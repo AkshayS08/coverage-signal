@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local fetch cache (EDGAR filings, news pulls)
+/cache
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
