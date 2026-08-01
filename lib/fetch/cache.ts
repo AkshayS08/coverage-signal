@@ -1,7 +1,15 @@
 import fs from "fs/promises";
 import path from "path";
+import os from "os";
 
-export const CACHE_DIR = path.join(process.cwd(), "cache");
+// Vercel's deployed function filesystem is read-only except /tmp — the
+// project-relative cache/ folder can't be created there. Locally, keep
+// using the project's own cache/ folder so nothing changes on-disk here.
+const isVercel = Boolean(process.env.VERCEL);
+
+export const CACHE_DIR = isVercel
+  ? path.join(os.tmpdir(), "coverage-signal-cache")
+  : path.join(process.cwd(), "cache");
 
 function resolveCachePath(relPath: string): string {
   return path.join(CACHE_DIR, relPath);
