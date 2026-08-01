@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import styles from "./page.module.css";
 import { rankCompanies } from "@/lib/rank";
-import type { CompanyResult, RunStreamEvent } from "@/lib/agent";
+import type { CompanyResult, RunStreamEvent, TriggerResult } from "@/lib/agent";
 
 const DEFAULT_BOOK = [
   // DaVita first: the most demo-tested name, reliably shows the agent
@@ -28,8 +28,9 @@ interface TraceLine {
   filler?: boolean;
 }
 
-interface DraftedOpener {
-  text: string;
+interface DraftedBriefing {
+  bullets: string[];
+  angle: string;
   source: "sonnet" | "template";
 }
 
@@ -51,27 +52,33 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Presentation-only: keeps the per-trigger evidence line to roughly one
+// line in a card instead of wrapping across several.
+function shorten(text: string | null, maxLen = 140): string {
+  if (!text) return "";
+  const trimmed = text.trim();
+  if (trimmed.length <= maxLen) return trimmed;
+  const cut = trimmed.slice(0, maxLen);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${cut.slice(0, lastSpace > 0 ? lastSpace : maxLen)}...`;
+}
+
 export default function Home() {
   const [book, setBook] = useState(DEFAULT_BOOK);
   const [passphrase, setPassphrase] = useState("");
   const [trace, setTrace] = useState<TraceLine[]>([]);
   const [results, setResults] = useState<CompanyResult[]>([]);
-  const [openers, setOpeners] = useState<Record<string, DraftedOpener>>({});
+  const [briefings, setBriefings] = useState<Record<string, DraftedBriefing>>({});
   const [running, setRunning] = useState(false);
 
-  const ranked = useMemo(() => rankCompanies(results), [results]);
-  const displayRanked = useMemo(
+  const { calls, monitor } = useMemo(() => rankCompanies(results), [results]);
+  const displayCalls = useMemo(
     () =>
-      ranked.map((rc) => ({
+      calls.map((rc) => ({
         ...rc,
-        opener: openers[rc.company]?.text ?? rc.opener,
-        openerSource: openers[rc.company]?.source ?? ("template" as const),
+        briefing: briefings[rc.company] ?? rc.briefing,
       })),
-    [ranked, openers]
-  );
-  const treasuryCount = useMemo(
-    () => ranked.filter((rc) => rc.triggers.some((t) => t.needType === "treasury")).length,
-    [ranked]
+    [calls, briefings]
   );
 
   async function runAgent() {
@@ -85,7 +92,7 @@ export default function Home() {
     setRunning(true);
     setTrace([]);
     setResults([]);
-    setOpeners({});
+    setBriefings({});
 
     // Real trace/error lines land here instead of going straight to state,
     // so a burst (all 15 trigger lines arriving in one response) can be
@@ -121,9 +128,9 @@ export default function Home() {
         queueTrace(event.company, event.text);
       } else if (event.type === "result") {
         setResults((rs) => [...rs, event.result]);
-        if (event.opener) {
-          const opener = event.opener;
-          setOpeners((prev) => ({ ...prev, [event.result.company]: opener }));
+        if (event.briefing) {
+          const briefing = event.briefing;
+          setBriefings((prev) => ({ ...prev, [event.result.company]: briefing }));
         }
       } else if (event.type === "error") {
         queueTrace(event.company, `error: ${event.message}`);
@@ -194,6 +201,32 @@ export default function Home() {
     }
   }
 
+  function renderTrigger(t: TriggerResult, isHeadline: boolean) {
+    return (
+      <div className={isHeadline ? styles.headlineTrigger : styles.supportingTrigger}>
+        <div className={styles.triggerHeaderRow}>
+          <span
+            className={`${styles.badge} ${
+              t.needType === "treasury" ? styles.badgeTreasury : styles.badgeCredit
+            }`}
+          >
+            {t.needType}
+          </span>
+          <span className={styles.triggerName}>{t.triggerName}</span>
+          <span className={styles.mappedNeed}>→ {t.mappedNeed}</span>
+        </div>
+        {t.evidence && <p className={styles.evidenceLine}>{shorten(t.evidence)}</p>}
+        <div className={styles.citations}>
+          {t.citations.map((c, ci) => (
+            <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
+              {c.form} {c.date} ↗
+            </a>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className={styles.page}>
       <header className={styles.header}>
@@ -253,13 +286,12 @@ export default function Home() {
           <div className={styles.panelBody}>
             {(results.length > 0 || running) && (
               <div className={styles.summaryLine}>
-                {results.length} compan{results.length === 1 ? "y" : "ies"} assessed · {ranked.length} call
-                {ranked.length === 1 ? "" : "s"} · {treasuryCount} treasury opportunit
-                {treasuryCount === 1 ? "y" : "ies"}
+                {results.length} assessed · {calls.length} to call · {monitor.length} monitoring
               </div>
             )}
-            {displayRanked.map((rc, i) => {
+            {displayCalls.map((rc, i) => {
               const isTreasuryLed = rc.topTrigger.needType === "treasury";
+              const [headline, ...supporting] = rc.triggers;
               return (
                 <div
                   key={rc.company}
@@ -270,46 +302,46 @@ export default function Home() {
                     <span className={styles.companyName}>{rc.company}</span>
                     <span className={styles.scoreText}>score {rc.score.toFixed(2)}</span>
                   </div>
-                  <p className={styles.opener}>
-                    &ldquo;{rc.opener}&rdquo;
-                    <span className={styles.openerSource}>
-                      {rc.openerSource === "sonnet" ? "Sonnet-drafted" : "templated"}
-                    </span>
-                  </p>
-                  <ul className={styles.triggerList}>
-                    {rc.triggers.map((t) => (
-                      <li key={t.triggerId} className={styles.triggerItem}>
-                        <span
-                          className={`${styles.badge} ${
-                            t.needType === "treasury" ? styles.badgeTreasury : styles.badgeCredit
-                          }`}
-                        >
-                          {t.needType}
-                        </span>
-                        <span className={styles.triggerName}>{t.triggerName}</span>
-                        <span className={styles.mappedNeed}>→ {t.mappedNeed}</span>
-                        <span className={styles.confidence}>
-                          {Math.round(t.confidence * 100)}% confidence
-                        </span>
-                        <div className={styles.citations}>
-                          {t.citations.map((c, ci) => (
-                            <a
-                              key={ci}
-                              href={c.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className={styles.citation}
-                            >
-                              {c.form} {c.date} ↗
-                            </a>
-                          ))}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className={styles.briefing}>
+                    <ul className={styles.briefingBullets}>
+                      {rc.briefing.bullets.map((b, bi) => (
+                        <li key={bi}>{b}</li>
+                      ))}
+                    </ul>
+                    <p className={styles.briefingAngle}>
+                      <strong>Angle:</strong> {rc.briefing.angle}
+                      <span className={styles.openerSource}>
+                        {rc.briefing.source === "sonnet" ? "Sonnet-drafted" : "templated"}
+                      </span>
+                    </p>
+                  </div>
+                  {renderTrigger(headline, true)}
+                  {supporting.length > 0 && (
+                    <div className={styles.supportingSection}>
+                      <div className={styles.supportingLabel}>Also flagged</div>
+                      <ul className={styles.triggerList}>
+                        {supporting.map((t) => (
+                          <li key={t.triggerId}>{renderTrigger(t, false)}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               );
             })}
+            {monitor.length > 0 && (
+              <details className={styles.monitorSection}>
+                <summary className={styles.monitorSummary}>Monitor ({monitor.length})</summary>
+                <ul className={styles.monitorList}>
+                  {monitor.map((m) => (
+                    <li key={m.company} className={styles.monitorItem}>
+                      <span className={styles.monitorCompany}>{m.company}</span>
+                      <span className={styles.monitorTrigger}>{m.topTrigger.triggerName}</span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
           </div>
         </div>
       </section>

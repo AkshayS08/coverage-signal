@@ -34,9 +34,9 @@ function mostRecentCitationDate(trigger: TriggerResult): string | undefined {
   return dates.reduce((latest, d) => (d > latest ? d : latest));
 }
 
-/** score = need_value x recency x confidence, per the build map's ranker formula. */
+/** score = need_value x recency. Confidence is deliberately not a factor. */
 export function scoreTrigger(trigger: TriggerResult, now: Date = new Date()): number {
   const needValue = NEED_VALUE[trigger.needType];
   const recency = recencyScore(mostRecentCitationDate(trigger), now);
-  return needValue * recency * trigger.confidence;
+  return needValue * recency;
 }

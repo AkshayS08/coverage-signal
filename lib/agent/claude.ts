@@ -52,7 +52,7 @@ const VERDICT_ITEM_SCHEMA = {
 const INSTRUCTIONS = `You are triaging a public company's SEC filings for a commercial bank relationship manager. For each of the 15 triggers listed, decide:
 - fired: does the evidence show this trigger actually happened / is present?
 - dataAvailable: could this realistically be assessed from what you were given? Set this to false only when the trigger is fundamentally the kind of thing public filings don't disclose (e.g. internal treasury/banking relationships) — not merely because you personally didn't spot it this quarter. If the trigger is marked PUBLIC and you simply see no evidence, that's fired=false, dataAvailable=true ("checked, no signal").
-- evidence: a short quote or paraphrase of what you found, or null if nothing.
+- evidence: a short quote or paraphrase of what you found, or null if nothing. When the filing supports a real timing element (a maturity date, a pending closing date, an effective date, a window that's open right now), make that explicit in the evidence text — e.g. "5.250% notes due June 2026 → refi window open now (~10 months out)" or "divestiture closing pending → proceeds land soon". Only surface timing when the filing genuinely discloses it; never invent urgency that isn't there.
 - confidence: 0-1.
 - needsDig: true only if the evidence is genuinely ambiguous (e.g. an event is mentioned but a key detail like amount or maturity is missing) AND a specific other filing in the catalog (not already in the excerpts below) looks likely to resolve it.
 - digHint: if needsDig, the exact url from the filing catalog you want read next. Otherwise null.

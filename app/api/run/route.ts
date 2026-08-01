@@ -1,6 +1,6 @@
 import { runAgentLoop, type RunStreamEvent } from "@/lib/agent";
 import { rankCompanies } from "@/lib/rank";
-import { draftOpener } from "@/lib/rank/sonnetOpener";
+import { draftBriefing } from "@/lib/rank/sonnetBriefing";
 import { checkRateLimit } from "./rateLimit";
 
 export const runtime = "nodejs";
@@ -69,14 +69,18 @@ export async function POST(request: Request) {
           const result = await runAgentLoop(company, (text) => send({ type: "trace", company, text }));
 
           if (result.verdict === "CALL") {
-            const [topRanked] = rankCompanies([result]);
-            const drafted = topRanked ? await draftOpener(result.company, topRanked.topTrigger) : undefined;
+            // Only draft a briefing for companies that will actually clear the
+            // call threshold — a "monitor" entry never displays one, so
+            // there's no point spending a Sonnet call on it.
+            const { calls } = rankCompanies([result]);
+            const topRanked = calls[0];
+            const drafted = topRanked ? await draftBriefing(result.company, topRanked.triggers) : undefined;
             if (drafted) {
               const label = drafted.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
-              console.log(`[opener] ${result.company}: ${drafted.source}`);
-              send({ type: "trace", company, text: `opener: ${label}` });
+              console.log(`[briefing] ${result.company}: ${drafted.source}`);
+              send({ type: "trace", company, text: `briefing: ${label}` });
             }
-            send({ type: "result", result, opener: drafted });
+            send({ type: "result", result, briefing: drafted });
           } else {
             send({ type: "result", result });
           }

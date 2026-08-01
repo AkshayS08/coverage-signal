@@ -1,3 +1,3 @@
 export * from "./score";
-export * from "./opener";
+export * from "./briefing";
 export * from "./rankCompanies";
