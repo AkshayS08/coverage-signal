@@ -52,8 +52,23 @@
   resize: vertical;
 }
 
+.runRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.passphraseInput {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: inherit;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  width: 160px;
+}
+
 .runButton {
-  align-self: flex-start;
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 600;
@@ -63,12 +78,18 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s;
+  white-space: nowrap;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .runButton:hover {
     background: var(--button-hover);
   }
+}
+
+.runButton:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .panels {
@@ -96,6 +117,170 @@
 
 .panelBody {
   flex: 1;
+  padding: 12px 16px;
+  overflow-y: auto;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.traceLine {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.traceLine + .traceLine {
+  margin-top: 2px;
+}
+
+.traceHeader {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-weight: 700;
+  margin-top: 14px;
+}
+
+.traceHeader:first-child {
+  margin-top: 0;
+}
+
+.traceFiller {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.summaryLine {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.card {
+  font-family: var(--font-geist-sans), sans-serif;
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.card + .card {
+  margin-top: 12px;
+}
+
+.cardTreasury {
+  border-left: 3px solid #b45309;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.rankBadge {
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.companyName {
+  font-weight: 700;
+  font-size: 15px;
+  flex: 1;
+}
+
+.scoreText {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.opener {
+  font-style: italic;
+  font-size: 13px;
+  margin: 8px 0;
+  color: var(--text-secondary);
+}
+
+.openerSource {
+  display: inline-block;
+  font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  margin-left: 8px;
+}
+
+.triggerList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.triggerItem {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+
+.badgeCredit {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.badgeTreasury {
+  background: #f59e0b;
+  color: #451a03;
+  box-shadow: 0 0 0 1px #b45309;
+}
+
+.triggerName {
+  font-weight: 600;
+}
+
+.mappedNeed {
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+
+.confidence {
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.citations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 3px;
+}
+
+.citation {
+  font-size: 11px;
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .citation:hover {
+    color: #1d4ed8;
+  }
 }
 
 @media (max-width: 700px) {
@@ -112,5 +297,19 @@
     --button-bg: #ededed;
     --button-fg: #111;
     --button-hover: #ccc;
+  }
+
+  .cardTreasury {
+    border-left-color: #f59e0b;
+  }
+
+  .citation {
+    color: #60a5fa;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .citation:hover {
+      color: #93c5fd;
+    }
   }
 }
