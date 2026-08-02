@@ -37,30 +37,33 @@ interface DraftedBriefing {
 // Presentation-only pacing: while the single batched Haiku call is in
 // flight there's nothing real to report, so these keep the panel moving
 // rather than freezing for ~13s. They never claim a specific finding.
+// A large, distinct pool read in sequence (see fillerRemaining below) so a
+// long wait reads as forward progress rather than a repeating record.
 const FILLER_LINES = [
-  "scanning 15 trigger signals...",
-  "cross-referencing the debt schedule...",
-  "checking recent 8-Ks against the taxonomy...",
-  "reviewing the balance sheet...",
-  "matching filings to banking needs...",
+  "resolving company identifier...",
+  "pulling recent 8-Ks...",
+  "reading the latest 10-Q...",
+  "checking the debt schedule...",
+  "scanning for upcoming maturities...",
+  "cross-referencing recent financing activity...",
+  "reviewing balance sheet disclosures...",
+  "checking covenant and liquidity language...",
+  "scanning treasury and FX disclosures...",
+  "checking for pending acquisitions or divestitures...",
+  "looking for recent buyback or dividend activity...",
+  "matching events to banking needs...",
 ];
 
 const DRAIN_TICK_MS = 150;
 const IDLE_FILLER_THRESHOLD_MS = 700;
 
+// Supporting triggers beyond this many (already sorted highest-scoring
+// first) collapse behind a "show N more" toggle instead of listing every
+// fired trigger on the card.
+const VISIBLE_SUPPORTING_COUNT = 3;
+
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// Presentation-only: keeps the per-trigger evidence line to roughly one
-// line in a card instead of wrapping across several.
-function shorten(text: string | null, maxLen = 140): string {
-  if (!text) return "";
-  const trimmed = text.trim();
-  if (trimmed.length <= maxLen) return trimmed;
-  const cut = trimmed.slice(0, maxLen);
-  const lastSpace = cut.lastIndexOf(" ");
-  return `${cut.slice(0, lastSpace > 0 ? lastSpace : maxLen)}...`;
 }
 
 export default function Home() {
@@ -100,7 +103,11 @@ export default function Home() {
     const revealQueue: TraceLine[] = [];
     let lastAppendAt = Date.now();
     let currentCompany = companies[0] ?? "";
-    let fillerIndex = 0;
+    // Per-company queue of not-yet-shown filler lines: refilled fresh (and
+    // reshuffled) whenever the company changes or the pool runs dry, so a
+    // single wait works through distinct lines before any repeat.
+    let fillerCompany = "";
+    let fillerRemaining: string[] = [];
 
     const appendLine = (line: TraceLine) => {
       setTrace((lines) => [...lines, line]);
@@ -113,8 +120,11 @@ export default function Home() {
         if (next.company) currentCompany = next.company;
         appendLine(next);
       } else if (Date.now() - lastAppendAt > IDLE_FILLER_THRESHOLD_MS) {
-        const text = FILLER_LINES[fillerIndex % FILLER_LINES.length];
-        fillerIndex += 1;
+        if (fillerCompany !== currentCompany || fillerRemaining.length === 0) {
+          fillerCompany = currentCompany;
+          fillerRemaining = [...FILLER_LINES];
+        }
+        const text = fillerRemaining.shift()!;
         appendLine({ company: currentCompany, text, filler: true });
       }
     }, DRAIN_TICK_MS);
@@ -215,7 +225,7 @@ export default function Home() {
           <span className={styles.triggerName}>{t.triggerName}</span>
           <span className={styles.mappedNeed}>→ {t.mappedNeed}</span>
         </div>
-        {t.evidence && <p className={styles.evidenceLine}>{shorten(t.evidence)}</p>}
+        {t.evidence && <p className={styles.evidenceLine}>{t.evidence.trim()}</p>}
         <div className={styles.citations}>
           {t.citations.map((c, ci) => (
             <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
@@ -300,7 +310,12 @@ export default function Home() {
                   <div className={styles.cardHeader}>
                     <span className={styles.rankBadge}>#{i + 1}</span>
                     <span className={styles.companyName}>{rc.company}</span>
-                    <span className={styles.scoreText}>score {rc.score.toFixed(2)}</span>
+                    <span
+                      className={styles.scoreText}
+                      title="Relative priority score (treasury-weighted, recency-adjusted) — useful for ranking, not a precise metric on its own"
+                    >
+                      priority {rc.score.toFixed(2)}
+                    </span>
                   </div>
                   <div className={styles.briefing}>
                     <ul className={styles.briefingBullets}>
@@ -320,10 +335,22 @@ export default function Home() {
                     <div className={styles.supportingSection}>
                       <div className={styles.supportingLabel}>Also flagged</div>
                       <ul className={styles.triggerList}>
-                        {supporting.map((t) => (
+                        {supporting.slice(0, VISIBLE_SUPPORTING_COUNT).map((t) => (
                           <li key={t.triggerId}>{renderTrigger(t, false)}</li>
                         ))}
                       </ul>
+                      {supporting.length > VISIBLE_SUPPORTING_COUNT && (
+                        <details className={styles.moreTriggers}>
+                          <summary className={styles.moreTriggersSummary}>
+                            show {supporting.length - VISIBLE_SUPPORTING_COUNT} more
+                          </summary>
+                          <ul className={styles.triggerList}>
+                            {supporting.slice(VISIBLE_SUPPORTING_COUNT).map((t) => (
+                              <li key={t.triggerId}>{renderTrigger(t, false)}</li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
                     </div>
                   )}
                 </div>
