@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import styles from "./page.module.css";
-import { rankCompanies } from "@/lib/rank";
+import { rankCompanies, scoreTrigger, templateBriefing } from "@/lib/rank";
+import type { RankedCompany } from "@/lib/rank";
 import type { CompanyResult, RunStreamEvent, TriggerResult } from "@/lib/agent";
+import type { DraftedBriefing } from "@/lib/rank/briefing";
 
 const DEFAULT_BOOK = [
   // DaVita first: the most demo-tested name, reliably shows the agent
@@ -28,10 +30,9 @@ interface TraceLine {
   filler?: boolean;
 }
 
-interface DraftedBriefing {
-  bullets: string[];
-  angle: string;
-  source: "sonnet" | "template";
+/** Real SEC EDGAR browse page for a resolved CIK — same data the fetch layer already reads from. */
+function edgarCompanyUrl(cik: string): string {
+  return `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cik}&type=&dateb=&owner=include&count=40`;
 }
 
 // Presentation-only pacing: while the single batched Haiku call is in
@@ -73,6 +74,7 @@ export default function Home() {
   const [results, setResults] = useState<CompanyResult[]>([]);
   const [briefings, setBriefings] = useState<Record<string, DraftedBriefing>>({});
   const [running, setRunning] = useState(false);
+  const [asOfDate, setAsOfDate] = useState<Date | null>(null);
 
   const { calls, monitor } = useMemo(() => rankCompanies(results), [results]);
   const displayCalls = useMemo(
@@ -82,6 +84,36 @@ export default function Home() {
         briefing: briefings[rc.company] ?? rc.briefing,
       })),
     [calls, briefings]
+  );
+  const treasuryCallCount = useMemo(
+    () => calls.filter((rc) => rc.topTrigger.needType === "treasury").length,
+    [calls]
+  );
+  // Monitor entries get the exact same full-detail shape as a call card —
+  // the threshold only decides which list a company defaults into, not
+  // whether its detail exists. Built from the same raw per-company results
+  // and the same exported scoreTrigger/templateBriefing used by the ranker,
+  // so this is display-only: no scoring or threshold logic is duplicated.
+  const monitorCards: RankedCompany[] = useMemo(
+    () =>
+      monitor.map((m) => {
+        const result = results.find((r) => r.company === m.company);
+        const triggers = (result?.results ?? [])
+          .filter((t) => t.fired && (t.needType === "credit" || t.needType === "treasury"))
+          .map((trigger) => ({ trigger, score: scoreTrigger(trigger) }))
+          .sort((a, b) => b.score - a.score)
+          .map((s) => s.trigger);
+        return {
+          company: m.company,
+          cik: result?.cik ?? "",
+          ticker: result?.ticker ?? "",
+          score: m.score,
+          triggers,
+          topTrigger: m.topTrigger,
+          briefing: briefings[m.company] ?? templateBriefing(triggers),
+        };
+      }),
+    [monitor, results, briefings]
   );
 
   async function runAgent() {
@@ -96,6 +128,7 @@ export default function Home() {
     setTrace([]);
     setResults([]);
     setBriefings({});
+    setAsOfDate(new Date());
 
     // Real trace/error lines land here instead of going straight to state,
     // so a burst (all 15 trigger lines arriving in one response) can be
@@ -237,6 +270,76 @@ export default function Home() {
     );
   }
 
+  // Shared by call cards (always visible, ranked) and monitor entries
+  // (collapsed by default, expanded on demand) — same full detail either
+  // way. rankLabel is omitted for monitor entries since they aren't ranked
+  // against each other the way calls are.
+  function renderCompanyCard(rc: RankedCompany, rankLabel?: string) {
+    const isTreasuryLed = rc.topTrigger.needType === "treasury";
+    const [headline, ...supporting] = rc.triggers;
+    return (
+      <div key={rc.company} className={`${styles.card} ${isTreasuryLed ? styles.cardTreasury : ""}`}>
+        <div className={styles.cardHeader}>
+          {rankLabel && <span className={styles.rankBadge}>{rankLabel}</span>}
+          {rc.cik ? (
+            <a
+              className={styles.companyName}
+              href={edgarCompanyUrl(rc.cik)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {rc.company}
+            </a>
+          ) : (
+            <span className={styles.companyName}>{rc.company}</span>
+          )}
+          <span
+            className={styles.scoreText}
+            title="Relative priority score (treasury-weighted, recency-adjusted) — useful for ranking, not a precise metric on its own"
+          >
+            priority {rc.score.toFixed(2)}
+          </span>
+        </div>
+        <div className={styles.briefing}>
+          <ul className={styles.briefingBullets}>
+            {rc.briefing.bullets.map((b, bi) => (
+              <li key={bi}>{b}</li>
+            ))}
+          </ul>
+          <p className={styles.briefingAngle}>
+            <strong>Angle:</strong> {rc.briefing.angle}
+            <span className={styles.openerSource}>
+              {rc.briefing.source === "sonnet" ? "Sonnet-drafted" : "templated"}
+            </span>
+          </p>
+        </div>
+        {renderTrigger(headline, true)}
+        {supporting.length > 0 && (
+          <div className={styles.supportingSection}>
+            <div className={styles.supportingLabel}>Also flagged</div>
+            <ul className={styles.triggerList}>
+              {supporting.slice(0, VISIBLE_SUPPORTING_COUNT).map((t) => (
+                <li key={t.triggerId}>{renderTrigger(t, false)}</li>
+              ))}
+            </ul>
+            {supporting.length > VISIBLE_SUPPORTING_COUNT && (
+              <details className={styles.moreTriggers}>
+                <summary className={styles.moreTriggersSummary}>
+                  show {supporting.length - VISIBLE_SUPPORTING_COUNT} more
+                </summary>
+                <ul className={styles.triggerList}>
+                  {supporting.slice(VISIBLE_SUPPORTING_COUNT).map((t) => (
+                    <li key={t.triggerId}>{renderTrigger(t, false)}</li>
+                  ))}
+                </ul>
+              </details>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <main className={styles.page}>
       <header className={styles.header}>
@@ -274,96 +377,76 @@ export default function Home() {
 
       <section className={styles.panels}>
         <div className={styles.panel}>
-          <h2 className={styles.panelTitle}>Agent trace</h2>
-          <div className={styles.panelBody}>
-            {trace.map((line, i) => {
-              const isNewCompany = i === 0 || trace[i - 1].company !== line.company;
-              const className = line.filler
-                ? styles.traceFiller
-                : isNewCompany
-                  ? styles.traceHeader
-                  : styles.traceLine;
-              return (
-                <div key={i} className={className}>
-                  {line.text}
-                </div>
-              );
-            })}
-          </div>
+          <details className={styles.tracePanelDetails} open>
+            <summary className={styles.panelTitle}>Agent trace</summary>
+            <div className={styles.panelBody}>
+              {trace.map((line, i) => {
+                const isNewCompany = i === 0 || trace[i - 1].company !== line.company;
+                const className = line.filler
+                  ? styles.traceFiller
+                  : isNewCompany
+                    ? styles.traceHeader
+                    : styles.traceLine;
+                return (
+                  <div key={i} className={className}>
+                    {line.text}
+                  </div>
+                );
+              })}
+            </div>
+          </details>
         </div>
         <div className={styles.panel}>
-          <h2 className={styles.panelTitle}>Call sheet</h2>
+          <div className={styles.callSheetHeader}>
+            <h2 className={styles.panelTitle}>Call sheet</h2>
+            {asOfDate && (
+              <p className={styles.asOfLine}>
+                As of{" "}
+                {asOfDate.toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}{" "}
+                · based on filings retrieved from SEC EDGAR
+              </p>
+            )}
+            <details className={styles.methodology}>
+              <summary className={styles.methodologySummary}>How this works</summary>
+              <p className={styles.methodologyText}>
+                Coverage Signal scans each company against 15 trigger types drawn from its recent SEC
+                filings (10-Ks, 10-Qs, 8-Ks), then ranks fired triggers by a treasury-weighted,
+                recency-adjusted priority score — treasury/deposit signals are weighted above credit
+                signals, since that&apos;s where commercial banking margin lives and where
+                lending-focused coverage tends to under-call. Companies whose top signal clears a
+                threshold are flagged &quot;call this week&quot;; the rest are tracked under
+                &quot;monitor.&quot;
+              </p>
+            </details>
+          </div>
           <div className={styles.panelBody}>
             {(results.length > 0 || running) && (
-              <div className={styles.summaryLine}>
-                {results.length} assessed · {calls.length} to call · {monitor.length} monitoring
-              </div>
-            )}
-            {displayCalls.map((rc, i) => {
-              const isTreasuryLed = rc.topTrigger.needType === "treasury";
-              const [headline, ...supporting] = rc.triggers;
-              return (
-                <div
-                  key={rc.company}
-                  className={`${styles.card} ${isTreasuryLed ? styles.cardTreasury : ""}`}
-                >
-                  <div className={styles.cardHeader}>
-                    <span className={styles.rankBadge}>#{i + 1}</span>
-                    <span className={styles.companyName}>{rc.company}</span>
-                    <span
-                      className={styles.scoreText}
-                      title="Relative priority score (treasury-weighted, recency-adjusted) — useful for ranking, not a precise metric on its own"
-                    >
-                      priority {rc.score.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className={styles.briefing}>
-                    <ul className={styles.briefingBullets}>
-                      {rc.briefing.bullets.map((b, bi) => (
-                        <li key={bi}>{b}</li>
-                      ))}
-                    </ul>
-                    <p className={styles.briefingAngle}>
-                      <strong>Angle:</strong> {rc.briefing.angle}
-                      <span className={styles.openerSource}>
-                        {rc.briefing.source === "sonnet" ? "Sonnet-drafted" : "templated"}
-                      </span>
-                    </p>
-                  </div>
-                  {renderTrigger(headline, true)}
-                  {supporting.length > 0 && (
-                    <div className={styles.supportingSection}>
-                      <div className={styles.supportingLabel}>Also flagged</div>
-                      <ul className={styles.triggerList}>
-                        {supporting.slice(0, VISIBLE_SUPPORTING_COUNT).map((t) => (
-                          <li key={t.triggerId}>{renderTrigger(t, false)}</li>
-                        ))}
-                      </ul>
-                      {supporting.length > VISIBLE_SUPPORTING_COUNT && (
-                        <details className={styles.moreTriggers}>
-                          <summary className={styles.moreTriggersSummary}>
-                            show {supporting.length - VISIBLE_SUPPORTING_COUNT} more
-                          </summary>
-                          <ul className={styles.triggerList}>
-                            {supporting.slice(VISIBLE_SUPPORTING_COUNT).map((t) => (
-                              <li key={t.triggerId}>{renderTrigger(t, false)}</li>
-                            ))}
-                          </ul>
-                        </details>
-                      )}
-                    </div>
-                  )}
+              <>
+                <div className={styles.verdictBanner}>
+                  This week: {calls.length} to call · {monitor.length} monitoring ·{" "}
+                  {treasuryCallCount} treasury {treasuryCallCount === 1 ? "opportunity" : "opportunities"}
                 </div>
-              );
-            })}
+                <div className={styles.summaryLine}>{results.length} companies assessed</div>
+              </>
+            )}
+            {displayCalls.map((rc, i) => renderCompanyCard(rc, `#${i + 1}`))}
             {monitor.length > 0 && (
               <details className={styles.monitorSection}>
                 <summary className={styles.monitorSummary}>Monitor ({monitor.length})</summary>
                 <ul className={styles.monitorList}>
-                  {monitor.map((m) => (
-                    <li key={m.company} className={styles.monitorItem}>
-                      <span className={styles.monitorCompany}>{m.company}</span>
-                      <span className={styles.monitorTrigger}>{m.topTrigger.triggerName}</span>
+                  {monitorCards.map((mc) => (
+                    <li key={mc.company} className={styles.monitorEntry}>
+                      <details>
+                        <summary className={styles.monitorEntrySummary}>
+                          <span className={styles.monitorCompany}>{mc.company}</span>
+                          <span className={styles.monitorTrigger}>{mc.topTrigger.triggerName}</span>
+                        </summary>
+                        <div className={styles.monitorEntryBody}>{renderCompanyCard(mc)}</div>
+                      </details>
                     </li>
                   ))}
                 </ul>
