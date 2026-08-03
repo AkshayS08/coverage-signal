@@ -2,10 +2,9 @@
 
 import { useMemo, useState } from "react";
 import styles from "./page.module.css";
-import { rankCompanies, scoreTrigger, templateBriefing } from "@/lib/rank";
-import type { RankedCompany } from "@/lib/rank";
-import type { CompanyResult, RunStreamEvent, TriggerResult } from "@/lib/agent";
-import type { DraftedBriefing } from "@/lib/rank/briefing";
+import { buildEvents, templateEventBriefing, BUCKET_LABELS, type EventRecord, type Bucket } from "@/lib/events";
+import type { DraftedEventBriefing } from "@/lib/events/eventBriefing";
+import type { CompanyResult, RunStreamEvent } from "@/lib/agent";
 
 const DEFAULT_BOOK = [
   // DaVita first: the most demo-tested name, reliably shows the agent
@@ -35,6 +34,19 @@ function edgarCompanyUrl(cik: string): string {
   return `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cik}&type=&dateb=&owner=include&count=40`;
 }
 
+const BUCKET_CLASS: Record<Bucket, string> = {
+  treasury: "bucketTreasury",
+  new_debt: "bucketNewDebt",
+  refi: "bucketRefi",
+  hedging: "bucketHedging",
+};
+
+function timingLabel(e: EventRecord): string {
+  if (e.timing.monthsToNearestFuture !== null) return `~${e.timing.monthsToNearestFuture}mo out`;
+  if (e.timing.isPendingLive) return "pending";
+  return "live now";
+}
+
 // Presentation-only pacing: while the single batched Haiku call is in
 // flight there's nothing real to report, so these keep the panel moving
 // rather than freezing for ~13s. They never claim a specific finding.
@@ -58,11 +70,6 @@ const FILLER_LINES = [
 const DRAIN_TICK_MS = 150;
 const IDLE_FILLER_THRESHOLD_MS = 700;
 
-// Supporting triggers beyond this many (already sorted highest-scoring
-// first) collapse behind a "show N more" toggle instead of listing every
-// fired trigger on the card.
-const VISIBLE_SUPPORTING_COUNT = 3;
-
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -72,48 +79,22 @@ export default function Home() {
   const [passphrase, setPassphrase] = useState("");
   const [trace, setTrace] = useState<TraceLine[]>([]);
   const [results, setResults] = useState<CompanyResult[]>([]);
-  const [briefings, setBriefings] = useState<Record<string, DraftedBriefing>>({});
+  const [eventBriefings, setEventBriefings] = useState<Record<string, DraftedEventBriefing>>({});
   const [running, setRunning] = useState(false);
   const [asOfDate, setAsOfDate] = useState<Date | null>(null);
 
-  const { calls, monitor } = useMemo(() => rankCompanies(results), [results]);
-  const displayCalls = useMemo(
+  const { flashCardCandidates, portfolio } = useMemo(() => buildEvents(results), [results]);
+  const displayFlashCards = useMemo(
     () =>
-      calls.map((rc) => ({
-        ...rc,
-        briefing: briefings[rc.company] ?? rc.briefing,
+      flashCardCandidates.map((e) => ({
+        event: e,
+        briefing: eventBriefings[e.id] ?? templateEventBriefing(e),
       })),
-    [calls, briefings]
+    [flashCardCandidates, eventBriefings]
   );
-  const treasuryCallCount = useMemo(
-    () => calls.filter((rc) => rc.topTrigger.needType === "treasury").length,
-    [calls]
-  );
-  // Monitor entries get the exact same full-detail shape as a call card —
-  // the threshold only decides which list a company defaults into, not
-  // whether its detail exists. Built from the same raw per-company results
-  // and the same exported scoreTrigger/templateBriefing used by the ranker,
-  // so this is display-only: no scoring or threshold logic is duplicated.
-  const monitorCards: RankedCompany[] = useMemo(
-    () =>
-      monitor.map((m) => {
-        const result = results.find((r) => r.company === m.company);
-        const triggers = (result?.results ?? [])
-          .filter((t) => t.fired && (t.needType === "credit" || t.needType === "treasury"))
-          .map((trigger) => ({ trigger, score: scoreTrigger(trigger) }))
-          .sort((a, b) => b.score - a.score)
-          .map((s) => s.trigger);
-        return {
-          company: m.company,
-          cik: result?.cik ?? "",
-          ticker: result?.ticker ?? "",
-          score: m.score,
-          triggers,
-          topTrigger: m.topTrigger,
-          briefing: briefings[m.company] ?? templateBriefing(triggers),
-        };
-      }),
-    [monitor, results, briefings]
+  const companiesWithEvents = useMemo(
+    () => new Set(flashCardCandidates.map((e) => e.company)).size,
+    [flashCardCandidates]
   );
 
   async function runAgent() {
@@ -127,7 +108,7 @@ export default function Home() {
     setRunning(true);
     setTrace([]);
     setResults([]);
-    setBriefings({});
+    setEventBriefings({});
     setAsOfDate(new Date());
 
     // Real trace/error lines land here instead of going straight to state,
@@ -171,9 +152,13 @@ export default function Home() {
         queueTrace(event.company, event.text);
       } else if (event.type === "result") {
         setResults((rs) => [...rs, event.result]);
-        if (event.briefing) {
-          const briefing = event.briefing;
-          setBriefings((prev) => ({ ...prev, [event.result.company]: briefing }));
+        if (event.eventBriefings && event.eventBriefings.length > 0) {
+          const drafted = event.eventBriefings;
+          setEventBriefings((prev) => {
+            const next = { ...prev };
+            for (const { eventId, briefing } of drafted) next[eventId] = briefing;
+            return next;
+          });
         }
       } else if (event.type === "error") {
         queueTrace(event.company, `error: ${event.message}`);
@@ -244,23 +229,36 @@ export default function Home() {
     }
   }
 
-  function renderTrigger(t: TriggerResult, isHeadline: boolean) {
+  function renderCompanyLink(company: string, cik: string) {
+    return cik ? (
+      <a className={styles.companyName} href={edgarCompanyUrl(cik)} target="_blank" rel="noreferrer">
+        {company}
+      </a>
+    ) : (
+      <span className={styles.companyName}>{company}</span>
+    );
+  }
+
+  function renderFlashCard(event: EventRecord, briefing: DraftedEventBriefing) {
     return (
-      <div className={isHeadline ? styles.headlineTrigger : styles.supportingTrigger}>
-        <div className={styles.triggerHeaderRow}>
-          <span
-            className={`${styles.badge} ${
-              t.needType === "treasury" ? styles.badgeTreasury : styles.badgeCredit
-            }`}
-          >
-            {t.needType}
+      <div key={event.id} className={styles.flashCard}>
+        <div className={styles.flashCardHeader}>
+          <span className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[event.bucket]]}`}>
+            {BUCKET_LABELS[event.bucket]}
           </span>
-          <span className={styles.triggerName}>{t.triggerName}</span>
-          <span className={styles.mappedNeed}>→ {t.mappedNeed}</span>
+          {renderCompanyLink(event.company, event.cik)}
+          <span className={styles.timingTag}>{timingLabel(event)}</span>
         </div>
-        {t.evidence && <p className={styles.evidenceLine}>{t.evidence.trim()}</p>}
+        <div className={styles.eventDescription}>{event.triggers.map((t) => t.triggerName).join(" + ")}</div>
+        <p className={styles.eventSummary}>{briefing.summary}</p>
+        <p className={styles.eventAngle}>
+          <strong>Angle:</strong> {briefing.angle}
+          <span className={styles.briefingSource}>
+            {briefing.source === "sonnet" ? "Sonnet-drafted" : "templated"}
+          </span>
+        </p>
         <div className={styles.citations}>
-          {t.citations.map((c, ci) => (
+          {event.citations.map((c, ci) => (
             <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
               {c.form} {c.date} ↗
             </a>
@@ -270,75 +268,37 @@ export default function Home() {
     );
   }
 
-  // Shared by call cards (always visible, ranked) and monitor entries
-  // (collapsed by default, expanded on demand) — same full detail either
-  // way. rankLabel is omitted for monitor entries since they aren't ranked
-  // against each other the way calls are.
-  function renderCompanyCard(rc: RankedCompany, rankLabel?: string) {
-    const isTreasuryLed = rc.topTrigger.needType === "treasury";
-    const [headline, ...supporting] = rc.triggers;
+  function renderPortfolioEvent(event: EventRecord) {
+    const flagHedging = event.bucket === "hedging" && !event.cardEligible;
     return (
-      <div key={rc.company} className={`${styles.card} ${isTreasuryLed ? styles.cardTreasury : ""}`}>
-        <div className={styles.cardHeader}>
-          {rankLabel && <span className={styles.rankBadge}>{rankLabel}</span>}
-          {rc.cik ? (
-            <a
-              className={styles.companyName}
-              href={edgarCompanyUrl(rc.cik)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {rc.company}
-            </a>
-          ) : (
-            <span className={styles.companyName}>{rc.company}</span>
-          )}
-          <span
-            className={styles.scoreText}
-            title="Relative priority score (treasury-weighted, recency-adjusted) — useful for ranking, not a precise metric on its own"
-          >
-            priority {rc.score.toFixed(2)}
-          </span>
-        </div>
-        <div className={styles.briefing}>
-          <ul className={styles.briefingBullets}>
-            {rc.briefing.bullets.map((b, bi) => (
-              <li key={bi}>{b}</li>
-            ))}
-          </ul>
-          <p className={styles.briefingAngle}>
-            <strong>Angle:</strong> {rc.briefing.angle}
-            <span className={styles.openerSource}>
-              {rc.briefing.source === "sonnet" ? "Sonnet-drafted" : "templated"}
-            </span>
-          </p>
-        </div>
-        {renderTrigger(headline, true)}
-        {supporting.length > 0 && (
-          <div className={styles.supportingSection}>
-            <div className={styles.supportingLabel}>Also flagged</div>
-            <ul className={styles.triggerList}>
-              {supporting.slice(0, VISIBLE_SUPPORTING_COUNT).map((t) => (
-                <li key={t.triggerId}>{renderTrigger(t, false)}</li>
-              ))}
-            </ul>
-            {supporting.length > VISIBLE_SUPPORTING_COUNT && (
-              <details className={styles.moreTriggers}>
-                <summary className={styles.moreTriggersSummary}>
-                  show {supporting.length - VISIBLE_SUPPORTING_COUNT} more
-                </summary>
-                <ul className={styles.triggerList}>
-                  {supporting.slice(VISIBLE_SUPPORTING_COUNT).map((t) => (
-                    <li key={t.triggerId}>{renderTrigger(t, false)}</li>
-                  ))}
-                </ul>
-              </details>
-            )}
+      <li key={event.id} className={styles.portfolioEvent}>
+        {flagHedging && (
+          <div className={styles.hedgingFlag}>
+            ⚑ Hedging opportunity — standing exposure, not urgent but worth raising
           </div>
         )}
-      </div>
+        {event.triggers.map((t, ti) => (
+          <div key={ti} className={styles.portfolioTrigger}>
+            <div className={styles.triggerHeaderRow}>
+              <span className={styles.triggerName}>{t.triggerName}</span>
+              <span className={styles.mappedNeed}>→ {t.mappedNeed}</span>
+              {!event.cardEligible && <span className={styles.tableOnlyTag}>table-only</span>}
+            </div>
+            {t.evidence && <p className={styles.evidenceLine}>{t.evidence.trim()}</p>}
+            <div className={styles.citations}>
+              {t.citations.map((c, ci) => (
+                <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
+                  {c.form} {c.date} ↗
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </li>
     );
   }
+
+  const BUCKET_ORDER: Bucket[] = ["treasury", "new_debt", "refi", "hedging"];
 
   return (
     <main className={styles.page}>
@@ -364,97 +324,98 @@ export default function Home() {
             onChange={(e) => setPassphrase(e.target.value)}
             autoComplete="off"
           />
-          <button
-            className={styles.runButton}
-            type="button"
-            onClick={runAgent}
-            disabled={running}
-          >
+          <button className={styles.runButton} type="button" onClick={runAgent} disabled={running}>
             {running ? "Running..." : "Run agent"}
           </button>
         </div>
       </section>
 
-      <section className={styles.panels}>
-        <div className={styles.panel}>
-          <details className={styles.tracePanelDetails} open>
-            <summary className={styles.panelTitle}>Agent trace</summary>
-            <div className={styles.panelBody}>
-              {trace.map((line, i) => {
-                const isNewCompany = i === 0 || trace[i - 1].company !== line.company;
-                const className = line.filler
-                  ? styles.traceFiller
-                  : isNewCompany
-                    ? styles.traceHeader
-                    : styles.traceLine;
-                return (
-                  <div key={i} className={className}>
-                    {line.text}
-                  </div>
-                );
-              })}
+      <section className={styles.resultsHeader}>
+        {asOfDate && (
+          <p className={styles.asOfLine}>
+            As of{" "}
+            {asOfDate.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}{" "}
+            · based on filings retrieved from SEC EDGAR
+          </p>
+        )}
+        <details className={styles.methodology}>
+          <summary className={styles.methodologySummary}>How this works</summary>
+          <p className={styles.methodologyText}>
+            Coverage Signal scans each company against 15 trigger types drawn from its recent SEC
+            filings, groups triggers that describe the same real-world event into one card (fixing
+            double-counting), and checks each event against the card eligibility test: dated/live AND
+            actionable within roughly 12-18 months. Eligible events surface as flash cards below,
+            ordered only by time-to-event — live/pending first, then soonest date — across four
+            opportunity buckets (treasury/deposits, new debt, refi, FX/rate hedging), with no ranking
+            of one opportunity type against another; the RM decides which call to make first.
+            Everything else — standing conditions, non-urgent signals — stays in the portfolio table.
+          </p>
+        </details>
+        {(results.length > 0 || running) && (
+          <>
+            <div className={styles.verdictBanner}>
+              This week: {flashCardCandidates.length} actionable event
+              {flashCardCandidates.length === 1 ? "" : "s"} across {companiesWithEvents} compan
+              {companiesWithEvents === 1 ? "y" : "ies"}
             </div>
-          </details>
-        </div>
-        <div className={styles.panel}>
-          <div className={styles.callSheetHeader}>
-            <h2 className={styles.panelTitle}>Call sheet</h2>
-            {asOfDate && (
-              <p className={styles.asOfLine}>
-                As of{" "}
-                {asOfDate.toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}{" "}
-                · based on filings retrieved from SEC EDGAR
-              </p>
-            )}
-            <details className={styles.methodology}>
-              <summary className={styles.methodologySummary}>How this works</summary>
-              <p className={styles.methodologyText}>
-                Coverage Signal scans each company against 15 trigger types drawn from its recent SEC
-                filings (10-Ks, 10-Qs, 8-Ks), then ranks fired triggers by a treasury-weighted,
-                recency-adjusted priority score — treasury/deposit signals are weighted above credit
-                signals, since that&apos;s where commercial banking margin lives and where
-                lending-focused coverage tends to under-call. Companies whose top signal clears a
-                threshold are flagged &quot;call this week&quot;; the rest are tracked under
-                &quot;monitor.&quot;
-              </p>
-            </details>
-          </div>
-          <div className={styles.panelBody}>
-            {(results.length > 0 || running) && (
-              <>
-                <div className={styles.verdictBanner}>
-                  This week: {calls.length} to call · {monitor.length} monitoring ·{" "}
-                  {treasuryCallCount} treasury {treasuryCallCount === 1 ? "opportunity" : "opportunities"}
-                </div>
-                <div className={styles.summaryLine}>{results.length} companies assessed</div>
-              </>
-            )}
-            {displayCalls.map((rc, i) => renderCompanyCard(rc, `#${i + 1}`))}
-            {monitor.length > 0 && (
-              <details className={styles.monitorSection}>
-                <summary className={styles.monitorSummary}>Monitor ({monitor.length})</summary>
-                <ul className={styles.monitorList}>
-                  {monitorCards.map((mc) => (
-                    <li key={mc.company} className={styles.monitorEntry}>
-                      <details>
-                        <summary className={styles.monitorEntrySummary}>
-                          <span className={styles.monitorCompany}>{mc.company}</span>
-                          <span className={styles.monitorTrigger}>{mc.topTrigger.triggerName}</span>
-                        </summary>
-                        <div className={styles.monitorEntryBody}>{renderCompanyCard(mc)}</div>
-                      </details>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            )}
-          </div>
-        </div>
+            <div className={styles.summaryLine}>{results.length} companies assessed</div>
+          </>
+        )}
       </section>
+
+      <section className={styles.flashCardSection}>
+        {displayFlashCards.map(({ event, briefing }) => renderFlashCard(event, briefing))}
+      </section>
+
+      {portfolio.length > 0 && (
+        <details className={styles.portfolioSection}>
+          <summary className={styles.portfolioSummary}>Portfolio table ({portfolio.length} companies)</summary>
+          <div className={styles.portfolioBody}>
+            {portfolio.map((p) => (
+              <div key={p.company} className={styles.portfolioCompany}>
+                <div className={styles.portfolioCompanyHeader}>{renderCompanyLink(p.company, p.cik)}</div>
+                {BUCKET_ORDER.map((bucket) => {
+                  const events = p.buckets[bucket];
+                  if (events.length === 0) return null;
+                  return (
+                    <div key={bucket} className={styles.portfolioBucket}>
+                      <div className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[bucket]]}`}>
+                        {BUCKET_LABELS[bucket]}
+                      </div>
+                      <ul className={styles.triggerList}>{events.map(renderPortfolioEvent)}</ul>
+                    </div>
+                  );
+                })}
+                {p.relationshipFlags.length > 0 && (
+                  <div className={styles.relationshipFlags}>
+                    Relationship flag (distress, not a sell signal):{" "}
+                    {p.relationshipFlags.map((t) => t.triggerName).join(", ")}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+
+      <details className={styles.tracePanelDetails}>
+        <summary className={styles.traceSummary}>▸ View agent reasoning</summary>
+        <div className={styles.panelBody}>
+          {trace.map((line, i) => {
+            const isNewCompany = i === 0 || trace[i - 1].company !== line.company;
+            const className = line.filler
+              ? styles.traceFiller
+              : isNewCompany
+                ? styles.traceHeader
+                : styles.traceLine;
+            return (
+              <div key={i} className={className}>
+                {line.text}
+              </div>
+            );
+          })}
+        </div>
+      </details>
     </main>
   );
 }

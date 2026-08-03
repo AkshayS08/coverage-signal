@@ -1,6 +1,6 @@
 import { runAgentLoop, type RunStreamEvent } from "@/lib/agent";
-import { rankCompanies } from "@/lib/rank";
-import { draftBriefing } from "@/lib/rank/sonnetBriefing";
+import { buildEvents } from "@/lib/events";
+import { draftEventBriefing } from "@/lib/events/sonnetEventBriefing";
 import { checkRateLimit } from "./rateLimit";
 
 export const runtime = "nodejs";
@@ -68,22 +68,19 @@ export async function POST(request: Request) {
         try {
           const result = await runAgentLoop(company, (text) => send({ type: "trace", company, text }));
 
-          if (result.verdict === "CALL") {
-            // Only draft a briefing for companies that will actually clear the
-            // call threshold — a "monitor" entry never displays one, so
-            // there's no point spending a Sonnet call on it.
-            const { calls } = rankCompanies([result]);
-            const topRanked = calls[0];
-            const drafted = topRanked ? await draftBriefing(result.company, topRanked.triggers) : undefined;
-            if (drafted) {
-              const label = drafted.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
-              console.log(`[briefing] ${result.company}: ${drafted.source}`);
-              send({ type: "trace", company, text: `briefing: ${label}` });
-            }
-            send({ type: "result", result, briefing: drafted });
-          } else {
-            send({ type: "result", result });
+          // Card eligibility is per-event, not per-company — a company can
+          // produce zero, one, or several card-eligible events. Only those
+          // get a Sonnet call; table-only events never do.
+          const { flashCardCandidates } = buildEvents([result]);
+          const eventBriefings: { eventId: string; briefing: Awaited<ReturnType<typeof draftEventBriefing>> }[] = [];
+          for (const event of flashCardCandidates) {
+            const drafted = await draftEventBriefing(event);
+            const label = drafted.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
+            console.log(`[eventBriefing] ${result.company} (${event.bucket}): ${drafted.source}`);
+            send({ type: "trace", company, text: `event briefing (${event.bucket}): ${label}` });
+            eventBriefings.push({ eventId: event.id, briefing: drafted });
           }
+          send({ type: "result", result, eventBriefings });
         } catch (err) {
           send({ type: "error", company, message: err instanceof Error ? err.message : String(err) });
         }

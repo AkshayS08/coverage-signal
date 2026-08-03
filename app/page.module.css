@@ -9,9 +9,9 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
   width: 100%;
-  max-width: 1080px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 48px 32px 64px;
 }
@@ -92,53 +92,12 @@
   cursor: default;
 }
 
-.panels {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
+/* --- Results header: as-of line, methodology, verdict banner --- */
 
-.panel {
-  display: flex;
-  flex-direction: column;
-  min-height: 360px;
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.panelTitle {
-  padding: 12px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: 1px solid var(--panel-border);
-  background: var(--panel-bg);
-}
-
-summary.panelTitle {
-  cursor: pointer;
-}
-
-.tracePanelDetails {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-}
-
-.callSheetHeader {
+.resultsHeader {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--panel-border);
-  background: var(--panel-bg);
-}
-
-.callSheetHeader .panelTitle {
-  padding: 0;
-  border-bottom: none;
-  background: none;
 }
 
 .asOfLine {
@@ -171,14 +130,271 @@ summary.panelTitle {
 
 .verdictBanner {
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
+  margin-top: 6px;
+}
+
+.summaryLine {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* --- Flash cards --- */
+
+.flashCardSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flashCard {
+  font-family: var(--font-geist-sans), sans-serif;
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.flashCardHeader {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.companyName {
+  font-weight: 700;
+  font-size: 15px;
+  flex: 1;
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .companyName:hover {
+    text-decoration: underline;
+  }
+}
+
+.timingTag {
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.eventDescription {
+  font-size: 13px;
+  font-weight: 600;
   margin-bottom: 4px;
 }
 
-.panelBody {
-  flex: 1;
+.eventSummary {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.eventAngle {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.briefingSource {
+  display: inline-block;
+  font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  margin-left: 8px;
+}
+
+/* --- Bucket badges (treasury stays the highlighted one) --- */
+
+.bucketBadge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 7px;
+  border-radius: 4px;
+}
+
+.bucketTreasury {
+  background: #f59e0b;
+  color: #451a03;
+  box-shadow: 0 0 0 1px #b45309;
+}
+
+.bucketNewDebt {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.bucketRefi {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.bucketHedging {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.flashCard:has(.bucketTreasury) {
+  border-left-color: #b45309;
+}
+
+/* --- Portfolio table (collapsed by default) --- */
+
+.portfolioSection {
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+.portfolioSummary {
+  cursor: pointer;
   padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--panel-bg);
+}
+
+.portfolioBody {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.portfolioCompany {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 14px;
+}
+
+.portfolioCompany:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.portfolioCompanyHeader {
+  margin-bottom: 8px;
+}
+
+.portfolioBucket {
+  margin-top: 10px;
+}
+
+.portfolioEvent {
+  margin-top: 8px;
+}
+
+.portfolioTrigger {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.hedgingFlag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b45309;
+  margin: 4px 0;
+}
+
+.tableOnlyTag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.relationshipFlags {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* --- Shared trigger row bits (flash cards don't use these; portfolio table does) --- */
+
+.triggerList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.triggerHeaderRow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.triggerName {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.mappedNeed {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.evidenceLine {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin: 3px 0 4px;
+}
+
+.citations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 3px;
+}
+
+.citation {
+  font-size: 11px;
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .citation:hover {
+    color: #1d4ed8;
+  }
+}
+
+/* --- Agent trace: collapsed by default --- */
+
+.tracePanelDetails {
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+}
+
+.traceSummary {
+  cursor: pointer;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--panel-bg);
+}
+
+.panelBody {
+  padding: 12px 16px;
+  max-height: 420px;
   overflow-y: auto;
   font-family: var(--font-geist-mono), monospace;
   font-size: 13px;
@@ -212,268 +428,6 @@ summary.panelTitle {
   opacity: 0.6;
 }
 
-.summaryLine {
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-}
-
-.card {
-  font-family: var(--font-geist-sans), sans-serif;
-  border: 1px solid var(--panel-border);
-  border-left: 3px solid var(--panel-border);
-  border-radius: 8px;
-  padding: 12px 14px;
-}
-
-.card + .card {
-  margin-top: 12px;
-}
-
-.cardTreasury {
-  border-left: 3px solid #b45309;
-}
-
-.cardHeader {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.rankBadge {
-  font-weight: 700;
-  font-size: 15px;
-  color: inherit;
-}
-
-.companyName {
-  font-weight: 700;
-  font-size: 15px;
-  flex: 1;
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .companyName:hover {
-    text-decoration: underline;
-  }
-}
-
-.scoreText {
-  font-size: 11px;
-  color: var(--text-secondary);
-  opacity: 0.6;
-  cursor: help;
-}
-
-.briefing {
-  margin: 8px 0;
-  font-size: 13px;
-}
-
-.briefingBullets {
-  list-style: disc;
-  padding-left: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.briefingBullets li {
-  line-height: 1.5;
-}
-
-.briefingAngle {
-  font-style: italic;
-  color: var(--text-secondary);
-  margin-top: 6px;
-}
-
-.openerSource {
-  display: inline-block;
-  font-style: normal;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--text-secondary);
-  opacity: 0.7;
-  margin-left: 8px;
-}
-
-.triggerList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  list-style: none;
-}
-
-.triggerHeaderRow {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-}
-
-.headlineTrigger {
-  margin-top: 6px;
-  padding-top: 8px;
-  border-top: 1px solid var(--panel-border);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.headlineTrigger .triggerName {
-  font-size: 14.5px;
-}
-
-.supportingTrigger {
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.supportingSection {
-  margin-top: 10px;
-}
-
-.supportingLabel {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-  opacity: 0.7;
-  margin-bottom: 6px;
-}
-
-.moreTriggers {
-  margin-top: 8px;
-}
-
-.moreTriggersSummary {
-  cursor: pointer;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.moreTriggers .triggerList {
-  margin-top: 8px;
-}
-
-.evidenceLine {
-  font-size: 12.5px;
-  color: var(--text-secondary);
-  margin: 3px 0 4px;
-}
-
-.badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-right: 6px;
-}
-
-.badgeCredit {
-  background: #e5e7eb;
-  color: #374151;
-}
-
-.badgeTreasury {
-  background: #f59e0b;
-  color: #451a03;
-  box-shadow: 0 0 0 1px #b45309;
-}
-
-.triggerName {
-  font-weight: 600;
-}
-
-.mappedNeed {
-  color: var(--text-secondary);
-  margin-left: 4px;
-}
-
-.citations {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 3px;
-}
-
-.citation {
-  font-size: 11px;
-  color: #2563eb;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .citation:hover {
-    color: #1d4ed8;
-  }
-}
-
-.monitorSection {
-  margin-top: 16px;
-  font-family: var(--font-geist-sans), sans-serif;
-}
-
-.monitorSummary {
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.monitorList {
-  list-style: none;
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.monitorEntry {
-  border-bottom: 1px solid var(--panel-border);
-}
-
-.monitorEntry:last-child {
-  border-bottom: none;
-}
-
-.monitorEntrySummary {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 12.5px;
-  padding: 6px 0;
-}
-
-.monitorEntryBody {
-  padding: 4px 0 14px;
-}
-
-.monitorCompany {
-  font-weight: 600;
-}
-
-.monitorTrigger {
-  color: var(--text-secondary);
-  text-align: right;
-}
-
-@media (max-width: 700px) {
-  .panels {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (prefers-color-scheme: dark) {
   .page {
     --panel-bg: #111;
@@ -484,8 +438,27 @@ summary.panelTitle {
     --button-hover: #ccc;
   }
 
-  .cardTreasury {
+  .bucketNewDebt {
+    background: #312e81;
+    color: #c7d2fe;
+  }
+
+  .bucketRefi {
+    background: #4c1d95;
+    color: #ede9fe;
+  }
+
+  .bucketHedging {
+    background: #374151;
+    color: #e5e7eb;
+  }
+
+  .flashCard:has(.bucketTreasury) {
     border-left-color: #f59e0b;
+  }
+
+  .hedgingFlag {
+    color: #f59e0b;
   }
 
   .citation {
