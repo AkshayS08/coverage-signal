@@ -57,6 +57,8 @@ export interface FlashCard {
   /** The headline trigger's own citations only — not the whole cluster's. */
   citations: TriggerResult["citations"];
   alsoActive: FlashCardActiveItem[];
+  /** Why this card cleared the freshness gate — e.g. "future maturity ~9mo" or "filed within 90 days (2026-07-21)". */
+  freshnessReason: string;
 }
 
 export interface CompanyPortfolio {
@@ -157,6 +159,19 @@ function hasGenuineFutureDate(timing: TimingInfo): boolean {
 }
 
 /**
+ * Human-readable justification for why a card cleared the freshness gate —
+ * surfaced in the trace/console so the gate's decision is auditable, not a
+ * black box (see buildEventsForCompany's freshness-gate comment for the
+ * underlying rule this describes).
+ */
+function describeFreshness(timing: TimingInfo, citations: TriggerResult["citations"]): string {
+  if (timing.monthsToNearestFuture !== null) return `future maturity ~${timing.monthsToNearestFuture}mo`;
+  if (timing.isPendingLive) return "pending/live event";
+  const mostRecent = mostRecentCitationDate(citations);
+  return mostRecent ? `filed within 90 days (${mostRecent})` : "no citation date (unexpected)";
+}
+
+/**
  * The one ordering rule, shared by every unit it applies to (a company's
  * headline-trigger candidates, and the final cross-company card list): a
  * known future date sorts first, ascending — soonest first. Everything
@@ -227,9 +242,6 @@ function buildEventsForCompany(
     };
   });
 
-  const buckets: Record<Bucket, EventRecord[]> = { treasury: [], new_debt: [], refi: [], hedging: [] };
-  for (const event of events) buckets[event.bucket].push(event);
-
   // Headline selection: flatten every INDIVIDUALLY card-eligible trigger
   // across ALL of this company's card-eligible clusters (not the clusters
   // themselves) and pick the single most urgent one as the headline. A
@@ -277,8 +289,26 @@ function buildEventsForCompany(
         bucket: bucketForTrigger(c.trigger.triggerId)!,
         timing: c.timing,
       })),
+      freshnessReason: describeFreshness(headline.timing, headline.trigger.citations),
     };
+
+    // Table/card agreement: the portfolio table normally labels a merged
+    // cluster via BUCKET_PRIORITY tie-break among its eligible constituents
+    // (resolveEventBucket, above) — which can disagree with the card when a
+    // different constituent trigger in the SAME cluster wins that tie-break
+    // (e.g. a cluster eligible via both "new debt issuance" and "new
+    // subsidiary" resolves to treasury by priority, even when new-debt
+    // issuance is the card's actual headline). Card and table must never
+    // contradict, so the cluster containing the headline trigger is
+    // re-filed under the card's own bucket.
+    const headlineCluster = events.find((event) => event.triggers.some((t) => t.triggerId === headline.trigger.triggerId));
+    if (headlineCluster && headlineCluster.bucket !== bucket) {
+      headlineCluster.bucket = bucket;
+    }
   }
+
+  const buckets: Record<Bucket, EventRecord[]> = { treasury: [], new_debt: [], refi: [], hedging: [] };
+  for (const event of events) buckets[event.bucket].push(event);
 
   return {
     events,

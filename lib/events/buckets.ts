@@ -8,10 +8,12 @@
  * surfaced separately (CompanyResult.relationshipFlags), same as before.
  *
  * A few placements are non-obvious from the trigger name alone:
- * - "new-debt-issuance" -> TREASURY, not NEW_DEBT. Per spec bucket 1, a
- *   completed raise (the notes already priced) is a "proceeds need a home"
- *   conversation, not a "we need financing" one — the borrowing already
- *   happened.
+ * - "new-debt-issuance" -> NEW_DEBT. Matches its own name and mappedNeed
+ *   ("Refi or add-on financing"). An earlier pass placed this under
+ *   TREASURY on the theory that a completed raise is really a "proceeds
+ *   need a home" conversation — corrected: showing a card literally
+ *   titled "New debt issuance" under a TREASURY tag reads as a bucket bug
+ *   to any viewer, taxonomy nuance aside.
  * - "acquisition-announced" -> NEW_DEBT (bridge financing need), matching
  *   its own mappedNeed. When the same 8-K also describes a divestiture
  *   (the reporting company is the seller, not the acquirer), dedup
@@ -33,7 +35,7 @@ export const BUCKET_PRIORITY: Bucket[] = ["treasury", "new_debt", "refi", "hedgi
 export const TRIGGER_BUCKET: Record<string, Bucket | null> = {
   // Credit / lending
   "debt-maturity": "refi",
-  "new-debt-issuance": "treasury",
+  "new-debt-issuance": "new_debt",
   "acquisition-announced": "new_debt",
   "capex-program": "new_debt",
   "revolver-near-capacity": "new_debt",

@@ -1,7 +1,6 @@
 import { runAgentLoop, type RunStreamEvent } from "@/lib/agent";
 import { buildEvents } from "@/lib/events";
 import { draftEventBriefing } from "@/lib/events/sonnetEventBriefing";
-import { draftCompanySummary } from "@/lib/events/sonnetCompanySummary";
 import { checkRateLimit } from "./rateLimit";
 
 export const runtime = "nodejs";
@@ -71,10 +70,17 @@ export async function POST(request: Request) {
 
           // Card eligibility is per-event, not per-company — a company can
           // produce zero, one, or several card-eligible events. Only those
-          // get a Sonnet call; table-only events never do.
-          const { flashCardCandidates, portfolio } = buildEvents([result]);
+          // get a Sonnet call; table-only events never do. The portfolio
+          // table's per-company summary is fully deterministic (see
+          // lib/events/companySummary.ts) and computed client-side, so
+          // there's nothing else to draft here.
+          const { flashCardCandidates } = buildEvents([result]);
           const eventBriefings: { eventId: string; briefing: Awaited<ReturnType<typeof draftEventBriefing>> }[] = [];
           for (const card of flashCardCandidates) {
+            // Freshness-gate audit trail: why this card qualified, so the
+            // gate's decision is visible in the trace, not a black box.
+            send({ type: "trace", company, text: `card qualified: ${card.freshnessReason}` });
+
             const drafted = await draftEventBriefing(card);
             const label = drafted.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
             console.log(`[eventBriefing] ${result.company} (${card.bucket}): ${drafted.source}`);
@@ -82,18 +88,7 @@ export async function POST(request: Request) {
             eventBriefings.push({ eventId: card.id, briefing: drafted });
           }
 
-          // Portfolio-table company summary: only for companies with no
-          // flash card at all — a company that has one reuses that card's
-          // own summary client-side instead, at no extra Sonnet cost.
-          let companySummary: Awaited<ReturnType<typeof draftCompanySummary>> | undefined;
-          if (flashCardCandidates.length === 0) {
-            companySummary = await draftCompanySummary(portfolio[0]);
-            const label = companySummary.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
-            console.log(`[companySummary] ${result.company}: ${companySummary.source}`);
-            send({ type: "trace", company, text: `portfolio summary: ${label}` });
-          }
-
-          send({ type: "result", result, eventBriefings, companySummary });
+          send({ type: "result", result, eventBriefings });
         } catch (err) {
           send({ type: "error", company, message: err instanceof Error ? err.message : String(err) });
         }

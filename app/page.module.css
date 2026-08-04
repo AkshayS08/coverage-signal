@@ -314,9 +314,21 @@
   margin-top: 10px;
 }
 
-.portfolioCompanySummaryText {
+.portfolioActionLine {
   font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.portfolioBulletList {
+  list-style: disc;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
   line-height: 1.5;
+  color: var(--text-secondary);
   margin-bottom: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--panel-border);
@@ -392,8 +404,23 @@
 .citations {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
   gap: 10px;
   margin-top: 3px;
+}
+
+.primarySource {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.supportingSources {
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .citation {

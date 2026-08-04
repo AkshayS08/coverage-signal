@@ -3,7 +3,7 @@ dotenv.config({ path: ".env.local" });
 
 import { runAgentLoop } from "../agent";
 import type { CompanyResult } from "../agent";
-import { buildEvents, BUCKET_LABELS, type EventRecord, type FlashCard, type FlashCardActiveItem } from "./index";
+import { buildEvents, buildPortfolioSummary, BUCKET_LABELS, type EventRecord, type FlashCard, type FlashCardActiveItem } from "./index";
 import { draftEventBriefing } from "./sonnetEventBriefing";
 
 // Same default book as app/page.tsx's DEFAULT_BOOK.
@@ -62,6 +62,7 @@ async function main() {
       .join(" + ");
     console.log(`--- #${i + 1} ${card.company} — ${tags} (${timingLabel(card)}) ---`);
     console.log(`Headline: ${card.headlineTrigger.triggerName}`);
+    console.log(`Freshness gate: ${card.freshnessReason}`);
     console.log(`Citations: ${card.citations.map((c) => `${c.form} ${c.date}`).join(", ")}`);
     console.log(`What (${wc(briefing.what)}w): ${briefing.what}`);
     console.log(`Why call (${wc(briefing.whyCall)}w): ${briefing.whyCall}`);
@@ -76,6 +77,20 @@ async function main() {
   }
 
   console.log(`########################################`);
+  console.log(`### CARD/TABLE BUCKET AGREEMENT CHECK`);
+  console.log(`########################################\n`);
+  for (const card of flashCardCandidates) {
+    const p = portfolio.find((x) => x.company === card.company)!;
+    const tableEvent = Object.values(p.buckets)
+      .flat()
+      .find((e) => e.triggers.some((t) => t.triggerId === card.headlineTrigger.triggerId));
+    const agree = tableEvent?.bucket === card.bucket;
+    console.log(
+      `${card.company}: card=${card.bucket}, table=${tableEvent?.bucket ?? "MISSING"} ${agree ? "✓ agree" : "✗ DISAGREE"}`
+    );
+  }
+
+  console.log(`\n########################################`);
   console.log(`### DEDUP CHECK — events built from >1 trigger`);
   console.log(`########################################\n`);
   const deduped = portfolio.flatMap((p) => Object.values(p.buckets).flat()).filter((e) => e.triggers.length > 1);
@@ -94,8 +109,12 @@ async function main() {
   console.log(`\n########################################`);
   console.log(`### PORTFOLIO TABLE (every company x 4 buckets)`);
   console.log(`########################################\n`);
+  const flashCardByCompany = new Map(flashCardCandidates.map((c) => [c.company, c]));
   for (const p of portfolio) {
     console.log(`--- ${p.company} ---`);
+    const summary = buildPortfolioSummary(p, flashCardByCompany.get(p.company) ?? null);
+    console.log(`  ${summary.actionLine}`);
+    for (const bullet of summary.bullets) console.log(`  • ${bullet}`);
     for (const bucket of ["treasury", "new_debt", "refi", "hedging"] as const) {
       const events = p.buckets[bucket];
       if (events.length === 0) continue;

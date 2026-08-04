@@ -5,7 +5,8 @@ import styles from "./page.module.css";
 import {
   buildEvents,
   templateEventBriefing,
-  templateCompanySummary,
+  buildPortfolioSummary,
+  compactLabelWithTiming,
   BUCKET_LABELS,
   type EventRecord,
   type FlashCard,
@@ -14,7 +15,6 @@ import {
   type Bucket,
 } from "@/lib/events";
 import type { DraftedEventBriefing } from "@/lib/events/eventBriefing";
-import type { DraftedCompanySummary } from "@/lib/events/companySummary";
 import type { CompanyResult, RunStreamEvent } from "@/lib/agent";
 
 const DEFAULT_BOOK = [
@@ -64,31 +64,12 @@ function formatHeadlineDate(timing: FlashCard["timing"], citations: FlashCard["c
   return timing.isPendingLive ? "pending" : "";
 }
 
-// Short, human labels for the compact "Also active" line — a company's
-// other card-eligible triggers collapsed into one phrase each, e.g.
-// "refi window ~9mo · new floating-rate issuance".
-const SHORT_TRIGGER_LABEL: Record<string, string> = {
-  "debt-maturity": "refi window",
-  "new-debt-issuance": "new debt raised",
-  "acquisition-announced": "acquisition financing",
-  "capex-program": "capex financing",
-  "revolver-near-capacity": "revolver upsize",
-  "dividend-buyback": "buyback increase",
-  "large-cash-balance": "cash build-up",
-  "asset-sale": "asset sale proceeds",
-  "international-expansion": "new foreign revenue",
-  "new-subsidiary": "new subsidiary accounts",
-  "ipo-secondary": "capital raise proceeds",
-  "floating-rate-debt": "new floating-rate issuance",
-  "commodity-exposure": "commodity hedging",
-  "fx-exposure": "FX hedging",
-};
-
+// Short label + timing for the compact "Also active" line — e.g. "refi
+// window ~9mo · new floating-rate issuance" — shared with the portfolio
+// table's bullets (lib/events/labels.ts) so the same event reads the same
+// short way everywhere.
 function compactActiveLabel(item: FlashCardActiveItem): string {
-  const label = SHORT_TRIGGER_LABEL[item.trigger.triggerId] ?? item.trigger.triggerName;
-  if (item.timing.monthsToNearestFuture !== null) return `${label} ~${item.timing.monthsToNearestFuture}mo`;
-  if (item.timing.isPendingLive) return `${label} (pending)`;
-  return label;
+  return compactLabelWithTiming(item.trigger.triggerId, item.trigger.triggerName, item.timing);
 }
 
 const BUCKET_SHORT_LABEL: Record<Bucket, string> = {
@@ -139,7 +120,6 @@ export default function Home() {
   const [trace, setTrace] = useState<TraceLine[]>([]);
   const [results, setResults] = useState<CompanyResult[]>([]);
   const [eventBriefings, setEventBriefings] = useState<Record<string, DraftedEventBriefing>>({});
-  const [companySummaries, setCompanySummaries] = useState<Record<string, DraftedCompanySummary>>({});
   const [running, setRunning] = useState(false);
   const [asOfDate, setAsOfDate] = useState<Date | null>(null);
 
@@ -161,19 +141,6 @@ export default function Home() {
     [flashCardCandidates]
   );
 
-  // A company with a flash card reuses that card's own (already-drafted)
-  // summary for the portfolio table — no extra Sonnet call. A company with
-  // no card uses the dedicated portfolio-only summary streamed from the
-  // server (or the deterministic template while that's still in flight).
-  function getPortfolioSummary(p: CompanyPortfolio): DraftedCompanySummary {
-    const card = flashCardByCompany.get(p.company);
-    if (card) {
-      const briefing = eventBriefings[card.id] ?? templateEventBriefing(card);
-      return { text: `${briefing.what} ${briefing.whyCall}`, source: "card" };
-    }
-    return companySummaries[p.company] ?? templateCompanySummary(p);
-  }
-
   async function runAgent() {
     const companies = book
       .split("\n")
@@ -186,7 +153,6 @@ export default function Home() {
     setTrace([]);
     setResults([]);
     setEventBriefings({});
-    setCompanySummaries({});
     setAsOfDate(new Date());
 
     // Real trace/error lines land here instead of going straight to state,
@@ -237,10 +203,6 @@ export default function Home() {
             for (const { eventId, briefing } of drafted) next[eventId] = briefing;
             return next;
           });
-        }
-        if (event.companySummary) {
-          const summary = event.companySummary;
-          setCompanySummaries((prev) => ({ ...prev, [event.result.company]: summary }));
         }
       } else if (event.type === "error") {
         queueTrace(event.company, `error: ${event.message}`);
@@ -353,19 +315,44 @@ export default function Home() {
             portfolio table for detail.
           </p>
         )}
-        <div className={styles.citations}>
-          {card.citations.map((c, ci) => (
-            <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
-              {c.form} {c.date} ↗
-            </a>
-          ))}
-        </div>
+        {renderCardSources(card.citations)}
+      </div>
+    );
+  }
+
+  // FIX 3: which citation backs the headline event should be obvious — the
+  // most recent one (matching the date already anchoring the "What" line
+  // and the card's own timing tag) is the primary source; the rest are
+  // supporting context for the same cluster, de-emphasized.
+  function renderCardSources(citations: FlashCard["citations"]) {
+    const sorted = [...citations].sort((a, b) => b.date.localeCompare(a.date));
+    const [primary, ...supporting] = sorted;
+    if (!primary) return null;
+    return (
+      <div className={styles.citations}>
+        <span className={styles.primarySource}>
+          Source:{" "}
+          <a href={primary.url} target="_blank" rel="noreferrer" className={styles.citation}>
+            {primary.form} {primary.date} ↗
+          </a>
+        </span>
+        {supporting.length > 0 && (
+          <span className={styles.supportingSources}>
+            also:{" "}
+            {supporting.map((c, ci) => (
+              <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
+                {c.form} {c.date} ↗
+              </a>
+            ))}
+          </span>
+        )}
       </div>
     );
   }
 
   function renderPortfolioCompany(p: CompanyPortfolio) {
-    const summary = getPortfolioSummary(p);
+    const card = flashCardByCompany.get(p.company) ?? null;
+    const summary = buildPortfolioSummary(p, card);
     return (
       <details key={p.company} className={styles.portfolioCompany}>
         <summary className={styles.portfolioCompanySummary}>
@@ -373,10 +360,12 @@ export default function Home() {
           <span className={styles.portfolioIndicators}>{buildIndicatorLine(p.buckets)}</span>
         </summary>
         <div className={styles.portfolioCompanyBody}>
-          <p className={styles.portfolioCompanySummaryText}>
-            {summary.text}
-            {summary.source === "sonnet" && <span className={styles.briefingSource}>Sonnet-drafted</span>}
-          </p>
+          <p className={styles.portfolioActionLine}>{summary.actionLine}</p>
+          <ul className={styles.portfolioBulletList}>
+            {summary.bullets.map((bullet, bi) => (
+              <li key={bi}>{bullet}</li>
+            ))}
+          </ul>
           {BUCKET_ORDER.map((bucket) => {
             const events = p.buckets[bucket];
             if (events.length === 0) return null;

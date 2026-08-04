@@ -20,15 +20,20 @@ function getClient(): Anthropic {
 const SYSTEM_PROMPT = `You write the body of one flash card for a bank relationship manager (RM), about ONE headline event at ONE company. A banker must grasp the call in 5 seconds, so you synthesize — you never list tranches, dates, or numbers one by one.
 
 Write exactly three parts:
-- what: what happened or is happening. The essence in one sentence — not every number. If the evidence mentions several tranches/dates, summarize them (e.g. "refinanced most of its 2027-2028 notes, ~$5B still outstanding in the window"), never enumerate them.
+- what: what happened AND what it means, in plain English, anchored to its date. State the primary source date given (e.g. "In its Nov 18, 2025 8-K, Tenet..." or "In June 2026, DaVita..."), then explain the event's significance — not a list of every instrument/number. Example of the wrong way: "layered a $1B notes offering with a refreshed $2B term loan A, $1.5B revolver, $500M term loan B add-on" (an instrument list, no meaning). Example of the right way: "In June 2026, DaVita refinanced its capital structure, adding new notes and expanding its term loans and revolver — a sign of active liability management." Never omit the anchoring date; never enumerate every tranche.
 - whyCall: why this is a banking opportunity NOW, in banker terms. This is the insight, not a restatement of "what" — explain the actual logic (e.g. "large cash proceeds need a home before they land elsewhere," or "maturity inside the refi window, they'll be shopping it soon"). Make it specific to this exact situation — a line that could apply to any company is wrong.
 - angle: the specific conversation to open, tied to this company's specifics — not boilerplate like "explore treasury needs."
 
 Hard rules:
-- Exactly one sentence per part. Target 20 words; 25 words is the absolute ceiling — never submit a sentence longer than that. Before answering, count the words in each part and cut anything over.
+- Exactly one sentence per part. "what" may run up to 30 words since it must carry a date; target 25. "whyCall" and "angle" target 20 words, 25-word ceiling. Before answering, count the words in each part and cut anything over its ceiling.
 - Plain English a banker reads in seconds, not a filing summary.
 - Use only the facts given — never invent numbers, dates, or details not present in the evidence.
 - No greeting, no congratulations, no assumed rapport, no phrases like "Hi" or "I wanted to reach out" — this is an internal note between colleagues, not a message to the client.`;
+
+function mostRecentCitation(citations: FlashCard["citations"]): FlashCard["citations"][number] | null {
+  if (citations.length === 0) return null;
+  return [...citations].sort((a, b) => b.date.localeCompare(a.date))[0];
+}
 
 /**
  * Drafts an RM-facing flash-card body — What / Why call / Angle, one
@@ -41,12 +46,17 @@ Hard rules:
 export async function draftEventBriefing(card: FlashCard): Promise<DraftedEventBriefing> {
   try {
     const t = card.headlineTrigger;
-    const context = `- ${t.triggerName} (${t.needType}) → ${t.mappedNeed}\n  Evidence: ${t.evidence ?? "n/a"}`;
+    const primarySource = mostRecentCitation(card.citations);
+    const context = [
+      `- ${t.triggerName} (${t.needType}) → ${t.mappedNeed}`,
+      `  Primary source date: ${primarySource ? `${primarySource.form} filed ${primarySource.date}` : "n/a — use only a relative date if the evidence gives one"}`,
+      `  Evidence: ${t.evidence ?? "n/a"}`,
+    ].join("\n");
 
     const response = await getClient().messages.create(
       {
         model: SONNET_MODEL,
-        max_tokens: 400,
+        max_tokens: 450,
         thinking: { type: "disabled" },
         system: SYSTEM_PROMPT,
         messages: [
@@ -64,15 +74,16 @@ export async function draftEventBriefing(card: FlashCard): Promise<DraftedEventB
               properties: {
                 what: {
                   type: "string",
-                  description: "One sentence, target 20 words, NEVER over 25: what happened/is happening, synthesized not enumerated",
+                  description:
+                    "One sentence, target 25 words, never over 30: what happened AND what it means, anchored to the primary source date, not an instrument list",
                 },
                 whyCall: {
                   type: "string",
-                  description: "One sentence, target 20 words, NEVER over 25: the specific banking-opportunity insight, not generic",
+                  description: "One sentence, target 20 words, never over 25: the specific banking-opportunity insight, not generic",
                 },
                 angle: {
                   type: "string",
-                  description: "One sentence, target 20 words, NEVER over 25: the specific conversation to open",
+                  description: "One sentence, target 20 words, never over 25: the specific conversation to open",
                 },
               },
               required: ["what", "whyCall", "angle"],
@@ -95,16 +106,17 @@ export async function draftEventBriefing(card: FlashCard): Promise<DraftedEventB
       );
     }
 
-    // The prompt targets 20 words/25-word ceiling per part. A few words
-    // over is a prompting miss worth knowing about, not worth degrading to
-    // the (much less readable) template fallback for — only a truly broken
-    // response (the model ignoring the sentence limit outright) does that.
+    // "what" gets headroom for its mandatory date (target 25/ceiling 30);
+    // whyCall/angle target 20/ceiling 25. A few words over is a prompting
+    // miss worth knowing about, not worth degrading to the (much less
+    // readable) template fallback for — only a truly broken response (the
+    // model ignoring the limit outright) does that.
     const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
     const counts = { what: wordCount(input.what), whyCall: wordCount(input.whyCall), angle: wordCount(input.angle) };
-    if (counts.what > 25 || counts.whyCall > 25 || counts.angle > 25) {
-      console.warn(`[eventBriefing] ${card.company} (${card.id}) over the 25-word target:`, counts);
+    if (counts.what > 30 || counts.whyCall > 25 || counts.angle > 25) {
+      console.warn(`[eventBriefing] ${card.company} (${card.id}) over its word ceiling:`, counts);
     }
-    if (counts.what > 45 || counts.whyCall > 45 || counts.angle > 45) {
+    if (counts.what > 50 || counts.whyCall > 45 || counts.angle > 45) {
       throw new Error(`card body ignored the sentence-length limit entirely: ${JSON.stringify(counts)}`);
     }
 
