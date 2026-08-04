@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type { EventRecord } from "./buildEvents";
+import type { FlashCard } from "./buildEvents";
 import { templateEventBriefing, type DraftedEventBriefing } from "./eventBriefing";
 
 // Deliberately NOT re-exported from lib/events/index.ts — this file pulls
@@ -17,71 +17,100 @@ function getClient(): Anthropic {
   return client;
 }
 
+const SYSTEM_PROMPT = `You write the body of one flash card for a bank relationship manager (RM), about ONE headline event at ONE company. A banker must grasp the call in 5 seconds, so you synthesize — you never list tranches, dates, or numbers one by one.
+
+Write exactly three parts:
+- what: what happened or is happening. The essence in one sentence — not every number. If the evidence mentions several tranches/dates, summarize them (e.g. "refinanced most of its 2027-2028 notes, ~$5B still outstanding in the window"), never enumerate them.
+- whyCall: why this is a banking opportunity NOW, in banker terms. This is the insight, not a restatement of "what" — explain the actual logic (e.g. "large cash proceeds need a home before they land elsewhere," or "maturity inside the refi window, they'll be shopping it soon"). Make it specific to this exact situation — a line that could apply to any company is wrong.
+- angle: the specific conversation to open, tied to this company's specifics — not boilerplate like "explore treasury needs."
+
+Hard rules:
+- Exactly one sentence per part. Target 20 words; 25 words is the absolute ceiling — never submit a sentence longer than that. Before answering, count the words in each part and cut anything over.
+- Plain English a banker reads in seconds, not a filing summary.
+- Use only the facts given — never invent numbers, dates, or details not present in the evidence.
+- No greeting, no congratulations, no assumed rapport, no phrases like "Hi" or "I wanted to reach out" — this is an internal note between colleagues, not a message to the client.`;
+
 /**
- * Drafts an RM-facing internal briefing for one flash-card EVENT (not a
- * whole company) via a single Sonnet call: a short factual summary plus
- * one suggested angle. Falls back to the deterministic template on any
- * failure or timeout — cost-bounded at exactly one Sonnet call per
- * card-eligible event.
+ * Drafts an RM-facing flash-card body — What / Why call / Angle, one
+ * sentence each — for a card's single HEADLINE trigger only (never the
+ * whole dedup cluster; other triggers in the same or a different cluster
+ * are the card's separate "Also active" line, not part of this prompt).
+ * Falls back to the deterministic template on any failure or timeout —
+ * cost-bounded at exactly one Sonnet call per card-eligible company.
  */
-export async function draftEventBriefing(event: EventRecord): Promise<DraftedEventBriefing> {
+export async function draftEventBriefing(card: FlashCard): Promise<DraftedEventBriefing> {
   try {
-    const triggerContext = event.triggers
-      .map((t) => `- ${t.triggerName} (${t.needType}) → ${t.mappedNeed}\n  Evidence: ${t.evidence ?? "n/a"}`)
-      .join("\n");
+    const t = card.headlineTrigger;
+    const context = `- ${t.triggerName} (${t.needType}) → ${t.mappedNeed}\n  Evidence: ${t.evidence ?? "n/a"}`;
 
     const response = await getClient().messages.create(
       {
         model: SONNET_MODEL,
-        max_tokens: 500,
+        max_tokens: 400,
         thinking: { type: "disabled" },
-        system:
-          "You write a short internal briefing note for a bank relationship manager, prepared by an analyst ahead of a client call, about ONE specific event (not the whole company relationship). Write a short factual summary (1-2 sentences) of what happened and why it's a reason to call now, plus one short suggested angle for the conversation. Use only the facts given — never invent numbers, dates, or details not present in the evidence. This is an internal note between colleagues, not a message to the client: no greeting, no congratulations, no assumed rapport, no phrases like \"Hi\" or \"I wanted to reach out.\" Be terse and factual, like a sharp analyst's note, not a sales pitch.",
+        system: SYSTEM_PROMPT,
         messages: [
           {
             role: "user",
-            content: `Company: ${event.company}\nOpportunity bucket: ${event.bucket}\n\nEvent (deduped from ${event.triggers.length} trigger${event.triggers.length > 1 ? "s" : ""}):\n${triggerContext}`,
+            content: `Company: ${card.company}\nOpportunity bucket: ${card.bucket}\n\nHeadline event:\n${context}`,
           },
         ],
         tools: [
           {
-            name: "submit_event_briefing",
-            description: "Submit the internal briefing note for this event.",
+            name: "submit_card_body",
+            description: "Submit the three-part flash card body.",
             input_schema: {
               type: "object",
               properties: {
-                summary: {
+                what: {
                   type: "string",
-                  description: "1-2 factual sentences: what happened and why it's a reason to call now",
+                  description: "One sentence, target 20 words, NEVER over 25: what happened/is happening, synthesized not enumerated",
+                },
+                whyCall: {
+                  type: "string",
+                  description: "One sentence, target 20 words, NEVER over 25: the specific banking-opportunity insight, not generic",
                 },
                 angle: {
                   type: "string",
-                  description: "One short suggested angle for the call",
+                  description: "One sentence, target 20 words, NEVER over 25: the specific conversation to open",
                 },
               },
-              required: ["summary", "angle"],
+              required: ["what", "whyCall", "angle"],
             },
           },
         ],
-        tool_choice: { type: "tool", name: "submit_event_briefing" },
+        tool_choice: { type: "tool", name: "submit_card_body" },
       },
       { timeout: TIMEOUT_MS }
     );
 
     const toolUse = response.content.find((b) => b.type === "tool_use");
     if (!toolUse || toolUse.type !== "tool_use") {
-      throw new Error(`Sonnet did not return a submit_event_briefing tool call (stop_reason: ${response.stop_reason})`);
+      throw new Error(`Sonnet did not return a submit_card_body tool call (stop_reason: ${response.stop_reason})`);
     }
-    const input = toolUse.input as { summary?: string; angle?: string };
-    if (!input.summary || !input.angle) {
+    const input = toolUse.input as { what?: string; whyCall?: string; angle?: string };
+    if (!input.what || !input.whyCall || !input.angle) {
       throw new Error(
-        `malformed event briefing response (stop_reason: ${response.stop_reason}, output_tokens: ${response.usage.output_tokens}): ${JSON.stringify(input)}`
+        `malformed card body response (stop_reason: ${response.stop_reason}, output_tokens: ${response.usage.output_tokens}): ${JSON.stringify(input)}`
       );
     }
 
-    return { summary: input.summary, angle: input.angle, source: "sonnet" };
+    // The prompt targets 20 words/25-word ceiling per part. A few words
+    // over is a prompting miss worth knowing about, not worth degrading to
+    // the (much less readable) template fallback for — only a truly broken
+    // response (the model ignoring the sentence limit outright) does that.
+    const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
+    const counts = { what: wordCount(input.what), whyCall: wordCount(input.whyCall), angle: wordCount(input.angle) };
+    if (counts.what > 25 || counts.whyCall > 25 || counts.angle > 25) {
+      console.warn(`[eventBriefing] ${card.company} (${card.id}) over the 25-word target:`, counts);
+    }
+    if (counts.what > 45 || counts.whyCall > 45 || counts.angle > 45) {
+      throw new Error(`card body ignored the sentence-length limit entirely: ${JSON.stringify(counts)}`);
+    }
+
+    return { what: input.what, whyCall: input.whyCall, angle: input.angle, source: "sonnet" };
   } catch (err) {
-    console.error(`[eventBriefing] Sonnet call failed for ${event.company} (${event.id}), falling back to template:`, err);
-    return templateEventBriefing(event);
+    console.error(`[eventBriefing] Sonnet call failed for ${card.company} (${card.id}), falling back to template:`, err);
+    return templateEventBriefing(card);
   }
 }

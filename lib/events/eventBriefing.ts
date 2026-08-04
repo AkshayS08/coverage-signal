@@ -1,8 +1,11 @@
-import type { EventRecord } from "./buildEvents";
+import type { FlashCard } from "./buildEvents";
 
 export interface DraftedEventBriefing {
-  /** One short paragraph — narrower scope than the old per-company multi-bullet briefing, since an event is usually 1-2 triggers. */
-  summary: string;
+  /** What happened/is happening — one sentence, the essence, not every tranche/number. */
+  what: string;
+  /** Why this is a banking opportunity NOW, in banker terms — specific to this situation. */
+  whyCall: string;
+  /** The specific conversation to open, tied to this company's specifics. */
   angle: string;
   source: "sonnet" | "template";
 }
@@ -13,16 +16,17 @@ function lowerFirst(s: string): string {
 
 /**
  * Deterministic fallback briefing — no model call. Built straight from the
- * event's own trigger evidence so it degrades gracefully if the Sonnet
- * call fails or times out.
+ * headline trigger's own evidence so it degrades gracefully if the Sonnet
+ * call fails or times out. Unlike the Sonnet version this doesn't
+ * synthesize (no model to do the synthesis), so it can run long — it's a
+ * degraded-mode fallback, not the primary experience.
  */
-export function templateEventBriefing(event: EventRecord): DraftedEventBriefing {
-  const top = event.triggers[0];
-  const summary =
-    top.evidence ?? `${top.triggerName} flagged (${top.needType}), mapping to a ${lowerFirst(top.mappedNeed)} conversation.`;
+export function templateEventBriefing(card: FlashCard): DraftedEventBriefing {
+  const t = card.headlineTrigger;
   return {
-    summary,
-    angle: `Lead with ${lowerFirst(top.mappedNeed)}, referencing the ${lowerFirst(top.triggerName)} directly.`,
+    what: t.evidence ?? `${t.triggerName} flagged (${t.needType}).`,
+    whyCall: `Maps to a ${lowerFirst(t.mappedNeed)} conversation.`,
+    angle: `Lead with ${lowerFirst(t.mappedNeed)}, referencing the ${lowerFirst(t.triggerName)} directly.`,
     source: "template",
   };
 }

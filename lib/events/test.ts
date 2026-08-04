@@ -3,7 +3,7 @@ dotenv.config({ path: ".env.local" });
 
 import { runAgentLoop } from "../agent";
 import type { CompanyResult } from "../agent";
-import { buildEvents, BUCKET_LABELS, type EventRecord } from "./index";
+import { buildEvents, BUCKET_LABELS, type EventRecord, type FlashCard, type FlashCardActiveItem } from "./index";
 import { draftEventBriefing } from "./sonnetEventBriefing";
 
 // Same default book as app/page.tsx's DEFAULT_BOOK.
@@ -24,10 +24,18 @@ function describeEvent(e: EventRecord): string {
   return `${triggerNames}${dedupNote}`;
 }
 
-function timingLabel(e: EventRecord): string {
+function timingLabel(e: { timing: EventRecord["timing"] }): string {
   if (e.timing.monthsToNearestFuture !== null) return `~${e.timing.monthsToNearestFuture}mo out`;
   if (e.timing.isPendingLive) return "pending/live";
   return "live now (no future date)";
+}
+
+function wc(s: string): number {
+  return s.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function describeAlsoActive(a: FlashCardActiveItem): string {
+  return `${BUCKET_LABELS[a.bucket]} (${timingLabel(a)}) — ${a.trigger.triggerName}`;
 }
 
 async function main() {
@@ -47,18 +55,22 @@ async function main() {
   console.log(`########################################\n`);
 
   for (let i = 0; i < flashCardCandidates.length; i++) {
-    const e = flashCardCandidates[i];
-    const briefing = await draftEventBriefing(e);
-    console.log(`--- #${i + 1} ${e.company} — ${BUCKET_LABELS[e.bucket]} (${timingLabel(e)}) ---`);
-    console.log(`Event: ${describeEvent(e)}`);
-    console.log(`Eligibility reasons: ${e.eligibilityReasons.join("; ")}`);
-    console.log(`Citations: ${e.citations.map((c) => `${c.form} ${c.date}`).join(", ")}`);
-    console.log(`Summary: ${briefing.summary}`);
-    console.log(`Angle: ${briefing.angle} [${briefing.source}]`);
-    if (e.alsoActive.length > 0) {
-      console.log(
-        `Also active: ${e.alsoActive.map((a) => `${BUCKET_LABELS[a.bucket]} (${timingLabel(a)}) — ${describeEvent(a)}`).join(" · ")}`
-      );
+    const card: FlashCard = flashCardCandidates[i];
+    const briefing = await draftEventBriefing(card);
+    const tags = [BUCKET_LABELS[card.bucket], card.secondaryBucket ? BUCKET_LABELS[card.secondaryBucket] : null]
+      .filter(Boolean)
+      .join(" + ");
+    console.log(`--- #${i + 1} ${card.company} — ${tags} (${timingLabel(card)}) ---`);
+    console.log(`Headline: ${card.headlineTrigger.triggerName}`);
+    console.log(`Citations: ${card.citations.map((c) => `${c.form} ${c.date}`).join(", ")}`);
+    console.log(`What (${wc(briefing.what)}w): ${briefing.what}`);
+    console.log(`Why call (${wc(briefing.whyCall)}w): ${briefing.whyCall}`);
+    console.log(`Angle (${wc(briefing.angle)}w): ${briefing.angle} [${briefing.source}]`);
+    if (wc(briefing.what) > 30 || wc(briefing.whyCall) > 30 || wc(briefing.angle) > 30) {
+      console.log(`  ⚠ WORD LIMIT EXCEEDED (target ~25 max per line)`);
+    }
+    if (card.alsoActive.length > 0) {
+      console.log(`Also active: ${card.alsoActive.map(describeAlsoActive).join(" · ")}`);
     }
     console.log("");
   }

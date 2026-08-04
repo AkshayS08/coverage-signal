@@ -74,12 +74,12 @@ export async function POST(request: Request) {
           // get a Sonnet call; table-only events never do.
           const { flashCardCandidates, portfolio } = buildEvents([result]);
           const eventBriefings: { eventId: string; briefing: Awaited<ReturnType<typeof draftEventBriefing>> }[] = [];
-          for (const event of flashCardCandidates) {
-            const drafted = await draftEventBriefing(event);
+          for (const card of flashCardCandidates) {
+            const drafted = await draftEventBriefing(card);
             const label = drafted.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
-            console.log(`[eventBriefing] ${result.company} (${event.bucket}): ${drafted.source}`);
-            send({ type: "trace", company, text: `event briefing (${event.bucket}): ${label}` });
-            eventBriefings.push({ eventId: event.id, briefing: drafted });
+            console.log(`[eventBriefing] ${result.company} (${card.bucket}): ${drafted.source}`);
+            send({ type: "trace", company, text: `card briefing (${card.bucket}): ${label}` });
+            eventBriefings.push({ eventId: card.id, briefing: drafted });
           }
 
           // Portfolio-table company summary: only for companies with no

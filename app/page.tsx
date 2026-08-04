@@ -8,6 +8,8 @@ import {
   templateCompanySummary,
   BUCKET_LABELS,
   type EventRecord,
+  type FlashCard,
+  type FlashCardActiveItem,
   type CompanyPortfolio,
   type Bucket,
 } from "@/lib/events";
@@ -38,11 +40,6 @@ interface TraceLine {
   filler?: boolean;
 }
 
-/** Real SEC EDGAR browse page for a resolved CIK — same data the fetch layer already reads from. */
-function edgarCompanyUrl(cik: string): string {
-  return `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cik}&type=&dateb=&owner=include&count=40`;
-}
-
 const BUCKET_CLASS: Record<Bucket, string> = {
   treasury: "bucketTreasury",
   new_debt: "bucketNewDebt",
@@ -50,25 +47,25 @@ const BUCKET_CLASS: Record<Bucket, string> = {
   hedging: "bucketHedging",
 };
 
-/** Plain, explicit date for a card's header — "matures ~Apr 2027" or "8-K filed Jul 21". */
-function formatEventDate(event: EventRecord, asOf: Date): string {
-  if (event.timing.monthsToNearestFuture !== null) {
+/** Plain, explicit date for a card's header — "matures ~Apr 2027" or "8-K filed Jul 21, 2026". Always includes the year. */
+function formatHeadlineDate(timing: FlashCard["timing"], citations: FlashCard["citations"], asOf: Date): string {
+  if (timing.monthsToNearestFuture !== null) {
     const future = new Date(asOf);
-    future.setMonth(future.getMonth() + Math.round(event.timing.monthsToNearestFuture));
+    future.setMonth(future.getMonth() + Math.round(timing.monthsToNearestFuture));
     return `matures ~${future.toLocaleDateString(undefined, { month: "short", year: "numeric" })}`;
   }
-  const mostRecent = [...event.citations].sort((a, b) => b.date.localeCompare(a.date))[0];
+  const mostRecent = [...citations].sort((a, b) => b.date.localeCompare(a.date))[0];
   if (mostRecent) {
     const d = new Date(mostRecent.date);
     if (!Number.isNaN(d.getTime())) {
-      return `${mostRecent.form} filed ${d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+      return `${mostRecent.form} filed ${d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
     }
   }
-  return event.timing.isPendingLive ? "pending" : "";
+  return timing.isPendingLive ? "pending" : "";
 }
 
 // Short, human labels for the compact "Also active" line — a company's
-// other card-eligible events collapsed into one phrase each, e.g.
+// other card-eligible triggers collapsed into one phrase each, e.g.
 // "refi window ~9mo · new floating-rate issuance".
 const SHORT_TRIGGER_LABEL: Record<string, string> = {
   "debt-maturity": "refi window",
@@ -87,10 +84,10 @@ const SHORT_TRIGGER_LABEL: Record<string, string> = {
   "fx-exposure": "FX hedging",
 };
 
-function compactEventLabel(event: EventRecord): string {
-  const label = SHORT_TRIGGER_LABEL[event.triggers[0].triggerId] ?? event.triggers[0].triggerName;
-  if (event.timing.monthsToNearestFuture !== null) return `${label} ~${event.timing.monthsToNearestFuture}mo`;
-  if (event.timing.isPendingLive) return `${label} (pending)`;
+function compactActiveLabel(item: FlashCardActiveItem): string {
+  const label = SHORT_TRIGGER_LABEL[item.trigger.triggerId] ?? item.trigger.triggerName;
+  if (item.timing.monthsToNearestFuture !== null) return `${label} ~${item.timing.monthsToNearestFuture}mo`;
+  if (item.timing.isPendingLive) return `${label} (pending)`;
   return label;
 }
 
@@ -149,9 +146,9 @@ export default function Home() {
   const { flashCardCandidates, portfolio } = useMemo(() => buildEvents(results), [results]);
   const displayFlashCards = useMemo(
     () =>
-      flashCardCandidates.map((e) => ({
-        event: e,
-        briefing: eventBriefings[e.id] ?? templateEventBriefing(e),
+      flashCardCandidates.map((card) => ({
+        card,
+        briefing: eventBriefings[card.id] ?? templateEventBriefing(card),
       })),
     [flashCardCandidates, eventBriefings]
   );
@@ -172,7 +169,7 @@ export default function Home() {
     const card = flashCardByCompany.get(p.company);
     if (card) {
       const briefing = eventBriefings[card.id] ?? templateEventBriefing(card);
-      return { text: briefing.summary, source: "card" };
+      return { text: `${briefing.what} ${briefing.whyCall}`, source: "card" };
     }
     return companySummaries[p.company] ?? templateCompanySummary(p);
   }
@@ -314,42 +311,50 @@ export default function Home() {
     }
   }
 
-  function renderCompanyLink(company: string, cik: string) {
-    return cik ? (
-      <a className={styles.companyName} href={edgarCompanyUrl(cik)} target="_blank" rel="noreferrer">
-        {company}
-      </a>
-    ) : (
-      <span className={styles.companyName}>{company}</span>
-    );
+  // Company names never link out — only individual filing citations do
+  // (FIX 4). Kept as a tiny function so every render site stays consistent.
+  function renderCompanyName(company: string) {
+    return <span className={styles.companyName}>{company}</span>;
   }
 
-  function renderFlashCard(event: EventRecord, briefing: DraftedEventBriefing) {
+  function renderFlashCard(card: FlashCard, briefing: DraftedEventBriefing) {
     return (
-      <div key={event.id} className={styles.flashCard}>
+      <div key={card.id} className={styles.flashCard}>
         <div className={styles.flashCardHeader}>
-          <span className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[event.bucket]]}`}>
-            {BUCKET_LABELS[event.bucket]}
+          <span className={styles.bucketTagGroup}>
+            <span className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[card.bucket]]}`}>
+              {BUCKET_LABELS[card.bucket]}
+            </span>
+            {card.secondaryBucket && (
+              <span className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[card.secondaryBucket]]}`}>
+                {BUCKET_LABELS[card.secondaryBucket]}
+              </span>
+            )}
           </span>
-          {renderCompanyLink(event.company, event.cik)}
-          <span className={styles.timingTag}>{formatEventDate(event, asOfDate ?? new Date())}</span>
+          {renderCompanyName(card.company)}
+          <span className={styles.timingTag}>{formatHeadlineDate(card.timing, card.citations, asOfDate ?? new Date())}</span>
         </div>
-        <div className={styles.eventDescription}>{event.triggers.map((t) => t.triggerName).join(" + ")}</div>
-        <p className={styles.eventSummary}>{briefing.summary}</p>
-        <p className={styles.eventAngle}>
+        <div className={styles.eventDescription}>{card.headlineTrigger.triggerName}</div>
+        <p className={styles.cardLine}>
+          <strong>What:</strong> {briefing.what}
+        </p>
+        <p className={styles.cardLine}>
+          <strong>Why call:</strong> {briefing.whyCall}
+        </p>
+        <p className={`${styles.cardLine} ${styles.cardLineAngle}`}>
           <strong>Angle:</strong> {briefing.angle}
           <span className={styles.briefingSource}>
             {briefing.source === "sonnet" ? "Sonnet-drafted" : "templated"}
           </span>
         </p>
-        {event.alsoActive.length > 0 && (
+        {card.alsoActive.length > 0 && (
           <p className={styles.alsoActiveLine}>
-            <strong>Also active:</strong> {event.alsoActive.map(compactEventLabel).join(" · ")} — see
+            <strong>Also active:</strong> {card.alsoActive.map(compactActiveLabel).join(" · ")} — see
             portfolio table for detail.
           </p>
         )}
         <div className={styles.citations}>
-          {event.citations.map((c, ci) => (
+          {card.citations.map((c, ci) => (
             <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
               {c.form} {c.date} ↗
             </a>
@@ -364,7 +369,7 @@ export default function Home() {
     return (
       <details key={p.company} className={styles.portfolioCompany}>
         <summary className={styles.portfolioCompanySummary}>
-          {renderCompanyLink(p.company, p.cik)}
+          {renderCompanyName(p.company)}
           <span className={styles.portfolioIndicators}>{buildIndicatorLine(p.buckets)}</span>
         </summary>
         <div className={styles.portfolioCompanyBody}>
@@ -489,7 +494,7 @@ export default function Home() {
       </section>
 
       <section className={styles.flashCardSection}>
-        {displayFlashCards.map(({ event, briefing }) => renderFlashCard(event, briefing))}
+        {displayFlashCards.map(({ card, briefing }) => renderFlashCard(card, briefing))}
       </section>
 
       {portfolio.length > 0 && (

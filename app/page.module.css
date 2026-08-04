@@ -169,18 +169,16 @@
   margin-bottom: 6px;
 }
 
+/* Company names are plain text everywhere — never a link (only individual filing citations link out). */
 .companyName {
   font-weight: 700;
   font-size: 15px;
   flex: 1;
-  color: inherit;
-  text-decoration: none;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .companyName:hover {
-    text-decoration: underline;
-  }
+.bucketTagGroup {
+  display: inline-flex;
+  gap: 4px;
 }
 
 .timingTag {
@@ -196,16 +194,17 @@
   margin-bottom: 4px;
 }
 
-.eventSummary {
+/* One of three: What / Why call / Angle — each a single synthesized sentence. */
+.cardLine {
   font-size: 13px;
   line-height: 1.5;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
-.eventAngle {
+.cardLineAngle {
   font-style: italic;
   color: var(--text-secondary);
-  font-size: 13px;
+  margin-bottom: 0;
 }
 
 .alsoActiveLine {

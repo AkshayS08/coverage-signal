@@ -16,12 +16,47 @@ export interface EventRecord {
   eligibilityReasons: string[];
   timing: TimingInfo;
   citations: TriggerResult["citations"];
+}
+
+/** One other card-eligible trigger for the same company, collapsed into the headline card's "Also active" line. */
+export interface FlashCardActiveItem {
+  trigger: TriggerResult;
+  bucket: Bucket;
+  timing: TimingInfo;
+}
+
+/**
+ * A flash card is built around exactly ONE headline trigger — the
+ * company's single most urgent card-eligible trigger — never a merged
+ * multi-trigger prose dump. A dedup cluster (see dedup.ts) can still
+ * contain several triggers (e.g. a credit-agreement amendment that's
+ * simultaneously new debt, an acquisition, and a new subsidiary); the
+ * cluster itself is untouched for the portfolio table, but the CARD only
+ * describes its most urgent member. Every other card-eligible trigger for
+ * this company — whether from the same cluster or a different one —
+ * becomes a compact `alsoActive` entry instead.
+ */
+export interface FlashCard {
+  id: string;
+  company: string;
+  cik: string;
+  ticker: string;
+  headlineTrigger: TriggerResult;
+  /** The headline trigger's own bucket — never a defaulted/fallback pick. */
+  bucket: Bucket;
   /**
-   * This company's OTHER card-eligible events, collapsed into this one
-   * surfaced card (one company = one card). Always empty on an event that
-   * isn't itself the company's chosen primary card.
+   * A second tag ONLY when the headline's own dedup cluster is exactly
+   * two triggers spanning two buckets (the same real-world event viewed
+   * from two angles, e.g. a divestiture that's both an asset sale and an
+   * "acquisition announced"). A 3+-trigger cluster (several distinct
+   * actions bundled in one filing) never gets a second tag — those extra
+   * triggers go to `alsoActive` instead.
    */
-  alsoActive: EventRecord[];
+  secondaryBucket: Bucket | null;
+  timing: TimingInfo;
+  /** The headline trigger's own citations only — not the whole cluster's. */
+  citations: TriggerResult["citations"];
+  alsoActive: FlashCardActiveItem[];
 }
 
 export interface CompanyPortfolio {
@@ -35,7 +70,7 @@ export interface CompanyPortfolio {
 
 export interface BuildEventsResult {
   /** At most one per company, already ordered: known future dates first (soonest first), then undated-but-fresh events by recency. */
-  flashCardCandidates: EventRecord[];
+  flashCardCandidates: FlashCard[];
   /** Every company x the 4 buckets, card-eligible or not — the table's full-evidence layer. */
   portfolio: CompanyPortfolio[];
 }
@@ -51,7 +86,7 @@ function dedupeCitations(citations: TriggerResult["citations"]): TriggerResult["
   return out;
 }
 
-/** Picks one bucket to label a (possibly multi-trigger) merged event with. */
+/** Picks one bucket to label a (possibly multi-trigger) merged event with, for the portfolio table. */
 function resolveEventBucket(
   triggers: TriggerResult[],
   eligibility: Map<string, ReturnType<typeof evaluateEligibility>>
@@ -75,12 +110,12 @@ function resolveEventBucket(
 }
 
 /**
- * Combines per-trigger timing into one event-level timing for ordering.
- * Only draws from the constituents that are actually card-eligible — an
- * event merged from one eligible trigger (e.g. a just-completed raise,
- * live now) and one ineligible sibling (e.g. a debt tranche maturing in 3
- * years) should order as "live now," not inherit the irrelevant sibling's
- * future date.
+ * Combines per-trigger timing into one cluster-level timing, for the
+ * portfolio table and the freshness gate. Only draws from the constituents
+ * that are actually card-eligible — a cluster merged from one eligible
+ * trigger (e.g. a just-completed raise, live now) and one ineligible
+ * sibling (e.g. a debt tranche maturing in 3 years) should read as "live
+ * now," not inherit the irrelevant sibling's future date.
  */
 function combineTiming(
   triggers: TriggerResult[],
@@ -121,10 +156,35 @@ function hasGenuineFutureDate(timing: TimingInfo): boolean {
   return timing.monthsToNearestFuture !== null || timing.isPendingLive;
 }
 
+/**
+ * The one ordering rule, shared by every unit it applies to (a company's
+ * headline-trigger candidates, and the final cross-company card list): a
+ * known future date sorts first, ascending — soonest first. Everything
+ * else (no parseable future date, but still fresh enough to be
+ * card-eligible) sorts after, by recency — most recently filed first.
+ */
+function compareUrgency(
+  a: { timing: TimingInfo; citations: TriggerResult["citations"] },
+  b: { timing: TimingInfo; citations: TriggerResult["citations"] }
+): number {
+  const aHasDate = a.timing.monthsToNearestFuture !== null;
+  const bHasDate = b.timing.monthsToNearestFuture !== null;
+  if (aHasDate !== bHasDate) return aHasDate ? -1 : 1;
+
+  if (aHasDate && bHasDate) {
+    const diff = a.timing.monthsToNearestFuture! - b.timing.monthsToNearestFuture!;
+    if (diff !== 0) return diff;
+  } else {
+    const dateDiff = mostRecentCitationDate(b.citations).localeCompare(mostRecentCitationDate(a.citations));
+    if (dateDiff !== 0) return dateDiff;
+  }
+  return 0;
+}
+
 function buildEventsForCompany(
   result: CompanyResult,
   now: Date
-): { events: EventRecord[]; portfolio: CompanyPortfolio; primaryFlashCard: EventRecord | null } {
+): { events: EventRecord[]; portfolio: CompanyPortfolio; flashCard: FlashCard | null } {
   const eligible = result.results.filter(
     (t) => t.fired && (t.needType === "credit" || t.needType === "treasury") && bucketForTrigger(t.triggerId) !== null
   );
@@ -164,20 +224,61 @@ function buildEventsForCompany(
       eligibilityReasons,
       timing,
       citations,
-      alsoActive: [],
     };
   });
 
   const buckets: Record<Bucket, EventRecord[]> = { treasury: [], new_debt: [], refi: [], hedging: [] };
   for (const event of events) buckets[event.bucket].push(event);
 
-  // One card per company: the most urgent card-eligible event becomes the
-  // company's single surfaced card; every other card-eligible event for
-  // this company collapses into that card's "Also active" line instead of
-  // spawning a second (repeated-company) card.
-  const eligibleSorted = events.filter((e) => e.cardEligible).sort(compareForOrdering);
-  const primaryFlashCard = eligibleSorted[0] ?? null;
-  if (primaryFlashCard) primaryFlashCard.alsoActive = eligibleSorted.slice(1);
+  // Headline selection: flatten every INDIVIDUALLY card-eligible trigger
+  // across ALL of this company's card-eligible clusters (not the clusters
+  // themselves) and pick the single most urgent one as the headline. A
+  // trigger that only "rides along" in an eligible cluster (its own rule
+  // said not eligible, e.g. standing floating-rate exposure bundled with a
+  // fresh acquisition in the same 8-K) is never a headline candidate.
+  const headlineCandidates = events
+    .filter((event) => event.cardEligible)
+    .flatMap((event) =>
+      event.triggers
+        .filter((t) => eligibilityByTriggerId.get(t.triggerId)?.cardEligible)
+        .map((t) => ({
+          trigger: t,
+          timing: eligibilityByTriggerId.get(t.triggerId)!.timing,
+          citations: t.citations,
+          cluster: event.triggers,
+        }))
+    )
+    .sort((a, b) => compareUrgency(a, b) || a.trigger.triggerName.localeCompare(b.trigger.triggerName));
+
+  let flashCard: FlashCard | null = null;
+  if (headlineCandidates.length > 0) {
+    const headline = headlineCandidates[0];
+    const bucket = bucketForTrigger(headline.trigger.triggerId)!;
+
+    let secondaryBucket: Bucket | null = null;
+    if (headline.cluster.length === 2) {
+      const clusterMate = headline.cluster.find((t) => t.triggerId !== headline.trigger.triggerId);
+      const clusterMateBucket = clusterMate ? bucketForTrigger(clusterMate.triggerId) : null;
+      if (clusterMateBucket && clusterMateBucket !== bucket) secondaryBucket = clusterMateBucket;
+    }
+
+    flashCard = {
+      id: `${result.company}::${headline.trigger.triggerId}`,
+      company: result.company,
+      cik: result.cik,
+      ticker: result.ticker,
+      headlineTrigger: headline.trigger,
+      bucket,
+      secondaryBucket,
+      timing: headline.timing,
+      citations: headline.trigger.citations,
+      alsoActive: headlineCandidates.slice(1).map((c) => ({
+        trigger: c.trigger,
+        bucket: bucketForTrigger(c.trigger.triggerId)!,
+        timing: c.timing,
+      })),
+    };
+  }
 
   return {
     events,
@@ -188,49 +289,26 @@ function buildEventsForCompany(
       buckets,
       relationshipFlags: result.relationshipFlags,
     },
-    primaryFlashCard,
+    flashCard,
   };
-}
-
-/**
- * A known future date (a real maturity/closing point-in-time) sorts first,
- * ascending — soonest first. Everything else (no parseable future date,
- * but still fresh enough to be card-eligible) sorts after, by recency —
- * most recently filed first. Unparseable-timing events never reach this
- * comparator at all: they fail card eligibility outright (see
- * buildEventsForCompany), so they can't float to the top of either tier.
- */
-function compareForOrdering(a: EventRecord, b: EventRecord): number {
-  const aHasDate = a.timing.monthsToNearestFuture !== null;
-  const bHasDate = b.timing.monthsToNearestFuture !== null;
-  if (aHasDate !== bHasDate) return aHasDate ? -1 : 1;
-
-  if (aHasDate && bHasDate) {
-    const diff = a.timing.monthsToNearestFuture! - b.timing.monthsToNearestFuture!;
-    if (diff !== 0) return diff;
-  } else {
-    const dateDiff = mostRecentCitationDate(b.citations).localeCompare(mostRecentCitationDate(a.citations));
-    if (dateDiff !== 0) return dateDiff;
-  }
-  return a.company.localeCompare(b.company);
 }
 
 /**
  * Card Eligibility Spec v2 entry point: replaces the old company-level
  * weighted score with per-event grouping, dedup, and eligibility. No
  * ranking of one opportunity type against another — flash cards are
- * ordered strictly by time-to-event; everything else (bucket, company)
- * is presentation only. One card per company: each company contributes at
- * most one flash card (its most urgent event); every other card-eligible
- * event for that company rides along as that card's `alsoActive` list.
+ * ordered strictly by time-to-event; everything else (bucket, company) is
+ * presentation only. One card per company, built around its single most
+ * urgent headline trigger; every other card-eligible trigger for that
+ * company rides along as that card's `alsoActive` list.
  */
 export function buildEvents(results: CompanyResult[], now: Date = new Date()): BuildEventsResult {
   const perCompany = results.map((result) => buildEventsForCompany(result, now));
 
   const flashCardCandidates = perCompany
-    .map((c) => c.primaryFlashCard)
-    .filter((e): e is EventRecord => e !== null)
-    .sort(compareForOrdering);
+    .map((c) => c.flashCard)
+    .filter((e): e is FlashCard => e !== null)
+    .sort((a, b) => compareUrgency(a, b) || a.company.localeCompare(b.company));
 
   return {
     flashCardCandidates,
