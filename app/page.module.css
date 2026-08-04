@@ -119,8 +119,12 @@
   color: var(--text-secondary);
 }
 
-.methodologyText {
+.methodologyList {
   margin-top: 6px;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 12px;
   line-height: 1.5;
@@ -204,6 +208,14 @@
   font-size: 13px;
 }
 
+.alsoActiveLine {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--panel-border);
+}
+
 .briefingSource {
   display: inline-block;
   font-style: normal;
@@ -285,8 +297,30 @@
   padding-top: 0;
 }
 
-.portfolioCompanyHeader {
-  margin-bottom: 8px;
+.portfolioCompanySummary {
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.portfolioIndicators {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.portfolioCompanyBody {
+  margin-top: 10px;
+}
+
+.portfolioCompanySummaryText {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--panel-border);
 }
 
 .portfolioBucket {

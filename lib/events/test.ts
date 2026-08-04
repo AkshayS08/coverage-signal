@@ -55,6 +55,11 @@ async function main() {
     console.log(`Citations: ${e.citations.map((c) => `${c.form} ${c.date}`).join(", ")}`);
     console.log(`Summary: ${briefing.summary}`);
     console.log(`Angle: ${briefing.angle} [${briefing.source}]`);
+    if (e.alsoActive.length > 0) {
+      console.log(
+        `Also active: ${e.alsoActive.map((a) => `${BUCKET_LABELS[a.bucket]} (${timingLabel(a)}) — ${describeEvent(a)}`).join(" · ")}`
+      );
+    }
     console.log("");
   }
 

@@ -2,8 +2,17 @@
 
 import { useMemo, useState } from "react";
 import styles from "./page.module.css";
-import { buildEvents, templateEventBriefing, BUCKET_LABELS, type EventRecord, type Bucket } from "@/lib/events";
+import {
+  buildEvents,
+  templateEventBriefing,
+  templateCompanySummary,
+  BUCKET_LABELS,
+  type EventRecord,
+  type CompanyPortfolio,
+  type Bucket,
+} from "@/lib/events";
 import type { DraftedEventBriefing } from "@/lib/events/eventBriefing";
+import type { DraftedCompanySummary } from "@/lib/events/companySummary";
 import type { CompanyResult, RunStreamEvent } from "@/lib/agent";
 
 const DEFAULT_BOOK = [
@@ -41,10 +50,63 @@ const BUCKET_CLASS: Record<Bucket, string> = {
   hedging: "bucketHedging",
 };
 
-function timingLabel(e: EventRecord): string {
-  if (e.timing.monthsToNearestFuture !== null) return `~${e.timing.monthsToNearestFuture}mo out`;
-  if (e.timing.isPendingLive) return "pending";
-  return "live now";
+/** Plain, explicit date for a card's header — "matures ~Apr 2027" or "8-K filed Jul 21". */
+function formatEventDate(event: EventRecord, asOf: Date): string {
+  if (event.timing.monthsToNearestFuture !== null) {
+    const future = new Date(asOf);
+    future.setMonth(future.getMonth() + Math.round(event.timing.monthsToNearestFuture));
+    return `matures ~${future.toLocaleDateString(undefined, { month: "short", year: "numeric" })}`;
+  }
+  const mostRecent = [...event.citations].sort((a, b) => b.date.localeCompare(a.date))[0];
+  if (mostRecent) {
+    const d = new Date(mostRecent.date);
+    if (!Number.isNaN(d.getTime())) {
+      return `${mostRecent.form} filed ${d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+    }
+  }
+  return event.timing.isPendingLive ? "pending" : "";
+}
+
+// Short, human labels for the compact "Also active" line — a company's
+// other card-eligible events collapsed into one phrase each, e.g.
+// "refi window ~9mo · new floating-rate issuance".
+const SHORT_TRIGGER_LABEL: Record<string, string> = {
+  "debt-maturity": "refi window",
+  "new-debt-issuance": "new debt raised",
+  "acquisition-announced": "acquisition financing",
+  "capex-program": "capex financing",
+  "revolver-near-capacity": "revolver upsize",
+  "dividend-buyback": "buyback increase",
+  "large-cash-balance": "cash build-up",
+  "asset-sale": "asset sale proceeds",
+  "international-expansion": "new foreign revenue",
+  "new-subsidiary": "new subsidiary accounts",
+  "ipo-secondary": "capital raise proceeds",
+  "floating-rate-debt": "new floating-rate issuance",
+  "commodity-exposure": "commodity hedging",
+  "fx-exposure": "FX hedging",
+};
+
+function compactEventLabel(event: EventRecord): string {
+  const label = SHORT_TRIGGER_LABEL[event.triggers[0].triggerId] ?? event.triggers[0].triggerName;
+  if (event.timing.monthsToNearestFuture !== null) return `${label} ~${event.timing.monthsToNearestFuture}mo`;
+  if (event.timing.isPendingLive) return `${label} (pending)`;
+  return label;
+}
+
+const BUCKET_SHORT_LABEL: Record<Bucket, string> = {
+  treasury: "treasury",
+  new_debt: "new debt",
+  refi: "refi",
+  hedging: "hedging",
+};
+
+/** Collapsed portfolio row: "refi ✓ · hedging ⚑" — scannable before expanding to full detail. */
+function buildIndicatorLine(buckets: Record<Bucket, EventRecord[]>): string {
+  return (["treasury", "new_debt", "refi", "hedging"] as const)
+    .filter((b) => buckets[b].length > 0)
+    .map((b) => (b === "hedging" ? "hedging ⚑" : `${BUCKET_SHORT_LABEL[b]} ✓`))
+    .join(" · ");
 }
 
 // Presentation-only pacing: while the single batched Haiku call is in
@@ -80,6 +142,7 @@ export default function Home() {
   const [trace, setTrace] = useState<TraceLine[]>([]);
   const [results, setResults] = useState<CompanyResult[]>([]);
   const [eventBriefings, setEventBriefings] = useState<Record<string, DraftedEventBriefing>>({});
+  const [companySummaries, setCompanySummaries] = useState<Record<string, DraftedCompanySummary>>({});
   const [running, setRunning] = useState(false);
   const [asOfDate, setAsOfDate] = useState<Date | null>(null);
 
@@ -96,6 +159,23 @@ export default function Home() {
     () => new Set(flashCardCandidates.map((e) => e.company)).size,
     [flashCardCandidates]
   );
+  const flashCardByCompany = useMemo(
+    () => new Map(flashCardCandidates.map((e) => [e.company, e])),
+    [flashCardCandidates]
+  );
+
+  // A company with a flash card reuses that card's own (already-drafted)
+  // summary for the portfolio table — no extra Sonnet call. A company with
+  // no card uses the dedicated portfolio-only summary streamed from the
+  // server (or the deterministic template while that's still in flight).
+  function getPortfolioSummary(p: CompanyPortfolio): DraftedCompanySummary {
+    const card = flashCardByCompany.get(p.company);
+    if (card) {
+      const briefing = eventBriefings[card.id] ?? templateEventBriefing(card);
+      return { text: briefing.summary, source: "card" };
+    }
+    return companySummaries[p.company] ?? templateCompanySummary(p);
+  }
 
   async function runAgent() {
     const companies = book
@@ -109,6 +189,7 @@ export default function Home() {
     setTrace([]);
     setResults([]);
     setEventBriefings({});
+    setCompanySummaries({});
     setAsOfDate(new Date());
 
     // Real trace/error lines land here instead of going straight to state,
@@ -159,6 +240,10 @@ export default function Home() {
             for (const { eventId, briefing } of drafted) next[eventId] = briefing;
             return next;
           });
+        }
+        if (event.companySummary) {
+          const summary = event.companySummary;
+          setCompanySummaries((prev) => ({ ...prev, [event.result.company]: summary }));
         }
       } else if (event.type === "error") {
         queueTrace(event.company, `error: ${event.message}`);
@@ -247,7 +332,7 @@ export default function Home() {
             {BUCKET_LABELS[event.bucket]}
           </span>
           {renderCompanyLink(event.company, event.cik)}
-          <span className={styles.timingTag}>{timingLabel(event)}</span>
+          <span className={styles.timingTag}>{formatEventDate(event, asOfDate ?? new Date())}</span>
         </div>
         <div className={styles.eventDescription}>{event.triggers.map((t) => t.triggerName).join(" + ")}</div>
         <p className={styles.eventSummary}>{briefing.summary}</p>
@@ -257,6 +342,12 @@ export default function Home() {
             {briefing.source === "sonnet" ? "Sonnet-drafted" : "templated"}
           </span>
         </p>
+        {event.alsoActive.length > 0 && (
+          <p className={styles.alsoActiveLine}>
+            <strong>Also active:</strong> {event.alsoActive.map(compactEventLabel).join(" · ")} — see
+            portfolio table for detail.
+          </p>
+        )}
         <div className={styles.citations}>
           {event.citations.map((c, ci) => (
             <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
@@ -265,6 +356,42 @@ export default function Home() {
           ))}
         </div>
       </div>
+    );
+  }
+
+  function renderPortfolioCompany(p: CompanyPortfolio) {
+    const summary = getPortfolioSummary(p);
+    return (
+      <details key={p.company} className={styles.portfolioCompany}>
+        <summary className={styles.portfolioCompanySummary}>
+          {renderCompanyLink(p.company, p.cik)}
+          <span className={styles.portfolioIndicators}>{buildIndicatorLine(p.buckets)}</span>
+        </summary>
+        <div className={styles.portfolioCompanyBody}>
+          <p className={styles.portfolioCompanySummaryText}>
+            {summary.text}
+            {summary.source === "sonnet" && <span className={styles.briefingSource}>Sonnet-drafted</span>}
+          </p>
+          {BUCKET_ORDER.map((bucket) => {
+            const events = p.buckets[bucket];
+            if (events.length === 0) return null;
+            return (
+              <div key={bucket} className={styles.portfolioBucket}>
+                <div className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[bucket]]}`}>
+                  {BUCKET_LABELS[bucket]}
+                </div>
+                <ul className={styles.triggerList}>{events.map(renderPortfolioEvent)}</ul>
+              </div>
+            );
+          })}
+          {p.relationshipFlags.length > 0 && (
+            <div className={styles.relationshipFlags}>
+              Relationship flag (distress, not a sell signal):{" "}
+              {p.relationshipFlags.map((t) => t.triggerName).join(", ")}
+            </div>
+          )}
+        </div>
+      </details>
     );
   }
 
@@ -340,16 +467,14 @@ export default function Home() {
         )}
         <details className={styles.methodology}>
           <summary className={styles.methodologySummary}>How this works</summary>
-          <p className={styles.methodologyText}>
-            Coverage Signal scans each company against 15 trigger types drawn from its recent SEC
-            filings, groups triggers that describe the same real-world event into one card (fixing
-            double-counting), and checks each event against the card eligibility test: dated/live AND
-            actionable within roughly 12-18 months. Eligible events surface as flash cards below,
-            ordered only by time-to-event — live/pending first, then soonest date — across four
-            opportunity buckets (treasury/deposits, new debt, refi, FX/rate hedging), with no ranking
-            of one opportunity type against another; the RM decides which call to make first.
-            Everything else — standing conditions, non-urgent signals — stays in the portfolio table.
-          </p>
+          <ul className={styles.methodologyList}>
+            <li>Scans each company against 15 trigger types from recent SEC filings</li>
+            <li>Groups triggers about the same event into one card (no double-counting)</li>
+            <li>Surfaces only dated, actionable events (next ~12–18 months) as flash cards</li>
+            <li>Four opportunity buckets: treasury/deposits, new debt, refi, FX/rate hedging</li>
+            <li>No ranking across types — cards are time-ordered; the RM decides which call matters most</li>
+            <li>Everything else stays in the portfolio table below</li>
+          </ul>
         </details>
         {(results.length > 0 || running) && (
           <>
@@ -370,31 +495,7 @@ export default function Home() {
       {portfolio.length > 0 && (
         <details className={styles.portfolioSection}>
           <summary className={styles.portfolioSummary}>Portfolio table ({portfolio.length} companies)</summary>
-          <div className={styles.portfolioBody}>
-            {portfolio.map((p) => (
-              <div key={p.company} className={styles.portfolioCompany}>
-                <div className={styles.portfolioCompanyHeader}>{renderCompanyLink(p.company, p.cik)}</div>
-                {BUCKET_ORDER.map((bucket) => {
-                  const events = p.buckets[bucket];
-                  if (events.length === 0) return null;
-                  return (
-                    <div key={bucket} className={styles.portfolioBucket}>
-                      <div className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[bucket]]}`}>
-                        {BUCKET_LABELS[bucket]}
-                      </div>
-                      <ul className={styles.triggerList}>{events.map(renderPortfolioEvent)}</ul>
-                    </div>
-                  );
-                })}
-                {p.relationshipFlags.length > 0 && (
-                  <div className={styles.relationshipFlags}>
-                    Relationship flag (distress, not a sell signal):{" "}
-                    {p.relationshipFlags.map((t) => t.triggerName).join(", ")}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <div className={styles.portfolioBody}>{portfolio.map(renderPortfolioCompany)}</div>
         </details>
       )}
 

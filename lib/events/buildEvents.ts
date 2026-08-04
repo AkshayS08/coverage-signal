@@ -16,6 +16,12 @@ export interface EventRecord {
   eligibilityReasons: string[];
   timing: TimingInfo;
   citations: TriggerResult["citations"];
+  /**
+   * This company's OTHER card-eligible events, collapsed into this one
+   * surfaced card (one company = one card). Always empty on an event that
+   * isn't itself the company's chosen primary card.
+   */
+  alsoActive: EventRecord[];
 }
 
 export interface CompanyPortfolio {
@@ -28,7 +34,7 @@ export interface CompanyPortfolio {
 }
 
 export interface BuildEventsResult {
-  /** Card-eligible events only, already ordered per the spec (live/pending first, then nearest future date). */
+  /** At most one per company, already ordered: known future dates first (soonest first), then undated-but-fresh events by recency. */
   flashCardCandidates: EventRecord[];
   /** Every company x the 4 buckets, card-eligible or not — the table's full-evidence layer. */
   portfolio: CompanyPortfolio[];
@@ -98,7 +104,27 @@ function mostRecentCitationDate(citations: TriggerResult["citations"]): string {
   return dates.length > 0 ? dates.reduce((latest, d) => (d > latest ? d : latest)) : "";
 }
 
-function buildEventsForCompany(result: CompanyResult): { events: EventRecord[]; portfolio: CompanyPortfolio } {
+const FRESHNESS_WINDOW_DAYS = 90;
+
+/** True when the event's most recent source filing is within the freshness window. */
+function isRecentFiling(citations: TriggerResult["citations"], now: Date): boolean {
+  const mostRecent = mostRecentCitationDate(citations);
+  if (!mostRecent) return false;
+  const filingDate = new Date(mostRecent);
+  if (Number.isNaN(filingDate.getTime())) return false;
+  const daysAgo = (now.getTime() - filingDate.getTime()) / (1000 * 60 * 60 * 24);
+  return daysAgo >= 0 && daysAgo <= FRESHNESS_WINDOW_DAYS;
+}
+
+/** A maturity <18mo (already required by eligibility.ts) or a pending close — a real point-in-time in the future. */
+function hasGenuineFutureDate(timing: TimingInfo): boolean {
+  return timing.monthsToNearestFuture !== null || timing.isPendingLive;
+}
+
+function buildEventsForCompany(
+  result: CompanyResult,
+  now: Date
+): { events: EventRecord[]; portfolio: CompanyPortfolio; primaryFlashCard: EventRecord | null } {
   const eligible = result.results.filter(
     (t) => t.fired && (t.needType === "credit" || t.needType === "treasury") && bucketForTrigger(t.triggerId) !== null
   );
@@ -110,6 +136,20 @@ function buildEventsForCompany(result: CompanyResult): { events: EventRecord[]; 
   const events: EventRecord[] = clusters.map((triggers) => {
     const bucket = resolveEventBucket(triggers, eligibilityByTriggerId);
     const perTrigger = triggers.map((t) => eligibilityByTriggerId.get(t.triggerId)!);
+    const timing = combineTiming(triggers, eligibilityByTriggerId);
+    const citations = dedupeCitations(triggers.flatMap((t) => t.citations));
+    const rawEligible = perTrigger.some((e) => e.cardEligible);
+
+    // Freshness gate: a rule-eligible event only earns a card if it's
+    // dated/live right now — a genuine future date (maturity <18mo,
+    // pending close), or a source filing within the last 90 days. An old
+    // completed event (rule-eligible in principle, e.g. a divestiture from
+    // two years ago) no longer qualifies; it drops to the portfolio table.
+    const fresh = hasGenuineFutureDate(timing) || isRecentFiling(citations, now);
+    const cardEligible = rawEligible && fresh;
+    const eligibilityReasons = perTrigger.map((e) => e.reason);
+    if (rawEligible && !fresh) eligibilityReasons.push("stale — filed 90+ days ago with no future date");
+
     return {
       id: `${result.company}::${triggers
         .map((t) => t.triggerId)
@@ -120,15 +160,24 @@ function buildEventsForCompany(result: CompanyResult): { events: EventRecord[]; 
       ticker: result.ticker,
       bucket,
       triggers,
-      cardEligible: perTrigger.some((e) => e.cardEligible),
-      eligibilityReasons: perTrigger.map((e) => e.reason),
-      timing: combineTiming(triggers, eligibilityByTriggerId),
-      citations: dedupeCitations(triggers.flatMap((t) => t.citations)),
+      cardEligible,
+      eligibilityReasons,
+      timing,
+      citations,
+      alsoActive: [],
     };
   });
 
   const buckets: Record<Bucket, EventRecord[]> = { treasury: [], new_debt: [], refi: [], hedging: [] };
   for (const event of events) buckets[event.bucket].push(event);
+
+  // One card per company: the most urgent card-eligible event becomes the
+  // company's single surfaced card; every other card-eligible event for
+  // this company collapses into that card's "Also active" line instead of
+  // spawning a second (repeated-company) card.
+  const eligibleSorted = events.filter((e) => e.cardEligible).sort(compareForOrdering);
+  const primaryFlashCard = eligibleSorted[0] ?? null;
+  if (primaryFlashCard) primaryFlashCard.alsoActive = eligibleSorted.slice(1);
 
   return {
     events,
@@ -139,14 +188,22 @@ function buildEventsForCompany(result: CompanyResult): { events: EventRecord[]; 
       buckets,
       relationshipFlags: result.relationshipFlags,
     },
+    primaryFlashCard,
   };
 }
 
-/** Live/pending (no parsed future date) sorts before a specific future date; ties break by recency, then name. */
+/**
+ * A known future date (a real maturity/closing point-in-time) sorts first,
+ * ascending — soonest first. Everything else (no parseable future date,
+ * but still fresh enough to be card-eligible) sorts after, by recency —
+ * most recently filed first. Unparseable-timing events never reach this
+ * comparator at all: they fail card eligibility outright (see
+ * buildEventsForCompany), so they can't float to the top of either tier.
+ */
 function compareForOrdering(a: EventRecord, b: EventRecord): number {
   const aHasDate = a.timing.monthsToNearestFuture !== null;
   const bHasDate = b.timing.monthsToNearestFuture !== null;
-  if (aHasDate !== bHasDate) return aHasDate ? 1 : -1;
+  if (aHasDate !== bHasDate) return aHasDate ? -1 : 1;
 
   if (aHasDate && bHasDate) {
     const diff = a.timing.monthsToNearestFuture! - b.timing.monthsToNearestFuture!;
@@ -163,14 +220,16 @@ function compareForOrdering(a: EventRecord, b: EventRecord): number {
  * weighted score with per-event grouping, dedup, and eligibility. No
  * ranking of one opportunity type against another — flash cards are
  * ordered strictly by time-to-event; everything else (bucket, company)
- * is presentation only.
+ * is presentation only. One card per company: each company contributes at
+ * most one flash card (its most urgent event); every other card-eligible
+ * event for that company rides along as that card's `alsoActive` list.
  */
-export function buildEvents(results: CompanyResult[]): BuildEventsResult {
-  const perCompany = results.map(buildEventsForCompany);
+export function buildEvents(results: CompanyResult[], now: Date = new Date()): BuildEventsResult {
+  const perCompany = results.map((result) => buildEventsForCompany(result, now));
 
   const flashCardCandidates = perCompany
-    .flatMap((c) => c.events)
-    .filter((e) => e.cardEligible)
+    .map((c) => c.primaryFlashCard)
+    .filter((e): e is EventRecord => e !== null)
     .sort(compareForOrdering);
 
   return {

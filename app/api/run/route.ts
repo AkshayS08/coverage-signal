@@ -1,6 +1,7 @@
 import { runAgentLoop, type RunStreamEvent } from "@/lib/agent";
 import { buildEvents } from "@/lib/events";
 import { draftEventBriefing } from "@/lib/events/sonnetEventBriefing";
+import { draftCompanySummary } from "@/lib/events/sonnetCompanySummary";
 import { checkRateLimit } from "./rateLimit";
 
 export const runtime = "nodejs";
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
           // Card eligibility is per-event, not per-company — a company can
           // produce zero, one, or several card-eligible events. Only those
           // get a Sonnet call; table-only events never do.
-          const { flashCardCandidates } = buildEvents([result]);
+          const { flashCardCandidates, portfolio } = buildEvents([result]);
           const eventBriefings: { eventId: string; briefing: Awaited<ReturnType<typeof draftEventBriefing>> }[] = [];
           for (const event of flashCardCandidates) {
             const drafted = await draftEventBriefing(event);
@@ -80,7 +81,19 @@ export async function POST(request: Request) {
             send({ type: "trace", company, text: `event briefing (${event.bucket}): ${label}` });
             eventBriefings.push({ eventId: event.id, briefing: drafted });
           }
-          send({ type: "result", result, eventBriefings });
+
+          // Portfolio-table company summary: only for companies with no
+          // flash card at all — a company that has one reuses that card's
+          // own summary client-side instead, at no extra Sonnet cost.
+          let companySummary: Awaited<ReturnType<typeof draftCompanySummary>> | undefined;
+          if (flashCardCandidates.length === 0) {
+            companySummary = await draftCompanySummary(portfolio[0]);
+            const label = companySummary.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
+            console.log(`[companySummary] ${result.company}: ${companySummary.source}`);
+            send({ type: "trace", company, text: `portfolio summary: ${label}` });
+          }
+
+          send({ type: "result", result, eventBriefings, companySummary });
         } catch (err) {
           send({ type: "error", company, message: err instanceof Error ? err.message : String(err) });
         }
