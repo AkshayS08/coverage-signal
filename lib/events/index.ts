@@ -5,6 +5,7 @@ export * from "./buildEvents";
 export * from "./eventBriefing";
 export * from "./companySummary";
 export * from "./labels";
+export * from "./factBase";
 // sonnetEventBriefing.ts is deliberately NOT re-exported here — it pulls in
 // the Anthropic SDK and must stay out of any client-importable barrel. The
 // portfolio-table summary (companySummary.ts) is fully deterministic now,

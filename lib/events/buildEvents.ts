@@ -2,7 +2,7 @@ import type { CompanyResult, TriggerResult } from "../agent";
 import { BUCKET_PRIORITY, bucketForTrigger, type Bucket } from "./buckets";
 import { clusterIntoEvents } from "./dedup";
 import { evaluateEligibility } from "./eligibility";
-import type { TimingInfo } from "./textHeuristics";
+import { extractEventDate, type TimingInfo } from "./textHeuristics";
 
 export interface EventRecord {
   id: string;
@@ -45,12 +45,15 @@ export interface FlashCard {
   /** The headline trigger's own bucket — never a defaulted/fallback pick. */
   bucket: Bucket;
   /**
-   * A second tag ONLY when the headline's own dedup cluster is exactly
-   * two triggers spanning two buckets (the same real-world event viewed
-   * from two angles, e.g. a divestiture that's both an asset sale and an
-   * "acquisition announced"). A 3+-trigger cluster (several distinct
-   * actions bundled in one filing) never gets a second tag — those extra
-   * triggers go to `alsoActive` instead.
+   * A second tag ONLY when the headline's own dedup cluster is exactly two
+   * triggers spanning two buckets AND the cluster-mate is itself
+   * individually card-eligible (the same real-world event viewed from two
+   * angles, e.g. a divestiture that's both an asset sale and an
+   * "acquisition announced" — not a standing/background trigger that
+   * merely shared the same 8-K citation, e.g. ordinary floating-rate debt
+   * disclosed alongside a fresh acquisition). A 3+-trigger cluster (several
+   * distinct actions bundled in one filing) never gets a second tag — those
+   * extra triggers go to `alsoActive` instead.
    */
   secondaryBucket: Bucket | null;
   timing: TimingInfo;
@@ -143,13 +146,29 @@ function mostRecentCitationDate(citations: TriggerResult["citations"]): string {
 
 const FRESHNESS_WINDOW_DAYS = 90;
 
-/** True when the event's most recent source filing is within the freshness window. */
-function isRecentFiling(citations: TriggerResult["citations"], now: Date): boolean {
-  const mostRecent = mostRecentCitationDate(citations);
-  if (!mostRecent) return false;
-  const filingDate = new Date(mostRecent);
-  if (Number.isNaN(filingDate.getTime())) return false;
-  const daysAgo = (now.getTime() - filingDate.getTime()) / (1000 * 60 * 60 * 24);
+/**
+ * The event's own date (an offering, closing, or amendment date pulled
+ * from its verified quote/evidence) when one is extractable — falling
+ * back to the citation date only when the event is genuinely undated.
+ * Matters because a filing can cite an OLD event alongside new ones in the
+ * same 8-K: a 14-month-old notes offering must not read as "this week"
+ * just because a recent filing happens to mention it too.
+ */
+function eventOwnDate(triggers: TriggerResult[]): string | null {
+  for (const t of triggers) {
+    const d = extractEventDate(t.verifiedQuote ?? t.evidence);
+    if (d) return d;
+  }
+  return null;
+}
+
+/** True when the EVENT's own date (preferred) or, failing that, its most recent citing filing, is within the freshness window. */
+function isRecentFiling(triggers: TriggerResult[], citations: TriggerResult["citations"], now: Date): boolean {
+  const dateToCheck = eventOwnDate(triggers) ?? mostRecentCitationDate(citations);
+  if (!dateToCheck) return false;
+  const eventDate = new Date(dateToCheck);
+  if (Number.isNaN(eventDate.getTime())) return false;
+  const daysAgo = (now.getTime() - eventDate.getTime()) / (1000 * 60 * 60 * 24);
   return daysAgo >= 0 && daysAgo <= FRESHNESS_WINDOW_DAYS;
 }
 
@@ -158,15 +177,62 @@ function hasGenuineFutureDate(timing: TimingInfo): boolean {
   return timing.monthsToNearestFuture !== null || timing.isPendingLive;
 }
 
+const TABLE_WINDOW_DAYS = 365;
+
+/**
+ * Rate/FX/commodity exposure is a standing condition, not a dated event —
+ * it's disclosed the same way whether it started last week or three years
+ * ago, and it represents a hedging opportunity for as long as it's on the
+ * books. It must never age out of the "current state" table the way a
+ * one-time completed transaction does.
+ */
+const ONGOING_EXPOSURE_TRIGGERS = new Set(["floating-rate-debt", "fx-exposure", "commodity-exposure"]);
+
+function isOngoingExposureEvent(triggers: TriggerResult[]): boolean {
+  return triggers.some((t) => ONGOING_EXPOSURE_TRIGGERS.has(t.triggerId));
+}
+
+/** True when the event's most recent source filing is within the last 12 months. */
+function isWithinTableWindow(citations: TriggerResult["citations"], now: Date): boolean {
+  const mostRecent = mostRecentCitationDate(citations);
+  if (!mostRecent) return false;
+  const filingDate = new Date(mostRecent);
+  if (Number.isNaN(filingDate.getTime())) return false;
+  const daysAgo = (now.getTime() - filingDate.getTime()) / (1000 * 60 * 60 * 24);
+  return daysAgo >= 0 && daysAgo <= TABLE_WINDOW_DAYS;
+}
+
+/**
+ * Portfolio-table visibility: the table is a weekly "current state" view,
+ * not a full transaction history. A dated past event (a completed raise, a
+ * closed divestiture, a buyback authorization) rolls off after 12 months —
+ * it's no longer current state, just history. Two categories are exempt
+ * from that roll-off entirely: an ongoing exposure (see
+ * ONGOING_EXPOSURE_TRIGGERS above) is never "past," and a genuine
+ * future-dated item (an upcoming maturity, a pending closing) is
+ * forward-looking, not backward-looking, so its age at disclosure is
+ * irrelevant. This governs table inclusion only — it has no bearing on
+ * card eligibility, which is decided separately by the freshness gate
+ * above.
+ */
+function isTableEligible(event: { triggers: TriggerResult[]; timing: TimingInfo; citations: TriggerResult["citations"] }, now: Date): boolean {
+  if (isOngoingExposureEvent(event.triggers)) return true;
+  if (hasGenuineFutureDate(event.timing)) return true;
+  return isWithinTableWindow(event.citations, now);
+}
+
 /**
  * Human-readable justification for why a card cleared the freshness gate —
  * surfaced in the trace/console so the gate's decision is auditable, not a
  * black box (see buildEventsForCompany's freshness-gate comment for the
- * underlying rule this describes).
+ * underlying rule this describes). Prefers the event's own date over the
+ * citing filing's, matching isRecentFiling above.
  */
-function describeFreshness(timing: TimingInfo, citations: TriggerResult["citations"]): string {
+function describeFreshness(timing: TimingInfo, triggers: TriggerResult[], citations: TriggerResult["citations"]): string {
   if (timing.monthsToNearestFuture !== null) return `future maturity ~${timing.monthsToNearestFuture}mo`;
   if (timing.isPendingLive) return "pending/live event";
+  const eventDate = eventOwnDate(triggers);
+  if (eventDate) return `dated within 90 days (${eventDate})`;
   const mostRecent = mostRecentCitationDate(citations);
   return mostRecent ? `filed within 90 days (${mostRecent})` : "no citation date (unexpected)";
 }
@@ -204,7 +270,7 @@ function buildEventsForCompany(
     (t) => t.fired && (t.needType === "credit" || t.needType === "treasury") && bucketForTrigger(t.triggerId) !== null
   );
 
-  const eligibilityByTriggerId = new Map(eligible.map((t) => [t.triggerId, evaluateEligibility(t)]));
+  const eligibilityByTriggerId = new Map(eligible.map((t) => [t.triggerId, evaluateEligibility(t, now)]));
 
   const clusters = clusterIntoEvents(eligible);
 
@@ -213,16 +279,25 @@ function buildEventsForCompany(
     const perTrigger = triggers.map((t) => eligibilityByTriggerId.get(t.triggerId)!);
     const timing = combineTiming(triggers, eligibilityByTriggerId);
     const citations = dedupeCitations(triggers.flatMap((t) => t.citations));
-    const rawEligible = perTrigger.some((e) => e.cardEligible);
+    // A trigger only counts toward card eligibility if it's ALSO
+    // quote-verified (see verifyQuote.ts) — a rule-eligible-but-unverified
+    // trigger must never produce a card, since its number/date claim
+    // couldn't be confirmed against the actual filing text.
+    const rawEligible = triggers.some((t, i) => perTrigger[i].cardEligible && t.quoteVerified);
 
     // Freshness gate: a rule-eligible event only earns a card if it's
     // dated/live right now — a genuine future date (maturity <18mo,
-    // pending close), or a source filing within the last 90 days. An old
-    // completed event (rule-eligible in principle, e.g. a divestiture from
-    // two years ago) no longer qualifies; it drops to the portfolio table.
-    const fresh = hasGenuineFutureDate(timing) || isRecentFiling(citations, now);
+    // pending close), or the EVENT ITSELF (not merely whichever filing
+    // cites it) dated within the last 90 days. An old completed event
+    // (rule-eligible in principle, e.g. a divestiture from two years ago)
+    // no longer qualifies; it drops to the portfolio table.
+    const fresh = hasGenuineFutureDate(timing) || isRecentFiling(triggers, citations, now);
     const cardEligible = rawEligible && fresh;
-    const eligibilityReasons = perTrigger.map((e) => e.reason);
+    const eligibilityReasons = perTrigger.map((e, i) => {
+      const t = triggers[i];
+      const unverifiedNote = t.fired && !t.quoteVerified ? " — UNVERIFIED (quote not found in source filing)" : "";
+      return `${e.reason}${unverifiedNote}`;
+    });
     if (rawEligible && !fresh) eligibilityReasons.push("stale — filed 90+ days ago with no future date");
 
     return {
@@ -247,12 +322,14 @@ function buildEventsForCompany(
   // themselves) and pick the single most urgent one as the headline. A
   // trigger that only "rides along" in an eligible cluster (its own rule
   // said not eligible, e.g. standing floating-rate exposure bundled with a
-  // fresh acquisition in the same 8-K) is never a headline candidate.
+  // fresh acquisition in the same 8-K) is never a headline candidate. Nor
+  // is a trigger whose quote failed verification — an unconfirmed number
+  // or date must never drive a card, no matter how urgent it looks.
   const headlineCandidates = events
     .filter((event) => event.cardEligible)
     .flatMap((event) =>
       event.triggers
-        .filter((t) => eligibilityByTriggerId.get(t.triggerId)?.cardEligible)
+        .filter((t) => eligibilityByTriggerId.get(t.triggerId)?.cardEligible && t.quoteVerified)
         .map((t) => ({
           trigger: t,
           timing: eligibilityByTriggerId.get(t.triggerId)!.timing,
@@ -267,10 +344,20 @@ function buildEventsForCompany(
     const headline = headlineCandidates[0];
     const bucket = bucketForTrigger(headline.trigger.triggerId)!;
 
+    // A second tag requires the cluster-mate to be a genuine second facet of
+    // THIS event, not merely a standing/background trigger that happened to
+    // share the same 8-K citation (dedup.ts clusters on shared citations,
+    // which can sweep in an unrelated standing exposure — e.g. a company's
+    // ordinary floating-rate debt disclosed in the same 8-K as a fresh
+    // acquisition). Individual eligibility is exactly the test for "genuine
+    // event, not standing background" (see eligibility.ts), so the
+    // cluster-mate must independently pass it before it can drive a tag.
     let secondaryBucket: Bucket | null = null;
     if (headline.cluster.length === 2) {
       const clusterMate = headline.cluster.find((t) => t.triggerId !== headline.trigger.triggerId);
-      const clusterMateBucket = clusterMate ? bucketForTrigger(clusterMate.triggerId) : null;
+      const clusterMateEligible =
+        clusterMate ? eligibilityByTriggerId.get(clusterMate.triggerId)?.cardEligible && clusterMate.quoteVerified : false;
+      const clusterMateBucket = clusterMate && clusterMateEligible ? bucketForTrigger(clusterMate.triggerId) : null;
       if (clusterMateBucket && clusterMateBucket !== bucket) secondaryBucket = clusterMateBucket;
     }
 
@@ -284,12 +371,19 @@ function buildEventsForCompany(
       secondaryBucket,
       timing: headline.timing,
       citations: headline.trigger.citations,
-      alsoActive: headlineCandidates.slice(1).map((c) => ({
-        trigger: c.trigger,
-        bucket: bucketForTrigger(c.trigger.triggerId)!,
-        timing: c.timing,
-      })),
-      freshnessReason: describeFreshness(headline.timing, headline.trigger.citations),
+      // Excludes any candidate from the headline's own cluster — that
+      // cluster IS the headline event (already represented by bucket +
+      // secondaryBucket above), so it must never also appear as a separate
+      // "also active" item.
+      alsoActive: headlineCandidates
+        .slice(1)
+        .filter((c) => c.cluster !== headline.cluster)
+        .map((c) => ({
+          trigger: c.trigger,
+          bucket: bucketForTrigger(c.trigger.triggerId)!,
+          timing: c.timing,
+        })),
+      freshnessReason: describeFreshness(headline.timing, [headline.trigger], headline.trigger.citations),
     };
 
     // Table/card agreement: the portfolio table normally labels a merged
@@ -308,7 +402,9 @@ function buildEventsForCompany(
   }
 
   const buckets: Record<Bucket, EventRecord[]> = { treasury: [], new_debt: [], refi: [], hedging: [] };
-  for (const event of events) buckets[event.bucket].push(event);
+  for (const event of events) {
+    if (isTableEligible(event, now)) buckets[event.bucket].push(event);
+  }
 
   return {
     events,

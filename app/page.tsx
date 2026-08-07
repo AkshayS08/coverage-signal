@@ -306,7 +306,7 @@ export default function Home() {
         <p className={`${styles.cardLine} ${styles.cardLineAngle}`}>
           <strong>Angle:</strong> {briefing.angle}
           <span className={styles.briefingSource}>
-            {briefing.source === "sonnet" ? "Sonnet-drafted" : "templated"}
+            {briefing.source === "sonnet" ? "Sonnet-drafted" : briefing.source === "quote" ? "source quote" : "templated"}
           </span>
         </p>
         {card.alsoActive.length > 0 && (
@@ -316,7 +316,21 @@ export default function Home() {
           </p>
         )}
         {renderCardSources(card.citations)}
+        {renderSourceText(card)}
       </div>
+    );
+  }
+
+  // Every number/date on a card traces to this quote — a user can check
+  // the filing's own words in one click rather than trusting the prose.
+  function renderSourceText(card: FlashCard) {
+    const quote = card.headlineTrigger.verifiedQuote;
+    if (!quote) return null;
+    return (
+      <details className={styles.sourceTextDetails}>
+        <summary className={styles.sourceTextSummary}>Source text</summary>
+        <blockquote className={styles.sourceTextQuote}>&ldquo;{quote}&rdquo;</blockquote>
+      </details>
     );
   }
 
@@ -331,14 +345,14 @@ export default function Home() {
     return (
       <div className={styles.citations}>
         <span className={styles.primarySource}>
-          Source:{" "}
+          Primary source:{" "}
           <a href={primary.url} target="_blank" rel="noreferrer" className={styles.citation}>
             {primary.form} {primary.date} ↗
           </a>
         </span>
         {supporting.length > 0 && (
           <span className={styles.supportingSources}>
-            also:{" "}
+            Supporting:{" "}
             {supporting.map((c, ci) => (
               <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
                 {c.form} {c.date} ↗
@@ -404,6 +418,11 @@ export default function Home() {
               <span className={styles.triggerName}>{t.triggerName}</span>
               <span className={styles.mappedNeed}>→ {t.mappedNeed}</span>
               {!event.cardEligible && <span className={styles.tableOnlyTag}>table-only</span>}
+              {t.fired && !t.quoteVerified && (
+                <span className={styles.unverifiedTag} title="Could not confirm this filing detail against the source text">
+                  unverified
+                </span>
+              )}
             </div>
             {t.evidence && <p className={styles.evidenceLine}>{t.evidence.trim()}</p>}
             <div className={styles.citations}>

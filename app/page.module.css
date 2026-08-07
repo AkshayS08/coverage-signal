@@ -226,6 +226,35 @@
   margin-left: 8px;
 }
 
+.sourceTextDetails {
+  margin-top: 6px;
+}
+
+.sourceTextSummary {
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.sourceTextQuote {
+  margin: 6px 0 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--panel-border);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.unverifiedTag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #b91c1c;
+  opacity: 0.85;
+}
+
 /* --- Bucket badges (treasury stays the highlighted one) --- */
 
 .bucketBadge {
@@ -519,6 +548,10 @@
 
   .hedgingFlag {
     color: #f59e0b;
+  }
+
+  .unverifiedTag {
+    color: #f87171;
   }
 
   .citation {

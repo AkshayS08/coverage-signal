@@ -9,6 +9,7 @@ import {
   type FilingCatalogEntry,
   type TriggerVerdict,
 } from "./claude";
+import { verifyTriggerQuote } from "./verifyQuote";
 
 const MAX_DIG_STEPS = 5;
 
@@ -24,6 +25,12 @@ export interface TriggerResult {
   needType: "credit" | "treasury" | "distress";
   confidence: number;
   citations: { form: string; date: string; url: string }[];
+  /** Did the model's `quote` field appear verbatim in the filing text we actually fetched? */
+  quoteVerified: boolean;
+  /** The verbatim source sentence(s) backing this trigger — only set when quoteVerified is true. Always the raw filing text, never scale-adjusted (see verifiedQuoteNormalized). */
+  verifiedQuote: string | null;
+  /** Same fact as verifiedQuote, but with any bare (unit-less) table figure replaced by its scale-normalized dollar form where a governing "dollar amounts... in millions/thousands" declaration was found (scaleNormalize.ts). Falls back to the raw text when no bare figures needed normalizing or none could be safely resolved. This — not verifiedQuote — is what card narration is built from. */
+  verifiedQuoteNormalized: string | null;
 }
 
 export interface CompanyResult {
@@ -99,9 +106,11 @@ export async function runAgentLoop(
   log(`${companyName} → reading recent filings (${describeBaseline(baseline)})...`);
 
   const corpus: CorpusDoc[] = [];
+  const textByUrl = new Map<string, string>();
   for (const filing of baseline) {
     const { text } = await readFiling(filing.primaryDocUrl);
     corpus.push({ form: filing.form, filingDate: filing.filingDate, url: filing.primaryDocUrl, text });
+    textByUrl.set(filing.primaryDocUrl, text);
   }
 
   // News isn't wired up yet (later session) — call the stub but don't narrate an empty result.
@@ -116,6 +125,26 @@ export async function runAgentLoop(
   });
   const verdictById = new Map(baseVerdicts.map((v) => [v.triggerId, v]));
 
+  // Deterministic fact-check: a fired trigger's `quote` must either appear
+  // literally in the filing text we actually fetched, or its key facts
+  // (amount/rate/date — see factTokens.ts) must co-occur within a bounded
+  // window, so a genuine table-row fact (a debt-schedule row is never an
+  // English sentence) verifies too. A trigger whose quote can't be
+  // verified either way never reaches a card (see buildEvents.ts); it
+  // stays in the portfolio table, marked unverified, so nothing vanishes.
+  function finalizeVerified(trigger: TriggerDef, v: TriggerVerdict, label: string): TriggerResult {
+    const result = verifyTriggerQuote({
+      fired: v.fired,
+      quote: v.quote,
+      citedUrls: v.citedUrls ?? [],
+      textByUrl,
+    });
+    if (v.fired && !result.verified) {
+      log(`  ⚠ QUOTE VERIFICATION FAILED for ${label} — model's quote not found in the fetched filing text; evidence discarded, excluded from cards`);
+    }
+    return finalize(trigger, citationLookup, v, result);
+  }
+
   let digBudget = MAX_DIG_STEPS;
   const results: TriggerResult[] = [];
 
@@ -126,23 +155,28 @@ export async function runAgentLoop(
     if (!v) {
       log(`checking ${label}... couldn't be classified — treating as no public signal.`);
       results.push(
-        finalize(trigger, citationLookup, {
-          triggerId: trigger.id,
-          fired: false,
-          dataAvailable: false,
-          evidence: null,
-          confidence: 0,
-          needsDig: false,
-          digHint: null,
-          citedUrls: [],
-        })
+        finalizeVerified(
+          trigger,
+          {
+            triggerId: trigger.id,
+            fired: false,
+            dataAvailable: false,
+            evidence: null,
+            quote: null,
+            confidence: 0,
+            needsDig: false,
+            digHint: null,
+            citedUrls: [],
+          },
+          label
+        )
       );
       continue;
     }
 
     if (v.needsDig && v.digHint && baselineUrls.has(v.digHint)) {
       log(`${label} unclear, but nothing new to check — ${describeVerdict(trigger, v)}.`);
-      results.push(finalize(trigger, citationLookup, v));
+      results.push(finalizeVerified(trigger, v, label));
       continue;
     }
 
@@ -150,12 +184,13 @@ export async function runAgentLoop(
       const digFiling = filingsResult.filings.find((f) => f.primaryDocUrl === v.digHint);
       if (!digFiling) {
         log(`${label} unclear, but the follow-up filing wasn't found — ${describeVerdict(trigger, v)}.`);
-        results.push(finalize(trigger, citationLookup, v));
+        results.push(finalizeVerified(trigger, v, label));
         continue;
       }
       digBudget--;
       log(`${label} unclear → digging into the ${digFiling.form}...`);
       const { text } = await readFiling(digFiling.primaryDocUrl);
+      textByUrl.set(digFiling.primaryDocUrl, text);
       const refined = await classifyOneTrigger({
         companyName: filingsResult.company,
         trigger,
@@ -168,13 +203,13 @@ export async function runAgentLoop(
         },
       });
       log(`${label} resolved — ${describeVerdict(trigger, refined)}.`);
-      results.push(finalize(trigger, citationLookup, refined));
+      results.push(finalizeVerified(trigger, refined, label));
     } else if (v.needsDig && digBudget === 0) {
       log(`${label} unclear, but out of follow-up budget for this run — ${describeVerdict(trigger, v)}.`);
-      results.push(finalize(trigger, citationLookup, v));
+      results.push(finalizeVerified(trigger, v, label));
     } else {
       log(`checking ${label}... ${describeVerdict(trigger, v)}`);
-      results.push(finalize(trigger, citationLookup, v));
+      results.push(finalizeVerified(trigger, v, label));
     }
   }
 
@@ -205,7 +240,8 @@ export async function runAgentLoop(
 function finalize(
   trigger: TriggerDef,
   citationLookup: Map<string, { form: string; date: string }>,
-  v: TriggerVerdict
+  v: TriggerVerdict,
+  verification: { verified: boolean; displayText: string | null; normalizedText: string | null }
 ): TriggerResult {
   return {
     triggerId: trigger.id,
@@ -220,5 +256,8 @@ function finalize(
       const known = citationLookup.get(url);
       return { form: known?.form ?? "filing", date: known?.date ?? "", url };
     }),
+    quoteVerified: verification.verified,
+    verifiedQuote: verification.verified ? verification.displayText : null,
+    verifiedQuoteNormalized: verification.verified ? (verification.normalizedText ?? verification.displayText) : null,
   };
 }

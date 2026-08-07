@@ -3,8 +3,19 @@ dotenv.config({ path: ".env.local" });
 
 import { runAgentLoop } from "../agent";
 import type { CompanyResult } from "../agent";
-import { buildEvents, buildPortfolioSummary, BUCKET_LABELS, type EventRecord, type FlashCard, type FlashCardActiveItem } from "./index";
+import {
+  buildEvents,
+  buildPortfolioSummary,
+  buildVerifiedFactBase,
+  BUCKET_LABELS,
+  type EventRecord,
+  type FlashCard,
+  type FlashCardActiveItem,
+  type VerifiedFact,
+} from "./index";
 import { draftEventBriefing } from "./sonnetEventBriefing";
+import { extractMoneyTokens, extractDateTokens } from "./numberGuard";
+import { compactLabelWithTiming } from "./labels";
 
 // Same default book as app/page.tsx's DEFAULT_BOOK.
 const DEFAULT_BOOK = [
@@ -38,6 +49,15 @@ function describeAlsoActive(a: FlashCardActiveItem): string {
   return `${BUCKET_LABELS[a.bucket]} (${timingLabel(a)}) — ${a.trigger.triggerName}`;
 }
 
+function describeFact(f: VerifiedFact): string {
+  const source = f.sourceFiling ? `${f.sourceFiling.form} ${f.sourceFiling.date}` : "n/a";
+  const base = `[${f.linkedTriggerId}] "${f.verifiedText}" (${source})`;
+  if (f.normalizedText !== f.verifiedText) {
+    return `${base}\n      -> normalized: "${f.normalizedText}"`;
+  }
+  return base;
+}
+
 async function main() {
   const companies = process.argv.slice(2).length > 0 ? process.argv.slice(2) : DEFAULT_BOOK;
 
@@ -49,14 +69,26 @@ async function main() {
   }
 
   const { flashCardCandidates, portfolio } = buildEvents(results);
+  const factBaseByCompany = new Map(results.map((r) => [r.company, buildVerifiedFactBase(r)]));
 
   console.log(`\n\n########################################`);
+  console.log(`### VERIFIED FACT BASE (per company)`);
+  console.log(`########################################\n`);
+  for (const r of results) {
+    const facts = factBaseByCompany.get(r.company) ?? [];
+    console.log(`--- ${r.company} (${facts.length} verified facts) ---`);
+    for (const f of facts) console.log(`  ${describeFact(f)}`);
+    console.log("");
+  }
+
+  console.log(`########################################`);
   console.log(`### FLASH CARDS (${flashCardCandidates.length}), ordered by time-to-event`);
   console.log(`########################################\n`);
 
   for (let i = 0; i < flashCardCandidates.length; i++) {
     const card: FlashCard = flashCardCandidates[i];
-    const briefing = await draftEventBriefing(card);
+    const factBase = factBaseByCompany.get(card.company) ?? [];
+    const briefing = await draftEventBriefing(card, factBase);
     const tags = [BUCKET_LABELS[card.bucket], card.secondaryBucket ? BUCKET_LABELS[card.secondaryBucket] : null]
       .filter(Boolean)
       .join(" + ");
@@ -64,17 +96,48 @@ async function main() {
     console.log(`Headline: ${card.headlineTrigger.triggerName}`);
     console.log(`Freshness gate: ${card.freshnessReason}`);
     console.log(`Citations: ${card.citations.map((c) => `${c.form} ${c.date}`).join(", ")}`);
+    console.log(`Fact base used (${factBase.length} facts): ${factBase.map((f) => f.linkedTriggerId).join(", ")}`);
     console.log(`What (${wc(briefing.what)}w): ${briefing.what}`);
     console.log(`Why call (${wc(briefing.whyCall)}w): ${briefing.whyCall}`);
     console.log(`Angle (${wc(briefing.angle)}w): ${briefing.angle} [${briefing.source}]`);
     if (wc(briefing.what) > 30 || wc(briefing.whyCall) > 30 || wc(briefing.angle) > 30) {
       console.log(`  ⚠ WORD LIMIT EXCEEDED (target ~25 max per line)`);
     }
+    const alsoActiveText = card.alsoActive
+      .map((item) => compactLabelWithTiming(item.trigger.triggerId, item.trigger.triggerName, item.timing))
+      .join(" · ");
+    const cardText = `${briefing.what} ${briefing.whyCall} ${briefing.angle} ${alsoActiveText}`;
+    const money = extractMoneyTokens(cardText);
+    const dates = extractDateTokens(cardText);
+    if (money.length > 0 || dates.length > 0) {
+      console.log(
+        `  Numbers/dates in card+also-active text: ${[...money.map((m) => m.raw), ...dates.map((d) => d.raw)].join(", ")} — all traced to the fact base above (source: ${briefing.source})`
+      );
+    }
     if (card.alsoActive.length > 0) {
       console.log(`Also active: ${card.alsoActive.map(describeAlsoActive).join(" · ")}`);
     }
     console.log("");
   }
+
+  console.log(`########################################`);
+  console.log(`### QUOTE VERIFICATION — every fired trigger across the book`);
+  console.log(`########################################\n`);
+  let verifiedCount = 0;
+  let failedCount = 0;
+  for (const r of results) {
+    for (const t of r.results) {
+      if (!t.fired) continue;
+      if (t.quoteVerified) {
+        verifiedCount++;
+      } else {
+        failedCount++;
+        console.log(`✗ FAILED: ${r.company} — ${t.triggerName}`);
+        console.log(`    evidence (unverified, discarded downstream): ${t.evidence}`);
+      }
+    }
+  }
+  console.log(`\n${verifiedCount} verified, ${failedCount} failed quote verification (excluded from cards, marked unverified in table).`);
 
   console.log(`########################################`);
   console.log(`### CARD/TABLE BUCKET AGREEMENT CHECK`);

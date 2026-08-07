@@ -28,6 +28,7 @@ export interface TriggerVerdict {
   fired: boolean;
   dataAvailable: boolean;
   evidence: string | null;
+  quote: string | null;
   confidence: number;
   needsDig: boolean;
   digHint: string | null;
@@ -41,6 +42,7 @@ const VERDICT_ITEM_SCHEMA = {
     fired: { type: "boolean" },
     dataAvailable: { type: "boolean" },
     evidence: { type: ["string", "null"] },
+    quote: { type: ["string", "null"] },
     confidence: { type: "number" },
     needsDig: { type: "boolean" },
     digHint: { type: ["string", "null"] },
@@ -51,8 +53,10 @@ const VERDICT_ITEM_SCHEMA = {
 
 const INSTRUCTIONS = `You are triaging a public company's SEC filings for a commercial bank relationship manager. For each of the 15 triggers listed, decide:
 - fired: does the evidence show this trigger actually happened / is present?
+- Perspective check: every trigger is evaluated from the perspective of the SUBJECT COMPANY named at the top of this prompt (Company: ...) — the company whose filings you were given, not any counterparty mentioned in them. This matters most for M&A: first work out whether the subject company is the BUYER/acquirer or the SELLER/divestor in the transaction. "Acquisition announced" fires ONLY when the subject company is the one doing the acquiring. When the subject company is selling, divesting, or exiting a business or asset, that is "Asset sale / divestiture closing" — never "Acquisition announced" — even if the filing or a counterparty's press release frames the deal from the buyer's side.
 - dataAvailable: could this realistically be assessed from what you were given? Set this to false only when the trigger is fundamentally the kind of thing public filings don't disclose (e.g. internal treasury/banking relationships) — not merely because you personally didn't spot it this quarter. If the trigger is marked PUBLIC and you simply see no evidence, that's fired=false, dataAvailable=true ("checked, no signal").
 - evidence: a short quote or paraphrase of what you found, or null if nothing. When the filing supports a real timing element (a maturity date, a pending closing date, an effective date, a window that's open right now), make that explicit in the evidence text — e.g. "5.250% notes due June 2026 → refi window open now (~10 months out)" or "divestiture closing pending → proceeds land soon". Only surface timing when the filing genuinely discloses it; never invent urgency that isn't there. Always write evidence in plain English, as if briefing a human banker — never quote or include raw XBRL tags, machine element names, namespace prefixes (e.g. "us-gaap:...", "uhs:...", any "company-prefix:ElementName" form), or accession-number-style identifiers. If the only source for a fact is a tagged data element, describe what it means in words instead of naming the tag (e.g. write "foreign-exchange hedging contracts disclosed in fair-value measurements", not "DesignatedAsHedgingInstrumentMember"; write "UK revenue reported as a separate segment line", not "uhs:UKRevenueMember").
+- quote: when fired is true and evidence states a specific number, date, rate, or other precise fact, copy the EXACT sentence(s) containing that fact VERBATIM from the filing text given above — character-for-character, copy-pasted, not paraphrased, not corrected, not reconstructed from memory. This is the only place numbers and dates are allowed to come from downstream — if you cannot find the literal sentence in the text above, do not write one; a missing quote is far better than an approximate or misremembered one. Set this to null if fired is false, or if the evidence is a general statement with no specific figure to verify (e.g. "no signal found"). Do not paraphrase into the quote field — if what you'd write isn't an exact substring of the filing text above, it doesn't belong here.
 - confidence: 0-1.
 - needsDig: true only if the evidence is genuinely ambiguous (e.g. an event is mentioned but a key detail like amount or maturity is missing) AND a specific other filing in the catalog (not already in the excerpts below) looks likely to resolve it.
 - digHint: if needsDig, the exact url from the filing catalog you want read next. Otherwise null.

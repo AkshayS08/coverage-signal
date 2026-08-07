@@ -1,5 +1,5 @@
 import { runAgentLoop, type RunStreamEvent } from "@/lib/agent";
-import { buildEvents } from "@/lib/events";
+import { buildEvents, buildVerifiedFactBase } from "@/lib/events";
 import { draftEventBriefing } from "@/lib/events/sonnetEventBriefing";
 import { checkRateLimit } from "./rateLimit";
 
@@ -75,13 +75,14 @@ export async function POST(request: Request) {
           // lib/events/companySummary.ts) and computed client-side, so
           // there's nothing else to draft here.
           const { flashCardCandidates } = buildEvents([result]);
+          const factBase = buildVerifiedFactBase(result);
           const eventBriefings: { eventId: string; briefing: Awaited<ReturnType<typeof draftEventBriefing>> }[] = [];
           for (const card of flashCardCandidates) {
             // Freshness-gate audit trail: why this card qualified, so the
             // gate's decision is visible in the trace, not a black box.
             send({ type: "trace", company, text: `card qualified: ${card.freshnessReason}` });
 
-            const drafted = await draftEventBriefing(card);
+            const drafted = await draftEventBriefing(card, factBase);
             const label = drafted.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
             console.log(`[eventBriefing] ${result.company} (${card.bucket}): ${drafted.source}`);
             send({ type: "trace", company, text: `card briefing (${card.bucket}): ${label}` });

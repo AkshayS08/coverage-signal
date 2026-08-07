@@ -16,8 +16,8 @@ const CASH_JUMP_THRESHOLD_PCT = 30;
  * bucket sections. Each rule returns both the yes/no and the timing info
  * the caller needs for flash-card ordering (nearest future date first).
  */
-export function evaluateEligibility(trigger: TriggerResult): EligibilityResult {
-  const timing = extractTimingInfo(trigger.evidence);
+export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date()): EligibilityResult {
+  const timing = extractTimingInfo(trigger.evidence, now);
 
   switch (trigger.triggerId) {
     // --- Treasury / deposits ---
