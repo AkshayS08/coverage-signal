@@ -169,6 +169,10 @@ async function main() {
         quoteVerified: false, // exactly what verifyTriggerQuote correctly produced above
         verifiedQuote: null,
         verifiedQuoteNormalized: null,
+        eventDate: null,
+        dateGranularity: null,
+        eventStatus: "upcoming",
+        proceedsUse: null,
       },
       {
         triggerId: "new-debt-issuance",
@@ -183,6 +187,10 @@ async function main() {
         quoteVerified: true,
         verifiedQuote: genuineResult.displayText ?? genuine,
         verifiedQuoteNormalized: genuineResult.normalizedText ?? genuineResult.displayText ?? genuine,
+        eventDate: "2030-11-24",
+        dateGranularity: "day",
+        eventStatus: "completed",
+        proceedsUse: "unstated",
       },
     ],
   };

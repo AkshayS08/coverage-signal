@@ -1,0 +1,3199 @@
+{
+  "generatedAt": "2026-08-08T03:28:47.991Z",
+  "companies": [
+    {
+      "company": "DAVITA INC.",
+      "cik": "0000927066",
+      "ticker": "DVA",
+      "results": [
+        {
+          "triggerId": "debt-maturity",
+          "triggerName": "Debt maturity approaching",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "4.625% Senior Notes due June 1, 2030; 3.75% Senior Notes due February 15, 2031; 6.875% Senior Notes due September 1, 2032; 6.75% Senior Notes due July 15, 2033. Multiple material debt tranches maturing within 12-18 months from current filings.",
+          "mappedNeed": "Refinancing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-10-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000165/dva-20250930.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2026-02-11",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "4.625% Senior Notes 2,750,000 2,750,000 6/1/2030 4.625 %",
+          "verifiedQuoteNormalized": "50% $375 million Senior Notes: 4.625% Senior Notes $2.75 billion $2.75 billion 6/1/2030 4.625 % $2.64 billion 3.75% Senior No",
+          "eventDate": "2030-06-01",
+          "dateGranularity": "day",
+          "eventStatus": "upcoming",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-debt-issuance",
+          "triggerName": "New debt issuance / notes pricing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company issued $1.0 billion aggregate principal amount of 6.750% Senior Notes due 2033 on May 23, 2025. Company also entered into Seventh Amendment on July 17, 2025 providing for repricing of Term Loan B facility and incremental borrowing of $250 million. Eighth Amendment on November 24, 2025 provided for new $2 billion Term A-2 facility and new $1.5 billion revolving facility. Ninth Amendment on June 8, 2026 provided for incremental $500 million borrowing under Term Loan B facility.",
+          "mappedNeed": "Refi or add-on financing",
+          "needType": "credit",
+          "confidence": 0.98,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2025-05-23",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000378/dva4490761-8k.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2025-07-17",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000119312525160501/d75954d8k.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2025-11-25",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000750/dva4564821-8k.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2026-06-08",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677426000316/dva4647631-8k.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On May 23, 2025 (the \"Closing Date\"), DaVita Inc. (the \"Company\") completed the previously announced private offering (the \"Notes Offering\") of $1.0 billion aggregate principal amount of its 6.750% Senior Notes due 2033",
+          "verifiedQuoteNormalized": "On May 23, 2025 (the \"Closing Date\"), DaVita Inc. (the \"Company\") completed the previously announced private offering (the \"Notes Offering\") of $1.0 billion aggregate principal amount of its 6.750% Senior Notes due 2033",
+          "eventDate": "2025-05-23",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": "partly_unapplied"
+        },
+        {
+          "triggerId": "acquisition-announced",
+          "triggerName": "Acquisition announced",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On February 2, 2026, the Company signed a definitive agreement to acquire a noncontrolling minority interest. The filing excerpt cuts off before providing full details of the acquisition target and terms.",
+          "mappedNeed": "Bridge financing, then permanent",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On February 2, 2026, the Company signed a definitive agreement to acquire a noncontrolling minority",
+          "verifiedQuoteNormalized": "On February 2, 2026, the Company signed a definitive agreement to acquire a noncontrolling minority",
+          "eventDate": "2026-02-02",
+          "dateGranularity": "day",
+          "eventStatus": "just_announced",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "capex-program",
+          "triggerName": "Capex program / new facility or construction",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company reports ongoing capital expenditures for property and equipment additions. Nine months ended September 30, 2025: $430.4 million in additions of property and equipment. Three months ended March 31, 2026: $102.0 million in additions. Ongoing capex program supporting dialysis center operations and infrastructure.",
+          "mappedNeed": "Term loan or capex facility",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2025-10-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000165/dva-20250930.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Additions of property and equipment ( 430,434 )",
+          "verifiedQuoteNormalized": "from investing activities: Additions of property and equipment ( $430.43 million ) ( $384.79 million ) Acquisitions ( 11",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "revolver-near-capacity",
+          "triggerName": "Revolver near capacity + growth",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "As of March 31, 2026, Company had $375 million drawn on $1.5 billion revolving line of credit, leaving $1.125 billion available. As of September 30, 2025, Company had $0 drawn on revolving facility. Revolver utilization is moderate but company has been actively drawing and repaying on the facility in connection with debt refinancing activities.",
+          "mappedNeed": "Revolver upsize",
+          "needType": "credit",
+          "confidence": 0.75,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-10-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000165/dva-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "As of March 31, 2026, the Company had $ 1,125,000 available and $ 375,000 drawn on its $ 1,500,000 revolving line of credit",
+          "verifiedQuoteNormalized": "March 31, 2025, respectively. As of March 31, 2026, the Company had $1.13 billion available and $375 million drawn on its $1.5 billion revolving line of credit under its senior secured cred",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "dividend-buyback",
+          "triggerName": "Dividend recap / buyback authorization",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On August 20, 2025, Board increased authorization under existing share repurchase program by $2.0 billion in additional repurchasing authority. Company has been actively repurchasing shares; nine months ended September 30, 2025 shows $1.461 billion in treasury stock purchases. No dividend disclosed.",
+          "mappedNeed": "Leverage capacity conversation",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2025-08-20",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000154/dva-20250820.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On August 20, 2025, the board of directors (the \"Board\") of DaVita Inc. (the \"Company\") increased the authorization under the Company's existing share repurchase program by $2,000,000,000 in additional repurchasing authority",
+          "verifiedQuoteNormalized": "t. ☐ Item 8.01. Other Events. On August 20, 2025, the board of directors (the “Board”) of DaVita Inc. (the “Company”) increased the authorization under the Company’s existing share repurchase program by $2,000,000,000 in additional repurchasing authority (the “New Authorization”). Th",
+          "eventDate": "2025-08-20",
+          "dateGranularity": "day",
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "large-cash-balance",
+          "triggerName": "Large cash balance building",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Cash and cash equivalents as of March 31, 2026: $644.2 million; as of September 30, 2025: $706.0 million; as of December 31, 2025: $676.4 million. Cash balances are moderate and declining quarter-over-quarter, not building. Not material relative to $17.5 billion in total assets.",
+          "mappedNeed": "Liquidity management, earning on idle cash",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-10-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000165/dva-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "asset-sale",
+          "triggerName": "Asset sale / divestiture closing",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material asset sales or divestitures disclosed in current filings. Company reports minor proceeds from asset and business sales: $3.7 million (Q1 2026) and $32.3 million (nine months 2025), which are immaterial. Prior DMG business sale was completed in June 2019 and is historical.",
+          "mappedNeed": "Proceeds deposit + sweep",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-10-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000165/dva-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "international-expansion",
+          "triggerName": "International expansion / rising foreign revenue",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company operates international dialysis centers in 14 countries outside the U.S., serving approximately 94,500 patients as of December 31, 2025. International operations are part of ancillary services segment. However, specific revenue growth rates and percentage of total revenue for international operations are not clearly broken out in the excerpts provided.",
+          "mappedNeed": "FX hedging, cross-border cash management",
+          "needType": "treasury",
+          "confidence": 0.7,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-11",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "our international operations provided dialysis and administrative services to a total of 585 outpatient dialysis centers located in 14 countries outside of the U.S., serving approximately 94,500 patients",
+          "verifiedQuoteNormalized": "on, as of December 31, 2025 , our international operations provided dialysis and administrative services to a total of 585 outpatient dialysis centers located in 14 countries outside of the U.S., serving approximately 94,500 patients. Finally, our U.S. integrated",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-subsidiary",
+          "triggerName": "New subsidiary / entity formation",
+          "fired": false,
+          "dataAvailable": false,
+          "evidence": null,
+          "mappedNeed": "New operating accounts",
+          "needType": "treasury",
+          "confidence": 0.5,
+          "citations": [],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "ipo-secondary",
+          "triggerName": "IPO / secondary raise",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No IPO or secondary equity offering disclosed. Company is established public company trading on NYSE. No equity raise activity reported.",
+          "mappedNeed": "Proceeds management, treasury build-out",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "floating-rate-debt",
+          "triggerName": "Floating-rate debt + rate exposure",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Significant floating-rate debt exposure. As of March 31, 2026: Term Loan A-2 of $1.987 billion at SOFR + 1.50%; Term Loan B-2 of $1.864 billion at SOFR + 1.75%; Revolving line of credit of $375 million at SOFR + 1.50%. Company has interest rate cap agreements in place to hedge SOFR exposure, with notional coverage of $3.5 billion through 2029.",
+          "mappedNeed": "Interest-rate hedging",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-10-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000165/dva-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Term Loan A-2 (2) $ 1,987,500 $ 2,000,000 11/24/2030 SOFR + 1.50% $ 1,982,531 Term Loan B-2 1,863,864 1,868,559 5/9/2031 SOFR + 1.75%",
+          "verifiedQuoteNormalized": "ecured Credit Facilities: Term Loan A-2 (2) $1.99 billion $2 billion 11/24/2030 SOFR + 1.50% $1.98 billion Term Loan B-2 $1.86 billion $1.87 billion 5/9/2031 SOFR + 1.75% $1.87 billion Revolving line",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "commodity-exposure",
+          "triggerName": "Commodity / input-cost exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material commodity or input-cost exposure explicitly disclosed in risk factors or MD&A sections provided. Company operates dialysis centers with relatively stable input costs (pharmaceuticals, supplies, labor). No hedging programs or commodity price volatility disclosures noted.",
+          "mappedNeed": "Commodity hedging",
+          "needType": "credit",
+          "confidence": 0.8,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-11",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "fx-exposure",
+          "triggerName": "Large FX exposure disclosed",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company has international operations in 14 countries with approximately 94,500 patients served, indicating foreign-currency exposure. Consolidated balance sheet shows unrealized gains on foreign currency translation of $27.8 million (Q1 2026) and $209.5 million (nine months 2025), indicating material FX exposure. However, specific quantitative disclosure of FX exposure amounts is not fully detailed in excerpts.",
+          "mappedNeed": "FX hedging program",
+          "needType": "treasury",
+          "confidence": 0.75,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-10-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000165/dva-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Unrealized gains on foreign currency translation 27,793",
+          "verifiedQuoteNormalized": "to net income $2.88 million $1.51 million Unrealized gains on foreign currency translation $27.79 million $90.86 million Other comprehensiv",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "covenant-breach",
+          "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. Company maintains compliance with credit agreement covenants. No material legal proceedings or regulatory matters that would trigger going-concern issues.",
+          "mappedNeed": "Restructuring or amendment support",
+          "needType": "distress",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2026-02-11",
+              "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        }
+      ],
+      "verdict": "CALL",
+      "relationshipFlags": []
+    },
+    {
+      "company": "HCA Healthcare, Inc.",
+      "cik": "0000860730",
+      "ticker": "HCA",
+      "results": [
+        {
+          "triggerId": "debt-maturity",
+          "triggerName": "Debt maturity approaching",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Senior notes due May 2031, May 2033, and May 2036 disclosed in April 2026 issuance. Additionally, $1.5 billion of 5.250% notes due June 2026 and $1.0 billion of 5.375% notes due September 2026 were redeemed in May 2026.",
+          "mappedNeed": "Refinancing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2026-04-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526197278/hca-20260427.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2026-04-27",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526182265/hca-20260427.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "The 2031 Notes will mature on May 15, 2031, the 2033 Notes will mature on May 15, 2033 and the 2036 Notes will mature on May 15, 2036.",
+          "verifiedQuoteNormalized": "The 2031 Notes will mature on May 15, 2031, the 2033 Notes will mature on May 15, 2033 and the 2036 Notes will mature on May 15, 2036.",
+          "eventDate": "2031-05-15",
+          "dateGranularity": "day",
+          "eventStatus": "upcoming",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-debt-issuance",
+          "triggerName": "New debt issuance / notes pricing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "HCA completed public offering of $3.0 billion aggregate principal amount of senior notes on April 30, 2026, comprised of $1.0 billion 4.700% notes due 2031, $750 million 5.000% notes due 2033, and $1.25 billion 5.300% notes due 2036.",
+          "mappedNeed": "Refi or add-on financing",
+          "needType": "credit",
+          "confidence": 0.98,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2026-04-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526197278/hca-20260427.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On April 30, 2026, HCA Inc. (the \"Issuer\"), a direct, wholly owned subsidiary of HCA Healthcare, Inc. (the \"Parent Guarantor\"), completed the public offering of (i) $1,000,000,000 aggregate principal amount of its 4.700% Senior Notes due 2031 (the \"2031 Notes\"), (ii) $750,000,000 aggregate principal amount of its 5.000% Senior Notes due 2033 (the \"2033 Notes\") and (iii) $1,250,000,000 aggregate principal amount of its 5.300% Senior Notes due 2036 (the \"2036 Notes\"",
+          "verifiedQuoteNormalized": "ount of senior notes Overview On April 30, 2026, HCA Inc. (the “Issuer”), a direct, wholly owned subsidiary of HCA Healthcare, Inc. (the “Parent Guarantor”), completed the public offering of (i) $1,000,000,000 aggregate principal amount of its 4.700% Senior Notes due 2031 (the “2031 Notes”), (ii) $750,000,000 aggregate principal amount of its 5.000% Senior Notes due 2033 (the “2033 Notes”) and (iii) $1,250,000,000 aggregate principal amount of its 5.300% Senior Notes due 2036 (the “2036 Notes” and, together with the 2031 N",
+          "eventDate": "2026-04-30",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": "partly_unapplied"
+        },
+        {
+          "triggerId": "acquisition-announced",
+          "triggerName": "Acquisition announced",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "HCA paid $386 million during the six months ended June 30, 2026 to acquire nonhospital health care entities. During the quarter ended March 31, 2026, HCA paid $265 million to acquire nonhospital health care entities. These represent ongoing acquisition activity.",
+          "mappedNeed": "Bridge financing, then permanent",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526191444/hca-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "S During the six months ended June 30, 2026 , we paid $ 386 million to acquire nonhospital health",
+          "verifiedQuoteNormalized": "S During the six months ended June 30, 2026 , we paid $ 386 million to acquire nonhospital health",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "capex-program",
+          "triggerName": "Capex program / new facility or construction",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "HCA disclosed capital expenditures of $2.350 billion for the six months ended June 30, 2026 and $1.119 billion for the quarter ended March 31, 2026. The company continues ongoing property and equipment purchases as part of its growth strategy.",
+          "mappedNeed": "Term loan or capex facility",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526191444/hca-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "of property and equipment ( 2,350 ) ( 2,167 ) Acquisition of hospital",
+          "verifiedQuoteNormalized": "of property and equipment ( $2.35 billion ) ( $2.17 billion ) Acquisition of hospital",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "revolver-near-capacity",
+          "triggerName": "Revolver near capacity + growth",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Senior unsecured credit facility shows $1.010 billion drawn at June 30, 2026 and $0 drawn at March 31, 2026. Commercial paper program increased from $4.0 billion to $8.0 billion capacity on July 29, 2026, with $3.890 billion outstanding at June 30, 2026. No evidence of revolver near capacity constraint.",
+          "mappedNeed": "Revolver upsize",
+          "needType": "credit",
+          "confidence": 0.75,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526191444/hca-20260331.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526323731/d315311d8k.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "dividend-buyback",
+          "triggerName": "Dividend recap / buyback authorization",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "HCA declared quarterly cash dividends of $0.78 per share in April 2026 and July 2026. The company repurchased 7.909 million shares during the six months ended June 30, 2026 at an average price of $447.53 per share. A $10 billion share repurchase authorization was in place as of June 30, 2026.",
+          "mappedNeed": "Leverage capacity conversation",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2026-04-24",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526174933/hca-20260424.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2026-07-24",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526315151/hca-20260724.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Cash dividends declared ($ 0.78 per share)",
+          "verifiedQuoteNormalized": "Cash dividends declared ($ 0.78 per share)",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "large-cash-balance",
+          "triggerName": "Large cash balance building",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Cash and cash equivalents were $1.013 billion at June 30, 2026 and $1.040 billion at December 31, 2025. Cash balance declined slightly quarter-over-quarter and is modest relative to total assets of $63.250 billion. No evidence of large or growing cash balance.",
+          "mappedNeed": "Liquidity management, earning on idle cash",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "asset-sale",
+          "triggerName": "Asset sale / divestiture closing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "During the six months ended June 30, 2026, HCA received proceeds of $21 million and recognized pretax gains of $9 million related to sales of real estate and other health care entity investments. During the quarter ended March 31, 2026, HCA received proceeds of $3 million and recognized a pretax loss of $1 million related to sales of real estate and other health care entity investments.",
+          "mappedNeed": "Proceeds deposit + sweep",
+          "needType": "treasury",
+          "confidence": 0.8,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526191444/hca-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": ". During the six months ended June 30, 2026 , we received proceeds of $ 21 million and recognized pretax gains of $ 9 million related to sales of real esta",
+          "verifiedQuoteNormalized": ". During the six months ended June 30, 2026 , we received proceeds of $ 21 million and recognized pretax gains of $ 9 million related to sales of real esta",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "completed",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "international-expansion",
+          "triggerName": "International expansion / rising foreign revenue",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "International revenue (managed care and insurers) was $491 million (2.4% of total) in Q2 2026 versus $461 million (2.5% of total) in Q2 2025. For six months ended June 30, 2026, international revenue was $990 million (2.5% of total) versus $906 million (2.5% of total) in prior year. HCA operates seven hospitals in England.",
+          "mappedNeed": "FX hedging, cross-border cash management",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            }
+          ],
+          "quoteVerified": false,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-subsidiary",
+          "triggerName": "New subsidiary / entity formation",
+          "fired": false,
+          "dataAvailable": false,
+          "evidence": null,
+          "mappedNeed": "New operating accounts",
+          "needType": "treasury",
+          "confidence": 0.5,
+          "citations": [],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "ipo-secondary",
+          "triggerName": "IPO / secondary raise",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No IPO or secondary equity offering disclosed. HCA is an established public company trading on NYSE under symbol HCA. Share repurchases and dividends are the primary equity-related activities.",
+          "mappedNeed": "Proceeds management, treasury build-out",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "floating-rate-debt",
+          "triggerName": "Floating-rate debt + rate exposure",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Commercial paper program with $3.890 billion outstanding at June 30, 2026 at weighted average rate of 4.3% represents floating-rate debt exposure. Senior unsecured credit facility of $1.010 billion at June 30, 2026 at effective interest rate of 4.8% also represents floating-rate exposure. Total floating-rate debt is approximately $4.9 billion out of $49.718 billion total debt.",
+          "mappedNeed": "Interest-rate hedging",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Commercial paper (average life of 38 days, weighted average rate of 4.3 %) $ 3,890",
+          "verifiedQuoteNormalized": "25 Short-term borrowings: Commercial paper (average life of 38 days, weighted average rate of 4.3 %) $3.89 billion $2.21 billion Long-term debt:",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "commodity-exposure",
+          "triggerName": "Commodity / input-cost exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No specific commodity or input-cost exposure disclosed in the excerpted quarterly filings. Risk factors section in 10-K should be reviewed for detailed commodity exposure disclosures.",
+          "mappedNeed": "Commodity hedging",
+          "needType": "credit",
+          "confidence": 0.7,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "fx-exposure",
+          "triggerName": "Large FX exposure disclosed",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Foreign currency translation adjustments disclosed in accumulated other comprehensive loss. For six months ended June 30, 2026, foreign currency translation resulted in a loss of $30 million (net of $3 million income tax benefit). HCA operates seven hospitals in England, creating ongoing foreign exchange exposure.",
+          "mappedNeed": "FX hedging program",
+          "needType": "treasury",
+          "confidence": 0.75,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "December 31, 2024 249.981 $ 3 $ — $ ( 387 ) $",
+          "verifiedQuoteNormalized": "December 31, 2024 249.981 $ 3 $ — $ ( 387 ) $",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "covenant-breach",
+          "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed in the filings. The company maintains adequate liquidity with operating cash flow of $4.349 billion for the six months ended June 30, 2026 and access to capital markets as evidenced by recent $3.0 billion debt issuance.",
+          "mappedNeed": "Restructuring or amendment support",
+          "needType": "distress",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526191444/hca-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        }
+      ],
+      "verdict": "CALL",
+      "relationshipFlags": []
+    },
+    {
+      "company": "TENET HEALTHCARE CORP",
+      "cik": "0000070318",
+      "ticker": "THC",
+      "results": [
+        {
+          "triggerId": "debt-maturity",
+          "triggerName": "Debt maturity approaching",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Senior secured first lien notes of $1.5 billion due November 2027; senior unsecured notes of $1.75 billion due June 2028; senior secured first lien notes of $600 million due April 2028; senior secured first lien notes of $1.4 billion due April 2029; senior secured first lien notes of $1.45 billion due April 2030; senior secured first lien notes of $2.0 billion due June 2030; senior secured first lien notes of $1.35 billion due June 2031; senior unsecured notes of $362 million due June 2031; senior secured first lien notes of $1.5 billion due November 2032; senior unsecured notes of $750 million due June 2033.",
+          "mappedNeed": "Refinancing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
+            }
+          ],
+          "quoteVerified": false,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": "2027-11-01",
+          "dateGranularity": "month",
+          "eventStatus": "upcoming",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-debt-issuance",
+          "triggerName": "New debt issuance / notes pricing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On November 18, 2025, Tenet issued $1.5 billion in aggregate principal amount of 5.500% senior secured first lien notes due 2032 and $750 million in aggregate principal amount of 6.000% senior notes due 2033. The company intends to use net proceeds to finance the redemption of all $1.5 billion outstanding of its 6.250% senior secured second lien notes due February 2027 and the partial redemption of $750 million outstanding of its 6.125% senior notes due October 2028.",
+          "mappedNeed": "Refi or add-on financing",
+          "needType": "credit",
+          "confidence": 0.98,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2025-11-18",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On November 18, 2025, Tenet Healthcare Corporation (\"Tenet\") issued $1,500,000,000 in aggregate principal amount of 5.500% senior secured first lien notes due 2032 (the \"First Lien Notes\") and $750,000,000 in aggregate principal amount of 6.000% senior notes due 2033 (the \"Senior Notes\" and together with the First Lien Notes, the \"Notes\").",
+          "verifiedQuoteNormalized": "Arrangement of a Registrant. On November 18, 2025, Tenet Healthcare Corporation (“Tenet”) issued $1,500,000,000 in aggregate principal amount of 5.500% senior secured first lien notes due 2032 (the “First Lien Notes”) and $750,000,000 in aggregate principal amount of 6.000% senior notes due 2033 (the “Senior Notes” and together with the First Lien Notes, the “Notes”). The First Lien Notes were iss",
+          "eventDate": "2025-11-18",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": "refinancing_only"
+        },
+        {
+          "triggerId": "acquisition-announced",
+          "triggerName": "Acquisition announced",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": null,
+          "mappedNeed": "Bridge financing, then permanent",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2025-02-18",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031825000009/thc-20241231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "capex-program",
+          "triggerName": "Capex program / new facility or construction",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "In September 2025, Tenet opened the newly constructed, 54-bed Florida Coast Medical Center in Port St. Lucie, Florida, offering specialized services including advanced cardiac care, diagnostic services, emergency care department, general surgery, neurosciences, orthopedics, robotics and urology. Capital expenditures for property and equipment were $348 million for the six months ended June 30, 2026 and $366 million for the six months ended June 30, 2025.",
+          "mappedNeed": "Term loan or capex facility",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2025-02-18",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031825000009/thc-20241231.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Months Ended June 30, 2026 2025 Hospital Operations: Good",
+          "verifiedQuoteNormalized": "Months Ended June 30, 2026 2025 Hospital Operations: Good",
+          "eventDate": "2025-09-01",
+          "dateGranularity": "month",
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "revolver-near-capacity",
+          "triggerName": "Revolver near capacity + growth",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "At June 30, 2026, Tenet had a senior secured revolving credit facility of $1.9 billion with no cash borrowings and less than $1 million of standby letters of credit outstanding, indicating full borrowing availability of $1.9 billion. At March 31, 2026, similarly, borrowing availability was $1.9 billion with no cash borrowings.",
+          "mappedNeed": "Revolver upsize",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "dividend-buyback",
+          "triggerName": "Dividend recap / buyback authorization",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Tenet repurchased common stock during the periods reported. For the six months ended June 30, 2026, the company repurchased $1.36 billion of common stock. For the three months ended March 31, 2026, the company repurchased $318 million of common stock.",
+          "mappedNeed": "Leverage capacity conversation",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Repurchases of common stock ( 1,360 )",
+          "verifiedQuoteNormalized": "eds from borrowings 28 15 Repurchases of common stock ( $1.36 billion ) ( $1.09 billion ) Distributions paid",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "large-cash-balance",
+          "triggerName": "Large cash balance building",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Cash and cash equivalents were $2.17 billion at June 30, 2026 and $2.883 billion at December 31, 2025, representing a substantial cash position. At March 31, 2026, cash and cash equivalents were $2.967 billion.",
+          "mappedNeed": "Liquidity management, earning on idle cash",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Cash and cash equivalents $ 2,170   $ 2,883",
+          "verifiedQuoteNormalized": ", 2025 ASSETS Current assets: Cash and cash equivalents $2.17 billion $2.88 billion Accounts receivable $2.61 billion",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "asset-sale",
+          "triggerName": "Asset sale / divestiture closing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On April 1, 2024, Tenet completed the sale of four hospitals located in California (Fountain Valley Regional Hospital, Lakewood Regional Medical Center, Los Alamitos Medical Center and Placentia-Linda Hospital) to UCI Health and two additional hospitals located in California (Sierra Vista Regional Medical Center and Twin Cities Community Hospital) to Adventist Health. Additionally, on August 5, 2024, Tenet announced the anticipated sale of its 70% ownership interest in five hospitals located in Alabama for approximately $910 million in cash, which was anticipated to close in fall 2024.",
+          "mappedNeed": "Proceeds deposit + sweep",
+          "needType": "treasury",
+          "confidence": 0.92,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2024-04-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031824000022/thc-20240401.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2024-08-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031824000044/thc-20240805.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On April 1, 2024 , Tenet Healthcare Corporation (the \"Company\") issued a press release (the \"Release\") announcing the completion of the s ale of four hospitals located in California (Fountain Valley Regional Hospital, Lakewood Regional Medical Center, Los Alamitos Medical Center and Placentia-Linda Hospital), along with certain related operations, to UCI Health. In the same Release , the Company announced the completion of the sale of two additional hospitals located in California ( Sierra Vista Regional Medical Center and Twin Cities Community Hospital), along with certain related operations to Adventist Health.",
+          "verifiedQuoteNormalized": "On April 1, 2024 , Tenet Healthcare Corporation (the \"Company\") issued a press release (the \"Release\") announcing the completion of the s ale of four hospitals located in California (Fountain Valley Regional Hospital, Lakewood Regional Medical Center, Los Alamitos Medical Center and Placentia-Linda Hospital), along with certain related operations, to UCI Health. In the same Release , the Company announced the completion of the sale of two additional hospitals located in California ( Sierra Vista Regional Medical Center and Twin Cities Community Hospital), along with certain related operations to Adventist Health.",
+          "eventDate": "2024-04-01",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "international-expansion",
+          "triggerName": "International expansion / rising foreign revenue",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": null,
+          "mappedNeed": "FX hedging, cross-border cash management",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2025-02-18",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031825000009/thc-20241231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-subsidiary",
+          "triggerName": "New subsidiary / entity formation",
+          "fired": false,
+          "dataAvailable": false,
+          "evidence": null,
+          "mappedNeed": "New operating accounts",
+          "needType": "treasury",
+          "confidence": 0.7,
+          "citations": [],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "ipo-secondary",
+          "triggerName": "IPO / secondary raise",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": null,
+          "mappedNeed": "Proceeds management, treasury build-out",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2025-02-18",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031825000009/thc-20241231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "floating-rate-debt",
+          "triggerName": "Floating-rate debt + rate exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Tenet's debt structure consists primarily of fixed-rate senior unsecured notes and senior secured first lien notes with rates ranging from 4.250% to 6.875%. No floating-rate debt instruments are disclosed in the debt footnote.",
+          "mappedNeed": "Interest-rate hedging",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-04-30",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "commodity-exposure",
+          "triggerName": "Commodity / input-cost exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": null,
+          "mappedNeed": "Commodity hedging",
+          "needType": "credit",
+          "confidence": 0.8,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2025-02-18",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031825000009/thc-20241231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "fx-exposure",
+          "triggerName": "Large FX exposure disclosed",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": null,
+          "mappedNeed": "FX hedging program",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2025-02-18",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031825000009/thc-20241231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "covenant-breach",
+          "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": null,
+          "mappedNeed": "Restructuring or amendment support",
+          "needType": "distress",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-29",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2025-02-18",
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031825000009/thc-20241231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        }
+      ],
+      "verdict": "CALL",
+      "relationshipFlags": []
+    },
+    {
+      "company": "UNIVERSAL HEALTH SERVICES INC",
+      "cik": "0000352915",
+      "ticker": "UHS",
+      "results": [
+        {
+          "triggerId": "debt-maturity",
+          "triggerName": "Debt maturity approaching",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "1.650% Senior Secured Notes due 2026 with maturity approaching within 12 months. Additionally, McAllen Medical Center and Wellington Regional Medical Center leases expire December 2026.",
+          "mappedNeed": "Refinancing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-25",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526071676/uhs-20251231.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "1.650% Senior Secured Notes due 2026",
+          "verifiedQuoteNormalized": "1.650% Senior Secured Notes due 2026",
+          "eventDate": "2026",
+          "dateGranularity": "year",
+          "eventStatus": "upcoming",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-debt-issuance",
+          "triggerName": "New debt issuance / notes pricing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Eleventh Amendment on April 22, 2026 increased borrowing capacity by $900 million: $200 million revolving facility increase, $300 million incremental term loan, and $400 million delayed draw term loan. Twelfth Amendment on July 20, 2026 added $700 million July 2026 Delayed Draw Term Loan.",
+          "mappedNeed": "Refi or add-on financing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2026-04-24",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526175197/uhs-20260422.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2026-07-21",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526310330/uhs-20260720.htm"
+            }
+          ],
+          "quoteVerified": false,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": "2026-04-22",
+          "dateGranularity": "day",
+          "eventStatus": "just_announced",
+          "proceedsUse": "partly_unapplied"
+        },
+        {
+          "triggerId": "acquisition-announced",
+          "triggerName": "Acquisition announced",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Acquisition of Talkspace, Inc. announced. $400 million delayed draw term loan facility is expected to be drawn upon closing of the Talkspace acquisition.",
+          "mappedNeed": "Bridge financing, then permanent",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2026-04-24",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526175197/uhs-20260422.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "The Company intends to use the proceeds from the 2026 Delayed Draw Term Loan to fund its previously announced acquisition of Talkspace, Inc.",
+          "verifiedQuoteNormalized": "The Company intends to use the proceeds from the 2026 Delayed Draw Term Loan to fund its previously announced acquisition of Talkspace, Inc.",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "just_announced",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "capex-program",
+          "triggerName": "Capex program / new facility or construction",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Alan B. Miller Medical Center, a newly constructed acute care hospital, scheduled to be completed and opened during second quarter 2026. Miller Medical Plaza, an 80,000 rentable square foot medical office building in Palm Beach Gardens, Florida, scheduled to be completed during third/fourth quarter 2026. Property and equipment additions of $217 million in Q1 2026 and $734 million in nine months ended September 30, 2025.",
+          "mappedNeed": "Term loan or capex facility",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312525272385/uhs-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "The MOB will be located on the campus of the Alan B. Miller Medical Center, a newly constructed acute care hospital owned and operated by a wholly-owned subsidiary of ours, which is scheduled to be completed and opened during the second quarter of 2026.",
+          "verifiedQuoteNormalized": "The MOB will be located on the campus of the Alan B. Miller Medical Center, a newly constructed acute care hospital owned and operated by a wholly-owned subsidiary of ours, which is scheduled to be completed and opened during the second quarter of 2026.",
+          "eventDate": "2026-06-30",
+          "dateGranularity": "month",
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "revolver-near-capacity",
+          "triggerName": "Revolver near capacity + growth",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "As of March 31, 2026, approximately $373 million of borrowings outstanding on revolving credit facility with total capacity of $1.5 billion (after April 2026 increase from $1.3 billion). Drawn balance represents approximately 25% of capacity, not near capacity, but facility was increased in context of growth and acquisition plans.",
+          "mappedNeed": "Revolver upsize",
+          "needType": "credit",
+          "confidence": 0.75,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "29, remained unchanged. As of March 31, 2026, we had approximately $ 373 million of borrowings outstanding pur",
+          "verifiedQuoteNormalized": "29, remained unchanged. As of March 31, 2026, we had approximately $ 373 million of borrowings outstanding pur",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "dividend-buyback",
+          "triggerName": "Dividend recap / buyback authorization",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Ongoing share repurchase program. Repurchased shares including excise tax of $164.5 million in Q1 2026 and $620.8 million in nine months ended September 30, 2025. Dividends paid of $12.6 million in Q1 2026 and $39.1 million in nine months ended September 30, 2025.",
+          "mappedNeed": "Leverage capacity conversation",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312525272385/uhs-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "— ( 9 ) — — — ( 164,492 ) — ( 164,501 ) —",
+          "verifiedQuoteNormalized": "— ( 9 ) — — — ( 164,492 ) — ( 164,501 ) —",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "large-cash-balance",
+          "triggerName": "Large cash balance building",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Cash and cash equivalents of $119.0 million at March 31, 2026 and $112.9 million at September 30, 2025, representing modest balances relative to total assets of $15.7 billion and $15.3 billion respectively. Not materially large or growing.",
+          "mappedNeed": "Liquidity management, earning on idle cash",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312525272385/uhs-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "asset-sale",
+          "triggerName": "Asset sale / divestiture closing",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material asset sales or divestitures disclosed in recent filings. Proceeds from sales of assets and businesses of $14.3 million in Q1 2026 and $2.9 million in nine months ended September 30, 2025 are immaterial.",
+          "mappedNeed": "Proceeds deposit + sweep",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312525272385/uhs-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "international-expansion",
+          "triggerName": "International expansion / rising foreign revenue",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "U.K. behavioral health care facilities generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024, representing growth. U.K. facilities comprise 161 inpatient and 2 outpatient behavioral health facilities. Total assets at U.K. facilities were $1.531 billion at December 31, 2025 and $1.358 billion at December 31, 2024.",
+          "mappedNeed": "FX hedging, cross-border cash management",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-25",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526071676/uhs-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Our behavioral health care facilities located in the U.K. generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024.",
+          "verifiedQuoteNormalized": "Our behavioral health care facilities located in the U.K. generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024.",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-subsidiary",
+          "triggerName": "New subsidiary / entity formation",
+          "fired": false,
+          "dataAvailable": false,
+          "evidence": null,
+          "mappedNeed": "New operating accounts",
+          "needType": "treasury",
+          "confidence": 0.5,
+          "citations": [],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "ipo-secondary",
+          "triggerName": "IPO / secondary raise",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No IPO or secondary equity offering disclosed. Company is a mature public company with no such activity indicated in filings.",
+          "mappedNeed": "Proceeds management, treasury build-out",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-25",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526071676/uhs-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "floating-rate-debt",
+          "triggerName": "Floating-rate debt + rate exposure",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Revolving credit and term loan A borrowings bear interest at either ABR rate or SOFR-based rate plus applicable margin. As of March 31, 2026, approximately $373 million drawn on revolving facility and $1.155 billion on term loan A, both bearing floating rates tied to SOFR or ABR.",
+          "mappedNeed": "Interest-rate hedging",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Revolving credit and tranche term loan A borrowings under the Credit Agreement, prior to the Eleventh Amendment, bear interest at our election at either (1) the ABR rate which is defined as the rate per annum equal to the greatest of (a) the lender's prime rate, (b) the greater of the federal funds effective rate and the overnight bank funding rate, plus 0.5 % and (c) one month term SOFR rate plus 1.1 %, in each case, plus an applicable margin based upon our consolidated leverage ratio at the end of each quarter ranging from 0.25 % to 0.625 %, or (2) the one, three or six month term SOFR rate plus 0.1 % (at our election), plus an applicable margin based upon our consolidated leverage ratio at the end of each quarter ranging from 1.25 % to 1.625 %.",
+          "verifiedQuoteNormalized": "Revolving credit and tranche term loan A borrowings under the Credit Agreement, prior to the Eleventh Amendment, bear interest at our election at either (1) the ABR rate which is defined as the rate per annum equal to the greatest of (a) the lender's prime rate, (b) the greater of the federal funds effective rate and the overnight bank funding rate, plus 0.5 % and (c) one month term SOFR rate plus 1.1 %, in each case, plus an applicable margin based upon our consolidated leverage ratio at the end of each quarter ranging from 0.25 % to 0.625 %, or (2) the one, three or six month term SOFR rate plus 0.1 % (at our election), plus an applicable margin based upon our consolidated leverage ratio at the end of each quarter ranging from 1.25 % to 1.625 %.",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "commodity-exposure",
+          "triggerName": "Commodity / input-cost exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material commodity or input-cost exposure disclosed in risk factors or MD&A. Healthcare operations have typical supply chain exposures but no specific commodity hedging or material exposure disclosed.",
+          "mappedNeed": "Commodity hedging",
+          "needType": "credit",
+          "confidence": 0.8,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-25",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526071676/uhs-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "fx-exposure",
+          "triggerName": "Large FX exposure disclosed",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Material foreign currency exposure from U.K. operations. Foreign currency translation adjustments of $(8.3) million in Q1 2026 and $41.1 million in nine months ended September 30, 2025. Company uses foreign exchange contracts to hedge net U.K. investment with inflows/outflows disclosed in cash flows.",
+          "mappedNeed": "FX hedging program",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312525272385/uhs-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "cy translation adjustment ( 8,283 ) 14,901 Other comprehensive income",
+          "verifiedQuoteNormalized": "cy translation adjustment ( 8,283 ) 14,901 Other comprehensive income",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "covenant-breach",
+          "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed in filings. Company maintains substantial liquidity and compliance with debt covenants.",
+          "mappedNeed": "Restructuring or amendment support",
+          "needType": "distress",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-25",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526071676/uhs-20251231.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        }
+      ],
+      "verdict": "CALL",
+      "relationshipFlags": []
+    },
+    {
+      "company": "Encompass Health Corp",
+      "cik": "0000785161",
+      "ticker": "EHC",
+      "results": [
+        {
+          "triggerId": "debt-maturity",
+          "triggerName": "Debt maturity approaching",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "4.500% Senior Notes due 2028 with $792.9 million outstanding as of March 31, 2026. Scheduled principal payment of $835.8 million due in 2028.",
+          "mappedNeed": "Refinancing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "4.50 % Senior Notes due 2028 792.9",
+          "verifiedQuoteNormalized": "4.50 % Senior Notes due 2028 792.9",
+          "eventDate": "2028",
+          "dateGranularity": "year",
+          "eventStatus": "upcoming",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-debt-issuance",
+          "triggerName": "New debt issuance / notes pricing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company completed issuance and sale of $500 million in aggregate principal amount of 5.875% Senior Notes due 2034 on May 29, 2026. Net proceeds of approximately $491.2 million after deducting initial purchasers' discount and offering expenses.",
+          "mappedNeed": "Refi or add-on financing",
+          "needType": "credit",
+          "confidence": 0.98,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2026-06-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000161/ehc-20260529.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On May 29, 2026, Encompass Health Corporation (the \"Company\") completed the issuance and sale of $500 million in aggregate principal amount of its 5.875% Senior Notes due 2034",
+          "verifiedQuoteNormalized": "On May 29, 2026, Encompass Health Corporation (the \"Company\") completed the issuance and sale of $500 million in aggregate principal amount of its 5.875% Senior Notes due 2034",
+          "eventDate": "2026-05-29",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": "refinancing_only"
+        },
+        {
+          "triggerId": "acquisition-announced",
+          "triggerName": "Acquisition announced",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "In May 2025, company acquired 51% of operations of a 54-bed inpatient rehabilitation unit in Fort Myers, Florida when Lee Healthcare Holdings, LLC contributed those operations to existing joint venture. Transaction accounted for under acquisition method.",
+          "mappedNeed": "Bridge financing, then permanent",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2025-10-31",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516125000115/ehc-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "In May 2025, we acquired 51 % of the operations of a 54 -bed inpatient rehabilitation unit in Fort Myers, Florida when Lee Healthcare Holdings, LLC contributed those operations to our existing joint venture.",
+          "verifiedQuoteNormalized": "In May 2025, we acquired 51 % of the operations of a 54 -bed inpatient rehabilitation unit in Fort Myers, Florida when Lee Healthcare Holdings, LLC contributed those operations to our existing joint venture.",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "completed",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "capex-program",
+          "triggerName": "Capex program / new facility or construction",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company actively pursues capacity expansions through development of new inpatient rehabilitation hospitals and additions to existing hospitals each year. De novo and bed addition strategies incorporate pre-fabrication construction technology. Since 2012, opened or acquired 78 new hospitals and increased licensed beds by approximately 72% (4,809 beds).",
+          "mappedNeed": "Term loan or capex facility",
+          "needType": "credit",
+          "confidence": 0.92,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "We actively pursue capacity expansions through the development of new inpatient rehabilitation hospitals and additions to existing hospitals each year.",
+          "verifiedQuoteNormalized": "We actively pursue capacity expansions through the development of new inpatient rehabilitation hospitals and additions to existing hospitals each year.",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "revolver-near-capacity",
+          "triggerName": "Revolver near capacity + growth",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "As of March 31, 2026, $220.0 million drawn on $1 billion revolving credit facility (22% utilization). As of December 31, 2025, $824 million was available for borrowing. Revolver is not near capacity.",
+          "mappedNeed": "Revolver upsize",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "dividend-buyback",
+          "triggerName": "Dividend recap / buyback authorization",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company declared dividends of $0.19 per share in Q1 2026 and $0.53 per share for nine months ended September 30, 2025. Repurchased common stock in open market: $71.6 million in Q1 2026 and $81.7 million in nine months ended September 30, 2025. Ongoing dividend and buyback programs.",
+          "mappedNeed": "Leverage capacity conversation",
+          "needType": "credit",
+          "confidence": 0.93,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-10-31",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516125000115/ehc-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Dividends declared ($ 0.19 per share)",
+          "verifiedQuoteNormalized": "Dividends declared ($ 0.19 per share)",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "large-cash-balance",
+          "triggerName": "Large cash balance building",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Cash and cash equivalents of $110.5 million as of March 31, 2026 and $48.7 million as of September 30, 2025. When including restricted cash, total cash position is $163.4 million as of March 31, 2026. Not materially large relative to company size ($7.3 billion in total assets).",
+          "mappedNeed": "Liquidity management, earning on idle cash",
+          "needType": "treasury",
+          "confidence": 0.88,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-10-31",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516125000115/ehc-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "asset-sale",
+          "triggerName": "Asset sale / divestiture closing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On December 31, 2025, company entered into agreement to sell 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to existing joint venture partner for $17.9 million effective January 1, 2026. Company recorded $17.5 million pre-tax gain in Other income during Q1 2026.",
+          "mappedNeed": "Proceeds deposit + sweep",
+          "needType": "treasury",
+          "confidence": 0.92,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On December 31, 2025, we entered into an agreement to sell our 50 % membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC (\"Gamma Knife\") to our existing joint venture partner, Barnes-Jewish Hospital, LLC, for $ 17.9  million effective January 1, 2026.",
+          "verifiedQuoteNormalized": "On December 31, 2025, we entered into an agreement to sell our 50 % membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC (\"Gamma Knife\") to our existing joint venture partner, Barnes-Jewish Hospital, LLC, for $ 17.9  million effective January 1, 2026.",
+          "eventDate": "2026-01-01",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "international-expansion",
+          "triggerName": "International expansion / rising foreign revenue",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Company operates hospitals in 39 states and Puerto Rico. No evidence of material foreign revenue or international expansion beyond Puerto Rico. Business is primarily domestic U.S.-focused.",
+          "mappedNeed": "FX hedging, cross-border cash management",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-subsidiary",
+          "triggerName": "New subsidiary / entity formation",
+          "fired": false,
+          "dataAvailable": false,
+          "evidence": null,
+          "mappedNeed": "New operating accounts",
+          "needType": "treasury",
+          "confidence": 0.7,
+          "citations": [],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "ipo-secondary",
+          "triggerName": "IPO / secondary raise",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No IPO or secondary equity offering announced or completed. Company is established public company trading on NYSE under symbol EHC.",
+          "mappedNeed": "Proceeds management, treasury build-out",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "floating-rate-debt",
+          "triggerName": "Floating-rate debt + rate exposure",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Revolving credit facility drawn balance of $220.0 million as of March 31, 2026 at interest rate of 4.9% (floating rate tied to SOFR). Represents floating-rate exposure on portion of debt portfolio.",
+          "mappedNeed": "Interest-rate hedging",
+          "needType": "credit",
+          "confidence": 0.88,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "As of March 31, 2026, $ 220.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+          "verifiedQuoteNormalized": "As of March 31, 2026, $ 220.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "commodity-exposure",
+          "triggerName": "Commodity / input-cost exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material commodity or input-cost exposure disclosed in risk factors or MD&A. Company is healthcare services provider with primary exposure to labor costs and reimbursement rates, not commodity prices.",
+          "mappedNeed": "Commodity hedging",
+          "needType": "credit",
+          "confidence": 0.8,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "fx-exposure",
+          "triggerName": "Large FX exposure disclosed",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material foreign-currency exposure disclosed. Company operates primarily in United States and Puerto Rico. No significant international operations or foreign revenue reported.",
+          "mappedNeed": "FX hedging program",
+          "needType": "treasury",
+          "confidence": 0.92,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "covenant-breach",
+          "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. Company maintains strong balance sheet with leverage ratio and interest coverage ratio in compliance with credit agreement covenants.",
+          "mappedNeed": "Restructuring or amendment support",
+          "needType": "distress",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-05-01",
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        }
+      ],
+      "verdict": "CALL",
+      "relationshipFlags": []
+    },
+    {
+      "company": "Acadia Healthcare Company, Inc.",
+      "cik": "0001520697",
+      "ticker": "ACHC",
+      "results": [
+        {
+          "triggerId": "debt-maturity",
+          "triggerName": "Debt maturity approaching",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Term Loan Facility matures February 28, 2030; Revolving Facility matures February 28, 2030; 7.375% Senior Notes due March 15, 2033. Current portion of long-term debt of $32.5 million at June 30, 2026.",
+          "mappedNeed": "Refinancing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-27",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526078266/achc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "each maturing on February 28, 2030",
+          "verifiedQuoteNormalized": "each maturing on February 28, 2030",
+          "eventDate": "2030-02-28",
+          "dateGranularity": "day",
+          "eventStatus": "upcoming",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-debt-issuance",
+          "triggerName": "New debt issuance / notes pricing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On March 10, 2025, company issued $550.0 million of 7.375% Senior Notes due 2033. On February 28, 2025, company entered into new credit agreement providing $1.0 billion revolving facility and $650.0 million term loan facility, both maturing February 28, 2030.",
+          "mappedNeed": "Refi or add-on financing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-27",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526078266/achc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On March 10, 2025, we issued $550.0 million of 7.375% Senior Notes due 2033",
+          "verifiedQuoteNormalized": "On March 10, 2025, we issued $550.0 million of 7.375% Senior Notes due 2033",
+          "eventDate": "2025-03-10",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": "refinancing_only"
+        },
+        {
+          "triggerId": "acquisition-announced",
+          "triggerName": "Acquisition announced",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "During year ended December 31, 2025, company opened one wholly-owned facility and five joint venture facilities (partnerships with Henry Ford Health, Geisinger Health, Ascension Seton, Fairview Health Services, and ECU Health), adding 778 beds. Also opened 15 comprehensive treatment centers.",
+          "mappedNeed": "Bridge financing, then permanent",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-27",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526078266/achc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "During the year ended December 31, 2025, we added 1,089 beds, consisting of 311 added to existing facilities and 778 added through the opening of one wholly-owned facility and five joint venture facilities",
+          "verifiedQuoteNormalized": "in 40 states and Puerto Rico. During the year ended December 31, 2025, we added 1,089 beds, consisting of 311 added to existing facilities and 778 added through the opening of one wholly-owned facility and five joint venture facilities, and we closed five facilitie",
+          "eventDate": "2025-12-31",
+          "dateGranularity": "year",
+          "eventStatus": "completed",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "capex-program",
+          "triggerName": "Capex program / new facility or construction",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company has ongoing capital expenditure program. For six months ended June 30, 2026, cash paid for capital expenditures was $115.1 million. Construction in progress of $267.0 million at June 30, 2026 (down from $515.4 million at December 31, 2025). Company strategy includes expansions of existing facilities and de novo facility development.",
+          "mappedNeed": "Term loan or capex facility",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526321076/achc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Cash paid for capital expenditures ( 115,117 )",
+          "verifiedQuoteNormalized": "acquired — ( $8.16 million ) Cash paid for capital expenditures ( $115.12 million ) ( $342.38 million ) Proceeds fr",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "revolver-near-capacity",
+          "triggerName": "Revolver near capacity + growth",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "At December 31, 2025, company had $594.8 million of availability under the $1.0 billion Revolving Facility. At June 30, 2026, revolving facility borrowings were $405.2 million (calculated from $550M initial funding less $160M repayment plus $85M borrowing in first half 2026), leaving approximately $594.8 million available. Revolver is not near capacity.",
+          "mappedNeed": "Revolver upsize",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-27",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526078266/achc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "dividend-buyback",
+          "triggerName": "Dividend recap / buyback authorization",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No dividend or special dividend announced. No share buyback authorization announced. Company repurchased minimal shares for payroll tax withholding ($2.7 million in first half 2026), but no material buyback program.",
+          "mappedNeed": "Leverage capacity conversation",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526321076/achc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "large-cash-balance",
+          "triggerName": "Large cash balance building",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Cash and cash equivalents of $171.3 million at June 30, 2026, up from $133.2 million at December 31, 2025. Cash increased $38.0 million in first half 2026. This represents a meaningful cash balance for the company.",
+          "mappedNeed": "Liquidity management, earning on idle cash",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526321076/achc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Cash and cash equivalents $ 171,290 $ 133,242",
+          "verifiedQuoteNormalized": "ASSETS Current assets: Cash and cash equivalents $171.29 million $133.24 million Accounts receivable, net",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "asset-sale",
+          "triggerName": "Asset sale / divestiture closing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Company has assets held for sale of $52.6 million at June 30, 2026 (down from $60.4 million at December 31, 2025) for closed properties actively marketed. Company closed five facilities totaling 382 beds during year ended December 31, 2025. Proceeds from sale of property and equipment were $26.5 million in first half 2026.",
+          "mappedNeed": "Proceeds deposit + sweep",
+          "needType": "treasury",
+          "confidence": 0.8,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526321076/achc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "The Company has recorded assets held for sale within other current assets on the condensed consolidated balance sheets for closed properties actively marketed of $ 52.6 million",
+          "verifiedQuoteNormalized": "The Company has recorded assets held for sale within other current assets on the condensed consolidated balance sheets for closed properties actively marketed of $ 52.6 million",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "international-expansion",
+          "triggerName": "International expansion / rising foreign revenue",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Company operates in 40 states and Puerto Rico. No material international expansion disclosed. All operations are within United States and Puerto Rico. No foreign revenue segment disclosed.",
+          "mappedNeed": "FX hedging, cross-border cash management",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526321076/achc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-subsidiary",
+          "triggerName": "New subsidiary / entity formation",
+          "fired": false,
+          "dataAvailable": false,
+          "evidence": "New subsidiaries are typically not disclosed in public filings unless tied to acquisitions. No specific disclosure of new subsidiary formation found.",
+          "mappedNeed": "New operating accounts",
+          "needType": "treasury",
+          "confidence": 0.7,
+          "citations": [],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "ipo-secondary",
+          "triggerName": "IPO / secondary raise",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No IPO or secondary equity offering announced or completed. Company is already public and trading on NASDAQ under symbol ACHC.",
+          "mappedNeed": "Proceeds management, treasury build-out",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526321076/achc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "floating-rate-debt",
+          "triggerName": "Floating-rate debt + rate exposure",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Credit Facility borrowings bear interest at floating rate equal to SOFR-based rate plus margin ranging from 1.375% to 2.250%, or base rate plus margin ranging from 0.375% to 1.250%. Term Loan Facility of $650.0 million and Revolving Facility borrowings are floating-rate debt. 7.375% Senior Notes are fixed-rate.",
+          "mappedNeed": "Interest-rate hedging",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-27",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526078266/achc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Borrowings under the Credit Agreement bear interest at a floating rate equal to, at our option, either (i) a Secured Overnight Financing Rate (\"SOFR\") -based rate plus a margin ranging from 1.375% to 2.250%",
+          "verifiedQuoteNormalized": "Borrowings under the Credit Agreement bear interest at a floating rate equal to, at our option, either (i) a Secured Overnight Financing Rate (\"SOFR\") -based rate plus a margin ranging from 1.375% to 2.250%",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "commodity-exposure",
+          "triggerName": "Commodity / input-cost exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material commodity or input-cost exposure disclosed in risk factors or MD&A. Company is a behavioral healthcare provider with exposure to labor costs and supplies, but no specific commodity hedging or material commodity price exposure disclosed.",
+          "mappedNeed": "Commodity hedging",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526321076/achc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "fx-exposure",
+          "triggerName": "Large FX exposure disclosed",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material foreign-currency exposure disclosed. Company operates in United States and Puerto Rico only. No foreign operations or foreign-currency denominated debt disclosed.",
+          "mappedNeed": "FX hedging program",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-07-28",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526321076/achc-20260630.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "covenant-breach",
+          "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. Company states 'At December 31, 2025, we were in compliance with all financial covenants.' No going-concern issues disclosed.",
+          "mappedNeed": "Restructuring or amendment support",
+          "needType": "distress",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-27",
+              "url": "https://www.sec.gov/Archives/edgar/data/1520697/000119312526078266/achc-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        }
+      ],
+      "verdict": "CALL",
+      "relationshipFlags": []
+    },
+    {
+      "company": "Concentra Group Holdings Parent, Inc.",
+      "cik": "0002014596",
+      "ticker": "CON",
+      "results": [
+        {
+          "triggerId": "debt-maturity",
+          "triggerName": "Debt maturity approaching",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "6.875% senior notes due July 15, 2032. As of March 31, 2026, $650.0 million principal outstanding.",
+          "mappedNeed": "Refinancing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "6.875 % senior notes due July 15, 2032",
+          "verifiedQuoteNormalized": "6.875 % senior notes due July 15, 2032",
+          "eventDate": "2032-07-15",
+          "dateGranularity": "day",
+          "eventStatus": "upcoming",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-debt-issuance",
+          "triggerName": "New debt issuance / notes pricing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "In March 2025, the Company completed an amendment to the Credit Agreement to increase the Revolving Credit Facility by $50.0 million from $400.0 million to $450.0 million and added an incremental term loan of $102.1 million, bringing the total Term Loan to $950.0 million. Interest rates were reduced from Term SOFR plus 2.50% to Term SOFR plus 2.00% for the Revolving Credit Facility and from Term SOFR plus 2.25% to Term SOFR plus 2.00% for the Term Loan.",
+          "mappedNeed": "Refi or add-on financing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "In March 2025, the Company completed an amendment to the Credit Agreement to increase our Revolving Credit Facility by $ 50.0 million from $ 400.0 million to $ 450.0 million. In addition, the amendment to the Credit Agreement also added new debt through an incremental term loan of $ 102.1 million, which provides an updated Term Loan of $ 950.0 million.",
+          "verifiedQuoteNormalized": "In March 2025, the Company completed an amendment to the Credit Agreement to increase our Revolving Credit Facility by $ 50.0 million from $ 400.0 million to $ 450.0 million. In addition, the amendment to the Credit Agreement also added new debt through an incremental term loan of $ 102.1 million, which provides an updated Term Loan of $ 950.0 million.",
+          "eventDate": "2025-03-03",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": "unstated"
+        },
+        {
+          "triggerId": "acquisition-announced",
+          "triggerName": "Acquisition announced",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "Effective March 1, 2025, the Company acquired Nova Medical Centers for a purchase price of $265.0 million. Nova operated 67 occupational health centers in five states. Effective June 1, 2025, the Company acquired Onsite Innovations, LLC (Pivot Onsite Innovations) for a purchase price of $54.4 million. Pivot Onsite Innovations operated over 240 onsite health clinics at employer locations in over 40 states.",
+          "mappedNeed": "Bridge financing, then permanent",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000029/cghp-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Effective March 1, 2025, the Company acquired Nova Medical Centers (\"Nova\"). Concentra Health Services, Inc., a wholly owned subsidiary of Concentra (\"CHSI\"), entered into an equity purchase agreement to acquire all of the outstanding membership interests for a purchase price of $265.0 million",
+          "verifiedQuoteNormalized": "Effective March 1, 2025, the Company acquired Nova Medical Centers (\"Nova\"). Concentra Health Services, Inc., a wholly owned subsidiary of Concentra (\"CHSI\"), entered into an equity purchase agreement to acquire all of the outstanding membership interests for a purchase price of $265.0 million",
+          "eventDate": "2025-03-01",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "capex-program",
+          "triggerName": "Capex program / new facility or construction",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": null,
+          "mappedNeed": "Term loan or capex facility",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "revolver-near-capacity",
+          "triggerName": "Revolver near capacity + growth",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "As of March 31, 2026, the Company had $434.2 million of availability under its Revolving Credit Facility after giving effect to $15.8 million of outstanding letters of credit. The Revolving Credit Facility has a total capacity of $450.0 million. No borrowings were outstanding under the Revolving Credit Facility as of March 31, 2026.",
+          "mappedNeed": "Revolver upsize",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "dividend-buyback",
+          "triggerName": "Dividend recap / buyback authorization",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On November 5, 2025, the Board of Directors authorized a share repurchase program to repurchase up to $100 million of the Company's outstanding common stock, expiring December 31, 2027. During the year ended December 31, 2025, the Company repurchased 1.0 million shares under the share repurchase program for $20.0 million. As of March 31, 2026, remaining authorization was $65.0 million. The Company also declared quarterly cash dividends of $0.0625 per share.",
+          "mappedNeed": "Leverage capacity conversation",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On November 5, 2025, the Board of Directors authorized a share repurchase program to repurchase up to $ 100  million of the Company's outstanding common stock. The share repurchase program will expire on December 31, 2027, unless extended or terminated by the Board of Directors.",
+          "verifiedQuoteNormalized": "On November 5, 2025, the Board of Directors authorized a share repurchase program to repurchase up to $ 100  million of the Company's outstanding common stock. The share repurchase program will expire on December 31, 2027, unless extended or terminated by the Board of Directors.",
+          "eventDate": "2025-11-05",
+          "dateGranularity": "day",
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "large-cash-balance",
+          "triggerName": "Large cash balance building",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Cash and equivalents were $61.7 million as of March 31, 2026, down from $79.9 million as of December 31, 2025. This represents a decline rather than a large or growing balance.",
+          "mappedNeed": "Liquidity management, earning on idle cash",
+          "needType": "treasury",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "asset-sale",
+          "triggerName": "Asset sale / divestiture closing",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": null,
+          "mappedNeed": "Proceeds deposit + sweep",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "international-expansion",
+          "triggerName": "International expansion / rising foreign revenue",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "The Company operates occupational health centers in 41 states and onsite health clinics in 44 states, with telemedicine serving 43 states and the District of Columbia. No international operations or foreign revenue disclosed.",
+          "mappedNeed": "FX hedging, cross-border cash management",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000029/cghp-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-subsidiary",
+          "triggerName": "New subsidiary / entity formation",
+          "fired": false,
+          "dataAvailable": false,
+          "evidence": null,
+          "mappedNeed": "New operating accounts",
+          "needType": "treasury",
+          "confidence": 0.7,
+          "citations": [],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "ipo-secondary",
+          "triggerName": "IPO / secondary raise",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "The Company completed its initial public offering in July 2024. No secondary equity offering has been announced or completed.",
+          "mappedNeed": "Proceeds management, treasury build-out",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "completed",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "floating-rate-debt",
+          "triggerName": "Floating-rate debt + rate exposure",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "The Company has floating-rate debt exposure through its Term Loan and Revolving Credit Facility, both tied to Term SOFR plus a spread. As of March 31, 2026, the Term Loan of $940.5 million carries interest at Term SOFR plus 2.00%, and the Revolving Credit Facility (with no outstanding borrowings) carries interest at Term SOFR plus 2.00%. The Company has designated interest rate swap and collar agreements to manage this exposure through February 2028.",
+          "mappedNeed": "Interest-rate hedging",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2025-11-06",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459625000046/cghp-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "The interest rate for the Revolving Credit Facility has been reduced from the Term Secured Overnight Financing Rate (\"Term SOFR\") plus 2.50 % to Term SOFR plus 2.00 %, subject to a leverage-based pricing grid including a 25 -basis point step down at a net leverage ratio of ≤ 3.50 x. In addition, the amendment to the Credit Agreement also added new debt through an incremental term loan of $ 102.1 million, which provides an updated Term Loan of $ 950.0 million. The Term Loan interest rate has been reduced from Term SOFR plus 2.25 % down to Term SOFR plus 2.00 %, subject to a leverage-based pricing grid including 25 -basis point step down at a net leverage ratio of ≤ 3.25 x.",
+          "verifiedQuoteNormalized": "The interest rate for the Revolving Credit Facility has been reduced from the Term Secured Overnight Financing Rate (\"Term SOFR\") plus 2.50 % to Term SOFR plus 2.00 %, subject to a leverage-based pricing grid including a 25 -basis point step down at a net leverage ratio of ≤ 3.50 x. In addition, the amendment to the Credit Agreement also added new debt through an incremental term loan of $ 102.1 million, which provides an updated Term Loan of $ 950.0 million. The Term Loan interest rate has been reduced from Term SOFR plus 2.25 % down to Term SOFR plus 2.00 %, subject to a leverage-based pricing grid including 25 -basis point step down at a net leverage ratio of ≤ 3.25 x.",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "commodity-exposure",
+          "triggerName": "Commodity / input-cost exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material commodity or input-cost exposure disclosed in the risk factors or MD&A sections reviewed.",
+          "mappedNeed": "Commodity hedging",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000029/cghp-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "fx-exposure",
+          "triggerName": "Large FX exposure disclosed",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "The Company operates exclusively within the United States (41 states for occupational health centers, 44 states for onsite health clinics, 43 states plus DC for telemedicine). No material foreign-currency exposure disclosed.",
+          "mappedNeed": "FX hedging program",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-02-26",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000029/cghp-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "covenant-breach",
+          "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. As of March 31, 2026, the Company's leverage ratio was 3.4x, well below the required maximum of 6.5x.",
+          "mappedNeed": "Restructuring or amendment support",
+          "needType": "distress",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-07",
+              "url": "https://www.sec.gov/Archives/edgar/data/2014596/000201459626000044/cghp-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        }
+      ],
+      "verdict": "CALL",
+      "relationshipFlags": []
+    },
+    {
+      "company": "Surgery Partners, Inc.",
+      "cik": "0001638833",
+      "ticker": "SGRY",
+      "results": [
+        {
+          "triggerId": "debt-maturity",
+          "triggerName": "Debt maturity approaching",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "7.250% senior unsecured notes due 2032. Senior secured term loan matures December 19, 2030. Senior secured revolving credit facility matures December 19, 2028.",
+          "mappedNeed": "Refinancing",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2025-08-13",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000110465925077656/tm2523271d1_8k.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "The 2025 Refinancing Loans shall bear interest at a rate per annum equal to (x) the forward-looking term rate based on Secured Overnight Financing Rate (\"Term SOFR\") plus 2.50% per annum or (y) an alternate base rate (which will be the highest of (i) the prime rate, (ii) the federal funds effective rate plus 0.5% per annum and (iii) Term SOFR plus 1.00% per annum (which shall not be less than 1.00%)) plus 1.50% per annum. The 2025 Refinancing Term Loans amortize in equal quarterly installments of 0.25% of the aggregate original principal amount of the 2025 Refinancing Term Loans (such amortization payments will commence on or around the last business day of the fiscal quarter ending September 30, 2025).",
+          "verifiedQuoteNormalized": "The 2025 Refinancing Loans shall bear interest at a rate per annum equal to (x) the forward-looking term rate based on Secured Overnight Financing Rate (\"Term SOFR\") plus 2.50% per annum or (y) an alternate base rate (which will be the highest of (i) the prime rate, (ii) the federal funds effective rate plus 0.5% per annum and (iii) Term SOFR plus 1.00% per annum (which shall not be less than 1.00%)) plus 1.50% per annum. The 2025 Refinancing Term Loans amortize in equal quarterly installments of 0.25% of the aggregate original principal amount of the 2025 Refinancing Term Loans (such amortization payments will commence on or around the last business day of the fiscal quarter ending September 30, 2025).",
+          "eventDate": "2028",
+          "dateGranularity": "year",
+          "eventStatus": "upcoming",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-debt-issuance",
+          "triggerName": "New debt issuance / notes pricing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On December 16, 2025, Surgery Center Holdings, Inc. issued an additional $425.0 million aggregate principal amount of 7.250% Senior Notes due 2032. On August 13, 2025, the company entered into a second amendment to refinance $1,383 million in term loans and revolving credit commitments.",
+          "mappedNeed": "Refi or add-on financing",
+          "needType": "credit",
+          "confidence": 0.98,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2025-12-16",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000110465925121563/tm2533546d1_8k.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2025-12-12",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000110465925120386/tm2533288d1_8k.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2025-12-11",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000110465925120159/tm2533207d1_8k.htm"
+            },
+            {
+              "form": "8-K",
+              "date": "2025-08-13",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000110465925077656/tm2523271d1_8k.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On December 16, 2025, Surgery Center Holdings, Inc. (the \"Issuer\"), a wholly-owned subsidiary of Surgery Partners, Inc. (the \"Company\"), issued an additional $425.0 million aggregate principal amount of 7.250% Senior Notes due 2032 (the \"Notes\").",
+          "verifiedQuoteNormalized": "On December 16, 2025, Surgery Center Holdings, Inc. (the \"Issuer\"), a wholly-owned subsidiary of Surgery Partners, Inc. (the \"Company\"), issued an additional $425.0 million aggregate principal amount of 7.250% Senior Notes due 2032 (the \"Notes\").",
+          "eventDate": "2025-12-16",
+          "dateGranularity": "day",
+          "eventStatus": "completed",
+          "proceedsUse": "partly_unapplied"
+        },
+        {
+          "triggerId": "acquisition-announced",
+          "triggerName": "Acquisition announced",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "The company announced on July 21, 2026 that it is selling (not acquiring) its ownership interests in Mountain View Hospital, LLC and Idaho Falls Community Hospital, LLC to Intermountain Health. This is a divestiture, not an acquisition by Surgery Partners.",
+          "mappedNeed": "Bridge financing, then permanent",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2026-07-24",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000069/sgry-20260721.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "completed",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "capex-program",
+          "triggerName": "Capex program / new facility or construction",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "The company reports ongoing capital expenditures for property and equipment. Nine months ended September 30, 2025: $65.9 million in purchases of property and equipment. Three months ended March 31, 2026: $16.0 million in purchases of property and equipment. The company continues to develop and acquire surgical facilities.",
+          "mappedNeed": "Term loan or capex facility",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2025-11-10",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883325000163/sgry-20250930.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "Purchases of property and equipment ( 65.9 ) ( 68.1 )",
+          "verifiedQuoteNormalized": "Purchases of property and equipment ( 65.9 ) ( 68.1 )",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "revolver-near-capacity",
+          "triggerName": "Revolver near capacity + growth",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "As of March 31, 2026, the company's availability on its $703.8 million senior secured revolving credit facility was $666.1 million (including letters of credit of $9.7 million), with $28.0 million drawn. This represents approximately 4% utilization, well below capacity.",
+          "mappedNeed": "Revolver upsize",
+          "needType": "credit",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "dividend-buyback",
+          "triggerName": "Dividend recap / buyback authorization",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No evidence of dividend authorization or share buyback program in the filings reviewed. The company reports distributions to non-controlling interest holders but no shareholder dividends or buyback authorizations.",
+          "mappedNeed": "Leverage capacity conversation",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-10",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883325000163/sgry-20250930.htm"
+            },
+            {
+              "form": "10-K",
+              "date": "2026-03-02",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000008/sgry-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "large-cash-balance",
+          "triggerName": "Large cash balance building",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "Cash and cash equivalents as of March 31, 2026 were $182.3 million, down from $239.9 million at December 31, 2025. As of September 30, 2025, cash was $203.4 million. Cash balances are modest relative to total assets of $8.0 billion and do not represent a large or growing cash position.",
+          "mappedNeed": "Liquidity management, earning on idle cash",
+          "needType": "treasury",
+          "confidence": 0.9,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-10",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883325000163/sgry-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "asset-sale",
+          "triggerName": "Asset sale / divestiture closing",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "On July 21, 2026, Surgery Partners announced an agreement to sell its ownership interests in Mountain View Hospital, LLC and Idaho Falls Community Hospital, LLC to Intermountain Health. The transaction values the combined facilities at approximately $1.15 billion, with Surgery Partners receiving approximately $795 million in total consideration. Closing is subject to customary conditions including regulatory approvals and physician member approvals.",
+          "mappedNeed": "Proceeds deposit + sweep",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2026-07-24",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000069/sgry-20260721.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "On July 21, 2026, a subsidiary (\"Seller\") of Surgery Partners, Inc. (the \"Company\"), the Company and Intermountain Health (\"Buyer\") placed into escrow pursuant to a binding agreement (the \"Escrow\") their respective signature pages to two Securities Purchase Agreements (the \"Agreements\"), pursuant to which Buyer would agree to acquire from Seller its ownership interests in Mountain View Hospital, LLC (\"MVH\") and Idaho Falls Community Hospital, LLC (\"IFCH\") (the \"Transaction\"). Such signature pages to the Agreements would be released from the Escrow to the other parties of the Agreements at such time as (i) requisite MVH physician member and MVH physician governing board approvals of the Transaction (in each case pertaining to MVH) have been obtained and (ii) Seller has certified to Buyer the accuracy of the representations and warranties contained in the Agreements as of the date of release from Escrow and Seller has not become aware of any material facts since signatures were placed into Escrow that would require or necessitate new or modified disclosures to the Seller disclosure schedules to either of the Agreements; provided if any such new or modified disclosures are required or needed, such new or modified disclosures are in a form acceptable to the parties to the Agreements. The Transaction values the combined facilities at approximately $1.15 billion, providing Surgery Partners with total consideration of approximately $795 million.",
+          "verifiedQuoteNormalized": "On July 21, 2026, a subsidiary (\"Seller\") of Surgery Partners, Inc. (the \"Company\"), the Company and Intermountain Health (\"Buyer\") placed into escrow pursuant to a binding agreement (the \"Escrow\") their respective signature pages to two Securities Purchase Agreements (the \"Agreements\"), pursuant to which Buyer would agree to acquire from Seller its ownership interests in Mountain View Hospital, LLC (\"MVH\") and Idaho Falls Community Hospital, LLC (\"IFCH\") (the \"Transaction\"). Such signature pages to the Agreements would be released from the Escrow to the other parties of the Agreements at such time as (i) requisite MVH physician member and MVH physician governing board approvals of the Transaction (in each case pertaining to MVH) have been obtained and (ii) Seller has certified to Buyer the accuracy of the representations and warranties contained in the Agreements as of the date of release from Escrow and Seller has not become aware of any material facts since signatures were placed into Escrow that would require or necessitate new or modified disclosures to the Seller disclosure schedules to either of the Agreements; provided if any such new or modified disclosures are required or needed, such new or modified disclosures are in a form acceptable to the parties to the Agreements. The Transaction values the combined facilities at approximately $1.15 billion, providing Surgery Partners with total consideration of approximately $795 million.",
+          "eventDate": "2026-07-21",
+          "dateGranularity": "day",
+          "eventStatus": "just_announced",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "international-expansion",
+          "triggerName": "International expansion / rising foreign revenue",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No evidence of international operations or foreign revenue. The company operates exclusively in the United States with 176 surgical facilities in 30 states as of December 31, 2025. No geographic segment reporting shows foreign revenue.",
+          "mappedNeed": "FX hedging, cross-border cash management",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-03-02",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000008/sgry-20251231.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-10",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883325000163/sgry-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "new-subsidiary",
+          "triggerName": "New subsidiary / entity formation",
+          "fired": false,
+          "dataAvailable": false,
+          "evidence": "New subsidiary formation is typically not disclosed in public filings unless tied to a reported acquisition. The company regularly acquires surgical facilities and physician practices, which may involve subsidiary formation, but this is not explicitly disclosed.",
+          "mappedNeed": "New operating accounts",
+          "needType": "treasury",
+          "confidence": 0.7,
+          "citations": [],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "ipo-secondary",
+          "triggerName": "IPO / secondary raise",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No IPO or secondary equity offering announced or completed. The company is already a public company trading on Nasdaq under ticker SGRY. No equity offerings are disclosed in the filings reviewed.",
+          "mappedNeed": "Proceeds management, treasury build-out",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "floating-rate-debt",
+          "triggerName": "Floating-rate debt + rate exposure",
+          "fired": true,
+          "dataAvailable": true,
+          "evidence": "The company has significant floating-rate debt exposure. The 2025 Refinancing Term Loans ($1,383 million) and 2025 Refinancing Revolving Loans bear interest at Term SOFR plus 2.50% per annum (or alternate base rate plus 1.50%). The senior secured term loan of $1,371.0 million as of March 31, 2026 is floating-rate debt.",
+          "mappedNeed": "Interest-rate hedging",
+          "needType": "credit",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "8-K",
+              "date": "2025-08-13",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000110465925077656/tm2523271d1_8k.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": "The 2025 Refinancing Loans shall bear interest at a rate per annum equal to (x) the forward-looking term rate based on Secured Overnight Financing Rate (\"Term SOFR\") plus 2.50% per annum or (y) an alternate base rate (which will be the highest of (i) the prime rate, (ii) the federal funds effective rate plus 0.5% per annum and (iii) Term SOFR plus 1.00% per annum (which shall not be less than 1.00%)) plus 1.50% per annum.",
+          "verifiedQuoteNormalized": "The 2025 Refinancing Loans shall bear interest at a rate per annum equal to (x) the forward-looking term rate based on Secured Overnight Financing Rate (\"Term SOFR\") plus 2.50% per annum or (y) an alternate base rate (which will be the highest of (i) the prime rate, (ii) the federal funds effective rate plus 0.5% per annum and (iii) Term SOFR plus 1.00% per annum (which shall not be less than 1.00%)) plus 1.50% per annum.",
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "commodity-exposure",
+          "triggerName": "Commodity / input-cost exposure",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material commodity or input-cost exposure disclosed in risk factors or MD&A. The company operates surgical facilities and does not have significant exposure to commodity price volatility. Supply chain issues are mentioned as a risk but not commodity price exposure specifically.",
+          "mappedNeed": "Commodity hedging",
+          "needType": "credit",
+          "confidence": 0.85,
+          "citations": [
+            {
+              "form": "10-K",
+              "date": "2026-03-02",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000008/sgry-20251231.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "fx-exposure",
+          "triggerName": "Large FX exposure disclosed",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No material foreign-currency exposure disclosed. The company operates exclusively in the United States with no international operations. No FX hedging or foreign currency exposure is mentioned in the quantitative and qualitative market risk disclosures.",
+          "mappedNeed": "FX hedging program",
+          "needType": "treasury",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-10",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883325000163/sgry-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        },
+        {
+          "triggerId": "covenant-breach",
+          "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+          "fired": false,
+          "dataAvailable": true,
+          "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. The company maintains adequate liquidity with $666.1 million available on its revolving credit facility as of March 31, 2026. No defaults or covenant violations are mentioned.",
+          "mappedNeed": "Restructuring or amendment support",
+          "needType": "distress",
+          "confidence": 0.95,
+          "citations": [
+            {
+              "form": "10-Q",
+              "date": "2026-05-05",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883326000046/sgry-20260331.htm"
+            },
+            {
+              "form": "10-Q",
+              "date": "2025-11-10",
+              "url": "https://www.sec.gov/Archives/edgar/data/1638833/000163883325000163/sgry-20250930.htm"
+            }
+          ],
+          "quoteVerified": true,
+          "verifiedQuote": null,
+          "verifiedQuoteNormalized": null,
+          "eventDate": null,
+          "dateGranularity": null,
+          "eventStatus": "standing",
+          "proceedsUse": null
+        }
+      ],
+      "verdict": "CALL",
+      "relationshipFlags": []
+    }
+  ]
+}

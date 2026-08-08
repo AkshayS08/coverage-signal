@@ -6,10 +6,15 @@ import {
   classifyAllTriggers,
   classifyOneTrigger,
   type CorpusDoc,
+  type DateGranularity,
+  type EventStatus,
   type FilingCatalogEntry,
+  type ProceedsUse,
   type TriggerVerdict,
 } from "./claude";
 import { verifyTriggerQuote } from "./verifyQuote";
+import { verifyEventDate, type EventDateGuardResult } from "./factGuard";
+import { classifyProceedsUse } from "./proceedsUse";
 
 const MAX_DIG_STEPS = 5;
 
@@ -31,6 +36,14 @@ export interface TriggerResult {
   verifiedQuote: string | null;
   /** Same fact as verifiedQuote, but with any bare (unit-less) table figure replaced by its scale-normalized dollar form where a governing "dollar amounts... in millions/thousands" declaration was found (scaleNormalize.ts). Falls back to the raw text when no bare figures needed normalizing or none could be safely resolved. This — not verifiedQuote — is what card narration is built from. */
   verifiedQuoteNormalized: string | null;
+  /** ISO date ("YYYY-MM-DD") or bare year ("YYYY") of the event this fact describes, fact-guarded against the cited filing text (factGuard.ts) — null if the model gave none, or if it claimed one that couldn't be verified in the filing. The card-eligibility gate's sole source of "when" (lib/events/eligibility.ts); never re-derived from evidence prose. */
+  eventDate: string | null;
+  /** Precision eventDate actually carries — "year" means eventDate is a bare 4-digit year with no month/day; display code must never render it as a specific date or a computed month count. Null exactly when eventDate is null. */
+  dateGranularity: DateGranularity | null;
+  /** Model-labeled status ("upcoming" / "just_announced" / "completed" / "standing") — the gate's sole source of "is this dated/live or a standing condition," replacing the old regex guesswork over evidence text. */
+  eventStatus: EventStatus;
+  /** Only meaningful for "new-debt-issuance" — null for every other trigger. Feeds the completed-issuance proceeds test (eligibility.ts). */
+  proceedsUse: ProceedsUse | null;
 }
 
 export interface CompanyResult {
@@ -142,7 +155,19 @@ export async function runAgentLoop(
     if (v.fired && !result.verified) {
       log(`  ⚠ QUOTE VERIFICATION FAILED for ${label} — model's quote not found in the fetched filing text; evidence discarded, excluded from cards`);
     }
-    return finalize(trigger, citationLookup, v, result);
+    const dateGuard = verifyEventDate({
+      eventDate: v.eventDate ?? null,
+      eventDateGranularity: v.eventDateGranularity ?? null,
+      anchorText: v.quote ?? v.evidence ?? null,
+      citedUrls: v.citedUrls ?? [],
+      textByUrl,
+    });
+    if (v.eventDate && !dateGuard.accepted) {
+      log(
+        `  ⚠ EVENT DATE REJECTED for ${companyName} — ${label}: claimed "${v.eventDate}" not found (or not anchored to this fact) in the fetched filing text; eventDate set to null`
+      );
+    }
+    return finalize(trigger, citationLookup, v, result, dateGuard);
   }
 
   let digBudget = MAX_DIG_STEPS;
@@ -163,6 +188,9 @@ export async function runAgentLoop(
             dataAvailable: false,
             evidence: null,
             quote: null,
+            eventDate: null,
+            eventDateGranularity: null,
+            eventStatus: "standing",
             confidence: 0,
             needsDig: false,
             digHint: null,
@@ -213,6 +241,44 @@ export async function runAgentLoop(
     }
   }
 
+  // proceedsUse: one Sonnet call, at most, per company — only when the
+  // issuance trigger actually fired. Kept out of the main Haiku
+  // classification (see the ProceedsUse doc comment in claude.ts for why).
+  // Reads the FULL cited filing text (already fetched, in textByUrl) —
+  // not just evidence/quote — since the use-of-proceeds sentence is
+  // frequently outside whatever narrow excerpt Haiku's own evidence/quote
+  // happened to select (see proceedsUse.ts's doc comment). Also always
+  // includes the most recent 10-Q, regardless of whether Haiku happened to
+  // cite it for THIS trigger: confirmed live that Haiku's own citation
+  // choice for new-debt-issuance is itself non-deterministic — sometimes
+  // it cites only the terse issuance 8-K (which frequently doesn't discuss
+  // use of proceeds at all), sometimes the fuller 10-Q MD&A ("Liquidity
+  // and Capital Resources," which routinely does). No new filing fetch —
+  // the 10-Q is already in textByUrl from the main corpus read.
+  const issuanceIdx = results.findIndex((r) => r.triggerId === "new-debt-issuance");
+  if (issuanceIdx !== -1 && results[issuanceIdx].fired) {
+    const issuance = results[issuanceIdx];
+    try {
+      const mostRecentTenQ = baseline
+        .filter((f) => f.form === "10-Q")
+        .sort((a, b) => b.filingDate.localeCompare(a.filingDate))[0];
+      const urls = new Set([...issuance.citations.map((c) => c.url), ...(mostRecentTenQ ? [mostRecentTenQ.primaryDocUrl] : [])]);
+      const filingTexts = [...urls].map((url) => textByUrl.get(url)).filter((t): t is string => !!t);
+      const proceedsUse = await classifyProceedsUse({
+        companyName,
+        evidence: issuance.evidence,
+        quote: issuance.verifiedQuote,
+        filingTexts,
+      });
+      results[issuanceIdx] = { ...issuance, proceedsUse };
+      log(`  proceeds-use classified (Sonnet): ${proceedsUse}`);
+    } catch (err) {
+      log(
+        `  ⚠ PROCEEDS-USE CLASSIFICATION FAILED for ${companyName} — new-debt-issuance: ${err instanceof Error ? err.message : String(err)}; proceedsUse left null`
+      );
+    }
+  }
+
   const callTriggers = results.filter(
     (r) => r.fired && (r.needType === "credit" || r.needType === "treasury")
   );
@@ -241,7 +307,8 @@ function finalize(
   trigger: TriggerDef,
   citationLookup: Map<string, { form: string; date: string }>,
   v: TriggerVerdict,
-  verification: { verified: boolean; displayText: string | null; normalizedText: string | null }
+  verification: { verified: boolean; displayText: string | null; normalizedText: string | null },
+  dateGuard: EventDateGuardResult
 ): TriggerResult {
   return {
     triggerId: trigger.id,
@@ -259,5 +326,13 @@ function finalize(
     quoteVerified: verification.verified,
     verifiedQuote: verification.verified ? verification.displayText : null,
     verifiedQuoteNormalized: verification.verified ? (verification.normalizedText ?? verification.displayText) : null,
+    eventDate: dateGuard.eventDate,
+    dateGranularity: dateGuard.eventDateGranularity,
+    eventStatus: v.eventStatus ?? "standing",
+    // Classified separately, once per fired issuance fact, by Sonnet — see
+    // the post-loop step in runAgentLoop. Null here is the pre-classification
+    // default, not a final answer, except for every non-issuance trigger
+    // (for which it stays null, correctly, forever).
+    proceedsUse: null,
   };
 }

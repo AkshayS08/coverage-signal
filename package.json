@@ -10,7 +10,9 @@
     "fetch:test": "tsx lib/fetch/test.ts",
     "agent:test": "tsx lib/agent/test.ts",
     "events:test": "tsx lib/events/test.ts",
-    "verify:regression": "tsx lib/agent/verifyQuote.regression.ts"
+    "verify:regression": "tsx lib/agent/verifyQuote.regression.ts",
+    "test": "tsx lib/events/eligibility.test.ts",
+    "test:build-fixture": "tsx lib/events/buildFixture.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
