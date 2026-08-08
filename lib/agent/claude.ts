@@ -72,6 +72,8 @@ export interface TriggerVerdict {
   dataAvailable: boolean;
   evidence: string | null;
   quote: string | null;
+  /** True when `quote` itself states the transaction's material figure(s) (amount, value, consideration, rate). False when quote is a fallback — the most specific factual sentence available, with no single sentence in the filing found to carry a figure — or when quote is null. Lets callers tell "verified AND useful" apart from "verified but figure-less" without re-parsing the quote text; see loop.ts's logging when false. */
+  quoteHasFigure: boolean;
   /** ISO date (YYYY-MM-DD) when day/month granularity, or a bare 4-digit year ("2026") when only a year is stated — or null if the filing states none. See DateGranularity above and the INSTRUCTIONS prompt for the exact rules. Verified against the filing text downstream (lib/agent/factGuard.ts) before it's trusted for any card decision. */
   eventDate: string | null;
   eventDateGranularity: DateGranularity | null;
@@ -90,6 +92,7 @@ const VERDICT_ITEM_SCHEMA = {
     dataAvailable: { type: "boolean" },
     evidence: { type: ["string", "null"] },
     quote: { type: ["string", "null"] },
+    quoteHasFigure: { type: "boolean" },
     eventDate: { type: ["string", "null"] },
     eventDateGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
     eventStatus: { type: "string", enum: ["upcoming", "just_announced", "completed", "standing"] },
@@ -98,7 +101,7 @@ const VERDICT_ITEM_SCHEMA = {
     digHint: { type: ["string", "null"] },
     citedUrls: { type: "array", items: { type: "string" } },
   },
-  required: ["triggerId", "fired", "dataAvailable", "eventStatus", "confidence", "needsDig"],
+  required: ["triggerId", "fired", "dataAvailable", "eventStatus", "quoteHasFigure", "confidence", "needsDig"],
 };
 
 const INSTRUCTIONS = `You are triaging a public company's SEC filings for a commercial bank relationship manager. For each of the 15 triggers listed, decide:
@@ -112,10 +115,10 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
   - ONLY A BARE YEAR with no month anywhere ("due 2026", "matures in 2028") -> eventDate is the bare year itself, exactly four digits ("2026"), eventDateGranularity "year". Do NOT invent a month or day — never write "2026-12-31" or "2026-01-01" for a bare "2026"; that fabricates precision the filing never stated.
   - If the filing states no date for this specific fact — or you're not certain which date belongs to it — eventDate is null and eventDateGranularity is null. A null is correct and useful; a borrowed, guessed, or over-precise date is not. Only meaningful when fired is true; both null when fired is false.
 - eventStatus: exactly one of "upcoming" (a stated future date — a maturity, a pending closing), "just_announced" (announced or executed and still live/actionable — proceeds not yet fully placed, a deal not yet closed), "completed" (already settled — redeemed, paid off, the transaction closed with nothing left to act on this week), or "standing" (an ongoing condition with no specific date — recurring/annual capex, an existing exposure, an unchanged buyback program). Label exactly what the filing's own words state, do not infer beyond them: "were redeemed" -> completed. "due November 2027" -> upcoming. "each year" / "actively pursue" / "ongoing" -> standing. Only meaningful when fired is true.
-- quote: when fired is true and evidence states a specific number, date, rate, or other precise fact, select ONE CONTIGUOUS SENTENCE from the filing text given above and copy it VERBATIM — character-for-character, copy-pasted, not paraphrased, not corrected, not reconstructed from memory. This is the only place numbers and dates are allowed to come from downstream. Two rules that matter more than they sound like they should:
-  - If the fact's material number/date/rate is stated in a DIFFERENT sentence than the surrounding context that introduces it (e.g. an opening clause names the parties and the agreement, and a separate, later, non-adjacent sentence states the dollar value), quote the sentence that actually CONTAINS the figure — not the introductory sentence, and not both stitched together.
-  - NEVER assemble a quote by joining text from two different locations in the filing into what looks like one contiguous span, even when both pieces are individually true and even when the join reads naturally. If it is not one real, unbroken, back-to-back span of the source text, it does not belong in this field. This is the single most important rule here: a spliced quote is not a paraphrase, it is a fabrication of contiguity that didn't happen, and downstream verification exists specifically to catch it.
-  If no single sentence contains both the figure and its surrounding context, quote just the figure-bearing sentence on its own — the evidence field (free text, not required to be verbatim) is where the surrounding context belongs, not the quote. If you cannot find one single contiguous sentence containing the fact verbatim, do not write one; a missing quote is far better than a spliced or misremembered one. Set this to null if fired is false, or if the evidence is a general statement with no specific figure to verify (e.g. "no signal found").
+- quote: REQUIRED whenever fired is true and evidence states a specific number, date, rate, or other precise fact. Defined precisely, not as a preference: **quote is the ONE contiguous sentence from the filing text given above that STATES the transaction's material figures — the amount, value, consideration, or rate.** Not the sentence that introduces the transaction. Not the sentence that names the parties. The sentence with the number in it. Copy it VERBATIM — character-for-character, copy-pasted, not paraphrased, not corrected, not reconstructed from memory. This is the only place numbers and dates are allowed to come from downstream.
+  - quoteHasFigure: set this to true when the quote you wrote actually contains the material figure. Set it to false ONLY when you searched and no single sentence anywhere in the filing text contains one — in that case, quote instead the single most specific factual sentence available (whatever best identifies the fact, even without a number), and quoteHasFigure stays false. Do not set quoteHasFigure true because the quote is "close enough" or mentions a different, smaller number — it means the quote you wrote literally contains the fact's own headline figure.
+  - NEVER assemble a quote by joining text from two different locations in the filing into what looks like one contiguous span, even when both pieces are individually true and even when the join reads naturally. If it is not one real, unbroken, back-to-back span of the source text, it does not belong in this field. This is the single most important rule here: a spliced quote is not a paraphrase, it is a fabrication of contiguity that didn't happen, and downstream verification exists specifically to catch it. An opening sentence that introduces the deal ("On [date], Company entered into an agreement...") is almost never the right quote by itself if a later sentence states the figure — go find that later sentence and quote it alone instead of the opener.
+  - If you cannot find any single contiguous sentence that reflects the fact at all, do not write one — set quote to null and quoteHasFigure to false; a missing quote is far better than a spliced or misremembered one. Also set quote to null (and quoteHasFigure to false) if fired is false, or if the evidence is a general statement with no specific figure to verify (e.g. "no signal found").
 - confidence: 0-1.
 - needsDig: true only if the evidence is genuinely ambiguous (e.g. an event is mentioned but a key detail like amount or maturity is missing) AND a specific other filing in the catalog (not already in the excerpts below) looks likely to resolve it.
 - digHint: if needsDig, the exact url from the filing catalog you want read next. Otherwise null.

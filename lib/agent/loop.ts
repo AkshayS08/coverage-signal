@@ -36,6 +36,8 @@ export interface TriggerResult {
   verifiedQuote: string | null;
   /** Which pass verified the quote — "literal" (the model's quote is a genuine contiguous substring of the filing) or "co-occurrence" (verified via the table-row fallback instead). Null when unverified. See verifyQuote.ts's QuoteVerificationResult.matchType doc for why this distinction matters. */
   quoteMatchType: "literal" | "co-occurrence" | null;
+  /** Model-reported: does verifiedQuote itself contain the fact's material figure, or is it a figure-less fallback (the most specific factual sentence available, with no single sentence found to carry a figure)? False whenever quote/verifiedQuote is null. See claude.ts's quote instruction. */
+  quoteHasFigure: boolean;
   /** Same fact as verifiedQuote, but with any bare (unit-less) table figure replaced by its scale-normalized dollar form where a governing "dollar amounts... in millions/thousands" declaration was found (scaleNormalize.ts). Falls back to the raw text when no bare figures needed normalizing or none could be safely resolved. This — not verifiedQuote — is what card narration is built from. */
   verifiedQuoteNormalized: string | null;
   /** ISO date ("YYYY-MM-DD") or bare year ("YYYY") of the event this fact describes, fact-guarded against the cited filing text (factGuard.ts) — null if the model gave none, or if it claimed one that couldn't be verified in the filing. The card-eligibility gate's sole source of "when" (lib/events/eligibility.ts); never re-derived from evidence prose. */
@@ -157,6 +159,9 @@ export async function runAgentLoop(
     if (v.fired && !result.verified) {
       log(`  ⚠ QUOTE VERIFICATION FAILED for ${label} — model's quote not found in the fetched filing text; evidence discarded, excluded from cards`);
     }
+    if (v.fired && result.verified && v.quoteHasFigure === false) {
+      log(`  ⚠ QUOTE HAS NO FIGURE for ${label} — verified, but the model reported no single sentence carried the fact's material figure; verifiedQuote is a figure-less fallback`);
+    }
     const dateGuard = verifyEventDate({
       eventDate: v.eventDate ?? null,
       eventDateGranularity: v.eventDateGranularity ?? null,
@@ -190,6 +195,7 @@ export async function runAgentLoop(
             dataAvailable: false,
             evidence: null,
             quote: null,
+            quoteHasFigure: false,
             eventDate: null,
             eventDateGranularity: null,
             eventStatus: "standing",
@@ -329,6 +335,7 @@ function finalize(
     verifiedQuote: verification.verified ? verification.displayText : null,
     verifiedQuoteNormalized: verification.verified ? (verification.normalizedText ?? verification.displayText) : null,
     quoteMatchType: verification.matchType,
+    quoteHasFigure: verification.verified ? (v.quoteHasFigure ?? false) : false,
     eventDate: dateGuard.eventDate,
     dateGranularity: dateGuard.eventDateGranularity,
     eventStatus: v.eventStatus ?? "standing",
