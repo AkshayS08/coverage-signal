@@ -169,6 +169,7 @@ async function main() {
         quoteVerified: false, // exactly what verifyTriggerQuote correctly produced above
         verifiedQuote: null,
         verifiedQuoteNormalized: null,
+        quoteMatchType: null,
         eventDate: null,
         dateGranularity: null,
         eventStatus: "upcoming",
@@ -187,6 +188,7 @@ async function main() {
         quoteVerified: true,
         verifiedQuote: genuineResult.displayText ?? genuine,
         verifiedQuoteNormalized: genuineResult.normalizedText ?? genuineResult.displayText ?? genuine,
+        quoteMatchType: genuineResult.matchType,
         eventDate: "2030-11-24",
         dateGranularity: "day",
         eventStatus: "completed",

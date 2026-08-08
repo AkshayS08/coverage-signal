@@ -145,6 +145,8 @@ export interface QuoteVerificationResult {
   displayText: string | null;
   /** What Sonnet is given as the stateable figure — the same text as displayText, but with any bare table figure replaced by its scale-normalized dollar form where a governing scale declaration was found. Falls back to displayText verbatim when no bare figures needed normalizing (the prose-match case) or none could be safely resolved. */
   normalizedText: string | null;
+  /** Which pass verified the quote — "literal" means the model's quote is a genuine contiguous substring of the filing; "co-occurrence" means it verified via the table-row fallback (the quote's key facts co-occur nearby without forming one exact span). Null when unverified. Exists so callers/tests can tell "verified because it's real prose" apart from "verified because a table row happened to contain the same tokens" — the two are not equally strong evidence that the quote reads as intended. */
+  matchType: "literal" | "co-occurrence" | null;
 }
 
 /**
@@ -170,16 +172,21 @@ function normalizeLiteralMatchText(trimmedQuote: string, sourceText: string): st
 /** Checks one quote against a list of candidate texts, literal match first, then table-aware co-occurrence. */
 function verifyClaim(quote: string, candidateTexts: string[]): QuoteVerificationResult {
   const trimmed = quote.trim();
-  if (!trimmed) return { verified: false, displayText: null, normalizedText: null };
+  if (!trimmed) return { verified: false, displayText: null, normalizedText: null, matchType: null };
 
   for (const text of candidateTexts) {
     if (quoteAppearsIn(trimmed, text)) {
-      return { verified: true, displayText: trimmed, normalizedText: normalizeLiteralMatchText(trimmed, text) };
+      return {
+        verified: true,
+        displayText: trimmed,
+        normalizedText: normalizeLiteralMatchText(trimmed, text),
+        matchType: "literal",
+      };
     }
   }
 
   const claimTokens = extractFactTokens(trimmed);
-  if (claimTokens.length === 0) return { verified: false, displayText: null, normalizedText: null };
+  if (claimTokens.length === 0) return { verified: false, displayText: null, normalizedText: null, matchType: null };
 
   for (const text of candidateTexts) {
     const window = findCoOccurrenceWindow(trimmed, claimTokens, text, CO_OCCURRENCE_WINDOW_CHARS);
@@ -188,11 +195,12 @@ function verifyClaim(quote: string, candidateTexts: string[]): QuoteVerification
         verified: true,
         displayText: extractRowDisplayText(text, window.start, window.end),
         normalizedText: extractNormalizedRowText(text, window.start, window.end),
+        matchType: "co-occurrence",
       };
     }
   }
 
-  return { verified: false, displayText: null, normalizedText: null };
+  return { verified: false, displayText: null, normalizedText: null, matchType: null };
 }
 
 /**
@@ -209,8 +217,8 @@ export function verifyTriggerQuote(params: {
   textByUrl: Map<string, string>;
 }): QuoteVerificationResult {
   const { fired, quote, citedUrls, textByUrl } = params;
-  if (!fired) return { verified: true, displayText: null, normalizedText: null }; // nothing asserted, nothing to verify
-  if (!quote || !quote.trim()) return { verified: false, displayText: null, normalizedText: null }; // fired but no verifiable quote given
+  if (!fired) return { verified: true, displayText: null, normalizedText: null, matchType: null }; // nothing asserted, nothing to verify
+  if (!quote || !quote.trim()) return { verified: false, displayText: null, normalizedText: null, matchType: null }; // fired but no verifiable quote given
 
   const citedTexts = citedUrls.map((url) => textByUrl.get(url)).filter((t): t is string => !!t);
   const citedResult = verifyClaim(quote, citedTexts);

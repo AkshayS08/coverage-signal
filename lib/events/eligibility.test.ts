@@ -228,6 +228,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     quoteVerified: true,
     verifiedQuote: "synthetic",
     verifiedQuoteNormalized: "synthetic",
+    quoteMatchType: "literal",
     eventDate: isoDaysBeforeNow(30),
     dateGranularity: "day",
     eventStatus: "completed",
@@ -491,6 +492,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     quoteVerified: true,
     verifiedQuote: "synthetic",
     verifiedQuoteNormalized: "synthetic",
+    quoteMatchType: "literal",
     eventDate: farYear,
     dateGranularity: "year",
     eventStatus: "upcoming",
@@ -520,6 +522,34 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
   } else {
     assert(true, `[18] UHS debt-maturity granularity is "${t.dateGranularity}" this build (not "year") — display-safety check not applicable, skipping rather than asserting on data this run doesn't have`);
   }
+}
+
+// --- 19a/19b/19c. Session 12 Part A — SGRY asset-sale quote-verification
+// determinism. Diagnosed root cause: Haiku's quote-selection sometimes
+// spliced two individually-true but non-adjacent sentences into one
+// fabricated contiguous span (the escrow-mechanics opening + a deal-value
+// sentence 1,169 characters later), which correctly failed verification —
+// that's the guard working, not a bug. Fixed at the prompt level (claude.ts:
+// select ONE contiguous sentence; when the material figures live in a
+// different sentence than the surrounding context, quote the figure-bearing
+// sentence; never join two locations). The third assertion below is the one
+// that actually matters: a run was observed where verification succeeded
+// via a genuinely contiguous quote that nonetheless contained NEITHER deal
+// figure — "verified" alone would have shipped an empty card. ---
+{
+  const sgry = findCompany("SGRY");
+  const t = findTrigger(sgry, "asset-sale");
+  const r = evaluateEligibility(t, NOW);
+  assert(r.cardEligible, `[19a] SGRY asset-sale cards (eventStatus=${t.eventStatus}, eventDate=${t.eventDate})`);
+  assert(
+    t.quoteVerified && t.quoteMatchType === "literal",
+    `[19b] SGRY asset-sale verifiedQuote passes LITERAL match, not the table co-occurrence path (quoteVerified=${t.quoteVerified}, matchType=${t.quoteMatchType})`
+  );
+  const hasFigures = !!t.verifiedQuote && (t.verifiedQuote.includes("$1.15 billion") || t.verifiedQuote.includes("$795 million"));
+  assert(
+    hasFigures,
+    `[19c] SGRY asset-sale verifiedQuote CONTAINS a deal figure ($1.15 billion or $795 million) — verifiedQuote: ${JSON.stringify(t.verifiedQuote)}`
+  );
 }
 
 console.log(`\n${failed === 0 ? "ALL GOLDEN TESTS PASSED" : `${failed} GOLDEN TEST(S) FAILED`} (${passed} passed, ${failed} failed)`);

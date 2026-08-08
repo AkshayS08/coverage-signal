@@ -34,6 +34,8 @@ export interface TriggerResult {
   quoteVerified: boolean;
   /** The verbatim source sentence(s) backing this trigger — only set when quoteVerified is true. Always the raw filing text, never scale-adjusted (see verifiedQuoteNormalized). */
   verifiedQuote: string | null;
+  /** Which pass verified the quote — "literal" (the model's quote is a genuine contiguous substring of the filing) or "co-occurrence" (verified via the table-row fallback instead). Null when unverified. See verifyQuote.ts's QuoteVerificationResult.matchType doc for why this distinction matters. */
+  quoteMatchType: "literal" | "co-occurrence" | null;
   /** Same fact as verifiedQuote, but with any bare (unit-less) table figure replaced by its scale-normalized dollar form where a governing "dollar amounts... in millions/thousands" declaration was found (scaleNormalize.ts). Falls back to the raw text when no bare figures needed normalizing or none could be safely resolved. This — not verifiedQuote — is what card narration is built from. */
   verifiedQuoteNormalized: string | null;
   /** ISO date ("YYYY-MM-DD") or bare year ("YYYY") of the event this fact describes, fact-guarded against the cited filing text (factGuard.ts) — null if the model gave none, or if it claimed one that couldn't be verified in the filing. The card-eligibility gate's sole source of "when" (lib/events/eligibility.ts); never re-derived from evidence prose. */
@@ -307,7 +309,7 @@ function finalize(
   trigger: TriggerDef,
   citationLookup: Map<string, { form: string; date: string }>,
   v: TriggerVerdict,
-  verification: { verified: boolean; displayText: string | null; normalizedText: string | null },
+  verification: { verified: boolean; displayText: string | null; normalizedText: string | null; matchType: "literal" | "co-occurrence" | null },
   dateGuard: EventDateGuardResult
 ): TriggerResult {
   return {
@@ -326,6 +328,7 @@ function finalize(
     quoteVerified: verification.verified,
     verifiedQuote: verification.verified ? verification.displayText : null,
     verifiedQuoteNormalized: verification.verified ? (verification.normalizedText ?? verification.displayText) : null,
+    quoteMatchType: verification.matchType,
     eventDate: dateGuard.eventDate,
     dateGranularity: dateGuard.eventDateGranularity,
     eventStatus: v.eventStatus ?? "standing",
