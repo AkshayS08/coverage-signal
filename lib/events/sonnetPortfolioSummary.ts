@@ -214,8 +214,8 @@ const NO_ACTION_STATEMENT_RE =
 /** An imperative/directive verb tied to a "now/today/this week" timeframe — the shape of "call them this week about the maturity", not the mere presence of a word like "urgent" or "immediate". */
 const ACTION_DIRECTIVE_RE = /\b(call|reach out|follow up|act)\b[^.!?]{0,30}\b(now|today|this week)\b/i;
 
-/** A negation anywhere in the same sentence as a would-be directive cancels it — "there is no urgent call to make" and "has not triggered any immediate action" are claims of INaction, not action. */
-const NEGATION_RE = /\b(no|not|n't|never|nothing|without)\b/i;
+/** A negation anywhere in the same sentence as a would-be directive cancels it — "there is no urgent call to make," "has not triggered any immediate action," and "neither has triggered a call this week" are all claims of INaction, not action. */
+const NEGATION_RE = /\b(no|not|n't|never|nothing|without|neither|nor)\b/i;
 
 /**
  * Constraint 2, checked against the gate's actual verdict (anyActionable),

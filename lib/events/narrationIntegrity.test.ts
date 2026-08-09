@@ -245,6 +245,17 @@ console.log(`=== Session 12 Parts B/C golden tests (narration integrity) ===\n`)
     );
     assert(!r.reasons.some((x) => x.includes("card gate")), "[6d4] a carded company naming its own actionable event PASSES constraint 2");
   }
+  // 6d5. Real case hit during live re-runs: "neither has triggered a call
+  // this week" — "neither" negates the directive just as much as "not"
+  // does, but wasn't in the original negation word list, causing a real
+  // retry against an otherwise-correct draft.
+  {
+    const r = checkSummaryConstraints(
+      "Nothing is actionable this week. Worth flagging is a standing hedging opportunity, which should be raised even though neither item has triggered a call this week.",
+      [hedgingStanding]
+    );
+    assert(!r.reasons.some((x) => x.includes("card gate")), '[6d5] "neither...has triggered a call this week" is recognized as negation, not a directive');
+  }
   // 6e. Fabricated figure: a dollar amount not present in any fact line -> violation.
   {
     const r = checkSummaryConstraints("The refi window matures 2026, backed by $1.65 billion, on top of a separate $9.99 billion facility.", [refiThisWeek]);
