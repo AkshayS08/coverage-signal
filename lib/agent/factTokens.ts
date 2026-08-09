@@ -15,6 +15,30 @@
 
 export type FactTokenKind = "money" | "percent" | "date";
 
+/**
+ * kind "money" only — which KIND of dollar figure this is, not just that it
+ * is one. Added because VerifiedFact.figures (factBase.ts) was showing a
+ * per-share dividend rate ("$0.19") as if it were a buyback authorization
+ * SIZE, and an unlabeled bare number ("3,938", no "$" anywhere near it) as
+ * if it were a confident dollar amount — both real, both wrong-typed, not
+ * wrong-valued. This field only ADDS information to the token; it changes
+ * nothing about which tokens get extracted, matched, or verified (see
+ * verifyQuote.ts/numberGuard.ts, which don't read it) — those consumers are
+ * unaffected. Only downstream presentation code (factBase.ts) uses it, to
+ * prefer "no figure disclosed" over a wrong-typed number.
+ *  - "currency": a confident dollar TOTAL — either scale-suffixed ("$1.5
+ *    billion"), a small unambiguous "$"-figure, or a bare comma-grouped
+ *    number that DOES have its own "$" (scale-ambiguous, but a real dollar
+ *    cell — the case verifyQuote.ts's scale normalization exists for).
+ *  - "per-share": a dollar figure immediately followed by "per share" (or
+ *    "/share") — a rate, never a total.
+ *  - "count": a bare comma-grouped number with NO "$" anywhere in its own
+ *    match — could be a share count, an index, or a table cell whose scale
+ *    declaration lives outside this token's reach; not confidently a
+ *    dollar amount at all.
+ */
+export type MoneyUnitType = "currency" | "per-share" | "count";
+
 export interface DateValue {
   year: number;
   /** null when only a year is known (e.g. a bare "2027" in "due 2027"). */
@@ -36,6 +60,8 @@ export interface FactToken {
   percentValue?: number;
   /** kind "date". */
   dateValue?: DateValue;
+  /** kind "money" only — see MoneyUnitType. Undefined for non-money kinds. */
+  moneyUnitType?: MoneyUnitType;
 }
 
 const MONTH_NAMES: Record<string, number> = {
@@ -119,7 +145,7 @@ function extractMonthYearDates(text: string): FactToken[] {
   return out;
 }
 
-/** A "$" or unit word ("billion"/"million"/etc.) makes the scale unambiguous — e.g. "$1.75 billion", "1.75 million". */
+/** A scale-suffixed figure ("$1.5 billion") never uses the per-share convention in practice — a per-share rate is always small and stated in bare dollars, never in millions/billions — so this is always "currency". */
 function extractMoneyUnitSuffixed(text: string): FactToken[] {
   const re = /\$?\s?\d[\d,]*(?:\.\d+)?\s?(?:billion|million|thousand|[bBmMkK])\b/g;
   const out: FactToken[] = [];
@@ -127,7 +153,7 @@ function extractMoneyUnitSuffixed(text: string): FactToken[] {
   while ((m = re.exec(text))) {
     const value = parseMoneyWithUnit(m[0]);
     if (value === null) continue;
-    out.push({ kind: "money", raw: m[0], index: m.index, moneyValue: value });
+    out.push({ kind: "money", raw: m[0], index: m.index, moneyValue: value, moneyUnitType: "currency" });
   }
   return out;
 }
@@ -172,12 +198,26 @@ function extractMoneyCommaGrouped(text: string): FactToken[] {
     // {index, raw.length} downstream (see verifyQuote.ts's row-text
     // extraction/normalization).
     const leadingWs = m[0].length - m[0].trimStart().length;
-    out.push({ kind: "money", raw: m[0].trim(), index: m.index + leadingWs, bareNumber: value });
+    // Whether THIS token's own match includes a "$" is a real signal a
+    // bare number lacks entirely — a share count, an index, or a table
+    // cell whose scale note lives outside this window are all extracted
+    // here too (deliberately — verifyQuote.ts still needs to match them
+    // against filing text either way), but only the "$"-bearing ones are
+    // confidently dollar amounts; see MoneyUnitType.
+    const moneyUnitType: MoneyUnitType = m[0].includes("$") ? "currency" : "count";
+    out.push({ kind: "money", raw: m[0].trim(), index: m.index + leadingWs, bareNumber: value, moneyUnitType });
   }
   return out;
 }
 
-/** A small "$"-tagged figure with no commas and no unit word (e.g. a per-share amount like "$0.78") — precise enough on its own that scale-guessing would only invite false matches, so treated as definite face value. */
+/** Real symptom: EHC's "Dividends declared ($ 0.19 per share)" — the dollar figure itself is exactly this shape, and "per share" sits right after it. */
+const PER_SHARE_TRAILING_RE = /^\s{0,3}(?:per\s+(?:common\s+)?share|\/\s?share)\b/i;
+
+function isPerShareContext(text: string, matchEnd: number): boolean {
+  return PER_SHARE_TRAILING_RE.test(text.slice(matchEnd, matchEnd + 30));
+}
+
+/** A small "$"-tagged figure with no commas and no unit word (e.g. a per-share amount like "$0.78") — precise enough on its own that scale-guessing would only invite false matches, so treated as definite face value. Tagged "per-share" instead of "currency" when the text right after it reads "per share"/"/share" — this is a RATE, never a total, and must never be shown as if it were one (see MoneyUnitType). */
 function extractMoneySmallDollar(text: string): FactToken[] {
   const re = /\$\s{0,4}\d+(?:\.\d+)?\b/g;
   const out: FactToken[] = [];
@@ -185,7 +225,8 @@ function extractMoneySmallDollar(text: string): FactToken[] {
   while ((m = re.exec(text))) {
     const value = Number.parseFloat(m[0].replace(/\$|\s/g, ""));
     if (Number.isNaN(value)) continue;
-    out.push({ kind: "money", raw: m[0], index: m.index, moneyValue: value });
+    const moneyUnitType: MoneyUnitType = isPerShareContext(text, m.index + m[0].length) ? "per-share" : "currency";
+    out.push({ kind: "money", raw: m[0], index: m.index, moneyValue: value, moneyUnitType });
   }
   return out;
 }

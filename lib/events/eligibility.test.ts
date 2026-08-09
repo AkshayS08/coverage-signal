@@ -382,16 +382,30 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
   }
 }
 
-// --- 12. UHS produces AT LEAST 2 cards — proves no per-company cap.
-// CONTROLLED: no company in this specific fixture build currently has two
-// independently card-eligible, quote-verified, different-cluster triggers
-// live (UHS's own acquisition-announced has no date — see [2] — and its
-// new-debt-issuance failed quote verification this build, an unrelated,
-// pre-existing non-determinism). Pins the same verified/recent
-// acquisition-announced fact from [2-guard] alongside UHS's own live
-// debt-maturity fact (a genuinely different cluster — different
-// citations) to prove the STRUCTURAL fix (the cap itself is gone) without
-// depending on two unrelated data-availability gaps closing at once. ---
+// --- 12. AT LEAST 2 cards for one company — proves no per-company cap.
+// CONTROLLED: no company in this fixture build currently has two live,
+// independently card-eligible, DIFFERENT-CLUSTER triggers (UHS's own
+// acquisition-announced has no date — see [2] — and its new-debt-issuance
+// failed quote verification this build, an unrelated pre-existing
+// non-determinism). Pins a verified/recent acquisition-announced fact
+// alongside UHS's own live debt-maturity fact to prove the STRUCTURAL fix
+// (the cap itself is gone) without depending on two unrelated
+// data-availability gaps closing at once.
+//
+// An earlier version of this test overrode eventDate/quoteVerified but NOT
+// citations, so the synthetic acquisition kept UHS's own real
+// acquisition-announced citation — which happens to cite the SAME 8-K
+// (uhs-20260422.htm) as UHS's real debt-maturity fact. clusterIntoEvents
+// clusters on shared citations, so the two facts correctly merged into ONE
+// cluster and the test failed for a reason that had nothing to do with the
+// per-company cap it exists to prove — the test's own premise ("a
+// genuinely different cluster — different citations") was false against
+// this fixture's real data. Fixed by also overriding `citations` to a
+// citation guaranteed disjoint from debt-maturity's, so the synthetic fact
+// actually lands in its own cluster. (Chose this over asserting on a
+// company with two genuinely live distinct events because no company in
+// the current fixture has one — every card-eligible company here produces
+// exactly one cluster; see the testFromFixture.ts run.) ---
 {
   const uhs = findCompany("UHS");
   const debtMaturity = findTrigger(uhs, "debt-maturity");
@@ -403,6 +417,10 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     quoteVerified: true,
     verifiedQuote: realAcquisition.evidence ?? "synthetic",
     verifiedQuoteNormalized: realAcquisition.evidence ?? "synthetic",
+    // Deliberately disjoint from debt-maturity's real citations (which
+    // include uhs-20260422.htm) — this is what makes it land in a
+    // genuinely different dedup cluster, not just a different trigger.
+    citations: [{ form: "8-K", date: isoDaysBeforeNow(30), url: "https://example.com/synthetic-controlled-acquisition-8k" }],
   };
   const uhsControlled: CompanyResult = {
     ...uhs,
@@ -411,7 +429,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
   const result = buildEvents([uhsControlled], NOW);
   assert(
     result.flashCardCandidates.length >= 2,
-    `[12] UHS produces at least 2 cards when debt-maturity (${debtMaturity.eventDate}) and a verified/recent acquisition-announced are both eligible (got ${result.flashCardCandidates.length}: ${result.flashCardCandidates.map((c) => c.headlineTrigger.triggerId).join(", ")}) — proves no per-company cap`
+    `[12] UHS produces at least 2 cards when debt-maturity (${debtMaturity.eventDate}) and a verified/recent acquisition-announced with a DISJOINT citation are both eligible (got ${result.flashCardCandidates.length}: ${result.flashCardCandidates.map((c) => c.headlineTrigger.triggerId).join(", ")}) — proves no per-company cap, independent of dedup clustering`
   );
 }
 

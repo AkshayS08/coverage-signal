@@ -18,7 +18,18 @@ export interface VerifiedFact {
   verifiedText: string;
   /** Same fact as verifiedText, but with any bare table figure resolved to its scale-normalized dollar form where a governing scale declaration was found (lib/agent/scaleNormalize.ts) — this is what Sonnet is given as the stateable value, so a table cell "1,500" under a "dollars in millions" declaration reads as "$1.5 billion," not a bare number nobody can safely interpret. Identical to verifiedText when no bare figures needed normalizing. */
   normalizedText: string;
-  /** Money/percent tokens found in normalizedText, as raw strings (e.g. "$1.5 billion", "5.125%"). */
+  /**
+   * CURRENCY-typed money tokens found in normalizedText, as raw strings
+   * (e.g. "$1.5 billion") — deliberately excludes percent tokens and any
+   * money token typed "per-share" or "count" (lib/agent/factTokens.ts's
+   * MoneyUnitType). Three real mistyped cases this exists to prevent: a
+   * bare unlabeled number ("3,938", no "$" anywhere near it) shown as a
+   * confident dollar amount; a percentage ("50%") shown as if it were the
+   * fact's dollar value; a per-share dividend ("$0.19 per share") shown as
+   * a buyback authorization SIZE. Only lib/events/sonnetPortfolioSummary.ts
+   * currently reads this field, and its own rule is: an empty array means
+   * "no figure disclosed" — never guess a wrong-typed number instead.
+   */
   figures: string[];
   /** Date tokens found in verifiedText, as raw strings (e.g. "November 18, 2025"). */
   dates: string[];
@@ -51,7 +62,7 @@ export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
       fact: t.triggerName,
       verifiedText: t.verifiedQuote,
       normalizedText,
-      figures: tokens.filter((tok) => tok.kind === "money" || tok.kind === "percent").map((tok) => tok.raw),
+      figures: tokens.filter((tok) => tok.kind === "money" && tok.moneyUnitType === "currency").map((tok) => tok.raw),
       dates: tokens.filter((tok) => tok.kind === "date").map((tok) => tok.raw),
       sourceFiling: mostRecentCitation(t.citations),
     });

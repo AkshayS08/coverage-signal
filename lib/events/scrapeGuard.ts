@@ -6,87 +6,55 @@
  * ", 2025 ASSETS Current assets: Cash $158.04 million $79.9 million" as a
  * What line. Every figure in it was real, so the fact-accuracy audit
  * (numberGuard.ts) passed it — this catches what that audit structurally
- * cannot: the text has no verb, no sentence, just table cells stitched
- * together by whitespace.
+ * cannot: the text never resolved into a sentence.
  *
  * Deliberately NOT applied to the dedicated "Source text" quote expander —
  * that surface exists specifically to show the filing's own raw words,
  * table row and all, for verification; this guards prose slots only.
+ *
+ * v2 (this file originally used a verb allowlist — false-positived on
+ * SGRY's genuine, figure-bearing asset-sale sentence because "values" and
+ * "providing" weren't enumerated; a verb list fails open on any real verb
+ * it doesn't happen to list). Replaced with two STRUCTURAL signals that
+ * don't require recognizing individual words: does the text end the way a
+ * sentence ends, and how numerically dense is it relative to its word
+ * count. Validated against every real verified quote in the current
+ * fixture (see narrationIntegrity.test.ts) — every genuine prose sentence
+ * ends with terminal punctuation and has low numeric density; every real
+ * scraped table/label fragment in the book has neither.
  */
-
-const COMMON_VERBS = [
-  "is", "are", "was", "were", "be", "been", "being",
-  "has", "have", "had",
-  "matures", "mature", "maturing", "expires", "expire", "expiring",
-  "closes", "closed", "closing",
-  "announced", "announces", "announcing",
-  "completed", "completes", "completing",
-  "entered", "enters", "entering",
-  "issued", "issues", "issuing",
-  "priced", "prices", "pricing",
-  "redeemed", "redeems", "redeeming",
-  "repaid", "repays", "repaying",
-  "raised", "raises", "raising",
-  "increased", "increases", "increasing",
-  "decreased", "decreases", "decreasing",
-  "rose", "rises", "rising",
-  "fell", "falls", "falling",
-  "grew", "grows", "growing",
-  "declined", "declines", "declining",
-  "paid", "pays", "paying",
-  "received", "receives", "receiving",
-  "reported", "reports", "reporting",
-  "disclosed", "discloses", "disclosing",
-  "filed", "files", "filing",
-  "plans", "planning", "planned",
-  "will", "expects", "expected", "expecting",
-  "agreed", "agrees", "agreeing",
-  "acquired", "acquires", "acquiring",
-  "sold", "sells", "selling",
-  "divested", "divests", "divesting",
-  "refinanced", "refinances", "refinancing",
-  "amended", "amends", "amending",
-  "extended", "extends", "extending",
-  "drew", "draws", "drawing",
-  "borrowed", "borrows", "borrowing",
-  "repurchased", "repurchases", "repurchasing",
-  "authorized", "authorizes", "authorizing",
-  "declared", "declares", "declaring",
-  "opened", "opens", "opening",
-  "launched", "launches", "launching",
-  "secured", "secures", "securing",
-  "obtained", "obtains", "obtaining",
-  "upsized", "upsizes", "upsizing",
-  "reduced", "reduces", "reducing",
-  "means", "meant", "needs", "needed",
-  "suggests", "suggested", "signals", "signaled",
-  "reflects", "reflected", "shows", "showed",
-  "comes", "came", "brings", "brought",
-  "gives", "gave", "lets", "let",
-  "makes", "made", "marks", "marked",
-  "represents", "represented", "stands", "stood",
-  "remains", "remained", "stays", "stayed",
-  "sits", "sat", "totals", "totaled", "totaling",
-];
-const VERB_RE = new RegExp(`\\b(${COMMON_VERBS.join("|")})\\b`, "i");
 
 /** Money/percent/year-shaped numeric runs — deliberately loose, this only needs to COUNT numerals, not classify them precisely. */
 const NUMERIC_TOKEN_RE = /\$?\d[\d,.]*\s*(?:%|percent|billion|million|thousand|bn|mm|k)?|\b(?:19|20)\d{2}\b/gi;
 
 const MIN_NUMERIC_TOKENS_TO_SUSPECT = 2;
 
+/** A table/label fragment almost never ends the way a written sentence does — a real sentence ends in ./!/?, optionally followed by a closing quote or parenthesis. */
+const SENTENCE_END_RE = /[.!?]["'’”)]?$/;
+
+/** Even a punctuated fragment is suspect if numerals/symbols dominate the text rather than connecting prose — a genuine sentence describing 2-3 figures is still mostly words. */
+const MAX_NUMERIC_WORD_RATIO = 0.3;
+
 /**
  * True when `text` looks like a table/label fragment rather than a
- * sentence: two or more numeric tokens and not a single common verb
- * anywhere. A genuine sentence with two numbers ("Cash rose from $80
- * million to $158 million") always has a verb; a scraped table cell never
- * does.
+ * sentence. Two independent structural signals, either one enough to
+ * reject: (1) it doesn't end the way a sentence ends, or (2) numerals make
+ * up too much of its word count even though it happens to end in
+ * punctuation (defense in depth against a stray period). Below the
+ * numeric-token floor, text is never suspected at all — a single number in
+ * an otherwise normal sentence is not scrape-shaped.
  */
 export function isScrapeShapedText(text: string | null | undefined): boolean {
   if (!text) return false;
   const trimmed = text.trim();
   if (!trimmed) return false;
+
   const numericMatches = trimmed.match(NUMERIC_TOKEN_RE) ?? [];
   if (numericMatches.length < MIN_NUMERIC_TOKENS_TO_SUSPECT) return false;
-  return !VERB_RE.test(trimmed);
+
+  if (!SENTENCE_END_RE.test(trimmed)) return true;
+
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  const numericRatio = words.length > 0 ? numericMatches.length / words.length : 0;
+  return numericRatio > MAX_NUMERIC_WORD_RATIO;
 }
