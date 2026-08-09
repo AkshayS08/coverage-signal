@@ -67,6 +67,7 @@ import type { CompanyResult, TriggerResult } from "../agent";
 import { buildEvents, compareUrgency } from "./buildEvents";
 import { evaluateEligibility, PROCEEDS_RECENCY_DAYS } from "./eligibility";
 import { daysBetween, PENDING_LIVE_MAX_AGE_DAYS } from "./eventTiming";
+import { normalizeEventDate } from "../agent/claude";
 
 interface Fixture {
   generatedAt: string;
@@ -569,6 +570,43 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
   assert(
     hasFigures,
     `[19c] SGRY asset-sale verifiedQuote CONTAINS a deal figure ($1.15 billion or $795 million) — verifiedQuote: ${JSON.stringify(t.verifiedQuote)}`
+  );
+}
+
+// --- 20. Session 13 — normalizeEventDate. A year-granularity claim with a
+// fabricated day ("2026-12-31") must normalize to the bare year and still
+// card via windowDate. This is the EXACT input Haiku produced live for
+// UHS's debt-maturity fact in Session 13 Part B's run 2 — the literal
+// forbidden example from claude.ts's own extraction prompt, self-
+// contradicting its own granularity label. ---
+{
+  const normalized = normalizeEventDate("2026-12-31", "year");
+  assert(
+    normalized.eventDate === "2026" && normalized.eventDateGranularity === "year" && normalized.wasNormalized,
+    `[20a] {eventDate: "2026-12-31", granularity: "year"} normalizes to bare "2026" (got eventDate=${normalized.eventDate}, granularity=${normalized.eventDateGranularity}, wasNormalized=${normalized.wasNormalized})`
+  );
+
+  const uhs = findCompany("UHS");
+  const realDebtMaturity = findTrigger(uhs, "debt-maturity");
+  const synthetic: TriggerResult = { ...realDebtMaturity, eventDate: normalized.eventDate, dateGranularity: normalized.eventDateGranularity };
+  const r = evaluateEligibility(synthetic, NOW);
+  assert(r.cardEligible, `[20b] the normalized bare-year fact still cards via windowDate (cardEligible=${r.cardEligible}, reason=${r.reason})`);
+}
+
+// --- 20c/20d. The other direction: a day-granularity claim landing exactly
+// on 12-31 or 01-01 is flagged for review, never auto-corrected — a real
+// date can legitimately fall on either, so normalizeEventDate must leave
+// it untouched while still reporting the pattern. ---
+{
+  const suspicious = normalizeEventDate("2026-12-31", "day");
+  assert(
+    suspicious.eventDate === "2026-12-31" && suspicious.eventDateGranularity === "day" && !suspicious.wasNormalized && suspicious.suspiciousRoundDate,
+    `[20c] a day-granularity "2026-12-31" is flagged, not modified (got eventDate=${suspicious.eventDate}, wasNormalized=${suspicious.wasNormalized}, suspiciousRoundDate=${suspicious.suspiciousRoundDate})`
+  );
+  const ordinary = normalizeEventDate("2030-06-01", "day");
+  assert(
+    !ordinary.suspiciousRoundDate && !ordinary.wasNormalized,
+    `[20d] an ordinary day-granularity date is neither flagged nor modified (suspiciousRoundDate=${ordinary.suspiciousRoundDate})`
   );
 }
 

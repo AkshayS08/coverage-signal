@@ -66,6 +66,43 @@ export type ProceedsUse = "refinancing_only" | "partly_unapplied" | "unstated";
  */
 export type DateGranularity = "year" | "month" | "day";
 
+const FULL_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+export interface DateNormalizationResult {
+  eventDate: string | null;
+  eventDateGranularity: DateGranularity | null;
+  /** True when a year-granularity claim carried a fabricated month/day and was corrected down to the bare year — the exact defect this exists for: Haiku's own prompt (above) explicitly forbids writing "2026-12-31" for a bare "2026," but the wording alone didn't stop it happening live. */
+  wasNormalized: boolean;
+  /** True when a day- or month-granularity claim lands exactly on 12-31 or 01-01 — the two values a model fabricates when it applies its own worst-case convention instead of reading a real date. Never auto-corrected (a real date can legitimately fall on either), only surfaced for review. Note: a genuine month-granularity January date ("January 2027" -> "2027-01-01") always matches the 01-01 pattern too, since day defaults to the 1st by convention for "month" granularity — an expected false positive, not a bug. */
+  suspiciousRoundDate: boolean;
+}
+
+/**
+ * Post-extraction validation for the eventDate/eventDateGranularity pair —
+ * enforces in code what the prompt above only asks for in words. Real
+ * case: Haiku returned {eventDate: "2026-12-31", eventDateGranularity:
+ * "year"} for UHS's debt-maturity fact — the LITERAL forbidden example
+ * from this file's own INSTRUCTIONS text, self-contradicting its own
+ * granularity label. Never rejects the fact: a bare-year maturity is
+ * legitimate and eventTiming.ts's windowDate convention already exists
+ * specifically to handle it downstream.
+ */
+export function normalizeEventDate(eventDate: string | null, eventDateGranularity: DateGranularity | null): DateNormalizationResult {
+  if (!eventDate || !eventDateGranularity) {
+    return { eventDate, eventDateGranularity, wasNormalized: false, suspiciousRoundDate: false };
+  }
+  const full = eventDate.match(FULL_DATE_RE);
+  if (!full) {
+    return { eventDate, eventDateGranularity, wasNormalized: false, suspiciousRoundDate: false };
+  }
+  if (eventDateGranularity === "year") {
+    return { eventDate: full[1], eventDateGranularity: "year", wasNormalized: true, suspiciousRoundDate: false };
+  }
+  const [, , month, day] = full;
+  const suspiciousRoundDate = (month === "12" && day === "31") || (month === "01" && day === "01");
+  return { eventDate, eventDateGranularity, wasNormalized: false, suspiciousRoundDate };
+}
+
 export interface TriggerVerdict {
   triggerId: string;
   fired: boolean;

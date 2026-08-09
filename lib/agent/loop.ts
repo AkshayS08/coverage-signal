@@ -5,6 +5,7 @@ import type { FilingEntry } from "../fetch";
 import {
   classifyAllTriggers,
   classifyOneTrigger,
+  normalizeEventDate,
   type CorpusDoc,
   type DateGranularity,
   type EventStatus,
@@ -162,16 +163,36 @@ export async function runAgentLoop(
     if (v.fired && result.verified && v.quoteHasFigure === false) {
       log(`  ⚠ QUOTE HAS NO FIGURE for ${label} — verified, but the model reported no single sentence carried the fact's material figure; verifiedQuote is a figure-less fallback`);
     }
+    // Post-extraction validation, before the fact-guard even runs: enforce
+    // in code what the prompt only asks for in words. Real case: Haiku
+    // returned {eventDate: "2026-12-31", eventDateGranularity: "year"} for
+    // UHS's debt-maturity fact — the literal forbidden example from its
+    // own instructions. A year-granularity claim with a fabricated
+    // month/day is corrected down to the bare year (never rejected —
+    // eventTiming.ts's windowDate convention exists to handle exactly
+    // this); a day/month-granularity claim landing exactly on 12-31 or
+    // 01-01 is only logged for review, never auto-corrected.
+    const normalizedDate = normalizeEventDate(v.eventDate ?? null, v.eventDateGranularity ?? null);
+    if (normalizedDate.wasNormalized) {
+      log(
+        `  ⚠ EVENT DATE NORMALIZED for ${companyName} — ${label}: claimed "${v.eventDate}" carried a fabricated month/day for a year-granularity fact; corrected to "${normalizedDate.eventDate}"`
+      );
+    }
+    if (normalizedDate.suspiciousRoundDate) {
+      log(
+        `  ⚠ EVENT DATE FLAGGED FOR REVIEW for ${companyName} — ${label}: "${normalizedDate.eventDate}" (granularity ${normalizedDate.eventDateGranularity}) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected`
+      );
+    }
     const dateGuard = verifyEventDate({
-      eventDate: v.eventDate ?? null,
-      eventDateGranularity: v.eventDateGranularity ?? null,
+      eventDate: normalizedDate.eventDate,
+      eventDateGranularity: normalizedDate.eventDateGranularity,
       anchorText: v.quote ?? v.evidence ?? null,
       citedUrls: v.citedUrls ?? [],
       textByUrl,
     });
-    if (v.eventDate && !dateGuard.accepted) {
+    if (normalizedDate.eventDate && !dateGuard.accepted) {
       log(
-        `  ⚠ EVENT DATE REJECTED for ${companyName} — ${label}: claimed "${v.eventDate}" not found (or not anchored to this fact) in the fetched filing text; eventDate set to null`
+        `  ⚠ EVENT DATE REJECTED for ${companyName} — ${label}: claimed "${normalizedDate.eventDate}" not found (or not anchored to this fact) in the fetched filing text; eventDate set to null`
       );
     }
     return finalize(trigger, citationLookup, v, result, dateGuard);

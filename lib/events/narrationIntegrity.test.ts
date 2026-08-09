@@ -509,24 +509,57 @@ console.log(`=== Session 12 Parts B/C golden tests (narration integrity) ===\n`)
 // display (Encompass's "$107.7"), and adjacency mis-binding generalized
 // beyond the two triggers Session 12 had keyword-gated. ---
 {
-  const uhs = fixture.companies.find((c) => c.ticker === "UHS");
-  if (!uhs) throw new Error("fixture missing UHS");
-  const uhsFacts = buildVerifiedFactBase(uhs);
-  const uhsDebtMaturity = uhsFacts.find((f) => f.linkedTriggerId === "debt-maturity");
-
-  // 10a/10b. Fix 1: UHS's bare "$ 771,910" table cell (no scale word, no
+  // 10a/10b/10c. Fix 1: a bare "$ 771,910" table cell (no scale word, no
   // sentence structure) must produce "no figure disclosed" in the SUMMARY
   // path (figures[]) AND must not be visible for the CARD path to guess a
   // scale for either (normalizedText) — the exact defect: card guessed
   // "$771.9 million," summary read the same bare number as "$771.91
-  // thousand."
+  // thousand." SYNTHETIC REGRESSION GUARD: this is UHS's real,
+  // historically-observed debt-maturity quote — but which quote/citation
+  // Haiku selects for this fact varies run to run (real, observed
+  // non-determinism, unrelated to this fix — the live fixture's current
+  // build cites a different sentence entirely), so it's pinned as a
+  // constructed CompanyResult, matching eligibility.test.ts's own
+  // established convention.
+  const bareQuote = "Current maturities of long-term debt $ 771,910   $ 748,158";
+  const synthetic: CompanyResult = {
+    company: "SYNTHETIC CO.",
+    cik: "0000000000",
+    ticker: "SYN2",
+    verdict: "CALL",
+    relationshipFlags: [],
+    results: [
+      {
+        triggerId: "debt-maturity",
+        triggerName: "Debt maturity approaching",
+        fired: true,
+        dataAvailable: true,
+        evidence: bareQuote,
+        mappedNeed: "Refinancing",
+        needType: "credit",
+        confidence: 0.95,
+        citations: [{ form: "10-Q", date: "2026-08-07", url: "https://example.com/synthetic" }],
+        quoteVerified: true,
+        verifiedQuote: bareQuote,
+        verifiedQuoteNormalized: bareQuote,
+        quoteMatchType: "literal",
+        quoteHasFigure: true,
+        eventDate: "2026",
+        dateGranularity: "year",
+        eventStatus: "upcoming",
+        proceedsUse: null,
+      },
+    ],
+  };
+  const uhsFacts = buildVerifiedFactBase(synthetic);
+  const uhsDebtMaturity = uhsFacts.find((f) => f.linkedTriggerId === "debt-maturity");
   assert(
     !!uhsDebtMaturity && uhsDebtMaturity.figures.length === 0,
-    `[10a] UHS's bare $771,910 table cell produces "no figure disclosed" in the portfolio-summary path (figures: ${JSON.stringify(uhsDebtMaturity?.figures)})`
+    `[10a] a bare $771,910 table cell produces "no figure disclosed" in the portfolio-summary path (figures: ${JSON.stringify(uhsDebtMaturity?.figures)})`
   );
   assert(
     !!uhsDebtMaturity && !/771,?910/.test(uhsDebtMaturity.normalizedText) && uhsDebtMaturity.normalizedText.includes("undisclosed"),
-    `[10b] UHS's bare $771,910 is also redacted from the CARD-narration text — Sonnet cannot see it to guess a scale either (normalizedText: ${JSON.stringify(uhsDebtMaturity?.normalizedText)})`
+    `[10b] the same bare $771,910 is also redacted from the CARD-narration text — Sonnet cannot see it to guess a scale either (normalizedText: ${JSON.stringify(uhsDebtMaturity?.normalizedText)})`
   );
   // 10c. The two paths never disagree: whenever the summary drops a
   // figure to "no figure disclosed," the card path's own text has no
