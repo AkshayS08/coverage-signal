@@ -289,7 +289,7 @@ export function extractFactTokens(text: string): FactToken[] {
   return result.sort((a, b) => a.index - b.index);
 }
 
-function moneyValuesMatch(a: number, b: number, toleranceRatio = 0.02): boolean {
+export function moneyValuesMatch(a: number, b: number, toleranceRatio = 0.02): boolean {
   const tol = Math.max(Math.max(Math.abs(a), Math.abs(b)) * toleranceRatio, 1);
   return Math.abs(a - b) <= tol;
 }

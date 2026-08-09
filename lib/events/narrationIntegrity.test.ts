@@ -21,6 +21,7 @@ import { failedPortfolioSummary } from "./portfolioSummary";
 import { checkSummaryConstraints, type FactLine } from "./sonnetPortfolioSummary";
 import { buildVerifiedFactBase, hasDeterminableScale } from "./factBase";
 import { overWordCeiling, buildCorrectionInstruction, type WordCounts } from "./sonnetEventBriefing";
+import { checkNumbersAgainstQuotes } from "./numberGuard";
 
 interface Fixture {
   generatedAt: string;
@@ -387,17 +388,54 @@ console.log(`=== Session 12 Parts B/C golden tests (narration integrity) ===\n`)
     `[8b] no displayed figure across the full book lacks a determinable unit (checked ${uncapped} figures; failures: ${badFigures.join("; ")})`
   );
 
-  // 8c. Fix 2: HCA's revolver "increased...from $4.0 billion...to $8.0
-  // billion" must bind the POST-change $8.0 billion, not the first-stated
-  // $4.0 billion.
-  const hca = fixture.companies.find((c) => c.ticker === "HCA");
-  if (!hca) throw new Error("fixture missing HCA");
-  const hcaFacts = buildVerifiedFactBase(hca);
-  const hcaRevolver = hcaFacts.find((f) => f.linkedTriggerId === "revolver-near-capacity");
-  assert(
-    !!hcaRevolver && hcaRevolver.figures.some((f) => f.includes("8.0 billion")) && !hcaRevolver.figures.some((f) => f.includes("4.0 billion")),
-    `[8c] HCA revolver-near-capacity binds the post-change $8.0 billion, not the pre-change $4.0 billion (figures: ${JSON.stringify(hcaRevolver?.figures)})`
-  );
+  // 8c. Fix 2: "increased...from $4.0 billion...to $8.0 billion" must bind
+  // the POST-change $8.0 billion, not the first-stated $4.0 billion.
+  // SYNTHETIC REGRESSION GUARD: this exact sentence is HCA's real,
+  // historically-observed revolver-near-capacity quote (see Session 13
+  // Part B's live-run report) — but that trigger doesn't fire on every
+  // live run (real, observed non-determinism, unrelated to this fix), so
+  // it's pinned here as a constructed CompanyResult, matching
+  // eligibility.test.ts's own established convention for a real quote
+  // that the current live fixture doesn't happen to reproduce.
+  {
+    const changeQuote =
+      'increased the size of its commercial paper program under which the Issuer may issue unsecured commercial paper notes (the "Notes") from time to time from a maximum aggregate face or principal amount of $4.0 billion outstanding at any time to a maximum aggregate face or principal amount of $8.0 billion outstanding at any time.';
+    const synthetic: CompanyResult = {
+      company: "SYNTHETIC CO.",
+      cik: "0000000000",
+      ticker: "SYN",
+      verdict: "CALL",
+      relationshipFlags: [],
+      results: [
+        {
+          triggerId: "revolver-near-capacity",
+          triggerName: "Revolver near capacity + growth",
+          fired: true,
+          dataAvailable: true,
+          evidence: changeQuote,
+          mappedNeed: "Revolver upsize",
+          needType: "credit",
+          confidence: 0.95,
+          citations: [{ form: "10-Q", date: "2026-07-28", url: "https://example.com/synthetic" }],
+          quoteVerified: true,
+          verifiedQuote: changeQuote,
+          verifiedQuoteNormalized: changeQuote,
+          quoteMatchType: "literal",
+          quoteHasFigure: true,
+          eventDate: null,
+          dateGranularity: null,
+          eventStatus: "standing",
+          proceedsUse: null,
+        },
+      ],
+    };
+    const syntheticFacts = buildVerifiedFactBase(synthetic);
+    const revolver = syntheticFacts.find((f) => f.linkedTriggerId === "revolver-near-capacity");
+    assert(
+      !!revolver && revolver.figures.some((f) => f.includes("8.0 billion")) && !revolver.figures.some((f) => f.includes("4.0 billion")),
+      `[8c] "increased from $4.0 billion to $8.0 billion" binds the post-change $8.0 billion, not the pre-change $4.0 billion (figures: ${JSON.stringify(revolver?.figures)})`
+    );
+  }
 
   // 8d. Fix 3: DaVita's fx-exposure fact must bind NO figure — the only
   // candidates in its padded, non-prose display text are an unrelated
@@ -461,6 +499,95 @@ console.log(`=== Session 12 Parts B/C golden tests (narration integrity) ===\n`)
   assert(
     /2026/.test(both) && /45-word hard limit/.test(both),
     `[9e] a combined accuracy+length failure's retry instruction covers both in one message (instruction: ${JSON.stringify(both)})`
+  );
+}
+
+// --- 10. Session 13 Part B — four figure-binding fixes after a live run
+// found real defects the fixture never exercised: a scale contradiction
+// (card said "$771.9 million," summary said "$771.91 thousand" for the
+// SAME bare UHS table cell), a truncated quote with no unit reaching
+// display (Encompass's "$107.7"), and adjacency mis-binding generalized
+// beyond the two triggers Session 12 had keyword-gated. ---
+{
+  const uhs = fixture.companies.find((c) => c.ticker === "UHS");
+  if (!uhs) throw new Error("fixture missing UHS");
+  const uhsFacts = buildVerifiedFactBase(uhs);
+  const uhsDebtMaturity = uhsFacts.find((f) => f.linkedTriggerId === "debt-maturity");
+
+  // 10a/10b. Fix 1: UHS's bare "$ 771,910" table cell (no scale word, no
+  // sentence structure) must produce "no figure disclosed" in the SUMMARY
+  // path (figures[]) AND must not be visible for the CARD path to guess a
+  // scale for either (normalizedText) — the exact defect: card guessed
+  // "$771.9 million," summary read the same bare number as "$771.91
+  // thousand."
+  assert(
+    !!uhsDebtMaturity && uhsDebtMaturity.figures.length === 0,
+    `[10a] UHS's bare $771,910 table cell produces "no figure disclosed" in the portfolio-summary path (figures: ${JSON.stringify(uhsDebtMaturity?.figures)})`
+  );
+  assert(
+    !!uhsDebtMaturity && !/771,?910/.test(uhsDebtMaturity.normalizedText) && uhsDebtMaturity.normalizedText.includes("undisclosed"),
+    `[10b] UHS's bare $771,910 is also redacted from the CARD-narration text — Sonnet cannot see it to guess a scale either (normalizedText: ${JSON.stringify(uhsDebtMaturity?.normalizedText)})`
+  );
+  // 10c. The two paths never disagree: whenever the summary drops a
+  // figure to "no figure disclosed," the card path's own text has no
+  // stray raw figure left for Sonnet to state instead.
+  assert(
+    !!uhsDebtMaturity && uhsDebtMaturity.figures.length === 0 && uhsDebtMaturity.normalizedText.includes("undisclosed"),
+    "[10c] card and summary paths agree — both are gated by the identical tokenHasDeterminableScale rule for this fact"
+  );
+
+  // 10d. Fix 2: Encompass's truncated quote ("Cash and cash equivalents $
+  // 107.7" — Haiku's own quote cut off right before "million," despite its
+  // evidence field having it) must be dropped, not shown as a bare,
+  // unitless "$107.7". This is a Part A/extraction defect (logged as an
+  // open issue, NOT fixed here) — Fix 2 is the display-side backstop.
+  const ehc = fixture.companies.find((c) => c.ticker === "EHC");
+  if (!ehc) throw new Error("fixture missing EHC");
+  const ehcFacts = buildVerifiedFactBase(ehc);
+  const ehcCash = ehcFacts.find((f) => f.linkedTriggerId === "large-cash-balance");
+  assert(
+    !!ehcCash && ehcCash.figures.length === 0 && !/\$\s*107\.7\b/.test(ehcCash.normalizedText),
+    `[10d] Encompass's truncated "$107.7" (no unit) is dropped from both paths, not displayed bare (figures: ${JSON.stringify(ehcCash?.figures)}, normalizedText: ${JSON.stringify(ehcCash?.normalizedText)})`
+  );
+
+  // 10e. Fix 1, part 2: the number-guard itself must reject a card that
+  // states a SCALE-GUESSED figure ("$771.9 million") against a source
+  // quote that only has the bare, unresolved "$ 771,910" — the old
+  // tolerant x1/x1000/x1,000,000 matching let exactly this kind of guess
+  // pass audit.
+  {
+    const guessedCard = "UHS has $771.9 million of debt maturing soon.";
+    const bareQuote = "Current maturities of long-term debt $ 771,910";
+    const result = checkNumbersAgainstQuotes(guessedCard, [bareQuote]);
+    assert(
+      !result.ok && result.unverifiedTokens.some((t) => /771\.9/.test(t)),
+      `[10e] numberGuard rejects a scale-guessed "$771.9 million" against a bare, unresolved "$ 771,910" source (result: ${JSON.stringify(result)})`
+    );
+  }
+  // 10e2. Positive control: the SAME figure at the SAME (already-resolved)
+  // scale still passes — this isn't a blanket rejection of large numbers,
+  // only of a scale that was never actually verified.
+  {
+    const correctCard = "The company holds $1.5 billion in new debt.";
+    const scaledQuote = "issued $1.5 billion aggregate principal amount of senior notes.";
+    const result = checkNumbersAgainstQuotes(correctCard, [scaledQuote]);
+    assert(result.ok, `[10e2] numberGuard still accepts a figure that matches the source at its own stated scale (result: ${JSON.stringify(result)})`);
+  }
+
+  // 10f. Disclosed, accepted tradeoff of generalizing the adjacency guard
+  // to every trigger (not a per-trigger keyword allowlist): Concentra's
+  // floating-rate-debt fact was previously correctly reading "$938.13
+  // million" (its first candidate happened to be right), but its source
+  // text has no sentence structure and multiple scale-worded candidates —
+  // under the universal rule it now loses that figure too. Documented
+  // here, not silently lost.
+  const con = fixture.companies.find((c) => c.ticker === "CON");
+  if (!con) throw new Error("fixture missing CON");
+  const conFacts = buildVerifiedFactBase(con);
+  const conFloating = conFacts.find((f) => f.linkedTriggerId === "floating-rate-debt");
+  assert(
+    !!conFloating && conFloating.figures.length === 0,
+    `[10f] KNOWN TRADEOFF: Concentra's floating-rate-debt figure ($938.13 million, previously correct) is now also dropped — non-sentence source with multiple scale-worded candidates, no reliable attribution without a keyword allowlist (figures: ${JSON.stringify(conFloating?.figures)})`
   );
 }
 

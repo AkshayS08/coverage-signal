@@ -15,10 +15,27 @@ function resolveCachePath(relPath: string): string {
   return path.join(CACHE_DIR, relPath);
 }
 
+/**
+ * Session 13 Part B: the cache previously had no expiry at all — a real
+ * live run found Concentra's 98% quarter-over-quarter cash build hidden
+ * behind a stale filing-list fetch for weeks, because nothing ever forced
+ * a re-fetch once a cache entry existed. 24 hours balances staying fresh
+ * against not re-fetching EDGAR on every run within the same day.
+ */
+export const FILING_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+interface CacheEnvelope<T> {
+  cachedAt: string;
+  data: T;
+}
+
 export async function readCache<T>(relPath: string): Promise<T | null> {
   try {
     const raw = await fs.readFile(resolveCachePath(relPath), "utf-8");
-    return JSON.parse(raw) as T;
+    const envelope = JSON.parse(raw) as CacheEnvelope<T>;
+    const age = Date.now() - new Date(envelope.cachedAt).getTime();
+    if (age > FILING_CACHE_TTL_MS) return null; // expired -- treat as a cache miss, caller re-fetches
+    return envelope.data;
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
     throw err;
@@ -28,7 +45,8 @@ export async function readCache<T>(relPath: string): Promise<T | null> {
 export async function writeCache(relPath: string, data: unknown): Promise<void> {
   const fullPath = resolveCachePath(relPath);
   await fs.mkdir(path.dirname(fullPath), { recursive: true });
-  await fs.writeFile(fullPath, JSON.stringify(data, null, 2), "utf-8");
+  const envelope: CacheEnvelope<unknown> = { cachedAt: new Date().toISOString(), data };
+  await fs.writeFile(fullPath, JSON.stringify(envelope, null, 2), "utf-8");
 }
 
 /**
