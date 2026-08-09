@@ -398,6 +398,20 @@
   color: var(--text-secondary);
 }
 
+/* Loud narration/summary failure — shown IN PLACE OF prose, never blended
+   in alongside it, so a Sonnet call failing (or every fallback text being
+   scrape-shaped) can never read as a normal card/summary. */
+.narrationFailureBanner {
+  margin: 6px 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fbbf24;
+  border-radius: 6px;
+}
+
 /* --- Shared trigger row bits (flash cards don't use these; portfolio table does) --- */
 
 .triggerList {
@@ -552,6 +566,12 @@
 
   .unverifiedTag {
     color: #f87171;
+  }
+
+  .narrationFailureBanner {
+    color: #fcd34d;
+    background: #422006;
+    border-color: #92400e;
   }
 
   .citation {

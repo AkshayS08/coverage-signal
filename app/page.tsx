@@ -5,7 +5,6 @@ import styles from "./page.module.css";
 import {
   buildEvents,
   templateEventBriefing,
-  buildPortfolioSummary,
   compactLabelWithTiming,
   BUCKET_LABELS,
   type EventRecord,
@@ -15,6 +14,7 @@ import {
   type Bucket,
 } from "@/lib/events";
 import type { DraftedEventBriefing } from "@/lib/events/eventBriefing";
+import type { DraftedPortfolioSummary } from "@/lib/events/portfolioSummary";
 import type { CompanyResult, RunStreamEvent } from "@/lib/agent";
 
 const DEFAULT_BOOK = [
@@ -120,6 +120,7 @@ export default function Home() {
   const [trace, setTrace] = useState<TraceLine[]>([]);
   const [results, setResults] = useState<CompanyResult[]>([]);
   const [eventBriefings, setEventBriefings] = useState<Record<string, DraftedEventBriefing>>({});
+  const [portfolioSummaries, setPortfolioSummaries] = useState<Record<string, DraftedPortfolioSummary>>({});
   const [running, setRunning] = useState(false);
   const [asOfDate, setAsOfDate] = useState<Date | null>(null);
 
@@ -136,10 +137,6 @@ export default function Home() {
     () => new Set(flashCardCandidates.map((e) => e.company)).size,
     [flashCardCandidates]
   );
-  const flashCardByCompany = useMemo(
-    () => new Map(flashCardCandidates.map((e) => [e.company, e])),
-    [flashCardCandidates]
-  );
 
   async function runAgent() {
     const companies = book
@@ -153,6 +150,7 @@ export default function Home() {
     setTrace([]);
     setResults([]);
     setEventBriefings({});
+    setPortfolioSummaries({});
     setAsOfDate(new Date());
 
     // Real trace/error lines land here instead of going straight to state,
@@ -203,6 +201,10 @@ export default function Home() {
             for (const { eventId, briefing } of drafted) next[eventId] = briefing;
             return next;
           });
+        }
+        if (event.portfolioSummary) {
+          const summary = event.portfolioSummary;
+          setPortfolioSummaries((prev) => ({ ...prev, [event.result.company]: summary }));
         }
       } else if (event.type === "error") {
         queueTrace(event.company, `error: ${event.message}`);
@@ -297,18 +299,26 @@ export default function Home() {
           <span className={styles.timingTag}>{formatHeadlineDate(card.timing, card.citations, asOfDate ?? new Date())}</span>
         </div>
         <div className={styles.eventDescription}>{card.headlineTrigger.triggerName}</div>
-        <p className={styles.cardLine}>
-          <strong>What:</strong> {briefing.what}
-        </p>
-        <p className={styles.cardLine}>
-          <strong>Why call:</strong> {briefing.whyCall}
-        </p>
-        <p className={`${styles.cardLine} ${styles.cardLineAngle}`}>
-          <strong>Angle:</strong> {briefing.angle}
-          <span className={styles.briefingSource}>
-            {briefing.source === "sonnet" ? "Sonnet-drafted" : briefing.source === "quote" ? "source quote" : "templated"}
-          </span>
-        </p>
+        {briefing.source === "failed" ? (
+          <div className={styles.narrationFailureBanner}>
+            ⚠ Narration failed — {briefing.failureReason}
+          </div>
+        ) : (
+          <>
+            <p className={styles.cardLine}>
+              <strong>What:</strong> {briefing.what}
+            </p>
+            <p className={styles.cardLine}>
+              <strong>Why call:</strong> {briefing.whyCall}
+            </p>
+            <p className={`${styles.cardLine} ${styles.cardLineAngle}`}>
+              <strong>Angle:</strong> {briefing.angle}
+              <span className={styles.briefingSource}>
+                {briefing.source === "sonnet" ? "Sonnet-drafted" : briefing.source === "quote" ? "source quote" : "templated"}
+              </span>
+            </p>
+          </>
+        )}
         {card.alsoActive.length > 0 && (
           <p className={styles.alsoActiveLine}>
             <strong>Also active:</strong> {card.alsoActive.map(compactActiveLabel).join(" · ")} — see
@@ -364,9 +374,22 @@ export default function Home() {
     );
   }
 
+  function renderPortfolioSummary(p: CompanyPortfolio) {
+    const drafted = portfolioSummaries[p.company];
+    if (!drafted) {
+      return <p className={styles.portfolioActionLine}>Summary loading...</p>;
+    }
+    if (drafted.source === "failed") {
+      return (
+        <div className={styles.narrationFailureBanner}>
+          ⚠ Summary unavailable — narration failed ({drafted.failureReason})
+        </div>
+      );
+    }
+    return <p className={styles.portfolioActionLine}>{drafted.summary}</p>;
+  }
+
   function renderPortfolioCompany(p: CompanyPortfolio) {
-    const card = flashCardByCompany.get(p.company) ?? null;
-    const summary = buildPortfolioSummary(p, card);
     return (
       <details key={p.company} className={styles.portfolioCompany}>
         <summary className={styles.portfolioCompanySummary}>
@@ -374,12 +397,7 @@ export default function Home() {
           <span className={styles.portfolioIndicators}>{buildIndicatorLine(p.buckets)}</span>
         </summary>
         <div className={styles.portfolioCompanyBody}>
-          <p className={styles.portfolioActionLine}>{summary.actionLine}</p>
-          <ul className={styles.portfolioBulletList}>
-            {summary.bullets.map((bullet, bi) => (
-              <li key={bi}>{bullet}</li>
-            ))}
-          </ul>
+          {renderPortfolioSummary(p)}
           {BUCKET_ORDER.map((bucket) => {
             const events = p.buckets[bucket];
             if (events.length === 0) return null;

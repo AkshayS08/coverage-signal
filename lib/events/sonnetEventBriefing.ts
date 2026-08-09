@@ -1,8 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { FlashCard } from "./buildEvents";
 import type { VerifiedFact } from "./factBase";
-import { templateEventBriefing, quoteFallbackBriefing, type DraftedEventBriefing } from "./eventBriefing";
+import { quoteFallbackBriefing, failedEventBriefing, type DraftedEventBriefing } from "./eventBriefing";
 import { checkNumbersAgainstQuotes } from "./numberGuard";
+import { isScrapeShapedText } from "./scrapeGuard";
 import { compactLabelWithTiming } from "./labels";
 import { BUCKET_LABELS } from "./buckets";
 
@@ -233,22 +234,37 @@ export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact
   const factTexts = factBase.flatMap((f) => [f.normalizedText, f.verifiedText]);
   const auditText = (body: RawCardBody) => `${body.what} ${body.whyCall} ${body.angle} ${alsoActiveAuditText(card)}`;
 
+  // Combined accuracy + shape gate: a body only passes if every figure
+  // traces to a verified fact AND none of its three parts is scrape-shaped
+  // text (numbers/labels with no sentence structure — see scrapeGuard.ts).
+  // Sonnet is instructed to always write full sentences, so the second
+  // check is defensive, not the primary path — but "ANY string bound for
+  // display" (Part C's own scope) includes Sonnet's own output, not just
+  // the fallbacks.
+  const bodyPassesGuard = (body: RawCardBody): { ok: boolean; unverifiedTokens: string[]; scrapeShaped: boolean } => {
+    const numberGuard = checkNumbersAgainstQuotes(auditText(body), factTexts);
+    const scrapeShaped = isScrapeShapedText(body.what) || isScrapeShapedText(body.whyCall) || isScrapeShapedText(body.angle);
+    return { ok: numberGuard.ok && !scrapeShaped, unverifiedTokens: numberGuard.unverifiedTokens, scrapeShaped };
+  };
+
   try {
     let body = await callSonnet(card, factBase);
-    let guard = checkNumbersAgainstQuotes(auditText(body), factTexts);
+    let guard = bodyPassesGuard(body);
 
     if (!guard.ok) {
       console.warn(
-        `[eventBriefing] ${card.company} (${card.id}) stated figures not in the verified fact base, retrying once:`,
+        `[eventBriefing] ${card.company} (${card.id}) ${
+          guard.scrapeShaped ? "produced scrape-shaped text" : "stated figures not in the verified fact base"
+        }, retrying once:`,
         guard.unverifiedTokens
       );
-      body = await callSonnet(card, factBase, guard.unverifiedTokens.join(", "));
-      guard = checkNumbersAgainstQuotes(auditText(body), factTexts);
+      body = await callSonnet(card, factBase, guard.unverifiedTokens.join(", ") || "the previous response read as raw data, not a sentence");
+      guard = bodyPassesGuard(body);
     }
 
     if (!guard.ok) {
       console.error(
-        `[eventBriefing] ${card.company} (${card.id}) still stated unverifiable figures after retry, falling back to the strongest single fact:`,
+        `[eventBriefing] ${card.company} (${card.id}) still failed the accuracy/shape guard after retry, falling back to the strongest single fact:`,
         guard.unverifiedTokens
       );
       return quoteFallbackBriefing(card);
@@ -256,7 +272,10 @@ export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact
 
     return { ...body, source: "sonnet" };
   } catch (err) {
-    console.error(`[eventBriefing] Sonnet call failed for ${card.company} (${card.id}), falling back to template:`, err);
-    return templateEventBriefing(card);
+    // This is the exact failure mode this project has hit three times now
+    // (max_tokens truncation, a deprecated temperature param, and the
+    // Session 10 template fallback on HCA/Concentra cards going unnoticed)
+    // — it must never again be a silent degrade. Loud failure only.
+    return failedEventBriefing(card, err instanceof Error ? err.message : String(err));
   }
 }

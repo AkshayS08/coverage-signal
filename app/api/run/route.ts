@@ -1,6 +1,7 @@
 import { runAgentLoop, type RunStreamEvent } from "@/lib/agent";
 import { buildEvents, buildVerifiedFactBase } from "@/lib/events";
 import { draftEventBriefing } from "@/lib/events/sonnetEventBriefing";
+import { draftPortfolioSummary } from "@/lib/events/sonnetPortfolioSummary";
 import { checkRateLimit } from "./rateLimit";
 
 export const runtime = "nodejs";
@@ -70,11 +71,12 @@ export async function POST(request: Request) {
 
           // Card eligibility is per-event, not per-company — a company can
           // produce zero, one, or several card-eligible events. Only those
-          // get a Sonnet call; table-only events never do. The portfolio
-          // table's per-company summary is fully deterministic (see
-          // lib/events/companySummary.ts) and computed client-side, so
-          // there's nothing else to draft here.
-          const { flashCardCandidates } = buildEvents([result]);
+          // get a Sonnet call for card narration; table-only events never
+          // do. The portfolio table's per-company summary (Session 12 Part
+          // B) is ALSO a Sonnet call now, drafted once per company from the
+          // same gated fact base (see lib/events/sonnetPortfolioSummary.ts)
+          // — the old fully-deterministic version is retired.
+          const { flashCardCandidates, portfolio } = buildEvents([result]);
           const factBase = buildVerifiedFactBase(result);
           const eventBriefings: { eventId: string; briefing: Awaited<ReturnType<typeof draftEventBriefing>> }[] = [];
           for (const card of flashCardCandidates) {
@@ -83,13 +85,20 @@ export async function POST(request: Request) {
             send({ type: "trace", company, text: `card qualified: ${card.freshnessReason}` });
 
             const drafted = await draftEventBriefing(card, factBase);
-            const label = drafted.source === "sonnet" ? "Sonnet-drafted" : "template (Sonnet unavailable)";
+            const label = drafted.source === "sonnet" ? "Sonnet-drafted" : drafted.source === "failed" ? "FAILED (see banner)" : drafted.source;
             console.log(`[eventBriefing] ${result.company} (${card.bucket}): ${drafted.source}`);
             send({ type: "trace", company, text: `card briefing (${card.bucket}): ${label}` });
             eventBriefings.push({ eventId: card.id, briefing: drafted });
           }
 
-          send({ type: "result", result, eventBriefings });
+          const portfolioSummary = await draftPortfolioSummary(portfolio[0], factBase);
+          send({
+            type: "trace",
+            company,
+            text: `portfolio summary: ${portfolioSummary.source === "sonnet" ? "Sonnet-drafted" : "FAILED (see banner)"}`,
+          });
+
+          send({ type: "result", result, eventBriefings, portfolioSummary });
         } catch (err) {
           send({ type: "error", company, message: err instanceof Error ? err.message : String(err) });
         }

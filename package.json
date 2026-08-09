@@ -12,7 +12,9 @@
     "events:test": "tsx lib/events/test.ts",
     "verify:regression": "tsx lib/agent/verifyQuote.regression.ts",
     "test": "tsx lib/events/eligibility.test.ts",
-    "test:build-fixture": "tsx lib/events/buildFixture.ts"
+    "test:narration": "tsx lib/events/narrationIntegrity.test.ts",
+    "test:build-fixture": "tsx lib/events/buildFixture.ts",
+    "events:test:fixture": "tsx lib/events/testFromFixture.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",

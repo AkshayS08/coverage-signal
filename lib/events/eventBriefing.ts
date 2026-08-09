@@ -1,14 +1,39 @@
 import type { FlashCard } from "./buildEvents";
+import { isScrapeShapedText } from "./scrapeGuard";
 
 export interface DraftedEventBriefing {
-  /** What happened/is happening — one sentence, the essence, not every tranche/number. */
+  /** What happened/is happening — one sentence, the essence, not every tranche/number. Empty when source is "failed" — the UI shows the failure banner in its place, never blank-but-styled-as-normal prose. */
   what: string;
   /** Why this is a banking opportunity NOW, in banker terms — specific to this situation. */
   whyCall: string;
   /** The specific conversation to open, tied to this company's specifics. */
   angle: string;
-  /** "quote" = even after a corrective retry, Sonnet's prose still stated a number/date the verified quote couldn't back — so the quote itself is shown instead of synthesized prose. */
-  source: "sonnet" | "template" | "quote";
+  /**
+   * "quote" = even after a corrective retry, Sonnet's prose still stated a
+   * number/date the verified quote couldn't back — so the quote itself is
+   * shown instead of synthesized prose. "failed" = narration could not
+   * safely produce ANY prose for this card (the Sonnet call itself failed,
+   * or every available fallback text was scrape-shaped) — the UI must
+   * render the loud-failure banner, never blend silently into a normal
+   * card. See failureReason.
+   */
+  source: "sonnet" | "template" | "quote" | "failed";
+  /** Present only when source is "failed" — the stage/reason a caller should log and a banner should display. */
+  failureReason?: string;
+}
+
+/**
+ * The loud-failure result: no synthesized or template prose, just a
+ * clearly-flagged failure the UI renders as a banner in place of the card
+ * body. Exists because this project has now silently degraded to template
+ * output three separate times (max_tokens truncation, a deprecated
+ * temperature param, and the Session 10 template fallback on HCA/Concentra
+ * cards going unnoticed) — three occurrences is a design flaw, not bad
+ * luck. Never call this a "fallback" in logs; it is a failure.
+ */
+export function failedEventBriefing(card: FlashCard, reason: string): DraftedEventBriefing {
+  console.error(`[eventBriefing] NARRATION FAILURE — company=${card.company} card=${card.id} reason=${reason}`);
+  return { what: "", whyCall: "", angle: "", source: "failed", failureReason: reason };
 }
 
 function lowerFirst(s: string): string {
@@ -31,10 +56,17 @@ function mostRecentCitation(citations: FlashCard["citations"]): FlashCard["citat
  */
 export function templateEventBriefing(card: FlashCard): DraftedEventBriefing {
   const t = card.headlineTrigger;
+  const quoteText = t.verifiedQuoteNormalized ?? t.verifiedQuote ?? t.evidence ?? `${t.triggerName} flagged (${t.needType}).`;
+  if (isScrapeShapedText(quoteText)) {
+    return failedEventBriefing(
+      card,
+      `verified text for ${t.triggerName} is scrape-shaped (numbers/labels with no sentence structure) — refusing to show it as prose`
+    );
+  }
   const primarySource = mostRecentCitation(card.citations);
   const datePrefix = primarySource ? `Per its ${primarySource.form} filed ${primarySource.date}: ` : "";
   return {
-    what: `${datePrefix}${t.verifiedQuoteNormalized ?? t.verifiedQuote ?? t.evidence ?? `${t.triggerName} flagged (${t.needType}).`}`,
+    what: `${datePrefix}${quoteText}`,
     whyCall: `Maps to a ${lowerFirst(t.mappedNeed)} conversation.`,
     angle: `Lead with ${lowerFirst(t.mappedNeed)}, referencing the ${lowerFirst(t.triggerName)} directly.`,
     source: "template",
@@ -50,10 +82,17 @@ export function templateEventBriefing(card: FlashCard): DraftedEventBriefing {
  */
 export function quoteFallbackBriefing(card: FlashCard): DraftedEventBriefing {
   const t = card.headlineTrigger;
+  const quoteText = t.verifiedQuoteNormalized ?? t.verifiedQuote ?? t.evidence ?? `${t.triggerName} flagged (${t.needType}).`;
+  if (isScrapeShapedText(quoteText)) {
+    return failedEventBriefing(
+      card,
+      `Sonnet's prose kept stating unverifiable figures, and the verified quote to fall back to is itself scrape-shaped (numbers/labels with no sentence structure) for ${t.triggerName}`
+    );
+  }
   const primarySource = mostRecentCitation(card.citations);
   const datePrefix = primarySource ? `Per its ${primarySource.form} filed ${primarySource.date}: ` : "";
   return {
-    what: `${datePrefix}${t.verifiedQuoteNormalized ?? t.verifiedQuote ?? t.evidence ?? `${t.triggerName} flagged (${t.needType}).`}`,
+    what: `${datePrefix}${quoteText}`,
     whyCall: `Maps to a ${lowerFirst(t.mappedNeed)} conversation.`,
     angle: `Lead with ${lowerFirst(t.mappedNeed)}, referencing this filing detail directly.`,
     source: "quote",

@@ -5,7 +5,6 @@ import { runAgentLoop } from "../agent";
 import type { CompanyResult } from "../agent";
 import {
   buildEvents,
-  buildPortfolioSummary,
   buildVerifiedFactBase,
   BUCKET_LABELS,
   type EventRecord,
@@ -14,6 +13,7 @@ import {
   type VerifiedFact,
 } from "./index";
 import { draftEventBriefing } from "./sonnetEventBriefing";
+import { draftPortfolioSummary } from "./sonnetPortfolioSummary";
 import { extractMoneyTokens, extractDateTokens } from "./numberGuard";
 import { compactLabelWithTiming } from "./labels";
 
@@ -172,12 +172,15 @@ async function main() {
   console.log(`\n########################################`);
   console.log(`### PORTFOLIO TABLE (every company x 4 buckets)`);
   console.log(`########################################\n`);
-  const flashCardByCompany = new Map(flashCardCandidates.map((c) => [c.company, c]));
   for (const p of portfolio) {
     console.log(`--- ${p.company} ---`);
-    const summary = buildPortfolioSummary(p, flashCardByCompany.get(p.company) ?? null);
-    console.log(`  ${summary.actionLine}`);
-    for (const bullet of summary.bullets) console.log(`  • ${bullet}`);
+    const factBase = factBaseByCompany.get(p.company) ?? [];
+    const drafted = await draftPortfolioSummary(p, factBase);
+    if (drafted.source === "failed") {
+      console.log(`  ⚠ NARRATION FAILURE — banner reason: ${drafted.failureReason}`);
+    } else {
+      console.log(`  ${drafted.summary}`);
+    }
     for (const bucket of ["treasury", "new_debt", "refi", "hedging"] as const) {
       const events = p.buckets[bucket];
       if (events.length === 0) continue;
