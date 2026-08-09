@@ -200,12 +200,46 @@ async function callSonnet(portfolio: CompanyPortfolio, factLines: FactLine[], co
   return input.summary.trim();
 }
 
-const URGENT_PHRASE_RE = /\b(call (now|this week|today)|reach out (now|this week|today)|should call|worth calling now|immediate(ly)?|urgent(ly)?|act now)\b/i;
+/**
+ * "Nothing/no ... actionable ... this week" — the exact framing the
+ * system prompt's rule 2 instructs, and what Sonnet has consistently
+ * produced across every real run observed. Also accepts the system
+ * prompt's OTHER fixed phrasing for the empty-fact-list case ("No
+ * verified activity to report this week") — that sentence never uses the
+ * word "actionable" at all.
+ */
+const NO_ACTION_STATEMENT_RE =
+  /\b(?:nothing|no)\b[^.!?]{0,50}\b(?:actionable|activity to report)\b[^.!?]{0,30}\bthis week\b/i;
 
-/** Constraint 2: no fact is THIS WEEK, but the prose still reads as a call to action. */
+/** An imperative/directive verb tied to a "now/today/this week" timeframe — the shape of "call them this week about the maturity", not the mere presence of a word like "urgent" or "immediate". */
+const ACTION_DIRECTIVE_RE = /\b(call|reach out|follow up|act)\b[^.!?]{0,30}\b(now|today|this week)\b/i;
+
+/** A negation anywhere in the same sentence as a would-be directive cancels it — "there is no urgent call to make" and "has not triggered any immediate action" are claims of INaction, not action. */
+const NEGATION_RE = /\b(no|not|n't|never|nothing|without)\b/i;
+
+/**
+ * Constraint 2, checked against the gate's actual verdict (anyActionable),
+ * not against vocabulary. The previous version (a banned-phrase regex —
+ * "urgent," "immediate," "call now") flagged NEGATED uses of those exact
+ * words — "there is no urgent call to make right now," "has not triggered
+ * any immediate action" — even though both sentences correctly say the
+ * OPPOSITE of what they were flagged for. Across two full fixture runs,
+ * this was the single largest source of retries and the one hard failure,
+ * always on an otherwise-correct draft.
+ *
+ * A no-card company's summary must (a) contain an explicit no-action
+ * statement, and (b) contain no NON-NEGATED directive naming a specific
+ * action tied to "now/today/this week." Standing-opportunity language
+ * ("worth raising," "worth flagging," "worth monitoring") matches neither
+ * pattern and is never touched by this check — it can never conflict with
+ * constraint 1's hedging-surfacing requirement. A carded company is exempt
+ * entirely: any language about its own actionable item is fine.
+ */
 function violatesGateContract(summary: string, anyActionable: boolean): boolean {
   if (anyActionable) return false;
-  return URGENT_PHRASE_RE.test(summary);
+  if (!NO_ACTION_STATEMENT_RE.test(summary)) return true;
+  const sentences = summary.split(/(?<=[.!?])\s+/);
+  return sentences.some((sentence) => ACTION_DIRECTIVE_RE.test(sentence) && !NEGATION_RE.test(sentence));
 }
 
 /** Matches a relative duration mention with its own unit, e.g. "~15 months out", "15mo", "1 year", "2 yrs". Captures the number and the unit separately so the VALUE can be checked, not the wording. */
@@ -280,7 +314,7 @@ export function checkSummaryConstraints(summary: string, factLines: FactLine[]):
   const reasons: string[] = [];
   if (!numberGuard.ok) reasons.push(`unverified figures/dates: ${numberGuard.unverifiedTokens.join(", ")}`);
   if (isScrapeShapedText(summary)) reasons.push("scrape-shaped text (numbers/labels with no sentence structure)");
-  if (violatesGateContract(summary, anyActionable)) reasons.push("contradicts the card gate (urgency language with nothing THIS WEEK)");
+  if (violatesGateContract(summary, anyActionable)) reasons.push("contradicts the card gate (missing an explicit no-action statement, or names a specific action for this week, with nothing THIS WEEK)");
   if (violatesDateGranularity(summary, factLines)) reasons.push("stated a relative duration whose value doesn't match any fed fact's timing");
   if (violatesHedgingSurfacing(summary, factLines)) reasons.push("standing hedging exposure exists but was not surfaced");
   if (violatesShape(summary, factLines.length === 0)) reasons.push("not 2-4 plain-prose sentences (1 allowed only when there are no gated facts), or contains a semicolon");

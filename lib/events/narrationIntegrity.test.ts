@@ -201,15 +201,49 @@ console.log(`=== Session 12 Parts B/C golden tests (narration integrity) ===\n`)
     );
     assert(!r.reasons.some((x) => x.includes("hedging")), "[6b] an explicit hedging mention clears constraint 1");
   }
-  // 6c. Gate contradiction: nothing actionable, but prose says "call now" -> violation.
+  // 6c. Gate contradiction: nothing actionable, but the summary never says
+  // so (no explicit no-action statement) -> violation. (Claim-based check,
+  // not vocabulary — this summary happens to also say "call now," but the
+  // missing no-action statement alone is enough to fail it.)
   {
     const r = checkSummaryConstraints("You should call now — there is a standing hedging opportunity worth flagging.", [hedgingStanding]);
-    assert(!r.ok && r.reasons.some((x) => x.includes("gate")), "[6c] urgency language with nothing THIS WEEK is caught");
+    assert(!r.ok && r.reasons.some((x) => x.includes("card gate")), "[6c] a no-card summary with no explicit no-action statement is caught");
   }
   // 6d. Gate contradiction: nothing actionable, prose correctly says so -> passes that check.
   {
     const r = checkSummaryConstraints("Nothing is actionable this week. A standing hedging opportunity is worth raising when the relationship allows.", [hedgingStanding]);
-    assert(!r.reasons.some((x) => x.includes("gate")), "[6d] correctly saying nothing is actionable clears constraint 2");
+    assert(!r.reasons.some((x) => x.includes("card gate")), "[6d] correctly saying nothing is actionable clears constraint 2");
+  }
+  // 6d2. Required assertion (Session 12 fix): a no-card summary explicitly
+  // saying nothing is actionable AND surfacing standing hedging language
+  // ("worth raising") must PASS — this is exactly the combination the
+  // previous vocabulary-based check put in conflict with constraint 1.
+  {
+    const r = checkSummaryConstraints(
+      "Nothing is actionable this week for this company. Its standing FX hedging remains worth raising with the client.",
+      [hedgingStanding]
+    );
+    assert(!r.reasons.some((x) => x.includes("card gate")), '[6d2] "nothing actionable this week... hedging worth raising" PASSES constraint 2');
+  }
+  // 6d3. Required assertion: a no-card summary that names a SPECIFIC
+  // action tied to "this week" must FAIL, even though it also contains the
+  // no-action statement elsewhere in the text.
+  {
+    const r = checkSummaryConstraints(
+      "Nothing is actionable this week overall. You should call them this week about the maturity.",
+      [hedgingStanding]
+    );
+    assert(!r.ok && r.reasons.some((x) => x.includes("card gate")), '[6d3] "call them this week about the maturity" on a no-card summary FAILS');
+  }
+  // 6d4. Required assertion: a CARDED company's summary naming its own
+  // actionable event as actionable must PASS — constraint 2 is exempt
+  // entirely once anyActionable is true.
+  {
+    const r = checkSummaryConstraints(
+      "Tenet has a refi window actionable this week — worth calling now to discuss terms.",
+      [refiThisWeek]
+    );
+    assert(!r.reasons.some((x) => x.includes("card gate")), "[6d4] a carded company naming its own actionable event PASSES constraint 2");
   }
   // 6e. Fabricated figure: a dollar amount not present in any fact line -> violation.
   {
