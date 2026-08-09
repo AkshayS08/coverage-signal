@@ -141,11 +141,65 @@ function buildContext(card: FlashCard, factBase: VerifiedFact[]): string {
   return lines.join("\n");
 }
 
-async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionNote?: string): Promise<RawCardBody> {
+/** Session 13 Part A: this word ceiling used to be a hard throw inside callSonnet, bypassing the accuracy/shape retry entirely — diagnosed as a long-tail problem (word counts observed 26-58 across repeated real drafts of the same card, not "reliably near the ceiling"), so it's now folded into the SAME retry pipeline as numberGuard/scrapeGuard (see bodyPassesGuard below) instead of throwing on its own. */
+const HARD_WORD_LIMIT = 45;
+
+export function wordCount(s: string): number {
+  return s.trim().split(/\s+/).filter(Boolean).length;
+}
+
+export interface WordCounts {
+  what: number;
+  whyCall: number;
+  angle: number;
+}
+
+export function wordCounts(body: RawCardBody): WordCounts {
+  return { what: wordCount(body.what), whyCall: wordCount(body.whyCall), angle: wordCount(body.angle) };
+}
+
+/** True when any part ignored the sentence-length limit entirely (not the soft 30-word target — this is the hard failure threshold). */
+export function overWordCeiling(counts: WordCounts): boolean {
+  return counts.what > HARD_WORD_LIMIT || counts.whyCall > HARD_WORD_LIMIT || counts.angle > HARD_WORD_LIMIT;
+}
+
+export interface GuardFailure {
+  unverifiedTokens: string[];
+  scrapeShaped: boolean;
+  overCeiling: boolean;
+  counts: WordCounts;
+}
+
+/**
+ * Composes the ONE retry's correction instruction from whichever check(s)
+ * failed — never assumes it was a numbers problem (the old hardcoded
+ * message always said "stated a number... not found," even when the real
+ * issue was purely length). Real diagnosed pattern this fixes: every
+ * observed retry came out LONGER than the first attempt, because the old
+ * correction note never mentioned length at all when only the accuracy
+ * check had failed — length regressions went uncorrected by construction.
+ */
+export function buildCorrectionInstruction(guard: GuardFailure): string {
+  const parts: string[] = [];
+  if (guard.unverifiedTokens.length > 0) {
+    parts.push(
+      `it stated a number, rate, or date not found in any of the facts given (${guard.unverifiedTokens.join(", ")}) — rewrite using ONLY figures and dates literally present in the facts, even if that makes a sentence less specific`
+    );
+  }
+  if (guard.scrapeShaped) {
+    parts.push(`one or more parts read as raw data (numbers/labels with no sentence structure) rather than a written sentence — write full, grammatical sentences`);
+  }
+  if (guard.overCeiling) {
+    parts.push(
+      `it ran over the ${HARD_WORD_LIMIT}-word hard limit (what=${guard.counts.what}, whyCall=${guard.counts.whyCall}, angle=${guard.counts.angle}) — rewrite ALL THREE parts to fit the 25-30 word target, cutting supporting detail first, never the sentence's one anchor date`
+    );
+  }
+  return parts.join("; also, ");
+}
+
+async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionInstruction?: string): Promise<RawCardBody> {
   const context = buildContext(card, factBase);
-  const userContent = correctionNote
-    ? `${context}\n\nYour previous attempt stated a number, rate, or date not found in any of the facts above: ${correctionNote}. Rewrite all three parts using ONLY figures and dates that are literally present in the facts given — drop anything you can't source from them, even if that makes a sentence less specific.`
-    : context;
+  const userContent = correctionInstruction ? `${context}\n\nYour previous attempt had a problem: ${correctionInstruction}` : context;
 
   const response = await getClient().messages.create(
     {
@@ -171,18 +225,14 @@ async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionN
     );
   }
 
-  // Target 25 words per part, hard outer limit 30 across all three. Only
-  // warns at the outer limit — never trims or rejects a clear-but-longer
-  // line. Only a truly broken response (the model ignoring the limit
-  // outright) is rejected here; the fact-accuracy audit (checked by the
-  // caller, against the full fact base) is a separate, factual check.
-  const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
-  const counts = { what: wordCount(input.what), whyCall: wordCount(input.whyCall), angle: wordCount(input.angle) };
+  // Target 25 words per part, hard outer limit 30. Only warns at the outer
+  // limit — never trims or rejects a clear-but-longer line here. The HARD
+  // ceiling (45) is checked and retried by the caller (bodyPassesGuard),
+  // not here — this function never throws for length, only for a
+  // genuinely malformed response.
+  const counts = wordCounts({ what: input.what, whyCall: input.whyCall, angle: input.angle });
   if (counts.what > 30 || counts.whyCall > 30 || counts.angle > 30) {
     console.warn(`[eventBriefing] ${card.company} (${card.id}) over its word ceiling:`, counts);
-  }
-  if (counts.what > 45 || counts.whyCall > 45 || counts.angle > 45) {
-    throw new Error(`card body ignored the sentence-length limit entirely: ${JSON.stringify(counts)}`);
   }
 
   return { what: input.what, whyCall: input.whyCall, angle: input.angle };
@@ -205,15 +255,21 @@ function alsoActiveAuditText(card: FlashCard): string {
  * way a banker would tell the story, while still being unable to state
  * any figure that isn't a verified fact for this company.
  *
- * After drafting, a deterministic audit (numberGuard.ts) checks every
- * $-amount, rate, and date across What/Why/Angle AND the also-active line
- * against the full fact base; a first miss gets one corrective retry, a
- * second miss falls back to a card built from the headline's own single
- * verified fact only (the strongest single fact, not a synthesized
- * narrative). Falls back further to the deterministic template on any API
- * failure or timeout. Cost-bounded at one, two, or three Sonnet calls per
- * card-eligible company (draft, optional retry — the template fallback
- * makes no call).
+ * After drafting, a deterministic guard (bodyPassesGuard) checks three
+ * things: every $-amount/rate/date across What/Why/Angle AND the
+ * also-active line traces to the full fact base (numberGuard.ts); no part
+ * reads as scrape-shaped raw data (scrapeGuard.ts); no part is over the
+ * 45-word hard ceiling (Session 13 Part A — folded in here rather than
+ * thrown as its own error, after diagnosing the failure as high run-to-run
+ * variance in draft length, not a systematically-too-tight ceiling). A
+ * first miss on any of the three gets ONE corrective retry whose
+ * instruction addresses whichever check(s) actually failed
+ * (buildCorrectionInstruction) — a second miss falls back to
+ * quoteFallbackBriefing (the headline's own verified quote, a real
+ * passing card, never truncated, never template prose). An outright API
+ * failure (timeout, malformed response) is a loud failure
+ * (failedEventBriefing), never a silent template degrade. Cost-bounded at
+ * one or two Sonnet calls per card-eligible company.
  */
 export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact[]): Promise<DraftedEventBriefing> {
   const headlineFact = factBase.find((f) => f.linkedTriggerId === card.headlineTrigger.triggerId);
@@ -241,10 +297,12 @@ export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact
   // check is defensive, not the primary path — but "ANY string bound for
   // display" (Part C's own scope) includes Sonnet's own output, not just
   // the fallbacks.
-  const bodyPassesGuard = (body: RawCardBody): { ok: boolean; unverifiedTokens: string[]; scrapeShaped: boolean } => {
+  const bodyPassesGuard = (body: RawCardBody): { ok: boolean; unverifiedTokens: string[]; scrapeShaped: boolean; overCeiling: boolean; counts: WordCounts } => {
     const numberGuard = checkNumbersAgainstQuotes(auditText(body), factTexts);
     const scrapeShaped = isScrapeShapedText(body.what) || isScrapeShapedText(body.whyCall) || isScrapeShapedText(body.angle);
-    return { ok: numberGuard.ok && !scrapeShaped, unverifiedTokens: numberGuard.unverifiedTokens, scrapeShaped };
+    const counts = wordCounts(body);
+    const overCeiling = overWordCeiling(counts);
+    return { ok: numberGuard.ok && !scrapeShaped && !overCeiling, unverifiedTokens: numberGuard.unverifiedTokens, scrapeShaped, overCeiling, counts };
   };
 
   try {
@@ -252,20 +310,16 @@ export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact
     let guard = bodyPassesGuard(body);
 
     if (!guard.ok) {
-      console.warn(
-        `[eventBriefing] ${card.company} (${card.id}) ${
-          guard.scrapeShaped ? "produced scrape-shaped text" : "stated figures not in the verified fact base"
-        }, retrying once:`,
-        guard.unverifiedTokens
-      );
-      body = await callSonnet(card, factBase, guard.unverifiedTokens.join(", ") || "the previous response read as raw data, not a sentence");
+      const instruction = buildCorrectionInstruction(guard);
+      console.warn(`[eventBriefing] ${card.company} (${card.id}) retrying once: ${instruction}`);
+      body = await callSonnet(card, factBase, instruction);
       guard = bodyPassesGuard(body);
     }
 
     if (!guard.ok) {
       console.error(
-        `[eventBriefing] ${card.company} (${card.id}) still failed the accuracy/shape guard after retry, falling back to the strongest single fact:`,
-        guard.unverifiedTokens
+        `[eventBriefing] ${card.company} (${card.id}) still failed after retry (${guard.overCeiling ? "over the word ceiling" : "accuracy/shape"}), falling back to the strongest single fact:`,
+        guard.overCeiling ? guard.counts : guard.unverifiedTokens
       );
       return quoteFallbackBriefing(card);
     }

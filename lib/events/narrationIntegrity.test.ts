@@ -1,12 +1,13 @@
 /**
- * Session 12 Parts B/C golden tests — narration integrity (loud failure,
- * scrape-shaped-text rejection) and the portfolio-summary constraint
- * checker. Runs entirely OFFLINE: no Anthropic/EDGAR calls, using the same
- * cached fixture (__fixtures__/session11-facts.json) as eligibility.test.ts
- * for the two tests that need a real FlashCard to override (spread
- * pattern, matching that file's own convention — real citations/evidence,
- * only the field under test pinned). Everything else here is a pure
- * function test with no live data dependency at all.
+ * Session 12 Parts B/C + Session 13 Part A golden tests — narration
+ * integrity (loud failure, scrape-shaped-text rejection, word-ceiling
+ * retry) and the portfolio-summary constraint checker. Runs entirely
+ * OFFLINE: no Anthropic/EDGAR calls, using the same cached fixture
+ * (__fixtures__/session11-facts.json) as eligibility.test.ts for the two
+ * tests that need a real FlashCard to override (spread pattern, matching
+ * that file's own convention — real citations/evidence, only the field
+ * under test pinned). Everything else here is a pure function test with
+ * no live data dependency at all.
  *
  * Run: npx tsx lib/events/narrationIntegrity.test.ts (or npm test)
  */
@@ -19,6 +20,7 @@ import { templateEventBriefing, quoteFallbackBriefing, failedEventBriefing } fro
 import { failedPortfolioSummary } from "./portfolioSummary";
 import { checkSummaryConstraints, type FactLine } from "./sonnetPortfolioSummary";
 import { buildVerifiedFactBase, hasDeterminableScale } from "./factBase";
+import { overWordCeiling, buildCorrectionInstruction, type WordCounts } from "./sonnetEventBriefing";
 
 interface Fixture {
   generatedAt: string;
@@ -412,10 +414,60 @@ console.log(`=== Session 12 Parts B/C golden tests (narration integrity) ===\n`)
   );
 }
 
+// --- 9. Session 13 Part A — word-ceiling retry path. Diagnosed as high
+// run-to-run draft-length variance (real repeated-draft counts observed:
+// 26-58 words), not a systematically-too-tight ceiling, so the fix folds
+// the 45-word hard ceiling into the SAME retry pipeline as
+// numberGuard/scrapeGuard rather than throwing on its own — these pure
+// functions ARE that retry decision, directly testable at zero cost. ---
+{
+  // 9a/9b. overWordCeiling: the exact real failure shape (what=47) trips
+  // it; a within-limits draft doesn't.
+  const overLimit: WordCounts = { what: 47, whyCall: 38, angle: 29 };
+  const withinLimit: WordCounts = { what: 32, whyCall: 28, angle: 24 };
+  assert(overWordCeiling(overLimit), "[9a] a real observed over-ceiling draft (what=47) trips overWordCeiling");
+  assert(!overWordCeiling(withinLimit), "[9b] a within-limit draft does not trip overWordCeiling");
+
+  // 9c. The correction instruction for a LENGTH-ONLY failure must mention
+  // the word limit and must NOT be miscategorized as a numbers problem —
+  // the exact bug that made every observed retry come out LONGER than the
+  // first attempt (the old hardcoded message only ever talked about
+  // sourcing figures, never length).
+  const lengthOnly = buildCorrectionInstruction({ unverifiedTokens: [], scrapeShaped: false, overCeiling: true, counts: overLimit });
+  assert(
+    /45-word hard limit/.test(lengthOnly) && !/stated a number/.test(lengthOnly),
+    `[9c] a length-only failure's retry instruction mentions the word limit and is not miscategorized as a numbers problem (instruction: ${JSON.stringify(lengthOnly)})`
+  );
+
+  // 9d. The correction instruction for an ACCURACY-only failure must
+  // mention the unverified figure and must NOT mention length — the
+  // retry must not ask Sonnet to shorten a draft that was never too long.
+  const accuracyOnly = buildCorrectionInstruction({
+    unverifiedTokens: ["$9.99 billion"],
+    scrapeShaped: false,
+    overCeiling: false,
+    counts: withinLimit,
+  });
+  assert(
+    /\$9\.99 billion/.test(accuracyOnly) && !/word hard limit/.test(accuracyOnly),
+    `[9d] an accuracy-only failure's retry instruction names the bad figure and does not mention length (instruction: ${JSON.stringify(accuracyOnly)})`
+  );
+
+  // 9e. Both failing at once must produce ONE instruction covering both —
+  // this is the real diagnosed case: a retry prompted by an accuracy miss
+  // that then grew even longer (34->58, 29->49, 29->48, 32->44 observed
+  // live) because length was never mentioned in the same breath.
+  const both = buildCorrectionInstruction({ unverifiedTokens: ["2026"], scrapeShaped: false, overCeiling: true, counts: overLimit });
+  assert(
+    /2026/.test(both) && /45-word hard limit/.test(both),
+    `[9e] a combined accuracy+length failure's retry instruction covers both in one message (instruction: ${JSON.stringify(both)})`
+  );
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) {
   console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);
   process.exit(1);
 } else {
-  console.log("\nALL SESSION 12 PARTS B/C GOLDEN TESTS PASSED");
+  console.log("\nALL SESSION 12/13 NARRATION-INTEGRITY GOLDEN TESTS PASSED");
 }
