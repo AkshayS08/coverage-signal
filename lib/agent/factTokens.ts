@@ -145,9 +145,22 @@ function extractMonthYearDates(text: string): FactToken[] {
   return out;
 }
 
-/** A scale-suffixed figure ("$1.5 billion") never uses the per-share convention in practice — a per-share rate is always small and stated in bare dollars, never in millions/billions — so this is always "currency". */
+/**
+ * A scale-suffixed figure ("$1.5 billion") never uses the per-share
+ * convention in practice — a per-share rate is always small and stated in
+ * bare dollars, never in millions/billions — so this is always "currency".
+ *
+ * "\s{0,4}" (not "\s?") on both sides of the digits: real case found this
+ * session — Encompass's "$ 17.9  million" has a DOUBLE space before
+ * "million" (an EDGAR HTML-to-text artifact, the same category of quirk
+ * already handled for "$ \n 3,890" in extractMoneyCommaGrouped below). The
+ * original "\s?" cap missed this, so the number got extracted here without
+ * its own value being consumed — and extractMoneySmallDollar's separate,
+ * looser match then captured a bare "$17.9" with NO scale at all, silently
+ * off by a factor of a million wherever it was later displayed.
+ */
 function extractMoneyUnitSuffixed(text: string): FactToken[] {
-  const re = /\$?\s?\d[\d,]*(?:\.\d+)?\s?(?:billion|million|thousand|[bBmMkK])\b/g;
+  const re = /\$?\s{0,4}\d[\d,]*(?:\.\d+)?\s{0,4}(?:billion|million|thousand|[bBmMkK])\b/g;
   const out: FactToken[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(text))) {

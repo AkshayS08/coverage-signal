@@ -18,7 +18,7 @@ import { isScrapeShapedText } from "./scrapeGuard";
 import { templateEventBriefing, quoteFallbackBriefing, failedEventBriefing } from "./eventBriefing";
 import { failedPortfolioSummary } from "./portfolioSummary";
 import { checkSummaryConstraints, type FactLine } from "./sonnetPortfolioSummary";
-import { buildVerifiedFactBase } from "./factBase";
+import { buildVerifiedFactBase, hasDeterminableScale } from "./factBase";
 
 interface Fixture {
   generatedAt: string;
@@ -306,6 +306,64 @@ console.log(`=== Session 12 Parts B/C golden tests (narration integrity) ===\n`)
   assert(
     !!uhsBuyback && uhsBuyback.figures.length === 0,
     `[7d] UHS dividend-buyback's bare unlabeled table figures (no "$" anywhere) are excluded rather than guessed as dollars (figures: ${JSON.stringify(uhsBuyback?.figures)})`
+  );
+}
+
+// --- 8. Figure-binding fixes (this session's 3 fixes) — each against real
+// fixture facts, not hand-written. ---
+{
+  // 8a/8b. Fix 1: Encompass's "$ 17.9  million" (double-space EDGAR
+  // artifact) must keep its scale word, not silently become "$17.9".
+  const ehc = fixture.companies.find((c) => c.ticker === "EHC");
+  if (!ehc) throw new Error("fixture missing EHC");
+  const ehcFacts = buildVerifiedFactBase(ehc);
+  const ehcAssetSale = ehcFacts.find((f) => f.linkedTriggerId === "asset-sale");
+  assert(
+    !!ehcAssetSale && ehcAssetSale.figures.some((f) => /\bmillion\b/i.test(f)),
+    `[8a] EHC asset-sale's figure keeps its "million" scale word despite the double-space EDGAR artifact (figures: ${JSON.stringify(ehcAssetSale?.figures)})`
+  );
+
+  // 8b. General assertion: across the ENTIRE book, no displayed figure
+  // lacks a determinable unit (hasDeterminableScale — factBase.ts).
+  let uncapped = 0;
+  const badFigures: string[] = [];
+  for (const c of fixture.companies) {
+    for (const f of buildVerifiedFactBase(c)) {
+      for (const fig of f.figures) {
+        uncapped++;
+        if (!hasDeterminableScale(fig)) badFigures.push(`${c.ticker}/${f.linkedTriggerId}: "${fig}"`);
+      }
+    }
+  }
+  assert(
+    badFigures.length === 0,
+    `[8b] no displayed figure across the full book lacks a determinable unit (checked ${uncapped} figures; failures: ${badFigures.join("; ")})`
+  );
+
+  // 8c. Fix 2: HCA's revolver "increased...from $4.0 billion...to $8.0
+  // billion" must bind the POST-change $8.0 billion, not the first-stated
+  // $4.0 billion.
+  const hca = fixture.companies.find((c) => c.ticker === "HCA");
+  if (!hca) throw new Error("fixture missing HCA");
+  const hcaFacts = buildVerifiedFactBase(hca);
+  const hcaRevolver = hcaFacts.find((f) => f.linkedTriggerId === "revolver-near-capacity");
+  assert(
+    !!hcaRevolver && hcaRevolver.figures.some((f) => f.includes("8.0 billion")) && !hcaRevolver.figures.some((f) => f.includes("4.0 billion")),
+    `[8c] HCA revolver-near-capacity binds the post-change $8.0 billion, not the pre-change $4.0 billion (figures: ${JSON.stringify(hcaRevolver?.figures)})`
+  );
+
+  // 8d. Fix 3: DaVita's fx-exposure fact must bind NO figure — the only
+  // candidates in its padded, non-prose display text are an unrelated
+  // net-income figure and the fact's own (unlabeled, in this padded text)
+  // translation-gain comparative; with no sentence structure to lean on,
+  // neither is trusted.
+  const dva = fixture.companies.find((c) => c.ticker === "DVA");
+  if (!dva) throw new Error("fixture missing DVA");
+  const dvaFacts = buildVerifiedFactBase(dva);
+  const dvaFx = dvaFacts.find((f) => f.linkedTriggerId === "fx-exposure");
+  assert(
+    !!dvaFx && dvaFx.figures.length === 0,
+    `[8d] DaVita fx-exposure binds no figure rather than the unrelated $2.88 million net-income figure (figures: ${JSON.stringify(dvaFx?.figures)})`
   );
 }
 
