@@ -28,7 +28,7 @@ async function runBookOnce(companies: string[]): Promise<{ json: string; elapsed
   for (const company of companies) {
     try {
       const result = await runAgentLoop(company);
-      const { flashCardCandidates, portfolio } = buildEvents([result]);
+      const { flashCardCandidates } = buildEvents([result]);
       const factBase = buildVerifiedFactBase(result);
 
       const eventBriefings = [];
@@ -38,7 +38,7 @@ async function runBookOnce(companies: string[]): Promise<{ json: string; elapsed
       }
       // Deterministic — included in the diffed output for full coverage,
       // though a pure function can't be the source of any drift.
-      const table = buildCompanyTableBlock(result, portfolio[0], flashCardCandidates.length);
+      const table = buildCompanyTableBlock(result, flashCardCandidates);
 
       outputs.push({ company, result, eventBriefings, table });
     } catch (err) {

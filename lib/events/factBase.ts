@@ -210,6 +210,27 @@ export interface VerifiedFact {
   dates: string[];
   /** Most recent citation backing this fact, if any — EDGAR metadata, not model output. */
   sourceFiling: { form: string; date: string; url: string } | null;
+  /** ALL citations for this fact, not just the most recent — Session 15b: the table and cards must show every source link, not one. */
+  citations: TriggerResult["citations"];
+  /**
+   * Session 15b: Haiku's own plain-English evidence paraphrase for this
+   * fact — already cached (the answer cache), produced by the same
+   * extraction call whose quote WAS verified for this trigger, though the
+   * evidence sentence itself isn't independently re-verified the way
+   * verifiedText is. The table renderer (evidenceCondense.ts) and card
+   * narration now read this as their primary "what happened, with the
+   * amount" source, because Haiku's extraction prompt requires proper
+   * $-scale phrasing in evidence ("$1.5 billion"), unlike verifiedText,
+   * which is sometimes a raw filing table fragment with an unscaled bare
+   * number. Null only when the trigger somehow fired with no evidence
+   * text at all (unreachable in practice — evidence is required whenever
+   * fired is true).
+   */
+  evidence: string | null;
+  /** Fact-guarded date fields, passed through unchanged, for evidenceCondense.ts's clause-matching (debt-maturity) and status-suffix (new-debt-issuance) logic. */
+  eventDate: TriggerResult["eventDate"];
+  dateGranularity: TriggerResult["dateGranularity"];
+  eventStatus: TriggerResult["eventStatus"];
 }
 
 function mostRecentCitation(citations: TriggerResult["citations"]): TriggerResult["citations"][number] | null {
@@ -242,6 +263,11 @@ export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
       figures: selected ? [selected] : [],
       dates: tokens.filter((tok) => tok.kind === "date").map((tok) => tok.raw),
       sourceFiling: mostRecentCitation(t.citations),
+      citations: t.citations,
+      evidence: t.evidence,
+      eventDate: t.eventDate,
+      dateGranularity: t.dateGranularity,
+      eventStatus: t.eventStatus,
     });
   }
   return facts;

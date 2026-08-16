@@ -97,10 +97,9 @@ async function main() {
   console.log(`### PORTFOLIO TABLE — deterministic, no model call (Session 15 Part B)`);
   console.log(`########################################\n`);
 
-  for (let i = 0; i < results.length; i++) {
-    const r = results[i];
-    const cardCount = flashCardCandidates.filter((c) => c.cik === r.cik).length;
-    const block = buildCompanyTableBlock(r, portfolio[i], cardCount);
+  for (const r of results) {
+    const cardsForCompany = flashCardCandidates.filter((c) => c.cik === r.cik);
+    const block = buildCompanyTableBlock(r, cardsForCompany);
     console.log(`--- ${block.company}  (${block.headerLine}) ---`);
     if (block.emptyStateLine) console.log(`  ${block.emptyStateLine}`);
     for (const bucket of TABLE_BUCKET_ORDER) {
@@ -111,13 +110,11 @@ async function main() {
         continue;
       }
       for (const line of lines) {
-        const bits = [line.label];
-        if (line.figure) bits.push(line.figure);
-        if (line.timingPhrase) bits.push(line.timingPhrase);
-        if (line.isHedgingFlag) bits.push("worth raising");
+        const text = line.timingPhrase ? `${line.description} — ${line.timingPhrase}` : line.description;
         const marker = line.isHedgingFlag ? "⚑" : "·";
         const cardMark = line.cardEligible ? " [card above]" : "";
-        console.log(`    ${marker} ${bits.join(" — ")}${cardMark}`);
+        const sources = line.citations.map((c) => `${c.form} ${c.date}`).join(", ");
+        console.log(`    ${marker} ${text}${cardMark} (${sources})`);
       }
     }
     if (block.relationshipFlags.length > 0) {

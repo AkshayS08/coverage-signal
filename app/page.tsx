@@ -109,18 +109,19 @@ export default function Home() {
   const [running, setRunning] = useState(false);
   const [asOfDate, setAsOfDate] = useState<Date | null>(null);
 
-  const { flashCardCandidates, portfolio } = useMemo(() => buildEvents(results), [results]);
+  const { flashCardCandidates } = useMemo(() => buildEvents(results), [results]);
 
-  // Session 15 Part B: the portfolio table is a pure function of already-
-  // streamed data — no server call, no loading state, computed the same
-  // way buildEvents itself already is.
+  // Session 15b Part A: the portfolio table renders per TRIGGER (its own
+  // bucket), not per buildEvents.ts cluster — computed from `results`
+  // directly. Still a pure function of already-streamed data — no server
+  // call, no loading state.
   const tableBlocks = useMemo(
     () =>
-      results.map((result, i) => {
-        const cardCount = flashCardCandidates.filter((c) => c.cik === result.cik).length;
-        return buildCompanyTableBlock(result, portfolio[i], cardCount);
+      results.map((result) => {
+        const cardsForCompany = flashCardCandidates.filter((c) => c.cik === result.cik);
+        return buildCompanyTableBlock(result, cardsForCompany);
       }),
-    [results, portfolio, flashCardCandidates]
+    [results, flashCardCandidates]
   );
 
   const companiesWithEvents = useMemo(
@@ -358,25 +359,25 @@ export default function Home() {
     );
   }
 
-  // Session 15 Part B: one deterministic bullet line per gated fact — fact
-  // label + figure (with unit, when disclosed) + timing + source link.
-  // Nothing here is model-drafted; a company's table block is a pure
-  // function of its already-streamed CompanyResult.
+  // Session 15b Part A: one deterministic bullet line per verified trigger
+  // — evidence-condensed description (what happened, with its amount and
+  // date already in it) + timing + EVERY source link. Nothing here is
+  // model-drafted; a company's table block is a pure function of its
+  // already-streamed CompanyResult (evidenceCondense.ts + portfolioTable.ts).
   function renderTableLine(line: TableLine, i: number) {
-    const parts = [line.label];
-    if (line.figure) parts.push(line.figure);
-    if (line.timingPhrase) parts.push(line.timingPhrase);
-    if (line.isHedgingFlag) parts.push("worth raising");
+    const text = line.timingPhrase ? `${line.description} — ${line.timingPhrase}` : line.description;
     return (
       <li key={i} className={line.isHedgingFlag ? styles.tableLineHedging : styles.tableLine}>
         <span className={styles.tableLineBullet}>{line.isHedgingFlag ? "⚑" : "·"}</span>
-        <span className={styles.tableLineText}>{parts.join(" — ")}</span>
+        <span className={styles.tableLineText}>{text}</span>
         {line.cardEligible && <span className={styles.tableLineCardMarker}>▸ card above</span>}
-        {line.citation && (
-          <a href={line.citation.url} target="_blank" rel="noreferrer" className={styles.citation}>
-            {line.citation.form} {line.citation.date} ↗
-          </a>
-        )}
+        <span className={styles.tableLineSources}>
+          {line.citations.map((c, ci) => (
+            <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
+              {c.form} {c.date} ↗
+            </a>
+          ))}
+        </span>
       </li>
     );
   }

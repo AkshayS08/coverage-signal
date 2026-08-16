@@ -7,6 +7,7 @@ import { checkNumbersAgainstQuotes, countDistinctFactsReferenced } from "./numbe
 import { isScrapeShapedText } from "./scrapeGuard";
 import { compactLabelWithTiming } from "./labels";
 import { BUCKET_LABELS } from "./buckets";
+import { extractFactTokens } from "../agent/factTokens";
 
 // Deliberately NOT re-exported from lib/events/index.ts — this file pulls
 // in the Anthropic SDK, and the barrel is meant to be safe for the client
@@ -59,20 +60,20 @@ const BUCKET_ANGLE_GUIDANCE: Record<Bucket, string> = {
 const SYSTEM_PROMPT = `You write ONE flash card for a bank relationship manager (RM) — a weekly briefing on who to call and why. The card leads with the CALL, not a description of what happened: an RM reading it in 5 seconds must know what to DO, not just what occurred. This is banker judgment applied to a fixed set of facts, not fact-finding — the headline event, its bucket, and its timing are ALREADY DECIDED by the system before you're called; your job is to write the call well, never to pick a different one.
 
 You will be given:
-- The HEADLINE EVENT — the one fact this card is about.
+- The HEADLINE EVENT — the one fact this card is about. Shown as both a verified quote and its own evidence sentence (a plain-English paraphrase, already properly scaled — "$1.5 billion," never a bare unscaled number). The specific amounts and dates you need are usually easiest to read off the evidence sentence.
 - Bucket-specific guidance for what OPEN WITH should focus on.
-- OTHER VERIFIED FACTS about the same company — everything else confirmed true about them right now. Weave one in ONLY when it is what makes the headline live THIS WEEK — never because it's merely available.
+- OTHER VERIFIED FACTS about the same company — everything else confirmed true about them right now, each with its own evidence sentence too. Weave one in ONLY when it is what makes the headline live THIS WEEK — never because it's merely available.
 
 Write exactly three fields:
 
-- callAbout: the ACTION, one imperative line. Never a description of an event. "Refinance the 2026 notes" — not "debt maturity approaching." "Move the divestiture proceeds into an operating relationship" — not "asset sale closing."
+- callAbout: the ACTION, one imperative line, and it MUST name the amount or the date of the thing being called about — a call with neither is not specific enough. "Refinance the $1.5 billion notes due November 2027" — not "debt maturity approaching" and not just "refinance the notes." If the headline fact genuinely has no verifiable dollar amount (never guess one), name the date instead — a date alone is enough, but never neither.
 
 - whyNow: the synthesis — what makes THIS WEEK the moment, not just what happened. One sentence; a second short sentence is allowed only to keep two distinct facts clean, never as extra room for detail. MUST connect the headline event to at least one OTHER given fact that explains why it's live now (a related disclosure, a stated market condition, a second dated event) — a sentence that only restates the headline event, however detailed, is description, not synthesis, and description is exactly what this format replaces. If nothing in the other verified facts genuinely explains why now, do not invent a connection or pad with unrelated detail — write the truest version you can with what you have; a structural check downstream decides whether it qualifies, that is not your call to route around.
 
 - openWith: one sentence the RM could actually say out loud on the phone, tied to this company's own specifics — never boilerplate. Follow the bucket-specific guidance you're given for what to focus on.
 
 THE FACTUAL SOURCE — read before writing anything:
-- Every number, date, rate, and dollar amount you state must appear, verbatim or in an obviously equivalent form, in the HEADLINE EVENT or the OTHER VERIFIED FACTS you were given. Nothing from general knowledge, nothing computed, nothing rounded to a different figure than given, nothing carried over from a different company.
+- Every number, date, rate, and dollar amount you state must appear, verbatim or in an obviously equivalent form, in the HEADLINE EVENT or the OTHER VERIFIED FACTS you were given — their quotes OR their evidence sentences, either is a valid source. Nothing from general knowledge, nothing computed, nothing rounded to a different figure than given, nothing carried over from a different company.
 - If a fact's own date is a duration without a calendar date, describe it using the duration and whatever date IS given — never calculate a derived calendar date yourself.
 
 Hard rules:
@@ -89,7 +90,8 @@ const CARD_BODY_TOOL = {
     properties: {
       callAbout: {
         type: "string",
-        description: "One imperative line: the action to take, never a description of an event.",
+        description:
+          "One imperative line: the action to take, never a description of an event. Must name the verified amount or date of the thing being called about — a date alone is fine when no figure is verifiable, but never neither.",
       },
       whyNow: {
         type: "string",
@@ -111,9 +113,21 @@ export interface RawCardBody {
   openWith: string;
 }
 
+/**
+ * Session 15b: includes the fact's own evidence sentence alongside the
+ * verified quote — the quote is often a raw filing fragment (sometimes a
+ * table row with no real sentence structure), while evidence is Haiku's
+ * own plain-English paraphrase, already properly $-scaled, and is where
+ * the specific amounts/dates actually live in readable form. Both are
+ * shown so Sonnet can draw a stated figure/date from either; the
+ * structural guard's accuracy corpus is expanded to match (see
+ * checkCardStructure) so a figure sourced from evidence is never
+ * incorrectly rejected as "unverified."
+ */
 function formatFact(f: VerifiedFact): string {
   const sourceStr = f.sourceFiling ? `${f.sourceFiling.form} filed ${f.sourceFiling.date}` : "n/a";
-  return `- ${f.fact}: "${f.normalizedText}" (source: ${sourceStr})`;
+  const evidenceLine = f.evidence ? `\n  evidence: "${f.evidence}"` : "";
+  return `- ${f.fact}: "${f.normalizedText}" (source: ${sourceStr})${evidenceLine}`;
 }
 
 // Exported so lib/cache/wordingCache.ts can hash EXACTLY what Sonnet will
@@ -202,13 +216,15 @@ export interface StructuralGuardResult {
  * say the opposite of what it fears") applies here too: no word list, no
  * lexical banned-phrase scan, just verifiable structural properties.
  *
- * Four checks, all structural: (1) no field is empty, (2) whyNow is at
+ * Six checks, all structural: (1) no field is empty, (2) whyNow is at
  * most 2 sentences, (3) every number/date/rate traces to a given fact
  * (numberGuard.ts, unchanged), (4) whyNow's own tokens trace to at least 2
  * DISTINCT facts (countDistinctFactsReferenced — the mechanical proxy for
- * "is this a synthesis or a restatement"), and (5) no field reads as raw
+ * "is this a synthesis or a restatement"), (5) no field reads as raw
  * scrape-shaped data rather than a written sentence (scrapeGuard.ts,
- * unchanged).
+ * unchanged), and (6, Session 15b Part B) callAbout names at least one
+ * verified figure or date — a call with neither is exactly the
+ * description-not-action pattern this format exists to kill.
  */
 export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[]): StructuralGuardResult {
   const reasons: string[] = [];
@@ -220,10 +236,14 @@ export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[]):
   const whyNowSentences = body.whyNow.trim() ? sentenceCount(body.whyNow) : 0;
   if (whyNowSentences > 2) reasons.push(`whyNow is ${whyNowSentences} sentences — over the 2-sentence limit`);
 
-  // Pooled (normalized + raw verified text) for the accuracy check — we
-  // only care whether a stated figure appears ANYWHERE in the verified
-  // corpus, in either form.
-  const accuracyCorpus = factBase.flatMap((f) => [f.normalizedText, f.verifiedText]);
+  // Session 15b: the accuracy corpus now also includes each fact's own
+  // evidence sentence, not just verifiedText/normalizedText — the quote
+  // is frequently a raw filing fragment with no real sentence structure,
+  // while evidence is Haiku's already-scaled paraphrase and is where a
+  // stated figure/date most often actually appears in citable form (this
+  // is the fix for UHS's debt-maturity card, whose own quote is a bare,
+  // unscaled table cell — see Part C / draftEventBriefing's doc comment).
+  const accuracyCorpus = factBase.flatMap((f) => [f.normalizedText, f.verifiedText, f.evidence ?? ""]);
   const auditText = `${body.callAbout} ${body.whyNow} ${body.openWith}`;
   const numberGuard = checkNumbersAgainstQuotes(auditText, accuracyCorpus);
   if (!numberGuard.ok) {
@@ -235,12 +255,25 @@ export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[]):
   }
 
   // ONE text per fact (normalizedText only) for the distinctness check —
-  // pooling normalized+raw here would double-count a single fact as two,
-  // since both strings describe the same underlying fact.
+  // pooling normalized+raw+evidence here would double- or triple-count a
+  // single fact, since all three describe the same underlying fact.
   const distinctnessCorpus = factBase.map((f) => f.normalizedText);
   const factsReferenced = body.whyNow.trim() ? countDistinctFactsReferenced(body.whyNow, distinctnessCorpus) : 0;
   if (factsReferenced < 2) {
     reasons.push(`whyNow references only ${factsReferenced} distinct fact(s) — must connect at least 2 to count as synthesis, not description`);
+  }
+
+  // Session 15b Part B: callAbout must name the amount OR the date of
+  // what it's calling about — never neither. A verified figure/date
+  // already present ANYWHERE in callAbout satisfies this (checked against
+  // the same accuracy corpus, so an unverified number here is caught
+  // twice: once by the accuracy check above, once here as "doesn't count").
+  const callAboutTokens = body.callAbout.trim() ? extractFactTokens(body.callAbout) : [];
+  const callAboutHasVerifiedFigureOrDate = callAboutTokens.some(
+    (tok) => (tok.kind === "money" || tok.kind === "date") && countDistinctFactsReferenced(tok.raw, accuracyCorpus) > 0
+  );
+  if (body.callAbout.trim() && !callAboutHasVerifiedFigureOrDate) {
+    reasons.push("callAbout names no verified amount or date — every call must name what it's about, even a date alone");
   }
 
   return { ok: reasons.length === 0, reasons, factsReferenced };

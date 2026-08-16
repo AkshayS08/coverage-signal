@@ -18,5 +18,13 @@
 /** claude.ts's 15-trigger extraction prompt + schema, and proceedsUse.ts's classification prompt. Untouched this session — stays at 1. */
 export const EXTRACTION_PROMPT_VERSION = 1;
 
-/** sonnetEventBriefing.ts's card-narration prompt + schema. Bumped this session (CALL ABOUT/WHY NOW/OPEN WITH replaces What/Why call/Angle). */
-export const NARRATION_PROMPT_VERSION = 2;
+/**
+ * sonnetEventBriefing.ts's card-narration prompt + schema.
+ * v2 (Session 15): CALL ABOUT/WHY NOW/OPEN WITH replaces What/Why call/Angle.
+ * v3 (Session 15b): evidence sentences added to context, the accuracy
+ * corpus, and a required callAbout figure-or-date check — the prompt and
+ * what counts as "verified" both changed, so old cached bodies (drafted
+ * without ever seeing evidence text) must not be replayed as if
+ * equivalent.
+ */
+export const NARRATION_PROMPT_VERSION = 3;

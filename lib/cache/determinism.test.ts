@@ -29,7 +29,7 @@ async function runBookOnce(companies: string[]): Promise<unknown[]> {
   const outputs: unknown[] = [];
   for (const company of companies) {
     const result = await runAgentLoop(company);
-    const { flashCardCandidates, portfolio } = buildEvents([result]);
+    const { flashCardCandidates } = buildEvents([result]);
     const factBase = buildVerifiedFactBase(result);
 
     const eventBriefings = [];
@@ -37,7 +37,7 @@ async function runBookOnce(companies: string[]): Promise<unknown[]> {
       const briefing = await cachedDraftEventBriefing(card, factBase);
       eventBriefings.push({ eventId: card.id, briefing });
     }
-    const table = buildCompanyTableBlock(result, portfolio[0], flashCardCandidates.length);
+    const table = buildCompanyTableBlock(result, flashCardCandidates);
 
     outputs.push({ company, result, eventBriefings, table });
   }

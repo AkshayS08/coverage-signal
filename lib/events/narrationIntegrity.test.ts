@@ -373,10 +373,11 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     }
 
     // 9f. A genuinely valid body (2 sentences, 2 distinct facts, no
-    // unverified figures, no scrape shape, no empty field) passes.
+    // unverified figures, no scrape shape, no empty field, callAbout names
+    // a verified figure — Session 15b Part B's new check) passes.
     if (fig1 && fig2 && fig1 !== fig2) {
       const body: RawCardBody = {
-        callAbout: "Refinance the upcoming notes.",
+        callAbout: `Refinance the upcoming notes (${fig1}).`,
         whyNow: `The company disclosed ${fig1} in one filing, and separately ${fig2} in another.`,
         openWith: "Ask how they're sequencing the two.",
       };
@@ -387,6 +388,39 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       );
     } else {
       console.warn("  (skipped [9f] — UHS's first two facts don't have two distinct figures this build)");
+    }
+
+    // 9h. Session 15b Part B: callAbout naming NEITHER a figure nor a date
+    // fails the new check — this is the exact "description, not a call"
+    // pattern the requirement exists to catch.
+    {
+      const body: RawCardBody = { callAbout: "Refinance the notes soon.", whyNow: "Something is happening.", openWith: "Let's talk." };
+      const r = checkCardStructure(body, uhsFacts);
+      assert(
+        r.reasons.some((x) => x.includes("no verified amount or date")),
+        "[9h] callAbout naming neither a figure nor a date fails the new Part B check"
+      );
+    }
+
+    // 9i. Part C's explicit allowance: callAbout naming a verified DATE
+    // ALONE (no dollar figure) satisfies the check — exactly UHS's own
+    // debt-maturity shape, whose only verifiable figure is redacted.
+    {
+      const uhsDebtMaturity = uhsFacts.find((f) => f.linkedTriggerId === "debt-maturity");
+      if (uhsDebtMaturity?.eventDate) {
+        const body: RawCardBody = {
+          callAbout: `Address the notes maturing in ${uhsDebtMaturity.eventDate}.`,
+          whyNow: "Placeholder synthesis line.",
+          openWith: "Ask how they're planning around it.",
+        };
+        const r = checkCardStructure(body, uhsFacts);
+        assert(
+          !r.reasons.some((x) => x.includes("no verified amount or date")),
+          `[9i] callAbout naming a verified DATE alone (no figure) satisfies the check — Part C's explicit allowance (reasons: ${r.reasons.join("; ")})`
+        );
+      } else {
+        console.warn("  (skipped [9i] — UHS's debt-maturity fact has no eventDate this build)");
+      }
     }
   }
 

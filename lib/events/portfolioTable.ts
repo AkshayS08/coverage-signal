@@ -1,33 +1,43 @@
 import type { CompanyResult, TriggerResult } from "../agent";
-import type { CompanyPortfolio, EventRecord } from "./buildEvents";
-import type { Bucket } from "./buckets";
+import type { FlashCard } from "./buildEvents";
+import { bucketForTrigger, type Bucket } from "./buckets";
+import { evaluateEligibility } from "./eligibility";
+import { buildVerifiedFactBase } from "./factBase";
+import { condenseEvidenceDescription } from "./evidenceCondense";
 import type { TimingInfo } from "./textHeuristics";
-import { shortTriggerLabel } from "./labels";
-import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
 
 /**
- * Session 15 Part B: the portfolio table's deterministic renderer.
- * Replaces sonnetPortfolioSummary.ts (deleted) entirely — same "GATED
- * FACTS ONLY" principle (only quote-verified fired triggers ever produce a
- * line, matching factBase.ts's VerifiedFact definition exactly), but
- * rendered directly as one line per fact instead of narrated into prose.
- * Every function here is a pure function of already-computed data
- * (CompanyResult + CompanyPortfolio, both produced upstream by the
- * unmodified gate/buildEvents.ts) — no model call anywhere in this file.
+ * Session 15b Part A: the portfolio table's deterministic renderer,
+ * rewritten to render per TRIGGER, not per dedup cluster. Session 15's
+ * first version grouped by buildEvents.ts's merged-cluster bucket, which
+ * meant a trigger could render under a bucket that wasn't its own (a
+ * cluster resolves to ONE bucket by priority tie-break; every constituent
+ * trigger inherited it) — confirmed live: HCA's debt-maturity fact
+ * rendered under "New debt" because it shared a citation with
+ * new-debt-issuance, which won the tie-break. Clusters/dedup stay exactly
+ * as they are for CARDS (out of scope this session); the table simply
+ * stops using them — it renders every verified trigger independently,
+ * under bucketForTrigger(triggerId), which is what "the table is the full
+ * picture" requires.
+ *
+ * Each line is built from the trigger's own evidence prose
+ * (evidenceCondense.ts), not from a figure+status template — see that
+ * file's doc comment for the three condensing rules this implements.
+ *
+ * No model call anywhere in this file.
  */
 
 export interface TableLine {
   triggerId: string;
-  /** Short deterministic label (labels.ts), e.g. "refi window", "new debt raised" — never raw filing prose. */
-  label: string;
-  /** The one safely-scaled figure bound to this fact (factBase.ts's selectDisplayFigure), or null for "no figure disclosed". */
-  figure: string | null;
+  /** Condensed "what happened, with its amount and date" — evidenceCondense.ts. Never empty (bareLineFallback guarantees a reason string when a fact has nothing else). */
+  description: string;
   /** dateGranularity-aware phrase — "~46mo out", "matures 2026" (never a computed month count for a year-granularity fact), "pending/live", "standing", or "". */
   timingPhrase: string;
-  citation: { form: string; date: string; url: string } | null;
-  /** True when this same fact also has its own flash card above — "companies with cards: the carded events appear in the table too, marked." */
+  /** ALL citations for this trigger, not just the most recent — every line must carry its source link(s). */
+  citations: TriggerResult["citations"];
+  /** True when this exact trigger is the headline of one of this company's actual rendered cards above — "the carded events appear in the table too, marked." */
   cardEligible: boolean;
-  /** True only for a STANDING (non-card) hedging-bucket fact — renders with the ⚑ marker instead of the ordinary bullet. */
+  /** True for a hedging-bucket line with no card of its own — renders with the ⚑ marker so a standing exposure is never buried. */
   isHedgingFlag: boolean;
 }
 
@@ -67,51 +77,42 @@ function timingPhraseFor(t: TriggerResult, timing: TimingInfo): string {
   return "";
 }
 
-function mostRecentCitation(citations: TriggerResult["citations"]): TriggerResult["citations"][number] | null {
-  if (citations.length === 0) return null;
-  return [...citations].sort((a, b) => b.date.localeCompare(a.date))[0];
-}
-
 /**
- * One line per quote-verified fired trigger in this event cluster — a
- * trigger that fired but failed quote verification never gets a line, the
- * same rule buildVerifiedFactBase already enforces for cards.
+ * Builds one company's table block. `cardsForCompany` is this company's
+ * slice of the SAME flashCardCandidates list the cards section renders
+ * from (filter by `.cik`) — it decides both cardCount and which specific
+ * trigger lines get the "card above" marker; this function never decides
+ * eligibility itself, only groups/labels/formats what the gate already
+ * decided (evaluateEligibility is called read-only, purely for each
+ * trigger's own TimingInfo — eligibility.ts itself is untouched).
  */
-function buildLinesForEvent(event: EventRecord, factByTrigger: Map<string, VerifiedFact>): TableLine[] {
-  const lines: TableLine[] = [];
-  for (const t of event.triggers) {
-    const fact = factByTrigger.get(t.triggerId);
-    if (!fact) continue;
-    lines.push({
-      triggerId: t.triggerId,
-      label: shortTriggerLabel(t.triggerId, t.triggerName),
-      figure: fact.figures[0] ?? null,
-      timingPhrase: timingPhraseFor(t, event.timing),
-      citation: mostRecentCitation(t.citations),
-      cardEligible: event.cardEligible,
-      isHedgingFlag: event.bucket === "hedging" && !event.cardEligible,
-    });
-  }
-  return lines;
-}
-
-/**
- * Builds one company's table block. `cardCount` is passed in rather than
- * recomputed here because it must match the SAME flashCardCandidates list
- * the cards section renders from (buildEvents' cross-company sort) — this
- * function only ever groups/labels/formats, it never decides eligibility.
- */
-export function buildCompanyTableBlock(result: CompanyResult, portfolio: CompanyPortfolio, cardCount: number): CompanyTableBlock {
+export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: FlashCard[], now: Date = new Date()): CompanyTableBlock {
   const factBase = buildVerifiedFactBase(result);
   const factByTrigger = new Map(factBase.map((f) => [f.linkedTriggerId, f]));
+  const headlineTriggerIds = new Set(cardsForCompany.map((c) => c.headlineTrigger.triggerId));
 
   const buckets: BucketLines = { treasury: [], new_debt: [], refi: [], hedging: [] };
-  for (const bucket of Object.keys(portfolio.buckets) as Bucket[]) {
-    for (const event of portfolio.buckets[bucket]) {
-      buckets[bucket].push(...buildLinesForEvent(event, factByTrigger));
-    }
+
+  for (const t of result.results) {
+    const fact = factByTrigger.get(t.triggerId);
+    if (!fact) continue; // not quote-verified — never described, never implied (same GATED FACTS ONLY rule cards use)
+    const bucket = bucketForTrigger(t.triggerId);
+    if (!bucket) continue; // distress/covenant-breach — a relationship flag, never a bucket line
+
+    const { timing } = evaluateEligibility(t, now);
+    const cardEligible = headlineTriggerIds.has(t.triggerId);
+
+    buckets[bucket].push({
+      triggerId: t.triggerId,
+      description: condenseEvidenceDescription(fact),
+      timingPhrase: timingPhraseFor(t, timing),
+      citations: t.citations,
+      cardEligible,
+      isHedgingFlag: bucket === "hedging" && !cardEligible,
+    });
   }
 
+  const cardCount = cardsForCompany.length;
   const triggersRun = result.results.length;
   const triggersNoSignalCount = triggersRun - result.results.filter((r) => r.fired).length;
 
