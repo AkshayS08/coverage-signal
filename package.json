@@ -14,10 +14,13 @@
     "test": "tsx lib/events/eligibility.test.ts",
     "test:narration": "tsx lib/events/narrationIntegrity.test.ts",
     "test:build-fixture": "tsx lib/events/buildFixture.ts",
-    "events:test:fixture": "tsx lib/events/testFromFixture.ts"
+    "events:test:fixture": "tsx lib/events/testFromFixture.ts",
+    "test:cache": "tsx lib/cache/cache.test.ts",
+    "test:determinism": "tsx lib/cache/determinism.test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
+    "@vercel/blob": "^2.8.0",
     "dotenv": "^17.4.2",
     "next": "16.2.12",
     "react": "19.2.4",

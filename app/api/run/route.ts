@@ -1,7 +1,8 @@
 import { runAgentLoop, type RunStreamEvent } from "@/lib/agent";
 import { buildEvents, buildVerifiedFactBase } from "@/lib/events";
-import { draftEventBriefing } from "@/lib/events/sonnetEventBriefing";
-import { draftPortfolioSummary } from "@/lib/events/sonnetPortfolioSummary";
+import { cachedDraftEventBriefing, cachedDraftPortfolioSummary } from "@/lib/cache/wordingCache";
+import { assertBlobConfigured } from "@/lib/fetch/cache";
+import { cacheStats } from "@/lib/cache/stats";
 import { checkRateLimit } from "./rateLimit";
 
 export const runtime = "nodejs";
@@ -33,6 +34,18 @@ export async function POST(request: Request) {
     return new Response("Incorrect passphrase", { status: 401 });
   }
 
+  // Session 14: fail fast and loud if the answer/wording cache has nowhere
+  // to persist — a missing token must never silently degrade into an
+  // uncached, non-deterministic run. See lib/fetch/cache.ts.
+  try {
+    assertBlobConfigured();
+  } catch (err) {
+    return new Response(
+      `Server not configured: ${err instanceof Error ? err.message : String(err)}`,
+      { status: 500 }
+    );
+  }
+
   // Backstop rate limit so even a valid passphrase can't loop expensively.
   const rate = checkRateLimit(getClientKey(request));
   if (!rate.allowed) {
@@ -59,6 +72,9 @@ export async function POST(request: Request) {
 
   const encoder = new TextEncoder();
 
+  // Per-request counters, not per-instance — see lib/cache/stats.ts.
+  cacheStats.reset();
+
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (event: RunStreamEvent) => {
@@ -78,20 +94,20 @@ export async function POST(request: Request) {
           // — the old fully-deterministic version is retired.
           const { flashCardCandidates, portfolio } = buildEvents([result]);
           const factBase = buildVerifiedFactBase(result);
-          const eventBriefings: { eventId: string; briefing: Awaited<ReturnType<typeof draftEventBriefing>> }[] = [];
+          const eventBriefings: { eventId: string; briefing: Awaited<ReturnType<typeof cachedDraftEventBriefing>> }[] = [];
           for (const card of flashCardCandidates) {
             // Freshness-gate audit trail: why this card qualified, so the
             // gate's decision is visible in the trace, not a black box.
             send({ type: "trace", company, text: `card qualified: ${card.freshnessReason}` });
 
-            const drafted = await draftEventBriefing(card, factBase);
+            const drafted = await cachedDraftEventBriefing(card, factBase);
             const label = drafted.source === "sonnet" ? "Sonnet-drafted" : drafted.source === "failed" ? "FAILED (see banner)" : drafted.source;
             console.log(`[eventBriefing] ${result.company} (${card.bucket}): ${drafted.source}`);
             send({ type: "trace", company, text: `card briefing (${card.bucket}): ${label}` });
             eventBriefings.push({ eventId: card.id, briefing: drafted });
           }
 
-          const portfolioSummary = await draftPortfolioSummary(portfolio[0], factBase);
+          const portfolioSummary = await cachedDraftPortfolioSummary(portfolio[0], factBase);
           send({
             type: "trace",
             company,
@@ -104,6 +120,7 @@ export async function POST(request: Request) {
         }
       }
 
+      send({ type: "trace", company: names[names.length - 1], text: `cache: ${cacheStats.summary()}` });
       send({ type: "done" });
       controller.close();
     },

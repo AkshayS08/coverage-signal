@@ -110,7 +110,9 @@ function formatFact(f: VerifiedFact): string {
   return `- ${f.fact}: "${f.normalizedText}" (source: ${sourceStr})`;
 }
 
-function buildContext(card: FlashCard, factBase: VerifiedFact[]): string {
+// Exported so lib/cache/wordingCache.ts can hash EXACTLY what Sonnet will
+// see when building the wording-cache key — no logic here changes.
+export function buildContext(card: FlashCard, factBase: VerifiedFact[]): string {
   const headlineFact = factBase.find((f) => f.linkedTriggerId === card.headlineTrigger.triggerId);
   const otherFacts = factBase.filter((f) => f !== headlineFact);
 

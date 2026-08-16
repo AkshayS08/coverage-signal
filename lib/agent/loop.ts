@@ -16,6 +16,8 @@ import {
 import { verifyTriggerQuote } from "./verifyQuote";
 import { verifyEventDate, type EventDateGuardResult } from "./factGuard";
 import { classifyProceedsUse } from "./proceedsUse";
+import { assertBlobConfigured } from "../fetch/cache";
+import { corpusFingerprint, cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
 
 const MAX_DIG_STEPS = 5;
 
@@ -105,6 +107,11 @@ export async function runAgentLoop(
     onTrace?.(line);
   }
 
+  // Fail fast and loud, before any work starts, if the answer/wording cache
+  // has no way to persist — see lib/fetch/cache.ts's doc comment for why a
+  // missing token must never silently degrade into an uncached run.
+  assertBlobConfigured();
+
   const filingsResult = await getRecentFilings(companyName, ["8-K", "10-Q", "10-K"]);
 
   const catalog: FilingCatalogEntry[] = filingsResult.filings.map((f) => ({
@@ -134,13 +141,28 @@ export async function runAgentLoop(
   // News isn't wired up yet (later session) — call the stub but don't narrate an empty result.
   await searchNews(companyName);
 
+  // Session 14: the answer cache. A filing's content never changes once
+  // filed, so the fingerprint of "which filings exist for this company"
+  // (corpusFingerprint, over the FULL catalog — see its doc comment) is a
+  // stable key for "what Haiku was actually asked." A hit means Haiku is
+  // never re-asked; a miss (new filing entered the catalog, or this
+  // company/corpus has never been seen) is exactly one Haiku call, same as
+  // before this session — this call was already batched over the whole
+  // corpus, never split per filing.
+  const fingerprint = corpusFingerprint(filingsResult.filings);
   log(`checking all 15 triggers...`);
-  const baseVerdicts = await classifyAllTriggers({
-    companyName: filingsResult.company,
-    triggers: TRIGGERS,
-    catalog,
-    corpus,
-  });
+  const { data: baseVerdicts, hit: baseHit } = await cachedBaseClassification(
+    filingsResult.cik,
+    fingerprint,
+    () =>
+      classifyAllTriggers({
+        companyName: filingsResult.company,
+        triggers: TRIGGERS,
+        catalog,
+        corpus,
+      })
+  );
+  log(`  answer cache ${baseHit ? "HIT" : "MISS"} (base classification, fingerprint ${fingerprint.slice(0, 8)})`);
   const verdictById = new Map(baseVerdicts.map((v) => [v.triggerId, v]));
 
   // Deterministic fact-check: a fired trigger's `quote` must either appear
@@ -248,17 +270,25 @@ export async function runAgentLoop(
       log(`${label} unclear → digging into the ${digFiling.form}...`);
       const { text } = await readFiling(digFiling.primaryDocUrl);
       textByUrl.set(digFiling.primaryDocUrl, text);
-      const refined = await classifyOneTrigger({
-        companyName: filingsResult.company,
-        trigger,
-        priorVerdict: v,
-        extraDoc: {
-          form: digFiling.form,
-          filingDate: digFiling.filingDate,
-          url: digFiling.primaryDocUrl,
-          text,
-        },
-      });
+      const { data: refined, hit: digHit } = await cachedDigClassification(
+        filingsResult.cik,
+        fingerprint,
+        trigger.id,
+        digFiling.primaryDocUrl,
+        () =>
+          classifyOneTrigger({
+            companyName: filingsResult.company,
+            trigger,
+            priorVerdict: v,
+            extraDoc: {
+              form: digFiling.form,
+              filingDate: digFiling.filingDate,
+              url: digFiling.primaryDocUrl,
+              text,
+            },
+          })
+      );
+      log(`  answer cache ${digHit ? "HIT" : "MISS"} (dig, ${trigger.id})`);
       log(`${label} resolved — ${describeVerdict(trigger, refined)}.`);
       results.push(finalizeVerified(trigger, refined, label));
     } else if (v.needsDig && digBudget === 0) {
@@ -293,13 +323,16 @@ export async function runAgentLoop(
         .sort((a, b) => b.filingDate.localeCompare(a.filingDate))[0];
       const urls = new Set([...issuance.citations.map((c) => c.url), ...(mostRecentTenQ ? [mostRecentTenQ.primaryDocUrl] : [])]);
       const filingTexts = [...urls].map((url) => textByUrl.get(url)).filter((t): t is string => !!t);
-      const proceedsUse = await classifyProceedsUse({
-        companyName,
-        evidence: issuance.evidence,
-        quote: issuance.verifiedQuote,
-        filingTexts,
-      });
+      const { data: proceedsUse, hit: proceedsHit } = await cachedProceedsUse(filingsResult.cik, fingerprint, () =>
+        classifyProceedsUse({
+          companyName,
+          evidence: issuance.evidence,
+          quote: issuance.verifiedQuote,
+          filingTexts,
+        })
+      );
       results[issuanceIdx] = { ...issuance, proceedsUse };
+      log(`  answer cache ${proceedsHit ? "HIT" : "MISS"} (proceedsUse)`);
       log(`  proceeds-use classified (Sonnet): ${proceedsUse}`);
     } catch (err) {
       log(

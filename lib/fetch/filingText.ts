@@ -66,19 +66,29 @@ function urlToCacheKey(url: string): string {
 }
 
 /**
- * Fetches a filing document's plain text, cached by URL. HTML is stripped
- * (including the non-visual inline-XBRL header/hidden-facts blocks) and
- * truncated to keep per-filing prompt cost bounded — 8-Ks are short enough
- * to survive intact; 10-Qs/10-Ks get the first ~40k chars, which reaches
- * past the cover page into the actual financial-statement tables (debt
- * schedule, etc.) rather than stopping at the cover page's XBRL facts.
+ * Fetches a filing document's plain text, cached by URL, PERMANENTLY
+ * (ttlMs: null) — unlike the filing LIST (which changes as companies file
+ * new documents, see cache.ts's FILING_CACHE_TTL_MS), the text at a fixed
+ * filing URL can never legitimately change once published. Re-fetching it
+ * on a schedule would only add SEC load and latency for identical bytes;
+ * only a genuinely new URL entering the filing list ever causes a fetch
+ * here. HTML is stripped (including the non-visual inline-XBRL
+ * header/hidden-facts blocks) and truncated to keep per-filing prompt cost
+ * bounded — 8-Ks are short enough to survive intact; 10-Qs/10-Ks get the
+ * first ~40k chars, which reaches past the cover page into the actual
+ * financial-statement tables (debt schedule, etc.) rather than stopping at
+ * the cover page's XBRL facts.
  */
 export async function getFilingText(url: string): Promise<{ text: string; fromCache: boolean }> {
   const cachePath = `edgar/filing-text/${urlToCacheKey(url)}.json`;
-  const { data, fromCache } = await cachedFetch<{ text: string }>(cachePath, async () => {
-    const html = await secFetchText(url);
-    const text = stripHtml(html).slice(0, MAX_CHARS);
-    return { text };
-  });
+  const { data, fromCache } = await cachedFetch<{ text: string }>(
+    cachePath,
+    async () => {
+      const html = await secFetchText(url);
+      const text = stripHtml(html).slice(0, MAX_CHARS);
+      return { text };
+    },
+    null
+  );
   return { text: data.text, fromCache };
 }
