@@ -1,8 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { FlashCard } from "./buildEvents";
+import type { Bucket } from "./buckets";
 import type { VerifiedFact } from "./factBase";
-import { quoteFallbackBriefing, failedEventBriefing, type DraftedEventBriefing } from "./eventBriefing";
-import { checkNumbersAgainstQuotes } from "./numberGuard";
+import { failedEventBriefing, type DraftedEventBriefing } from "./eventBriefing";
+import { checkNumbersAgainstQuotes, countDistinctFactsReferenced } from "./numberGuard";
 import { isScrapeShapedText } from "./scrapeGuard";
 import { compactLabelWithTiming } from "./labels";
 import { BUCKET_LABELS } from "./buckets";
@@ -25,10 +26,10 @@ import { BUCKET_LABELS } from "./buckets";
 //   - which facts are VERIFIED at all (lib/agent/verifyQuote.ts + factBase.ts)
 //
 // SONNET NARRATES — given the headline event and the company's full
-// verified fact list (both already decided), it sequences the story,
-// judges which other facts are directly relevant context, and writes the
-// prose. It never picks the headline, never invents a bucket, and never
-// states a figure that isn't already in the fact list handed to it.
+// verified fact list (both already decided), it writes the CALL: the
+// action, the synthesis for why now, and the opening line. It never picks
+// the headline, never invents a bucket, and never states a figure that
+// isn't already in the fact list handed to it.
 // ============================================================================
 
 const SONNET_MODEL = "claude-sonnet-5";
@@ -40,71 +41,76 @@ function getClient(): Anthropic {
   return client;
 }
 
-const SYSTEM_PROMPT = `You write the body of one flash card for a bank relationship manager (RM) — a weekly briefing on who to call and why. A banker must grasp the call in 5 seconds, so you synthesize — you never list tranches, dates, or numbers one by one. This is banker judgment applied to a fixed set of facts, not fact-finding: the headline event, the tag, and the timing are ALREADY DECIDED by the system before you're called — your job is to narrate that decision well, not to pick a different one.
+/**
+ * Session 15 Part A: bucket-specific guidance for OPEN WITH, so the phone
+ * line an RM would actually say is grounded in what THIS bucket's
+ * opportunity is really about — a refi conversation starts with sequencing,
+ * a treasury conversation starts with where the money lands, a new-debt
+ * conversation starts with facility structure, a hedging conversation
+ * starts with the exposure itself.
+ */
+const BUCKET_ANGLE_GUIDANCE: Record<Bucket, string> = {
+  refi: "This is a REFI card. OPEN WITH should focus on sequencing and timing — how this maturity fits the company's broader calendar (what comes before or after it, when to start talking), not a generic financing line.",
+  treasury: "This is a TREASURY card. OPEN WITH should focus on where the proceeds or cash land — proposing a specific home for the money (an operating account, a sweep arrangement, a deposit relationship), not a generic congratulations line.",
+  new_debt: "This is a NEW DEBT card. OPEN WITH should focus on structure — the specific facility type the RM is proposing (a term loan, a revolver, a bridge), not a generic 'let us help finance this' line.",
+  hedging: "This is a HEDGING card. OPEN WITH should focus on the exposure just created — naming the specific new rate/FX/commodity exposure and proposing to discuss hedging it, not a generic risk-management line.",
+};
+
+const SYSTEM_PROMPT = `You write ONE flash card for a bank relationship manager (RM) — a weekly briefing on who to call and why. The card leads with the CALL, not a description of what happened: an RM reading it in 5 seconds must know what to DO, not just what occurred. This is banker judgment applied to a fixed set of facts, not fact-finding — the headline event, its bucket, and its timing are ALREADY DECIDED by the system before you're called; your job is to write the call well, never to pick a different one.
 
 You will be given:
-- The HEADLINE EVENT — the one fact this card is about. What must open with it.
-- OTHER VERIFIED FACTS about the same company — everything else confirmed true about them right now. Most of these are NOT part of this card's story. Weave one in only when it's directly, narratively relevant to the headline (a prior redemption that explains why this maturity is the next one to clear; a related amendment to the same facility) — never because it's merely available. An unrelated fact (a buyback, an unconnected acquisition) does not belong here even if it's true; it surfaces elsewhere in the product.
+- The HEADLINE EVENT — the one fact this card is about.
+- Bucket-specific guidance for what OPEN WITH should focus on.
+- OTHER VERIFIED FACTS about the same company — everything else confirmed true about them right now. Weave one in ONLY when it is what makes the headline live THIS WEEK — never because it's merely available.
 
-Write exactly three parts:
-- what: opens with the headline event, in plain English a non-banker could follow, anchored to its date. State the primary source date given, then explain what happened and what it means. If a directly relevant other fact adds real context (why this is the next domino, what was already resolved), weave it in as one clause — don't bolt on an unrelated fact just to sound fuller. Never use unexplained jargon — banned: "liability management," "layered [a facility]," "amend-and-extend," "term loan B add-on," and similar insider phrasing; explain any technical term you can't avoid. Never enumerate every tranche/instrument — describe the pattern, not the list.
-- whyCall: the banking-opportunity insight, grounded in this company's own facts (the headline event, plus relevant context if it strengthens the logic) — never a generic statement that could apply to any company. This is judgment, not restatement: explain WHY the story you just told means it's time to call.
-- angle: the specific conversation to open, tied to this company's specifics — never boilerplate like "explore treasury needs." Should reference the actual event/number/timing so the line could only be said about this company.
+Write exactly three fields:
 
-THE FACTUAL SOURCE — read this before writing anything:
-- Every number, date, rate, and dollar amount you state must appear, verbatim or in an obviously equivalent form, somewhere in the HEADLINE EVENT or the OTHER VERIFIED FACTS you were given. Nothing from general knowledge, nothing computed, nothing rounded to a different figure than what's given, nothing carried over from a different company.
-- Synthesis, framing, sequencing, and judgment are exactly what you're here for — none of that requires inventing a new number or date, only connecting and interpreting the ones you were given.
+- callAbout: the ACTION, one imperative line. Never a description of an event. "Refinance the 2026 notes" — not "debt maturity approaching." "Move the divestiture proceeds into an operating relationship" — not "asset sale closing."
+
+- whyNow: the synthesis — what makes THIS WEEK the moment, not just what happened. One sentence; a second short sentence is allowed only to keep two distinct facts clean, never as extra room for detail. MUST connect the headline event to at least one OTHER given fact that explains why it's live now (a related disclosure, a stated market condition, a second dated event) — a sentence that only restates the headline event, however detailed, is description, not synthesis, and description is exactly what this format replaces. If nothing in the other verified facts genuinely explains why now, do not invent a connection or pad with unrelated detail — write the truest version you can with what you have; a structural check downstream decides whether it qualifies, that is not your call to route around.
+
+- openWith: one sentence the RM could actually say out loud on the phone, tied to this company's own specifics — never boilerplate. Follow the bucket-specific guidance you're given for what to focus on.
+
+THE FACTUAL SOURCE — read before writing anything:
+- Every number, date, rate, and dollar amount you state must appear, verbatim or in an obviously equivalent form, in the HEADLINE EVENT or the OTHER VERIFIED FACTS you were given. Nothing from general knowledge, nothing computed, nothing rounded to a different figure than given, nothing carried over from a different company.
 - If a fact's own date is a duration without a calendar date, describe it using the duration and whatever date IS given — never calculate a derived calendar date yourself.
 
-Date anchoring — applies to every part:
-- The ONE fact each sentence is actually about must be anchored to its own exact date (as given), never a bare relative window. Wrong: "matures in under a year." Right: "matures March 2027 (under a year out)."
-- A synthesized pattern across facts needs at most ONE anchor date — the one the sentence is actually built around — not a date for every fact folded in.
-- Never comma-splice two distinct dated facts into one clause. If a part genuinely needs two distinct dated facts and neither can be dropped, use two short sentences, one fact each — but prefer the single most decision-relevant date over stretching to fit both.
-
 Hard rules:
-- One sentence per part by default; a second short sentence is allowed only to keep two distinct dated facts clean — never as extra room for more detail. Target 25 words, hard outer limit 30 — a genuinely necessary second dated fact may push a part to the ceiling, that's expected, not a defect. Before answering, count the words; if over the limit, cut supporting detail first, never cut the sentence's one anchor date.
-- Do NOT contradict the bucket/tag or timing you were told is already decided — narrate them, don't second-guess them.
-- Plain English a banker — and a newcomer reading over their shoulder — would understand in seconds. No filing-summary phrasing, no jargon.
-- No greeting, no congratulations, no assumed rapport, no phrases like "Hi" or "I wanted to reach out" — this is an internal note between colleagues, not a message to the client.`;
+- Do NOT contradict the bucket or timing you were told is already decided — write the call, don't second-guess the decision.
+- Plain English a banker — and a newcomer reading over their shoulder — would understand in seconds. No filing-summary phrasing, no unexplained jargon (banned unless explained: "liability management," "amend-and-extend," "term loan B add-on," and similar insider phrasing).
+- Never enumerate every tranche/instrument — describe the pattern, not the list.
+- No greeting, no congratulations, no assumed rapport, no "Hi" or "I wanted to reach out" — this is an internal note between colleagues, not a message to the client.`;
 
 const CARD_BODY_TOOL = {
   name: "submit_card_body",
-  description: "Submit the three-part flash card body.",
+  description: "Submit the three-field flash card body.",
   input_schema: {
     type: "object" as const,
     properties: {
-      what: {
+      callAbout: {
         type: "string",
-        description:
-          "One sentence (two only if needed to keep two distinct dated facts from being comma-spliced), target 25 words, hard outer limit 30: opens with the headline event in plain English, no unexplained jargon, weaving in directly-relevant other facts only — every number/date traceable to the facts given, never an itemized list of each instrument/amendment",
+        description: "One imperative line: the action to take, never a description of an event.",
       },
-      whyCall: {
+      whyNow: {
         type: "string",
         description:
-          "One sentence, target 20-25 words, hard outer limit 30: the specific banking-opportunity insight — why THIS story means call now — naming this company's own facts and exact dates from what was given, never phrasing generic enough to fit another company",
+          "One sentence (two only if needed to keep two distinct facts clean): the synthesis connecting the headline event to at least one other given fact that makes it live this week.",
       },
-      angle: {
+      openWith: {
         type: "string",
-        description:
-          "One sentence, target 20-25 words, hard outer limit 30: the specific conversation to open, naming this company's own facts from what was given, never phrasing generic enough to fit another company",
+        description: "One sentence the RM could say on the phone, tied to this company's own specifics, following the bucket-specific guidance given.",
       },
     },
-    required: ["what", "whyCall", "angle"],
+    required: ["callAbout", "whyNow", "openWith"],
   },
 };
 
-interface RawCardBody {
-  what: string;
-  whyCall: string;
-  angle: string;
+export interface RawCardBody {
+  callAbout: string;
+  whyNow: string;
+  openWith: string;
 }
 
-// normalizedText, not verifiedText: a table-sourced fact's bare figures
-// ("1,500") are already resolved to their scale-normalized dollar form
-// ("$1.5 billion") wherever the filing's own scale declaration made that
-// safely determinable (scaleNormalize.ts) — this is "the stateable
-// figure" Sonnet is meant to write, not a number it would have to guess
-// the units of.
 function formatFact(f: VerifiedFact): string {
   const sourceStr = f.sourceFiling ? `${f.sourceFiling.form} filed ${f.sourceFiling.date}` : "n/a";
   return `- ${f.fact}: "${f.normalizedText}" (source: ${sourceStr})`;
@@ -123,10 +129,12 @@ export function buildContext(card: FlashCard, factBase: VerifiedFact[]): string 
 
   const lines = [
     `Company: ${card.company}`,
-    `Bucket/tag (already decided — narrate it, do not contradict it): ${tagLabel}`,
+    `Bucket/tag (already decided — do not contradict it): ${tagLabel}`,
     `Timing (already decided): ${timingLabel}`,
     ``,
-    `HEADLINE EVENT (the card's subject — "what" must open with this):`,
+    `OPEN WITH guidance for this bucket: ${BUCKET_ANGLE_GUIDANCE[card.bucket]}`,
+    ``,
+    `HEADLINE EVENT (the card's subject — CALL ABOUT and WHY NOW must be built around this):`,
     headlineFact
       ? formatFact(headlineFact)
       : `- ${card.headlineTrigger.triggerName}: "${card.headlineTrigger.verifiedQuoteNormalized ?? card.headlineTrigger.verifiedQuote ?? "n/a"}"`,
@@ -135,68 +143,12 @@ export function buildContext(card: FlashCard, factBase: VerifiedFact[]): string 
   if (otherFacts.length > 0) {
     lines.push(
       ``,
-      `OTHER VERIFIED FACTS about this company (weave in ONLY if directly relevant context to the headline — otherwise ignore, they surface elsewhere):`,
+      `OTHER VERIFIED FACTS about this company (weave one into WHY NOW ONLY if it explains why the headline is live now — otherwise ignore, they surface elsewhere):`,
       ...otherFacts.map(formatFact)
     );
   }
 
   return lines.join("\n");
-}
-
-/** Session 13 Part A: this word ceiling used to be a hard throw inside callSonnet, bypassing the accuracy/shape retry entirely — diagnosed as a long-tail problem (word counts observed 26-58 across repeated real drafts of the same card, not "reliably near the ceiling"), so it's now folded into the SAME retry pipeline as numberGuard/scrapeGuard (see bodyPassesGuard below) instead of throwing on its own. */
-const HARD_WORD_LIMIT = 45;
-
-export function wordCount(s: string): number {
-  return s.trim().split(/\s+/).filter(Boolean).length;
-}
-
-export interface WordCounts {
-  what: number;
-  whyCall: number;
-  angle: number;
-}
-
-export function wordCounts(body: RawCardBody): WordCounts {
-  return { what: wordCount(body.what), whyCall: wordCount(body.whyCall), angle: wordCount(body.angle) };
-}
-
-/** True when any part ignored the sentence-length limit entirely (not the soft 30-word target — this is the hard failure threshold). */
-export function overWordCeiling(counts: WordCounts): boolean {
-  return counts.what > HARD_WORD_LIMIT || counts.whyCall > HARD_WORD_LIMIT || counts.angle > HARD_WORD_LIMIT;
-}
-
-export interface GuardFailure {
-  unverifiedTokens: string[];
-  scrapeShaped: boolean;
-  overCeiling: boolean;
-  counts: WordCounts;
-}
-
-/**
- * Composes the ONE retry's correction instruction from whichever check(s)
- * failed — never assumes it was a numbers problem (the old hardcoded
- * message always said "stated a number... not found," even when the real
- * issue was purely length). Real diagnosed pattern this fixes: every
- * observed retry came out LONGER than the first attempt, because the old
- * correction note never mentioned length at all when only the accuracy
- * check had failed — length regressions went uncorrected by construction.
- */
-export function buildCorrectionInstruction(guard: GuardFailure): string {
-  const parts: string[] = [];
-  if (guard.unverifiedTokens.length > 0) {
-    parts.push(
-      `it stated a number, rate, or date not found in any of the facts given (${guard.unverifiedTokens.join(", ")}) — rewrite using ONLY figures and dates literally present in the facts, even if that makes a sentence less specific`
-    );
-  }
-  if (guard.scrapeShaped) {
-    parts.push(`one or more parts read as raw data (numbers/labels with no sentence structure) rather than a written sentence — write full, grammatical sentences`);
-  }
-  if (guard.overCeiling) {
-    parts.push(
-      `it ran over the ${HARD_WORD_LIMIT}-word hard limit (what=${guard.counts.what}, whyCall=${guard.counts.whyCall}, angle=${guard.counts.angle}) — rewrite ALL THREE parts to fit the 25-30 word target, cutting supporting detail first, never the sentence's one anchor date`
-    );
-  }
-  return parts.join("; also, ");
 }
 
 async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionInstruction?: string): Promise<RawCardBody> {
@@ -206,7 +158,7 @@ async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionI
   const response = await getClient().messages.create(
     {
       model: SONNET_MODEL,
-      max_tokens: 500,
+      max_tokens: 400,
       thinking: { type: "disabled" },
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userContent }],
@@ -220,118 +172,143 @@ async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionI
   if (!toolUse || toolUse.type !== "tool_use") {
     throw new Error(`Sonnet did not return a submit_card_body tool call (stop_reason: ${response.stop_reason})`);
   }
-  const input = toolUse.input as { what?: string; whyCall?: string; angle?: string };
-  if (!input.what || !input.whyCall || !input.angle) {
+  const input = toolUse.input as { callAbout?: string; whyNow?: string; openWith?: string };
+  if (!input.callAbout || !input.whyNow || !input.openWith) {
     throw new Error(
       `malformed card body response (stop_reason: ${response.stop_reason}, output_tokens: ${response.usage.output_tokens}): ${JSON.stringify(input)}`
     );
   }
 
-  // Target 25 words per part, hard outer limit 30. Only warns at the outer
-  // limit — never trims or rejects a clear-but-longer line here. The HARD
-  // ceiling (45) is checked and retried by the caller (bodyPassesGuard),
-  // not here — this function never throws for length, only for a
-  // genuinely malformed response.
-  const counts = wordCounts({ what: input.what, whyCall: input.whyCall, angle: input.angle });
-  if (counts.what > 30 || counts.whyCall > 30 || counts.angle > 30) {
-    console.warn(`[eventBriefing] ${card.company} (${card.id}) over its word ceiling:`, counts);
-  }
-
-  return { what: input.what, whyCall: input.whyCall, angle: input.angle };
+  return { callAbout: input.callAbout, whyNow: input.whyNow, openWith: input.openWith };
 }
 
-/** Deterministic text for the card's "also active" line — same rendering the UI uses (labels.ts) — included in the audit alongside What/Why/Angle even though it's never model-generated, per the spec's "audit the entire card text" requirement. */
-function alsoActiveAuditText(card: FlashCard): string {
-  return card.alsoActive
-    .map((item) => compactLabelWithTiming(item.trigger.triggerId, item.trigger.triggerName, item.timing))
-    .join(" · ");
+function sentenceCount(text: string): number {
+  return text
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean).length;
+}
+
+export interface StructuralGuardResult {
+  ok: boolean;
+  reasons: string[];
+  factsReferenced: number;
 }
 
 /**
- * Drafts an RM-facing flash-card body — What / Why call / Angle, one
- * sentence each. The headline, tag, timing, and also-active routing are
- * ALL decided before this function is ever called (buildEvents.ts); this
- * only narrates. Sonnet receives the company's full verified fact base
- * (factBase.ts) — not just the headline's own quote — so it can weave in
- * directly relevant context (a prior redemption, a related amendment) the
- * way a banker would tell the story, while still being unable to state
- * any figure that isn't a verified fact for this company.
+ * Session 15 Part A: replaces the old word-ceiling guard and its retry
+ * loop with a HARD STRUCTURAL check — Session 12's standing rule ("a guard
+ * that scans vocabulary rather than claims will reject the sentences that
+ * say the opposite of what it fears") applies here too: no word list, no
+ * lexical banned-phrase scan, just verifiable structural properties.
  *
- * After drafting, a deterministic guard (bodyPassesGuard) checks three
- * things: every $-amount/rate/date across What/Why/Angle AND the
- * also-active line traces to the full fact base (numberGuard.ts); no part
- * reads as scrape-shaped raw data (scrapeGuard.ts); no part is over the
- * 45-word hard ceiling (Session 13 Part A — folded in here rather than
- * thrown as its own error, after diagnosing the failure as high run-to-run
- * variance in draft length, not a systematically-too-tight ceiling). A
- * first miss on any of the three gets ONE corrective retry whose
- * instruction addresses whichever check(s) actually failed
- * (buildCorrectionInstruction) — a second miss falls back to
- * quoteFallbackBriefing (the headline's own verified quote, a real
- * passing card, never truncated, never template prose). An outright API
- * failure (timeout, malformed response) is a loud failure
- * (failedEventBriefing), never a silent template degrade. Cost-bounded at
- * one or two Sonnet calls per card-eligible company.
+ * Four checks, all structural: (1) no field is empty, (2) whyNow is at
+ * most 2 sentences, (3) every number/date/rate traces to a given fact
+ * (numberGuard.ts, unchanged), (4) whyNow's own tokens trace to at least 2
+ * DISTINCT facts (countDistinctFactsReferenced — the mechanical proxy for
+ * "is this a synthesis or a restatement"), and (5) no field reads as raw
+ * scrape-shaped data rather than a written sentence (scrapeGuard.ts,
+ * unchanged).
+ */
+export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[]): StructuralGuardResult {
+  const reasons: string[] = [];
+
+  if (!body.callAbout.trim()) reasons.push("callAbout is empty");
+  if (!body.whyNow.trim()) reasons.push("whyNow is empty");
+  if (!body.openWith.trim()) reasons.push("openWith is empty");
+
+  const whyNowSentences = body.whyNow.trim() ? sentenceCount(body.whyNow) : 0;
+  if (whyNowSentences > 2) reasons.push(`whyNow is ${whyNowSentences} sentences — over the 2-sentence limit`);
+
+  // Pooled (normalized + raw verified text) for the accuracy check — we
+  // only care whether a stated figure appears ANYWHERE in the verified
+  // corpus, in either form.
+  const accuracyCorpus = factBase.flatMap((f) => [f.normalizedText, f.verifiedText]);
+  const auditText = `${body.callAbout} ${body.whyNow} ${body.openWith}`;
+  const numberGuard = checkNumbersAgainstQuotes(auditText, accuracyCorpus);
+  if (!numberGuard.ok) {
+    reasons.push(`stated a number, rate, or date not found in any given fact (${numberGuard.unverifiedTokens.join(", ")})`);
+  }
+
+  if (isScrapeShapedText(body.callAbout) || isScrapeShapedText(body.whyNow) || isScrapeShapedText(body.openWith)) {
+    reasons.push("one or more fields read as raw data (numbers/labels with no sentence structure), not a written sentence");
+  }
+
+  // ONE text per fact (normalizedText only) for the distinctness check —
+  // pooling normalized+raw here would double-count a single fact as two,
+  // since both strings describe the same underlying fact.
+  const distinctnessCorpus = factBase.map((f) => f.normalizedText);
+  const factsReferenced = body.whyNow.trim() ? countDistinctFactsReferenced(body.whyNow, distinctnessCorpus) : 0;
+  if (factsReferenced < 2) {
+    reasons.push(`whyNow references only ${factsReferenced} distinct fact(s) — must connect at least 2 to count as synthesis, not description`);
+  }
+
+  return { ok: reasons.length === 0, reasons, factsReferenced };
+}
+
+export function buildCorrectionInstruction(guard: StructuralGuardResult): string {
+  return guard.reasons.join("; also, ");
+}
+
+/**
+ * Drafts an RM-facing flash-card body — CALL ABOUT / WHY NOW / OPEN WITH.
+ * The headline, tag, timing, and also-active routing are ALL decided
+ * before this function is ever called (buildEvents.ts); this only
+ * narrates. Sonnet receives the company's full verified fact base
+ * (factBase.ts) — not just the headline's own quote — so it can
+ * genuinely synthesize (weave in a directly relevant second fact) rather
+ * than merely describe the headline.
+ *
+ * A first miss on the structural guard gets ONE corrective retry; a
+ * second miss is a loud failure (failedEventBriefing) — there is no
+ * deterministic fallback of any kind. An outright API failure (timeout,
+ * malformed response) is the same loud failure. Cost-bounded at one or
+ * two Sonnet calls per card-eligible company.
  */
 export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact[]): Promise<DraftedEventBriefing> {
   const headlineFact = factBase.find((f) => f.linkedTriggerId === card.headlineTrigger.triggerId);
   if (!headlineFact) {
     // Should be unreachable — a card's headline is only ever built from a
     // quote-verified trigger (see buildEvents.ts), which is exactly what
-    // populates the fact base — but never draft prose with nothing
-    // verified to ground it.
-    console.error(`[eventBriefing] ${card.company} (${card.id}) has no matching fact in the verified fact base; using quote fallback`);
-    return quoteFallbackBriefing(card);
+    // populates the fact base.
+    return failedEventBriefing(card, `no matching verified fact for headline trigger ${card.headlineTrigger.triggerId}`);
   }
-
-  // Both forms, unioned: normalizedText is what Sonnet was prompted with
-  // (so this is the primary match path), but verifiedText (raw) stays in
-  // the mix too — the audit's own scale-flexible matching (numberGuard.ts)
-  // already accepts a normalized figure against a raw one or vice versa,
-  // so this is redundancy for robustness, not a requirement.
-  const factTexts = factBase.flatMap((f) => [f.normalizedText, f.verifiedText]);
-  const auditText = (body: RawCardBody) => `${body.what} ${body.whyCall} ${body.angle} ${alsoActiveAuditText(card)}`;
-
-  // Combined accuracy + shape gate: a body only passes if every figure
-  // traces to a verified fact AND none of its three parts is scrape-shaped
-  // text (numbers/labels with no sentence structure — see scrapeGuard.ts).
-  // Sonnet is instructed to always write full sentences, so the second
-  // check is defensive, not the primary path — but "ANY string bound for
-  // display" (Part C's own scope) includes Sonnet's own output, not just
-  // the fallbacks.
-  const bodyPassesGuard = (body: RawCardBody): { ok: boolean; unverifiedTokens: string[]; scrapeShaped: boolean; overCeiling: boolean; counts: WordCounts } => {
-    const numberGuard = checkNumbersAgainstQuotes(auditText(body), factTexts);
-    const scrapeShaped = isScrapeShapedText(body.what) || isScrapeShapedText(body.whyCall) || isScrapeShapedText(body.angle);
-    const counts = wordCounts(body);
-    const overCeiling = overWordCeiling(counts);
-    return { ok: numberGuard.ok && !scrapeShaped && !overCeiling, unverifiedTokens: numberGuard.unverifiedTokens, scrapeShaped, overCeiling, counts };
-  };
 
   try {
     let body = await callSonnet(card, factBase);
-    let guard = bodyPassesGuard(body);
+    let guard = checkCardStructure(body, factBase);
 
     if (!guard.ok) {
       const instruction = buildCorrectionInstruction(guard);
       console.warn(`[eventBriefing] ${card.company} (${card.id}) retrying once: ${instruction}`);
       body = await callSonnet(card, factBase, instruction);
-      guard = bodyPassesGuard(body);
+      guard = checkCardStructure(body, factBase);
     }
 
     if (!guard.ok) {
-      console.error(
-        `[eventBriefing] ${card.company} (${card.id}) still failed after retry (${guard.overCeiling ? "over the word ceiling" : "accuracy/shape"}), falling back to the strongest single fact:`,
-        guard.overCeiling ? guard.counts : guard.unverifiedTokens
-      );
-      return quoteFallbackBriefing(card);
+      // The STORED/displayed reason is deliberately a fixed, generic
+      // string, never the live guard.reasons detail — a persistently-
+      // failing card (this fact combination genuinely can't pass the
+      // guard) can fail a DIFFERENT specific way on every uncached retry
+      // (observed live: unverifiable figures one run, insufficient
+      // synthesis the next, scrape-shaped the one after that, for the
+      // exact same card). Embedding that live detail in the cached-or-not
+      // failureReason broke run-to-run byte-identity — determinism is the
+      // point of this whole architecture, so the specific-but-unstable
+      // detail goes to the log only, never into what gets displayed/cached.
+      console.error(`[eventBriefing] ${card.company} (${card.id}) structural check failed after retry — detail: ${guard.reasons.join("; ")}`);
+      return failedEventBriefing(card, "structural check failed after one retry");
     }
 
     return { ...body, source: "sonnet" };
   } catch (err) {
-    // This is the exact failure mode this project has hit three times now
-    // (max_tokens truncation, a deprecated temperature param, and the
-    // Session 10 template fallback on HCA/Concentra cards going unnoticed)
-    // — it must never again be a silent degrade. Loud failure only.
-    return failedEventBriefing(card, err instanceof Error ? err.message : String(err));
+    // This is the exact failure mode this project has hit repeatedly
+    // (max_tokens truncation, a deprecated temperature param, the Session
+    // 10 template fallback) — it must never again be a silent degrade.
+    // Loud failure only. Same determinism reasoning as above: the live
+    // error message (which can embed timing/token counts that vary run to
+    // run) is logged in full, but the stored reason is generic and stable.
+    console.error(`[eventBriefing] ${card.company} (${card.id}) API call failed — detail: ${err instanceof Error ? err.message : String(err)}`);
+    return failedEventBriefing(card, "narration API call failed");
   }
 }

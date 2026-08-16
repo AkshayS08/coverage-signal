@@ -64,12 +64,25 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
 
     // --- New debt / financing need ---
     case "new-debt-issuance": {
-      if (eventStatus === "completed") {
+      // Session 15 Part D fix: the proceeds test must run for BOTH
+      // "completed" AND "just_announced" issuances — the diagnosed bug
+      // (UHS's Aug 11 2026 $1.1B notes, proceedsUse "refinancing_only")
+      // was that this branch only ever consulted proceedsUse once the
+      // raise had settled, so an underwriting-agreement-stage issuance
+      // with proceeds already fully committed to refinancing carded
+      // unconditionally — proceedsUse was computed and available, just
+      // never read. Only "upcoming" (a not-yet-priced planned issuance,
+      // with nothing for the proceeds classifier to have found) still
+      // takes the old unconditional-true path below.
+      if (eventStatus === "completed" || eventStatus === "just_announced") {
         const windowDate = computeWindowDate(eventDate, dateGranularity);
         if (trigger.proceedsUse === "partly_unapplied" && windowDate) {
           // daysBetween(date, now) is positive when `date` is in the FUTURE
-          // (see eventTiming.ts) — a completed issuance's windowDate is in
-          // the past, so negate it to get "days ago" as a positive number.
+          // (see eventTiming.ts) — the issuance's own windowDate is in the
+          // past by the time either status reaches this branch (a
+          // completed issuance's settlement date, or a just_announced
+          // issuance's own announcement date), so negate it to get "days
+          // ago" as a positive number.
           const daysAgo = -daysBetween(windowDate, now);
           if (daysAgo >= 0 && daysAgo <= PROCEEDS_RECENCY_DAYS) {
             return { cardEligible: true, reason: `proceeds partly unapplied, issued ${daysAgo}d ago`, timing };
@@ -83,10 +96,11 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
         if (trigger.proceedsUse === "refinancing_only") {
           return { cardEligible: false, reason: "proceeds fully applied to refinancing — nothing left to win", timing };
         }
-        return { cardEligible: false, reason: "completed issuance, use of proceeds not disclosed", timing };
+        return { cardEligible: false, reason: `${eventStatus} issuance, use of proceeds not disclosed`, timing };
       }
-      // just_announced / upcoming: a live, dated capital-markets event —
-      // the proceeds test only applies once the raise has settled.
+      // upcoming: a not-yet-priced planned issuance — proceeds can't be
+      // evaluated yet, since there's nothing in the filing yet for the
+      // proceeds classifier to have found.
       return { cardEligible: true, reason: "dated capital event", timing };
     }
 

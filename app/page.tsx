@@ -4,17 +4,18 @@ import { useMemo, useState } from "react";
 import styles from "./page.module.css";
 import {
   buildEvents,
-  templateEventBriefing,
   compactLabelWithTiming,
+  buildCompanyTableBlock,
+  buildBookEmptyStateLine,
+  TABLE_BUCKET_ORDER,
   BUCKET_LABELS,
-  type EventRecord,
   type FlashCard,
   type FlashCardActiveItem,
-  type CompanyPortfolio,
+  type TableLine,
+  type CompanyTableBlock,
   type Bucket,
 } from "@/lib/events";
 import type { DraftedEventBriefing } from "@/lib/events/eventBriefing";
-import type { DraftedPortfolioSummary } from "@/lib/events/portfolioSummary";
 import type { CompanyResult, RunStreamEvent } from "@/lib/agent";
 
 const DEFAULT_BOOK = [
@@ -72,21 +73,6 @@ function compactActiveLabel(item: FlashCardActiveItem): string {
   return compactLabelWithTiming(item.trigger.triggerId, item.trigger.triggerName, item.timing);
 }
 
-const BUCKET_SHORT_LABEL: Record<Bucket, string> = {
-  treasury: "treasury",
-  new_debt: "new debt",
-  refi: "refi",
-  hedging: "hedging",
-};
-
-/** Collapsed portfolio row: "refi ✓ · hedging ⚑" — scannable before expanding to full detail. */
-function buildIndicatorLine(buckets: Record<Bucket, EventRecord[]>): string {
-  return (["treasury", "new_debt", "refi", "hedging"] as const)
-    .filter((b) => buckets[b].length > 0)
-    .map((b) => (b === "hedging" ? "hedging ⚑" : `${BUCKET_SHORT_LABEL[b]} ✓`))
-    .join(" · ");
-}
-
 // Presentation-only pacing: while the single batched Haiku call is in
 // flight there's nothing real to report, so these keep the panel moving
 // rather than freezing for ~13s. They never claim a specific finding.
@@ -120,19 +106,23 @@ export default function Home() {
   const [trace, setTrace] = useState<TraceLine[]>([]);
   const [results, setResults] = useState<CompanyResult[]>([]);
   const [eventBriefings, setEventBriefings] = useState<Record<string, DraftedEventBriefing>>({});
-  const [portfolioSummaries, setPortfolioSummaries] = useState<Record<string, DraftedPortfolioSummary>>({});
   const [running, setRunning] = useState(false);
   const [asOfDate, setAsOfDate] = useState<Date | null>(null);
 
   const { flashCardCandidates, portfolio } = useMemo(() => buildEvents(results), [results]);
-  const displayFlashCards = useMemo(
+
+  // Session 15 Part B: the portfolio table is a pure function of already-
+  // streamed data — no server call, no loading state, computed the same
+  // way buildEvents itself already is.
+  const tableBlocks = useMemo(
     () =>
-      flashCardCandidates.map((card) => ({
-        card,
-        briefing: eventBriefings[card.id] ?? templateEventBriefing(card),
-      })),
-    [flashCardCandidates, eventBriefings]
+      results.map((result, i) => {
+        const cardCount = flashCardCandidates.filter((c) => c.cik === result.cik).length;
+        return buildCompanyTableBlock(result, portfolio[i], cardCount);
+      }),
+    [results, portfolio, flashCardCandidates]
   );
+
   const companiesWithEvents = useMemo(
     () => new Set(flashCardCandidates.map((e) => e.company)).size,
     [flashCardCandidates]
@@ -150,7 +140,6 @@ export default function Home() {
     setTrace([]);
     setResults([]);
     setEventBriefings({});
-    setPortfolioSummaries({});
     setAsOfDate(new Date());
 
     // Real trace/error lines land here instead of going straight to state,
@@ -201,10 +190,6 @@ export default function Home() {
             for (const { eventId, briefing } of drafted) next[eventId] = briefing;
             return next;
           });
-        }
-        if (event.portfolioSummary) {
-          const summary = event.portfolioSummary;
-          setPortfolioSummaries((prev) => ({ ...prev, [event.result.company]: summary }));
         }
       } else if (event.type === "error") {
         queueTrace(event.company, `error: ${event.message}`);
@@ -281,7 +266,8 @@ export default function Home() {
     return <span className={styles.companyName}>{company}</span>;
   }
 
-  function renderFlashCard(card: FlashCard, briefing: DraftedEventBriefing) {
+  function renderFlashCard(card: FlashCard) {
+    const briefing = eventBriefings[card.id];
     return (
       <div key={card.id} className={styles.flashCard}>
         <div className={styles.flashCardHeader}>
@@ -298,24 +284,22 @@ export default function Home() {
           {renderCompanyName(card.company)}
           <span className={styles.timingTag}>{formatHeadlineDate(card.timing, card.citations, asOfDate ?? new Date())}</span>
         </div>
-        <div className={styles.eventDescription}>{card.headlineTrigger.triggerName}</div>
-        {briefing.source === "failed" ? (
+        {!briefing ? (
+          <p className={styles.draftingLine}>Drafting...</p>
+        ) : briefing.source === "failed" ? (
           <div className={styles.narrationFailureBanner}>
             ⚠ Narration failed — {briefing.failureReason}
           </div>
         ) : (
           <>
             <p className={styles.cardLine}>
-              <strong>What:</strong> {briefing.what}
+              <span className={styles.cardFieldLabel}>Call about</span> {briefing.callAbout}
             </p>
             <p className={styles.cardLine}>
-              <strong>Why call:</strong> {briefing.whyCall}
+              <span className={styles.cardFieldLabel}>Why now</span> {briefing.whyNow}
             </p>
-            <p className={`${styles.cardLine} ${styles.cardLineAngle}`}>
-              <strong>Angle:</strong> {briefing.angle}
-              <span className={styles.briefingSource}>
-                {briefing.source === "sonnet" ? "Sonnet-drafted" : briefing.source === "quote" ? "source quote" : "templated"}
-              </span>
+            <p className={`${styles.cardLine} ${styles.cardLineOpenWith}`}>
+              <span className={styles.cardFieldLabel}>Open with</span> &ldquo;{briefing.openWith}&rdquo;
             </p>
           </>
         )}
@@ -338,16 +322,16 @@ export default function Home() {
     if (!quote) return null;
     return (
       <details className={styles.sourceTextDetails}>
-        <summary className={styles.sourceTextSummary}>Source text</summary>
+        <summary className={styles.sourceTextSummary}>▸ quote</summary>
         <blockquote className={styles.sourceTextQuote}>&ldquo;{quote}&rdquo;</blockquote>
       </details>
     );
   }
 
   // FIX 3: which citation backs the headline event should be obvious — the
-  // most recent one (matching the date already anchoring the "What" line
-  // and the card's own timing tag) is the primary source; the rest are
-  // supporting context for the same cluster, de-emphasized.
+  // most recent one (matching the date already anchoring the card's own
+  // timing tag) is the primary source; the rest are supporting context for
+  // the same cluster, de-emphasized.
   function renderCardSources(citations: FlashCard["citations"]) {
     const sorted = [...citations].sort((a, b) => b.date.localeCompare(a.date));
     const [primary, ...supporting] = sorted;
@@ -355,7 +339,7 @@ export default function Home() {
     return (
       <div className={styles.citations}>
         <span className={styles.primarySource}>
-          Primary source:{" "}
+          Source:{" "}
           <a href={primary.url} target="_blank" rel="noreferrer" className={styles.citation}>
             {primary.form} {primary.date} ↗
           </a>
@@ -374,89 +358,59 @@ export default function Home() {
     );
   }
 
-  function renderPortfolioSummary(p: CompanyPortfolio) {
-    const drafted = portfolioSummaries[p.company];
-    if (!drafted) {
-      return <p className={styles.portfolioActionLine}>Summary loading...</p>;
-    }
-    if (drafted.source === "failed") {
-      return (
-        <div className={styles.narrationFailureBanner}>
-          ⚠ Summary unavailable — narration failed ({drafted.failureReason})
-        </div>
-      );
-    }
-    return <p className={styles.portfolioActionLine}>{drafted.summary}</p>;
+  // Session 15 Part B: one deterministic bullet line per gated fact — fact
+  // label + figure (with unit, when disclosed) + timing + source link.
+  // Nothing here is model-drafted; a company's table block is a pure
+  // function of its already-streamed CompanyResult.
+  function renderTableLine(line: TableLine, i: number) {
+    const parts = [line.label];
+    if (line.figure) parts.push(line.figure);
+    if (line.timingPhrase) parts.push(line.timingPhrase);
+    if (line.isHedgingFlag) parts.push("worth raising");
+    return (
+      <li key={i} className={line.isHedgingFlag ? styles.tableLineHedging : styles.tableLine}>
+        <span className={styles.tableLineBullet}>{line.isHedgingFlag ? "⚑" : "·"}</span>
+        <span className={styles.tableLineText}>{parts.join(" — ")}</span>
+        {line.cardEligible && <span className={styles.tableLineCardMarker}>▸ card above</span>}
+        {line.citation && (
+          <a href={line.citation.url} target="_blank" rel="noreferrer" className={styles.citation}>
+            {line.citation.form} {line.citation.date} ↗
+          </a>
+        )}
+      </li>
+    );
   }
 
-  function renderPortfolioCompany(p: CompanyPortfolio) {
+  function renderPortfolioCompany(table: CompanyTableBlock) {
     return (
-      <details key={p.company} className={styles.portfolioCompany}>
+      <details key={table.company} className={styles.portfolioCompany}>
         <summary className={styles.portfolioCompanySummary}>
-          {renderCompanyName(p.company)}
-          <span className={styles.portfolioIndicators}>{buildIndicatorLine(p.buckets)}</span>
+          {renderCompanyName(table.company)}
+          <span className={styles.portfolioHeaderLine}>{table.headerLine}</span>
         </summary>
         <div className={styles.portfolioCompanyBody}>
-          {renderPortfolioSummary(p)}
-          {BUCKET_ORDER.map((bucket) => {
-            const events = p.buckets[bucket];
-            if (events.length === 0) return null;
-            return (
-              <div key={bucket} className={styles.portfolioBucket}>
-                <div className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[bucket]]}`}>
-                  {BUCKET_LABELS[bucket]}
-                </div>
-                <ul className={styles.triggerList}>{events.map(renderPortfolioEvent)}</ul>
-              </div>
-            );
-          })}
-          {p.relationshipFlags.length > 0 && (
+          {table.emptyStateLine && <p className={styles.emptyStateLine}>{table.emptyStateLine}</p>}
+          {TABLE_BUCKET_ORDER.map((bucket) => (
+            <div key={bucket} className={styles.portfolioBucket}>
+              <div className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[bucket]]}`}>{BUCKET_LABELS[bucket]}</div>
+              <ul className={styles.tableLineList}>
+                {table.buckets[bucket].length === 0 ? (
+                  <li className={styles.tableLineEmptyBucket}>no signal found</li>
+                ) : (
+                  table.buckets[bucket].map((line, i) => renderTableLine(line, i))
+                )}
+              </ul>
+            </div>
+          ))}
+          {table.relationshipFlags.length > 0 && (
             <div className={styles.relationshipFlags}>
-              Relationship flag (distress, not a sell signal):{" "}
-              {p.relationshipFlags.map((t) => t.triggerName).join(", ")}
+              Relationship flag (distress, not a sell signal): {table.relationshipFlags.join(", ")}
             </div>
           )}
         </div>
       </details>
     );
   }
-
-  function renderPortfolioEvent(event: EventRecord) {
-    const flagHedging = event.bucket === "hedging" && !event.cardEligible;
-    return (
-      <li key={event.id} className={styles.portfolioEvent}>
-        {flagHedging && (
-          <div className={styles.hedgingFlag}>
-            ⚑ Hedging opportunity — standing exposure, not urgent but worth raising
-          </div>
-        )}
-        {event.triggers.map((t, ti) => (
-          <div key={ti} className={styles.portfolioTrigger}>
-            <div className={styles.triggerHeaderRow}>
-              <span className={styles.triggerName}>{t.triggerName}</span>
-              <span className={styles.mappedNeed}>→ {t.mappedNeed}</span>
-              {!event.cardEligible && <span className={styles.tableOnlyTag}>table-only</span>}
-              {t.fired && !t.quoteVerified && (
-                <span className={styles.unverifiedTag} title="Could not confirm this filing detail against the source text">
-                  unverified
-                </span>
-              )}
-            </div>
-            {t.evidence && <p className={styles.evidenceLine}>{t.evidence.trim()}</p>}
-            <div className={styles.citations}>
-              {t.citations.map((c, ci) => (
-                <a key={ci} href={c.url} target="_blank" rel="noreferrer" className={styles.citation}>
-                  {c.form} {c.date} ↗
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
-      </li>
-    );
-  }
-
-  const BUCKET_ORDER: Bucket[] = ["treasury", "new_debt", "refi", "hedging"];
 
   return (
     <main className={styles.page}>
@@ -502,9 +456,9 @@ export default function Home() {
             <li>Scans each company against 15 trigger types from recent SEC filings</li>
             <li>Groups triggers about the same event into one card (no double-counting)</li>
             <li>Surfaces only dated, actionable events (next ~12–18 months) as flash cards</li>
-            <li>Four opportunity buckets: treasury/deposits, new debt, refi, FX/rate hedging</li>
+            <li>Four opportunity buckets: refi, new debt, treasury/deposits, FX/rate hedging</li>
             <li>No ranking across types — cards are time-ordered; the RM decides which call matters most</li>
-            <li>Everything else stays in the portfolio table below</li>
+            <li>Everything else stays in the portfolio table below, deterministically rendered — never model-drafted</li>
           </ul>
         </details>
         {(results.length > 0 || running) && (
@@ -520,13 +474,17 @@ export default function Home() {
       </section>
 
       <section className={styles.flashCardSection}>
-        {displayFlashCards.map(({ card, briefing }) => renderFlashCard(card, briefing))}
+        {flashCardCandidates.length > 0
+          ? flashCardCandidates.map(renderFlashCard)
+          : results.length > 0 && (
+              <p className={styles.emptyStateLine}>{buildBookEmptyStateLine(tableBlocks)}</p>
+            )}
       </section>
 
-      {portfolio.length > 0 && (
+      {tableBlocks.length > 0 && (
         <details className={styles.portfolioSection}>
-          <summary className={styles.portfolioSummary}>Portfolio table ({portfolio.length} companies)</summary>
-          <div className={styles.portfolioBody}>{portfolio.map(renderPortfolioCompany)}</div>
+          <summary className={styles.portfolioSummary}>Portfolio table ({tableBlocks.length} companies)</summary>
+          <div className={styles.portfolioBody}>{tableBlocks.map(renderPortfolioCompany)}</div>
         </details>
       )}
 

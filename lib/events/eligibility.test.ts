@@ -355,6 +355,53 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
   );
 }
 
+// --- 8c. UHS — $1.1B Aug 11 2026 issuance — LIVE, the Session 15 Part D
+// bug fact. eventStatus "just_announced" (an underwriting agreement, not
+// yet settled), proceedsUse "refinancing_only". Before the Part D fix,
+// eligibility.ts's new-debt-issuance case only ever consulted proceedsUse
+// once eventStatus reached "completed" — a just_announced issuance carded
+// unconditionally regardless of what the proceeds classifier said. Must
+// now be TABLE: the money is already spoken for. Setup asserts the status
+// so a future rebuild that happens to catch this same issuance AFTER it
+// settles (eventStatus flips to "completed") fails loudly instead of
+// silently testing the wrong branch. ---
+{
+  const uhs = findCompany("UHS");
+  const t = findTrigger(uhs, "new-debt-issuance");
+  if (t.eventStatus !== "just_announced") {
+    throw new Error(
+      `[8c] test setup invalid: UHS's real new-debt-issuance eventStatus is "${t.eventStatus}", not "just_announced" — this test needs the not-yet-settled branch to prove the Part D fix`
+    );
+  }
+  const r = evaluateEligibility(t, NOW);
+  assert(
+    !r.cardEligible,
+    `[8c] UHS new-debt-issuance ($1.1B, ${t.eventDate}, LIVE eventStatus=just_announced proceedsUse=${t.proceedsUse}) stays TABLE — the proceeds test now runs before settlement too (reason: "${r.reason}")`
+  );
+}
+
+// --- 8d. SYNTHETIC REGRESSION GUARD: a just_announced issuance with
+// proceedsUse "partly_unapplied", still inside the recency window, must
+// still CARD. Proves the Part D fix extended the proceeds test to
+// just_announced without over-correcting it into an unconditional TABLE —
+// no real fact in this book currently has just_announced +
+// partly_unapplied at once, so this pins UHS's real issuance's proceedsUse
+// only, leaving its real (recent) eventDate/eventStatus untouched. ---
+{
+  const uhs = findCompany("UHS");
+  const real = findTrigger(uhs, "new-debt-issuance");
+  const daysAgo = -daysBetween(real.eventDate!, NOW);
+  if (!(daysAgo >= 0 && daysAgo <= PROCEEDS_RECENCY_DAYS)) {
+    throw new Error(`[8d] test setup invalid: UHS's issuance is ${daysAgo}d ago — expected inside the ${PROCEEDS_RECENCY_DAYS}d window`);
+  }
+  const controlled: TriggerResult = { ...real, proceedsUse: "partly_unapplied" };
+  const r = evaluateEligibility(controlled, NOW);
+  assert(
+    r.cardEligible,
+    `[8d] Synthetic: just_announced issuance, proceedsUse=partly_unapplied, ${daysAgo}d ago, cards — the Part D fix's positive branch still works (reason: "${r.reason}")`
+  );
+}
+
 // --- 9. Encompass — standing capex program — must be TABLE ---
 {
   const ehc = findCompany("EHC");

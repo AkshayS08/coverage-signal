@@ -14,8 +14,8 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
 import { runAgentLoop } from "../agent";
-import { buildEvents, buildVerifiedFactBase } from "../events";
-import { cachedDraftEventBriefing, cachedDraftPortfolioSummary } from "./wordingCache";
+import { buildEvents, buildVerifiedFactBase, buildCompanyTableBlock } from "../events";
+import { cachedDraftEventBriefing } from "./wordingCache";
 import { cacheStats } from "./stats";
 
 const BOOK_A = ["DaVita", "HCA Healthcare", "Tenet Healthcare", "Universal Health Services", "Encompass Health"];
@@ -36,9 +36,11 @@ async function runBookOnce(companies: string[]): Promise<{ json: string; elapsed
         const briefing = await cachedDraftEventBriefing(card, factBase);
         eventBriefings.push({ eventId: card.id, briefing });
       }
-      const portfolioSummary = await cachedDraftPortfolioSummary(portfolio[0], factBase);
+      // Deterministic — included in the diffed output for full coverage,
+      // though a pure function can't be the source of any drift.
+      const table = buildCompanyTableBlock(result, portfolio[0], flashCardCandidates.length);
 
-      outputs.push({ company, result, eventBriefings, portfolioSummary });
+      outputs.push({ company, result, eventBriefings, table });
     } catch (err) {
       // Mirrors app/api/run/route.ts's per-company try/catch — one bad
       // name must not abort the rest of the book, in this test or in prod.

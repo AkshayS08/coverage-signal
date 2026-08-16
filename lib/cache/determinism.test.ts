@@ -18,8 +18,8 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
 import { runAgentLoop } from "../agent";
-import { buildEvents, buildVerifiedFactBase } from "../events";
-import { cachedDraftEventBriefing, cachedDraftPortfolioSummary } from "./wordingCache";
+import { buildEvents, buildVerifiedFactBase, buildCompanyTableBlock } from "../events";
+import { cachedDraftEventBriefing } from "./wordingCache";
 import { cacheStats } from "./stats";
 
 const COMPANIES = (process.argv[2] || "DaVita").split(",").map((s) => s.trim());
@@ -37,9 +37,9 @@ async function runBookOnce(companies: string[]): Promise<unknown[]> {
       const briefing = await cachedDraftEventBriefing(card, factBase);
       eventBriefings.push({ eventId: card.id, briefing });
     }
-    const portfolioSummary = await cachedDraftPortfolioSummary(portfolio[0], factBase);
+    const table = buildCompanyTableBlock(result, portfolio[0], flashCardCandidates.length);
 
-    outputs.push({ company, result, eventBriefings, portfolioSummary });
+    outputs.push({ company, result, eventBriefings, table });
   }
   return outputs;
 }

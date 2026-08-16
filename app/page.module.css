@@ -194,17 +194,40 @@
   margin-bottom: 4px;
 }
 
-/* One of three: What / Why call / Angle — each a single synthesized sentence. */
+/* One of three: Call about / Why now / Open with — each a synthesized field, action first. */
 .cardLine {
   font-size: 13px;
   line-height: 1.5;
   margin-bottom: 4px;
 }
 
-.cardLineAngle {
+.cardFieldLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  margin-right: 2px;
+}
+
+.cardLineOpenWith {
   font-style: italic;
   color: var(--text-secondary);
   margin-bottom: 0;
+}
+
+.draftingLine {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.emptyStateLine {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 4px 0;
 }
 
 .alsoActiveLine {
@@ -333,8 +356,9 @@
   gap: 10px;
 }
 
-.portfolioIndicators {
-  font-size: 12px;
+.portfolioHeaderLine {
+  font-size: 12.5px;
+  font-weight: 700;
   color: var(--text-secondary);
   white-space: nowrap;
 }
@@ -343,10 +367,57 @@
   margin-top: 10px;
 }
 
-.portfolioActionLine {
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 8px;
+/* --- Session 15 Part B: deterministic table lines — one per gated fact,
+   fact + figure + timing + source, no prose, no model call. --- */
+
+.tableLineList {
+  list-style: none;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tableLine,
+.tableLineHedging {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.tableLineHedging {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.tableLineBullet {
+  opacity: 0.7;
+}
+
+.tableLineText {
+  color: var(--text-secondary);
+}
+
+.tableLineHedging .tableLineText {
+  color: inherit;
+}
+
+.tableLineCardMarker {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.tableLineEmptyBucket {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  font-style: italic;
 }
 
 .portfolioBulletList {
@@ -560,7 +631,8 @@
     border-left-color: #f59e0b;
   }
 
-  .hedgingFlag {
+  .hedgingFlag,
+  .tableLineHedging {
     color: #f59e0b;
   }
 

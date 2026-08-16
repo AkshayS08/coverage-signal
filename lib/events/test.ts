@@ -6,6 +6,8 @@ import type { CompanyResult } from "../agent";
 import {
   buildEvents,
   buildVerifiedFactBase,
+  buildCompanyTableBlock,
+  TABLE_BUCKET_ORDER,
   BUCKET_LABELS,
   type EventRecord,
   type FlashCard,
@@ -13,7 +15,6 @@ import {
   type VerifiedFact,
 } from "./index";
 import { draftEventBriefing } from "./sonnetEventBriefing";
-import { draftPortfolioSummary } from "./sonnetPortfolioSummary";
 import { extractMoneyTokens, extractDateTokens } from "./numberGuard";
 import { compactLabelWithTiming } from "./labels";
 
@@ -28,12 +29,6 @@ const DEFAULT_BOOK = [
   "Concentra Group Holdings",
   "Surgery Partners",
 ];
-
-function describeEvent(e: EventRecord): string {
-  const triggerNames = e.triggers.map((t) => t.triggerName).join(" + ");
-  const dedupNote = e.triggers.length > 1 ? ` [DEDUPED from ${e.triggers.length} triggers]` : "";
-  return `${triggerNames}${dedupNote}`;
-}
 
 function timingLabel(e: { timing: EventRecord["timing"] }): string {
   if (e.timing.monthsToNearestFuture !== null) return `~${e.timing.monthsToNearestFuture}mo out`;
@@ -97,22 +92,23 @@ async function main() {
     console.log(`Freshness gate: ${card.freshnessReason}`);
     console.log(`Citations: ${card.citations.map((c) => `${c.form} ${c.date}`).join(", ")}`);
     console.log(`Fact base used (${factBase.length} facts): ${factBase.map((f) => f.linkedTriggerId).join(", ")}`);
-    console.log(`What (${wc(briefing.what)}w): ${briefing.what}`);
-    console.log(`Why call (${wc(briefing.whyCall)}w): ${briefing.whyCall}`);
-    console.log(`Angle (${wc(briefing.angle)}w): ${briefing.angle} [${briefing.source}]`);
-    if (wc(briefing.what) > 30 || wc(briefing.whyCall) > 30 || wc(briefing.angle) > 30) {
-      console.log(`  ⚠ WORD LIMIT EXCEEDED (target ~25 max per line)`);
-    }
-    const alsoActiveText = card.alsoActive
-      .map((item) => compactLabelWithTiming(item.trigger.triggerId, item.trigger.triggerName, item.timing))
-      .join(" · ");
-    const cardText = `${briefing.what} ${briefing.whyCall} ${briefing.angle} ${alsoActiveText}`;
-    const money = extractMoneyTokens(cardText);
-    const dates = extractDateTokens(cardText);
-    if (money.length > 0 || dates.length > 0) {
-      console.log(
-        `  Numbers/dates in card+also-active text: ${[...money.map((m) => m.raw), ...dates.map((d) => d.raw)].join(", ")} — all traced to the fact base above (source: ${briefing.source})`
-      );
+    if (briefing.source === "failed") {
+      console.log(`  ⚠ NARRATION FAILURE — banner reason: ${briefing.failureReason}`);
+    } else {
+      console.log(`Call about: ${briefing.callAbout}`);
+      console.log(`Why now (${wc(briefing.whyNow)}w): ${briefing.whyNow}`);
+      console.log(`Open with: ${briefing.openWith} [${briefing.source}]`);
+      const alsoActiveText = card.alsoActive
+        .map((item) => compactLabelWithTiming(item.trigger.triggerId, item.trigger.triggerName, item.timing))
+        .join(" · ");
+      const cardText = `${briefing.callAbout} ${briefing.whyNow} ${briefing.openWith} ${alsoActiveText}`;
+      const money = extractMoneyTokens(cardText);
+      const dates = extractDateTokens(cardText);
+      if (money.length > 0 || dates.length > 0) {
+        console.log(
+          `  Numbers/dates in card+also-active text: ${[...money.map((m) => m.raw), ...dates.map((d) => d.raw)].join(", ")} — all traced to the fact base above (source: ${briefing.source})`
+        );
+      }
     }
     if (card.alsoActive.length > 0) {
       console.log(`Also active: ${card.alsoActive.map(describeAlsoActive).join(" · ")}`);
@@ -170,27 +166,33 @@ async function main() {
   }
 
   console.log(`\n########################################`);
-  console.log(`### PORTFOLIO TABLE (every company x 4 buckets)`);
+  console.log(`### PORTFOLIO TABLE (every company x 4 buckets) — deterministic, no model call`);
   console.log(`########################################\n`);
-  for (const p of portfolio) {
-    console.log(`--- ${p.company} ---`);
-    const factBase = factBaseByCompany.get(p.company) ?? [];
-    const drafted = await draftPortfolioSummary(p, factBase);
-    if (drafted.source === "failed") {
-      console.log(`  ⚠ NARRATION FAILURE — banner reason: ${drafted.failureReason}`);
-    } else {
-      console.log(`  ${drafted.summary}`);
-    }
-    for (const bucket of ["treasury", "new_debt", "refi", "hedging"] as const) {
-      const events = p.buckets[bucket];
-      if (events.length === 0) continue;
+  for (let i = 0; i < results.length; i++) {
+    const r = results[i];
+    const cardCount = flashCardCandidates.filter((c) => c.cik === r.cik).length;
+    const block = buildCompanyTableBlock(r, portfolio[i], cardCount);
+    console.log(`--- ${block.company}  (${block.headerLine}) ---`);
+    if (block.emptyStateLine) console.log(`  ${block.emptyStateLine}`);
+    for (const bucket of TABLE_BUCKET_ORDER) {
+      const lines = block.buckets[bucket];
       console.log(`  ${BUCKET_LABELS[bucket]}:`);
-      for (const e of events) {
-        console.log(`    - [${e.cardEligible ? "CARD" : "table-only"}] ${describeEvent(e)} (${e.eligibilityReasons.join("; ")})`);
+      if (lines.length === 0) {
+        console.log(`    · no signal found`);
+        continue;
+      }
+      for (const line of lines) {
+        const bits = [line.label];
+        if (line.figure) bits.push(line.figure);
+        if (line.timingPhrase) bits.push(line.timingPhrase);
+        if (line.isHedgingFlag) bits.push("worth raising");
+        const marker = line.isHedgingFlag ? "⚑" : "·";
+        const cardMark = line.cardEligible ? " [card above]" : "";
+        console.log(`    ${marker} ${bits.join(" — ")}${cardMark}`);
       }
     }
-    if (p.relationshipFlags.length > 0) {
-      console.log(`  Relationship flags (distress, not a bucket): ${p.relationshipFlags.map((t) => t.triggerName).join(", ")}`);
+    if (block.relationshipFlags.length > 0) {
+      console.log(`  Relationship flags (distress, not a bucket): ${block.relationshipFlags.join(", ")}`);
     }
     console.log("");
   }

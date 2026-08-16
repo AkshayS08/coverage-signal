@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { readCache, writeCache } from "../fetch/cache";
-import { PROMPT_VERSION } from "./promptVersion";
+import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 import { cacheStats } from "./stats";
 
 function sha256(input: string): string {
@@ -53,7 +53,7 @@ export async function cachedBaseClassification<T>(
   fingerprint: string,
   compute: () => Promise<T>
 ): Promise<{ data: T; hit: boolean }> {
-  return getOrCompute(`answer/${cik}/base/${fingerprint}/v${PROMPT_VERSION}.json`, compute);
+  return getOrCompute(`answer/${cik}/base/${fingerprint}/v${EXTRACTION_PROMPT_VERSION}.json`, compute);
 }
 
 /** A single-trigger dig follow-up against one specific extra filing. */
@@ -64,7 +64,7 @@ export async function cachedDigClassification<T>(
   digUrl: string,
   compute: () => Promise<T>
 ): Promise<{ data: T; hit: boolean }> {
-  const key = `answer/${cik}/dig/${fingerprint}/${triggerId}/${sha256(digUrl)}/v${PROMPT_VERSION}.json`;
+  const key = `answer/${cik}/dig/${fingerprint}/${triggerId}/${sha256(digUrl)}/v${EXTRACTION_PROMPT_VERSION}.json`;
   return getOrCompute(key, compute);
 }
 
@@ -80,5 +80,5 @@ export async function cachedProceedsUse<T>(
   fingerprint: string,
   compute: () => Promise<T>
 ): Promise<{ data: T; hit: boolean }> {
-  return getOrCompute(`answer/${cik}/proceedsUse/${fingerprint}/v${PROMPT_VERSION}.json`, compute);
+  return getOrCompute(`answer/${cik}/proceedsUse/${fingerprint}/v${EXTRACTION_PROMPT_VERSION}.json`, compute);
 }

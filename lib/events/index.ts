@@ -5,8 +5,9 @@ export * from "./buildEvents";
 export * from "./eventBriefing";
 export * from "./labels";
 export * from "./factBase";
-// sonnetEventBriefing.ts and sonnetPortfolioSummary.ts are deliberately NOT
-// re-exported here — both pull in the Anthropic SDK and must stay out of
-// any client-importable barrel. The portfolio-table summary (Session 12
-// Part B) is now a server-side Sonnet call like card narration, streamed
-// to the client via RunStreamEvent rather than computed in the browser.
+export * from "./portfolioTable";
+// sonnetEventBriefing.ts is deliberately NOT re-exported here — it pulls
+// in the Anthropic SDK and must stay out of any client-importable barrel.
+// The portfolio table (Session 15 Part B) is now fully deterministic —
+// portfolioTable.ts has no SDK dependency, so it's safe in this barrel and
+// is computed client-side from `results`, same as buildEvents itself.

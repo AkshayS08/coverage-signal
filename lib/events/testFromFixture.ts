@@ -16,9 +16,16 @@ dotenv.config({ path: ".env.local" });
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CompanyResult } from "../agent";
-import { buildEvents, buildVerifiedFactBase, BUCKET_LABELS, type EventRecord, type FlashCard } from "./index";
+import {
+  buildEvents,
+  buildVerifiedFactBase,
+  buildCompanyTableBlock,
+  TABLE_BUCKET_ORDER,
+  BUCKET_LABELS,
+  type EventRecord,
+  type FlashCard,
+} from "./index";
 import { draftEventBriefing } from "./sonnetEventBriefing";
-import { draftPortfolioSummary } from "./sonnetPortfolioSummary";
 import { extractMoneyTokens, extractDateTokens } from "./numberGuard";
 import { compactLabelWithTiming } from "./labels";
 
@@ -30,12 +37,6 @@ function timingLabel(e: { timing: EventRecord["timing"] }): string {
   if (e.timing.monthsToNearestFuture !== null) return `~${e.timing.monthsToNearestFuture}mo out`;
   if (e.timing.isPendingLive) return "pending/live";
   return "live now (no future date)";
-}
-
-function describeEvent(e: EventRecord): string {
-  const triggerNames = e.triggers.map((t) => t.triggerName).join(" + ");
-  const dedupNote = e.triggers.length > 1 ? ` [DEDUPED from ${e.triggers.length} triggers]` : "";
-  return `${triggerNames}${dedupNote}`;
 }
 
 async function main() {
@@ -71,13 +72,13 @@ async function main() {
       if (briefing.failureReason?.includes("scrape-shaped")) scrapeRejections++;
       console.log(`  ⚠ NARRATION FAILURE — banner reason: ${briefing.failureReason}`);
     } else {
-      console.log(`What (${wc(briefing.what)}w): ${briefing.what}`);
-      console.log(`Why call (${wc(briefing.whyCall)}w): ${briefing.whyCall}`);
-      console.log(`Angle (${wc(briefing.angle)}w): ${briefing.angle} [${briefing.source}]`);
+      console.log(`Call about: ${briefing.callAbout}`);
+      console.log(`Why now (${wc(briefing.whyNow)}w): ${briefing.whyNow}`);
+      console.log(`Open with: ${briefing.openWith} [${briefing.source}]`);
       const alsoActiveText = card.alsoActive
         .map((item) => compactLabelWithTiming(item.trigger.triggerId, item.trigger.triggerName, item.timing))
         .join(" · ");
-      const cardText = `${briefing.what} ${briefing.whyCall} ${briefing.angle} ${alsoActiveText}`;
+      const cardText = `${briefing.callAbout} ${briefing.whyNow} ${briefing.openWith} ${alsoActiveText}`;
       const money = extractMoneyTokens(cardText);
       const dates = extractDateTokens(cardText);
       if (money.length > 0 || dates.length > 0) {
@@ -93,30 +94,34 @@ async function main() {
   }
 
   console.log(`########################################`);
-  console.log(`### PORTFOLIO TABLE — Sonnet-drafted per-company summary (Session 12 Part B)`);
+  console.log(`### PORTFOLIO TABLE — deterministic, no model call (Session 15 Part B)`);
   console.log(`########################################\n`);
 
-  for (const p of portfolio) {
-    const factBase = factBaseByCompany.get(p.company) ?? [];
-    const drafted = await draftPortfolioSummary(p, factBase);
-    console.log(`--- ${p.company} ---`);
-    if (drafted.source === "failed") {
-      narrationFailures++;
-      if (drafted.failureReason?.includes("scrape-shaped")) scrapeRejections++;
-      console.log(`  ⚠ NARRATION FAILURE — banner reason: ${drafted.failureReason}`);
-    } else {
-      console.log(`  ${drafted.summary}`);
-    }
-    for (const bucket of ["treasury", "new_debt", "refi", "hedging"] as const) {
-      const events = p.buckets[bucket];
-      if (events.length === 0) continue;
+  for (let i = 0; i < results.length; i++) {
+    const r = results[i];
+    const cardCount = flashCardCandidates.filter((c) => c.cik === r.cik).length;
+    const block = buildCompanyTableBlock(r, portfolio[i], cardCount);
+    console.log(`--- ${block.company}  (${block.headerLine}) ---`);
+    if (block.emptyStateLine) console.log(`  ${block.emptyStateLine}`);
+    for (const bucket of TABLE_BUCKET_ORDER) {
+      const lines = block.buckets[bucket];
       console.log(`  ${BUCKET_LABELS[bucket]}:`);
-      for (const e of events) {
-        console.log(`    - [${e.cardEligible ? "CARD" : "table-only"}] ${describeEvent(e)} (${timingLabel(e)})`);
+      if (lines.length === 0) {
+        console.log(`    · no signal found`);
+        continue;
+      }
+      for (const line of lines) {
+        const bits = [line.label];
+        if (line.figure) bits.push(line.figure);
+        if (line.timingPhrase) bits.push(line.timingPhrase);
+        if (line.isHedgingFlag) bits.push("worth raising");
+        const marker = line.isHedgingFlag ? "⚑" : "·";
+        const cardMark = line.cardEligible ? " [card above]" : "";
+        console.log(`    ${marker} ${bits.join(" — ")}${cardMark}`);
       }
     }
-    if (p.relationshipFlags.length > 0) {
-      console.log(`  Relationship flags (distress, not a bucket): ${p.relationshipFlags.map((t) => t.triggerName).join(", ")}`);
+    if (block.relationshipFlags.length > 0) {
+      console.log(`  Relationship flags (distress, not a bucket): ${block.relationshipFlags.join(", ")}`);
     }
     console.log("");
   }

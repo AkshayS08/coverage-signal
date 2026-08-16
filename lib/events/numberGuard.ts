@@ -38,7 +38,8 @@ function strictMoneyMatch(a: FactToken, b: FactToken): boolean {
   return false;
 }
 
-function strictFactTokensMatch(a: FactToken, b: FactToken): boolean {
+/** Exported so the card-narration structural guard (sonnetEventBriefing.ts) can reuse the SAME matching rule to check which individual facts a span of text actually draws from — see countDistinctFactsReferenced below. */
+export function strictFactTokensMatch(a: FactToken, b: FactToken): boolean {
   if (a.kind !== b.kind) return false;
   if (a.kind === "money") return strictMoneyMatch(a, b);
   if (a.kind === "percent") return a.percentValue !== undefined && b.percentValue !== undefined && Math.abs(a.percentValue - b.percentValue) <= 0.01;
@@ -69,6 +70,31 @@ export function checkNumbersAgainstQuotes(cardText: string, quotes: string[]): N
     .map((token) => token.raw);
 
   return { ok: unverifiedTokens.length === 0, unverifiedTokens };
+}
+
+/**
+ * Session 15 Part A: a mechanical, structural proxy for "WHY NOW connects
+ * at least two facts" — the new card shape's hard requirement that the
+ * synthesis not be a restatement of the headline event alone. Counts how
+ * many of the given fact texts have at least one money/percent/date token
+ * (via strictFactTokensMatch — the SAME scale-exact rule numberGuard uses,
+ * so a figure only counts as "referencing" a fact when it genuinely
+ * matches that fact's own stated scale) in common with `text`. A card
+ * whose WHY NOW only draws tokens from ONE fact (typically just the
+ * headline) is, by construction, not a synthesis of two things — it's a
+ * description of one, which is exactly the "here's a thing that happened"
+ * pattern this session kills. Structural (token overlap), never lexical
+ * (no keyword/phrase matching) — Session 12's standing rule.
+ */
+export function countDistinctFactsReferenced(text: string, factTexts: string[]): number {
+  const textTokens = extractFactTokens(text);
+  if (textTokens.length === 0) return 0;
+  let count = 0;
+  for (const factText of factTexts) {
+    const factTokens = extractFactTokens(factText);
+    if (textTokens.some((tt) => factTokens.some((ft) => strictFactTokensMatch(tt, ft)))) count++;
+  }
+  return count;
 }
 
 // Backward-compatible named exports for callers that want typed money/date
