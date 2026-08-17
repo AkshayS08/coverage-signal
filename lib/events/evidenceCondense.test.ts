@@ -137,6 +137,69 @@ console.log(`=== Session 15b golden tests (evidence condenser) ===\n`);
   assert(!/U\.K\.$/.test(condensedIntl.trim()), `[6b] UHS international-expansion does not truncate mid-"U.K." (condensed: ${JSON.stringify(condensedIntl)})`);
 }
 
+// --- 7 (Session 16 Fix B1): the matched clause must isolate the tranche
+// itself, never a preceding line-item ("current portion of long-term debt
+// was $10 million") that happens to share the same run-on sentence with no
+// semicolon between them. SYNTHETIC: no fixture company has this exact
+// comma-joined lead-in shape (real case found live on Quest Diagnostics,
+// which isn't in this 8-company fixture); pinned onto a real UHS
+// debt-maturity fact with evidence swapped for the real live Quest text. ---
+{
+  const real = factFor("UHS", "debt-maturity");
+  const controlled: VerifiedFact = {
+    ...real,
+    evidence:
+      "3.45% Senior Notes due June 2026 matured on June 1, 2026. As of June 30, 2026, the current portion of long-term debt was $10 million, with 4.60% Senior Notes due December 2027 ($400 million) and 4.20% Senior Notes due June 2029 ($500 million) approaching maturity within the next 12-18 months.",
+    eventDate: "2027-12-01",
+    dateGranularity: "month",
+  };
+  const condensed = condenseDebtMaturity(controlled);
+  assert(
+    /^4\.60% Senior Notes due December 2027 \(\$400 million\)/.test(condensed),
+    `[7a] SYNTHETIC: Quest-shaped evidence isolates the December 2027 tranche, not the preceding "$10 million" current-portion figure (condensed: ${JSON.stringify(condensed)})`
+  );
+  assert(!/current portion|\$10 million/.test(condensed), `[7b] SYNTHETIC: the unrelated $10 million current-portion figure does not leak into the line`);
+}
+
+// --- 8 (Session 16 Fix B3): truncation must never leave a dangling
+// conjunction/preposition right before the ellipsis. Real fixture case:
+// DaVita's new-debt-issuance evidence is exactly 261 chars (1 over the 260
+// cap), and the naive word-boundary cut landed right after "...borrowings
+// and", the "and" left hanging. ---
+{
+  const davita = factFor("DVA", "new-debt-issuance");
+  assert(davita.evidence !== null && davita.evidence.length > 260, `[8 setup] DaVita new-debt-issuance evidence is over the truncation threshold (length=${davita.evidence?.length})`);
+  const condensed = condenseFirstSentence(davita);
+  assert(condensed.endsWith("…"), `[8a] DaVita new-debt-issuance line is truncated (condensed: ${JSON.stringify(condensed)})`);
+  assert(
+    !/\b(and|or|with|for|to|of|in|on|at|by|the|a|an)…$/i.test(condensed),
+    `[8b] DaVita's truncated line does not end on a dangling conjunction/preposition right before the ellipsis (condensed: ${JSON.stringify(condensed)})`
+  );
+  assert(
+    condensed === "Company completed private offering of $1.0 billion aggregate principal amount of 6.750% Senior Notes due 2033 on May 23, 2025…",
+    `[8c] DaVita's line cuts at the real comma clause boundary (after "May 23, 2025"), not a mid-phrase word break (condensed: ${JSON.stringify(condensed)})`
+  );
+}
+
+// --- 9 (Session 16 Fix B4): a standing fact with 2+ periods phrased as
+// "<word> quarter of <year>" (not "as of <date>") must still prefer the
+// MOST RECENT period — Rule 3 previously only recognized "as of" phrasing.
+// SYNTHETIC: no fixture company has this exact shape (real case found live
+// on Molina Healthcare, which isn't in this 8-company fixture); pinned onto
+// a real EHC dividend-buyback fact with evidence swapped for the real live
+// Molina text. ---
+{
+  const real = factFor("EHC", "dividend-buyback");
+  const controlled: VerifiedFact = {
+    ...real,
+    evidence:
+      "In the first quarter of 2025, the company purchased approximately 1,679,000 shares for $500 million under a stock purchase program authorized in October 2024. In the third quarter of 2025, the company purchased approximately 2,849,000 shares for $500 million under a program authorized in April 2025.",
+  };
+  const condensed = condenseFirstSentence(controlled);
+  assert(/third quarter of 2025/.test(condensed), `[9a] SYNTHETIC: Molina-shaped evidence keeps the third-quarter (most recent) period (condensed: ${JSON.stringify(condensed)})`);
+  assert(!/first quarter of 2025/.test(condensed), `[9b] SYNTHETIC: the earlier first-quarter period is dropped entirely — Rule 3, never render the comparison`);
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) {
   console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);

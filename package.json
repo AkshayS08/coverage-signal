@@ -14,6 +14,7 @@
     "test": "tsx lib/events/eligibility.test.ts",
     "test:narration": "tsx lib/events/narrationIntegrity.test.ts",
     "test:condense": "tsx lib/events/evidenceCondense.test.ts",
+    "test:table": "tsx lib/events/portfolioTable.test.ts",
     "test:build-fixture": "tsx lib/events/buildFixture.ts",
     "events:test:fixture": "tsx lib/events/testFromFixture.ts",
     "test:cache": "tsx lib/cache/cache.test.ts",

@@ -26,5 +26,17 @@ export const EXTRACTION_PROMPT_VERSION = 1;
  * what counts as "verified" both changed, so old cached bodies (drafted
  * without ever seeing evidence text) must not be replayed as if
  * equivalent.
+ * v4 (Session 16 Fix D, attempt 1): explicit "state figures exactly as
+ * given, never a sum/rounded/derived total" instruction — Centene's
+ * callAbout requirement was making Sonnet occasionally compute a round
+ * total ("$2.0 billion") from two stated redemption amounts instead of
+ * using the stated remaining balance ("$568.7 million"), correctly
+ * rejected by the number-guard.
+ * v5 (Session 16 Fix D, attempt 2): v4's abstract instruction wasn't
+ * concrete enough — verified live, Centene still failed 3/3 fresh attempts
+ * under v4, still computing "$2.1 billion"/"$2 billion". Replaced with a
+ * concrete worked example of the exact failure shape (a balance paid down
+ * in steps, plus what remains) so the instruction has something specific
+ * to pattern-match against, not just an abstract rule.
  */
-export const NARRATION_PROMPT_VERSION = 3;
+export const NARRATION_PROMPT_VERSION = 5;
