@@ -38,5 +38,30 @@ export const EXTRACTION_PROMPT_VERSION = 1;
  * concrete worked example of the exact failure shape (a balance paid down
  * in steps, plus what remains) so the instruction has something specific
  * to pattern-match against, not just an abstract rule.
+ * v6 (Session 17, bumped once at the end per Item 0, after every narration
+ * change was in): Item 4 (citations computed from which facts the drafted
+ * text actually references, not the headline trigger alone), Item 16
+ * (timing stated as "N months out," never "inside the N-month refi
+ * window" — the threshold is an internal rule, not a market term), and
+ * Item 17 (OPEN WITH replaced with KEY POINTS — 2-4 plain-fact bullets,
+ * first bullet always the headline fact, no bullet may connect two facts
+ * together). Old cached bodies used a different field (openWith) and a
+ * different citation rule entirely — replaying them would be a shape the
+ * current code can no longer even parse correctly, not just stale wording.
  */
-export const NARRATION_PROMPT_VERSION = 5;
+export const NARRATION_PROMPT_VERSION = 6;
+
+/**
+ * Session 17 Item 0: this project's session prompts have referred to this
+ * constant as "wordingPromptVersion" and its extraction counterpart as
+ * "extractionPromptVersion." The FUNCTIONAL split those names describe —
+ * two independent constants, one per cache namespace, bumped
+ * independently — already happened in Session 15 (see NARRATION_PROMPT_
+ * VERSION's own history above) and was re-verified intact at the start of
+ * this session (Item 0's diagnosis: already done, nothing to split).
+ * Kept under their existing SCREAMING_SNAKE_CASE names rather than
+ * renamed to match a session prompt's casing convention — renaming would
+ * touch every read site across the codebase for a naming preference, not
+ * a functional gap, and this project's own standing rules favor fixing
+ * the shape of a real problem over cosmetic churn.
+ */

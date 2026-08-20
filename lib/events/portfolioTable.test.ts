@@ -156,15 +156,48 @@ console.log(`=== Session 16 golden tests (portfolio table renderer) ===\n`);
   assert(!!line && line.timingPhrase === "completed", `[C2] DaVita new-debt-issuance (status=completed) renders "completed" (got: ${JSON.stringify(line?.timingPhrase)})`);
 }
 
-// --- C: DaVita's real just_announced acquisition (dated, but past the
-// pending-live window) renders "announced <date>", not "". ---
+// --- C3 (updated Session 17 Item 12): DaVita's real just_announced
+// acquisition (dated, but past the pending-live window) renders bare
+// "announced", not "". Session 17 Item 12 changed the expected value here:
+// DaVita's own description already states "On February 2, 2026" (Haiku's
+// evidence phrasing routinely opens with the event's own date), so
+// restating it in the status suffix ("announced Feb 2, 2026") was pure
+// redundancy — real bug this fixes. The date is never lost entirely: it's
+// in the description, just not doubled into the suffix too. ---
 {
   const davita = companyFor("DVA");
   const table = buildCompanyTableBlock(davita, []);
   const line = table.buckets.new_debt.find((l) => l.triggerId === "acquisition-announced");
+  assert(!!line && /February 2, 2026/.test(line.description), `[C3 setup] DaVita's acquisition-announced description already states its own date`);
   assert(
-    !!line && /^announced /.test(line.timingPhrase) && line.timingPhrase !== "announced",
-    `[C3] DaVita acquisition-announced (status=just_announced, dated, stale) renders "announced <date>" (got: ${JSON.stringify(line?.timingPhrase)})`
+    !!line && line.timingPhrase === "announced",
+    `[C3] DaVita acquisition-announced renders bare "announced" — the date is already in the description, not blank and not doubled (got: ${JSON.stringify(line?.timingPhrase)})`
+  );
+}
+
+// --- C4 (Session 17 Item 12, other branch): when the description does
+// NOT already state the fact's own date, the date suffix must still show
+// — suppression is conditional, never unconditional. SYNTHETIC: no
+// fixture fact happens to omit its own date from its evidence (Haiku's
+// phrasing routinely opens with "On <date>, ..."); pinned onto DaVita's own
+// real acquisition-announced fact (eventDate/granularity kept real —
+// "2026-02-02"/day — only the evidence text is swapped to a date-less
+// sentence, isolating exactly the condition under test). ---
+{
+  const davita = companyFor("DVA");
+  const realAcquisition = davita.results.find((r) => r.triggerId === "acquisition-announced")!;
+  assert(!!realAcquisition.eventDate, `[C4 setup] DaVita's real acquisition-announced fact has an eventDate to test against`);
+  const controlled: CompanyResult = {
+    ...davita,
+    results: davita.results.map((r) =>
+      r.triggerId === "acquisition-announced" ? { ...r, evidence: "The Company signed a definitive agreement to acquire a noncontrolling minority interest in an entity." } : r
+    ),
+  };
+  const table = buildCompanyTableBlock(controlled, []);
+  const line = table.buckets.new_debt.find((l) => l.triggerId === "acquisition-announced");
+  assert(
+    !!line && !/February/.test(line.description) && line.timingPhrase !== "announced" && /^announced /.test(line.timingPhrase),
+    `[C4] when the description does NOT already state the date, the suffix still shows it (got description: ${JSON.stringify(line?.description)}, timing: ${JSON.stringify(line?.timingPhrase)})`
   );
 }
 
@@ -174,6 +207,28 @@ console.log(`=== Session 16 golden tests (portfolio table renderer) ===\n`);
   const uhs = companyFor("UHS");
   const factBase = buildVerifiedFactBase(uhs);
   assert(factBase.length > 0, `[R1] UHS fact base is still non-empty (sanity check the fixture itself is intact)`);
+}
+
+// --- Item 11: "standing" is internal taxonomy vocabulary and must never
+// render as the literal word — every standing-status line across the
+// whole fixture renders "ongoing" instead, never blank (the never-blank
+// invariant from Session 16 still holds; "standing" replaced with plain
+// English is a distinct requirement from "never blank," and this checks
+// both at once). ---
+{
+  let standingCount = 0;
+  let ongoingCount = 0;
+  for (const company of fixture.companies) {
+    const table = buildCompanyTableBlock(company, []);
+    for (const bucket of TABLE_BUCKET_ORDER) {
+      for (const line of table.buckets[bucket]) {
+        if (line.timingPhrase === "standing") standingCount++;
+        if (line.timingPhrase === "ongoing") ongoingCount++;
+      }
+    }
+  }
+  assert(standingCount === 0, `[11a] zero table lines render the literal word "standing" across the whole fixture (found: ${standingCount})`);
+  assert(ongoingCount > 0, `[11b] at least one standing-status line renders "ongoing" instead (found: ${ongoingCount}) — sanity check the replacement actually fires on real data`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

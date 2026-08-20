@@ -18,7 +18,8 @@
     "test:build-fixture": "tsx lib/events/buildFixture.ts",
     "events:test:fixture": "tsx lib/events/testFromFixture.ts",
     "test:cache": "tsx lib/cache/cache.test.ts",
-    "test:determinism": "tsx lib/cache/determinism.test.ts"
+    "test:determinism": "tsx lib/cache/determinism.test.ts",
+    "test:live-markers": "tsx lib/cache/liveMarkerScan.test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",

@@ -299,9 +299,14 @@ export default function Home() {
             <p className={styles.cardLine}>
               <span className={styles.cardFieldLabel}>Why now</span> {briefing.whyNow}
             </p>
-            <p className={`${styles.cardLine} ${styles.cardLineOpenWith}`}>
-              <span className={styles.cardFieldLabel}>Open with</span> &ldquo;{briefing.openWith}&rdquo;
-            </p>
+            <div className={styles.cardLine}>
+              <span className={styles.cardFieldLabel}>Key points</span>
+              <ul className={styles.keyPointsList}>
+                {briefing.keyPoints.map((kp, i) => (
+                  <li key={i}>{kp}</li>
+                ))}
+              </ul>
+            </div>
           </>
         )}
         {card.alsoActive.length > 0 && (
@@ -310,7 +315,7 @@ export default function Home() {
             portfolio table for detail.
           </p>
         )}
-        {renderCardSources(card.citations)}
+        {renderCardSources(briefing && briefing.source === "sonnet" ? briefing.citations : card.citations)}
         {renderSourceText(card)}
       </div>
     );

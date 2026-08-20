@@ -88,7 +88,7 @@ export interface BuildEventsResult {
   portfolio: CompanyPortfolio[];
 }
 
-function dedupeCitations(citations: TriggerResult["citations"]): TriggerResult["citations"] {
+export function dedupeCitations(citations: TriggerResult["citations"]): TriggerResult["citations"] {
   const seen = new Set<string>();
   const out: TriggerResult["citations"] = [];
   for (const c of citations) {

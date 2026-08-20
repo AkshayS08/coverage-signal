@@ -161,23 +161,40 @@ console.log(`=== Session 15b golden tests (evidence condenser) ===\n`);
   assert(!/current portion|\$10 million/.test(condensed), `[7b] SYNTHETIC: the unrelated $10 million current-portion figure does not leak into the line`);
 }
 
-// --- 8 (Session 16 Fix B3): truncation must never leave a dangling
-// conjunction/preposition right before the ellipsis. Real fixture case:
-// DaVita's new-debt-issuance evidence is exactly 261 chars (1 over the 260
-// cap), and the naive word-boundary cut landed right after "...borrowings
-// and", the "and" left hanging. ---
+// --- 8 (Session 16 Fix B3, updated Session 17 Item 13): truncation must
+// never leave a dangling conjunction/preposition right before the
+// ellipsis, and the cap itself must not cut a real, single-sentence fact
+// that's only barely over the OLD 260-char limit. DaVita's new-debt-
+// issuance evidence is 261 chars — 1 over the old cap, comfortably under
+// the new 400-char one (measured against every real condensed line across
+// both fixture books; the longest found was 318 chars — see
+// evidenceCondense.ts's MAX_LINE_CHARS comment). [8a]/[8b] now confirm the
+// fix: DaVita's real line renders in FULL, including the $986 million
+// net-proceeds figure the old 260-cap discarded. [8c]/[8d] preserve
+// coverage of the truncation logic itself (still real, load-bearing code
+// for a genuinely pathological case) via a SYNTHETIC evidence string well
+// over 400 chars, pinned onto the same real DaVita fact. ---
 {
   const davita = factFor("DVA", "new-debt-issuance");
-  assert(davita.evidence !== null && davita.evidence.length > 260, `[8 setup] DaVita new-debt-issuance evidence is over the truncation threshold (length=${davita.evidence?.length})`);
+  assert(davita.evidence !== null && davita.evidence.length === 261, `[8 setup] DaVita new-debt-issuance evidence is 261 chars — over the old 260 cap, under the new 400 one (length=${davita.evidence?.length})`);
   const condensed = condenseFirstSentence(davita);
-  assert(condensed.endsWith("…"), `[8a] DaVita new-debt-issuance line is truncated (condensed: ${JSON.stringify(condensed)})`);
+  assert(!condensed.endsWith("…"), `[8a] DaVita new-debt-issuance line is NOT truncated under the new 400-char cap (condensed: ${JSON.stringify(condensed)})`);
   assert(
-    !/\b(and|or|with|for|to|of|in|on|at|by|the|a|an)…$/i.test(condensed),
-    `[8b] DaVita's truncated line does not end on a dangling conjunction/preposition right before the ellipsis (condensed: ${JSON.stringify(condensed)})`
+    /\$986 million/.test(condensed),
+    `[8b] DaVita's line keeps its own $986 million net-proceeds figure, discarded by the old 260-char cap (condensed: ${JSON.stringify(condensed)})`
   );
+
+  const synthetic: VerifiedFact = {
+    ...davita,
+    evidence:
+      "Company completed private offering of $1.0 billion aggregate principal amount of 6.750% Senior Notes due 2033 on May 23, 2025, with net proceeds of approximately $986 million used to repay revolving credit facility borrowings, fund working capital, support general corporate purposes, and provide additional liquidity for the company's ongoing operations and future growth initiatives across its network of outpatient dialysis centers nationwide.",
+  };
+  assert(synthetic.evidence!.length > 400, `[8c setup] SYNTHETIC evidence is over the 400-char cap (length=${synthetic.evidence!.length})`);
+  const condensedSynthetic = condenseFirstSentence(synthetic);
+  assert(condensedSynthetic.endsWith("…"), `[8c] SYNTHETIC: a genuinely long single sentence still truncates (condensed: ${JSON.stringify(condensedSynthetic)})`);
   assert(
-    condensed === "Company completed private offering of $1.0 billion aggregate principal amount of 6.750% Senior Notes due 2033 on May 23, 2025…",
-    `[8c] DaVita's line cuts at the real comma clause boundary (after "May 23, 2025"), not a mid-phrase word break (condensed: ${JSON.stringify(condensed)})`
+    !/\b(and|or|with|for|to|of|in|on|at|by|the|a|an)…$/i.test(condensedSynthetic),
+    `[8d] SYNTHETIC: the truncated line still does not end on a dangling conjunction/preposition (condensed: ${JSON.stringify(condensedSynthetic)})`
   );
 }
 
@@ -198,6 +215,73 @@ console.log(`=== Session 15b golden tests (evidence condenser) ===\n`);
   const condensed = condenseFirstSentence(controlled);
   assert(/third quarter of 2025/.test(condensed), `[9a] SYNTHETIC: Molina-shaped evidence keeps the third-quarter (most recent) period (condensed: ${JSON.stringify(condensed)})`);
   assert(!/first quarter of 2025/.test(condensed), `[9b] SYNTHETIC: the earlier first-quarter period is dropped entirely — Rule 3, never render the comparison`);
+}
+
+// --- 11 (Session 17 Item 14, regression): cross-family false positive.
+// HCA's real dividend-buyback evidence has an "as of June 30, 2026"
+// sentence (buyback capacity) and a SEPARATE "six months ended June 30,
+// 2026" sentence (shares repurchased) — the SAME period-end, two
+// different metrics, not a temporal progression of one thing. Comparing
+// them as if they were a genuine before/after pair (the bug Item 14's
+// first implementation introduced) silently drops the dividend sentence
+// entirely. Family-aware matching must leave this fact on the ORIGINAL
+// "first sentence with money" fallback — the dividend sentence — since
+// neither family has 2+ occurrences on its own. Real fixture data,
+// unmodified. ---
+{
+  const hca = factFor("HCA", "dividend-buyback");
+  const condensed = condenseFirstSentence(hca);
+  assert(
+    /\$0\.78 per share/.test(condensed),
+    `[11] REAL HCA dividend-buyback keeps the dividend sentence — "as of June 30" (buyback capacity) and "six months ended June 30" (shares repurchased) are different families describing different metrics, not a comparison (condensed: ${JSON.stringify(condensed)})`
+  );
+}
+
+// --- 10 (Session 17 Item 14): a multi-period comparison stated WITHIN a
+// single sentence — not across two sentences, which Rule 3's
+// mostRecentPeriodSentence already handled — must still collapse to the
+// most recent period only. Real fixture case, unmodified: DaVita's real
+// capex-program evidence is exactly one sentence mentioning BOTH "the
+// first six months of 2026" and "the first six months of 2025." ---
+{
+  const davita = factFor("DVA", "capex-program");
+  assert(
+    /first six months of 2026/.test(davita.evidence ?? "") && /first six months of 2025/.test(davita.evidence ?? ""),
+    `[10 setup] DaVita capex-program evidence states both periods within ONE sentence (evidence: ${JSON.stringify(davita.evidence)})`
+  );
+  const condensed = condenseFirstSentence(davita);
+  assert(/first six months of 2026/.test(condensed), `[10a] DaVita capex line keeps the 2026 (most recent) period (condensed: ${JSON.stringify(condensed)})`);
+  assert(!/first six months of 2025/.test(condensed), `[10b] DaVita capex line drops the earlier 2025 period entirely, even stated within the SAME sentence (condensed: ${JSON.stringify(condensed)})`);
+  assert(/\$271\.8 million/.test(condensed) && !/\$264\.3 million/.test(condensed), `[10c] the 2026 figure ($271.8M) is kept, the 2025 figure ($264.3M) is dropped (condensed: ${JSON.stringify(condensed)})`);
+}
+
+// --- 12 (Session 17 follow-up, regression): a single sentence with 2+
+// same-family matches must NOT outrank the money-bearing sentence in
+// mostRecentPeriodSentence's cross-sentence selection — that is
+// collapseSamePeriodClause's (Item 14's) job, applied AFTER a sentence is
+// chosen, not a reason to choose a different sentence in the first place.
+// Real bug found live during this session's own baseline-diff review:
+// UHS's real (Aug 2026) international-expansion evidence gained a third
+// sentence since the fixture was captured — "Total assets... were $1.531
+// billion as of December 31, 2025 and $1.358 billion as of December 31,
+// 2024." — whose own two internal "as of" matches satisfied the (buggy)
+// 2+-occurrence bar on their own, letting it leapfrog the actually-
+// relevant revenue-growth sentence. Pinned onto the real UHS fact with the
+// real live evidence text (captured verbatim) since the fixture predates
+// this third sentence. ---
+{
+  const real = factFor("UHS", "international-expansion");
+  const controlled: VerifiedFact = {
+    ...real,
+    evidence:
+      "UHS operates behavioral health care facilities in the United Kingdom. UK behavioral health care facilities generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024, representing growth. Total assets at UK behavioral health care facilities were approximately $1.531 billion as of December 31, 2025 and $1.358 billion as of December 31, 2024.",
+  };
+  const condensed = condenseFirstSentence(controlled);
+  assert(
+    /net revenues of approximately \$1\.001 billion/.test(condensed),
+    `[12a] REAL (live-captured) UHS international-expansion keeps the revenue-growth sentence, not the total-assets sentence, even though the total-assets sentence has 2 same-family "as of" matches within itself (condensed: ${JSON.stringify(condensed)})`
+  );
+  assert(!/Total assets/.test(condensed), `[12b] the total-assets sentence's own internal 2-period comparison does not let it outrank the money-bearing revenue sentence (condensed: ${JSON.stringify(condensed)})`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

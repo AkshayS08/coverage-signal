@@ -3,7 +3,8 @@ import type { FlashCard } from "./buildEvents";
 import { bucketForTrigger, type Bucket } from "./buckets";
 import { evaluateEligibility } from "./eligibility";
 import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
-import { condenseEvidenceDescription, formatAnnouncedDate } from "./evidenceCondense";
+import { condenseEvidenceDescription, formatAnnouncedDate, dateTokenMatchesEventDate } from "./evidenceCondense";
+import { extractFactTokens } from "../agent/factTokens";
 import type { TimingInfo } from "./textHeuristics";
 
 /**
@@ -75,7 +76,14 @@ export const TABLE_BUCKET_ORDER: Bucket[] = ["refi", "new_debt", "treasury", "he
  * (completed/just_announced) and the final never-blank fallback close every
  * remaining eventStatus case.
  */
-function timingPhraseFor(t: TriggerResult, timing: TimingInfo): string {
+/** True when `description` already states the trigger's own eventDate, at its own granularity — reuses the exact date-matching rule evidenceCondense.ts's debt-maturity clause selection uses, so "does the line already say this" and "which clause matches this date" never disagree. */
+function descriptionAlreadyStatesDate(description: string, eventDate: string, granularity: TriggerResult["dateGranularity"]): boolean {
+  if (!granularity) return false;
+  const dateTokens = extractFactTokens(description).filter((tok) => tok.kind === "date");
+  return dateTokens.some((tok) => dateTokenMatchesEventDate(tok, eventDate, granularity));
+}
+
+function timingPhraseFor(t: TriggerResult, timing: TimingInfo, description: string): string {
   if (timing.monthsToNearestFuture !== null) {
     if (timing.dateGranularity === "year") {
       // A bare-year maturity (e.g. "due 2026", no month ever disclosed)
@@ -86,10 +94,25 @@ function timingPhraseFor(t: TriggerResult, timing: TimingInfo): string {
     return `~${timing.monthsToNearestFuture}mo out`;
   }
   if (timing.isPendingLive) return "pending/live";
-  if (t.eventStatus === "standing") return "standing";
+  // Session 17 Item 11: "standing" is internal taxonomy vocabulary, not
+  // something an RM should have to parse — replaced with plain English.
+  // "ongoing" (not "recurring"): an RM reads "ongoing" as a live, current
+  // condition; "recurring" reads as a schedule, which a standing fact
+  // usually isn't. Never blank — the never-blank rule this session's own
+  // acceptance criteria re-affirms wins over the option to omit entirely.
+  if (t.eventStatus === "standing") return "ongoing";
   if (t.eventStatus === "completed") return "completed";
   if (t.eventStatus === "just_announced") {
-    return t.eventDate && t.dateGranularity ? `announced ${formatAnnouncedDate(t.eventDate, t.dateGranularity)}` : "announced";
+    // Session 17 Item 12: real case — "On February 2, 2026, the Company
+    // signed a definitive agreement... — announced Feb 2, 2026" states the
+    // same date twice. Suppress the date suffix only when the line's own
+    // description already states that exact date (checked structurally,
+    // same date-matching rule the debt-maturity condenser uses) — a
+    // just_announced fact whose description does NOT already carry the
+    // date (e.g. a bare "announced") still needs it shown.
+    if (!t.eventDate || !t.dateGranularity) return "announced";
+    if (descriptionAlreadyStatesDate(description, t.eventDate, t.dateGranularity)) return "announced";
+    return `announced ${formatAnnouncedDate(t.eventDate, t.dateGranularity)}`;
   }
   // Never reached in practice (eventStatus is exhaustive above at
   // "upcoming"/"just_announced"/"completed"/"standing" and "upcoming" with
@@ -144,11 +167,12 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
 
     const { timing } = evaluateEligibility(t, now);
     const cardEligible = headlineTriggerIds.has(t.triggerId);
+    const description = condenseEvidenceDescription(fact);
 
     buckets[bucket].push({
       triggerId: t.triggerId,
-      description: condenseEvidenceDescription(fact),
-      timingPhrase: timingPhraseFor(t, timing),
+      description,
+      timingPhrase: timingPhraseFor(t, timing, description),
       citations: t.citations,
       cardEligible,
       isHedgingFlag: bucket === "hedging" && !cardEligible,

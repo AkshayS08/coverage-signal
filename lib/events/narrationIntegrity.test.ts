@@ -26,8 +26,9 @@ import { buildEvents } from "./buildEvents";
 import { isScrapeShapedText } from "./scrapeGuard";
 import { failedEventBriefing } from "./eventBriefing";
 import { buildVerifiedFactBase, hasDeterminableScale, type VerifiedFact } from "./factBase";
-import { checkCardStructure, buildCorrectionInstruction, type RawCardBody } from "./sonnetEventBriefing";
-import { checkNumbersAgainstQuotes, countDistinctFactsReferenced } from "./numberGuard";
+import { checkCardStructure, buildCorrectionInstruction, parseKeyPoints, type RawCardBody } from "./sonnetEventBriefing";
+import { checkNumbersAgainstQuotes, countDistinctFactsReferenced, factsReferencedIn, isFullyExplainedByOneFact } from "./numberGuard";
+import { dedupeCitations } from "./buildEvents";
 
 interface Fixture {
   generatedAt: string;
@@ -121,7 +122,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       result.source === "failed" &&
         result.callAbout === "" &&
         result.whyNow === "" &&
-        result.openWith === "" &&
+        result.keyPoints.length === 0 &&
         result.failureReason === "simulated Sonnet timeout",
       "[4a] failedEventBriefing returns empty fields + source:failed + the given reason"
     );
@@ -317,7 +318,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
 
     // 9a. Empty field fails.
     {
-      const body: RawCardBody = { callAbout: "", whyNow: `Something about ${fig1 ?? "it"}.`, openWith: "Call them." };
+      const body: RawCardBody = { callAbout: "", whyNow: `Something about ${fig1 ?? "it"}.`, keyPoints: ["A generic point.", "Another point."] };
       const r = checkCardStructure(body, uhsFacts);
       assert(!r.ok && r.reasons.some((x) => x.includes("callAbout is empty")), "[9a] an empty callAbout fails structurally");
     }
@@ -327,7 +328,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       const body: RawCardBody = {
         callAbout: "Refinance the notes.",
         whyNow: "First sentence here. Second sentence here. Third sentence pushes it over.",
-        openWith: "Call them.",
+        keyPoints: ["A generic point.", "Another point."],
       };
       const r = checkCardStructure(body, uhsFacts);
       assert(!r.ok && r.reasons.some((x) => x.includes("2-sentence limit")), "[9b] a 3-sentence whyNow fails the sentence-count check");
@@ -338,7 +339,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       const body: RawCardBody = {
         callAbout: "Refinance the notes.",
         whyNow: `This references $9,999,999,999 which appears nowhere in the facts.`,
-        openWith: "Call them.",
+        keyPoints: ["A generic point.", "Another point."],
       };
       const r = checkCardStructure(body, uhsFacts);
       assert(!r.ok && r.reasons.some((x) => x.includes("not found in any given fact")), "[9c] a figure absent from every given fact fails the number-guard check");
@@ -349,7 +350,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       const body: RawCardBody = {
         callAbout: "Refinance the notes.",
         whyNow: ", 2025 ASSETS Current assets: Cash $158.04 million $79.9 million",
-        openWith: "Call them.",
+        keyPoints: ["A generic point.", "Another point."],
       };
       const r = checkCardStructure(body, uhsFacts);
       assert(!r.ok && r.reasons.some((x) => x.includes("raw data")), "[9d] a scrape-shaped whyNow fails the scrape-guard check");
@@ -361,7 +362,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       const body: RawCardBody = {
         callAbout: "Refinance the notes.",
         whyNow: `The company disclosed ${fig1} in its filing.`,
-        openWith: "Call them.",
+        keyPoints: ["A generic point.", "Another point."],
       };
       const r = checkCardStructure(body, uhsFacts);
       assert(
@@ -379,7 +380,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       const body: RawCardBody = {
         callAbout: `Refinance the upcoming notes (${fig1}).`,
         whyNow: `The company disclosed ${fig1} in one filing, and separately ${fig2} in another.`,
-        openWith: "Ask how they're sequencing the two.",
+        keyPoints: [`The filing states ${fig1}.`, `A separate filing states ${fig2}.`],
       };
       const r = checkCardStructure(body, uhsFacts);
       assert(
@@ -394,7 +395,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     // fails the new check — this is the exact "description, not a call"
     // pattern the requirement exists to catch.
     {
-      const body: RawCardBody = { callAbout: "Refinance the notes soon.", whyNow: "Something is happening.", openWith: "Let's talk." };
+      const body: RawCardBody = { callAbout: "Refinance the notes soon.", whyNow: "Something is happening.", keyPoints: ["A generic point.", "Another point."] };
       const r = checkCardStructure(body, uhsFacts);
       assert(
         r.reasons.some((x) => x.includes("no verified amount or date")),
@@ -411,7 +412,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
         const body: RawCardBody = {
           callAbout: `Address the notes maturing in ${uhsDebtMaturity.eventDate}.`,
           whyNow: "Placeholder synthesis line.",
-          openWith: "Ask how they're planning around it.",
+          keyPoints: ["A generic point.", "Another point."],
         };
         const r = checkCardStructure(body, uhsFacts);
         assert(
@@ -433,6 +434,227 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       `[9g] buildCorrectionInstruction joins every reason with "; also, " (got: ${JSON.stringify(instruction)})`
     );
   }
+}
+
+// --- 11 (Session 17 Item 17): checkCardStructure's three new keyPoints
+// checks — 2-4 bullet count, no bullet connecting 2+ distinct facts, and
+// the first bullet must reference the HEADLINE fact specifically. [11a]/
+// [11b] reuse the real UHS fact base from block 9; [11c]/[11d]/[11e] use
+// two SYNTHETIC facts pinned to real UHS filings (clean, guaranteed-
+// distinct figures) rather than depending on which two live UHS facts
+// happen to have bound figures in a given fixture rebuild. ---
+{
+  const uhs = fixture.companies.find((c) => c.ticker === "UHS")!;
+  const uhsFacts: VerifiedFact[] = buildVerifiedFactBase(uhs);
+
+  // 11a. Only 1 bullet fails the count check.
+  {
+    const body: RawCardBody = { callAbout: "Refinance the notes.", whyNow: "Placeholder synthesis line.", keyPoints: ["Only one bullet here."] };
+    const r = checkCardStructure(body, uhsFacts);
+    assert(!r.ok && r.reasons.some((x) => x.includes("needs 2 to 4")), `[11a] a single keyPoints bullet fails the 2-4 count check (reasons: ${r.reasons.join("; ")})`);
+  }
+
+  // 11b. 5 bullets fails the count check.
+  {
+    const body: RawCardBody = {
+      callAbout: "Refinance the notes.",
+      whyNow: "Placeholder synthesis line.",
+      keyPoints: ["One.", "Two.", "Three.", "Four.", "Five."],
+    };
+    const r = checkCardStructure(body, uhsFacts);
+    assert(!r.ok && r.reasons.some((x) => x.includes("needs 2 to 4")), `[11b] 5 keyPoints bullets fails the 2-4 count check (reasons: ${r.reasons.join("; ")})`);
+  }
+
+  const headlineFact: VerifiedFact = {
+    linkedTriggerId: "debt-maturity",
+    fact: "Debt maturity approaching",
+    verifiedText: "SYNTHETIC",
+    normalizedText: "SYNTHETIC: notes due 2027",
+    figures: ["$500 million"],
+    dates: ["2027"],
+    sourceFiling: null,
+    citations: [{ form: "10-Q", date: "2026-07-01", url: "https://example.com/synthetic-headline" }],
+    evidence: "SYNTHETIC: $500 million of notes due 2027.",
+    eventDate: "2027",
+    dateGranularity: "year",
+    eventStatus: "upcoming",
+  };
+  const otherFact: VerifiedFact = {
+    linkedTriggerId: "large-cash-balance",
+    fact: "Large cash balance building",
+    verifiedText: "SYNTHETIC",
+    normalizedText: "SYNTHETIC: cash of $900 million",
+    figures: ["$900 million"],
+    dates: [],
+    sourceFiling: null,
+    citations: [{ form: "10-Q", date: "2026-07-01", url: "https://example.com/synthetic-other" }],
+    evidence: "SYNTHETIC: cash and equivalents of $900 million.",
+    eventDate: null,
+    dateGranularity: null,
+    eventStatus: "standing",
+  };
+  const syntheticFacts = [headlineFact, otherFact];
+
+  // 11c. A bullet referencing 2 distinct facts fails — the structural
+  // proxy for "no bullet may assert a relationship between two facts."
+  {
+    const body: RawCardBody = {
+      callAbout: "Refinance the $500 million notes due 2027.",
+      whyNow: "The notes come due as cash builds toward $900 million, giving room to act.",
+      keyPoints: ["The company holds $500 million of notes due 2027 and separately $900 million of cash.", "A second, unrelated point."],
+    };
+    const r = checkCardStructure(body, syntheticFacts, "debt-maturity");
+    assert(
+      !r.ok && r.reasons.some((x) => x.includes("never connects two")),
+      `[11c] SYNTHETIC: a keyPoints bullet referencing 2 distinct facts fails — a bullet states one fact, never a relationship (reasons: ${r.reasons.join("; ")})`
+    );
+  }
+
+  // 11d. The first bullet not referencing the headline fact fails.
+  {
+    const body: RawCardBody = {
+      callAbout: "Refinance the $500 million notes due 2027.",
+      whyNow: "Placeholder synthesis line naming nothing extra.",
+      keyPoints: ["The company holds $900 million of cash.", "A second point."],
+    };
+    const r = checkCardStructure(body, syntheticFacts, "debt-maturity");
+    assert(
+      !r.ok && r.reasons.some((x) => x.includes("does not reference the headline fact")),
+      `[11d] SYNTHETIC: the first keyPoints bullet not referencing the headline fact fails (reasons: ${r.reasons.join("; ")})`
+    );
+  }
+
+  // 11e. A well-formed keyPoints array (2 bullets, each single-fact, first
+  // bullet references the headline) passes all three new checks.
+  {
+    const body: RawCardBody = {
+      callAbout: "Refinance the $500 million notes due 2027.",
+      whyNow: "The notes come due while cash of $900 million sits on the balance sheet.",
+      keyPoints: ["The company has $500 million of notes due 2027.", "Separately, the company holds $900 million of cash."],
+    };
+    const r = checkCardStructure(body, syntheticFacts, "debt-maturity");
+    assert(
+      !r.reasons.some((x) => x.includes("2 to 4") || x.includes("never connects two") || x.includes("does not reference the headline fact")),
+      `[11e] SYNTHETIC: a well-formed keyPoints array (first bullet = headline, no multi-fact bullets) passes all three new checks (reasons: ${r.reasons.join("; ")})`
+    );
+  }
+}
+
+// --- 12 (Session 17 Item 17, hardening): parseKeyPoints must accept a
+// genuine array (the normal case) AND recover the real malformed shape
+// observed live on Tenet's and Quest's actual first attempts this session
+// — a single string with pseudo-XML <item> tags instead of a JSON array,
+// despite the schema declaring an array. Anything else (a plain string
+// with no tags, a number, null) still returns [], which still fails
+// loudly downstream. ---
+{
+  assert(
+    JSON.stringify(parseKeyPoints(["First point.", "Second point."])) === JSON.stringify(["First point.", "Second point."]),
+    "[12a] a genuine array of strings passes through unchanged"
+  );
+
+  const realMalformed =
+    "\n<item>Senior secured first lien notes of $1.5 billion are due November 2027, part of maturities staggered out to November 2033</item>\n<item>In November 2025, Tenet issued $1.5 billion of 5.500% first lien notes due 2032 and $750 million of 6.000% senior notes due 2033</item>\n<item>Cash and cash equivalents stood at $2.17 billion as of June 30, 2026</item>\n<item>Tenet repurchased $1.36 billion of common stock in the six months ended June 30, 2026</item>\n</keyPoints>\n";
+  const recovered = parseKeyPoints(realMalformed);
+  assert(
+    recovered.length === 4 && recovered[0].startsWith("Senior secured first lien notes") && recovered[3].includes("$1.36 billion"),
+    `[12b] REAL malformed shape (Tenet's actual live response this session) recovers all 4 bullets, content intact (got ${recovered.length} bullets: ${JSON.stringify(recovered)})`
+  );
+
+  assert(JSON.stringify(parseKeyPoints("just a plain string, no tags")) === "[]", "[12c] a plain string with no <item> tags returns empty — still fails loudly downstream, no guess");
+  assert(JSON.stringify(parseKeyPoints(null)) === "[]", "[12d] null returns empty");
+  assert(JSON.stringify(parseKeyPoints(undefined)) === "[]", "[12e] undefined returns empty");
+}
+
+// --- 13 (Session 17 Item 17, regression): the real false-positive found
+// live on Tenet's actual first draft this session. Tenet's debt-maturity
+// evidence lists its own tranche ladder, which happens to include the
+// exact "$1.5 billion due November 2032" / "$750 million due June 2033"
+// figures that new-debt-issuance's evidence ALSO states (the same notes,
+// described from two angles) — a bullet describing ONLY new-debt-
+// issuance's own two-tranche pricing was being rejected twice over: once
+// as "scrape-shaped" (numeric density 0.33, above the old 0.3 sentence
+// threshold) and once as "connects 2 facts" (token-overlap with debt-
+// maturity's evidence, even though new-debt-issuance alone fully explains
+// every token in it). Real fixture data, unmodified. ---
+{
+  const thc = fixture.companies.find((c) => c.ticker === "THC")!;
+  const thcFacts = buildVerifiedFactBase(thc);
+  const debtMaturity = thcFacts.find((f) => f.linkedTriggerId === "debt-maturity");
+  const newDebtIssuance = thcFacts.find((f) => f.linkedTriggerId === "new-debt-issuance");
+  if (debtMaturity && newDebtIssuance) {
+    const realTenetBullet =
+      "On November 18, 2025, Tenet issued $1.5 billion of 5.500% first lien notes due 2032 and $750 million of 6.000% senior notes due 2033.";
+    assert(
+      !isScrapeShapedText(realTenetBullet, "bullet"),
+      `[13a] REAL Tenet bullet (numeric ratio ~0.33) is NOT scrape-shaped under the bullet context's looser threshold`
+    );
+    assert(
+      isFullyExplainedByOneFact(realTenetBullet, thcFacts),
+      `[13b] REAL Tenet bullet IS fully explained by new-debt-issuance alone, even though debt-maturity's evidence coincidentally shares the same tranche figures`
+    );
+    const body: RawCardBody = {
+      callAbout: "Refinance the $1.5 billion senior secured first lien notes due November 2027.",
+      whyNow: "Tenet just tapped the market in November 2025 for similar notes, showing it can access refinancing ahead of the 2027 wall.",
+      keyPoints: [
+        "$1.5 billion senior secured first lien notes mature November 2027, part of maturities staggered out to November 2033.",
+        realTenetBullet,
+      ],
+    };
+    const r = checkCardStructure(body, thcFacts, "debt-maturity");
+    assert(
+      !r.reasons.some((x) => x.includes("raw data") || x.includes("not fully explained")),
+      `[13c] REAL Tenet card body (both real bullets) passes both fixed checks (reasons: ${r.reasons.join("; ")})`
+    );
+  } else {
+    console.warn("  (skipped [13] — Tenet's debt-maturity or new-debt-issuance fact missing this fixture build)");
+  }
+}
+
+// --- 10 (Session 17 Item 4): factsReferencedIn / the citation-union fix.
+// Real fixture data: HCA's debt-maturity fact (cites ONLY 8-K 2026-04-30,
+// evidence states "The 2031 Notes mature May 15, 2031") and HCA's
+// asset-sale fact (cites ONLY 10-Q 2026-07-28, evidence states "$21
+// million") share no citation with each other — the exact shape that
+// broke a dedup-cluster-based union (debt-maturity never clusters with
+// anything else, since it has no 8-K to share). Text referencing BOTH
+// facts' own figures/dates must resolve to BOTH facts, and their citation
+// union must cover both filings — proving the fix actually closes the gap
+// a cluster-based implementation would not have. ---
+{
+  const hca = fixture.companies.find((c) => c.ticker === "HCA")!;
+  const hcaFacts = buildVerifiedFactBase(hca);
+  const debtMaturity = hcaFacts.find((f) => f.linkedTriggerId === "debt-maturity")!;
+  const assetSale = hcaFacts.find((f) => f.linkedTriggerId === "asset-sale")!;
+
+  assert(
+    debtMaturity.citations.every((c) => !assetSale.citations.some((c2) => c2.url === c.url)),
+    "[10 setup] HCA's debt-maturity and asset-sale facts share no citation — the real shape a cluster-based union would miss"
+  );
+
+  const cardText = "Refinance the notes maturing May 15, 2031. The company also received $21 million from recent asset sales.";
+  const referenced = factsReferencedIn(cardText, hcaFacts);
+  assert(
+    referenced.some((f) => f.linkedTriggerId === "debt-maturity") && referenced.some((f) => f.linkedTriggerId === "asset-sale"),
+    `[10a] text referencing both facts' own figures/dates resolves to BOTH facts (got: ${referenced.map((f) => f.linkedTriggerId).join(", ")})`
+  );
+
+  const union = dedupeCitations([...debtMaturity.citations, ...referenced.flatMap((f) => f.citations)]);
+  const urls = union.map((c) => c.url);
+  assert(
+    debtMaturity.citations.every((c) => urls.includes(c.url)) && assetSale.citations.every((c) => urls.includes(c.url)),
+    "[10b] the citation union covers both the headline's own filing (8-K) and the referenced fact's filing (10-Q) — not just the headline's"
+  );
+
+  // A text that only restates the headline's own figure must NOT pull in
+  // an unrelated fact's citation — the fix must be precise, not "cite
+  // everything the company has."
+  const headlineOnlyText = "Refinance the notes maturing May 15, 2031.";
+  const referencedNarrow = factsReferencedIn(headlineOnlyText, hcaFacts);
+  assert(
+    !referencedNarrow.some((f) => f.linkedTriggerId === "asset-sale"),
+    "[10c] text mentioning only the headline's own date does not pull in an unrelated fact's citation — precise, not over-inclusive"
+  );
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

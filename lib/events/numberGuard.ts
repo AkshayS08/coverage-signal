@@ -8,6 +8,7 @@
  * scale-equivalent form, is not.
  */
 import { extractFactTokens, moneyValuesMatch, type FactToken } from "../agent/factTokens";
+import type { VerifiedFact } from "./factBase";
 
 export interface NumberGuardResult {
   ok: boolean;
@@ -95,6 +96,57 @@ export function countDistinctFactsReferenced(text: string, factTexts: string[]):
     if (textTokens.some((tt) => factTokens.some((ft) => strictFactTokensMatch(tt, ft)))) count++;
   }
   return count;
+}
+
+/**
+ * Session 17 Item 4: which VERIFIED FACTS a drafted card body actually
+ * draws a number/date/rate from — the source of truth for a card's own
+ * citation set, computed from the text Sonnet actually wrote rather than
+ * a pre-narration guess. Real bug this fixes: Quest's card cited only its
+ * headline fact's own filing (a 10-Q) while WHY NOW asserted a May 2026
+ * notes-pricing event stated only in an 8-K from a DIFFERENT dedup
+ * cluster (debt-maturity has no 8-K citation of its own, so it can never
+ * cluster with anything on citation-sharing grounds — a cluster-based
+ * union would not have covered this case either). Checking which facts'
+ * own text (normalizedText + verifiedText + evidence) actually shares a
+ * token with the card text, using the same scale-exact match the rest of
+ * this file uses, is what makes "every date/figure in the card traces to
+ * a cited filing" true by construction instead of by convention.
+ */
+export function factsReferencedIn(text: string, factBase: VerifiedFact[]): VerifiedFact[] {
+  const textTokens = extractFactTokens(text);
+  if (textTokens.length === 0) return [];
+  return factBase.filter((f) => {
+    const factTokens = extractFactTokens(`${f.normalizedText} ${f.verifiedText} ${f.evidence ?? ""}`);
+    return textTokens.some((tt) => factTokens.some((ft) => strictFactTokensMatch(tt, ft)));
+  });
+}
+
+/**
+ * Session 17 Item 17: is `text` fully accounted for by a SINGLE fact — is
+ * there at least one fact in factBase whose own text contains a match for
+ * EVERY token in `text`? This is deliberately a different (stricter,
+ * set-cover) question than factsReferencedIn's "which facts overlap at
+ * all" — a company's own RELATED facts routinely restate the same
+ * underlying figures from a different angle (confirmed live: Tenet's
+ * debt-maturity evidence lists its own tranche ladder, which happens to
+ * include the exact "$1.5 billion due 2032" / "$750 million due 2033"
+ * figures that new-debt-issuance's evidence ALSO states, since they're
+ * the same notes described two ways), so a bullet naming only
+ * new-debt-issuance's own figures still "overlaps" debt-maturity's
+ * evidence too under plain token-overlap counting — a false positive for
+ * "this bullet connects two facts," since one fact (new-debt-issuance)
+ * already fully explains every token in it. A bullet only genuinely
+ * connects two facts when NO single fact's own text covers everything it
+ * states.
+ */
+export function isFullyExplainedByOneFact(text: string, factBase: VerifiedFact[]): boolean {
+  const textTokens = extractFactTokens(text);
+  if (textTokens.length === 0) return true;
+  return factBase.some((f) => {
+    const factTokens = extractFactTokens(`${f.normalizedText} ${f.verifiedText} ${f.evidence ?? ""}`);
+    return textTokens.every((tt) => factTokens.some((ft) => strictFactTokensMatch(tt, ft)));
+  });
 }
 
 // Backward-compatible named exports for callers that want typed money/date

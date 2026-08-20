@@ -74,11 +74,11 @@ async function main() {
     } else {
       console.log(`Call about: ${briefing.callAbout}`);
       console.log(`Why now (${wc(briefing.whyNow)}w): ${briefing.whyNow}`);
-      console.log(`Open with: ${briefing.openWith} [${briefing.source}]`);
+      console.log(`Key points: ${briefing.keyPoints.map((kp) => `\n  - ${kp}`).join("")} [${briefing.source}]`);
       const alsoActiveText = card.alsoActive
         .map((item) => compactLabelWithTiming(item.trigger.triggerId, item.trigger.triggerName, item.timing))
         .join(" · ");
-      const cardText = `${briefing.callAbout} ${briefing.whyNow} ${briefing.openWith} ${alsoActiveText}`;
+      const cardText = `${briefing.callAbout} ${briefing.whyNow} ${briefing.keyPoints.join(" ")} ${alsoActiveText}`;
       const money = extractMoneyTokens(cardText);
       const dates = extractDateTokens(cardText);
       if (money.length > 0 || dates.length > 0) {

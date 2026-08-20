@@ -30,7 +30,19 @@ import { shortTriggerLabel } from "./labels";
 
 const MONTH_ABBR = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const MAX_LINE_CHARS = 260;
+/**
+ * Session 17 Item 13: 260 was cutting real, single-sentence facts that
+ * were only barely over it — DaVita's new-debt-issuance evidence is 261
+ * chars (1 over) and lost its own $986 million net-proceeds figure to the
+ * cut; Molina's covenant-amendment sentence is 318 chars and lost its
+ * ratio step-up schedule. Measured every real condensed line across both
+ * fixture books before choosing a new value (see the session transcript):
+ * the longest real single-sentence line found is 318 chars, comfortably
+ * under 400 — raised here with real margin, not raised away entirely,
+ * since a genuinely pathological run-on sentence should still get a safety
+ * cap somewhere.
+ */
+const MAX_LINE_CHARS = 400;
 
 /**
  * Session 16 Fix B3: a plain word-boundary cut can still land right before
@@ -130,7 +142,7 @@ export function formatDueDate(eventDate: string, granularity: DateGranularity): 
 export { formatDueDate as formatAnnouncedDate };
 
 /** True when this date TOKEN is the fact's own due-date, at the fact's own granularity — never a coincidentally same-year "as of" balance date (see UHS's real trap: a bare "2026" due-year token sitting a sentence away from an unrelated "June 30, 2026" balance-sheet date). */
-function dateTokenMatchesEventDate(tok: FactToken, eventDate: string, granularity: DateGranularity): boolean {
+export function dateTokenMatchesEventDate(tok: FactToken, eventDate: string, granularity: DateGranularity): boolean {
   if (!tok.dateValue) return false;
   if (granularity === "year") return tok.dateValue.month === null && tok.dateValue.year === Number(eventDate);
   const [y, m, d] = eventDate.split("-").map(Number);
@@ -271,6 +283,19 @@ const AS_OF_RE = /\bas of\s+((?:January|February|March|April|May|June|July|Augus
 const QUARTER_WORD_RE = /\b(first|second|third|fourth)\s+quarter\s+of\s+(\d{4})\b/gi;
 const QUARTER_NAME_TO_NUM: Record<string, number> = { first: 1, second: 2, third: 3, fourth: 4 };
 
+/**
+ * Session 17 Item 14: a third period-marker shape — "the first six months
+ * of <year>" / "six months ended <full date>" — an interim-period
+ * phrasing distinct from both of the above, real on DaVita's capex
+ * evidence ("$271.8 million in the first six months of 2026 and $264.3
+ * million in the first six months of 2025") and HCA's asset-sale/capex
+ * evidence ("during the six months ended June 30, 2026... during the
+ * quarter ended March 31, 2026..."). Captures either a bare year (no exact
+ * day — ordering-only, proxied to that half's end) or a full date.
+ */
+const MONTHS_PERIOD_RE =
+  /\b(?:the\s+)?(?:first|second|third|fourth)?\s*(?:three|six|nine|twelve)\s+months\s+(?:of|ended)\s+((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}|\d{4})\b/gi;
+
 function parseLooseDate(raw: string): number {
   const d = new Date(raw.replace(",", ""));
   return Number.isNaN(d.getTime()) ? -Infinity : d.getTime();
@@ -281,47 +306,159 @@ function quarterEndTimestamp(year: number, quarter: number): number {
   return Date.UTC(year, quarter * 3, 0);
 }
 
-/** Latest period timestamp mentioned anywhere in `s` — "as of <date>" and/or "<word> quarter of <year>" — or null if neither shape appears. Takes the LATEST within a single sentence too, in case one sentence states more than one period. */
-function periodTimestamp(s: string): number | null {
-  let latest: number | null = null;
+/** A bare-year "N months of <year>" reading has no exact day — June 30 of that year is an ordering-only proxy (a first-half period), never displayed. A full date parses directly. */
+function monthsPeriodTimestamp(raw: string): number {
+  return /^\d{4}$/.test(raw) ? Date.UTC(Number(raw), 5, 30) : parseLooseDate(raw);
+}
 
-  AS_OF_RE.lastIndex = 0;
-  let m: RegExpExecArray | null;
-  while ((m = AS_OF_RE.exec(s))) {
-    const t = parseLooseDate(m[1]);
-    if (t !== -Infinity && (latest === null || t > latest)) latest = t;
-  }
+type PeriodFamily = "as-of" | "quarter" | "months";
 
-  QUARTER_WORD_RE.lastIndex = 0;
-  while ((m = QUARTER_WORD_RE.exec(s))) {
-    const t = quarterEndTimestamp(Number(m[2]), QUARTER_NAME_TO_NUM[m[1].toLowerCase()]);
-    if (latest === null || t > latest) latest = t;
-  }
-
-  return latest;
+interface PeriodMatch {
+  index: number;
+  end: number;
+  t: number;
+  family: PeriodFamily;
 }
 
 /**
- * Rule 3: when evidence states 2+ dated periods — either "as of <date>"
- * (DaVita's revolver: "As of June 30... As of March 31...") or "<word>
- * quarter of <year>" (Molina's buyback: "first quarter of 2025... third
- * quarter of 2025...") — keep only the sentence for the MOST RECENT period.
- * Never render the comparison unless the fact's own gate status depends on
- * the change (debt-maturity and new-debt-issuance, which never reach this
- * function, are the cases where a stated change genuinely matters; a
- * utilization/balance/buyback snapshot does not care that it changed, only
- * what it currently is).
+ * Every period-shape match in `text` — as-of dates, quarter-word, and
+ * N-months — each tagged with its own FAMILY (not just a timestamp), and
+ * its position (for clause extraction). The family tag exists because a
+ * genuine before/after comparison, in every real case observed this
+ * session, always restates the SAME phrasing twice ("As of X... As of
+ * Y...", "first quarter of X... third quarter of Y...", "first N months
+ * of X... first N months of Y...") — comparing ACROSS families produced a
+ * real false positive live: HCA's dividend-buyback evidence has one
+ * sentence stating buyback capacity "as of June 30, 2026" and a separate
+ * sentence stating shares repurchased for the "six months ended June 30,
+ * 2026" — the SAME period-end, two different metrics, not a temporal
+ * progression of one thing — and comparing them cross-family picked the
+ * wrong sentence and silently dropped the dividend figure entirely.
+ * Shared by both the across-sentences check (mostRecentPeriodSentence,
+ * Rule 3) and the within-one-sentence check (collapseSamePeriodClause,
+ * Item 14).
+ */
+function findPeriodMatches(text: string): PeriodMatch[] {
+  const matches: PeriodMatch[] = [];
+  let m: RegExpExecArray | null;
+
+  AS_OF_RE.lastIndex = 0;
+  while ((m = AS_OF_RE.exec(text))) {
+    const t = parseLooseDate(m[1]);
+    if (t !== -Infinity) matches.push({ index: m.index, end: m.index + m[0].length, t, family: "as-of" });
+  }
+
+  QUARTER_WORD_RE.lastIndex = 0;
+  while ((m = QUARTER_WORD_RE.exec(text))) {
+    const t = quarterEndTimestamp(Number(m[2]), QUARTER_NAME_TO_NUM[m[1].toLowerCase()]);
+    matches.push({ index: m.index, end: m.index + m[0].length, t, family: "quarter" });
+  }
+
+  MONTHS_PERIOD_RE.lastIndex = 0;
+  while ((m = MONTHS_PERIOD_RE.exec(text))) {
+    matches.push({ index: m.index, end: m.index + m[0].length, t: monthsPeriodTimestamp(m[1]), family: "months" });
+  }
+
+  return matches.sort((a, b) => a.index - b.index);
+}
+
+/**
+ * Rule 3: when evidence states 2+ dated periods IN THE SAME PHRASING
+ * FAMILY — either "as of <date>" (DaVita's revolver: "As of June 30... As
+ * of March 31...") or "<word> quarter of <year>" (Molina's buyback: "first
+ * quarter of 2025... third quarter of 2025...") or "N months of/ended
+ * <date>" (DaVita's capex) — keep only the sentence for the MOST RECENT
+ * period within that family. Never render the comparison unless the
+ * fact's own gate status depends on the change (debt-maturity and
+ * new-debt-issuance, which never reach this function, are the cases where
+ * a stated change genuinely matters; a utilization/balance/buyback
+ * snapshot does not care that it changed, only what it currently is).
+ * Cross-family matches (an "as-of" sentence and a "months" sentence, say)
+ * are never compared against each other — see findPeriodMatches' doc
+ * comment for the real false positive that requires this.
+ *
+ * Session 17 follow-up: a single sentence can itself contain 2+ same-family
+ * matches (UHS's total-assets sentence: "...$1.531 billion as of December
+ * 31, 2025 and $1.358 billion as of December 31, 2024." has two "as of"
+ * hits in one sentence). That is Item 14's within-one-sentence case
+ * (collapseSamePeriodClause's job, applied after a sentence is chosen), not
+ * a genuine ACROSS-sentence progression — counting it here let that single
+ * sentence outrank the money-bearing revenue-growth sentence purely for
+ * having a recognized period phrase, even though the revenue sentence
+ * ("$1.001 billion in 2025 and $880 million in 2024") is the one this
+ * trigger is actually about. So each sentence contributes at most ONE
+ * occurrence per family (its own latest), and only 2+ DISTINCT sentences
+ * count as a real comparison.
  */
 function mostRecentPeriodSentence(evidence: string): string | null {
   const sentences = splitSentences(evidence);
-  const dated = sentences
-    .map((s) => {
-      const t = periodTimestamp(s);
-      return t !== null ? { s, t } : null;
-    })
-    .filter((d): d is { s: string; t: number } => d !== null);
-  if (dated.length < 2) return null;
-  return dated.reduce((latest, cur) => (cur.t > latest.t ? cur : latest)).s;
+  const byFamily = new Map<PeriodFamily, { s: string; t: number }[]>();
+  for (const s of sentences) {
+    const matches = findPeriodMatches(s);
+    if (matches.length === 0) continue;
+    const latestPerFamily = new Map<PeriodFamily, number>();
+    for (const m of matches) {
+      const cur = latestPerFamily.get(m.family);
+      if (cur === undefined || m.t > cur) latestPerFamily.set(m.family, m.t);
+    }
+    for (const [family, t] of latestPerFamily) {
+      const arr = byFamily.get(family) ?? [];
+      arr.push({ s, t });
+      byFamily.set(family, arr);
+    }
+  }
+
+  let best: { s: string; t: number } | null = null;
+  for (const occurrences of byFamily.values()) {
+    if (occurrences.length < 2) continue; // a lone sentence isn't a cross-sentence comparison
+    const localBest = occurrences.reduce((latest, cur) => (cur.t > latest.t ? cur : latest));
+    if (!best || localBest.t > best.t) best = localBest;
+  }
+  return best ? best.s : null;
+}
+
+/**
+ * Session 17 Item 14: Rule 3's sentence-level check (above) misses a
+ * period comparison stated WITHIN one sentence — real case: DaVita's
+ * capex evidence is a single sentence ("...$271.8 million in the first six
+ * months of 2026 and $264.3 million in the first six months of 2025,
+ * reflecting...") that never splits into two, so mostRecentPeriodSentence
+ * never even runs its comparison. When a chosen candidate sentence itself
+ * contains 2+ period matches, keep only the clause around the MOST RECENT
+ * one — reusing the same clause-boundary logic (semicolon/sentence-end/
+ * tranche-"and") the debt-maturity condenser uses, since DaVita's own
+ * boundary between the two periods is exactly a tranche-"and" ("2026
+ * and $264.3 million..."). A trailing generic clause after the dropped
+ * period (if any) is not reattached — matching Rule 3's existing "never
+ * render the comparison" outcome, not a comparison plus a partial one.
+ * Family-aware for the same reason mostRecentPeriodSentence is (see that
+ * function's doc comment): only 2+ SAME-FAMILY matches within the
+ * sentence count as a genuine comparison to collapse.
+ */
+function collapseSamePeriodClause(sentence: string): string {
+  const matches = findPeriodMatches(sentence);
+  const byFamily = new Map<PeriodFamily, PeriodMatch[]>();
+  for (const m of matches) {
+    const arr = byFamily.get(m.family) ?? [];
+    arr.push(m);
+    byFamily.set(m.family, arr);
+  }
+  let mostRecent: PeriodMatch | null = null;
+  for (const occurrences of byFamily.values()) {
+    if (occurrences.length < 2) continue;
+    const localBest = occurrences.reduce((latest, cur) => (cur.t > latest.t ? cur : latest));
+    if (!mostRecent || localBest.t > mostRecent.t) mostRecent = localBest;
+  }
+  if (!mostRecent) return sentence;
+
+  const start = boundaryBefore(sentence, mostRecent.index);
+  const end = boundaryAfter(sentence, mostRecent.index);
+  const clause = sentence
+    .slice(start, end)
+    .trim()
+    .replace(/^[,;.]\s*/, "")
+    .replace(/[,;]\s*$/, "");
+  return clause || sentence;
 }
 
 /**
@@ -339,6 +476,12 @@ function mostRecentPeriodSentence(evidence: string): string | null {
  * the first sentence containing a money figure: that is the amount this
  * whole exercise exists to surface. Only when NO sentence has one, prefer
  * the first with a date. Only when neither exists, true first sentence.
+ *
+ * Whatever sentence is chosen then passes through collapseSamePeriodClause
+ * (Item 14) — Rule 3's sentence-level check can't catch a multi-period
+ * comparison stated within a SINGLE sentence (DaVita's capex line), so
+ * every candidate gets this second, narrower pass regardless of which
+ * branch selected it.
  */
 export function condenseFirstSentence(f: VerifiedFact): string {
   // Empty, not the bare label — see condenseDebtMaturity's identical
@@ -348,18 +491,18 @@ export function condenseFirstSentence(f: VerifiedFact): string {
   if (!f.evidence) return "";
 
   const recentPeriod = mostRecentPeriodSentence(f.evidence);
-  if (recentPeriod) return truncate(recentPeriod);
+  if (recentPeriod) return truncate(collapseSamePeriodClause(recentPeriod));
 
   const sentences = splitSentences(f.evidence);
-  if (sentences.length === 0) return truncate(f.evidence);
+  if (sentences.length === 0) return truncate(collapseSamePeriodClause(f.evidence));
 
   const withMoney = sentences.find((s) => extractFactTokens(s).some((t) => t.kind === "money"));
-  if (withMoney) return truncate(withMoney);
+  if (withMoney) return truncate(collapseSamePeriodClause(withMoney));
 
   const withDate = sentences.find((s) => extractFactTokens(s).some((t) => t.kind === "date"));
-  if (withDate) return truncate(withDate);
+  if (withDate) return truncate(collapseSamePeriodClause(withDate));
 
-  return truncate(sentences[0]);
+  return truncate(collapseSamePeriodClause(sentences[0]));
 }
 
 /** No bound figure, no evidence, or a condenser producing an empty string all collapse to this — the honesty rule stays: never guess, always say why the line is thin. */

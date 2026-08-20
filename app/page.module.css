@@ -194,7 +194,7 @@
   margin-bottom: 4px;
 }
 
-/* One of three: Call about / Why now / Open with — each a synthesized field, action first. */
+/* One of three: Call about / Why now / Key points — each a synthesized field, action first. */
 .cardLine {
   font-size: 13px;
   line-height: 1.5;
@@ -210,10 +210,16 @@
   margin-right: 2px;
 }
 
-.cardLineOpenWith {
-  font-style: italic;
-  color: var(--text-secondary);
-  margin-bottom: 0;
+/* Session 17 Item 17: Key points — 2-4 plain-fact bullets replacing Open With. */
+.keyPointsList {
+  list-style: disc;
+  padding-left: 18px;
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .draftingLine {

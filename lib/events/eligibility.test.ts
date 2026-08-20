@@ -112,15 +112,26 @@ function isoDaysBeforeNow(days: number): string {
 
 console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generatedAt}) ===\n`);
 
-// --- 1. UHS — 1.650% notes due 2026 (debt maturity) — must be CARD ---
+// --- 1. UHS — 1.650% notes due 2026 (debt maturity) — must be TABLE.
 // Live-extracted: eventDate "2026" (bare year — no filing in the corpus
-// states a month for these notes), eventDateGranularity "year". The gate
-// must still card it via the windowDate (Dec 31, 2026) convention.
+// states a month for these notes), eventDateGranularity "year".
+//
+// Updated in Session 17 Item 5: this used to assert the gate cards it via
+// the windowDate (Dec 31, 2026) convention — that was the bug. Dec 31 is
+// safe for EXCLUDING (if the worst-case date is outside the window, the
+// real one is too) but never for INCLUDING (the worst-case date landing
+// inside the window says nothing about where the real, unknown-month date
+// actually falls — it could be January or December). UHS's own real fact
+// is the live case this was found on: held to the table now, month not
+// verifiable. ---
 {
   const uhs = findCompany("UHS");
   const t = findTrigger(uhs, "debt-maturity");
   const r = evaluateEligibility(t, NOW);
-  assert(r.cardEligible, `[1] UHS debt-maturity (1.650% notes due ${t.eventDate}, granularity=${t.dateGranularity}) cards`);
+  assert(
+    !r.cardEligible && /bare-year maturity/.test(r.reason),
+    `[1] UHS debt-maturity (1.650% notes due ${t.eventDate}, granularity=${t.dateGranularity}) is held to TABLE — month not verifiable, windowDate is not a real date (reason: ${r.reason})`
+  );
 }
 
 // --- 2. UHS — Talkspace acquisition — LIVE. No filing in the corpus has
@@ -436,7 +447,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 // acquisition-announced has no date — see [2] — and its new-debt-issuance
 // failed quote verification this build, an unrelated pre-existing
 // non-determinism). Pins a verified/recent acquisition-announced fact
-// alongside UHS's own live debt-maturity fact to prove the STRUCTURAL fix
+// alongside a controlled debt-maturity fact to prove the STRUCTURAL fix
 // (the cap itself is gone) without depending on two unrelated
 // data-availability gaps closing at once.
 //
@@ -453,11 +464,25 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 // actually lands in its own cluster. (Chose this over asserting on a
 // company with two genuinely live distinct events because no company in
 // the current fixture has one — every card-eligible company here produces
-// exactly one cluster; see the testFromFixture.ts run.) ---
+// exactly one cluster; see the testFromFixture.ts run.)
+//
+// Session 17 Item 5 update: UHS's own real debt-maturity is bare-year and
+// no longer card-eligible (see [1]/[20b]) — using it here would make this
+// test depend on a fact this session deliberately excluded, conflating
+// "no per-company cap" with "bare-year gate." debt-maturity is now ALSO
+// controlled: same real evidence/figures, but with a real day-granularity
+// date within the window (so it cards on its own real merits) and its own
+// disjoint synthetic citation. ---
 {
   const uhs = findCompany("UHS");
-  const debtMaturity = findTrigger(uhs, "debt-maturity");
+  const realDebtMaturity = findTrigger(uhs, "debt-maturity");
   const realAcquisition = findTrigger(uhs, "acquisition-announced");
+  const controlledDebtMaturity: TriggerResult = {
+    ...realDebtMaturity,
+    eventDate: isoDaysBeforeNow(-120), // ~4mo in the future — inside the 18mo window
+    dateGranularity: "day",
+    citations: [{ form: "10-Q", date: isoDaysBeforeNow(30), url: "https://example.com/synthetic-controlled-debt-maturity-10q" }],
+  };
   const controlledAcquisition: TriggerResult = {
     ...realAcquisition,
     eventDate: isoDaysBeforeNow(30),
@@ -465,19 +490,21 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     quoteVerified: true,
     verifiedQuote: realAcquisition.evidence ?? "synthetic",
     verifiedQuoteNormalized: realAcquisition.evidence ?? "synthetic",
-    // Deliberately disjoint from debt-maturity's real citations (which
-    // include uhs-20260422.htm) — this is what makes it land in a
-    // genuinely different dedup cluster, not just a different trigger.
+    // Deliberately disjoint from debt-maturity's (controlled) citations —
+    // this is what makes it land in a genuinely different dedup cluster,
+    // not just a different trigger.
     citations: [{ form: "8-K", date: isoDaysBeforeNow(30), url: "https://example.com/synthetic-controlled-acquisition-8k" }],
   };
   const uhsControlled: CompanyResult = {
     ...uhs,
-    results: uhs.results.map((t) => (t.triggerId === "acquisition-announced" ? controlledAcquisition : t)),
+    results: uhs.results.map((t) =>
+      t.triggerId === "acquisition-announced" ? controlledAcquisition : t.triggerId === "debt-maturity" ? controlledDebtMaturity : t
+    ),
   };
   const result = buildEvents([uhsControlled], NOW);
   assert(
     result.flashCardCandidates.length >= 2,
-    `[12] UHS produces at least 2 cards when debt-maturity (${debtMaturity.eventDate}) and a verified/recent acquisition-announced with a DISJOINT citation are both eligible (got ${result.flashCardCandidates.length}: ${result.flashCardCandidates.map((c) => c.headlineTrigger.triggerId).join(", ")}) — proves no per-company cap, independent of dedup clustering`
+    `[12] UHS produces at least 2 cards when a controlled debt-maturity (day-granularity, in-window) and a verified/recent acquisition-announced with a DISJOINT citation are both eligible (got ${result.flashCardCandidates.length}: ${result.flashCardCandidates.map((c) => c.headlineTrigger.triggerId).join(", ")}) — proves no per-company cap, independent of dedup clustering`
   );
 }
 
@@ -621,11 +648,22 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 }
 
 // --- 20. Session 13 — normalizeEventDate. A year-granularity claim with a
-// fabricated day ("2026-12-31") must normalize to the bare year and still
-// card via windowDate. This is the EXACT input Haiku produced live for
-// UHS's debt-maturity fact in Session 13 Part B's run 2 — the literal
-// forbidden example from claude.ts's own extraction prompt, self-
-// contradicting its own granularity label. ---
+// fabricated day ("2026-12-31") must normalize to the bare year. This is
+// the EXACT input Haiku produced live for UHS's debt-maturity fact in
+// Session 13 Part B's run 2 — the literal forbidden example from
+// claude.ts's own extraction prompt, self-contradicting its own
+// granularity label.
+//
+// [20b] updated in Session 17 Item 5: the normalized bare-year fact used
+// to still CARD via the Dec-31 windowDate convention — exactly the real
+// bug UHS hit live ("1.650% Senior Secured Notes due 2026" carded off a
+// worst-case convention date, not a real one). Dec 31 is safe for
+// EXCLUDING (if the latest possible date is outside the window, the real
+// one is too) but never for INCLUDING (the latest possible date being
+// inside the window says nothing about where the real, unknown-month date
+// actually falls). A bare-year maturity inside the window must now go to
+// the table, never a card — normalizeEventDate's own correctness (20a) is
+// unchanged; only the downstream card decision is. ---
 {
   const normalized = normalizeEventDate("2026-12-31", "year");
   assert(
@@ -637,7 +675,10 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
   const realDebtMaturity = findTrigger(uhs, "debt-maturity");
   const synthetic: TriggerResult = { ...realDebtMaturity, eventDate: normalized.eventDate, dateGranularity: normalized.eventDateGranularity };
   const r = evaluateEligibility(synthetic, NOW);
-  assert(r.cardEligible, `[20b] the normalized bare-year fact still cards via windowDate (cardEligible=${r.cardEligible}, reason=${r.reason})`);
+  assert(
+    !r.cardEligible && /bare-year maturity/.test(r.reason),
+    `[20b] the normalized bare-year fact is held to the TABLE, never a card, even though windowDate places it inside the 18mo window (cardEligible=${r.cardEligible}, reason=${r.reason})`
+  );
 }
 
 // --- 20c/20d. The other direction: a day-granularity claim landing exactly

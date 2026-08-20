@@ -1,9 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type { FlashCard } from "./buildEvents";
-import type { Bucket } from "./buckets";
+import { dedupeCitations, type FlashCard } from "./buildEvents";
 import type { VerifiedFact } from "./factBase";
 import { failedEventBriefing, type DraftedEventBriefing } from "./eventBriefing";
-import { checkNumbersAgainstQuotes, countDistinctFactsReferenced } from "./numberGuard";
+import { checkNumbersAgainstQuotes, countDistinctFactsReferenced, factsReferencedIn, isFullyExplainedByOneFact } from "./numberGuard";
 import { isScrapeShapedText } from "./scrapeGuard";
 import { compactLabelWithTiming } from "./labels";
 import { BUCKET_LABELS } from "./buckets";
@@ -28,9 +27,9 @@ import { extractFactTokens } from "../agent/factTokens";
 //
 // SONNET NARRATES — given the headline event and the company's full
 // verified fact list (both already decided), it writes the CALL: the
-// action, the synthesis for why now, and the opening line. It never picks
-// the headline, never invents a bucket, and never states a figure that
-// isn't already in the fact list handed to it.
+// action, the synthesis for why now, and the supporting facts. It never
+// picks the headline, never invents a bucket, and never states a figure
+// that isn't already in the fact list handed to it.
 // ============================================================================
 
 const SONNET_MODEL = "claude-sonnet-5";
@@ -42,35 +41,19 @@ function getClient(): Anthropic {
   return client;
 }
 
-/**
- * Session 15 Part A: bucket-specific guidance for OPEN WITH, so the phone
- * line an RM would actually say is grounded in what THIS bucket's
- * opportunity is really about — a refi conversation starts with sequencing,
- * a treasury conversation starts with where the money lands, a new-debt
- * conversation starts with facility structure, a hedging conversation
- * starts with the exposure itself.
- */
-const BUCKET_ANGLE_GUIDANCE: Record<Bucket, string> = {
-  refi: "This is a REFI card. OPEN WITH should focus on sequencing and timing — how this maturity fits the company's broader calendar (what comes before or after it, when to start talking), not a generic financing line.",
-  treasury: "This is a TREASURY card. OPEN WITH should focus on where the proceeds or cash land — proposing a specific home for the money (an operating account, a sweep arrangement, a deposit relationship), not a generic congratulations line.",
-  new_debt: "This is a NEW DEBT card. OPEN WITH should focus on structure — the specific facility type the RM is proposing (a term loan, a revolver, a bridge), not a generic 'let us help finance this' line.",
-  hedging: "This is a HEDGING card. OPEN WITH should focus on the exposure just created — naming the specific new rate/FX/commodity exposure and proposing to discuss hedging it, not a generic risk-management line.",
-};
-
 const SYSTEM_PROMPT = `You write ONE flash card for a bank relationship manager (RM) — a weekly briefing on who to call and why. The card leads with the CALL, not a description of what happened: an RM reading it in 5 seconds must know what to DO, not just what occurred. This is banker judgment applied to a fixed set of facts, not fact-finding — the headline event, its bucket, and its timing are ALREADY DECIDED by the system before you're called; your job is to write the call well, never to pick a different one.
 
 You will be given:
 - The HEADLINE EVENT — the one fact this card is about. Shown as both a verified quote and its own evidence sentence (a plain-English paraphrase, already properly scaled — "$1.5 billion," never a bare unscaled number). The specific amounts and dates you need are usually easiest to read off the evidence sentence.
-- Bucket-specific guidance for what OPEN WITH should focus on.
 - OTHER VERIFIED FACTS about the same company — everything else confirmed true about them right now, each with its own evidence sentence too. Weave one in ONLY when it is what makes the headline live THIS WEEK — never because it's merely available.
 
 Write exactly three fields:
 
-- callAbout: the ACTION, one imperative line, and it MUST name the amount or the date of the thing being called about — a call with neither is not specific enough. "Refinance the $1.5 billion notes due November 2027" — not "debt maturity approaching" and not just "refinance the notes." If the headline fact genuinely has no verifiable dollar amount (never guess one), name the date instead — a date alone is enough, but never neither.
+- callAbout: the ACTION, one imperative line, and it MUST name the amount or the date of the thing being called about — a call with neither is not specific enough. "Refinance the $1.5 billion notes due November 2027." — not "debt maturity approaching" and not just "refinance the notes." If the headline fact genuinely has no verifiable dollar amount (never guess one), name the date instead — a date alone is enough, but never neither. Describe timing in plain terms the person on the other end of the call would recognize — "15 months out," never "inside the 15-month refi window" or any other named threshold. The 18-month refi cutoff is this system's own internal rule for what's worth a card at all; it is not a market term, and stating it as one implies a convention that doesn't exist. Write it as a complete sentence, ending in a period, exactly like whyNow and every keyPoints bullet — an imperative line is still a sentence.
 
 - whyNow: the synthesis — what makes THIS WEEK the moment, not just what happened. One sentence; a second short sentence is allowed only to keep two distinct facts clean, never as extra room for detail. MUST connect the headline event to at least one OTHER given fact that explains why it's live now (a related disclosure, a stated market condition, a second dated event) — a sentence that only restates the headline event, however detailed, is description, not synthesis, and description is exactly what this format replaces. If nothing in the other verified facts genuinely explains why now, do not invent a connection or pad with unrelated detail — write the truest version you can with what you have; a structural check downstream decides whether it qualifies, that is not your call to route around.
 
-- openWith: one sentence the RM could actually say out loud on the phone, tied to this company's own specifics — never boilerplate. Follow the bucket-specific guidance you're given for what to focus on.
+- keyPoints: 2 to 4 bullets, plain facts in the same register the portfolio table uses — one fact and its own figure or date per bullet, nothing more. The FIRST bullet must be the fact that triggered this card (the headline event itself — the maturity, the announced deal, the proceeds). The rest are supporting facts, each still standing on its own. A bullet states what IS true; it never explains what one fact means for another. Do not write "which gives them a window to," "so the same approach can be," "before it competes with," or any other sentence connecting two facts together — that connective work belongs in whyNow, and only there. If you find yourself writing "so," "which means," "giving them," or "before" to link two bullets' worth of information into one, you have written a whyNow sentence by accident; split it back into two separate, unconnected facts instead.
 
 THE FACTUAL SOURCE — read before writing anything:
 - Every number, date, rate, and dollar amount you state must appear, verbatim or in an obviously equivalent form, in the HEADLINE EVENT or the OTHER VERIFIED FACTS you were given — their quotes OR their evidence sentences, either is a valid source. Nothing from general knowledge, nothing computed, nothing rounded to a different figure than given, nothing carried over from a different company.
@@ -80,7 +63,7 @@ THE FACTUAL SOURCE — read before writing anything:
 Hard rules:
 - Do NOT contradict the bucket or timing you were told is already decided — write the call, don't second-guess the decision.
 - Plain English a banker — and a newcomer reading over their shoulder — would understand in seconds. No filing-summary phrasing, no unexplained jargon (banned unless explained: "liability management," "amend-and-extend," "term loan B add-on," and similar insider phrasing).
-- Never enumerate every tranche/instrument — describe the pattern, not the list.
+- Never enumerate every tranche/instrument in one bullet — one bullet per fact, describe the pattern, not the list.
 - No greeting, no congratulations, no assumed rapport, no "Hi" or "I wanted to reach out" — this is an internal note between colleagues, not a message to the client.`;
 
 const CARD_BODY_TOOL = {
@@ -92,26 +75,30 @@ const CARD_BODY_TOOL = {
       callAbout: {
         type: "string",
         description:
-          "One imperative line: the action to take, never a description of an event. Must name the verified amount or date of the thing being called about — a date alone is fine when no figure is verifiable, but never neither.",
+          "One imperative line, written as a complete sentence ending in a period: the action to take, never a description of an event. Must name the verified amount or date of the thing being called about — a date alone is fine when no figure is verifiable, but never neither. State timing in plain terms ('N months out'), never as a named 'window' or threshold.",
       },
       whyNow: {
         type: "string",
         description:
           "One sentence (two only if needed to keep two distinct facts clean): the synthesis connecting the headline event to at least one other given fact that makes it live this week.",
       },
-      openWith: {
-        type: "string",
-        description: "One sentence the RM could say on the phone, tied to this company's own specifics, following the bucket-specific guidance given.",
+      keyPoints: {
+        type: "array",
+        items: { type: "string" },
+        minItems: 2,
+        maxItems: 4,
+        description:
+          '2 to 4 plain-fact bullets, one fact with its own figure/date per bullet. The first bullet must be the headline fact itself. No bullet may connect two facts together (no \'which gives them\', \'so the same approach\', \'before it competes with\') — that belongs in whyNow only. MUST be a genuine JSON array of plain strings — exactly like callAbout and whyNow are plain strings, each array ELEMENT is one plain string, e.g. ["First fact and its figure.", "Second fact and its figure."] — never a single string, never XML or any other markup.',
       },
     },
-    required: ["callAbout", "whyNow", "openWith"],
+    required: ["callAbout", "whyNow", "keyPoints"],
   },
 };
 
 export interface RawCardBody {
   callAbout: string;
   whyNow: string;
-  openWith: string;
+  keyPoints: string[];
 }
 
 /**
@@ -147,9 +134,7 @@ export function buildContext(card: FlashCard, factBase: VerifiedFact[]): string 
     `Bucket/tag (already decided — do not contradict it): ${tagLabel}`,
     `Timing (already decided): ${timingLabel}`,
     ``,
-    `OPEN WITH guidance for this bucket: ${BUCKET_ANGLE_GUIDANCE[card.bucket]}`,
-    ``,
-    `HEADLINE EVENT (the card's subject — CALL ABOUT and WHY NOW must be built around this):`,
+    `HEADLINE EVENT (the card's subject — CALL ABOUT and WHY NOW must be built around this, and it must be keyPoints' first bullet):`,
     headlineFact
       ? formatFact(headlineFact)
       : `- ${card.headlineTrigger.triggerName}: "${card.headlineTrigger.verifiedQuoteNormalized ?? card.headlineTrigger.verifiedQuote ?? "n/a"}"`,
@@ -187,14 +172,42 @@ async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionI
   if (!toolUse || toolUse.type !== "tool_use") {
     throw new Error(`Sonnet did not return a submit_card_body tool call (stop_reason: ${response.stop_reason})`);
   }
-  const input = toolUse.input as { callAbout?: string; whyNow?: string; openWith?: string };
-  if (!input.callAbout || !input.whyNow || !input.openWith) {
+  const input = toolUse.input as { callAbout?: string; whyNow?: string; keyPoints?: unknown };
+  const keyPoints = parseKeyPoints(input.keyPoints);
+  if (!input.callAbout || !input.whyNow || keyPoints.length === 0) {
     throw new Error(
       `malformed card body response (stop_reason: ${response.stop_reason}, output_tokens: ${response.usage.output_tokens}): ${JSON.stringify(input)}`
     );
   }
 
-  return { callAbout: input.callAbout, whyNow: input.whyNow, openWith: input.openWith };
+  return { callAbout: input.callAbout, whyNow: input.whyNow, keyPoints };
+}
+
+/**
+ * Session 17 Item 17: despite the schema declaring keyPoints as a JSON
+ * array of strings, Sonnet occasionally returns it as a single string
+ * with pseudo-XML item tags instead — observed live, verbatim, on Tenet's
+ * and Quest's real cards this session: `"\n<item>...</item>\n<item>...
+ * </item>\n</keyPoints>\n"`. The CONTENT inside each tag is still
+ * genuinely Sonnet's own authored bullet — only the envelope is wrong —
+ * so this extracts it rather than discarding a correct answer over a
+ * formatting slip. This is not a content fallback (nothing here writes
+ * or guesses any text): every extracted bullet still passes through the
+ * exact same checkCardStructure guard as a normal array response, so a
+ * malformed envelope can never bypass verification, it just isn't
+ * wastefully thrown away either. Anything that isn't a genuine array and
+ * doesn't match this one observed shape still returns [], which still
+ * fails loudly via the empty-keyPoints check above.
+ */
+export function parseKeyPoints(raw: unknown): string[] {
+  if (Array.isArray(raw)) {
+    return raw.filter((k): k is string => typeof k === "string" && k.trim().length > 0);
+  }
+  if (typeof raw === "string") {
+    const items = [...raw.matchAll(/<item>([\s\S]*?)<\/item>/gi)].map((m) => m[1].trim()).filter(Boolean);
+    return items;
+  }
+  return [];
 }
 
 function sentenceCount(text: string): number {
@@ -217,22 +230,27 @@ export interface StructuralGuardResult {
  * say the opposite of what it fears") applies here too: no word list, no
  * lexical banned-phrase scan, just verifiable structural properties.
  *
- * Six checks, all structural: (1) no field is empty, (2) whyNow is at
- * most 2 sentences, (3) every number/date/rate traces to a given fact
- * (numberGuard.ts, unchanged), (4) whyNow's own tokens trace to at least 2
- * DISTINCT facts (countDistinctFactsReferenced — the mechanical proxy for
- * "is this a synthesis or a restatement"), (5) no field reads as raw
- * scrape-shaped data rather than a written sentence (scrapeGuard.ts,
- * unchanged), and (6, Session 15b Part B) callAbout names at least one
- * verified figure or date — a call with neither is exactly the
- * description-not-action pattern this format exists to kill.
+ * Session 17 Item 17 adds three more checks for keyPoints, all structural
+ * in the same spirit — never a scan for connective WORDS ("so," "which
+ * gives them"), since Standing Rule 2 explicitly warns that catches the
+ * wrong sentences. Instead: (a) 2-4 bullets, each non-empty, (b) each
+ * bullet references AT MOST ONE distinct fact — the exact inverse of
+ * whyNow's "at least 2" requirement below, and the same
+ * countDistinctFactsReferenced machinery; a bullet whose tokens match two
+ * different facts is, structurally, connecting them, which is exactly
+ * what a bullet must never do, (c) the first bullet's tokens trace back to
+ * the HEADLINE fact specifically (factsReferencedIn, Item 4's fix) — not
+ * just any fact.
  */
-export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[]): StructuralGuardResult {
+export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[], headlineTriggerId?: string): StructuralGuardResult {
   const reasons: string[] = [];
 
   if (!body.callAbout.trim()) reasons.push("callAbout is empty");
   if (!body.whyNow.trim()) reasons.push("whyNow is empty");
-  if (!body.openWith.trim()) reasons.push("openWith is empty");
+  const keyPoints = body.keyPoints.map((k) => k.trim()).filter(Boolean);
+  if (keyPoints.length === 0) reasons.push("keyPoints is empty");
+  else if (keyPoints.length < 2) reasons.push(`keyPoints has only ${keyPoints.length} bullet — needs 2 to 4`);
+  else if (keyPoints.length > 4) reasons.push(`keyPoints has ${keyPoints.length} bullets — needs 2 to 4`);
 
   const whyNowSentences = body.whyNow.trim() ? sentenceCount(body.whyNow) : 0;
   if (whyNowSentences > 2) reasons.push(`whyNow is ${whyNowSentences} sentences — over the 2-sentence limit`);
@@ -245,13 +263,13 @@ export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[]):
   // is the fix for UHS's debt-maturity card, whose own quote is a bare,
   // unscaled table cell — see Part C / draftEventBriefing's doc comment).
   const accuracyCorpus = factBase.flatMap((f) => [f.normalizedText, f.verifiedText, f.evidence ?? ""]);
-  const auditText = `${body.callAbout} ${body.whyNow} ${body.openWith}`;
+  const auditText = `${body.callAbout} ${body.whyNow} ${keyPoints.join(" ")}`;
   const numberGuard = checkNumbersAgainstQuotes(auditText, accuracyCorpus);
   if (!numberGuard.ok) {
     reasons.push(`stated a number, rate, or date not found in any given fact (${numberGuard.unverifiedTokens.join(", ")})`);
   }
 
-  if (isScrapeShapedText(body.callAbout) || isScrapeShapedText(body.whyNow) || isScrapeShapedText(body.openWith)) {
+  if (isScrapeShapedText(body.callAbout) || isScrapeShapedText(body.whyNow) || keyPoints.some((k) => isScrapeShapedText(k, "bullet"))) {
     reasons.push("one or more fields read as raw data (numbers/labels with no sentence structure), not a written sentence");
   }
 
@@ -262,6 +280,35 @@ export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[]):
   const factsReferenced = body.whyNow.trim() ? countDistinctFactsReferenced(body.whyNow, distinctnessCorpus) : 0;
   if (factsReferenced < 2) {
     reasons.push(`whyNow references only ${factsReferenced} distinct fact(s) — must connect at least 2 to count as synthesis, not description`);
+  }
+
+  // Session 17 Item 17: no keyPoints bullet may assert a relationship
+  // between two facts. NOT plain token-overlap counting (countDistinct-
+  // FactsReferenced) — a company's own RELATED facts routinely restate
+  // the same figures from a different angle (confirmed live: Tenet's
+  // debt-maturity evidence lists its own tranche ladder, which happens to
+  // include the exact "$1.5 billion due 2032"/"$750 million due 2033"
+  // figures new-debt-issuance's evidence also states, since they're the
+  // same notes described two ways) — so a bullet naming only ONE fact's
+  // own figures can still token-overlap a SECOND, unrelated fact by
+  // coincidence. The real question is whether some SINGLE fact fully
+  // accounts for the bullet (isFullyExplainedByOneFact, Item 17's fix) —
+  // only a bullet no single fact can fully explain is genuinely combining
+  // two.
+  const multiFactBullets = keyPoints.filter((k) => !isFullyExplainedByOneFact(k, factBase));
+  if (multiFactBullets.length > 0) {
+    reasons.push(`${multiFactBullets.length} keyPoints bullet(s) are not fully explained by any single fact — a bullet states one fact, it never connects two`);
+  }
+
+  // Session 17 Item 17: the FIRST bullet must be the fact that triggered
+  // the card — checked by tracing its tokens back to the headline fact
+  // specifically (factsReferencedIn, Item 4's own fix), not just any fact
+  // in the base.
+  if (headlineTriggerId && keyPoints.length > 0) {
+    const firstBulletFacts = factsReferencedIn(keyPoints[0], factBase);
+    if (!firstBulletFacts.some((f) => f.linkedTriggerId === headlineTriggerId)) {
+      reasons.push("the first keyPoints bullet does not reference the headline fact — it must lead with the fact that triggered this card");
+    }
   }
 
   // Session 15b Part B: callAbout must name the amount OR the date of
@@ -285,7 +332,7 @@ export function buildCorrectionInstruction(guard: StructuralGuardResult): string
 }
 
 /**
- * Drafts an RM-facing flash-card body — CALL ABOUT / WHY NOW / OPEN WITH.
+ * Drafts an RM-facing flash-card body — CALL ABOUT / WHY NOW / KEY POINTS.
  * The headline, tag, timing, and also-active routing are ALL decided
  * before this function is ever called (buildEvents.ts); this only
  * narrates. Sonnet receives the company's full verified fact base
@@ -310,13 +357,13 @@ export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact
 
   try {
     let body = await callSonnet(card, factBase);
-    let guard = checkCardStructure(body, factBase);
+    let guard = checkCardStructure(body, factBase, card.headlineTrigger.triggerId);
 
     if (!guard.ok) {
       const instruction = buildCorrectionInstruction(guard);
       console.warn(`[eventBriefing] ${card.company} (${card.id}) retrying once: ${instruction}`);
       body = await callSonnet(card, factBase, instruction);
-      guard = checkCardStructure(body, factBase);
+      guard = checkCardStructure(body, factBase, card.headlineTrigger.triggerId);
     }
 
     if (!guard.ok) {
@@ -334,7 +381,21 @@ export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact
       return failedEventBriefing(card, "structural check failed after one retry");
     }
 
-    return { ...body, source: "sonnet" };
+    // Session 17 Item 4: the card's citation set is the union of citations
+    // across every VERIFIED FACT the drafted text actually draws a number/
+    // date/rate from — never just the headline trigger's own citations,
+    // and never a dedup-cluster union either (debt-maturity facts routinely
+    // have no 8-K citation of their own, so they can never cluster with the
+    // new-debt-issuance fact WHY NOW might legitimately reference — a
+    // cluster-based union would still have missed exactly the case this
+    // was written for). The headline fact's own citations are always
+    // included regardless, since callAbout is required to name one of its
+    // own figures/dates.
+    const cardText = `${body.callAbout} ${body.whyNow} ${body.keyPoints.join(" ")}`;
+    const referencedFacts = factsReferencedIn(cardText, factBase);
+    const citations = dedupeCitations([...headlineFact.citations, ...referencedFacts.flatMap((f) => f.citations)]);
+
+    return { ...body, source: "sonnet", citations };
   } catch (err) {
     // This is the exact failure mode this project has hit repeatedly
     // (max_tokens truncation, a deprecated temperature param, the Session

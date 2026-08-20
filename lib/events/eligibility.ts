@@ -144,16 +144,27 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
       if (timing.monthsToNearestFuture === null) {
         return { cardEligible: false, reason: "approaching maturity, but no verifiable date — held to table", timing };
       }
-      if (timing.monthsToNearestFuture <= REFI_WINDOW_MONTHS) {
-        // Year-granularity facts (a bare "due 2026", no month disclosed
-        // anywhere) must never display a computed month count — that
-        // count came from windowDate's Dec-31 convention, not the filing.
-        // Display the year the filing actually states, nothing more
-        // precise.
-        const reason = timing.dateGranularity === "year" ? `matures ${eventDate}` : `maturity ~${timing.monthsToNearestFuture}mo out`;
-        return { cardEligible: true, reason, timing };
+      // Exclusion check FIRST, unchanged, using the same windowDate-derived
+      // monthsToNearestFuture as before this session — the Dec-31
+      // convention is safe here: if the worst-case date is still outside
+      // the window, the real (unverifiable-month) date is definitely
+      // outside too.
+      if (timing.monthsToNearestFuture > REFI_WINDOW_MONTHS) {
+        return { cardEligible: false, reason: "maturity 18+ months out", timing };
       }
-      return { cardEligible: false, reason: "maturity 18+ months out", timing };
+      // Session 17 Item 5: the SAME Dec-31 convention is NOT safe for
+      // INCLUSION — the worst-case date landing inside the window does not
+      // mean the real, unknown-month date actually does (a bare "due 2026"
+      // filed today could mature next January or next December, and only
+      // the filing itself, never a code convention, can say which). UHS's
+      // real "1.650% Senior Secured Notes due 2026" carded on exactly this
+      // reasoning before this fix. A bare-year maturity within the window
+      // goes to the table with the year shown; only a real month/day date
+      // can card.
+      if (timing.dateGranularity === "year") {
+        return { cardEligible: false, reason: `bare-year maturity (${eventDate}) — month not verifiable, held to table`, timing };
+      }
+      return { cardEligible: true, reason: `maturity ~${timing.monthsToNearestFuture}mo out`, timing };
     }
 
     // --- FX / rate hedging ---
