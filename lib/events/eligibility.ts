@@ -238,6 +238,23 @@ export function evaluateRowEligibility(row: LadderRow, now: Date = new Date()): 
   if (row.status === "unconfirmed") {
     return { cardEligible: false, reason: "unconfirmed — dropped from the newest filing with no redemption explaining it, held to table", timing };
   }
+  // C1 — the filing states this tranche at nil. Real, worth rendering, and
+  // not a refinancing conversation: there is nothing left to refinance.
+  if (row.status === "repaid") {
+    return { cardEligible: false, reason: "repaid — the filing states a nil balance for this tranche", timing };
+  }
+  // D3 — the stated maturity has already passed. Never live, never cardable.
+  // The explanation, where the corpus carries one, rides on the row itself
+  // (retiredBy) rather than being asserted here.
+  if (row.status === "matured") {
+    return {
+      cardEligible: false,
+      reason: row.retiredBy
+        ? "matured — the stated maturity date has passed, and an issuance in the corpus names this tranche"
+        : "matured — the stated maturity date has passed, with nothing in the corpus stating how it was repaid",
+      timing,
+    };
+  }
 
   if (timing.monthsToNearestFuture === null) {
     return { cardEligible: false, reason: "approaching maturity, but no verifiable date — held to table", timing };
@@ -246,7 +263,31 @@ export function evaluateRowEligibility(row: LadderRow, now: Date = new Date()): 
     return { cardEligible: false, reason: "maturity 18+ months out", timing };
   }
   if (timing.dateGranularity === "year") {
-    return { cardEligible: false, reason: `bare-year maturity (${row.maturityDate}) — month not verifiable, held to table`, timing };
+    // D1 (Session 18, post-stage-2) — THE SAME ARITHMETIC THAT EXCLUDES ALSO
+    // INCLUDES.
+    //
+    // A bare year has no disclosed month, so the code applies December 31 as
+    // its window date (eventTiming.ts's computeWindowDate) — the latest date
+    // the year could mean. That convention is what makes EXCLUSION safe: if
+    // even the latest possible date is outside the window, every possible
+    // date is. Held to the table on that basis, a bare-year row could never
+    // card at all, which over-suppresses in exactly the mirror-image case:
+    // if the EARLIEST possible date is also inside the window, then every
+    // possible date is inside, and the row is cardable on the year alone.
+    //
+    // The check above has already established December 31 is within the
+    // window. All that remains is January 1 — if any part of the year is
+    // already past, the year is only partly inside and it stays table-only.
+    //
+    // Pure arithmetic on two dates the calendar defines. No month is
+    // recovered, nothing is inferred, and nothing is presented as a date the
+    // filing stated.
+    const year = String(row.maturityDate ?? "").slice(0, 4);
+    const yearStartsInFuture = /^\d{4}$/.test(year) && daysBetween(`${year}-01-01`, now) >= 0;
+    if (yearStartsInFuture) {
+      return { cardEligible: true, reason: `matures during ${year} — the whole year falls inside the ${REFI_WINDOW_MONTHS}-month window, so no month is needed`, timing };
+    }
+    return { cardEligible: false, reason: `bare-year maturity (${row.maturityDate}) — only part of that year falls inside the window and no month is stated, held to table`, timing };
   }
   return { cardEligible: true, reason: `maturity ~${timing.monthsToNearestFuture}mo out`, timing };
 }

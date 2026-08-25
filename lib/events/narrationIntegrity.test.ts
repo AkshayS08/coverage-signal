@@ -234,6 +234,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
           issuedTranches: [],
           cashAmount: null,
           projectName: null,
+    columnReadFailure: false,
         },
       ],
     };

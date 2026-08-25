@@ -299,6 +299,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     issuedTranches: [],
     cashAmount: "$500 million", // Session 18 D2: a real completed issuance states its own amount — null here would (correctly) block the card for an unrelated reason and defeat this test's actual purpose
     projectName: null,
+    columnReadFailure: false,
   };
   const r = evaluateEligibility(synthetic, NOW);
   assert(r.cardEligible, "[4] Synthetic completed issuance (30d old, partly_unapplied) cards — proceeds-test positive branch");
@@ -749,6 +750,53 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
   assert(
     !ordinary.suspiciousRoundDate && !ordinary.wasNormalized,
     `[20d] an ordinary day-granularity date is neither flagged nor modified (suspiciousRoundDate=${ordinary.suspiciousRoundDate})`
+  );
+}
+
+// ============================================================================
+// D1 (Session 18, post-stage-2) — THE SAME ARITHMETIC THAT EXCLUDES ALSO
+// INCLUDES.
+//
+// The December 31 window convention is safe for EXCLUDING: if even the latest
+// date the year could mean falls outside the window, every date does. Held to
+// the table on that basis alone, a bare-year row could never card at all —
+// which over-suppresses in the mirror-image case. If January 1 of that year is
+// ALSO inside the window, then every date the year could mean is inside, and
+// the row is cardable on the year alone.
+//
+// Pure calendar arithmetic: no month is recovered, and nothing is presented as
+// a date the filing stated. Uses a FIXED "now" rather than the fixture's, so
+// all three cases stay meaningful as the corpus ages.
+// ============================================================================
+{
+  const D1_NOW = new Date("2026-08-25T00:00:00Z"); // window runs to 2028-02-25
+
+  const wholeYearInside = evaluateRowEligibility(syntheticLadderRow({ maturityDate: "2027", dateGranularity: "year" }), D1_NOW);
+  assert(
+    wholeYearInside.cardEligible,
+    `[D1-1] 2027 falls ENTIRELY inside the 18-month window — Jan 1 2027 and Dec 31 2027 both land before 2028-02-25 — so it cards on the year alone (reason: ${wholeYearInside.reason})`
+  );
+
+  const partlyPast = evaluateRowEligibility(syntheticLadderRow({ maturityDate: "2026", dateGranularity: "year" }), D1_NOW);
+  assert(
+    !partlyPast.cardEligible,
+    `[D1-2] REVERSE: 2026 is only PARTLY inside — most of it is already past and the filing never said which month — so it stays table-only (reason: ${partlyPast.reason})`
+  );
+
+  const partlyBeyond = evaluateRowEligibility(syntheticLadderRow({ maturityDate: "2028", dateGranularity: "year" }), D1_NOW);
+  assert(
+    !partlyBeyond.cardEligible,
+    `[D1-3] REVERSE: 2028 is only partly inside at the far end — December 2028 is well past the window — so it stays table-only (reason: ${partlyBeyond.reason})`
+  );
+
+  // The rule must not reach past the status gate.
+  assert(
+    !evaluateRowEligibility(syntheticLadderRow({ maturityDate: "2027", dateGranularity: "year", status: "repaid" }), D1_NOW).cardEligible,
+    "[D1-4] a REPAID row whose year is fully inside the window still does not card — there is nothing left to refinance"
+  );
+  assert(
+    !evaluateRowEligibility(syntheticLadderRow({ maturityDate: "2027", dateGranularity: "year", status: "matured" }), D1_NOW).cardEligible,
+    "[D1-5] and neither does a MATURED one"
   );
 }
 

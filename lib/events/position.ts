@@ -1,6 +1,7 @@
 import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry } from "../agent";
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
 import { extractFactTokens, factTokensMatch, type FactToken } from "../agent/factTokens";
+import { isStatedZeroAmount } from "../agent/moneyScale";
 
 /**
  * Session 18 Part B — the deterministic position layer. Until now no
@@ -40,8 +41,19 @@ export interface LadderRow {
   citedUrl: string;
   /** Deterministic, content-derived identity (instrument+rate+maturity — never amount, same rule as matching elsewhere in this file) — NOT a random id, since determinism across identical runs matters throughout this pipeline. Lets a company's several debt-maturity cards (one per qualifying tranche, buildEvents.ts) each point at the specific row they're about. */
   id: string;
-  status: "live" | "retired" | "unconfirmed";
-  /** Set only when status === "retired" — the redemption text that explains it, and where that text came from. */
+  /**
+   * "live"        — on the newest filing's ladder, not yet due.
+   * "retired"     — redeemed by a later issuance named in an 8-K.
+   * "unconfirmed" — on the prior filing, gone from the current one, nothing explaining it.
+   * "repaid"      — C1: the filing itself states a nil balance for this tranche.
+   * "matured"     — D3: the maturity date the filing states has already passed.
+   *
+   * Only "live" ever cards. All five RENDER — a repaid tranche and a matured
+   * one are both facts an RM wants, and neither is the same thing as a row
+   * that quietly vanished.
+   */
+  status: "live" | "retired" | "unconfirmed" | "repaid" | "matured";
+  /** Set when status is "retired", or when a "matured" row's retirement IS explained by a redemption in the corpus — the text that explains it, and where it came from. */
   retiredBy?: { evidence: string; citedUrl: string };
 }
 
@@ -278,6 +290,20 @@ function rowsRepresentSameTranche(a: DebtRowLike, b: DebtRowLike): boolean {
 }
 
 /** No stated maturity (real for an aggregate line) sorts to the end — there's nothing to order it by, and the far end of the ladder is where "no known timing" belongs, never surfaced as if it were a real date. */
+/**
+ * D3. True when the maturity this row states is already in the past. A
+ * bare-year maturity is only past once the WHOLE year is — 2026 is not
+ * matured in August 2026, because the filing never said which month.
+ */
+function maturityHasPassed(row: DebtRowLike, now: Date): boolean {
+  if (!row.maturityDate) return false;
+  const raw = row.maturityDate.trim();
+  const iso = row.dateGranularity === "year" || /^\d{4}$/.test(raw) ? `${raw.slice(0, 4)}-12-31` : raw;
+  const t = Date.parse(iso);
+  if (Number.isNaN(t)) return false;
+  return t < now.getTime();
+}
+
 function maturitySortKey(row: DebtRowLike): number {
   if (!row.maturityDate) return Number.POSITIVE_INFINITY;
   if (row.dateGranularity === "year") {
@@ -313,7 +339,7 @@ function maturitySortKey(row: DebtRowLike): number {
  * step 2 applies at most one issuance's delta — the same pre-existing limit
  * new-debt-issuance already has today, out of this session's scope to lift.
  */
-export function assemblePosition(result: CompanyResult): CompanyPosition {
+export function assemblePosition(result: CompanyResult, now: Date = new Date()): CompanyPosition {
   const debtMaturity = result.results.find((r) => r.triggerId === "debt-maturity");
   const newDebtIssuance = result.results.find((r) => r.triggerId === "new-debt-issuance");
 
@@ -384,6 +410,26 @@ export function assemblePosition(result: CompanyResult): CompanyPosition {
     rows.push(ladderRowFromSequenceEntry(priorEntry, "unconfirmed"));
   }
 
+  // C1 — a tranche the filing itself reports at nil is REPAID, and says so.
+  // Applied only to rows still "live": a redemption already explained is a
+  // better explanation than a zero balance, and should not be overwritten.
+  rows = rows.map((r) => (r.status === "live" && parseMoneyAmount(r.amount) === 0 ? { ...r, status: "repaid" as const } : r));
+
+  // D3 — a maturity date that has already passed means MATURED, not live.
+  // Nothing compared a row's date to today before this, so a ladder from an
+  // older base filing carried tranches that had since come due and rendered
+  // them as though they were still outstanding.
+  //
+  // Where an issuance in the corpus actually names the tranche, that
+  // explanation is attached and stated. Where nothing states it, nothing is
+  // said — a matured row with no refinancing on file is reported as exactly
+  // that, never as an inferred repayment.
+  rows = rows.map((r) => {
+    if (r.status !== "live" || !maturityHasPassed(r, now)) return r;
+    const explained = redeemsText && retiredByEvidence && redemptionRetiresRow(r, redeemsText) ? retiredByEvidence : undefined;
+    return explained ? { ...r, status: "matured" as const, retiredBy: explained } : { ...r, status: "matured" as const };
+  });
+
   rows.sort((a, b) => maturitySortKey(a) - maturitySortKey(b));
 
   const adjustments = baseSequence.filter((e) => e.kind === "adjustment");
@@ -444,6 +490,11 @@ const CHECKSUM_TOLERANCE_FRACTION_OF_SMALLEST_ROW = 0.5;
  */
 export function parseMoneyAmount(raw: string): number | null {
   const trimmed = raw.trim();
+  // C1 — a dash alone is the accounting convention for nil, and nil is zero.
+  // It must PARSE, not fail: a zero row contributes zero to the walk, which is
+  // arithmetically identical to skipping it but leaves the row visible as a
+  // repaid tranche instead of an unexplained absence.
+  if (isStatedZeroAmount(trimmed)) return 0;
   const isNegative = (trimmed.includes("(") && trimmed.includes(")")) || /^-/.test(trimmed.replace(/^\(/, ""));
   const withoutParens = trimmed.replace(/[()]/g, "");
   const token = extractFactTokens(withoutParens).find((t) => t.kind === "money");

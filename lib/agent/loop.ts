@@ -79,8 +79,11 @@ function bindEntriesToPeriod<T extends { amount: string; periodColumn: string | 
   expectedReportDate: string | null,
   log: (line: string) => void,
   label: string,
-  describe: (entry: T) => string
+  describe: (entry: T) => string,
+  /** C2/C3 — written into by this function so the caller can tell "read the wrong column" apart from "no schedule here". */
+  outcome?: { total: number; droppedForPeriod: number; unbound: number }
 ): T[] {
+  if (outcome) { outcome.total = entries.length; outcome.droppedForPeriod = 0; outcome.unbound = 0; }
   if (!expectedReportDate) return entries;
   // Built explicitly from the ISO string rather than run through
   // extractFactTokens: that tokenizer does not parse a bare "2026-06-30" at
@@ -96,6 +99,7 @@ function bindEntriesToPeriod<T extends { amount: string; periodColumn: string | 
   ];
   const kept: T[] = [];
   let unbound = 0;
+  let droppedForPeriod = 0;
   for (const entry of entries) {
     if (!entry.periodColumn || !entry.periodColumn.trim()) {
       unbound++;
@@ -113,6 +117,7 @@ function bindEntriesToPeriod<T extends { amount: string; periodColumn: string | 
       kept.push(entry);
       continue;
     }
+    droppedForPeriod++;
     log(
       `  ⚠ WRONG-COLUMN ENTRY DROPPED for ${label} — "${describe(entry)}" reports amount ${JSON.stringify(entry.amount)} from column ${JSON.stringify(entry.periodColumn)}, but this filing's period of report is ${expectedReportDate}; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted`
     );
@@ -120,6 +125,17 @@ function bindEntriesToPeriod<T extends { amount: string; periodColumn: string | 
   if (unbound > 0) {
     log(`  COLUMN BINDING for ${label} — ${unbound} entr${unbound === 1 ? "y" : "ies"} stated no period column; kept (a single-column table is real), not verifiable either way`);
   }
+  // C2 (Session 18, post-stage-2) — ASSERT THAT EXTRACTION CHOSE THE RIGHT
+  // COLUMN, not merely that wrong ones get discarded. Those are different
+  // claims: a filing every one of whose rows was discarded for period is a
+  // filing that was READ WRONG, and until now that was indistinguishable
+  // from a filing with no debt note at all. Stated per filing, loudly.
+  if (entries.length > 0 && droppedForPeriod === entries.length) {
+    log(
+      `  ⚠ WRONG COLUMN READ for ${label} — all ${entries.length} transcribed entr${entries.length === 1 ? "y" : "ies"} state a period column that is not this filing's own period of report (${expectedReportDate}). The note was located and transcribed; the wrong column of it was read. This is a READ FAILURE, not an absent schedule.`
+    );
+  }
+  if (outcome) { outcome.total = entries.length; outcome.droppedForPeriod = droppedForPeriod; outcome.unbound = unbound; }
   return kept;
 }
 
@@ -353,6 +369,15 @@ export interface TriggerResult {
   cashAmount: string | null;
   /** Session 18 A3 — every trigger. The discrete named project this event's filing calls out, or null when the amount is a period total with no named project. */
   projectName: string | null;
+  /**
+   * Session 18 C3 — "debt-maturity" ONLY, false for every other trigger.
+   * True when the base filing's debt note WAS located and transcribed but
+   * every entry stated a period column other than that filing's own period of
+   * report. Distinct from "no schedule": the note is there and was read
+   * wrong. Surfaced so the render layer can say so rather than leaving an
+   * empty ladder to read as an absent disclosure.
+   */
+  columnReadFailure: boolean;
 }
 
 export interface CompanyResult {
@@ -446,6 +471,11 @@ export async function runAgentLoop(
   // bound that has nothing to do with whether the claim is real.
   const textByUrl = new Map<string, string>();
   const debtNoteStatusByFiling: { form: string; filingDate: string; reportDate: string; url: string; status: DebtNoteFilingStatus }[] = [];
+  // C3 — set when EVERY transcribed base-ladder entry was discarded for
+  // stating the wrong period column. That is a read failure, and it must not
+  // be confused with the filing having no schedule (see the search-order
+  // block below).
+  let baseColumnReadFailure = false;
   // Session 18 A1: where each filing's debt note was located, in that
   // filing's FULL text — the bound verification uses to reject a "row" that
   // is really a cash-flow line or a narrative mention. Only 10-Q/10-K
@@ -624,8 +654,9 @@ export async function runAgentLoop(
     // period. The base filing's own EDGAR period-of-report is the
     // authority; the prior sequence is bound to the PRIOR filing's period,
     // since that is its own current column.
+    const baseColumnOutcome = { total: 0, droppedForPeriod: 0, unbound: 0 };
     const columnBound = {
-      scheduleSequence: bindEntriesToPeriod(v.scheduleSequence, debtScheduleGuidance.base?.reportDate ?? null, log, label, (e) => e.label ?? e.kind),
+      scheduleSequence: bindEntriesToPeriod(v.scheduleSequence, debtScheduleGuidance.base?.reportDate ?? null, log, label, (e) => e.label ?? e.kind, baseColumnOutcome),
       priorScheduleSequence: bindEntriesToPeriod(v.priorScheduleSequence, debtScheduleGuidance.prior?.reportDate ?? null, log, `${label} (prior period)`, (e) => e.label ?? e.kind),
       balanceSheetDebtCaptions: bindEntriesToPeriod(v.balanceSheetDebtCaptions, debtScheduleGuidance.base?.reportDate ?? null, log, `${label} (balance sheet)`, (c) => c.label),
     };
@@ -725,6 +756,10 @@ export async function runAgentLoop(
       }
     }
 
+    if (trigger.id === "debt-maturity") {
+      baseColumnReadFailure = baseColumnOutcome.total > 0 && baseColumnOutcome.droppedForPeriod === baseColumnOutcome.total;
+    }
+
     return finalize(
       trigger,
       citationLookup,
@@ -736,6 +771,7 @@ export async function runAgentLoop(
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
       { rowsExtracted, rowsVerified },
+      trigger.id === "debt-maturity" && baseColumnOutcome.total > 0 && baseColumnOutcome.droppedForPeriod === baseColumnOutcome.total,
       scheduleCompleteness
     );
   }
@@ -873,9 +909,30 @@ export async function runAgentLoop(
   // Cost is bounded and only paid when it is earned: the retry fires solely
   // when the chosen filing yielded ZERO verified entries, and each attempt is
   // cached under its own key so a re-run never re-bills it.
+  //
+  // C3 (Session 18, post-stage-2) — "WRONG COLUMN" IS NOT "NO SCHEDULE".
+  //
+  // The outcome test above asks only whether any entry survived, and two
+  // completely different failures produce the same zero. Measured on UHS:
+  // both of its 10-Qs carry a located, transcribed debt note, and every
+  // single entry of each was discarded because the model read the December 31
+  // comparative column instead of the filing's own period. The search then
+  // walked silently back to a February 10-K and rendered an eight-month-old
+  // ladder as the current position, beside an August 8-K.
+  //
+  // The fallback exists for a filing that ABBREVIATES its note — ordinary,
+  // and not an error. A filing whose note was read wrong is an error, and
+  // walking backwards past it hides the error behind a stale but tidy answer.
+  // So that case fails loudly and stops here, leaving the bucket to state
+  // that the note was found and misread — which is the truth, and is more
+  // use to an RM than a ladder quietly dated eight months ago.
   const debtIdx = results.findIndex((r) => r.triggerId === "debt-maturity");
   const debtTriggerDef = TRIGGERS.find((t) => t.id === "debt-maturity");
-  if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && usableDebtNoteFilings.length > 1) {
+  if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && baseColumnReadFailure) {
+    log(
+      `  ⚠ DEBT SCHEDULE READ FAILURE for ${debtTriggerDef.name.toLowerCase()} — the base filing's debt note was located and transcribed, but every entry stated a period column other than that filing's own period of report. This is a misread, not an absent schedule, so the search-order fallback does NOT run: an older filing's ladder would render clean while being months stale.`
+    );
+  } else if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && usableDebtNoteFilings.length > 1) {
     const label = debtTriggerDef.name.toLowerCase();
     for (let next = 1; next < usableDebtNoteFilings.length; next++) {
       const candidate = usableDebtNoteFilings[next];
@@ -1282,20 +1339,66 @@ function verifySourceLineAndScale<T extends { sourceLine: string; amount: string
 const MONTH_NAMES = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
 const MONTH_YEAR_RE = new RegExp(`\\b(${MONTH_NAMES.join("|")})\\s+((?:19|20)\\d{2})\\b`, "i");
 
+/**
+ * D2 (Session 18, post-stage-2) — SEARCH THE WHOLE LOCATED NOTE, NOT THE ROW'S
+ * OWN LINE.
+ *
+ * The first cut read only the row's own verified sourceLine, and the
+ * measurement taken from it — "0 of 28 year-only rows carry a month" —
+ * undercounted, because a filing routinely states maturity months in the
+ * PROSE around its table: a redemption discussion, a maturity-range sentence.
+ * Tenet's 6.125% due 2028 is the worked case, printed as "6.125 % due 2028"
+ * in the table and "6.125% senior notes due October 2028" in the narrative a
+ * few hundred characters away.
+ *
+ * THE AMBIGUITY RULE IS THE WHOLE SAFETY. A note mentioning two different
+ * months against the same year gives no basis to pick one, so the row stays
+ * year-only. Only a single unambiguous candidate is applied — this can
+ * sharpen a correct answer and can never move a row to a different year, both
+ * because the year must already match and because two candidates abstain.
+ */
+function monthsStatedForYear(noteText: string, year: string): number[] {
+  const re = new RegExp(`\b(${MONTH_NAMES.join("|")})\s+${year}\b`, "gi");
+  const found = new Set<number>();
+  for (const m of noteText.matchAll(re)) {
+    const idx = MONTH_NAMES.indexOf(m[1].toLowerCase());
+    if (idx >= 0) found.add(idx + 1);
+  }
+  return [...found];
+}
+
 function recoverStatedMonth<T extends { maturityDate: string | null; dateGranularity: DateGranularity | null; sourceLine: string }>(
   row: T,
   log: (line: string) => void,
   label: string,
-  describe: (row: T) => string
+  describe: (row: T) => string,
+  noteText?: string
 ): T {
   if (row.dateGranularity !== "year" || !row.maturityDate) return row;
+  const year = row.maturityDate.trim();
+
+  // 1. The row's own verified sourceLine — most specific, always wins.
   const m = row.sourceLine.match(MONTH_YEAR_RE);
-  if (!m) return row;
-  if (m[2] !== row.maturityDate.trim()) return row; // different year -> not this row's maturity; never override
-  const month = MONTH_NAMES.indexOf(m[1].toLowerCase()) + 1;
-  if (month < 1) return row;
-  const recovered = `${m[2]}-${String(month).padStart(2, "0")}-01`;
-  log(`  MATURITY MONTH RECOVERED for ${label} — "${describe(row)}" was bare year ${row.maturityDate}, but its own verified sourceLine prints "${m[0]}"; sharpened to ${recovered}`);
+  if (m && m[2] === year) {
+    const month = MONTH_NAMES.indexOf(m[1].toLowerCase()) + 1;
+    if (month >= 1) {
+      const recovered = `${year}-${String(month).padStart(2, "0")}-01`;
+      log(`  MATURITY MONTH RECOVERED for ${label} — "${describe(row)}" was bare year ${year}, but its own verified sourceLine prints "${m[0]}"; sharpened to ${recovered}`);
+      return { ...row, maturityDate: recovered, dateGranularity: "month" as DateGranularity };
+    }
+  }
+
+  // 2. The located debt note, but ONLY when it states exactly one month for
+  // this year. Two or more and there is nothing to choose between them.
+  if (!noteText) return row;
+  const candidates = monthsStatedForYear(noteText, year);
+  if (candidates.length === 0) return row;
+  if (candidates.length > 1) {
+    log(`  MATURITY MONTH AMBIGUOUS for ${label} — "${describe(row)}" is bare year ${year}, and the note states ${candidates.length} different months against ${year}; held at year precision rather than picked`);
+    return row;
+  }
+  const recovered = `${year}-${String(candidates[0]).padStart(2, "0")}-01`;
+  log(`  MATURITY MONTH RECOVERED for ${label} — "${describe(row)}" was bare year ${year}; the located debt note states exactly one month for ${year}; sharpened to ${recovered}`);
   return { ...row, maturityDate: recovered, dateGranularity: "month" as DateGranularity };
 }
 
@@ -1333,9 +1436,14 @@ function verifySequenceEntries(
   noteSpanByUrl: Map<string, { start: number; end: number }>
 ): VerifiedSequenceEntry[] {
   const verified = verifySourceLineAndScale(entries, citedUrls, textByUrl, log, label, (e) => e.label ?? e.kind, noteSpanByUrl);
+  const noteTextFor = (url: string): string | undefined => {
+    const span = noteSpanByUrl.get(url);
+    const text = textByUrl.get(url);
+    return span && text ? text.slice(span.start, span.end) : undefined;
+  };
   return verified.map((entry) =>
     entry.kind === "row"
-      ? withVerifiedMaturity(recoverStatedMonth(entry, log, label, (e) => e.label ?? "row"), log, label, (e) => e.label ?? "row")
+      ? withVerifiedMaturity(recoverStatedMonth(entry, log, label, (e) => e.label ?? "row", noteTextFor(entry.citedUrl)), log, label, (e) => e.label ?? "row")
       : entry
   );
 }
@@ -1410,6 +1518,7 @@ function finalize(
   debtScheduleBaseFiling: DebtScheduleFilingRef | null,
   debtSchedulePriorFiling: DebtScheduleFilingRef | null,
   rowAccounting: { rowsExtracted: number; rowsVerified: number },
+  columnReadFailure: boolean,
   scheduleCompleteness: ScheduleCompletenessResult | null
 ): TriggerResult {
   const narrowedCitedUrls = narrowCitationsToBackedFilings(
@@ -1444,6 +1553,7 @@ function finalize(
     debtSchedulePriorFiling: trigger.id === "debt-maturity" ? debtSchedulePriorFiling : null,
     rowsExtracted: rowAccounting.rowsExtracted,
     rowsVerified: rowAccounting.rowsVerified,
+    columnReadFailure,
     scheduleCompleteness,
     redeems: v.redeems,
     issuedTranches: debtFields.issuedTranches,

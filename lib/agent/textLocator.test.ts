@@ -232,6 +232,29 @@ const CHS = "6 ⅞% Senior Notes due 2028 $ 42 $ 42 6 % Senior Secured Notes due
   assert(absent.verified && absent.sourceSpan !== null, "[15c] preference is never a filter — with no occurrence in range the first is still returned, rather than failing");
 }
 
+// ============================================================================
+// 7. C1 — A NIL CELL IS NOT CONTENT.
+//
+// Quest's note prints "3.45 % Senior Note due June 2026 $ — $ 501": the
+// current column is nil, the prior column carries the balance. The model
+// transcribes the row without the dash, and that one omitted cell was the
+// entire reason the row failed literal verification.
+// ============================================================================
+{
+  const QUEST = "3.45 % Senior Note due June 2026 $ — $ 501 4.60 % Senior Notes due December 2027 400 400";
+  assert(quoteAppearsIn("3.45 % Senior Note due June 2026 501", QUEST), "[16a] the row quoted WITHOUT the nil cell matches text that prints one");
+  assert(quoteAppearsIn("3.45 % Senior Note due June 2026 — 501", QUEST), "[16b] ...and quoting WITH it still matches — the rule folds both ways");
+  const at = createTextLocator(QUEST).find("3.45 % Senior Note due June 2026 501");
+  assert(at === 0, `[16c] and the raw offset still points at the row's real start (got ${at})`);
+}
+
+// --- A dash that is NOT a standalone cell keeps its meaning. ---
+{
+  assert(quoteAppearsIn("Long-term debt", "Long-term debt 16,030"), "[17a] a hyphen inside a word is untouched");
+  assert(!quoteAppearsIn("2026-03-31", "2026 03 31"), "[17b] an ISO date's separators are untouched — it does not collapse to a bare run of numbers");
+  assert(createTextLocator("Total 5,642 less 10").find("Total 5,642 10") === null, "[17c] and dropping a nil cell never lets unrelated cells slide together into a false match");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`); process.exit(1); }
 else console.log("\nALL TEXT-LOCATOR GOLDEN TESTS PASSED");

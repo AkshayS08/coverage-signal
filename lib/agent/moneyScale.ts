@@ -69,6 +69,20 @@ export interface MoneyScaleCheck {
  */
 const MAX_PLAUSIBLE_SCALED_TABLE_FIGURE = 100_000_000;
 
+/**
+ * True when this amount field is the accounting convention for nil — a dash,
+ * alone, with nothing but a currency glyph and whitespace around it. Exported
+ * because three layers need the SAME answer: the scale check (which must not
+ * call it indeterminate), position.ts's parseMoneyAmount (which must value it
+ * at 0, not fail to parse), and the render layer (which marks the tranche
+ * repaid). A dash sitting inside a figure — a minus sign, a numeric range —
+ * is deliberately not matched.
+ */
+export function isStatedZeroAmount(raw: string | null): boolean {
+  if (raw === null) return false;
+  return /^[\s$£€¥]*[-‐-―]+[\s$£€¥]*$/.test(raw);
+}
+
 export function checkMoneyScale(raw: string | null): MoneyScaleCheck {
   if (raw === null || !raw.trim()) return { determinable: true }; // null/empty is a valid "nothing stated" — not a scale failure
   // Parens can fall in more than one place around a negative accounting
@@ -82,6 +96,20 @@ export function checkMoneyScale(raw: string | null): MoneyScaleCheck {
   // consistently or a value could parse fine downstream while still being
   // wrongly flagged as indeterminate here.
   const withoutParens = raw.replace(/[()]/g, "");
+  // C1 (Session 18, post-stage-2) — AN EM-DASH IS A STATED ZERO.
+  //
+  // "$ —" in an amount column is the accounting convention for nil, and nil
+  // is a FACT: the tranche was repaid. Treating it as an undeterminable scale
+  // dropped the row entirely, which loses that fact and inflates the drop
+  // count with entries that were transcribed perfectly. Seven of the fourteen
+  // base-ladder drops measured this session are this shape — six Cigna notes
+  // repaid or reclassified at year end, and Quest's 3.45% Senior Note due
+  // June 2026, matured in the quarter the filing reports.
+  //
+  // Scoped tightly: the whole field must be a dash, optionally with a
+  // currency glyph and whitespace. A dash INSIDE a figure is a minus sign or
+  // a range and is not touched.
+  if (isStatedZeroAmount(withoutParens)) return { determinable: true };
   const tokens = extractFactTokens(withoutParens).filter((t) => t.kind === "money");
   if (tokens.length === 0) return { determinable: false, raw }; // no money-shaped token at all in a field meant to be one
 

@@ -270,6 +270,12 @@ function timingPhraseFor(t: TriggerResult, timing: TimingInfo, description: stri
 /** Session 18 F1: a ladder row's own timing phrase — never blank, same never-blank floor as timingPhraseFor above, but with the row's OWN status folded in (unconfirmed is a distinct explanation, not just a missing date). */
 function refiTimingPhrase(row: LadderRow, timing: TimingInfo): string {
   if (row.status === "unconfirmed") return "unconfirmed — dropped from newest filing, no redemption explaining it";
+  if (row.status === "repaid") return "repaid — filing states a nil balance";
+  if (row.status === "matured") {
+    return row.retiredBy
+      ? `matured ${row.maturityDate} — refinanced: ${row.retiredBy.evidence.slice(0, 90)}`
+      : `matured ${row.maturityDate} — nothing in these filings states how it was repaid`;
+  }
   if (timing.monthsToNearestFuture !== null) {
     if (timing.dateGranularity === "year") return `matures ${row.maturityDate}`;
     return `${timing.monthsToNearestFuture}mo out`;
@@ -309,8 +315,16 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
     };
   }
 
-  const position = assemblePosition(result);
-  const displayRows = position.rows.filter((r) => r.status !== "retired"); // already sorted by maturity
+  const position = assemblePosition(result, now);
+  // A retired row never gets its own table line — it only explains a live one
+  // via a card's KEY POINT. Everything else renders.
+  //
+  // Ordering, not filtering: repaid and matured rows are HISTORY, and sorting
+  // them purely by maturity would put them at the top (their dates are the
+  // earliest) and push the nearest live tranches out of the named list
+  // entirely. They keep their place in the ladder, below the live rows.
+  const historical = (r: LadderRow) => (r.status === "repaid" || r.status === "matured" ? 1 : 0);
+  const displayRows = position.rows.filter((r) => r.status !== "retired").sort((a, b) => historical(a) - historical(b));
   const nearestRows = displayRows.slice(0, NAMED_TRANCHE_COUNT);
   const tailRows = displayRows.slice(NAMED_TRANCHE_COUNT);
 
@@ -342,6 +356,11 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // otherwise-aggregate company).
   const rawRows = (debtMaturity.scheduleSequence ?? []).filter((e) => e.kind === "row");
   const isAggregateDisclosure = rawRows.length > 0 && rawRows.every((r) => r.dateGranularity !== "day" && r.dateGranularity !== "month");
+
+  const sourceCitation: TriggerResult["citations"][number] | null = position.baseFiling
+    ? { form: position.baseFiling.form, date: position.baseFiling.date, url: position.baseFiling.url }
+    : (debtMaturity.citations[0] ?? null);
+  const sourceCitationText = sourceCitation ? `${sourceCitation.form} ${sourceCitation.date}` : "the base filing";
 
   const finalSubtotalText = position.finalSubtotal ? `${position.finalSubtotal.label ?? "a total"} of ${position.finalSubtotal.amount}` : null;
 
@@ -377,7 +396,16 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // ladder is never suppressed, only the claim that these particular rows
   // are it.
   const gapPct = position.walkGapFraction === null ? null : Math.round(position.walkGapFraction * 100);
-  const completenessStatement = position.rowsNotVerifiedAsTranscribed
+  // C3 — a note that WAS located and transcribed, with the wrong column read.
+  // Distinct from an absent schedule, and it must say so: an empty ladder
+  // otherwise reads as "this company discloses no tranche detail", which is
+  // the opposite of the truth. The search-order fallback deliberately does
+  // not run here (lib/agent/loop.ts), so there is no older ladder standing in
+  // front of this statement.
+  const columnReadFailure = debtMaturity.columnReadFailure;
+  const completenessStatement = columnReadFailure
+    ? `NOTE FOUND BUT READ WRONG — the debt note in ${sourceCitationText} was located and transcribed, but every row carried a period column other than that filing's own period of report, so none could be trusted. This is a misread, not an absent disclosure; an older filing's ladder is deliberately NOT substituted. Read the filing.`
+    : position.rowsNotVerifiedAsTranscribed
     ? `TRANSCRIPTION NOT VERIFIED — the note states ${finalSubtotalText ?? "a total"}, but the rows below sum ${gapPct}% short of it. The rows are shown as extracted and are NOT this company's position; read the filing. (${check1Clause}; ${check2Clause})`
     : isAggregateDisclosure
       ? `aggregate disclosure — ${tranchCount} line${tranchCount === 1 ? "" : "s"} reported as category total${tranchCount === 1 ? "" : "s"}, no individual tranche maturities stated in this filing (${check1Clause}; ${check2Clause})`
@@ -388,9 +416,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // and what the model was explicitly told to use) over citations[0], which
   // is just whichever citation the model happened to list first and isn't
   // guaranteed to be the actual debtSchedule source filing.
-  const sourceCitation: TriggerResult["citations"][number] | null = position.baseFiling
-    ? { form: position.baseFiling.form, date: position.baseFiling.date, url: position.baseFiling.url }
-    : (debtMaturity.citations[0] ?? null);
+
 
   // Session 18 (post-v11) — prior-period CONTEXT, never a substitution. Only
   // when the base ladder failed BOTH checks does the older filing's schedule

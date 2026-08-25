@@ -110,6 +110,7 @@ function baseTriggerResult(over: Partial<TriggerResult> & { triggerId: string })
     issuedTranches: [],
     cashAmount: null,
     projectName: null,
+    columnReadFailure: false,
     ...over,
   };
 }
@@ -547,11 +548,54 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   const c = assemblePosition(clean);
   assert(c.walkGapFraction === null && !c.rowsNotVerifiedAsTranscribed, "[A3-5] REVERSE: a ladder that ties reports no gap and makes no disclaimer");
 
-  if (failed > 0) {
-    console.error(`\nA3 FAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);
-    process.exit(1);
-  }
-  console.log(`A3: ${passed} total assertions passed.`);
+}
+
+// ============================================================================
+// C1 / D3 — REPAID AND MATURED ARE FACTS, NOT ABSENCES.
+//
+// Both render, neither cards, and they are different statements: "the filing
+// says this tranche is at nil" and "the date the filing stated has passed"
+// carry different information for an RM, and collapsing either into a bare
+// disappearance loses it.
+// ============================================================================
+{
+  const NOW = new Date("2026-08-25T00:00:00Z");
+  const dm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    scheduleSequence: [
+      row({ label: "1.250 % Notes due March 2026", rate: "1.250%", maturityDate: "2026-03-01", dateGranularity: "month", amount: "$549 million" }),
+      row({ label: "3.250 % Notes due April 2025", rate: "3.250%", maturityDate: "2025-04-01", dateGranularity: "month", amount: "$ —" }),
+      row({ label: "4.500 % Notes due September 2030", rate: "4.500%", maturityDate: "2030-09-15", dateGranularity: "day", amount: "$993 million" }),
+      row({ label: "Notes due 2026", rate: "5.000%", maturityDate: "2026", dateGranularity: "year", amount: "$400 million" }),
+    ],
+  });
+  const pos = assemblePosition(companyWith([dm]), NOW);
+  const byLabel = (l: string) => pos.rows.find((r) => r.instrument === l)!;
+
+  assert(byLabel("3.250 % Notes due April 2025").status === "repaid", "[C1-8] a row the filing states at nil is REPAID — not dropped, and not merely matured");
+  assert(byLabel("1.250 % Notes due March 2026").status === "matured", "[D3-1] a row whose stated maturity has passed is MATURED, never live");
+  assert(byLabel("4.500 % Notes due September 2030").status === "live", "[D3-2] REVERSE: a future maturity is untouched");
+  assert(byLabel("Notes due 2026").status === "live", "[D3-3] REVERSE: a BARE YEAR is not matured until the WHOLE year is — the filing never said which month of 2026");
+  assert(pos.rows.length === 4, "[C1-9] NEVER SUPPRESSED — all four rows are still on the ladder");
+  assert(!byLabel("1.250 % Notes due March 2026").retiredBy, "[D3-4] with nothing in the corpus explaining the repayment, nothing is claimed about it");
+}
+
+// --- D3, the other half: where an issuance DOES name the matured tranche,
+// that explanation is attached rather than inferred. ---
+{
+  const NOW = new Date("2026-08-25T00:00:00Z");
+  const dm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    scheduleSequence: [row({ label: "3.45 % Senior Note due June 2026", rate: "3.45%", maturityDate: "2026-06-01", dateGranularity: "month", amount: "$501 million" })],
+  });
+  const issuance = baseTriggerResult({
+    triggerId: "new-debt-issuance",
+    redeems: "3.45% Senior Notes due June 2026",
+    citations: [{ form: "8-K", date: "2026-05-08", url: "https://example.com/8k" }],
+  });
+  const pos = assemblePosition(companyWith([dm, issuance]), NOW);
+  const r = pos.rows[0];
+  assert(r.status === "retired" || (r.status === "matured" && !!r.retiredBy), `[D3-5] a matured tranche an issuance names carries that explanation (status ${r.status}, explained ${!!r.retiredBy})`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

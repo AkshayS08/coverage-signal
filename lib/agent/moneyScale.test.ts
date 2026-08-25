@@ -9,7 +9,7 @@
  *
  * Run: npx tsx lib/agent/moneyScale.test.ts
  */
-import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, scaleWordFromDeclaration } from "./moneyScale";
+import { isStatedZeroAmount, checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, scaleWordFromDeclaration } from "./moneyScale";
 import { extractFactTokens } from "./factTokens";
 
 let passed = 0;
@@ -222,6 +222,24 @@ assert(hasDeterminableMoneyScale("$3,769 millions"), "[39] plural 'millions' on 
   const v = extractFactTokens("$549 million").filter((t) => t.kind === "money").find((t) => t.moneyValue !== undefined)?.moneyValue;
   assert(v === 549_000_000, "[42] the singular form is unchanged");
 }
+
+// ============================================================================
+// C1 (Session 18, post-stage-2) — AN EM-DASH IS A STATED ZERO.
+//
+// "$ —" is the accounting convention for nil, and nil is a fact: the tranche
+// was repaid. Reading it as an undeterminable scale dropped the row and lost
+// the fact. Seven of the fourteen base-ladder drops measured this session
+// were this shape.
+// ============================================================================
+assert(isStatedZeroAmount("$ —"), "[C1-1] '$ —' is a stated zero");
+assert(isStatedZeroAmount("—") && isStatedZeroAmount(" - ") && isStatedZeroAmount("–"), "[C1-2] so are a bare em-dash, a spaced hyphen and an en-dash");
+assert(checkMoneyScale("$ —").determinable, "[C1-3] and it is a DETERMINABLE amount, not an indeterminate scale");
+
+// --- REVERSE: a dash carrying a figure is not a zero, and must not become one. ---
+assert(!isStatedZeroAmount("$ -549 million"), "[C1-4] REVERSE: a negative figure is not a stated zero");
+assert(!isStatedZeroAmount("2026-03-31"), "[C1-5] REVERSE: nor is a date");
+assert(!isStatedZeroAmount("$ 549"), "[C1-6] REVERSE: nor is an ordinary figure");
+assert(!isStatedZeroAmount(""), "[C1-7] REVERSE: an empty field is not a stated zero — it is nothing stated");
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) {

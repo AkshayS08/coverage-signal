@@ -107,6 +107,18 @@ function isDigitCode(code: number): boolean {
   return code >= 48 && code <= 57;
 }
 
+function isDashCode(code: number): boolean {
+  return code === 45 || (code >= 0x2010 && code <= 0x2015);
+}
+
+/** A run of dashes at `i` that is bounded by whitespace/currency (or the string edge) on the far side — a nil table cell, not a hyphen or a minus sign. */
+function isStandaloneDashAt(s: string, i: number): boolean {
+  if (i >= s.length || !isDashCode(s.charCodeAt(i))) return false;
+  let j = i;
+  while (j < s.length && isDashCode(s.charCodeAt(j))) j++;
+  return j >= s.length || isSpaceOrCurrency(s.charCodeAt(j));
+}
+
 /**
  * THE single normalization. Previously this existed twice — once as a chain
  * of regex replaces for the needle, once as a character walker for the
@@ -154,6 +166,23 @@ function normalizeCore(s: string, wantMap: boolean): { normalized: string; map: 
       // number ("4 ¾%"), not a gap between tokens — emit nothing, so the
       // fraction binds to its own integer part.
       if (i < n && VULGAR_FRACTIONS[s[i]] !== undefined && isDigitCode(normalized.charCodeAt(normalized.length - 1))) continue;
+      // C1, second face — A NIL CELL IS NOT CONTENT.
+      //
+      // Quest's note prints "3.45 % Senior Note due June 2026 $ — $ 501": the
+      // current column is nil and the prior column carries the balance. The
+      // model transcribes the row without the dash, and that single omitted
+      // cell is the whole reason the row fails literal verification. Same
+      // class as the currency glyph — a dash standing alone between cells
+      // carries no identifying content, and it is dropped from BOTH sides, so
+      // a quote that includes it and one that omits it agree.
+      //
+      // Bounded to a dash that is whitespace-delimited on both sides, so a
+      // hyphen inside a word ("Long-term"), a minus sign against digits, and
+      // an ISO date's separators are all untouched.
+      if (isStandaloneDashAt(s, i)) {
+        while (i < n && isDashCode(s.charCodeAt(i))) i++;
+        continue; // stay in the run: the whitespace after it folds in too
+      }
       emit(" ", runStart);
       continue;
     }

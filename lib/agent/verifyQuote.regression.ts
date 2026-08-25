@@ -187,6 +187,7 @@ async function main() {
         issuedTranches: [],
         cashAmount: null,
         projectName: null,
+    columnReadFailure: false,
       },
       {
         triggerId: "new-debt-issuance",
@@ -219,6 +220,7 @@ async function main() {
         issuedTranches: [],
         cashAmount: null,
         projectName: null,
+    columnReadFailure: false,
       },
     ],
   };
