@@ -98,20 +98,77 @@ const UHS_FILING = [
 const UHS_LINE = "$800 million, 2.65% Senior Notes due 2030 (a.) 5,300 5,100";
 
 assert(!amountAppearsIn("$800,000 thousands", UHS_FILING), "[6b] precondition — the digit group '800,000' genuinely does NOT appear in UHS's filing");
+
+// A1 (post-stage-2): amountCorroborated is now BOUNDED — it takes the row's
+// own matched span and the located note span, because an unbounded scan over
+// a whole filing corroborates almost anything. `spanOf` gives each assertion
+// the row's real position in its own fixture rather than a hand-picked
+// number, so these stay honest if the fixtures are edited.
+const spanOf = (text: string, row: string) => {
+  const at = text.indexOf(row);
+  return at < 0 ? null : { start: at, end: at + row.length };
+};
+const WHOLE = (text: string) => ({ start: 0, end: text.length });
+
 assert(
-  amountCorroborated("$800,000 thousands", UHS_LINE, UHS_FILING),
-  "[6c] ...but $800,000 thousands is KEPT, because its VALUE matches the '$800 million' its own verified sourceLine prints"
+  amountCorroborated("$800,000 thousands", UHS_LINE, UHS_FILING, spanOf(UHS_FILING, UHS_LINE), null),
+  "[6c] $800,000 thousands is KEPT, because its VALUE matches the '$800 million' its own verified row prints"
 );
 assert(
-  !amountCorroborated("$373,000 thousands", "Revolving credit facility (a.) 3,371 2,692", UHS_FILING),
+  !amountCorroborated("$373,000 thousands", "Revolving credit facility (a.) 3,371 2,692", UHS_FILING, null, null),
   "[6d] a revolver balance neither printed nor value-matched anywhere is still REJECTED — the fallback still bites"
 );
-// --- The CHS case must survive the new escape hatch: a caption with no
-// figure in it can never corroborate anything by value. ---
-assert(!amountCorroborated("$ 45,828 million", "Total long-term debt", CHS_FILING), "[6e] CHS's fabricated subtotal is still rejected — its caption carries no figure to match against");
-assert(amountCorroborated("$ 11,624 million", "Total long-term debt", CHS_FILING), "[6f] and CHS's real subtotal on that same caption is still kept, via the digit scan");
+// --- The CHS case must survive the escape hatch: a caption with no figure in
+// it can never corroborate anything by value. ---
+const CHS_TOTAL_ROW = "Total long-term debt 11,624";
+assert(
+  !amountCorroborated("$ 45,828 million", "Total long-term debt", CHS_FILING, spanOf(CHS_FILING, CHS_TOTAL_ROW), WHOLE(CHS_FILING)),
+  "[6e] CHS's fabricated subtotal is still rejected — its caption carries no figure to match against, and 45,828 is not printed beside it"
+);
+assert(
+  amountCorroborated("$ 11,624 million", "Total long-term debt", CHS_FILING, spanOf(CHS_FILING, CHS_TOTAL_ROW), WHOLE(CHS_FILING)),
+  "[6f] and CHS's real subtotal on that same caption is still kept — 11,624 IS printed on that row"
+);
 // --- Value matching is EXACT: near-misses are different figures. ---
-assert(!amountCorroborated("$801,000 thousands", UHS_LINE, "no digits here"), "[6g] $801,000 does not match a printed $800 million — exact value equality, never a tolerance");
+assert(!amountCorroborated("$801,000 thousands", UHS_LINE, "no digits here", null, null), "[6g] $801,000 does not match a printed $800 million — exact value equality, never a tolerance");
+
+// ============================================================================
+// PART 1c — A1: THE BOUNDS THEMSELVES. Live case: CHS's ladder carried an
+// $708M "ABL Facility" row whose sourceLine — "Proceeds from ABL Facility
+// 708" — is a genuine line of the filing, from the CASH FLOW STATEMENT. The
+// real debt note prints that facility as zero. It verified literally and the
+// amount scan found "708" because "708" was right there in the cash-flow
+// line. Only the note-span bound separates the two.
+// ============================================================================
+const CHS_WITH_CASHFLOW = [
+  "COMMUNITY HEALTH SYSTEMS, INC. Condensed Consolidated Statements of Cash Flows",
+  "Issuance of long-term debt — 700 Proceeds from ABL Facility 708 2,189 Repayments of long-term debt",
+  "................................................................",
+  "NOTE 5 — LONG-TERM DEBT",
+  "Dollar amounts are expressed in millions.",
+  "ABL Facility — —",
+  "Total long-term debt 11,624",
+].join("\n");
+const NOTE_START = CHS_WITH_CASHFLOW.indexOf("NOTE 5 — LONG-TERM DEBT");
+const NOTE_SPAN = { start: NOTE_START, end: CHS_WITH_CASHFLOW.length };
+const CASHFLOW_ROW = "Proceeds from ABL Facility 708";
+
+assert(
+  amountCorroborated("$ 708 million", CASHFLOW_ROW, CHS_WITH_CASHFLOW, spanOf(CHS_WITH_CASHFLOW, CASHFLOW_ROW), null),
+  "[6h] precondition — with NO note bound, the cash-flow row corroborates its own $708M perfectly. This is the bug."
+);
+assert(
+  !amountCorroborated("$ 708 million", CASHFLOW_ROW, CHS_WITH_CASHFLOW, spanOf(CHS_WITH_CASHFLOW, CASHFLOW_ROW), NOTE_SPAN),
+  "[6i] ...and with the note bound applied it is REJECTED — the row is real, but it is not a debt-schedule row"
+);
+assert(
+  amountCorroborated("$ 11,624 million", "Total long-term debt 11,624", CHS_WITH_CASHFLOW, spanOf(CHS_WITH_CASHFLOW, "Total long-term debt 11,624"), NOTE_SPAN),
+  "[6j] REVERSE: a real row INSIDE the note is unaffected by the same bound"
+);
+assert(
+  !amountCorroborated("$ 2,189 million", "ABL Facility — —", CHS_WITH_CASHFLOW, spanOf(CHS_WITH_CASHFLOW, "ABL Facility — —"), NOTE_SPAN),
+  "[6k] a figure printed elsewhere in the SAME filing no longer corroborates a row it is not printed beside"
+);
 
 // ============================================================================
 // PART 2 — cashAmount resolves from the filing's own declaration.

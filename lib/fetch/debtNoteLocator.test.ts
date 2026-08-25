@@ -178,20 +178,22 @@ const FULL_DOC_WITH_SCHEDULE = `${LEAD_FILLER}\n\nLong-Term Debt\n${REAL_SHAPE_S
 }
 
 // ============================================================================
-// [13] PINNED CLUSTER CHOICE — all 10 companies, against their REAL base
+// [13] PINNED SPAN CHOICE — all 10 companies, against their REAL base
 // filings.
 //
-// This is the safety net that makes shipping a one-proxy selection rule
-// defensible. locateDebtNoteSection now picks by MAGNITUDE rather than
-// cluster density (see its doc comment), and that rule's correctness was
-// established against ONE snapshot of base filings — every company's base is
-// currently a 10-Q. The rule was previously rejected on a snapshot where
-// HCA's base was a 10-K containing a stray "250,000,000", so a future filing
-// can genuinely flip the answer.
+// This is the safety net that makes shipping a selection rule defensible.
+// locateDebtNoteSection now selects HEADING-FIRST (B2): the block under a
+// numbered debt-note heading that actually has a table attached beneath it,
+// with coupon density plus magnitude used only where no such heading exists.
+// `via` is pinned alongside the offsets, so a company silently dropping from
+// the heading path to the density fallback fails here rather than quietly
+// changing what the model is handed.
 //
-// These pins make that flip LOUD. Each company asserts the exact offset the
-// rule selects today, so a new filing that changes which table gets extracted
-// fails here instead of silently changing what the model is handed.
+// Nine of the ten now resolve via their own heading. Universal Health
+// Services is pinned as "density" because its 10-Q genuinely carries no
+// numbered debt-note heading at all — its schedule lives only in the 10-K,
+// which the search-order rule reaches. That is a real property of the filing,
+// not a gap in the rule.
 //
 // IF ONE OF THESE FAILS, DO NOT RETUNE THE PIN TO MATCH. A failure means
 // either a new filing became the base (re-measure and re-pin deliberately,
@@ -203,17 +205,17 @@ const FULL_DOC_WITH_SCHEDULE = `${LEAD_FILLER}\n\nLong-Term Debt\n${REAL_SHAPE_S
 // zero model calls. It does need filing access, so it is a hard dependency
 // rather than a skip — a pin that quietly skips protects nothing.
 async function checkPins() {
-  const PINS: { company: string; form: string; start: number; end: number; matchCount: number; note: string }[] = [
-    { company: "DaVita", form: "10-Q", start: 26811, end: 30152, matchCount: 10, note: "CORRECTED by magnitude: density picked the interest-rate-cap table at 31261" },
-    { company: "HCA Healthcare", form: "10-Q", start: 33278, end: 34496, matchCount: 5, note: "unchanged by magnitude" },
-    { company: "Tenet Healthcare", form: "10-Q", start: 32959, end: 34115, matchCount: 10, note: "unchanged by magnitude" },
-    { company: "Universal Health Services", form: "10-Q", start: 279162, end: 282193, matchCount: 9, note: "KNOWN MISS: interest-expense table wins on magnitude too" },
-    { company: "Encompass Health", form: "10-Q", start: 40145, end: 41081, matchCount: 4, note: "unchanged by magnitude" },
-    { company: "Community Health Systems", form: "10-Q", start: 49227, end: 51119, matchCount: 5, note: "CORRECTED by magnitude: density picked ABL prose at 129587 (no grouped figure at all)" },
-    { company: "Quest Diagnostics", form: "10-Q", start: 39325, end: 41175, matchCount: 13, note: "unchanged by magnitude" },
-    { company: "Centene Corporation", form: "10-Q", start: 52513, end: 53756, matchCount: 7, note: "unchanged by magnitude" },
-    { company: "Cigna Group", form: "10-K", start: 318130, end: 322218, matchCount: 37, note: "KNOWN MISS: anti-dilutive EPS table wins on magnitude too" },
-    { company: "Molina Healthcare", form: "10-Q", start: 28306, end: 29350, matchCount: 5, note: "unchanged by magnitude" },
+  const PINS: { company: string; form: string; via: "heading" | "density"; start: number; end: number; matchCount: number }[] = [
+    { company: "DaVita", form: "10-Q", via: "heading", start: 26757, end: 30166, matchCount: 10 },
+    { company: "HCA Healthcare", form: "10-Q", via: "heading", start: 32472, end: 34562, matchCount: 5 },
+    { company: "Tenet Healthcare", form: "10-Q", via: "heading", start: 33013, end: 34307, matchCount: 10 },
+    { company: "Universal Health Services", form: "10-Q", via: "density", start: 279162, end: 282193, matchCount: 9 },
+    { company: "Encompass Health", form: "10-Q", via: "heading", start: 40129, end: 41110, matchCount: 4 },
+    { company: "Community Health Systems", form: "10-Q", via: "heading", start: 48294, end: 51157, matchCount: 13 },
+    { company: "Quest Diagnostics", form: "10-Q", via: "heading", start: 39415, end: 42534, matchCount: 13 },
+    { company: "Centene Corporation", form: "10-Q", via: "heading", start: 52644, end: 53972, matchCount: 7 },
+    { company: "Cigna Group", form: "10-K", via: "heading", start: 318174, end: 322264, matchCount: 37 },
+    { company: "Molina Healthcare", form: "10-Q", via: "heading", start: 37461, end: 38402, matchCount: 5 },
   ];
 
   const USABLE = new Set<DebtNoteFilingStatus>(["found", "under_cap"]);
@@ -245,31 +247,31 @@ async function checkPins() {
       continue;
     }
     assert(
-      loc.start === pin.start && loc.end === pin.end && loc.matchCount === pin.matchCount,
-      `[13] ${pin.company}: cluster choice pinned at start=${pin.start} end=${pin.end} matches=${pin.matchCount} ` +
-        `(got start=${loc.start} end=${loc.end} matches=${loc.matchCount}) — ${pin.note}`
+      loc.via === pin.via && loc.start === pin.start && loc.end === pin.end && loc.matchCount === pin.matchCount,
+      `[13] ${pin.company}: span pinned at via=${pin.via} start=${pin.start} end=${pin.end} matches=${pin.matchCount} ` +
+        `(got via=${loc.via} start=${loc.start} end=${loc.end} matches=${loc.matchCount})`
     );
   }
 }
 
 
 // ============================================================================
-// [14] DEBT-NOTE HEADING ASSERTION — pinned per company, DERIVED FROM A RUN.
+// [14] DEBT-NOTE HEADING — pinned per company, DERIVED FROM A RUN.
 //
-// A debt schedule lives under a titled, numbered note. This asserts the
-// located span contains one, which is an INDEPENDENT check on the locator:
-// coupon density can land on an interest-expense or fair-value table that
-// shares the rate-near-year signature, and neither sits under a "N. Debt"
-// heading.
+// Under heading-first selection this is no longer only an audit of a span
+// density chose; it is a record of which heading each company's span is
+// anchored to, so a change of anchor is visible.
 //
-// The two FAILs below are not gaps in the rule — they are the rule working.
-// UHS's 10-Q span is its interest-expense-by-instrument table and Molina's is
-// its fair-value disclosure; both were confirmed wrong independently, by
-// reading the filings. UHS is already handled (the search-order fallback
-// moves it to the 10-K, which does carry a real note). Molina is NOT handled
-// and reconciles only because its real note at char 37,661 falls inside the
-// 40k lead window the model always receives — so this assertion is currently
-// the only thing that would notice if that ever stopped being true.
+// Molina flipped from null to "7. Debt" with B2, and that flip retired a
+// logged limitation rather than papering over one: magnitude tie-breaking
+// used to prefer Molina's FAIR-VALUE disclosure (largest figure 3,951) over
+// its carrying-amount schedule (3,769), and the company reconciled only
+// because its real note happened to fall inside the 40k lead window every
+// filing gets regardless of the locator. The heading now selects the real
+// note directly, in the 10-Q and the 10-K alike.
+//
+// UHS stays null: its 10-Q carries no numbered debt-note heading, which is a
+// fact about the filing. See [13].
 //
 // Values are emitted by the assertion itself, never hand-written, so a pin
 // can never encode what someone wished were true.
@@ -285,7 +287,7 @@ async function checkHeadingPins() {
     { company: "Quest Diagnostics", form: "10-Q", hasHeading: true, heading: "7. DEBT" },
     { company: "Centene Corporation", form: "10-Q", hasHeading: true, heading: "8. Debt" },
     { company: "Cigna Group", form: "10-K", hasHeading: true, heading: "Note 7 – Debt" },
-    { company: "Molina Healthcare", form: "10-Q", hasHeading: false, heading: null },
+    { company: "Molina Healthcare", form: "10-Q", hasHeading: true, heading: "7. Debt" },
   ];
   const USABLE2 = new Set<DebtNoteFilingStatus>(["found", "under_cap"]);
   for (const pin of PINS) {

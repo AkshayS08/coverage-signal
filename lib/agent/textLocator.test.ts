@@ -12,7 +12,7 @@
  *
  * Run: npx tsx lib/agent/textLocator.test.ts
  */
-import { createTextLocator, quoteAppearsIn } from "./verifyQuote";
+import { createTextLocator, quoteAppearsIn, verifyClaim } from "./verifyQuote";
 
 let passed = 0;
 let failed = 0;
@@ -103,6 +103,134 @@ const TENET = "Senior unsecured notes:     6.125 % due 2028 $ 1,750   $ 1,750   
 // --- A currency glyph alone carries no identity, so a needle made only of
 // glyphs must not match everything. ---
 assert(createTextLocator(TENET).find("$") === null, "[6] a bare '$' needle normalizes to nothing and matches nothing");
+
+// ============================================================================
+// 4. VULGAR FRACTION ↔ DECIMAL EQUIVALENCE (Session 18, post-stage-1).
+//
+// CHS's real 10-Q shape: the table prints fractions, the model returns
+// decimals, and the row dropped carrying an amount that was exactly right.
+// ============================================================================
+/** CHS's real note text, verbatim, fraction glyphs and all. */
+const CHS = "6 ⅞% Senior Notes due 2028 $ 42 $ 42 6 % Senior Secured Notes due 2029 644 644 5 ¼% Senior Secured Notes due 2030 1,535 1,535 4 ¾% Senior Secured Notes due 2031 689 1,058 10 ⅞% Senior Secured Notes due 2032 1,549 2,003";
+
+{
+  const loc = createTextLocator(CHS);
+  assert(loc.find("4.750% Senior Secured Notes due 2031 689") !== null, "[7a] the model's decimal row locates in a filing that prints '4 ¾%'");
+  assert(loc.find("10.875% Senior Secured Notes due 2032 1,549") !== null, "[7b] a two-digit integer part binds to its fraction ('10 ⅞%' -> 10.875)");
+  assert(quoteAppearsIn("5.250% Senior Secured Notes due 2030 1,535", CHS), "[7c] quoteAppearsIn agrees on the fraction rule too");
+  const at = loc.find("4.750% Senior Secured Notes due 2031 689");
+  assert(at !== null && CHS.slice(at).startsWith("4 ¾%"), `[7d] and the RAW offset points at the real row start, unskewed by the 1-char->3-char expansion (got ${JSON.stringify(CHS.slice(at ?? 0, (at ?? 0) + 12))})`);
+}
+
+// --- Both directions: a filing printing decimals matches a fraction needle.
+// Deliberately spelled with the SAME spacing on both sides, so this asserts
+// the fraction rule and nothing else. Whitespace around "%" is a separate
+// variance the normalizer still preserves (one space stays one space); see
+// [8c], which pins that as known and currently costless rather than
+// quietly folding a second rule in under cover of this one. ---
+{
+  const decimalFiling = "4.750% Senior Secured Notes due 2031 689";
+  assert(quoteAppearsIn("4 ¾% Senior Secured Notes due 2031 689", decimalFiling), "[8a] tolerance runs the other way — a fraction-spelled needle finds a decimal-printed row");
+  assert(quoteAppearsIn("10 ⅞% Senior Secured Notes due 2032 1,549", "10.875% Senior Secured Notes due 2032 1,549"), "[8b] ...including a two-digit integer part");
+  assert(!quoteAppearsIn("5 ¼% Senior Secured Notes", "5¼ % Senior Secured Notes"), "[8c] KNOWN GAP, pinned: a space moved from before the glyph to after it still misses — the 10-K's '5¼ %' spelling against the 10-Q's '5 ¼%'. Costs zero drops today (every row it could affect fails on its amount, not its rate); if that changes, this assertion flips and says so.");
+}
+
+// --- Trailing zeros alone, with no fraction involved. ---
+{
+  assert(quoteAppearsIn("5.00 % Senior Notes", "5.000 % Senior Notes"), "[9a] '5.00' matches '5.000' — trailing zeros carry no value");
+  assert(quoteAppearsIn("$ 1,750.00", "$ 1,750"), "[9b] '1,750.00' matches '1,750'");
+  assert(quoteAppearsIn("2.80 % Senior Notes due June 2031", "2.8 % Senior Notes due June 2031"), "[9c] and it converges from both sides");
+}
+
+// --- A YEAR HAS NO DECIMAL POINT and must never be touched by the
+// trailing-zero rule. A maturity silently becoming "203" would be far worse
+// than the drop this rule exists to fix. ---
+{
+  const loc = createTextLocator(CHS);
+  assert(loc.find("due 2030 1,535") !== null, "[10a] a bare year is emitted exactly as printed");
+  assert(loc.find("due 203 1,535") === null, "[10b] ...and is NOT truncated by the trailing-zero rule");
+  assert(loc.find("1,058") !== null && loc.find("1,58") === null, "[10c] a grouped amount with no decimal point is untouched");
+}
+
+// --- Only TERMINATING fractions fold. A third would have to be rounded, and
+// rounding invents precision the filing never stated. ---
+{
+  assert(!quoteAppearsIn("5.333% Notes", "5 ⅓% Notes"), "[11] a non-terminating fraction is left alone rather than rounded into a false match");
+}
+
+// --- Tolerance is still not permissiveness. ---
+{
+  const loc = createTextLocator(CHS);
+  assert(loc.find("4.500% Senior Secured Notes due 2031 689") === null, "[12a] '4 ¾%' does NOT match a claimed 4.500% — the rule folds notation, not values");
+  assert(loc.find("4.750% Senior Secured Notes due 2031 690") === null, "[12b] a real fraction row with a fabricated amount is still NOT found");
+  assert(loc.find("4.750% Senior Secured Notes due 2031 1,000") === null, "[12c] and the CHS phantom figure finds nothing");
+}
+
+// ============================================================================
+// 5. A2 — CO-OCCURRENCE MUST CARRY THE AMOUNT, NOT JUST THE CAPTION.
+//
+// CHS's real shape. `extractFactTokens` does not read a trailing bare table
+// figure as money, so "6.875% Junior-Priority Secured Notes due 2029 350"
+// tokenizes to a rate and a year and nothing else. Co-occurrence then asked
+// only whether a 6.875% and a 2029 sit near each other beside one of the
+// claim's own words — which every real mention of that instrument satisfies,
+// anywhere in the filing. Two rows verified exactly this way, claiming $350M
+// and $400M against real balances of $1,244M and $1,227M.
+// ============================================================================
+{
+  // CHS's real 10-K shape, and the reason co-occurrence had anything to bite
+  // on at all: the TABLE prints the coupon as a fraction, while the narrative
+  // beside it spells the same coupon as a decimal. The model's decimal row
+  // therefore co-occurs with the PROSE mention, not with the table row it
+  // claims to be transcribing.
+  const CHS_10K =
+    "The 6⅞% Junior-Priority Secured Notes due 2029 bear interest at a rate of 6.875 % per annum. " +
+    "6⅞ % Junior-Priority Secured Notes due 2029 1,244 1,244 6⅛ % Junior-Priority Secured Notes due 2030 1,227 1,227 ABL Facility — 341";
+  const FABRICATED = "6.875% Junior-Priority Secured Notes due 2029 350";
+  const REAL = "6.875% Junior-Priority Secured Notes due 2029 1,244";
+
+  assert(verifyClaim(FABRICATED, [CHS_10K]).verified, "[13a] precondition — with no amount required, the fabricated row VERIFIES on caption co-occurrence alone. This is the bug.");
+  assert(!verifyClaim(FABRICATED, [CHS_10K], { requireAmount: "$ 350 million" }).verified, "[13b] ...and with its own amount required it is REJECTED — 350 is not printed beside that instrument");
+  const real = verifyClaim(REAL, [CHS_10K], { requireAmount: "$ 1,244 million" });
+  assert(real.verified, "[13c] REVERSE: the SAME instrument with its REAL balance still verifies — the rule folds fabrication, not the fallback");
+  assert(real.matchType === "co-occurrence", `[13d] ...and still via co-occurrence, so the fallback keeps doing its job (got ${real.matchType})`);
+}
+
+// --- The amount requirement must not bite a claim with nothing
+// discriminating to test: a 2-digit figure occurs in every filing, and
+// demanding it would invent failures rather than catch them. ---
+{
+  const TEXT = "Deferred debt issuance costs ( 31 ) Total $ 3,769";
+  assert(
+    verifyClaim("Deferred debt issuance costs ( 31 )", [TEXT], { requireAmount: "( 31 ) million" }).verified,
+    "[14] a claim whose only figure is 2-digit is passed through — the check abstains rather than guessing"
+  );
+}
+
+// ============================================================================
+// 6. A1 — THE MATCHED SPAN IS OCCURRENCE-AWARE.
+//
+// A filing prints the same caption twice — once on the balance sheet, once in
+// the debt note. Taking the FIRST occurrence resolved correctly-transcribed
+// note rows to a position outside the note, where A1's note bound then
+// rejected them. Measured live before this fix: one real subtotal lost each
+// on Centene, Encompass and Molina, and UHS's walk pushed from a clean tie to
+// a 24% miss. Same bug lib/fetch/scheduleCompleteness.ts already fixed for
+// itself, same remedy.
+// ============================================================================
+{
+  const TEXT = "CONDENSED CONSOLIDATED BALANCE SHEETS Long-term debt $ 16,030 Total liabilities" + " ".repeat(50) + "8. Debt Long-term debt $ 16,030 Total debt";
+  const noteStart = TEXT.indexOf("8. Debt");
+
+  const plain = verifyClaim("Long-term debt $ 16,030", [TEXT]);
+  assert(plain.sourceSpan !== null && plain.sourceSpan.start < noteStart, "[15a] precondition — with no preference the match resolves to the BALANCE-SHEET occurrence, outside the note");
+
+  const preferred = verifyClaim("Long-term debt $ 16,030", [TEXT], { preferWithin: [{ start: noteStart, end: TEXT.length }] });
+  assert(preferred.sourceSpan !== null && preferred.sourceSpan.start >= noteStart, "[15b] ...and with the note preferred it resolves to the IN-NOTE occurrence");
+
+  const absent = verifyClaim("Long-term debt $ 16,030", [TEXT], { preferWithin: [{ start: 999999, end: 1000000 }] });
+  assert(absent.verified && absent.sourceSpan !== null, "[15c] preference is never a filter — with no occurrence in range the first is still returned, rather than failing");
+}
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`); process.exit(1); }

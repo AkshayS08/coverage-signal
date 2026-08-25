@@ -87,11 +87,33 @@ export function findDebtNoteHeading(text: string, spanStart: number, spanEnd: nu
 }
 
 export type DebtNoteLocation =
-  | { status: "found"; start: number; end: number; matchCount: number }
+  | { status: "found"; start: number; end: number; matchCount: number; via: "heading" | "density" }
   | { status: "not_found" };
 
+/**
+ * B1 (Session 18, post-stage-2) — THE COUPON PATTERN WAS BLIND TO FRACTIONS.
+ *
+ * Requiring a decimal point made a table printing `4¾%`, `6⅞%`, `10⅞%`
+ * invisible to the detector. Density then clustered on the narrative
+ * elsewhere in the filing — redemption discussion, which DOES spell its
+ * coupons as decimals — and the excerpt handed to the model contained prose
+ * about the notes instead of the note itself. Measured on CHS's real 10-Q:
+ * the table sits at character 48,497 and the span this locator returned was
+ * [49,227 – 51,119], starting 730 characters past it. The model was never
+ * shown the table it was asked to transcribe, and produced six figures that
+ * appear in no column of any CHS debt table.
+ *
+ * Older indentures price in eighths and this is ordinary typography, not an
+ * edge case: CHS carries 16 fraction coupons in each 10-Q and 161 in its
+ * 10-K.
+ */
+const VULGAR_FRACTION_CLASS = "¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞";
+const COUPON_SRC = `(?:\\d{1,2}\\.\\d{2,4}|\\d{1,2}\\s?[${VULGAR_FRACTION_CLASS}])\\s?%`;
 /** A coupon rate loosely followed by a maturity year, in either order and however far HTML-to-text stripping put whitespace between them — the one shape a debt-schedule row (or a dense cluster of them) reliably has. */
-const COUPON_NEAR_YEAR_RE = /\d{1,2}\.\d{2,4}\s?%[\s\S]{0,90}?\b(?:19|20)\d{2}\b|\b(?:19|20)\d{2}\b[\s\S]{0,90}?\d{1,2}\.\d{2,4}\s?%/g;
+const COUPON_NEAR_YEAR_RE = new RegExp(
+  `${COUPON_SRC}[\\s\\S]{0,90}?\\b(?:19|20)\\d{2}\\b|\\b(?:19|20)\\d{2}\\b[\\s\\S]{0,90}?${COUPON_SRC}`,
+  "g"
+);
 
 /** Minimum matches required within a window to count as a real schedule (not a stray coupon mention + an unrelated nearby year). A genuine multi-tranche debt note has several rows; a single narrative sentence ("5.500% notes due 2032") never clusters this tightly. */
 const MIN_CLUSTER_SIZE = 3;
@@ -118,6 +140,153 @@ function maxGroupedFigure(text: string, start: number, end: number): number {
     if (Number.isFinite(n) && n > max) max = n;
   }
   return max;
+}
+
+/**
+ * B3 (Session 18, post-stage-2) — ASSERT A TABLE, NOT A HEADING.
+ *
+ * The heading assertion added last session proved only that a debt note's
+ * heading sat near the chosen span. CHS's span passed it while containing
+ * no table at all: the heading was 730 characters above the span start, the
+ * table was under the heading, and the span held the prose that followed.
+ * "The right note" and "the table inside it" are different claims and only
+ * the second one is worth anything to extraction.
+ *
+ * A span qualifies on either shape a real debt disclosure takes, because
+ * the two are genuinely different and both are legitimate:
+ *   - ITEMIZED: several coupon-near-year rows (the multi-tranche ladder).
+ *   - AGGREGATE: a stated total, for a filing that reports debt as category
+ *     rollups with no per-tranche coupons at all. HCA is exactly this shape
+ *     across both its 10-Q and its 10-K, and requiring coupon rows would
+ *     throw out a real, correct, complete disclosure.
+ */
+const STATED_TOTAL_RE = /\btotal\b(?:\s+[A-Za-z-]+){0,3}\s+debt\b[^A-Za-z0-9]{0,20}\$?\s*\d[\d,]*/i;
+
+export interface TableAssertion {
+  ok: boolean;
+  couponRows: number;
+  hasStatedTotal: boolean;
+  /** First and last offsets WITHIN the region at which table content was seen. −1 when there is none. */
+  firstContentAt: number;
+  lastContentAt: number;
+}
+
+/** Every offset in `region` carrying table content — a coupon-near-year row, or a stated debt total. */
+function contentSpansIn(region: string): { spans: { start: number; end: number }[]; couponRows: number; hasStatedTotal: boolean } {
+  const spans: { start: number; end: number }[] = [];
+  const re = new RegExp(COUPON_NEAR_YEAR_RE.source, "g");
+  let couponRows = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(region))) {
+    couponRows++;
+    spans.push({ start: m.index, end: m.index + m[0].length });
+    if (re.lastIndex === m.index) re.lastIndex++;
+  }
+  const totalMatch = region.match(STATED_TOTAL_RE);
+  const hasStatedTotal = totalMatch !== null && totalMatch.index !== undefined;
+  if (totalMatch && totalMatch.index !== undefined) {
+    spans.push({ start: totalMatch.index, end: totalMatch.index + totalMatch[0].length });
+  }
+  spans.sort((a, b) => a.start - b.start);
+  return { spans, couponRows, hasStatedTotal };
+}
+
+export function assertSpanContainsTable(text: string, start: number, end: number): TableAssertion {
+  const { spans, couponRows, hasStatedTotal } = contentSpansIn(text.slice(start, end));
+  return {
+    ok: couponRows >= MIN_CLUSTER_SIZE || hasStatedTotal,
+    couponRows,
+    hasStatedTotal,
+    firstContentAt: spans.length > 0 ? spans[0].start : -1,
+    lastContentAt: spans.length > 0 ? Math.max(...spans.map((s) => s.end)) : -1,
+  };
+}
+
+/**
+ * B2 (Session 18, post-stage-2) — HEADING FIRST, DENSITY AS FALLBACK.
+ *
+ * The debt note announces itself in plain text a few hundred characters
+ * before its table. Until now that heading was used only to AUDIT the span
+ * density had already chosen, never to find it — which is backwards, and
+ * CHS is the case that shows why: density selected prose sitting inside the
+ * correct note while the table under the same heading was never spliced.
+ *
+ * Deferred once before on the grounds that density was correct where it
+ * mattered. It no longer is, and the failure mode is silent.
+ *
+ * Every heading in the document is considered, not just the first: a 10-K
+ * lists "Debt" in its own table of contents and cross-references it from
+ * MD&A, and neither of those blocks contains a table — so they fail the B3
+ * assertion and fall away without needing a special case. Where more than
+ * one heading DOES carry a table, magnitude picks between them, the same
+ * discriminator density selection already uses.
+ */
+const HEADING_BLOCK_SCAN_CHARS = 20000;
+/** Small lead-in so the block opens ON the heading, which the model then sees naming the note it is reading. */
+const HEADING_LEAD_CHARS = 200;
+/**
+ * How far the table may sit below its own heading. THE load-bearing bound of
+ * the heading path, and the one that separates a real note heading from the
+ * things that merely look like one.
+ *
+ * DEBT_NOTE_HEADING_RE was written as an ASSERTION, where a false positive
+ * costs nothing — its own doc comment says so. As a FINDER it is far too
+ * generous: measured across the 10 real base filings it matched the cash
+ * flow statement's own captions ("02 ) Proceeds from debt", "1 ) Amortization
+ * of debt", "0 — Principal payments on debt", where the leading digits are
+ * table figures) and an MD&A risk heading ("26. We have significant debt").
+ * HCA's base filing selected that last one and contained NONE of HCA's eight
+ * verified entries — a regression, caught before shipping by measuring
+ * against the rows themselves rather than trusting the heading.
+ *
+ * The discriminator is attachment, not vocabulary: a debt note's table
+ * begins within a few hundred characters of the heading that announces it,
+ * while a caption or a risk paragraph has whatever happens to follow it
+ * further down the document. Structural, and it needs no list of forbidden
+ * words.
+ */
+const HEADING_TO_TABLE_CHARS = 1200;
+
+function findAllDebtNoteHeadings(text: string): number[] {
+  const re = new RegExp(DEBT_NOTE_HEADING_RE.source, "gi");
+  const found: number[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text))) {
+    const raw = m[1];
+    const n = Number(raw);
+    // A note number is 1..MAX_NOTE_NUMBER and is never zero-padded. Both
+    // rejections are real: "02 )" and "0 —" are cash-flow table figures that
+    // happen to precede a caption ending in "debt", not note numbers.
+    if (n >= 1 && n <= MAX_NOTE_NUMBER && !/^0/.test(raw)) found.push(m.index);
+    if (re.lastIndex === m.index) re.lastIndex++;
+  }
+  return found;
+}
+
+/** The table block under one heading, or null when that heading has no table attached beneath it (a contents entry, a cash-flow caption, a risk paragraph). */
+function tableBlockForHeading(text: string, headingAt: number): { start: number; end: number; matchCount: number } | null {
+  const scanEnd = Math.min(text.length, headingAt + HEADING_BLOCK_SCAN_CHARS);
+  const region = text.slice(headingAt, scanEnd);
+  const { spans } = contentSpansIn(region);
+  if (spans.length === 0) return null;
+  if (spans[0].start > HEADING_TO_TABLE_CHARS) return null; // heading is not attached to a table
+
+  // Extend through the table only while its content stays contiguous, so the
+  // block ends at the table's real end rather than at a fixed distance that
+  // would swallow whatever prose follows.
+  let last = spans[0];
+  const run: { start: number; end: number }[] = [spans[0]];
+  for (const s of spans.slice(1)) {
+    if (s.start - last.end > CLUSTER_GAP_CHARS) break;
+    last = s;
+    run.push(s);
+  }
+  const { couponRows, hasStatedTotal } = contentSpansIn(region.slice(0, last.end));
+  if (couponRows < MIN_CLUSTER_SIZE && !hasStatedTotal) return null;
+
+  const start = Math.max(0, headingAt - HEADING_LEAD_CHARS);
+  const rawEnd = Math.min(text.length, headingAt + last.end + PAD_CHARS);
+  return { start, end: Math.min(rawEnd, start + MAX_EXCERPT_CHARS), matchCount: couponRows };
 }
 
 function findMatches(text: string): number[] {
@@ -154,6 +323,60 @@ function clusterPositions(positions: number[]): number[][] {
  * heading-word search this project's own conventions rule out).
  */
 export function locateDebtNoteSection(text: string): DebtNoteLocation {
+  // B2 — HEADING FIRST. A heading whose block actually carries a table wins
+  // outright; magnitude only breaks ties BETWEEN qualifying headings, never
+  // between a heading block and a stretch of prose somewhere else.
+  //
+  // NESTED CAPTIONS ARE NOT HEADINGS. Every false positive measured across
+  // the 10 real base filings has the same shape: a subtotal caption INSIDE
+  // the note's own table, whose leading digits are a table figure —
+  // "30 ) Total long-term debt" (Quest, 814 chars below its real "7. DEBT"),
+  // "25 ) Total debt" (UHS), "17 ) Total debt" and "16 ) Total long-term
+  // debt" (CHS), "6 ) Long-term debt" (Encompass). Quest selected one of
+  // these and its span contained none of Quest's 16 verified entries.
+  //
+  // A note heading PRECEDES its own table, so anything matching inside a
+  // block already claimed by an earlier heading is a caption within that
+  // table, not a competing note. Dropping the nested ones needs no list of
+  // caption words and no tightening of the heading pattern itself — which
+  // was measured and rejected before, because it also throws out real
+  // headings.
+  // A note's own body can also be INTERRUPTED — a paragraph of prose between
+  // two halves of the same disclosure — and the contiguity bound above ends
+  // the block at that break. The caption that then follows looks disjoint
+  // while being the same note continuing. Quest is the measured case: its
+  // real "7. DEBT" block ends at 41,208, "15 ) Debt" sits 804 characters
+  // later, and because that continuation happens to carry a larger grouped
+  // figure (5,710 against 5,671) magnitude selected the fragment over the
+  // note that contains it — a span holding none of Quest's 16 verified
+  // entries. A candidate landing within one cluster gap of a kept block
+  // EXTENDS it rather than competing with it.
+  const headingCandidates: { at: number; block: { start: number; end: number; matchCount: number } }[] = [];
+  for (const at of findAllDebtNoteHeadings(text)) {
+    const host = headingCandidates.find((k) => at >= k.block.start && at <= k.block.end + CLUSTER_GAP_CHARS);
+    const block = tableBlockForHeading(text, at);
+    if (host) {
+      if (block && block.end > host.block.end) {
+        host.block = { ...host.block, end: Math.min(block.end, host.block.start + MAX_EXCERPT_CHARS) };
+      }
+      continue;
+    }
+    if (block) headingCandidates.push({ at, block });
+  }
+  const headingBlocks = headingCandidates.map((c) => c.block);
+  if (headingBlocks.length > 0) {
+    let best = headingBlocks[0];
+    let bestMagnitude = maxGroupedFigure(text, best.start, best.end);
+    for (const b of headingBlocks.slice(1)) {
+      const magnitude = maxGroupedFigure(text, b.start, b.end);
+      if (magnitude > bestMagnitude) {
+        best = b;
+        bestMagnitude = magnitude;
+      }
+    }
+    return { status: "found", start: best.start, end: best.end, matchCount: best.matchCount, via: "heading" };
+  }
+
   const positions = findMatches(text);
   const clusters = clusterPositions(positions).filter((c) => c.length >= MIN_CLUSTER_SIZE);
   if (clusters.length === 0) return { status: "not_found" };
@@ -225,10 +448,19 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
     return { start, end: Math.min(rawEnd, start + MAX_EXCERPT_CHARS) };
   };
 
-  let best = clusters[0];
+  // B3 — a density cluster must also contain a table, on the same test the
+  // heading path uses. A cluster of coupon mentions in narrative prose is
+  // not a schedule, and until now nothing said so.
+  const tableClusters = clusters.filter((c) => {
+    const span = spanOf(c);
+    return assertSpanContainsTable(text, span.start, span.end).ok;
+  });
+  if (tableClusters.length === 0) return { status: "not_found" };
+
+  let best = tableClusters[0];
   let bestSpan = spanOf(best);
   let bestMagnitude = maxGroupedFigure(text, bestSpan.start, bestSpan.end);
-  for (const c of clusters.slice(1)) {
+  for (const c of tableClusters.slice(1)) {
     const span = spanOf(c);
     const magnitude = maxGroupedFigure(text, span.start, span.end);
     // Ties fall back to the old rule (denser cluster wins, then earliest) so
@@ -242,7 +474,7 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
     }
   }
 
-  return { status: "found", start: bestSpan.start, end: bestSpan.end, matchCount: best.length };
+  return { status: "found", start: bestSpan.start, end: bestSpan.end, matchCount: best.length, via: "density" };
 }
 
 /**
@@ -278,6 +510,13 @@ export interface FilingExtractionResult {
   text: string;
   debtNoteStatus: DebtNoteFilingStatus;
   matchCount?: number;
+  /**
+   * Session 18 A1 — where the debt note was located in the FULL filing text,
+   * surfaced so verification can bound an amount search to the note itself.
+   * Null for a form the locator never runs on (8-K), for a document under the
+   * lead cap, and when no note was found.
+   */
+  noteSpan?: { start: number; end: number };
 }
 
 /**
@@ -302,11 +541,12 @@ export function buildExtractionText(params: { form: string; url: string; fullTex
   // Excerpt may overlap or sit inside the lead window (a smaller/simpler
   // filing's note might already be within LEAD_CHARS) — splice only the
   // non-overlapping remainder so the model never sees the same text twice.
-  if (location.end <= LEAD_CHARS) return { text: lead, debtNoteStatus: "found", matchCount: location.matchCount };
+  const noteSpan = { start: location.start, end: location.end };
+  if (location.end <= LEAD_CHARS) return { text: lead, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
   const excerptStart = Math.max(location.start, LEAD_CHARS);
   const excerpt = fullText.slice(excerptStart, location.end);
   const text = `${lead}\n\n[... document continues; excerpt below resumes at character offset ${excerptStart} of the full filing, where the debt-schedule note was located ...]\n\n${excerpt}`;
-  return { text, debtNoteStatus: "found", matchCount: location.matchCount };
+  return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
 }
 
 /**
@@ -323,3 +563,4 @@ export function assertCompanyHasLocatableDebtNote(
   const anyFound = checked.some((c) => c.status === "found");
   if (!anyFound && checked.length > 0) throw new DebtNoteNotFoundError(companyName, checked);
 }
+

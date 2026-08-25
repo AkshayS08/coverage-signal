@@ -76,6 +76,52 @@ export interface CompanyPosition {
    * something a reader has to infer from an absence.
    */
   baseLadderUntrustworthy: boolean;
+  /**
+   * A3 (Session 18, post-stage-2) — the walk misses by so much that the rows
+   * cannot be presented as the position, even though the note itself is real
+   * and its subtotals may well be right.
+   *
+   * CHS is the measured case: Check 1 is off by $6.07B against a stated total
+   * of $9.578B, and its rows rendered normally beside the failure notice —
+   * three of the five fabricated. Check 2 TIED throughout, because the
+   * balance-sheet captions and the subtotals were both transcribed correctly
+   * while everything between them was not; so `baseLadderUntrustworthy`
+   * (which needs BOTH checks to fail) never fired.
+   *
+   * This suppresses the CLAIM, never the fact: the bucket still states that a
+   * debt note exists, which filing it is in, what total it states and how far
+   * the transcription misses by. What it stops is the individual rows being
+   * read as the company's tranches.
+   */
+  rowsNotVerifiedAsTranscribed: boolean;
+  /** The worst Check-1 gap as a fraction of the largest subtotal claimed, or null when there is nothing to compare. Reported whether or not it crosses the threshold — never only on failure. */
+  walkGapFraction: number | null;
+}
+
+/**
+ * The threshold A3 turns on. Deliberately a FRACTION of the ladder's own
+ * stated total rather than an absolute figure: the same $500M gap is noise on
+ * a $45B ladder and a missing tranche on a $3B one, and this rule has to hold
+ * across companies two orders of magnitude apart.
+ *
+ * Set well above the checksum's own tolerance (which is absolute and sized
+ * below the smallest row, see CHECKSUM_ABSOLUTE_FLOOR) so that "does not tie"
+ * and "cannot be shown as the position" stay two different statements. A
+ * ladder that misses by a rounding artefact still renders its rows and still
+ * says it does not tie; only a ladder missing a material share of itself
+ * stops claiming its rows are the position.
+ */
+export const CHECK1_MATERIAL_GAP_FRACTION = 0.05;
+
+export function walkGapFractionOf(walk: WalkChecksumResult): number | null {
+  const failing = walk.subtotalChecks.filter((c) => !c.tie);
+  if (failing.length === 0) return null;
+  // Scale against the LARGEST claimed subtotal — the ladder's own stated
+  // total — not against the failing subtotal, so a small section subtotal
+  // missing entirely can't read as a large fraction of itself.
+  const statedTotal = Math.max(...walk.subtotalChecks.map((c) => Math.abs(c.claimedAmount)));
+  if (!Number.isFinite(statedTotal) || statedTotal === 0) return null;
+  return Math.max(...failing.map((c) => Math.abs(c.gap))) / statedTotal;
 }
 
 function ladderRowId(row: DebtRowLike & { instrument: string }): string {
@@ -344,12 +390,15 @@ export function assemblePosition(result: CompanyResult): CompanyPosition {
   const subtotalEntries = baseSequence.filter((e) => e.kind === "subtotal");
   const finalSubtotal = subtotalEntries.length > 0 ? subtotalEntries[subtotalEntries.length - 1] : null;
 
+  const walkGapFraction = walkGapFractionOf(baseWalk);
   return {
     rows,
     adjustments,
     finalSubtotal,
     baseFiling: debtMaturity?.debtScheduleSourceFiling ?? null,
     baseLadderUntrustworthy,
+    rowsNotVerifiedAsTranscribed: walkGapFraction !== null && walkGapFraction > CHECK1_MATERIAL_GAP_FRACTION,
+    walkGapFraction,
   };
 }
 

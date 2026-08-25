@@ -153,8 +153,14 @@ console.log("=== scheduleCompleteness.ts golden tests ===\n");
 // section and then read as "missing." Occurrence-aware resolution must pick
 // the in-section occurrence and report nothing missing. ---
 {
+  // The restatement has to sit where a real one sits — in MD&A, thousands of
+  // characters from the note, not three lines under it. It was adjacent here
+  // only because the fixture is small, and the located section's own padding
+  // then reached it, which made this test assert the opposite of what it
+  // describes: a duplicate INSIDE the section is not the Quest case at all.
   const restatement = [
     "",
+    "-".repeat(4000),
     "Management's Discussion and Analysis",
     "As discussed above, " + TOTAL_A + " and the related current portion are unchanged from the prior period.",
   ].join("\n");

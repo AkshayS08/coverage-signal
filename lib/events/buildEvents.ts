@@ -480,7 +480,13 @@ function buildEventsForCompany(
   // conversations, not one.
   const debtMaturityTrigger = result.results.find((t) => t.triggerId === "debt-maturity");
   const position = assemblePosition(result);
-  const rowCandidates = position.rows
+  // A3 (Session 18, post-stage-2): a ladder whose walk misses by a material
+  // share of its own stated total does not card. The rows still RENDER —
+  // portfolioTable.ts states the note, its filing, its total and the size of
+  // the miss — but a card asserts "this specific tranche matures on this
+  // date for this amount", and that is exactly the claim the failing walk
+  // says cannot be made. Live case: three of CHS's five rows are fabricated.
+  const rowCandidates = (position.rowsNotVerifiedAsTranscribed ? [] : position.rows)
     .map((row) => ({ row, eligibility: evaluateRowEligibility(row, now) }))
     .filter(({ eligibility }) => eligibility.cardEligible)
     .sort((a, b) => compareUrgency({ timing: a.eligibility.timing, citations: [] }, { timing: b.eligibility.timing, citations: [] }));

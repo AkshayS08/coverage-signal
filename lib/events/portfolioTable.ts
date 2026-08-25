@@ -115,6 +115,16 @@ export interface RefiLadderBlock {
    * breakdown at all.
    */
   adjustments: VerifiedSequenceEntry[];
+  /**
+   * A3 (Session 18, post-stage-2). True when Check 1 misses by more than
+   * CHECK1_MATERIAL_GAP_FRACTION of the ladder's own stated total. The rows
+   * are still rendered — never suppressed — but they must be presented as an
+   * unreliable transcription rather than as this company's position, and
+   * none of them cards.
+   */
+  rowsNotVerifiedAsTranscribed: boolean;
+  /** The size of that miss as a fraction of the stated total, reported whether or not it crosses the threshold. Null when Check 1 has nothing to compare. */
+  walkGapFraction: number | null;
 }
 
 export interface CompanyTableBlock {
@@ -294,6 +304,8 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       sourceCitation: null,
       isAggregateDisclosure: false,
       adjustments: [],
+      rowsNotVerifiedAsTranscribed: false,
+      walkGapFraction: null,
     };
   }
 
@@ -331,6 +343,8 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   const rawRows = (debtMaturity.scheduleSequence ?? []).filter((e) => e.kind === "row");
   const isAggregateDisclosure = rawRows.length > 0 && rawRows.every((r) => r.dateGranularity !== "day" && r.dateGranularity !== "month");
 
+  const finalSubtotalText = position.finalSubtotal ? `${position.finalSubtotal.label ?? "a total"} of ${position.finalSubtotal.amount}` : null;
+
   // Session 18 (post-v9 redesign): Check 1 and Check 2 are reported as two
   // distinct clauses, never blended into one tie rate — they fail
   // differently and each names its own failure.
@@ -357,9 +371,17 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
           ? "balance-sheet anchor cannot be checked — the note states no subtotal to anchor against"
           : `balance-sheet anchor does not tie — $${Math.abs(balanceSheetCheck.nearestGap).toLocaleString("en-US")} unaccounted vs. nearest subtotal`;
 
-  const completenessStatement = isAggregateDisclosure
-    ? `aggregate disclosure — ${tranchCount} line${tranchCount === 1 ? "" : "s"} reported as category total${tranchCount === 1 ? "" : "s"}, no individual tranche maturities stated in this filing (${check1Clause}; ${check2Clause})`
-    : `${tranchCount} tranche${tranchCount === 1 ? "" : "s"} — ${check1Clause}; ${check2Clause}`;
+  // A3 — when the walk misses by a material share of the stated total, the
+  // block leads with what CANNOT be claimed. The note, its filing and its
+  // stated total are all still stated: the fact that this company has a debt
+  // ladder is never suppressed, only the claim that these particular rows
+  // are it.
+  const gapPct = position.walkGapFraction === null ? null : Math.round(position.walkGapFraction * 100);
+  const completenessStatement = position.rowsNotVerifiedAsTranscribed
+    ? `TRANSCRIPTION NOT VERIFIED — the note states ${finalSubtotalText ?? "a total"}, but the rows below sum ${gapPct}% short of it. The rows are shown as extracted and are NOT this company's position; read the filing. (${check1Clause}; ${check2Clause})`
+    : isAggregateDisclosure
+      ? `aggregate disclosure — ${tranchCount} line${tranchCount === 1 ? "" : "s"} reported as category total${tranchCount === 1 ? "" : "s"}, no individual tranche maturities stated in this filing (${check1Clause}; ${check2Clause})`
+      : `${tranchCount} tranche${tranchCount === 1 ? "" : "s"} — ${check1Clause}; ${check2Clause}`;
 
   // Session 18 (post-v6): prefer the deterministically-selected base filing
   // (position.baseFiling — exactly what lib/fetch/debtNoteLocator.ts found
@@ -374,7 +396,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // when the base ladder failed BOTH checks does the older filing's schedule
   // get surfaced at all, and even then it sits beneath the base ladder's own
 
-  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments };
+  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
 
 /**

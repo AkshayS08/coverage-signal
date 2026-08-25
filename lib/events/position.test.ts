@@ -489,6 +489,71 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   );
 }
 
+// ============================================================================
+// A3 — A LADDER THAT MISSES BY A MATERIAL SHARE OF ITS OWN STATED TOTAL DOES
+// NOT PRESENT ITS ROWS AS THE POSITION.
+//
+// CHS's real numbers: five rows summing to $3.50B against a stated total of
+// $9.578B, so the walk misses by 79% — and three of those five rows were
+// fabricated. Check 2 TIED throughout (captions and subtotals were both
+// transcribed correctly; only the rows between them were wrong), so
+// `baseLadderUntrustworthy`, which needs BOTH checks to fail, never fired.
+//
+// The distinction A3 has to hold is between "does not tie" and "cannot be
+// shown as the position". A rounding-sized miss is the first; most of the
+// ladder missing is the second.
+// ============================================================================
+{
+  const materiallyShort = companyWith([
+    baseTriggerResult({
+      triggerId: "debt-maturity",
+      scheduleSequence: [
+        row({ label: "4.750% Senior Secured Notes due 2031", amount: "$689 million" }),
+        row({ label: "10.875% Senior Secured Notes due 2032", amount: "$1,549 million" }),
+        subtotal({ label: "Total debt", amount: "$9,578 million" }),
+      ],
+    }),
+  ]);
+  const p = assemblePosition(materiallyShort);
+  assert(p.walkGapFraction !== null && Math.round(p.walkGapFraction * 100) === 77, `[A3-1] the gap is reported as a fraction of the ladder's own stated total (got ${p.walkGapFraction})`);
+  assert(p.rowsNotVerifiedAsTranscribed, "[A3-2] ...and a ladder missing three quarters of itself does not present its rows as the position");
+  assert(p.rows.length === 2, "[A3-3] NEVER SUPPRESSED — the rows are still assembled and still rendered; only the claim about them changes");
+
+  // --- REVERSE: a rounding-sized miss is not a material one. ---
+  const roundingShort = companyWith([
+    baseTriggerResult({
+      triggerId: "debt-maturity",
+      scheduleSequence: [
+        row({ label: "Tranche A", amount: "$5,000 million" }),
+        row({ label: "Tranche B", amount: "$5,000 million" }),
+        subtotal({ label: "Total debt", amount: "$10,150 million" }),
+      ],
+    }),
+  ]);
+  const r = assemblePosition(roundingShort);
+  assert(r.walkGapFraction !== null && !r.rowsNotVerifiedAsTranscribed, `[A3-4] REVERSE: a 1.5% miss still fails Check 1 but does NOT suppress the position claim (got ${r.walkGapFraction})`);
+
+  // --- REVERSE: a clean walk reports no gap at all. ---
+  const clean = companyWith([
+    baseTriggerResult({
+      triggerId: "debt-maturity",
+      scheduleSequence: [
+        row({ label: "Tranche A", amount: "$5,000 million" }),
+        row({ label: "Tranche B", amount: "$5,000 million" }),
+        subtotal({ label: "Total debt", amount: "$10,000 million" }),
+      ],
+    }),
+  ]);
+  const c = assemblePosition(clean);
+  assert(c.walkGapFraction === null && !c.rowsNotVerifiedAsTranscribed, "[A3-5] REVERSE: a ladder that ties reports no gap and makes no disclaimer");
+
+  if (failed > 0) {
+    console.error(`\nA3 FAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);
+    process.exit(1);
+  }
+  console.log(`A3: ${passed} total assertions passed.`);
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) {
   console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);

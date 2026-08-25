@@ -19,7 +19,7 @@ import {
   type ScheduleSequenceEntry,
   type TriggerVerdict,
 } from "./claude";
-import { verifyTriggerQuote, verifyClaim } from "./verifyQuote";
+import { verifyTriggerQuote, verifyClaim, discriminatingDigitGroups } from "./verifyQuote";
 import { verifyEventDate, type EventDateGuardResult } from "./factGuard";
 import { classifyProceedsUse } from "./proceedsUse";
 import { extractFactTokens, factTokensMatch, type FactToken } from "./factTokens";
@@ -446,11 +446,17 @@ export async function runAgentLoop(
   // bound that has nothing to do with whether the claim is real.
   const textByUrl = new Map<string, string>();
   const debtNoteStatusByFiling: { form: string; filingDate: string; reportDate: string; url: string; status: DebtNoteFilingStatus }[] = [];
+  // Session 18 A1: where each filing's debt note was located, in that
+  // filing's FULL text — the bound verification uses to reject a "row" that
+  // is really a cash-flow line or a narrative mention. Only 10-Q/10-K
+  // filings have one; an 8-K has no note to locate.
+  const noteSpanByUrl = new Map<string, { start: number; end: number }>();
   for (const filing of baseline) {
     const { text: fullText } = await readFiling(filing.primaryDocUrl);
     const extraction = buildExtractionText({ form: filing.form, url: filing.primaryDocUrl, fullText });
     corpus.push({ form: filing.form, filingDate: filing.filingDate, url: filing.primaryDocUrl, text: extraction.text });
     textByUrl.set(filing.primaryDocUrl, fullText);
+    if (extraction.noteSpan) noteSpanByUrl.set(filing.primaryDocUrl, extraction.noteSpan);
     if (filing.form === "10-Q" || filing.form === "10-K") {
       debtNoteStatusByFiling.push({ form: filing.form, filingDate: filing.filingDate, reportDate: filing.reportDate, url: filing.primaryDocUrl, status: extraction.debtNoteStatus });
       log(
@@ -667,8 +673,8 @@ export async function runAgentLoop(
       }
     }
 
-    const scheduleSequence = verifySequenceEntries(unitScoped.scheduleSequence, v.citedUrls ?? [], textByUrl, log, label);
-    const priorScheduleSequence = verifySequenceEntries(unitScoped.priorScheduleSequence, v.citedUrls ?? [], textByUrl, log, label);
+    const scheduleSequence = verifySequenceEntries(unitScoped.scheduleSequence, v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
+    const priorScheduleSequence = verifySequenceEntries(unitScoped.priorScheduleSequence, v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
     const issuedTranches = verifyIssuedTranches(v.issuedTranches, v.citedUrls ?? [], textByUrl, log, label);
     const balanceSheetDebtCaptions = verifyBalanceSheetCaptions(unitScoped.balanceSheetDebtCaptions, v.citedUrls ?? [], textByUrl, log, label);
     const rowsExtracted = v.scheduleSequence.length + v.priorScheduleSequence.length + v.issuedTranches.length + v.balanceSheetDebtCaptions.length;
@@ -1057,20 +1063,109 @@ export function amountAppearsIn(amount: string, text: string): boolean {
  * carries no figure at all, so there is nothing to corroborate by value and
  * the digit scan still rejects them.
  */
-export function amountCorroborated(amount: string, sourceLine: string, filingText: string): boolean {
-  const valueOf = (s: string) =>
-    extractFactTokens(s)
-      .filter((t) => t.kind === "money")
-      .map((t) => t.moneyValue)
-      .filter((v): v is number => v !== undefined);
-  const claimed = valueOf(amount);
+/**
+ * A1 (Session 18, post-stage-2) — AN AMOUNT MUST BE FOUND NEAR ITS OWN ROW,
+ * NOT ANYWHERE IN THE DOCUMENT.
+ *
+ * The scan this replaces looked for the amount's digit groups across the
+ * WHOLE filing. In a 183,000-character document that proves nothing: "350",
+ * "400" and "708" all occur somewhere. Measured live on CHS — "350" appears
+ * in a comprehensive-income figure, in the text of an accounting standard
+ * ("Topic 350"), and in a capital-expenditure sentence; "708" appears once,
+ * in the CASH FLOW STATEMENT, as "Proceeds from ABL Facility 708". That last
+ * one is on the rendered ladder as an $708M ABL balance, against a real
+ * balance of zero, and it verified LITERALLY — it is a genuine line of the
+ * filing, just not from the debt note.
+ *
+ * So corroboration is bounded twice over, and both bounds are needed:
+ *   - to the row's own matched position, because an amount belonging to this
+ *     row is printed on this row; and
+ *   - to the located debt note, because a real line from the cash flow
+ *     statement is still not a debt-schedule row.
+ *
+ * The value-equality path stays and is checked first — it is what lets UHS's
+ * "$800,000 thousands" corroborate against a note the filing names "$800
+ * million", identical value sharing no digits. It now compares against the
+ * text the FILING actually printed at the match (`verifiedText`) rather than
+ * the model's own sourceLine. Under a literal match those are the same string
+ * by definition; under co-occurrence they are not, and the old form was
+ * value-matching the model's claim against the model's own claim.
+ */
+const AMOUNT_PROXIMITY_CHARS = 300;
+
+/**
+ * A1's note bound is applied with a margin, because the located span is a
+ * padded window around DETECTED CONTENT, not the note's true closing
+ * boundary. A debt note's own total and adjustment lines routinely sit past
+ * its last coupon-bearing row, and where the filing writes them as "Total
+ * debt before unamortized financing costs 4,752,551" no stated-total pattern
+ * catches them either — so the window ends before the note does. Measured:
+ * without this margin UHS lost its subtotal, its walk went from a clean tie
+ * to a 24% miss, and A3 then correctly refused to render rows that were
+ * never wrong.
+ *
+ * The margin costs the check nothing it was built for. The row it exists to
+ * reject — CHS's cash-flow "Proceeds from ABL Facility 708" — sits about
+ * 37,000 characters from that filing's debt note, three orders of magnitude
+ * outside this bound. A boundary this rule polices to within a few hundred
+ * characters would be measuring the locator's padding, not the filing.
+ */
+const NOTE_SPAN_MARGIN_CHARS = 3000;
+
+/** Mirrors buildExtractionText's LEAD_CHARS: a filing this short was sent to the model whole and is about one event. */
+const SINGLE_EVENT_FILING_CHARS = 40000;
+
+function noteSpanWithMargin(span: { start: number; end: number } | undefined): { start: number; end: number } | null {
+  if (!span) return null;
+  return { start: Math.max(0, span.start - NOTE_SPAN_MARGIN_CHARS), end: span.end + NOTE_SPAN_MARGIN_CHARS };
+}
+
+function moneyValuesOf(s: string): number[] {
+  return extractFactTokens(s)
+    .filter((t) => t.kind === "money")
+    .map((t) => t.moneyValue)
+    .filter((v): v is number => v !== undefined);
+}
+
+export function amountCorroborated(
+  amount: string,
+  verifiedText: string,
+  filingText: string,
+  span: { start: number; end: number } | null,
+  noteSpan: { start: number; end: number } | null
+): boolean {
+  const claimed = moneyValuesOf(amount);
   if (claimed.length > 0) {
-    const printed = valueOf(sourceLine);
+    const printed = moneyValuesOf(verifiedText);
     // Exact value equality — not a tolerance. Two figures that are merely
     // close are two different figures, and this is a fabrication check.
     if (claimed.some((c) => printed.some((p) => Math.abs(c) === Math.abs(p)))) return true;
   }
-  return amountAppearsIn(amount, filingText);
+  const groups = discriminatingDigitGroups(amount);
+  if (groups.length === 0) return true; // nothing discriminating to test — abstain, never fabricate a failure
+  // No position means no way to bound the search, and an unbounded search is
+  // the thing this function exists to stop.
+  if (!span) return false;
+  // A SINGLE-EVENT FILING IS ITS OWN BOUND. The whole point of the proximity
+  // rule is that "somewhere in this document" is meaningless across 183,000
+  // characters of a 10-K. It is not meaningless across an 8-K, which is short
+  // enough that the model receives all of it and which exists to announce one
+  // transaction. Cigna's pricing 8-K is the measured case: the model quoted
+  // the interest-rate sentence for each tranche while the principal amount is
+  // stated a paragraph above, and proximity alone dropped three real tranches.
+  // The bound is the lead window — the same threshold buildExtractionText
+  // uses to decide a filing needs no excerpting at all.
+  if (!noteSpan && filingText.length <= SINGLE_EVENT_FILING_CHARS) {
+    return groups.some((g) => filingText.includes(g));
+  }
+  let from = Math.max(0, span.start - AMOUNT_PROXIMITY_CHARS);
+  let to = Math.min(filingText.length, span.end + AMOUNT_PROXIMITY_CHARS);
+  if (noteSpan) {
+    from = Math.max(from, noteSpan.start);
+    to = Math.min(to, noteSpan.end);
+  }
+  if (to <= from) return false;
+  return groups.some((g) => filingText.slice(from, to).includes(g));
 }
 
 function verifySourceLineAndScale<T extends { sourceLine: string; amount: string }>(
@@ -1079,7 +1174,15 @@ function verifySourceLineAndScale<T extends { sourceLine: string; amount: string
   textByUrl: Map<string, string>,
   log: (line: string) => void,
   label: string,
-  describe: (entry: T) => string
+  describe: (entry: T) => string,
+  /**
+   * A1. The located debt note per filing. Passed for the debt-note sequences
+   * (whose rows must come from inside the note) and deliberately NOT for
+   * balance-sheet captions — those live in the balance sheet by definition,
+   * outside every debt note — nor for 8-K issued tranches, whose filings have
+   * no note to locate at all.
+   */
+  noteSpanByUrl?: Map<string, { start: number; end: number }>
 ): (T & { citedUrl: string })[] {
   const orderedUrls = [...new Set([...citedUrls, ...textByUrl.keys()])];
   const out: (T & { citedUrl: string })[] = [];
@@ -1092,26 +1195,45 @@ function verifySourceLineAndScale<T extends { sourceLine: string; amount: string
     }
     let matched = false;
     let sourceLineFoundButAmountAbsent = false;
+    let foundOutsideNote = false;
     for (const url of orderedUrls) {
       const text = textByUrl.get(url);
       if (!text) continue;
-      if (!verifyClaim(entry.sourceLine, [text]).verified) continue;
-      // The sourceLine is real in THIS filing. The amount riding along with
-      // it must be too, or the pair is a real caption carrying a figure the
-      // filing never printed — the CHS shape. Checked per-filing rather than
-      // across the corpus, so a figure that is only real in some OTHER
-      // company's filing can never rescue it.
-      if (!amountCorroborated(entry.amount, entry.sourceLine, text)) {
+      // A2 — a co-occurrence match must carry this entry's own amount, not
+      // just an instrument caption that happens to sit near a matching year.
+      const noteSpan = noteSpanWithMargin(noteSpanByUrl?.get(url));
+      const result = verifyClaim(entry.sourceLine, [text], { requireAmount: entry.amount, preferWithin: [noteSpan] });
+      if (!result.verified) continue;
+
+      // A1, first bound — the row must come from inside the located debt
+      // note. Only enforced where a note was actually located in THIS filing:
+      // a filing with no locatable note (an 8-K, an abbreviated 10-Q) has no
+      // span to be outside of, and rejecting on its absence would be a false
+      // drop rather than a check.
+      if (noteSpan && result.sourceSpan && (result.sourceSpan.end < noteSpan.start || result.sourceSpan.start > noteSpan.end)) {
+        foundOutsideNote = true;
+        continue; // a different filing may carry this row inside its own note
+      }
+
+      // A1, second bound — the amount must be printed near the row it is
+      // claimed for. Checked per-filing rather than across the corpus, so a
+      // figure that is only real in some OTHER filing can never rescue it.
+      if (!amountCorroborated(entry.amount, result.displayText ?? entry.sourceLine, text, result.sourceSpan, noteSpan)) {
         sourceLineFoundButAmountAbsent = true;
-        continue; // another cited filing may legitimately carry both
+        continue;
       }
       matched = true;
       out.push({ ...entry, citedUrl: url });
       break;
     }
+    if (!matched && foundOutsideNote) {
+      log(
+        `  ⚠ ROW OUTSIDE THE DEBT NOTE for ${label} — "${describe(entry)}" matches real filing text, but that text sits outside the located debt-note section (a cash-flow line or narrative mention, not a schedule row); dropped, not trusted`
+      );
+    }
     if (!matched && sourceLineFoundButAmountAbsent) {
       log(
-        `  ⚠ AMOUNT NOT IN FILING for ${label} — "${describe(entry)}" cites a sourceLine that IS in the filing, but its amount ${JSON.stringify(entry.amount)} appears nowhere in that filing's text; dropped as fabricated, not trusted`
+        `  ⚠ AMOUNT NOT PRINTED NEAR ITS ROW for ${label} — "${describe(entry)}" cites a sourceLine that IS in the filing, but its amount ${JSON.stringify(entry.amount)} is not printed on or beside that row; dropped as fabricated, not trusted`
       );
     }
     if (!matched && process.env.DIAG_DEBT_ROWS) {
@@ -1207,9 +1329,10 @@ function verifySequenceEntries(
   citedUrls: string[],
   textByUrl: Map<string, string>,
   log: (line: string) => void,
-  label: string
+  label: string,
+  noteSpanByUrl: Map<string, { start: number; end: number }>
 ): VerifiedSequenceEntry[] {
-  const verified = verifySourceLineAndScale(entries, citedUrls, textByUrl, log, label, (e) => e.label ?? e.kind);
+  const verified = verifySourceLineAndScale(entries, citedUrls, textByUrl, log, label, (e) => e.label ?? e.kind, noteSpanByUrl);
   return verified.map((entry) =>
     entry.kind === "row"
       ? withVerifiedMaturity(recoverStatedMonth(entry, log, label, (e) => e.label ?? "row"), log, label, (e) => e.label ?? "row")

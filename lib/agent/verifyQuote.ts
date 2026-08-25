@@ -46,16 +46,166 @@ import { detectDollarScaleAt, formatScaledDollars } from "./scaleNormalize";
  * character-aligned with this function or createTextLocator's raw offsets
  * silently skew.
  */
-const CURRENCY_GLYPHS = /[$£€¥]/g;
+/**
+ * Session 18 (post-stage-1) — A VULGAR FRACTION AND ITS DECIMAL ARE THE
+ * SAME NUMBER.
+ *
+ * Older indentures print coupons as fractions, and the filings carry that
+ * typography verbatim: CHS's 10-Q prints "4 ¾% Senior Secured Notes due
+ * 2031 689" while its 10-K carries 161 fraction glyphs across the same
+ * instruments. The model normalizes to decimals — "4.750% Senior Secured
+ * Notes due 2031 689" — so the row's sourceLine never matches literally,
+ * and the row drops carrying an amount that is exactly right. Same class as
+ * the currency glyph above: notation, not content.
+ *
+ * Both halves of the equivalence are needed, and neither alone is enough:
+ *
+ *   1. The GLYPH expands to its decimal, absorbing the space that separates
+ *      it from its integer part ("4 ¾" is one number, not two tokens) —
+ *      otherwise the filing side reads "4 .75".
+ *   2. TRAILING ZEROS after a decimal point are trimmed on BOTH sides —
+ *      otherwise the filing's "4.75" still misses the model's "4.750".
+ *
+ * Rule 2 is what makes this a real equivalence rather than a fit to the
+ * three-decimal convention this particular model happens to use today. All
+ * three spellings — "4 ¾", "4.75", "4.750" — converge on one canonical
+ * form, so the match holds whichever side prints which.
+ *
+ * Only fractions with a TERMINATING decimal are folded. A third or a sixth
+ * would have to be rounded, and rounding invents precision the document
+ * never stated; those glyphs are left alone (they do not occur in coupon
+ * rates, and leaving them is exactly today's behaviour, so no regression).
+ */
+const VULGAR_FRACTIONS: Record<string, string> = {
+  "½": ".5",
+  "¼": ".25",
+  "¾": ".75",
+  "⅕": ".2",
+  "⅖": ".4",
+  "⅗": ".6",
+  "⅘": ".8",
+  "⅛": ".125",
+  "⅜": ".375",
+  "⅝": ".625",
+  "⅞": ".875",
+  "⅒": ".1",
+};
+
+function isSpaceOrCurrency(code: number): boolean {
+  // space, tab, LF, CR, FF, VT, NBSP, and the currency glyphs
+  return (
+    code === 32 || (code >= 9 && code <= 13) || code === 160 ||
+    code === 36 /* $ */ || code === 163 /* £ */ || code === 8364 /* € */ || code === 165 /* ¥ */
+  );
+}
+
+function isWhitespaceCode(code: number): boolean {
+  return code === 32 || (code >= 9 && code <= 13) || code === 160;
+}
+
+function isDigitCode(code: number): boolean {
+  return code >= 48 && code <= 57;
+}
+
+/**
+ * THE single normalization. Previously this existed twice — once as a chain
+ * of regex replaces for the needle, once as a character walker for the
+ * haystack — with a doc comment warning that the two MUST stay
+ * character-aligned or createTextLocator silently returns wrong offsets.
+ * The fraction rule expands one character into three and deletes others,
+ * which is precisely the kind of rewrite that breaks a hand-maintained
+ * pairing, so the pairing is gone: there is one walker, and the map is
+ * simply not built when the caller doesn't need it. The two functions can
+ * no longer disagree because there is only one.
+ */
+function normalizeCore(s: string, wantMap: boolean): { normalized: string; map: number[] } {
+  let normalized = "";
+  const map: number[] = [];
+  const emit = (chars: string, at: number) => {
+    normalized += chars;
+    if (wantMap) for (let k = 0; k < chars.length; k++) map.push(at);
+  };
+
+  let i = 0;
+  const n = s.length;
+  while (i < n) {
+    const ch = s[i];
+
+    if (ch === "“" || ch === "”") { emit('"', i); i++; continue; }
+    if (ch === "‘" || ch === "’") { emit("'", i); i++; continue; }
+    if (ch === "–" || ch === "—") { emit("-", i); i++; continue; }
+
+    const fraction = VULGAR_FRACTIONS[ch];
+    if (fraction !== undefined) { emit(fraction, i); i++; continue; }
+
+    // Whitespace and currency glyphs are consumed as ONE run, emitting a
+    // single space if the run contained any whitespace and nothing if it was
+    // glyphs alone — currency symbols are stripped BEFORE whitespace
+    // collapses, so "a $ b" must become "a b", not "a  b".
+    if (isSpaceOrCurrency(s.charCodeAt(i))) {
+      const runStart = i;
+      let sawWhitespace = false;
+      while (i < n && isSpaceOrCurrency(s.charCodeAt(i))) {
+        if (isWhitespaceCode(s.charCodeAt(i))) sawWhitespace = true;
+        i++;
+      }
+      if (!sawWhitespace) continue;
+      // A run sitting between a digit and a vulgar fraction is INSIDE a
+      // number ("4 ¾%"), not a gap between tokens — emit nothing, so the
+      // fraction binds to its own integer part.
+      if (i < n && VULGAR_FRACTIONS[s[i]] !== undefined && isDigitCode(normalized.charCodeAt(normalized.length - 1))) continue;
+      emit(" ", runStart);
+      continue;
+    }
+
+    // A numeric token, canonicalized: the integer part verbatim, the
+    // fractional part with trailing zeros removed (and the decimal point
+    // itself removed when nothing but zeros followed it). Scoped to a
+    // maximal digit/comma run so a bare year ("2030") or a grouped amount
+    // ("1,500") — neither of which carries a decimal point — is emitted
+    // exactly as printed and can never be altered by this branch.
+    if (isDigitCode(s.charCodeAt(i))) {
+      let j = i;
+      while (j < n && (isDigitCode(s.charCodeAt(j)) || s[j] === ",")) j++;
+      const intEnd = j;
+      let fracStart = -1;
+      let fracEnd = -1;
+      if (j < n && s[j] === "." && j + 1 < n && isDigitCode(s.charCodeAt(j + 1))) {
+        fracStart = j + 1;
+        j = fracStart;
+        while (j < n && isDigitCode(s.charCodeAt(j))) j++;
+        fracEnd = j;
+      }
+      for (let k = i; k < intEnd; k++) emit(s[k], k);
+      if (fracStart >= 0) {
+        let end = fracEnd;
+        while (end > fracStart && s[end - 1] === "0") end--;
+        if (end > fracStart) {
+          emit(".", fracStart - 1);
+          for (let k = fracStart; k < end; k++) emit(s[k], k);
+        }
+      }
+      i = j;
+      continue;
+    }
+
+    emit(ch, i);
+    i++;
+  }
+
+  // .trim() equivalent, applied to both halves together so the map stays aligned.
+  let from = 0;
+  let to = normalized.length;
+  while (from < to && normalized[from] === " ") from++;
+  while (to > from && normalized[to - 1] === " ") to--;
+  return {
+    normalized: normalized.slice(from, to),
+    map: wantMap ? map.slice(from, to) : map,
+  };
+}
 
 function normalizeForMatch(s: string): string {
-  return s
-    .replace(/[“”]/g, '"')
-    .replace(/[‘’]/g, "'")
-    .replace(/[–—]/g, "-")
-    .replace(CURRENCY_GLYPHS, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  return normalizeCore(s, false).normalized;
 }
 
 /** True if `quote` appears verbatim (whitespace/quote-glyph differences aside) inside `sourceText`. */
@@ -100,70 +250,43 @@ function extractRowDisplayText(sourceText: string, start: number, end: number): 
  * scale declarations) can run on a literal-matched quote too.
  */
 function normalizeWithMap(s: string): { normalized: string; map: number[] } {
-  let normalized = "";
-  const map: number[] = [];
-  let i = 0;
-  const n = s.length;
-  while (i < n) {
-    const ch = s[i];
-    if (ch === "“" || ch === "”") {
-      normalized += '"';
-      map.push(i);
-      i++;
-      continue;
-    }
-    if (ch === "‘" || ch === "’") {
-      normalized += "'";
-      map.push(i);
-      i++;
-      continue;
-    }
-    if (ch === "–" || ch === "—") {
-      normalized += "-";
-      map.push(i);
-      i++;
-      continue;
-    }
-    // Whitespace and currency glyphs are consumed as ONE run, emitting a
-    // single space if the run contained any whitespace and nothing if it was
-    // glyphs alone. This is subtle but load-bearing: normalizeForMatch strips
-    // currency glyphs BEFORE collapsing whitespace, so "a $ b" collapses to
-    // "a b" there. Consuming the glyph on its own here would leave "a  b" —
-    // two spaces against one — and every raw offset after that point would
-    // skew. The two functions must produce identical strings or
-    // createTextLocator returns wrong positions, which is worse than the bug
-    // this fix exists for.
-    if (/[\s$£€¥]/.test(ch)) {
-      const runStart = i;
-      let sawWhitespace = false;
-      while (i < n && /[\s$£€¥]/.test(s[i])) {
-        if (/\s/.test(s[i])) sawWhitespace = true;
-        i++;
-      }
-      if (sawWhitespace) {
-        normalized += " ";
-        map.push(runStart);
-      }
-      continue;
-    }
-    normalized += ch;
-    map.push(i);
-    i++;
-  }
-  return { normalized, map };
+  return normalizeCore(s, true);
 }
 
-/** Locates a literal (whitespace/glyph-normalized) match's span in RAW `sourceText` coordinates, or null if it genuinely isn't there. */
-function findLiteralMatchSpan(quote: string, sourceText: string): { start: number; end: number } | null {
+/**
+ * Locates a literal (whitespace/glyph-normalized) match's span in RAW
+ * `sourceText` coordinates, or null if it genuinely isn't there.
+ *
+ * OCCURRENCE-AWARE (Session 18 A1). A filing prints the same caption more
+ * than once — "Total $ 3,769" appears in the debt note and again on the
+ * balance sheet, "Long-term debt $ 16,030" in the note and again in MD&A —
+ * and taking the FIRST occurrence resolves a correctly-transcribed note row
+ * to a position outside the note, where A1 then rejects it as not being a
+ * schedule row. lib/fetch/scheduleCompleteness.ts hit this exact bug and
+ * solved it the same way; `preferWithin` is that fix applied here.
+ *
+ * Preference, never a filter: when no occurrence falls inside the preferred
+ * range the first one is still returned, so this can only ever move a match
+ * to a better position, never invent or destroy one.
+ */
+function findLiteralMatchSpan(quote: string, sourceText: string, preferWithin?: { start: number; end: number } | null): { start: number; end: number } | null {
   const normalizedQuote = normalizeForMatch(quote);
   if (!normalizedQuote) return null;
   const { normalized, map } = normalizeWithMap(sourceText);
-  const idx = normalized.indexOf(normalizedQuote);
-  if (idx === -1) return null;
-  const start = map[idx];
-  const lastNormIdx = idx + normalizedQuote.length - 1;
-  const end = lastNormIdx + 1 < map.length ? map[lastNormIdx + 1] : sourceText.length;
-  return { start, end };
+  const spanAt = (idx: number) => {
+    const start = map[idx];
+    const lastNormIdx = idx + normalizedQuote.length - 1;
+    const end = lastNormIdx + 1 < map.length ? map[lastNormIdx + 1] : sourceText.length;
+    return { start, end };
+  };
+  const first = normalized.indexOf(normalizedQuote);
+  if (first === -1) return null;
+  if (!preferWithin) return spanAt(first);
+  for (let idx = first; idx !== -1; idx = normalized.indexOf(normalizedQuote, idx + 1)) {
+    const span = spanAt(idx);
+    if (span.start >= preferWithin.start && span.start <= preferWithin.end) return span;
+  }
+  return spanAt(first);
 }
 
 /**
@@ -237,6 +360,53 @@ export interface QuoteVerificationResult {
   normalizedText: string | null;
   /** Which pass verified the quote — "literal" means the model's quote is a genuine contiguous substring of the filing; "co-occurrence" means it verified via the table-row fallback (the quote's key facts co-occur nearby without forming one exact span). Null when unverified. Exists so callers/tests can tell "verified because it's real prose" apart from "verified because a table row happened to contain the same tokens" — the two are not equally strong evidence that the quote reads as intended. */
   matchType: "literal" | "co-occurrence" | null;
+  /**
+   * Where in the candidate text the claim was actually matched, in RAW
+   * offsets. Session 18 A1 needs this: an amount is corroborated near the row
+   * it is claimed for, and "near" is meaningless without the row's position.
+   * Null when unverified, or on the rare literal match whose span can't be
+   * relocated.
+   */
+  sourceSpan: { start: number; end: number } | null;
+  /** Which candidate text (by index) the claim matched — so a caller checking positions knows WHICH document those offsets belong to. */
+  sourceIndex: number | null;
+}
+
+/**
+ * A2 (Session 18, post-stage-2) — CO-OCCURRENCE MUST NOT PASS ON THE CAPTION
+ * ALONE.
+ *
+ * `extractFactTokens` does not read a trailing bare table figure as money, so
+ * a debt-schedule row like "6.875% Junior-Priority Secured Notes due 2029
+ * 350" tokenizes to a RATE and a YEAR and nothing else. Co-occurrence then
+ * asks only that a 6.875% and a 2029 sit near each other beside one of the
+ * claim's own words — which every real mention of that instrument satisfies,
+ * anywhere in the filing. The amount riding along was never checked by this
+ * pass at all.
+ *
+ * Measured live on CHS: two rows verified exactly this way against the 10-K,
+ * claiming $350M and $400M against real balances of $1,244M and $1,227M, and
+ * both are on the rendered ladder. A fabricated row and a real one are
+ * indistinguishable to a test that never looks at the number.
+ *
+ * So when the caller knows what amount the claim carries, the amount must be
+ * printed inside the same bounded region as the identity. Checked on the
+ * DIGIT GROUP rather than a parsed money token, precisely because the bare
+ * table figure this is guarding is not tokenizable as money.
+ */
+const AMOUNT_IN_WINDOW_PAD_CHARS = 160;
+const MIN_DISCRIMINATING_DIGITS = 3;
+
+/** The digit groups in `amount` long enough to identify anything. Two-digit groups occur in every filing and prove nothing. */
+export function discriminatingDigitGroups(amount: string): string[] {
+  return (amount.match(/\d[\d,]*(?:\.\d+)?/g) ?? []).filter((g) => g.replace(/\D/g, "").length >= MIN_DISCRIMINATING_DIGITS);
+}
+
+function amountPrintedNear(amount: string, text: string, start: number, end: number): boolean {
+  const groups = discriminatingDigitGroups(amount);
+  if (groups.length === 0) return true; // nothing discriminating to test — abstain rather than fabricate a failure
+  const region = text.slice(Math.max(0, start - AMOUNT_IN_WINDOW_PAD_CHARS), Math.min(text.length, end + AMOUNT_IN_WINDOW_PAD_CHARS));
+  return groups.some((g) => region.includes(g));
 }
 
 /**
@@ -268,37 +438,63 @@ function normalizeLiteralMatchText(trimmedQuote: string, sourceText: string): st
  * does for `quote`, just called per-candidate instead of over the whole
  * list at once.
  */
-export function verifyClaim(quote: string, candidateTexts: string[]): QuoteVerificationResult {
+export function verifyClaim(
+  quote: string,
+  candidateTexts: string[],
+  options?: {
+    /**
+     * A2. The amount this claim carries. When given, a CO-OCCURRENCE match
+     * must also print this amount inside the matched region — identity plus
+     * amount, never identity alone. Literal matches are unaffected: a literal
+     * match already contains the row verbatim, figure included.
+     */
+    requireAmount?: string;
+    /**
+     * A1. Where the debt note sits in each candidate text. Used only to
+     * disambiguate WHICH occurrence of a repeated caption is meant — see
+     * findLiteralMatchSpan. Never used to reject a match.
+     */
+    preferWithin?: ({ start: number; end: number } | null)[];
+  }
+): QuoteVerificationResult {
   const trimmed = quote.trim();
-  if (!trimmed) return { verified: false, displayText: null, normalizedText: null, matchType: null };
+  const unverified: QuoteVerificationResult = { verified: false, displayText: null, normalizedText: null, matchType: null, sourceSpan: null, sourceIndex: null };
+  if (!trimmed) return unverified;
 
-  for (const text of candidateTexts) {
+  for (let i = 0; i < candidateTexts.length; i++) {
+    const text = candidateTexts[i];
     if (quoteAppearsIn(trimmed, text)) {
       return {
         verified: true,
         displayText: trimmed,
         normalizedText: normalizeLiteralMatchText(trimmed, text),
         matchType: "literal",
+        sourceSpan: findLiteralMatchSpan(trimmed, text, options?.preferWithin?.[i] ?? null),
+        sourceIndex: i,
       };
     }
   }
 
   const claimTokens = extractFactTokens(trimmed);
-  if (claimTokens.length === 0) return { verified: false, displayText: null, normalizedText: null, matchType: null };
+  if (claimTokens.length === 0) return unverified;
 
-  for (const text of candidateTexts) {
+  for (let i = 0; i < candidateTexts.length; i++) {
+    const text = candidateTexts[i];
     const window = findCoOccurrenceWindow(trimmed, claimTokens, text, CO_OCCURRENCE_WINDOW_CHARS);
-    if (window) {
-      return {
-        verified: true,
-        displayText: extractRowDisplayText(text, window.start, window.end),
-        normalizedText: extractNormalizedRowText(text, window.start, window.end),
-        matchType: "co-occurrence",
-      };
-    }
+    if (!window) continue;
+    // A2 — the caption is not enough on its own.
+    if (options?.requireAmount !== undefined && !amountPrintedNear(options.requireAmount, text, window.start, window.end)) continue;
+    return {
+      verified: true,
+      displayText: extractRowDisplayText(text, window.start, window.end),
+      normalizedText: extractNormalizedRowText(text, window.start, window.end),
+      matchType: "co-occurrence",
+      sourceSpan: window,
+      sourceIndex: i,
+    };
   }
 
-  return { verified: false, displayText: null, normalizedText: null, matchType: null };
+  return unverified;
 }
 
 /**
@@ -315,8 +511,8 @@ export function verifyTriggerQuote(params: {
   textByUrl: Map<string, string>;
 }): QuoteVerificationResult {
   const { fired, quote, citedUrls, textByUrl } = params;
-  if (!fired) return { verified: true, displayText: null, normalizedText: null, matchType: null }; // nothing asserted, nothing to verify
-  if (!quote || !quote.trim()) return { verified: false, displayText: null, normalizedText: null, matchType: null }; // fired but no verifiable quote given
+  if (!fired) return { verified: true, displayText: null, normalizedText: null, matchType: null, sourceSpan: null, sourceIndex: null }; // nothing asserted, nothing to verify
+  if (!quote || !quote.trim()) return { verified: false, displayText: null, normalizedText: null, matchType: null, sourceSpan: null, sourceIndex: null }; // fired but no verifiable quote given
 
   const citedTexts = citedUrls.map((url) => textByUrl.get(url)).filter((t): t is string => !!t);
   const citedResult = verifyClaim(quote, citedTexts);
