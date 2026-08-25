@@ -1,6 +1,7 @@
 import type { TriggerResult } from "../agent";
 import { computeTiming, computeWindowDate, daysBetween } from "./eventTiming";
 import { isFreshEvent, parseQoQIncreasePercent, type TimingInfo } from "./textHeuristics";
+import type { LadderRow } from "./position";
 
 /** The card-eligibility spec's core test: dated/live AND actionable within ~12-18mo. */
 export interface EligibilityResult {
@@ -31,7 +32,56 @@ export const PROCEEDS_RECENCY_DAYS = 90;
  * any date is even looked at, so a redeemed note's now-irrelevant former
  * due date can never be reached, let alone mistaken for an upcoming
  * maturity.
+ *
+ * Session 18 D2: a third universal restriction, alongside the two above —
+ * `cashAmount: null` never cards, for any trigger reached by this function.
+ * (Not "any trigger" without qualification: "debt-maturity" no longer comes
+ * through here at all — see evaluateRowEligibility below, which is governed
+ * by D1/the position instead.) This is what stops a pharmacy launch, a JV
+ * formation, or a held-for-sale classification from carding just because
+ * the disclosure happens to mention money with no amount actually stated
+ * for THIS event.
  */
+/**
+ * Session 18 (post-v16) — THE ONE D2 EXEMPTION: a named discrete capex
+ * project cards with or without a stated amount.
+ *
+ * Found by reverse assertion R1, which exists precisely to tell
+ * discrimination apart from blanket suppression. UHS discloses Miller
+ * Medical Plaza — 80,000 rentable square feet, completion December 2026, a
+ * 10-year master flex lease — and D2 held it to the table for want of a
+ * dollar figure. Verified against the filing text at zero cost: there is no
+ * figure to capture. No money appears within 700 characters of any mention
+ * of the project, in either the 10-Q or the 10-K. The only money near the
+ * Medical Center is MD&A operating expense ($61M salaries, $4M running
+ * costs), which is not a project cost and is correctly not bound to it. So
+ * D2 was suppressing a real financing conversation over a number the filing
+ * never printed — a building under construction is a term-loan discussion
+ * whether or not its cost is disclosed.
+ *
+ * SCOPED TO THE TRIGGER, NEVER THE COMPANY, and deliberately narrow to
+ * capex-program. Measured across the whole book, three fired triggers have a
+ * projectName with a null cashAmount, and a blanket "named project cards"
+ * rule would card all three:
+ *   - UHS capex-program        "…Miller Medical Plaza"                  <- must card (R1)
+ *   - Cigna new-subsidiary     "Evernorth EnGuide Pharmacy"             <- must NOT (item 7)
+ *   - Quest new-subsidiary     "Michigan laboratory testing JV entity"  <- must NOT (item 8)
+ * Neither cashAmount nor projectName separates them; only what the trigger
+ * IS does. A capex programme is a capital deployment with a financing need
+ * by construction; an entity formation is not, which is exactly why items 7
+ * and 8 hold those to the table. Every other trigger still requires an
+ * amount, so this cannot widen anything else.
+ *
+ * Still structural, not a vocabulary guard: it reads whether a discrete
+ * project was NAMED, never what the name says. A capex line with no named
+ * project (routine period spend — item 10's HCA/Quest/Tenet/DaVita figures)
+ * is untouched and stays a table line, which is the distinction item 10 and
+ * R1 draw between them.
+ */
+function namedProjectExemptFromD2(trigger: TriggerResult): boolean {
+  return trigger.triggerId === "capex-program" && trigger.projectName !== null && trigger.projectName.trim() !== "";
+}
+
 export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date()): EligibilityResult {
   const { eventStatus, eventDate, dateGranularity, triggerId } = trigger;
   const timing = computeTiming(eventStatus, eventDate, dateGranularity, now);
@@ -41,6 +91,9 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
   }
   if (eventStatus === "completed" && triggerId !== "new-debt-issuance") {
     return { cardEligible: false, reason: "already completed — nothing left to win", timing };
+  }
+  if (trigger.cashAmount === null && !namedProjectExemptFromD2(trigger)) {
+    return { cardEligible: false, reason: "no stated cash amount for this event — held to table", timing };
   }
 
   switch (triggerId) {
@@ -135,37 +188,16 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
         ? { cardEligible: true, reason: "newly increased/announced authorization", timing }
         : { cardEligible: false, reason: "ongoing/unchanged program", timing };
 
-    // --- Refi (debt maturity) ---
-    case "debt-maturity": {
-      // eventStatus "standing"/"completed" are already excluded by the
-      // universal hard rules above — by the time we reach here, status is
-      // "upcoming" or "just_announced", so this is purely the date-window
-      // check, never a status guess.
-      if (timing.monthsToNearestFuture === null) {
-        return { cardEligible: false, reason: "approaching maturity, but no verifiable date — held to table", timing };
-      }
-      // Exclusion check FIRST, unchanged, using the same windowDate-derived
-      // monthsToNearestFuture as before this session — the Dec-31
-      // convention is safe here: if the worst-case date is still outside
-      // the window, the real (unverifiable-month) date is definitely
-      // outside too.
-      if (timing.monthsToNearestFuture > REFI_WINDOW_MONTHS) {
-        return { cardEligible: false, reason: "maturity 18+ months out", timing };
-      }
-      // Session 17 Item 5: the SAME Dec-31 convention is NOT safe for
-      // INCLUSION — the worst-case date landing inside the window does not
-      // mean the real, unknown-month date actually does (a bare "due 2026"
-      // filed today could mature next January or next December, and only
-      // the filing itself, never a code convention, can say which). UHS's
-      // real "1.650% Senior Secured Notes due 2026" carded on exactly this
-      // reasoning before this fix. A bare-year maturity within the window
-      // goes to the table with the year shown; only a real month/day date
-      // can card.
-      if (timing.dateGranularity === "year") {
-        return { cardEligible: false, reason: `bare-year maturity (${eventDate}) — month not verifiable, held to table`, timing };
-      }
-      return { cardEligible: true, reason: `maturity ~${timing.monthsToNearestFuture}mo out`, timing };
-    }
+    // --- Refi (debt maturity) — Session 18: MOVED OUT of this function
+    // entirely. A debtSchedule with N rows needs N independent
+    // eligibility decisions (one tranche can be 6 months out and cardable
+    // while its neighbor is 3 years out), which a single TriggerResult ->
+    // single EligibilityResult call can never express. See
+    // evaluateRowEligibility below, called once per LadderRow from the
+    // assembled position (lib/events/position.ts) instead. If this
+    // function is ever called with triggerId "debt-maturity", that's a
+    // wiring bug upstream — falls through to the default "no card rule"
+    // case below rather than silently reusing stale single-fact logic.
 
     // --- FX / rate hedging ---
     case "floating-rate-debt":
@@ -185,4 +217,36 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
     default:
       return { cardEligible: false, reason: "no card rule for this trigger", timing };
   }
+}
+
+/**
+ * Session 18 D1 + the refi card test, per LADDER ROW instead of per
+ * trigger — debt-maturity's replacement for the deleted switch case above.
+ * Same date-window logic, byte-for-byte: dated + ≤18mo out + not a
+ * bare-year row cards; everything else stays table-only. What changed is
+ * only what the gate is ALLOWED TO LOOK AT — D1 (only a `live` row is even
+ * considered; `retired`/`unconfirmed` never reach the date test) runs
+ * first, reusing the position layer's own status instead of guessing from
+ * a citation or an evidence sentence.
+ */
+export function evaluateRowEligibility(row: LadderRow, now: Date = new Date()): EligibilityResult {
+  const timing = computeTiming("upcoming", row.maturityDate, row.dateGranularity, now);
+
+  if (row.status === "retired") {
+    return { cardEligible: false, reason: "retired — redeemed by a later issuance", timing };
+  }
+  if (row.status === "unconfirmed") {
+    return { cardEligible: false, reason: "unconfirmed — dropped from the newest filing with no redemption explaining it, held to table", timing };
+  }
+
+  if (timing.monthsToNearestFuture === null) {
+    return { cardEligible: false, reason: "approaching maturity, but no verifiable date — held to table", timing };
+  }
+  if (timing.monthsToNearestFuture > REFI_WINDOW_MONTHS) {
+    return { cardEligible: false, reason: "maturity 18+ months out", timing };
+  }
+  if (timing.dateGranularity === "year") {
+    return { cardEligible: false, reason: `bare-year maturity (${row.maturityDate}) — month not verifiable, held to table`, timing };
+  }
+  return { cardEligible: true, reason: `maturity ~${timing.monthsToNearestFuture}mo out`, timing };
 }

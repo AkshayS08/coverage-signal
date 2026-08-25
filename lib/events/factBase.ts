@@ -1,5 +1,6 @@
 import type { CompanyResult, TriggerResult } from "../agent";
 import { extractFactTokens, type FactToken } from "../agent/factTokens";
+import { assemblePosition, citationsForLadderRow } from "./position";
 
 /**
  * Figure-binding — deciding WHICH single currency figure (if any) actually
@@ -174,6 +175,23 @@ function redactUndeterminedFigures(text: string, allTokens: FactToken[]): string
 export interface VerifiedFact {
   /** Which trigger this fact came from — lets the caller find "the headline's own fact" in the list. */
   linkedTriggerId: string;
+  /**
+   * Session 18 (post-v16) — debt-maturity row facts ONLY; null for every
+   * other fact. Which specific ladder row (position.ts's LadderRow.id) this
+   * fact describes.
+   *
+   * `linkedTriggerId` alone CANNOT identify a debt-maturity fact, because
+   * every one of a company's ladder rows carries the same "debt-maturity"
+   * id. Found live: Cigna produced three refi cards for three different
+   * tranches (3.400% due March 2027, 7.875% due May 2027, 3.050% due
+   * October 2027), and all three narrated the SAME wrong tranche — the
+   * $550M 1.250% notes — because the headline-fact lookup was a `.find` on
+   * triggerId and always returned the first row. The figures were real
+   * Cigna figures, so no fabrication guard could catch it; the cards were
+   * simply about the wrong debt. This field is what makes the lookup
+   * row-exact, mirroring FlashCard.headlineRowId on the card side.
+   */
+  ladderRowId: string | null;
   /** Short label for the fact, e.g. the trigger name — for prompt readability, not itself a source of truth. */
   fact: string;
   /** The literal verified text backing this fact — a prose quote or a table-row snippet, exactly as shown in the UI's source-text expander. Raw, unscaled, UNREDACTED — for verification/audit and the raw source-text display, never altered. */
@@ -231,6 +249,10 @@ export interface VerifiedFact {
   eventDate: TriggerResult["eventDate"];
   dateGranularity: TriggerResult["dateGranularity"];
   eventStatus: TriggerResult["eventStatus"];
+  /** Session 18 F2 — debt-maturity row facts ONLY. Verbatim from the debt note's own section header (position.ts's LadderRow.seniority), or null when the filing states none. Surfaced as its own field because a ladder row's `sourceLine` (the table row itself) frequently doesn't repeat the section header the seniority came from. Null for every other fact. */
+  seniority: string | null;
+  /** Session 18 E1 — new-debt-issuance facts ONLY, when the issuance's own `redeems` field is populated. Verbatim description of what this issuance retired, copied from the field — not an inference, and not evidence that the retired tranche is THIS card's own headline. Null for every other fact, and null when new-debt-issuance fired with nothing redeemed. */
+  redeemsInfo: string | null;
 }
 
 function mostRecentCitation(citations: TriggerResult["citations"]): TriggerResult["citations"][number] | null {
@@ -250,6 +272,9 @@ function mostRecentCitation(citations: TriggerResult["citations"]): TriggerResul
 export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
   const facts: VerifiedFact[] = [];
   for (const t of result.results) {
+    // Session 18: "debt-maturity" is handled entirely separately below —
+    // it no longer has ONE fact to build (see buildDebtMaturityFacts).
+    if (t.triggerId === "debt-maturity") continue;
     if (!t.fired || !t.quoteVerified || !t.verifiedQuote) continue;
     const rawNormalizedText = t.verifiedQuoteNormalized ?? t.verifiedQuote;
     const tokens = extractFactTokens(rawNormalizedText);
@@ -257,6 +282,7 @@ export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
     const normalizedText = redactUndeterminedFigures(rawNormalizedText, tokens);
     facts.push({
       linkedTriggerId: t.triggerId,
+      ladderRowId: null,
       fact: t.triggerName,
       verifiedText: t.verifiedQuote,
       normalizedText,
@@ -268,7 +294,68 @@ export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
       eventDate: t.eventDate,
       dateGranularity: t.dateGranularity,
       eventStatus: t.eventStatus,
+      seniority: null,
+      // Session 18 E1: only new-debt-issuance ever carries this; every
+      // other trigger's redeems is always null already (Session 18 A2).
+      redeemsInfo: t.triggerId === "new-debt-issuance" ? (t.redeems ?? null) : null,
     });
   }
+  facts.push(...buildDebtMaturityFacts(result));
   return facts;
+}
+
+/**
+ * Session 18: debt-maturity's replacement for the single-fact path above —
+ * one VerifiedFact per LIVE ladder row (lib/events/position.ts), never per
+ * trigger. A `retired` or `unconfirmed` row is NOT a current fact worth
+ * narrating in another card's WHY NOW or counting toward the number-guard's
+ * accuracy corpus — a redemption's own evidence (`row.retiredBy.evidence`)
+ * is surfaced separately, as a KEY POINT on the specific card it explains
+ * (sonnetEventBriefing.ts), not as a general fact anyone can cite.
+ *
+ * `figures` is read directly from the row's own structured `amount` field,
+ * not re-derived from `sourceLine` text — the extraction contract already
+ * guarantees a debtSchedule row's amount carries its own unit, sidestepping
+ * the bare-number-scale ambiguity selectDisplayFigure exists to resolve for
+ * free-text quotes. `normalizedText`/`evidence` still run the SAME
+ * redaction pass as every other fact (defense in depth against an
+ * incidental unrelated bare number elsewhere in a table-shaped sourceLine).
+ */
+function buildDebtMaturityFacts(result: CompanyResult): VerifiedFact[] {
+  const debtMaturityTrigger = result.results.find((t) => t.triggerId === "debt-maturity");
+  if (!debtMaturityTrigger) return [];
+  const position = assemblePosition(result);
+  return position.rows
+    .filter((row) => row.status === "live")
+    .map((row) => {
+      const tokens = extractFactTokens(row.sourceLine);
+      const normalizedText = redactUndeterminedFigures(row.sourceLine, tokens);
+      const citations = citationsForLadderRow(row, debtMaturityTrigger);
+      return {
+        linkedTriggerId: "debt-maturity",
+        ladderRowId: row.id,
+        fact: `${debtMaturityTrigger.triggerName} — ${row.instrument}`,
+        verifiedText: row.sourceLine,
+        normalizedText,
+        figures: [row.amount],
+        // Session 18 (post-v6): maturityDate is nullable now (a real
+        // aggregate line, like HCA's "Other debt," can genuinely state no
+        // maturity) — an unstated date is correctly absent here, not a
+        // string "null" or an empty-string placeholder.
+        dates: row.maturityDate ? [row.maturityDate] : [],
+        sourceFiling: mostRecentCitation(citations),
+        citations,
+        evidence: row.sourceLine,
+        eventDate: row.maturityDate,
+        dateGranularity: row.dateGranularity,
+        // Session 18 (post-v6): "upcoming" implies a dated future event —
+        // wrong for a real aggregate line with no stated maturity (e.g.
+        // HCA's "Other debt"), which is an ongoing condition, not something
+        // due on a date. "standing" matches how every other dateless fact
+        // in this pipeline is already labeled.
+        eventStatus: row.maturityDate ? "upcoming" : "standing",
+        seniority: row.seniority,
+        redeemsInfo: null,
+      };
+    });
 }

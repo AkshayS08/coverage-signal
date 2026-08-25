@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { TriggerDef } from "./triggers";
+import { recordUsage } from "./costMeter";
 
 const HAIKU_MODEL = "claude-haiku-4-5";
 
@@ -103,6 +104,130 @@ export function normalizeEventDate(eventDate: string | null, eventDateGranularit
   return { eventDate, eventDateGranularity, wasNormalized: false, suspiciousRoundDate };
 }
 
+/**
+ * Session 18 A1, redesigned post-v9 (three rounds of label-matching —
+ * category, feedsIntoTotal, and a proposed numeric fallback — all tried to
+ * answer "which total does this line belong to," a question the filing
+ * itself never poses). Live hand-verification of both pilot companies
+ * established the real model: a debt note is a RUNNING TOTAL, not a set of
+ * lines belonging to one grand total. Every printed subtotal equals the sum
+ * of everything printed above it — no labels needed to reconcile it. This
+ * is the ordered transcription of that running sequence: every row,
+ * adjustment, and subtotal, in PRINTED order — never repositioned.
+ *
+ * Post-v10 correction: an earlier version of this schema asked the model to
+ * REPOSITION entries (e.g. move HCA's "Commercial paper" out of its printed
+ * position to sit later in the sequence, where the arithmetic needed it).
+ * That instruction was itself an instance-fit — it forced one company's
+ * shape into a flat running total instead of representing what the filing
+ * actually prints, and the live pilot showed the model couldn't reliably
+ * follow it either. The real structure is that a debt note is NESTED: the
+ * filing prints section headings (e.g. "Long-term debt", "Short-term
+ * borrowings"), and a subtotal reconciles against the rows in its OWN
+ * section plus any earlier subtotals/open sections it rolls up — never
+ * against a reordered flat list. `section` (below) captures that heading
+ * verbatim; printed order is preserved exactly. See
+ * lib/events/position.ts's computeWalkChecksum for the nested walk this
+ * enables.
+ */
+export type ScheduleEntryKind = "row" | "adjustment" | "subtotal";
+
+export interface ScheduleSequenceEntry {
+  kind: ScheduleEntryKind;
+  /**
+   * "row": the instrument's own name (e.g. "Term Loan A-2", "Commercial
+   * paper"). "adjustment": the reconciling line's own label (e.g. "Debt
+   * issuance costs and discounts"). "subtotal": the total line's own
+   * verbatim label, or null when the filing prints the figure with no
+   * "Total ..." caption at all — real and expected (DaVita's post-discount
+   * running total has none), never invent one.
+   */
+  label: string | null;
+  /**
+   * Signed as printed — parentheses mean negative; copy the sign, never
+   * convert to a bare positive number. Unit always attached, same rule as
+   * every other money field in this schema. For "row"/"adjustment" this is
+   * the entry's own contribution to the running sum; for "subtotal" this is
+   * the CLAIMED running total at this point — checked against the actual
+   * running sum by the checksum, never trusted on the model's word alone.
+   */
+  amount: string;
+  /** Verbatim, verified against the filing text the same way `quote` is — a row/adjustment/subtotal whose sourceLine can't be verified is dropped, not trusted. */
+  sourceLine: string;
+  /**
+   * Post-v10 correction: the note's own section heading this entry sits
+   * under, copied verbatim (e.g. "Long-term debt", "Short-term borrowings") —
+   * or null when the filing prints no such heading for this entry (a flat,
+   * single-section note like DaVita's, or a genuinely unplaced top-level
+   * line like HCA's final "less amounts due within one year" adjustment).
+   * Entries are captured in PRINTED order and NEVER repositioned — this
+   * field, not reordering, is what lets Check 1 (lib/events/position.ts's
+   * computeWalkChecksum) tell which rows a given subtotal is summing over.
+   * If a row plainly sits under a heading but which one is genuinely
+   * unclear, leave this null rather than guess — a null is read as
+   * top-level, which surfaces any resulting mismatch honestly in Check 1
+   * instead of silently mis-assigning the row to a section it may not
+   * belong to.
+   */
+  section: string | null;
+  /**
+   * Session 18 (post-v12) — COLUMN BINDING. Every debt table prints at
+   * least two amount columns (this period and the prior comparative), and
+   * until this field existed nothing in the schema said which one an
+   * `amount` came from. That is a silent-corruption class, not a one-off:
+   * a set of prior-column rows sums to the prior-column subtotal and passes
+   * Check 1 perfectly, because the internal walk is self-consistent within
+   * either column. Only Check 2 catches it, and only because a balance
+   * sheet is current-period by definition. Live case: Quest, where the
+   * model read prior-column values for several rows and both subtotals and
+   * still walked cleanly.
+   *
+   * The verbatim column header this specific amount was read from, exactly
+   * as the table prints it (e.g. "June 30, 2026", "December 31, 2025").
+   * Verified in CODE against the base filing's own EDGAR period-of-report
+   * (lib/agent/loop.ts) — an entry bound to a different period is DROPPED,
+   * never accepted. Null only when the table genuinely prints a single
+   * amount column with no period header at all.
+   */
+  periodColumn: string | null;
+  /** Only meaningful for kind "row" — null for "adjustment"/"subtotal". Same copy-never-compute rules as eventDate; null when this specific row states no rate. */
+  rate: string | null;
+  /** Only meaningful for kind "row". Verbatim from the debt note's own section header; null when the filing states no seniority for this row — never guessed. */
+  seniority: string | null;
+  /** Only meaningful for kind "row". Nullable — a real aggregate line (e.g. "Other debt") can genuinely state no maturity; a claimed value with no matching date token in this row's own sourceLine is dropped downstream, never trusted. */
+  maturityDate: string | null;
+  dateGranularity: DateGranularity | null;
+}
+
+/**
+ * Session 18 (post-v9) — Check 2's own input. Every 10-Q/10-K carries a
+ * balance sheet with debt captions, independent of the debt note's own
+ * running sequence — cross-referencing the two proves the note actually
+ * belongs to THIS period (an internal walk on a stale, prior-quarter note
+ * ties perfectly on its own; the balance sheet is what catches that). NOT a
+ * fixed set of captions — a company states whichever ones its own balance
+ * sheet actually prints (see lib/events/position.ts's computeBalanceSheetCheck).
+ */
+export interface BalanceSheetDebtCaption {
+  /** Verbatim, e.g. "Current portion of long-term debt", "Long-term debt", "Commercial paper". */
+  label: string;
+  amount: string;
+  sourceLine: string;
+  /** Session 18 (post-v12) — same column binding as ScheduleSequenceEntry.periodColumn. A balance sheet is comparative too, and Check 2 is only a current-period anchor if its captions actually came from the current column. */
+  periodColumn: string | null;
+}
+
+/** A single newly-priced tranche from an issuance 8-K — NOT part of the debt note's running-total walk (that's scheduleSequence), just a row to append to the ladder. Same field shape as a scheduleSequence "row" entry, minus kind/label (uses `instrument` instead, since it's never part of an ordered sequence with adjustments/subtotals). */
+export interface IssuedTrancheRow {
+  instrument: string;
+  rate: string | null;
+  seniority: string | null;
+  amount: string;
+  maturityDate: string | null;
+  dateGranularity: DateGranularity | null;
+  sourceLine: string;
+}
+
 export interface TriggerVerdict {
   triggerId: string;
   fired: boolean;
@@ -119,7 +244,127 @@ export interface TriggerVerdict {
   needsDig: boolean;
   digHint: string | null;
   citedUrls: string[];
+  /**
+   * Session 18 A1, redesigned post-v9 — "debt-maturity" ONLY, empty array
+   * for every other trigger. The base filing's ENTIRE debt note,
+   * transcribed as an ordered row/adjustment/subtotal sequence — see
+   * ScheduleSequenceEntry's doc comment for the running-total model this
+   * replaces label-matching with. This — not eventDate/quote/evidence
+   * above — is what lib/events/position.ts and the gate now read for this
+   * trigger.
+   */
+  scheduleSequence: ScheduleSequenceEntry[];
+  /**
+   * Session 18 — "debt-maturity" ONLY. The SAME transcription, but from the
+   * next-most-recent 10-Q or 10-K already present in the corpus (not the
+   * newest one — that's scheduleSequence above). Exists so
+   * lib/events/position.ts can detect a tranche that silently dropped off
+   * the newest filing with no 8-K explaining why (the `unconfirmed` case).
+   * Empty array if the corpus holds only one periodic filing with a debt
+   * schedule.
+   */
+  priorScheduleSequence: ScheduleSequenceEntry[];
+  /**
+   * Session 18 (post-v9) — "debt-maturity" ONLY. The SAME base filing's own
+   * balance sheet debt captions — Check 2's input (lib/events/position.ts's
+   * computeBalanceSheetCheck), independent of scheduleSequence's own
+   * internal walk. Proves the note belongs to THIS period; an internal walk
+   * on a stale note ties perfectly on its own. Empty for every other
+   * trigger.
+   */
+  balanceSheetDebtCaptions: BalanceSheetDebtCaption[];
+  /**
+   * Session 18 (post-v11) — "debt-maturity" ONLY, null for every other
+   * trigger. The scheduleSequence table's OWN unit declaration, copied
+   * verbatim from the table's header/caption (e.g. "(In millions)",
+   * "(amounts in thousands)") — or null when the table declares none. Many
+   * filings state the scale ONCE here instead of on every row, which left
+   * rows reading a bare "$ 549" and either dropped as indeterminate or,
+   * worse, silently read as literal dollars a million times too small
+   * (Cigna's 10-K, live). Applied in CODE, never by the model — see
+   * lib/agent/moneyScale.ts's applyTableUnitToAmount.
+   */
+  scheduleTableUnit: string | null;
+  /** Session 18 (post-v11) — "debt-maturity" ONLY. Same, for priorScheduleSequence's own table (a different filing, so a separately-declared unit). */
+  priorScheduleTableUnit: string | null;
+  /** Session 18 (post-v11) — "debt-maturity" ONLY. Same, for the BALANCE SHEET's own unit declaration — a different statement from the debt note, with its own caption, so never assume the note's unit carries over. */
+  balanceSheetTableUnit: string | null;
+  /** Session 18 A2 — "new-debt-issuance" ONLY. Verbatim description of the notes named as being redeemed/repaid by THIS issuance, or null. Copied, never inferred — this is what lets lib/events/position.ts retire the right ladder row instead of leaving a card pointed at dead debt. Null for every other trigger. */
+  redeems: string | null;
+  /**
+   * Session 18 — "new-debt-issuance" ONLY, empty array for every other
+   * trigger. The row(s) for the tranche(s) THIS issuance just priced,
+   * transcribed from the pricing 8-K itself (which states
+   * instrument/rate/amount/maturity/seniority just as concretely as a
+   * periodic debt note does). This is what lets lib/events/position.ts add
+   * the newly issued tranche(s) to the ladder as `live` rows, not just
+   * remove the redeemed one.
+   */
+  issuedTranches: IssuedTrancheRow[];
+  /**
+   * Session 18 A3 — every trigger. The amount THIS event's own filing text
+   * states for it, or null. Not a general dollar figure that happens to
+   * appear near the disclosure — the amount actually being received, paid,
+   * or committed for this specific event. A classification (e.g. assets
+   * reclassified as held-for-sale, which states a carrying value but no
+   * realized cash) is null, not that carrying value. An announcement or a
+   * launch with no stated amount is null. Never extract direction — the
+   * trigger's own bucket already carries that, and a second, possibly
+   * disagreeing source of truth is worse than none.
+   */
+  cashAmount: string | null;
+  /**
+   * Session 18 A3 — every trigger. The discrete, NAMED project the filing
+   * calls out (e.g. "Alan B. Miller Medical Center"), or null when the
+   * amount is a period total with no named project ("six-month capital
+   * expenditures of $348 million"). Amount plus a name is a project; amount
+   * with no name is period spend — both are real facts, this field is only
+   * what tells them apart.
+   */
+  projectName: string | null;
 }
+
+const SCHEDULE_SEQUENCE_ENTRY_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    kind: { type: "string", enum: ["row", "adjustment", "subtotal"] },
+    label: { type: ["string", "null"] },
+    amount: { type: "string" },
+    sourceLine: { type: "string" },
+    section: { type: ["string", "null"] },
+    periodColumn: { type: ["string", "null"] },
+    rate: { type: ["string", "null"] },
+    seniority: { type: ["string", "null"] },
+    maturityDate: { type: ["string", "null"] },
+    dateGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
+  },
+  required: ["kind", "amount", "sourceLine"],
+};
+
+const BALANCE_SHEET_CAPTION_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    label: { type: "string" },
+    amount: { type: "string" },
+    sourceLine: { type: "string" },
+    periodColumn: { type: ["string", "null"] },
+  },
+  required: ["label", "amount", "sourceLine"],
+};
+
+const ISSUED_TRANCHE_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    instrument: { type: "string" },
+    rate: { type: ["string", "null"] },
+    seniority: { type: ["string", "null"] },
+    amount: { type: "string" },
+    maturityDate: { type: ["string", "null"] },
+    dateGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
+    sourceLine: { type: "string" },
+  },
+  required: ["instrument", "amount", "sourceLine"],
+};
 
 const VERDICT_ITEM_SCHEMA = {
   type: "object" as const,
@@ -137,6 +382,16 @@ const VERDICT_ITEM_SCHEMA = {
     needsDig: { type: "boolean" },
     digHint: { type: ["string", "null"] },
     citedUrls: { type: "array", items: { type: "string" } },
+    scheduleSequence: { type: "array", items: SCHEDULE_SEQUENCE_ENTRY_SCHEMA },
+    priorScheduleSequence: { type: "array", items: SCHEDULE_SEQUENCE_ENTRY_SCHEMA },
+    balanceSheetDebtCaptions: { type: "array", items: BALANCE_SHEET_CAPTION_SCHEMA },
+    scheduleTableUnit: { type: ["string", "null"] },
+    priorScheduleTableUnit: { type: ["string", "null"] },
+    balanceSheetTableUnit: { type: ["string", "null"] },
+    redeems: { type: ["string", "null"] },
+    issuedTranches: { type: "array", items: ISSUED_TRANCHE_SCHEMA },
+    cashAmount: { type: ["string", "null"] },
+    projectName: { type: ["string", "null"] },
   },
   required: ["triggerId", "fired", "dataAvailable", "eventStatus", "quoteHasFigure", "confidence", "needsDig"],
 };
@@ -161,6 +416,33 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
 - digHint: if needsDig, the exact url from the filing catalog you want read next. Otherwise null.
 - citedUrls: the filing url(s) you actually drew evidence from, from the excerpts or catalog below.
 
+- scheduleSequence / priorScheduleSequence / balanceSheetDebtCaptions — ONLY for the "debt-maturity" trigger. Leave all three at their empty default ([], [], []) for every other trigger.
+  - The base filing to transcribe from is named explicitly in the "Debt-schedule filing guidance" section above — read it first. Do NOT search the catalog yourself for "the most recent 10-Q or 10-K"; that guidance already resolved which filing (if any) has a locatable schedule, and may deliberately NOT be the newest filing by date if a newer one's own debt note wasn't locatable. If that section says no filing has a locatable schedule, all three arrays stay at their empty defaults — do not fabricate a table to fill them, even a plausible-looking one.
+  - THE KEY IDEA: a debt note is a RUNNING TOTAL, not a set of lines belonging to one grand total. Every printed subtotal equals the sum of everything printed above it WITHIN ITS OWN SECTION, plus any earlier subtotal or section it rolls up. Your job is to transcribe the note EXACTLY AS PRINTED, in the SAME order the filing prints it, capturing each entry's own section heading — you are NEVER deciding which lines "belong to" which total, and you NEVER reorder or reposition anything to make the arithmetic work. If a line printed first needs to be reordered for a subtotal to reconcile, that is a sign you have the section wrong, not a reason to move the line.
+  - scheduleSequence is an ORDERED array, IN PRINTED ORDER — literally the order these lines appear on the page, top to bottom, exactly as printed. Each entry has a kind:
+    - "row": one debt instrument/tranche/category line (e.g. "Term Loan A-2", "Commercial paper", "Senior unsecured notes payable through 2095"). label = the instrument's own name. Also carries rate, seniority (verbatim from the note's own section header, null if not stated), maturityDate + dateGranularity (same copy-never-compute rules as eventDate above — bare year stays bare, and BOTH ARE NULLABLE: null is the correct answer whenever this specific row states no maturity — a catch-all line like "Other debt (effective interest rate of 4.9%)" often states a rate with no maturity year anywhere next to it; do not default to the reporting period or any other plausible-looking year — that is fabrication, independently checked downstream against this row's own sourceLine).
+    - "adjustment": a reconciling line between rows and a subtotal — unamortized discount/premium, issuance costs, finance leases, current portion, "amounts due within one year." label = the line's own text. amount is signed exactly as printed — a value in parentheses is negative; copy the parentheses/minus sign, never convert to a bare positive number. rate/seniority/maturityDate/dateGranularity are null for this kind.
+    - "subtotal": a printed running total — "Total long-term debt," "Total debt," or a figure the filing simply prints with NO "Total ..." caption at all (real and expected — set label to null in that case, never invent a label that isn't there). rate/seniority/maturityDate/dateGranularity are null for this kind.
+  - section: EVERY entry (row, adjustment, AND subtotal) carries this field — the note's own section heading it sits under, copied VERBATIM (e.g. "Long-term debt", "Short-term borrowings"), or null when the filing prints no such heading for this entry (a flat, single-section note has no headings at all — every entry is null; that is the normal, expected case for most companies). A subtotal that closes out a section (e.g. "Total long-term debt" closing the "Long-term debt" section) carries THAT section's own name. A subtotal that rolls multiple sections together (e.g. "Total debt," which is not itself scoped to one heading) carries section: null. If you cannot tell which heading a specific row sits under, leave section null rather than guess — do not force an assignment you are not sure of.
+  - PRINTED ORDER, NEVER REPOSITIONED — worked example. THE FIGURES BELOW ARE FAKE PLACEHOLDERS (deliberately impossible repeated-digit numbers) FROM AN IMAGINARY FILING. They exist ONLY to show the SHAPE of the nesting. Never copy any number, label, or section name from this example into your answer; every value you return must come from the filing text you were actually given. If the filing you were given does not contain a debt schedule, return an empty scheduleSequence — do NOT reproduce this example.
+    The imaginary filing prints "Short-term borrowings:" first, with one row, "Commercial paper" (11,111, section "Short-term borrowings") — this goes into the sequence FIRST, exactly where it is printed, never moved later. THEN it prints the "Long-term debt:" section: rows "Instrument A" (22,222), "Instrument B" (33,333), "Instrument C" (44,444), each section "Long-term debt"; then adjustment "Debt issuance costs and discounts" (-1,111), also section "Long-term debt"; then subtotal "Total long-term debt" (98,888), section "Long-term debt" — reconciles against the "Long-term debt" section's own rows+adjustment only: 22,222+33,333+44,444-1,111=98,888 (commercial paper is NOT part of this sum — it's a different section). THEN subtotal "Total debt" (109,999), section null — this is a ROLLUP: it reconciles against "Total long-term debt" (98,888) PLUS the "Short-term borrowings" section's own total (11,111) = 109,999. THEN adjustment "Less amounts due within one year" (-2,222), section null. THEN a FINAL subtotal with label null, section null (the filing prints this figure — 107,777 — with no "Total ..." caption at all) — reconciles against "Total debt" (109,999) minus the adjustment above it (-2,222) = 107,777. Every entry stayed exactly where the filing printed it; only the section field, not position, tells the checksum how to group them.
+  - periodColumn — EVERY entry (row, adjustment, AND subtotal). A debt table prints at least TWO amount columns: this period and the prior comparative period (e.g. "June 30, 2026" and "December 31, 2025"). READ ONLY THE CURRENT-PERIOD COLUMN — the one matching the period end named in the "Debt-schedule filing guidance" section above — and copy that column's own header here VERBATIM. This is checked in code against the filing's actual period of report, and any entry bound to a different period is DROPPED, so guessing costs you the row. Two specific traps: (a) when the current-period cell is a dash or blank (the instrument was repaid), the amount is ZERO or the row is simply absent — do NOT reach across to the prior column's number to fill the gap; (b) a subtotal row has two figures too, and the FIRST one is the current period. Set periodColumn to null only when the table genuinely prints a single amount column with no period header at all.
+  - EVERY entry's amount MUST carry its own unit (same "unit always attached" rule as everywhere else in this schema) — a bare "98,888" with no unit is wrong even when the sign is correctly preserved.
+  - scheduleTableUnit: MANY filings state the table's scale ONCE, in the table's own header or caption, instead of repeating it on every row — e.g. "(In millions)", "(amounts in thousands)", "(dollars in thousands)". Copy that declaration here VERBATIM, exactly as printed, whenever the table has one. This is NOT a substitute for the per-entry unit rule above — still attach each entry's unit whenever the row itself states one. It is what lets code recover the correct scale for rows that genuinely state none, so a row reading only "$ 555" (again an illustrative placeholder, not a figure to copy) under an "(In millions)" caption is read as $555 million and not as 555 dollars. Set it to null ONLY when the table truly prints no scale declaration anywhere in or above it — never invent one, and never infer a scale from how large the numbers look.
+  - priorScheduleTableUnit: the same, for the PRIOR-period filing's own table (a different document with its own separate caption — never assume it matches the base filing's).
+  - balanceSheetTableUnit: the same, for the BALANCE SHEET's own unit declaration. The balance sheet is a different statement from the debt note, with its own caption — never carry the note's declaration over to it.
+  - sourceLine for EVERY entry (row, adjustment, and subtotal alike) — copied VERBATIM, character-for-character, exactly as it appears in the filing text given above, held to the EXACT SAME standard as the "quote" field's instructions above (re-read them). Not a clean sentence you compose describing the line — the filing's own raw text at that point, cells run together exactly as extracted, spacing and all.
+  - The prior-period filing (if any) is ALSO named in the "Debt-schedule filing guidance" section — do not search the catalog for it yourself. Transcribe ITS OWN running sequence the same way into priorScheduleSequence. If the guidance section says no second filing exists, priorScheduleSequence is [].
+  - balanceSheetDebtCaptions: from the SAME base filing's own BALANCE SHEET — a different section of the same document from the debt note, not the note's own totals. Every debt-related line item that balance sheet actually prints (e.g. "Current portion of long-term debt," "Long-term debt," and, for some companies, a separate "Commercial paper" caption). This is NOT a fixed set of captions to fill in — read whichever ones THIS SPECIFIC company's balance sheet actually states; some companies split out finance leases separately, some fold commercial paper into a combined line, some have no separate short-term caption at all. Copy each caption's own label and amount verbatim (unit always attached), with sourceLine verified the same verbatim way as everything else. The balance sheet is comparative too — read ONLY the current-period column and record its header in that caption's own periodColumn, same rule and same code check as scheduleSequence above. Leave empty only if the balance sheet genuinely states no debt captions at all — should be rare.
+
+- redeems / issuedTranches — ONLY for the "new-debt-issuance" trigger. Leave both at their empty default (null, []) for every other trigger.
+  - redeems: a verbatim description of the notes named as being redeemed, repaid, or retired by THIS issuance, copied exactly as the filing states it — or null if the filing names nothing being retired. Never infer this from context; only from the filing's own words.
+  - issuedTranches: the row(s) for the tranche(s) THIS issuance itself just priced (instrument/rate/seniority/amount/maturityDate/dateGranularity/sourceLine) — a pricing 8-K states these just as concretely as a periodic debt note does. One row per distinct tranche priced in this issuance. sourceLine here follows the exact same verbatim-copy rule as scheduleSequence's sourceLine above — copy the pricing 8-K's own text for that tranche, never a composed summary sentence.
+
+- cashAmount / projectName — EVERY trigger.
+  - cashAmount: the dollar amount THIS SPECIFIC event's own filing text states for it, with its unit — or null. Not any dollar figure that happens to appear nearby; the amount actually being received, paid, committed, or raised for this exact event. A classification with no realized cash movement (e.g. assets reclassified as held-for-sale, which states a carrying value but nothing has actually been sold or received yet) is null, even though a dollar figure is present in the disclosure — the carrying value is not this event's cashAmount. An announcement, launch, or formation with no dollar figure stated anywhere for it is null. Do not extract which direction the cash moves (in or out) — that already comes from the trigger itself; do not create a second, possibly disagreeing answer to a question this schema doesn't ask.
+  - projectName: the discrete, NAMED project or facility the filing calls out for this event (e.g. "Alan B. Miller Medical Center"), or null when the amount is a period total with no specific named thing behind it (e.g. "capital expenditures of $348 million for the six months ended..."). Amount plus a name is a named project; amount with no name is period spend — this field is only what tells the two apart, never a judgment about whether either one matters.
+
 Return a result for every one of the 15 triggers, even ones with no signal at all.`;
 
 function formatTriggers(triggers: TriggerDef[]): string {
@@ -184,20 +466,173 @@ function formatCorpus(docs: CorpusDoc[]): string {
     .join("\n\n");
 }
 
-/** One Haiku call classifying all 15 triggers against the assembled corpus. */
+/**
+ * Session 18 (post-v6, live-diagnosed): the old instruction — "find the
+ * SINGLE most recent 10-Q or 10-K" — leaves the model to search for a
+ * filing that may not have a locatable debt schedule at all (Centene: 28
+ * fabricated rows resembling ANOTHER company's real debt structure, because
+ * the "most recent" filing by date didn't carry the table and the model
+ * filled the gap rather than say so; Cigna: the table exists ONLY in the
+ * 10-K, never either 10-Q — a strict "most recent by date" reading would
+ * have picked a 10-Q with nothing there). A locator miss and a fabrication
+ * risk are the same event: whichever filing the model is asked to
+ * transcribe from should be one CODE has already confirmed has a real,
+ * locatable schedule (lib/fetch/debtNoteLocator.ts), never one merely
+ * guessed to be "most recent." This is computed once per company in
+ * loop.ts (deterministic, zero LLM cost) and handed to the model as a
+ * closed choice instead of an open search.
+ */
+export interface DebtScheduleFilingRef {
+  form: string;
+  /** Filing date (when it was submitted to EDGAR). */
+  date: string;
+  url: string;
+  /** Session 18 (post-v12): EDGAR's own period-of-report for this filing — the authoritative answer to "which column is the current one," taken from filing metadata rather than inferred from the table or trusted from the model. Drives the column-binding check in lib/agent/loop.ts. */
+  reportDate: string;
+}
+export interface DebtScheduleFilingGuidance {
+  base: DebtScheduleFilingRef | null;
+  prior: DebtScheduleFilingRef | null;
+}
+
+function formatDebtScheduleGuidance(g: DebtScheduleFilingGuidance): string {
+  if (!g.base) {
+    return [
+      `## Debt-schedule filing guidance (determined in code, not for you to search)`,
+      `No filing in this company's corpus was found to contain a locatable, itemized debt schedule table — checked across every 10-Q/10-K fetched, not guessed. If debt-maturity fires based on narrative evidence elsewhere (a single MD&A sentence, an 8-K), that is fine for evidence/quote/eventDate as usual, but debtSchedule and priorDebtSchedule MUST stay empty ([]) and statedTotal MUST stay null. Do NOT fabricate rows, and do NOT reach for a structure that resembles a typical debt schedule from memory or from a different company's usual shape — a filing genuinely lacking a locatable table is a real, reportable fact, not a gap to paper over.`,
+    ].join("\n");
+  }
+  const priorLine = g.prior
+    ? `The prior-period filing for priorDebtSchedule is: ${g.prior.form} filed ${g.prior.date}, period ending ${g.prior.reportDate} (${g.prior.url}) — transcribe ITS OWN debt note the same way, from that filing alone, reading ITS OWN current column (the one for ${g.prior.reportDate}).`
+    : `No second filing with a locatable schedule exists in this corpus — priorDebtSchedule stays [].`;
+  return [
+    `## Debt-schedule filing guidance (determined in code, not for you to search)`,
+    `The base filing for debtSchedule/statedTotal is: ${g.base.form} filed ${g.base.date} (${g.base.url}) — use ONLY this filing's own debt note table, transcribed in full.`,
+    `THE CURRENT PERIOD FOR THIS FILING IS ${g.base.reportDate}. Every amount you report from it — every scheduleSequence entry AND every balance-sheet caption — must come from the column for ${g.base.reportDate}, and each entry's periodColumn must be that column's own verbatim header. Amounts read from the prior comparative column are dropped in code, so a row taken from the wrong column is a row lost, not a row saved.`,
+    `Continuing on the base filing: This is NOT necessarily the single newest 10-Q/10-K by date — it is whichever filing was confirmed (in code, before this prompt was built) to actually contain a locatable schedule. Do not substitute a different, newer filing even if one exists in the catalog below; that newer filing's own debt note either doesn't exist or wasn't locatable, which is exactly why this one was selected instead.`,
+    priorLine,
+  ].join("\n");
+}
+
+/**
+ * Session 18: the new debtSchedule/priorDebtSchedule/reconcilingLines/
+ * issuedTranches/cashAmount/projectName/redeems/statedTotal fields are all
+ * OPTIONAL in the tool schema (not in VERDICT_ITEM_SCHEMA's `required`) so
+ * the 14 unrelated triggers' existing behavior is never disturbed by their
+ * mere addition — but that means a verdict can come back with them simply
+ * missing (undefined), not an empty default. Every downstream reader
+ * (position.ts, eligibility.ts, factBase.ts) is written against the
+ * documented defaults ([]/[]/[]/  null etc.), never against "possibly
+ * undefined" — this is where that guarantee is made true, once, for both
+ * call sites below.
+ */
+const SESSION18_OPTIONAL_FIELDS = [
+  "scheduleSequence",
+  "priorScheduleSequence",
+  "balanceSheetDebtCaptions",
+  "scheduleTableUnit",
+  "priorScheduleTableUnit",
+  "balanceSheetTableUnit",
+  "redeems",
+  "issuedTranches",
+  "cashAmount",
+  "projectName",
+] as const;
+type Session18OptionalField = (typeof SESSION18_OPTIONAL_FIELDS)[number];
+/** A raw verdict as the tool call (or a hand-built synthetic one) may legitimately omit the Session 18 fields — the shape withFieldDefaults accepts. */
+export type TriggerVerdictInput = Omit<TriggerVerdict, Session18OptionalField> & Partial<Pick<TriggerVerdict, Session18OptionalField>>;
+
+/** rate/seniority/maturityDate/dateGranularity are optional in SCHEDULE_SEQUENCE_ENTRY_SCHEMA/ISSUED_TRANCHE_SCHEMA for the same "don't disturb the 14 unrelated triggers" reason every other Session 18 field is optional — an entry that omits one entirely needs the same undefined-to-null normalization withFieldDefaults already does at the verdict level. */
+function normalizeRow<T extends { rate?: string | null; seniority?: string | null; maturityDate?: string | null; dateGranularity?: DateGranularity | null }>(
+  row: T
+): T & { rate: string | null; seniority: string | null; maturityDate: string | null; dateGranularity: DateGranularity | null } {
+  return {
+    ...row,
+    rate: row.rate ?? null,
+    seniority: row.seniority ?? null,
+    maturityDate: row.maturityDate ?? null,
+    dateGranularity: row.dateGranularity ?? null,
+  };
+}
+
+/** `label`/`section` are optional in SCHEDULE_SEQUENCE_ENTRY_SCHEMA (a genuinely unlabeled subtotal, or a top-level entry with no heading, is real and expected) — need the same undefined-to-null normalization. */
+function normalizeSequenceEntry(entry: ScheduleSequenceEntry & { label?: string | null; section?: string | null; periodColumn?: string | null }): ScheduleSequenceEntry {
+  return { ...normalizeRow(entry), label: entry.label ?? null, section: entry.section ?? null, periodColumn: entry.periodColumn ?? null };
+}
+
+export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
+  return {
+    ...v,
+    scheduleSequence: (v.scheduleSequence ?? []).map(normalizeSequenceEntry),
+    priorScheduleSequence: (v.priorScheduleSequence ?? []).map(normalizeSequenceEntry),
+    balanceSheetDebtCaptions: (v.balanceSheetDebtCaptions ?? []).map((c) => ({ ...c, periodColumn: c.periodColumn ?? null })),
+    scheduleTableUnit: v.scheduleTableUnit ?? null,
+    priorScheduleTableUnit: v.priorScheduleTableUnit ?? null,
+    balanceSheetTableUnit: v.balanceSheetTableUnit ?? null,
+    redeems: v.redeems ?? null,
+    issuedTranches: (v.issuedTranches ?? []).map(normalizeRow),
+    cashAmount: v.cashAmount ?? null,
+    projectName: v.projectName ?? null,
+  };
+}
+
+/**
+ * Session 18: a `max_tokens` stop is a genuinely different failure from "the
+ * checksum didn't tie" — a truncated response can ALSO make the checksum
+ * fail (a partial schedule under-sums the stated total), but truncation
+ * needs a bigger token budget, not a prompt fix, and conflating the two
+ * would send whoever's debugging a tie-rate miss down the wrong path. Loud
+ * and named, same "never silent" standing guard the rest of this pipeline
+ * already follows — never inferred after the fact from a downstream guard.
+ */
+function assertNotTruncated(response: { stop_reason: string | null }, context: string): void {
+  if (response.stop_reason === "max_tokens") {
+    throw new Error(`TRUNCATED RESPONSE for ${context} — stop_reason was "max_tokens"; raise max_tokens, this is not a checksum/extraction-accuracy issue`);
+  }
+}
+
+/**
+ * Session 18: retry-once wrapper — a malformed tool-call response
+ * (`results` not an array, or no tool_use at all) is a genuinely rare but
+ * observed transient shape for this much LARGER response (a full
+ * debtSchedule + priorDebtSchedule on top of the other 14 triggers), not a
+ * deterministic bug: confirmed live, an identical re-ask of the exact same
+ * company/corpus (temperature 0) succeeded cleanly on the very next call.
+ * One retry, same "loud failure only after genuinely exhausting the
+ * option" pattern draftEventBriefing already uses for the narration guard —
+ * a SECOND malformed response throws for real, never silently degrades.
+ */
 export async function classifyAllTriggers(params: {
   companyName: string;
   triggers: TriggerDef[];
   catalog: FilingCatalogEntry[];
   corpus: CorpusDoc[];
+  debtScheduleGuidance: DebtScheduleFilingGuidance;
 }): Promise<TriggerVerdict[]> {
-  const { companyName, triggers, catalog, corpus } = params;
+  try {
+    return await attemptClassifyAllTriggers(params);
+  } catch (err) {
+    console.warn(`[claude] ${params.companyName} — classifyAllTriggers malformed response, retrying once: ${err instanceof Error ? err.message : String(err)}`);
+    return await attemptClassifyAllTriggers(params);
+  }
+}
+
+async function attemptClassifyAllTriggers(params: {
+  companyName: string;
+  triggers: TriggerDef[];
+  catalog: FilingCatalogEntry[];
+  corpus: CorpusDoc[];
+  debtScheduleGuidance: DebtScheduleFilingGuidance;
+}): Promise<TriggerVerdict[]> {
+  const { companyName, triggers, catalog, corpus, debtScheduleGuidance } = params;
 
   const userContent = [
     `Company: ${companyName}`,
     ``,
     `## The 15 triggers`,
     formatTriggers(triggers),
+    ``,
+    formatDebtScheduleGuidance(debtScheduleGuidance),
     ``,
     `## Full filing catalog (available for digging; not all are excerpted below)`,
     formatCatalog(catalog),
@@ -208,7 +643,14 @@ export async function classifyAllTriggers(params: {
 
   const response = await getClient().messages.create({
     model: HAIKU_MODEL,
-    max_tokens: 6144,
+    // Session 18: raised from 6144 — a full multi-tranche debtSchedule PLUS
+    // its priorDebtSchedule counterpart PLUS the other 14 triggers' normal
+    // answers, all in one tool call, can be considerably larger than any
+    // single-fact-per-trigger response ever was. Tunable; confirm against a
+    // real HCA/Cigna (both ~10-tranche companies) response size during the
+    // pilot re-extraction and raise further if assertNotTruncated ever
+    // fires for a real company.
+    max_tokens: 12000,
     temperature: 0,
     system: INSTRUCTIONS,
     messages: [{ role: "user", content: userContent }],
@@ -228,12 +670,18 @@ export async function classifyAllTriggers(params: {
     tool_choice: { type: "tool", name: "submit_triage" },
   });
 
+  recordUsage(HAIKU_MODEL, response.usage);
+  assertNotTruncated(response, `${companyName} — classifyAllTriggers`);
+
   const toolUse = response.content.find((b) => b.type === "tool_use");
   if (!toolUse || toolUse.type !== "tool_use") {
     throw new Error("Haiku did not return a submit_triage tool call");
   }
   const input = toolUse.input as { results: TriggerVerdict[] };
-  return input.results;
+  if (!Array.isArray(input.results)) {
+    throw new Error(`malformed submit_triage response for ${companyName} — results is not an array (got ${typeof input.results})`);
+  }
+  return input.results.map(withFieldDefaults);
 }
 
 /** Follow-up call for a single ambiguous trigger, given one additional filing's text. */
@@ -267,7 +715,10 @@ export async function classifyOneTrigger(params: {
 
   const response = await getClient().messages.create({
     model: HAIKU_MODEL,
-    max_tokens: 3072,
+    // Session 18: raised from 3072 — a dig on "debt-maturity" specifically
+    // can still need to return a full debtSchedule, same reasoning as
+    // classifyAllTriggers above.
+    max_tokens: 6144,
     temperature: 0,
     system: INSTRUCTIONS,
     messages: [{ role: "user", content: userContent }],
@@ -281,9 +732,12 @@ export async function classifyOneTrigger(params: {
     tool_choice: { type: "tool", name: "submit_trigger_verdict" },
   });
 
+  recordUsage(HAIKU_MODEL, response.usage);
+  assertNotTruncated(response, `${companyName} — classifyOneTrigger(${trigger.id})`);
+
   const toolUse = response.content.find((b) => b.type === "tool_use");
   if (!toolUse || toolUse.type !== "tool_use") {
     throw new Error("Haiku did not return a submit_trigger_verdict tool call");
   }
-  return toolUse.input as TriggerVerdict;
+  return withFieldDefaults(toolUse.input as TriggerVerdict);
 }

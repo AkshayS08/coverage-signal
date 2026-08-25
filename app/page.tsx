@@ -9,10 +9,13 @@ import {
   buildBookEmptyStateLine,
   TABLE_BUCKET_ORDER,
   BUCKET_LABELS,
+  BUCKET_TRIGGER_COUNTS,
   type FlashCard,
   type FlashCardActiveItem,
   type TableLine,
   type CompanyTableBlock,
+  type RefiLadderBlock,
+  type RefiLadderLine,
   type Bucket,
 } from "@/lib/events";
 import type { DraftedEventBriefing } from "@/lib/events/eventBriefing";
@@ -387,6 +390,67 @@ export default function Home() {
     );
   }
 
+  // Session 18 F1: one refi ladder row — instrument/rate/seniority/amount,
+  // never just a figure+status template. `card above` uses the row's own
+  // id (headlineRowId), not the trigger id — a company can have several
+  // debt-maturity cards, one per qualifying tranche.
+  function renderRefiLadderLine(line: RefiLadderLine, i: number) {
+    const seniorityPrefix = line.row.seniority ? `${line.row.seniority} ` : "";
+    const rateText = line.row.rate ? `${line.row.rate} ` : "";
+    const text = `${line.row.amount} ${rateText}${seniorityPrefix}${line.row.instrument} — ${line.timingPhrase}`;
+    return (
+      <li key={i} className={styles.tableLine}>
+        <span className={styles.tableLineBullet}>·</span>
+        <span className={styles.tableLineText}>{text}</span>
+        {line.cardEligible && <span className={styles.tableLineCardMarker}>▸ card above</span>}
+      </li>
+    );
+  }
+
+  // Session 18 F1: the refi bucket's own renderer — a completeness
+  // statement (ties or doesn't, never suppressed either way) above a
+  // ladder, not a flat TableLine list like the other three buckets.
+  function renderRefiLadder(refi: RefiLadderBlock) {
+    if (!refi.hasData) {
+      const n = BUCKET_TRIGGER_COUNTS.refi;
+      return <p className={styles.tableLineEmptyBucket}>no signal — {n} trigger{n === 1 ? "" : "s"} checked</p>;
+    }
+    return (
+      <>
+        <p className={styles.refiCompletenessLine}>{refi.completenessStatement}</p>
+        <ul className={styles.tableLineList}>
+          {refi.nearestLines.map((line, i) => renderRefiLadderLine(line, i))}
+          {refi.tailSummary && (
+            <li className={styles.tableLine}>
+              <span className={styles.tableLineBullet}>·</span>
+              <span className={styles.tableLineText}>{refi.tailSummary}</span>
+            </li>
+          )}
+          {/* Session 18 (post-v9 redesign): adjustment entries rendered as
+              their own visible lines — previously only fed the checksum's
+              invisible sum. A figure like "amounts due within one year:
+              $6,264 million" is real, useful timing information even with
+              no per-tranche breakdown at all. */}
+          {refi.adjustments.map((adj, i) => (
+            <li key={`adjustment-${i}`} className={styles.tableLine}>
+              <span className={styles.tableLineBullet}>·</span>
+              <span className={styles.tableLineText}>
+                {adj.amount} — {adj.label ?? "(unlabeled adjustment)"}
+              </span>
+            </li>
+          ))}
+        </ul>
+        {refi.sourceCitation && (
+          <div className={styles.tableLineSources}>
+            <a href={refi.sourceCitation.url} target="_blank" rel="noreferrer" className={styles.citation}>
+              {refi.sourceCitation.form} {refi.sourceCitation.date} ↗
+            </a>
+          </div>
+        )}
+      </>
+    );
+  }
+
   function renderPortfolioCompany(table: CompanyTableBlock) {
     return (
       <details key={table.company} className={styles.portfolioCompany}>
@@ -399,13 +463,20 @@ export default function Home() {
           {TABLE_BUCKET_ORDER.map((bucket) => (
             <div key={bucket} className={styles.portfolioBucket}>
               <div className={`${styles.bucketBadge} ${styles[BUCKET_CLASS[bucket]]}`}>{BUCKET_LABELS[bucket]}</div>
-              <ul className={styles.tableLineList}>
-                {table.buckets[bucket].length === 0 ? (
-                  <li className={styles.tableLineEmptyBucket}>no signal found</li>
-                ) : (
-                  table.buckets[bucket].map((line, i) => renderTableLine(line, i))
-                )}
-              </ul>
+              {bucket === "refi" ? (
+                renderRefiLadder(table.refiLadder)
+              ) : (
+                <ul className={styles.tableLineList}>
+                  {table.buckets[bucket].length === 0 ? (
+                    <li className={styles.tableLineEmptyBucket}>
+                      {/* Session 18 F3: states what was actually checked, not a bare "no signal found" — proves the framework ran rather than reading as a rendering gap. */}
+                      no signal — {BUCKET_TRIGGER_COUNTS[bucket]} trigger{BUCKET_TRIGGER_COUNTS[bucket] === 1 ? "" : "s"} checked
+                    </li>
+                  ) : (
+                    table.buckets[bucket].map((line, i) => renderTableLine(line, i))
+                  )}
+                </ul>
+              )}
             </div>
           ))}
           {table.relationshipFlags.length > 0 && (

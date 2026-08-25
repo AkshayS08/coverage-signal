@@ -1,5 +1,13 @@
-import { runAgentLoop, type RunStreamEvent } from "@/lib/agent";
-import { buildEvents, buildVerifiedFactBase } from "@/lib/events";
+import { currentCompanySpend, runAgentLoop, type RunStreamEvent } from "@/lib/agent";
+import {
+  buildEvents,
+  buildExtractionReport,
+  buildVerifiedFactBase,
+  formatBookSummary,
+  formatExtractionReport,
+  summarizeBook,
+  type CompanyExtractionReport,
+} from "@/lib/events";
 import { cachedDraftEventBriefing } from "@/lib/cache/wordingCache";
 import { assertBlobConfigured } from "@/lib/fetch/cache";
 import { cacheStats } from "@/lib/cache/stats";
@@ -81,9 +89,26 @@ export async function POST(request: Request) {
         controller.enqueue(encoder.encode(JSON.stringify(event) + "\n"));
       };
 
+      // Session 18: every run states its own reconciliation outcome. Built
+      // here rather than inside runAgentLoop because loop.ts deliberately
+      // does not depend on the events layer (see rowMaturityToken's comment
+      // there) — this route already sits above both, so the report costs
+      // nothing and introduces no cycle.
+      const extractionReports: CompanyExtractionReport[] = [];
+
       for (const company of names) {
         try {
           const result = await runAgentLoop(company, (text) => send({ type: "trace", company, text }));
+
+          // Read immediately after extraction and before any card narration
+          // bills into the same scope, so this figure is the EXTRACTION
+          // spend — the same subtotal runAgentLoop itself logs.
+          const report = buildExtractionReport(result, currentCompanySpend());
+          extractionReports.push(report);
+          for (const line of formatExtractionReport(report)) {
+            console.log(line);
+            send({ type: "trace", company, text: line });
+          }
 
           // Card eligibility is per-event, not per-company — a company can
           // produce zero, one, or several card-eligible events. Only those
@@ -110,6 +135,18 @@ export async function POST(request: Request) {
           send({ type: "result", result, eventBriefings });
         } catch (err) {
           send({ type: "error", company, message: err instanceof Error ? err.message : String(err) });
+        }
+      }
+
+      // The book-level headline: how many companies reconciled, how many
+      // passed on a partial transcription, and what the pass cost. Emitted
+      // even when some companies errored out — a partial book's tie rate is
+      // still worth stating, and stating it over the companies that did run
+      // is more honest than withholding it.
+      if (extractionReports.length > 0) {
+        for (const line of formatBookSummary(summarizeBook(extractionReports))) {
+          console.log(line);
+          send({ type: "trace", company: names[names.length - 1], text: line });
         }
       }
 

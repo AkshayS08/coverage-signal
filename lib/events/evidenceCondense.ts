@@ -9,20 +9,20 @@ import { shortTriggerLabel } from "./labels";
  * cached plain-English paraphrase), never from figure+status alone. No
  * model call anywhere in this file.
  *
- * Step 0 of this session dumped every verified trigger's raw evidence for
- * both acceptance books before any of this was written (see the session
- * transcript) — three real shapes came out of that, and this file has one
- * condenser per shape, dispatched by trigger family:
+ * Session 18: "debt-maturity" no longer goes through this file at all.
+ * Its old shape here (Rule 1, condenseDebtMaturity) reconstructed a fake
+ * ladder by picking one clause out of a run-on evidence sentence and
+ * appending "+N more tranches to YYYY" — an approximation of what
+ * lib/events/position.ts now knows structurally, from a real transcribed
+ * debtSchedule. Deleted, not bypassed: debt-maturity facts never reach
+ * condenseEvidenceDescription below, and the refi bucket renders directly
+ * from the assembled position (lib/events/portfolioTable.ts).
  *
- *  1. debt-maturity — evidence frequently lists MANY tranches in one
- *     semicolon/"and"-joined run of text (Tenet: 10 tranches in one
- *     string). The eligible/timed tranche is whichever one matches the
- *     trigger's own fact-guarded eventDate — never positional (first-
- *     listed is not reliably the relevant one). See condenseDebtMaturity.
- *  2. new-debt-issuance — every tranche in the evidence belongs to ONE
+ * What remains here:
+ *  1. new-debt-issuance — every tranche in the evidence belongs to ONE
  *     event, so the whole first sentence (which is where Haiku states the
  *     pricing) is used as-is, never split apart. See condenseFirstSentence.
- *  3. everything else, including explicit multi-period comparisons
+ *  2. everything else, including explicit multi-period comparisons
  *     (revolver utilization, cash balance) — take the most recent "as of"
  *     period only when two or more are present; otherwise the first
  *     sentence. See condenseFirstSentence / mostRecentPeriodSentence.
@@ -184,88 +184,6 @@ function boundaryAfter(text: string, pos: number): number {
   const am = TRANCHE_AND_RE.exec(text);
   if (am) earliest = Math.min(earliest, am.index);
   return earliest;
-}
-
-const PERCENT_RE = /\d+(?:\.\d+)?\s?%/g;
-
-/**
- * Session 16 Fix B1: within `[start, matchedIndex)`, the start of the LAST
- * percent-rate mention (e.g. "4.60%") — a debt tranche's own rate reliably
- * marks where ITS clause actually begins, tighter than the generic
- * semicolon/sentence/tranche-"and" boundary alone. Confirmed live: Quest's
- * evidence has no semicolon or sentence break before its December-2027
- * tranche, so the wide boundary swept in an unrelated lead-in ("current
- * portion of long-term debt was $10 million, with...") ahead of the tranche
- * that actually matters; the rate anchor isolates just "4.60% Senior Notes
- * due December 2027 ($400 million)". A no-op (returns `start` unchanged)
- * when no percent appears in the gap — every other observed debt-maturity
- * evidence already has its own rate at, or immediately after, the existing
- * boundary, so this never widens or otherwise disturbs an already-correct
- * clause.
- */
-function tightenClauseStart(text: string, start: number, matchedIndex: number): number {
-  const region = text.slice(start, matchedIndex);
-  const matches = [...region.matchAll(PERCENT_RE)];
-  if (matches.length === 0) return start;
-  return start + matches[matches.length - 1].index!;
-}
-
-/** The single clause containing position `pos` — bounded by the nearest semicolon/sentence-end/tranche-"and" on each side, tightened forward to the nearest percent-rate anchor when one falls inside that wider span (see tightenClauseStart). */
-function extractClause(text: string, pos: number): string {
-  const start = tightenClauseStart(text, boundaryBefore(text, pos), pos);
-  const end = boundaryAfter(text, pos);
-  return text
-    .slice(start, end)
-    .trim()
-    .replace(/^[,;.]\s*/, "")
-    .replace(/[,;]\s*$/, "");
-}
-
-/**
- * Rule 1 (debt-maturity): select the clause matching the trigger's own
- * eventDate. Never position-based. No match -> a date-only line, never a
- * guess and never the first clause — "a missing amount is fine; a wrong
- * tranche is not."
- */
-export function condenseDebtMaturity(f: VerifiedFact): string {
-  // Empty, not the bare label — condenseEvidenceDescription's caller falls
-  // through to bareLineFallback for an empty result, which is what turns
-  // "capex financing" (unexplained) into "capex financing — no figure
-  // disclosed" (honest). Returning the label directly here would silently
-  // skip that fallback, since a non-empty label reads as "already handled."
-  if (!f.evidence || !f.eventDate || !f.dateGranularity) return "";
-
-  const dateTokens = extractFactTokens(f.evidence).filter((t) => t.kind === "date");
-  const matched = dateTokens.find((t) => dateTokenMatchesEventDate(t, f.eventDate!, f.dateGranularity!));
-  if (!matched) {
-    return formatDueDate(f.eventDate, f.dateGranularity) === f.eventDate
-      ? `notes due ${f.eventDate}`
-      : `notes due ${formatDueDate(f.eventDate, f.dateGranularity)}`;
-  }
-
-  const clauseStart = boundaryBefore(f.evidence, matched.index);
-  const clauseEnd = boundaryAfter(f.evidence, matched.index);
-  const clause = extractClause(f.evidence, matched.index);
-
-  // "+N more tranches" must count only OTHER genuine due-dates, never an
-  // "as of <date>" balance-sheet mention or a redemption date that
-  // happens to share the evidence with a real maturity list — verified
-  // live against Centene ("As of June 30, 2026..." + two redemption
-  // dates, none of them another tranche) and Community Health (an "as of"
-  // long-term-debt total). Requires the word "due" within a short window
-  // before the date token — every real multi-tranche debt-maturity
-  // evidence observed uses "...notes due <date>" for each one.
-  const DUE_PROXIMITY_CHARS = 20;
-  const otherDates = dateTokens.filter((t) => {
-    if (t === matched) return false;
-    if (t.index >= clauseStart && t.index < clauseEnd) return false;
-    const before = f.evidence!.slice(Math.max(0, t.index - DUE_PROXIMITY_CHARS), t.index);
-    return /\bdue\b/i.test(before);
-  });
-  if (otherDates.length === 0) return truncate(clause);
-
-  const maxYear = Math.max(...otherDates.map((t) => t.dateValue!.year));
-  return truncate(`${clause} (+${otherDates.length} more tranche${otherDates.length === 1 ? "" : "s"} to ${maxYear})`);
 }
 
 /** "as of DATE" period markers, decimal-safe — used to find the most-recent-period sentence for multi-period comparisons (Rule 3). */
@@ -484,8 +402,7 @@ function collapseSamePeriodClause(sentence: string): string {
  * branch selected it.
  */
 export function condenseFirstSentence(f: VerifiedFact): string {
-  // Empty, not the bare label — see condenseDebtMaturity's identical
-  // early-return for why: an empty string is what lets
+  // Empty, not the bare label — an empty string is what lets
   // condenseEvidenceDescription's fallback produce an explained
   // "no figure disclosed" line instead of a silently bare one.
   if (!f.evidence) return "";
@@ -510,13 +427,12 @@ export function bareLineFallback(f: VerifiedFact): string {
   return `${shortTriggerLabel(f.linkedTriggerId, f.fact)} — no figure disclosed`;
 }
 
-/** Top-level dispatch by trigger family (Rules 1/2/3). */
+/**
+ * Top-level dispatch (Rules 1/2 above). Session 18: no longer branches on
+ * "debt-maturity" — that trigger's facts never reach this function (see
+ * this file's own top doc comment); every fact condenses the same way now.
+ */
 export function condenseEvidenceDescription(f: VerifiedFact): string {
-  let description: string;
-  if (f.linkedTriggerId === "debt-maturity") {
-    description = condenseDebtMaturity(f);
-  } else {
-    description = condenseFirstSentence(f);
-  }
+  const description = condenseFirstSentence(f);
   return description.trim() || bareLineFallback(f);
 }

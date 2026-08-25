@@ -53,6 +53,46 @@ const MAX_NUMERIC_WORD_RATIO = 0.3;
 const MAX_NUMERIC_WORD_RATIO_BULLET = 0.5;
 
 /**
+ * Session 18 (post-v16) — WHY THE RATIO NEEDED A SECOND SIGNAL.
+ *
+ * Session 18's refi rebuild made a card that describes ONE ladder row, and
+ * sonnetEventBriefing's own prompt requires callAbout to name that row's
+ * amount or its date. So the shortest correct card is inherently dense:
+ *   "Refinance the $1,481 million 3.400% notes due March 2027."   ratio 0.33
+ * That was rejected, while a wordier version of the same fact passed at
+ * 0.17 — the guard was penalising concision, which is the one quality a
+ * call line most needs. Every card generated in the first live run failed
+ * here.
+ *
+ * Raising the ratio is NOT the fix, and this was measured rather than
+ * assumed: a genuine scraped dump scores identically.
+ *   "Total debt 45,828 Current portion 6,264."                    ratio 0.33
+ * The ratio simply cannot separate those two, at any threshold.
+ *
+ * What separates them is grammar. A written sentence connects its figures
+ * with function words; a table dump juxtaposes them with none.
+ *   good card  "Refinance THE $1,481 million 3.400% notes DUE March 2027."
+ *   dump       "Total debt 45,828 Current portion 6,264."          (none)
+ *
+ * DISTINCT function words, not a raw count — measured against real dumps,
+ * a transcribed pair of table rows repeats one connective ("5.125 % DUE
+ * 2027 1,500 4.250 % DUE 2029 1,400.") and would pass a naive count of two
+ * while remaining exactly the fragment this guard exists to catch.
+ *
+ * A closed, universal set of English function words, in the same spirit as
+ * moneyScale.ts's closed SCALE_WORDS — not a domain vocabulary, and never
+ * company- or filing-specific.
+ */
+const FUNCTION_WORD_RE =
+  /\b(?:the|a|an|of|in|at|on|to|from|with|and|or|by|for|due|has|have|had|is|are|was|were|will|its|their|this|that|up|down|than|into|over|as|be|been|against)\b/gi;
+const MIN_DISTINCT_FUNCTION_WORDS = 2;
+
+/** Distinct function words in `text` — the sentence-structure signal that overrides pure numeral density. */
+function distinctFunctionWords(text: string): number {
+  return new Set((text.match(FUNCTION_WORD_RE) ?? []).map((w) => w.toLowerCase())).size;
+}
+
+/**
  * True when `text` looks like a table/label fragment rather than a
  * sentence. Two independent structural signals, either one enough to
  * reject: (1) it doesn't end the way a sentence ends, or (2) numerals make
@@ -76,5 +116,8 @@ export function isScrapeShapedText(text: string | null | undefined, context: "se
   const words = trimmed.split(/\s+/).filter(Boolean);
   const numericRatio = words.length > 0 ? numericMatches.length / words.length : 0;
   const maxRatio = context === "bullet" ? MAX_NUMERIC_WORD_RATIO_BULLET : MAX_NUMERIC_WORD_RATIO;
-  return numericRatio > maxRatio;
+  if (numericRatio <= maxRatio) return false;
+  // Dense, but grammatically connected — a written sentence, not a dump.
+  // See FUNCTION_WORD_RE's comment for why density alone can't decide this.
+  return distinctFunctionWords(trimmed) < MIN_DISTINCT_FUNCTION_WORDS;
 }

@@ -222,6 +222,18 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
           dateGranularity: null,
           eventStatus: "standing",
           proceedsUse: null,
+          scheduleSequence: [],
+          priorScheduleSequence: [],
+          balanceSheetDebtCaptions: [],
+          debtScheduleSourceFiling: null,
+          debtSchedulePriorFiling: null,
+          rowsExtracted: 0,
+          rowsVerified: 0,
+          scheduleCompleteness: null,
+          redeems: null,
+          issuedTranches: [],
+          cashAmount: null,
+          projectName: null,
         },
       ],
     };
@@ -467,6 +479,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
 
   const headlineFact: VerifiedFact = {
     linkedTriggerId: "debt-maturity",
+    ladderRowId: null,
     fact: "Debt maturity approaching",
     verifiedText: "SYNTHETIC",
     normalizedText: "SYNTHETIC: notes due 2027",
@@ -478,9 +491,12 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     eventDate: "2027",
     dateGranularity: "year",
     eventStatus: "upcoming",
+    seniority: null,
+    redeemsInfo: null,
   };
   const otherFact: VerifiedFact = {
     linkedTriggerId: "large-cash-balance",
+    ladderRowId: null,
     fact: "Large cash balance building",
     verifiedText: "SYNTHETIC",
     normalizedText: "SYNTHETIC: cash of $900 million",
@@ -492,6 +508,8 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     eventDate: null,
     dateGranularity: null,
     eventStatus: "standing",
+    seniority: null,
+    redeemsInfo: null,
   };
   const syntheticFacts = [headlineFact, otherFact];
 
@@ -612,20 +630,44 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
 }
 
 // --- 10 (Session 17 Item 4): factsReferencedIn / the citation-union fix.
-// Real fixture data: HCA's debt-maturity fact (cites ONLY 8-K 2026-04-30,
-// evidence states "The 2031 Notes mature May 15, 2031") and HCA's
-// asset-sale fact (cites ONLY 10-Q 2026-07-28, evidence states "$21
-// million") share no citation with each other — the exact shape that
-// broke a dedup-cluster-based union (debt-maturity never clusters with
-// anything else, since it has no 8-K to share). Text referencing BOTH
-// facts' own figures/dates must resolve to BOTH facts, and their citation
-// union must cover both filings — proving the fix actually closes the gap
-// a cluster-based implementation would not have. ---
+// HCA's real debt-maturity fact (cites ONLY 8-K 2026-04-30, evidence states
+// "The 2031 Notes mature May 15, 2031") and HCA's real asset-sale fact
+// (cites ONLY 10-Q 2026-07-28, evidence states "$21 million") share no
+// citation with each other — the exact shape that broke a dedup-cluster-
+// based union (debt-maturity never clusters with anything else, since it
+// has no 8-K to share). Text referencing BOTH facts' own figures/dates must
+// resolve to BOTH facts, and their citation union must cover both filings —
+// proving the fix actually closes the gap a cluster-based implementation
+// would not have.
+//
+// Session 18: debt-maturity is SYNTHETIC here — the real fixture predates
+// this session's schema (no debtSchedule), so buildVerifiedFactBase no
+// longer produces an old-shape debt-maturity fact for it at all. Rebuilt to
+// match HCA's real, historical content (same date/citation shape this test
+// exists to prove) and spliced onto the company's otherwise-real fact base
+// (asset-sale, etc., untouched). ---
 {
   const hca = fixture.companies.find((c) => c.ticker === "HCA")!;
-  const hcaFacts = buildVerifiedFactBase(hca);
-  const debtMaturity = hcaFacts.find((f) => f.linkedTriggerId === "debt-maturity")!;
-  const assetSale = hcaFacts.find((f) => f.linkedTriggerId === "asset-sale")!;
+  const hcaFactsReal = buildVerifiedFactBase(hca);
+  const assetSale = hcaFactsReal.find((f) => f.linkedTriggerId === "asset-sale")!;
+  const debtMaturity: VerifiedFact = {
+    linkedTriggerId: "debt-maturity",
+    ladderRowId: null,
+    fact: "Debt maturity approaching — SYNTHETIC (5.250% Notes)",
+    verifiedText: "SYNTHETIC: The 2031 Notes mature May 15, 2031.",
+    normalizedText: "SYNTHETIC: The 2031 Notes mature May 15, 2031.",
+    figures: [],
+    dates: ["May 15, 2031"],
+    sourceFiling: { form: "8-K", date: "2026-04-30", url: "https://example.com/synthetic-hca-debt-maturity-8k" },
+    citations: [{ form: "8-K", date: "2026-04-30", url: "https://example.com/synthetic-hca-debt-maturity-8k" }],
+    evidence: "SYNTHETIC: The 2031 Notes mature May 15, 2031.",
+    eventDate: "2031-05-15",
+    dateGranularity: "day",
+    eventStatus: "upcoming",
+    seniority: null,
+    redeemsInfo: null,
+  };
+  const hcaFacts = [...hcaFactsReal.filter((f) => f.linkedTriggerId !== "debt-maturity"), debtMaturity];
 
   assert(
     debtMaturity.citations.every((c) => !assetSale.citations.some((c2) => c2.url === c.url)),
@@ -655,6 +697,101 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     !referencedNarrow.some((f) => f.linkedTriggerId === "asset-sale"),
     "[10c] text mentioning only the headline's own date does not pull in an unrelated fact's citation — precise, not over-inclusive"
   );
+}
+
+// --- 14 (Session 18 E1/F2): seniority and redeemsInfo must be part of a
+// fact's own accuracy corpus, or a card correctly stating either one (per
+// the SYSTEM_PROMPT's own new instructions) would fail the guard for
+// stating an "unverified" figure/date. SYNTHETIC: no re-extraction has
+// happened yet, so no real fact carries these fields — pinned onto a real
+// HCA fact (only seniority/redeemsInfo set) per this file's established
+// convention. ---
+{
+  const hca = fixture.companies.find((c) => c.ticker === "HCA")!;
+  const hcaFactsReal = buildVerifiedFactBase(hca);
+  const otherRealFact = hcaFactsReal.find((f) => f.linkedTriggerId === "asset-sale")!;
+
+  const issuanceFact: VerifiedFact = {
+    linkedTriggerId: "new-debt-issuance",
+    ladderRowId: null,
+    fact: "New debt issuance / notes pricing",
+    verifiedText: "SYNTHETIC",
+    normalizedText: "SYNTHETIC: Issued $1.5 billion of 5.500% first lien notes due 2032.",
+    figures: ["$1.5 billion"],
+    dates: ["2032"],
+    sourceFiling: null,
+    citations: [{ form: "8-K", date: "2025-11-18", url: "https://example.com/synthetic-issuance-8k" }],
+    evidence: "SYNTHETIC: On November 18, 2025, issued $1.5 billion of 5.500% first lien notes due 2032.",
+    eventDate: "2025-11-18",
+    dateGranularity: "day",
+    eventStatus: "completed",
+    seniority: null,
+    redeemsInfo: "the 6.250% second lien notes due February 2027",
+  };
+  const headlineFact: VerifiedFact = {
+    linkedTriggerId: "debt-maturity",
+    ladderRowId: null,
+    fact: "Debt maturity approaching — 5.125% first lien notes",
+    verifiedText: "SYNTHETIC",
+    normalizedText: "SYNTHETIC: 5.125% senior secured first lien notes due November 2027, $1.5 billion.",
+    figures: ["$1.5 billion"],
+    dates: ["November 2027"],
+    sourceFiling: null,
+    citations: [{ form: "10-Q", date: "2026-06-30", url: "https://example.com/synthetic-headline-10q" }],
+    evidence: "SYNTHETIC: $1.5 billion of 5.125% notes due November 2027.",
+    eventDate: "2027-11-01",
+    dateGranularity: "month",
+    eventStatus: "upcoming",
+    seniority: "Senior secured first lien notes:",
+    redeemsInfo: null,
+  };
+  const syntheticFacts = [headlineFact, issuanceFact, otherRealFact];
+
+  // 14a: a keyPoints bullet stating the redemption, copied verbatim from
+  // redeemsInfo, must be fully explained by the issuance fact ALONE — not
+  // flagged as connecting two facts, and not flagged as an unverified
+  // figure/date.
+  {
+    const body: RawCardBody = {
+      callAbout: "Refinance the $1.5 billion senior secured first lien notes due November 2027.",
+      whyNow: "Tenet already tapped the market to redeem an earlier maturity, showing it can access this market again.",
+      keyPoints: [
+        "$1.5 billion senior secured first lien notes due November 2027.",
+        "On November 18, 2025, the company issued $1.5 billion of 5.500% first lien notes due 2032, redeeming the 6.250% second lien notes due February 2027.",
+      ],
+    };
+    const r = checkCardStructure(body, syntheticFacts, "debt-maturity");
+    assert(
+      !r.reasons.some((x) => x.includes("not fully explained") || x.includes("not found in any given fact")),
+      `[14a] E1: a bullet stating the redemption (copied from redeemsInfo) passes both the accuracy check and the single-fact check (reasons: ${r.reasons.join("; ")})`
+    );
+  }
+
+  // 14b: factsReferencedIn resolves redemption-stating text back to the
+  // issuance fact specifically — proves redeemsInfo is genuinely part of
+  // that fact's own searchable text, not a second untracked source.
+  {
+    const referenced = factsReferencedIn("redeeming the 6.250% second lien notes due February 2027", syntheticFacts);
+    assert(
+      referenced.some((f) => f.linkedTriggerId === "new-debt-issuance"),
+      `[14b] E1: text naming the redemption resolves to the issuance fact via factsReferencedIn (got: ${referenced.map((f) => f.linkedTriggerId).join(", ")})`
+    );
+  }
+
+  // 14c: F2 — callAbout naming the fact's own seniority phrase is verified,
+  // not flagged as unstated content.
+  {
+    const body: RawCardBody = {
+      callAbout: "Refinance the $1.5 billion senior secured first lien notes due November 2027.",
+      whyNow: "Tenet already tapped the market to redeem an earlier maturity, showing it can access this market again.",
+      keyPoints: ["$1.5 billion senior secured first lien notes due November 2027.", "The company holds $21 million from recent asset sales."],
+    };
+    const r = checkCardStructure(body, syntheticFacts, "debt-maturity");
+    assert(
+      !r.reasons.some((x) => x.includes("callAbout names no verified amount or date")),
+      `[14c] F2: callAbout naming the fact's own seniority phrase alongside its figure/date is not penalized (reasons: ${r.reasons.join("; ")})`
+    );
+  }
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

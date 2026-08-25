@@ -87,16 +87,16 @@ function monthFromMatch(raw: string): number | null {
 
 function parseMoneyWithUnit(raw: string): number | null {
   const cleaned = raw.replace(/\$|\s/g, "");
-  const match = cleaned.match(/^([\d,]*(?:\.\d+)?)([bBmMkK]|billion|million|thousand)?$/);
+  const match = cleaned.match(/^([\d,]*(?:\.\d+)?)([bBmMkK]|billions?|millions?|thousands?)?$/);
   if (!match) return null;
   const numPart = match[1].replace(/,/g, "");
   const num = Number.parseFloat(numPart);
   if (Number.isNaN(num)) return null;
   const suffix = (match[2] ?? "").toLowerCase();
   const multiplier =
-    suffix === "b" || suffix === "billion" ? 1_000_000_000 :
-    suffix === "m" || suffix === "million" ? 1_000_000 :
-    suffix === "k" || suffix === "thousand" ? 1_000 :
+    suffix === "b" || suffix === "billion" || suffix === "billions" ? 1_000_000_000 :
+    suffix === "m" || suffix === "million" || suffix === "millions" ? 1_000_000 :
+    suffix === "k" || suffix === "thousand" || suffix === "thousands" ? 1_000 :
     1;
   return num * multiplier;
 }
@@ -160,7 +160,17 @@ function extractMonthYearDates(text: string): FactToken[] {
  * off by a factor of a million wherever it was later displayed.
  */
 function extractMoneyUnitSuffixed(text: string): FactToken[] {
-  const re = /\$?\s{0,4}\d[\d,]*(?:\.\d+)?\s{0,4}(?:billion|million|thousand|[bBmMkK])\b/g;
+  // Plurals ("thousands", "millions") are matched too — the trailing 
+  // previously rejected them. Found live in the v13 run, failing in two
+  // DIFFERENT ways, one of them silent: "$800,000 thousands" did not
+  // tokenize at all and every entry carrying it was dropped as
+  // scale-indeterminate (UHS: all 16), while "$1.5 millions" fell through
+  // to extractMoneySmallDollar, which matched the bare "$1.5" and yielded
+  // ONE POINT FIVE DOLLARS with no scale — the same silent million-fold
+  // class the comments above already warn about. A filing's caption says
+  // "(dollars in thousands)", so the model echoing the plural onto the
+  // amount is entirely ordinary input, not a malformed one.
+  const re = /\$?\s{0,4}\d[\d,]*(?:\.\d+)?\s{0,4}(?:billions?|millions?|thousands?|[bBmMkK])\b/g;
   const out: FactToken[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(text))) {

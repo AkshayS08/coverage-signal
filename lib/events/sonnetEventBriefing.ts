@@ -7,6 +7,7 @@ import { isScrapeShapedText } from "./scrapeGuard";
 import { compactLabelWithTiming } from "./labels";
 import { BUCKET_LABELS } from "./buckets";
 import { extractFactTokens } from "../agent/factTokens";
+import { recordUsage } from "../agent/costMeter";
 
 // Deliberately NOT re-exported from lib/events/index.ts — this file pulls
 // in the Anthropic SDK, and the barrel is meant to be safe for the client
@@ -49,11 +50,11 @@ You will be given:
 
 Write exactly three fields:
 
-- callAbout: the ACTION, one imperative line, and it MUST name the amount or the date of the thing being called about — a call with neither is not specific enough. "Refinance the $1.5 billion notes due November 2027." — not "debt maturity approaching" and not just "refinance the notes." If the headline fact genuinely has no verifiable dollar amount (never guess one), name the date instead — a date alone is enough, but never neither. Describe timing in plain terms the person on the other end of the call would recognize — "15 months out," never "inside the 15-month refi window" or any other named threshold. The 18-month refi cutoff is this system's own internal rule for what's worth a card at all; it is not a market term, and stating it as one implies a convention that doesn't exist. Write it as a complete sentence, ending in a period, exactly like whyNow and every keyPoints bullet — an imperative line is still a sentence.
+- callAbout: the ACTION, one imperative line, and it MUST name the amount or the date of the thing being called about — a call with neither is not specific enough. "Refinance the $1.5 billion notes due November 2027." — not "debt maturity approaching" and not just "refinance the notes." If the headline fact genuinely has no verifiable dollar amount (never guess one), name the date instead — a date alone is enough, but never neither. Describe timing in plain terms the person on the other end of the call would recognize — "15 months out," never "inside the 15-month refi window" or any other named threshold. The 18-month refi cutoff is this system's own internal rule for what's worth a card at all; it is not a market term, and stating it as one implies a convention that doesn't exist. Write it as a complete sentence, ending in a period, exactly like whyNow and every keyPoints bullet — an imperative line is still a sentence. If the headline fact has a stated seniority (a "seniority:" line), work it in naturally — "Refinance the $1.5 billion senior secured first lien notes due November 2027" — a banker names the tranche precisely, not generically as "notes."
 
 - whyNow: the synthesis — what makes THIS WEEK the moment, not just what happened. One sentence; a second short sentence is allowed only to keep two distinct facts clean, never as extra room for detail. MUST connect the headline event to at least one OTHER given fact that explains why it's live now (a related disclosure, a stated market condition, a second dated event) — a sentence that only restates the headline event, however detailed, is description, not synthesis, and description is exactly what this format replaces. If nothing in the other verified facts genuinely explains why now, do not invent a connection or pad with unrelated detail — write the truest version you can with what you have; a structural check downstream decides whether it qualifies, that is not your call to route around.
 
-- keyPoints: 2 to 4 bullets, plain facts in the same register the portfolio table uses — one fact and its own figure or date per bullet, nothing more. The FIRST bullet must be the fact that triggered this card (the headline event itself — the maturity, the announced deal, the proceeds). The rest are supporting facts, each still standing on its own. A bullet states what IS true; it never explains what one fact means for another. Do not write "which gives them a window to," "so the same approach can be," "before it competes with," or any other sentence connecting two facts together — that connective work belongs in whyNow, and only there. If you find yourself writing "so," "which means," "giving them," or "before" to link two bullets' worth of information into one, you have written a whyNow sentence by accident; split it back into two separate, unconnected facts instead.
+- keyPoints: 2 to 4 bullets, plain facts in the same register the portfolio table uses — one fact and its own figure or date per bullet, nothing more. The FIRST bullet must be the fact that triggered this card (the headline event itself — the maturity, the announced deal, the proceeds). The rest are supporting facts, each still standing on its own. A bullet states what IS true; it never explains what one fact means for another. Do not write "which gives them a window to," "so the same approach can be," "before it competes with," or any other sentence connecting two facts together — that connective work belongs in whyNow, and only there. If you find yourself writing "so," "which means," "giving them," or "before" to link two bullets' worth of information into one, you have written a whyNow sentence by accident; split it back into two separate, unconnected facts instead. If a given fact you're describing has a "redeemed:" line, state that redemption as part of describing the fact itself — "On November 18, 2025, Tenet issued $1.5 billion of 5.500% first lien notes due 2032 and $750 million of 6.000% senior notes due 2033, redeeming the 6.250% second lien notes due February 2027." — copied from the field, one filed fact about what that issuance did, never phrased as explaining why a DIFFERENT tranche (the headline or any other fact) is live now — that would be asserting a relationship between two facts, which a bullet never does.
 
 THE FACTUAL SOURCE — read before writing anything:
 - Every number, date, rate, and dollar amount you state must appear, verbatim or in an obviously equivalent form, in the HEADLINE EVENT or the OTHER VERIFIED FACTS you were given — their quotes OR their evidence sentences, either is a valid source. Nothing from general knowledge, nothing computed, nothing rounded to a different figure than given, nothing carried over from a different company.
@@ -112,16 +113,43 @@ export interface RawCardBody {
  * checkCardStructure) so a figure sourced from evidence is never
  * incorrectly rejected as "unverified."
  */
+/** The fact a card is actually about: row-exact for a debt-maturity card (which one of a company's tranches), trigger-matched otherwise. */
+function findHeadlineFact(factBase: VerifiedFact[], card: FlashCard): VerifiedFact | undefined {
+  if (card.headlineRowId) {
+    const exact = factBase.find((f) => f.ladderRowId === card.headlineRowId);
+    // No silent fallback to "some other tranche" — a card with a row id whose
+    // fact is missing must fail loudly, not narrate a different debt.
+    if (exact) return exact;
+    return undefined;
+  }
+  return factBase.find((f) => f.linkedTriggerId === card.headlineTrigger.triggerId);
+}
+
 function formatFact(f: VerifiedFact): string {
   const sourceStr = f.sourceFiling ? `${f.sourceFiling.form} filed ${f.sourceFiling.date}` : "n/a";
   const evidenceLine = f.evidence ? `\n  evidence: "${f.evidence}"` : "";
-  return `- ${f.fact}: "${f.normalizedText}" (source: ${sourceStr})${evidenceLine}`;
+  // Session 18 F2: a debt-maturity row's seniority (from the debt note's
+  // own section header) surfaced as its own line — the row's sourceLine
+  // (the table row itself) frequently doesn't repeat the header text, so
+  // without this Sonnet has no way to state it even though it's a real,
+  // filed fact.
+  const seniorityLine = f.seniority ? `\n  seniority: "${f.seniority}"` : "";
+  // Session 18 E1: what this issuance redeemed, copied verbatim from the
+  // field — available so Sonnet can state it as a KEY POINT when
+  // describing the issuance, never as an inference about which live
+  // tranche it explains.
+  const redeemsLine = f.redeemsInfo ? `\n  redeemed: "${f.redeemsInfo}"` : "";
+  return `- ${f.fact}: "${f.normalizedText}" (source: ${sourceStr})${evidenceLine}${seniorityLine}${redeemsLine}`;
 }
 
 // Exported so lib/cache/wordingCache.ts can hash EXACTLY what Sonnet will
 // see when building the wording-cache key — no logic here changes.
 export function buildContext(card: FlashCard, factBase: VerifiedFact[]): string {
-  const headlineFact = factBase.find((f) => f.linkedTriggerId === card.headlineTrigger.triggerId);
+  // Session 18 (post-v16): row-EXACT when the card is about one ladder row.
+  // A plain triggerId match returns the company's first tranche for every
+  // one of its refi cards — see VerifiedFact.ladderRowId for the live case
+  // where three Cigna cards all narrated the wrong debt.
+  const headlineFact = findHeadlineFact(factBase, card);
   const otherFacts = factBase.filter((f) => f !== headlineFact);
 
   const tagLabel = [BUCKET_LABELS[card.bucket], card.secondaryBucket ? BUCKET_LABELS[card.secondaryBucket] : null]
@@ -167,6 +195,7 @@ async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionI
     },
     { timeout: TIMEOUT_MS }
   );
+  recordUsage(SONNET_MODEL, response.usage);
 
   const toolUse = response.content.find((b) => b.type === "tool_use");
   if (!toolUse || toolUse.type !== "tool_use") {
@@ -262,7 +291,11 @@ export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[], 
   // stated figure/date most often actually appears in citable form (this
   // is the fix for UHS's debt-maturity card, whose own quote is a bare,
   // unscaled table cell — see Part C / draftEventBriefing's doc comment).
-  const accuracyCorpus = factBase.flatMap((f) => [f.normalizedText, f.verifiedText, f.evidence ?? ""]);
+  // Session 18: seniority (F2) and redeemsInfo (E1) added too — a bullet
+  // correctly stating a redemption's own rate/date, copied straight from
+  // redeemsInfo, must not fail this check for want of its source being
+  // included here.
+  const accuracyCorpus = factBase.flatMap((f) => [f.normalizedText, f.verifiedText, f.evidence ?? "", f.seniority ?? "", f.redeemsInfo ?? ""]);
   const auditText = `${body.callAbout} ${body.whyNow} ${keyPoints.join(" ")}`;
   const numberGuard = checkNumbersAgainstQuotes(auditText, accuracyCorpus);
   if (!numberGuard.ok) {
@@ -347,7 +380,11 @@ export function buildCorrectionInstruction(guard: StructuralGuardResult): string
  * two Sonnet calls per card-eligible company.
  */
 export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact[]): Promise<DraftedEventBriefing> {
-  const headlineFact = factBase.find((f) => f.linkedTriggerId === card.headlineTrigger.triggerId);
+  // Session 18 (post-v16): row-EXACT when the card is about one ladder row.
+  // A plain triggerId match returns the company's first tranche for every
+  // one of its refi cards — see VerifiedFact.ladderRowId for the live case
+  // where three Cigna cards all narrated the wrong debt.
+  const headlineFact = findHeadlineFact(factBase, card);
   if (!headlineFact) {
     // Should be unreachable — a card's headline is only ever built from a
     // quote-verified trigger (see buildEvents.ts), which is exactly what

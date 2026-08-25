@@ -65,9 +65,34 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CompanyResult, TriggerResult } from "../agent";
 import { buildEvents, compareUrgency } from "./buildEvents";
-import { evaluateEligibility, PROCEEDS_RECENCY_DAYS } from "./eligibility";
+import { evaluateEligibility, evaluateRowEligibility, PROCEEDS_RECENCY_DAYS } from "./eligibility";
 import { daysBetween, PENDING_LIVE_MAX_AGE_DAYS } from "./eventTiming";
-import { normalizeEventDate } from "../agent/claude";
+import { normalizeEventDate, type DateGranularity } from "../agent/claude";
+import type { LadderRow } from "./position";
+
+/**
+ * Session 18: debt-maturity moved out of evaluateEligibility entirely (see
+ * that function's own doc comment) — every debt-maturity assertion below
+ * now goes through evaluateRowEligibility instead, which needs a LadderRow,
+ * not a raw TriggerResult. No real debtSchedule data exists yet (this
+ * fixture predates re-extraction), so every row here is SYNTHETIC, built
+ * from whichever real fixture field (eventDate/dateGranularity) the
+ * original test was pinned to, wherever one still applies — labeled
+ * SYNTHETIC at each call site, not silently swapped in.
+ */
+function syntheticLadderRow(over: Partial<LadderRow> & { maturityDate: string; dateGranularity: DateGranularity }): LadderRow {
+  return {
+    id: `synthetic::${over.maturityDate}::${over.dateGranularity}`,
+    instrument: "synthetic",
+    rate: null,
+    seniority: null,
+    amount: "$1.0 billion",
+    sourceLine: "synthetic",
+    citedUrl: "https://example.com/synthetic",
+    status: "live",
+    ...over,
+  };
+}
 
 interface Fixture {
   generatedAt: string;
@@ -127,10 +152,11 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 {
   const uhs = findCompany("UHS");
   const t = findTrigger(uhs, "debt-maturity");
-  const r = evaluateEligibility(t, NOW);
+  const row = syntheticLadderRow({ maturityDate: t.eventDate ?? "2026", dateGranularity: t.dateGranularity ?? "year" });
+  const r = evaluateRowEligibility(row, NOW);
   assert(
     !r.cardEligible && /bare-year maturity/.test(r.reason),
-    `[1] UHS debt-maturity (1.650% notes due ${t.eventDate}, granularity=${t.dateGranularity}) is held to TABLE — month not verifiable, windowDate is not a real date (reason: ${r.reason})`
+    `[1] SYNTHETIC row pinned to UHS's real 1.650% notes due ${t.eventDate}, granularity=${t.dateGranularity}: held to TABLE — month not verifiable, windowDate is not a real date (reason: ${r.reason})`
   );
 }
 
@@ -218,8 +244,23 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 {
   const thc = findCompany("THC");
   const t = findTrigger(thc, "debt-maturity");
-  const r = evaluateEligibility(t, NOW);
-  assert(r.cardEligible, `[3] Tenet debt-maturity (notes due ${t.eventDate}) cards`);
+  const row = syntheticLadderRow({ maturityDate: t.eventDate!, dateGranularity: t.dateGranularity! });
+  const r = evaluateRowEligibility(row, NOW);
+  assert(r.cardEligible, `[3] SYNTHETIC row pinned to Tenet's real notes due ${t.eventDate}: cards`);
+}
+
+// --- 3b (Session 18 D1, new). A row's own status gates the date test
+// before any date math runs — an otherwise-in-window `retired` or
+// `unconfirmed` row must never card, no matter how close its maturity is. ---
+{
+  const t = findCompany("THC").results.find((r) => r.triggerId === "debt-maturity")!;
+  const inWindowDate = t.eventDate!;
+  const retired = syntheticLadderRow({ maturityDate: inWindowDate, dateGranularity: t.dateGranularity!, status: "retired" });
+  const unconfirmed = syntheticLadderRow({ maturityDate: inWindowDate, dateGranularity: t.dateGranularity!, status: "unconfirmed" });
+  const rRetired = evaluateRowEligibility(retired, NOW);
+  const rUnconfirmed = evaluateRowEligibility(unconfirmed, NOW);
+  assert(!rRetired.cardEligible && /retired/.test(rRetired.reason), `[3b-i] a retired row with an in-window maturity date still never cards (reason: ${rRetired.reason})`);
+  assert(!rUnconfirmed.cardEligible && /unconfirmed/.test(rUnconfirmed.reason), `[3b-ii] an unconfirmed row with an in-window maturity date still never cards (reason: ${rUnconfirmed.reason})`);
 }
 
 // --- 4. Synthetic — completed issuance, 30 days old, partly_unapplied — must be CARD ---
@@ -246,6 +287,18 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     dateGranularity: "day",
     eventStatus: "completed",
     proceedsUse: "partly_unapplied",
+    scheduleSequence: [],
+    priorScheduleSequence: [],
+    balanceSheetDebtCaptions: [],
+    debtScheduleSourceFiling: null,
+    debtSchedulePriorFiling: null,
+    rowsExtracted: 0,
+    rowsVerified: 0,
+    scheduleCompleteness: null,
+    redeems: null,
+    issuedTranches: [],
+    cashAmount: "$500 million", // Session 18 D2: a real completed issuance states its own amount — null here would (correctly) block the card for an unrelated reason and defeat this test's actual purpose
+    projectName: null,
   };
   const r = evaluateEligibility(synthetic, NOW);
   assert(r.cardEligible, "[4] Synthetic completed issuance (30d old, partly_unapplied) cards — proceeds-test positive branch");
@@ -472,16 +525,36 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 // "no per-company cap" with "bare-year gate." debt-maturity is now ALSO
 // controlled: same real evidence/figures, but with a real day-granularity
 // date within the window (so it cards on its own real merits) and its own
-// disjoint synthetic citation. ---
+// disjoint synthetic citation.
+//
+// Session 18 update: debt-maturity cards are now built from the assembled
+// position (lib/events/position.ts), not from the trigger's own
+// eventDate/dateGranularity directly — the controlled fact needs a
+// debtSchedule row instead of an eventDate override for evaluateRowEligibility
+// to ever see it. ---
 {
   const uhs = findCompany("UHS");
   const realDebtMaturity = findTrigger(uhs, "debt-maturity");
   const realAcquisition = findTrigger(uhs, "acquisition-announced");
+  const controlledDebtMaturityCitedUrl = "https://example.com/synthetic-controlled-debt-maturity-10q";
   const controlledDebtMaturity: TriggerResult = {
     ...realDebtMaturity,
-    eventDate: isoDaysBeforeNow(-120), // ~4mo in the future — inside the 18mo window
-    dateGranularity: "day",
-    citations: [{ form: "10-Q", date: isoDaysBeforeNow(30), url: "https://example.com/synthetic-controlled-debt-maturity-10q" }],
+    citations: [{ form: "10-Q", date: isoDaysBeforeNow(30), url: controlledDebtMaturityCitedUrl }],
+    scheduleSequence: [
+      {
+        kind: "row",
+        label: "synthetic controlled notes",
+        rate: "5.000%",
+        seniority: null,
+        amount: "$1.0 billion",
+        maturityDate: isoDaysBeforeNow(-120), // ~4mo in the future — inside the 18mo window
+        dateGranularity: "day",
+        sourceLine: "synthetic",
+        citedUrl: controlledDebtMaturityCitedUrl,
+        section: null,
+        periodColumn: null,
+      },
+    ],
   };
   const controlledAcquisition: TriggerResult = {
     ...realAcquisition,
@@ -548,7 +621,8 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 {
   const dva = findCompany("DVA");
   const t = findTrigger(dva, "debt-maturity");
-  const r = evaluateEligibility(t, NOW);
+  const row = syntheticLadderRow({ maturityDate: t.eventDate!, dateGranularity: t.dateGranularity! });
+  const r = evaluateRowEligibility(row, NOW);
   const months = r.timing.monthsToNearestFuture;
   assert(
     months === null || months < 15 || months > 21,
@@ -573,27 +647,8 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 // still go to TABLE — proves the convention can't quietly widen the gate. ---
 {
   const farYear = String(NOW.getUTCFullYear() + 2); // Dec 31 two years out is unambiguously beyond 18mo regardless of exact month within `now`.
-  const synthetic: TriggerResult = {
-    triggerId: "debt-maturity",
-    triggerName: "Debt maturity approaching",
-    fired: true,
-    dataAvailable: true,
-    evidence: `Synthetic: notes due ${farYear} (bare year, no month disclosed).`,
-    mappedNeed: "Refinancing",
-    needType: "credit",
-    confidence: 1,
-    citations: [],
-    quoteVerified: true,
-    verifiedQuote: "synthetic",
-    verifiedQuoteNormalized: "synthetic",
-    quoteMatchType: "literal",
-    quoteHasFigure: true,
-    eventDate: farYear,
-    dateGranularity: "year",
-    eventStatus: "upcoming",
-    proceedsUse: null,
-  };
-  const r = evaluateEligibility(synthetic, NOW);
+  const row = syntheticLadderRow({ maturityDate: farYear, dateGranularity: "year" });
+  const r = evaluateRowEligibility(row, NOW);
   assert(
     !r.cardEligible,
     `[17] Bare-year maturity (${farYear}, windowDate Dec 31 ${farYear}) outside 18mo stays TABLE — the year-convention can't quietly widen the gate`
@@ -606,8 +661,9 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
 {
   const uhs = findCompany("UHS");
   const t = findTrigger(uhs, "debt-maturity");
-  const r = evaluateEligibility(t, NOW);
-  if (t.dateGranularity === "year") {
+  if (t.dateGranularity === "year" && t.eventDate) {
+    const row = syntheticLadderRow({ maturityDate: t.eventDate, dateGranularity: "year" });
+    const r = evaluateRowEligibility(row, NOW);
     const showsMonthCount = /~\d+\s*mo\b/.test(r.reason);
     const showsFabricatedMonth = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\b/i.test(r.reason);
     assert(
@@ -671,10 +727,8 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     `[20a] {eventDate: "2026-12-31", granularity: "year"} normalizes to bare "2026" (got eventDate=${normalized.eventDate}, granularity=${normalized.eventDateGranularity}, wasNormalized=${normalized.wasNormalized})`
   );
 
-  const uhs = findCompany("UHS");
-  const realDebtMaturity = findTrigger(uhs, "debt-maturity");
-  const synthetic: TriggerResult = { ...realDebtMaturity, eventDate: normalized.eventDate, dateGranularity: normalized.eventDateGranularity };
-  const r = evaluateEligibility(synthetic, NOW);
+  const row = syntheticLadderRow({ maturityDate: normalized.eventDate!, dateGranularity: normalized.eventDateGranularity! });
+  const r = evaluateRowEligibility(row, NOW);
   assert(
     !r.cardEligible && /bare-year maturity/.test(r.reason),
     `[20b] the normalized bare-year fact is held to the TABLE, never a card, even though windowDate places it inside the 18mo window (cardEligible=${r.cardEligible}, reason=${r.reason})`

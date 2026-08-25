@@ -9,7 +9,22 @@ import { secFetchText } from "./http";
 // 20k-char cap, meaning the truncated text handed to the model was 100%
 // header noise and never reached the actual debt schedule / financial
 // tables at all. Raised alongside stripping that block below.
-const MAX_CHARS = 40000;
+//
+// Session 18: this used to be a hard 40,000-char cap applied HERE, at fetch
+// time — meaning the CACHED text was already truncated, permanently, with
+// no way to recover what was cut. That was fine when every trigger's fact
+// lived in the first ~40k chars (true for single-sentence MD&A claims), but
+// diagnosed live against real filings this session: a full per-tranche debt
+// schedule sits anywhere from ~23k to ~613k chars into these companies'
+// 10-Qs/10-Ks — ALL 30 of the 10 companies' baseline 10-Q/10-K filings
+// exceeded the old 40k cap. Fetching and caching the FULL stripped text
+// (still bounded by SANITY_CEILING_CHARS below, just to stop a genuinely
+// pathological document from being cached unbounded) lets
+// lib/fetch/debtNoteLocator.ts do the actual windowing downstream, at
+// corpus-assembly time, where it can also serve verification (which needs
+// the full text, not just whatever window was sent to the model) — see
+// runAgentLoop in lib/agent/loop.ts.
+const SANITY_CEILING_CHARS = 1_000_000;
 
 // SEC filings are full of typographic quotes/dashes around defined terms
 // (the "Company", the "Buyer") and other punctuation, almost always encoded
@@ -73,19 +88,24 @@ function urlToCacheKey(url: string): string {
  * on a schedule would only add SEC load and latency for identical bytes;
  * only a genuinely new URL entering the filing list ever causes a fetch
  * here. HTML is stripped (including the non-visual inline-XBRL
- * header/hidden-facts blocks) and truncated to keep per-filing prompt cost
- * bounded — 8-Ks are short enough to survive intact; 10-Qs/10-Ks get the
- * first ~40k chars, which reaches past the cover page into the actual
- * financial-statement tables (debt schedule, etc.) rather than stopping at
- * the cover page's XBRL facts.
+ * header/hidden-facts blocks); the FULL stripped text is cached (see
+ * SANITY_CEILING_CHARS above for why this is no longer truncated to 40k
+ * here) — callers that need a bounded excerpt for the model prompt build it
+ * downstream via lib/fetch/debtNoteLocator.ts's buildExtractionText.
+ *
+ * Cache path is versioned ("v2") so every filing-text entry cached under
+ * the OLD 40k-truncated regime is cleanly orphaned rather than silently
+ * replayed as if it were the full document — the same "bump a version
+ * stamp, never delete" pattern lib/cache/promptVersion.ts already uses for
+ * the answer/wording caches.
  */
 export async function getFilingText(url: string): Promise<{ text: string; fromCache: boolean }> {
-  const cachePath = `edgar/filing-text/${urlToCacheKey(url)}.json`;
+  const cachePath = `edgar/filing-text-v2/${urlToCacheKey(url)}.json`;
   const { data, fromCache } = await cachedFetch<{ text: string }>(
     cachePath,
     async () => {
       const html = await secFetchText(url);
-      const text = stripHtml(html).slice(0, MAX_CHARS);
+      const text = stripHtml(html).slice(0, SANITY_CEILING_CHARS);
       return { text };
     },
     null

@@ -20,7 +20,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CompanyResult } from "../agent";
 import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
-import { condenseDebtMaturity, condenseFirstSentence, condenseEvidenceDescription } from "./evidenceCondense";
+import { condenseFirstSentence, condenseEvidenceDescription } from "./evidenceCondense";
 
 interface Fixture {
   generatedAt: string;
@@ -55,36 +55,13 @@ function factFor(ticker: string, triggerId: string): VerifiedFact {
 
 console.log(`=== Session 15b golden tests (evidence condenser) ===\n`);
 
-// --- 1. Rule 1: debt-maturity selects the clause matching the trigger's
-// OWN eventDate — never positional. Tenet's real evidence lists 10
-// tranches in one string; the eligible one (Nov 2027, matching eventDate)
-// is neither first-by-accident-only nor guessable without date-matching. ---
-{
-  const tenet = factFor("THC", "debt-maturity");
-  const condensed = condenseDebtMaturity(tenet);
-  assert(
-    /November 2027/.test(condensed) && /\$1\.5 billion/.test(condensed),
-    `[1a] Tenet debt-maturity picks the November 2027 / $1.5 billion clause matching eventDate=${tenet.eventDate} (condensed: ${JSON.stringify(condensed)})`
-  );
-  assert(!/June 2028|April 2029|June 2033/.test(condensed), `[1b] Tenet's condensed line does NOT lead with a different (non-matching) tranche`);
-  assert(/\+9 more tranches? to 2033/.test(condensed), `[1c] Tenet's line correctly counts the other 9 due-dated tranches, max year 2033 (condensed: ${JSON.stringify(condensed)})`);
-}
-
-// --- 2. Rule 1's mandated no-guess fallback: when no evidence clause
-// contains a date matching eventDate, render a date-only line — never the
-// first clause, never a fabricated figure. SYNTHETIC: no real fact in the
-// current book fails to find its own eventDate in evidence (that's what
-// factGuard.ts already guarantees upstream), so this pins a controlled
-// case with evidence text that deliberately omits the matching date. ---
-{
-  const real = factFor("UHS", "debt-maturity");
-  const controlled: VerifiedFact = { ...real, evidence: "Some other unrelated tranche due March 2019 was mentioned.", eventDate: "2026", dateGranularity: "year" };
-  const condensed = condenseDebtMaturity(controlled);
-  assert(
-    condensed === "notes due 2026",
-    `[2] SYNTHETIC: no evidence clause matches eventDate -> date-only fallback, never the unrelated first clause (condensed: ${JSON.stringify(condensed)})`
-  );
-}
+// --- Items 1/2 (Rule 1, the debt-maturity tranche-clause picker) removed
+// Session 18 — condenseDebtMaturity is deleted, not bypassed. debt-maturity
+// facts never reach this file's condenser at all now; the refi bucket
+// renders directly from the assembled position (lib/events/position.ts,
+// lib/events/portfolioTable.ts). See position.test.ts for the tests that
+// replace these (row matching, never on amount alone; the no-guess
+// "unconfirmed" fallback when a tranche's fate can't be determined).
 
 // --- 3. Rule 3 / generic condenser: prefers the first sentence containing
 // a MONEY figure over an earlier figure-less scene-setter. Real bug found
@@ -137,29 +114,10 @@ console.log(`=== Session 15b golden tests (evidence condenser) ===\n`);
   assert(!/U\.K\.$/.test(condensedIntl.trim()), `[6b] UHS international-expansion does not truncate mid-"U.K." (condensed: ${JSON.stringify(condensedIntl)})`);
 }
 
-// --- 7 (Session 16 Fix B1): the matched clause must isolate the tranche
-// itself, never a preceding line-item ("current portion of long-term debt
-// was $10 million") that happens to share the same run-on sentence with no
-// semicolon between them. SYNTHETIC: no fixture company has this exact
-// comma-joined lead-in shape (real case found live on Quest Diagnostics,
-// which isn't in this 8-company fixture); pinned onto a real UHS
-// debt-maturity fact with evidence swapped for the real live Quest text. ---
-{
-  const real = factFor("UHS", "debt-maturity");
-  const controlled: VerifiedFact = {
-    ...real,
-    evidence:
-      "3.45% Senior Notes due June 2026 matured on June 1, 2026. As of June 30, 2026, the current portion of long-term debt was $10 million, with 4.60% Senior Notes due December 2027 ($400 million) and 4.20% Senior Notes due June 2029 ($500 million) approaching maturity within the next 12-18 months.",
-    eventDate: "2027-12-01",
-    dateGranularity: "month",
-  };
-  const condensed = condenseDebtMaturity(controlled);
-  assert(
-    /^4\.60% Senior Notes due December 2027 \(\$400 million\)/.test(condensed),
-    `[7a] SYNTHETIC: Quest-shaped evidence isolates the December 2027 tranche, not the preceding "$10 million" current-portion figure (condensed: ${JSON.stringify(condensed)})`
-  );
-  assert(!/current portion|\$10 million/.test(condensed), `[7b] SYNTHETIC: the unrelated $10 million current-portion figure does not leak into the line`);
-}
+// --- Item 7 (Session 16 Fix B1, the debt-maturity clause-isolation
+// regression) removed Session 18 for the same reason as items 1/2 above —
+// position.ts's row matching (instrument+rate+maturity, never a preceding
+// unrelated line item) replaces this entirely; see position.test.ts.
 
 // --- 8 (Session 16 Fix B3, updated Session 17 Item 13): truncation must
 // never leave a dangling conjunction/preposition right before the

@@ -1,7 +1,8 @@
 import type { CompanyResult, TriggerResult } from "../agent";
 import { BUCKET_PRIORITY, bucketForTrigger, type Bucket } from "./buckets";
 import { clusterIntoEvents } from "./dedup";
-import { evaluateEligibility } from "./eligibility";
+import { evaluateEligibility, evaluateRowEligibility } from "./eligibility";
+import { assemblePosition, citationsForLadderRow } from "./position";
 import { extractEventDate, type TimingInfo } from "./textHeuristics";
 
 export interface EventRecord {
@@ -70,6 +71,15 @@ export interface FlashCard {
   alsoActive: FlashCardActiveItem[];
   /** Why this card cleared the freshness gate — e.g. "future maturity ~9mo" or "filed within 90 days (2026-07-21)". */
   freshnessReason: string;
+  /**
+   * Session 18: set ONLY for a debt-maturity card — which specific ladder
+   * row (lib/events/position.ts) this card is about. A company can produce
+   * several debt-maturity cards, one per independently qualifying tranche,
+   * so `headlineTrigger.triggerId === "debt-maturity"` alone can't tell two
+   * of a company's own cards apart; this can. Null for every other
+   * trigger's card.
+   */
+  headlineRowId: string | null;
 }
 
 export interface CompanyPortfolio {
@@ -301,8 +311,18 @@ function buildEventsForCompany(
   result: CompanyResult,
   now: Date
 ): { events: EventRecord[]; portfolio: CompanyPortfolio; flashCards: FlashCard[] } {
+  // Session 18: "debt-maturity" is excluded here — it no longer goes
+  // through the per-trigger eligibility/clustering/card path at all. A
+  // debtSchedule with N rows needs N independent card decisions (see
+  // evaluateRowEligibility, lib/events/eligibility.ts), which this
+  // one-eligibility-result-per-trigger machinery can't express. Its own
+  // row-based cards are built separately, below.
   const eligible = result.results.filter(
-    (t) => t.fired && (t.needType === "credit" || t.needType === "treasury") && bucketForTrigger(t.triggerId) !== null
+    (t) =>
+      t.fired &&
+      (t.needType === "credit" || t.needType === "treasury") &&
+      bucketForTrigger(t.triggerId) !== null &&
+      t.triggerId !== "debt-maturity"
   );
 
   const eligibilityByTriggerId = new Map(eligible.map((t) => [t.triggerId, evaluateEligibility(t, now)]));
@@ -447,8 +467,59 @@ function buildEventsForCompany(
           timing: c.timing,
         })),
       freshnessReason: describeFreshness(headline.timing, [headline.trigger], headline.trigger.citations),
+      headlineRowId: null,
     };
   });
+
+  // Session 18 D1: debt-maturity's own cards — one per LIVE ladder row that
+  // independently clears the (unchanged) refi card test, sourced from the
+  // assembled position rather than a raw TriggerResult. A company can
+  // produce 0 to N of these, consistent with the rest of this file's "no
+  // per-company cap, one card per card-eligible event" rule — two
+  // genuinely different tranches inside the window are two different refi
+  // conversations, not one.
+  const debtMaturityTrigger = result.results.find((t) => t.triggerId === "debt-maturity");
+  const position = assemblePosition(result);
+  const rowCandidates = position.rows
+    .map((row) => ({ row, eligibility: evaluateRowEligibility(row, now) }))
+    .filter(({ eligibility }) => eligibility.cardEligible)
+    .sort((a, b) => compareUrgency({ timing: a.eligibility.timing, citations: [] }, { timing: b.eligibility.timing, citations: [] }));
+
+  const rowFlashCards: FlashCard[] = debtMaturityTrigger
+    ? rowCandidates.map(({ row, eligibility }) => ({
+        id: `${result.company}::debt-maturity::${row.id}`,
+        company: result.company,
+        cik: result.cik,
+        ticker: result.ticker,
+        headlineTrigger: debtMaturityTrigger,
+        bucket: "refi" as const,
+        secondaryBucket: null,
+        timing: eligibility.timing,
+        citations: citationsForLadderRow(row, debtMaturityTrigger),
+        alsoActive: [], // filled in the cross-reference pass below
+        freshnessReason: eligibility.reason,
+        headlineRowId: row.id,
+      }))
+    : [];
+
+  // Cross-reference pass: every card (trigger-based or row-based) for this
+  // company points at every OTHER card as a compact `alsoActive` pointer —
+  // fills in what the trigger-cluster loop above already computed for
+  // itself (unchanged, so untouched by this addition) and gives the new
+  // row-based cards the same "this company's other cards" context, in both
+  // directions.
+  const allCompanyCards = [...flashCards, ...rowFlashCards];
+  for (const card of rowFlashCards) {
+    card.alsoActive = allCompanyCards
+      .filter((c) => c !== card)
+      .map((c) => ({ trigger: c.headlineTrigger, bucket: c.bucket, timing: c.timing }));
+  }
+  for (const card of flashCards) {
+    card.alsoActive = [
+      ...card.alsoActive,
+      ...rowFlashCards.map((c) => ({ trigger: c.headlineTrigger, bucket: c.bucket, timing: c.timing })),
+    ];
+  }
 
   const buckets: Record<Bucket, EventRecord[]> = { treasury: [], new_debt: [], refi: [], hedging: [] };
   for (const event of events) {
@@ -464,7 +535,7 @@ function buildEventsForCompany(
       buckets,
       relationshipFlags: result.relationshipFlags,
     },
-    flashCards,
+    flashCards: allCompanyCards,
   };
 }
 

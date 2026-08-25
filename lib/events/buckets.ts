@@ -60,3 +60,18 @@ export const TRIGGER_BUCKET: Record<string, Bucket | null> = {
 export function bucketForTrigger(triggerId: string): Bucket | null {
   return TRIGGER_BUCKET[triggerId] ?? null;
 }
+
+/**
+ * Session 18 F3: how many of the 15 triggers map to each bucket — an empty
+ * bucket renders "no signal — N triggers checked" instead of a bare "no
+ * signal found," so the empty state proves the framework actually ran
+ * rather than reading as a rendering gap. Derived once from TRIGGER_BUCKET
+ * itself, never hand-maintained as a second source of truth.
+ */
+export const BUCKET_TRIGGER_COUNTS: Record<Bucket, number> = (() => {
+  const counts: Record<Bucket, number> = { treasury: 0, new_debt: 0, refi: 0, hedging: 0 };
+  for (const bucket of Object.values(TRIGGER_BUCKET)) {
+    if (bucket) counts[bucket]++;
+  }
+  return counts;
+})();

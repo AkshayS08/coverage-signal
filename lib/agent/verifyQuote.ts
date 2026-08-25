@@ -19,11 +19,41 @@ import { detectDollarScaleAt, formatScaledDollars } from "./scaleNormalize";
  * This is what catches a hallucinated number/date before it ever reaches a
  * card.
  */
+/**
+ * Session 18 (post-v16) — CURRENCY SYMBOLS ARE FORMATTING, NOT CONTENT.
+ *
+ * An accounting table prints "$" on the FIRST row of a section and omits it
+ * on every row beneath, so Tenet's note reads:
+ *     6.125 % due 2028 $ 1,750
+ *     5.125 % due 2027   1,500
+ * The model, reasonably, renders every row the same way and returns
+ * "5.125 % due 2027 $ 1,500". Measured against the real filing, that single
+ * inserted "$ " was the ENTIRE reason 12 of Tenet's 24 entries failed
+ * literal verification and fell back to co-occurrence — the cells are
+ * contiguous, 17 characters apart, nothing else differs.
+ *
+ * The same class showed up in the variance runs: Encompass's only drift
+ * between two identical runs was "( 35.9 ) million" vs "( $ 35.9 million )".
+ *
+ * Dropping the symbol is structural, not a vocabulary guard, and belongs in
+ * exactly the same list as the curly quotes and en/em dashes already folded
+ * here: a currency glyph carries no identifying information that the digits
+ * and words beside it do not already carry. Matching is never left to rest
+ * on it — every caller pairs this with the figure itself, and amounts are
+ * separately corroborated against the filing (loop.ts's amountCorroborated).
+ *
+ * Applied identically in normalizeWithMap below, which MUST stay
+ * character-aligned with this function or createTextLocator's raw offsets
+ * silently skew.
+ */
+const CURRENCY_GLYPHS = /[$£€¥]/g;
+
 function normalizeForMatch(s: string): string {
   return s
     .replace(/[“”]/g, '"')
     .replace(/[‘’]/g, "'")
     .replace(/[–—]/g, "-")
+    .replace(CURRENCY_GLYPHS, "")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -94,11 +124,26 @@ function normalizeWithMap(s: string): { normalized: string; map: number[] } {
       i++;
       continue;
     }
-    if (/\s/.test(ch)) {
+    // Whitespace and currency glyphs are consumed as ONE run, emitting a
+    // single space if the run contained any whitespace and nothing if it was
+    // glyphs alone. This is subtle but load-bearing: normalizeForMatch strips
+    // currency glyphs BEFORE collapsing whitespace, so "a $ b" collapses to
+    // "a b" there. Consuming the glyph on its own here would leave "a  b" —
+    // two spaces against one — and every raw offset after that point would
+    // skew. The two functions must produce identical strings or
+    // createTextLocator returns wrong positions, which is worse than the bug
+    // this fix exists for.
+    if (/[\s$£€¥]/.test(ch)) {
       const runStart = i;
-      while (i < n && /\s/.test(s[i])) i++;
-      normalized += " ";
-      map.push(runStart);
+      let sawWhitespace = false;
+      while (i < n && /[\s$£€¥]/.test(s[i])) {
+        if (/\s/.test(s[i])) sawWhitespace = true;
+        i++;
+      }
+      if (sawWhitespace) {
+        normalized += " ";
+        map.push(runStart);
+      }
       continue;
     }
     normalized += ch;
@@ -119,6 +164,51 @@ function findLiteralMatchSpan(quote: string, sourceText: string): { start: numbe
   const lastNormIdx = idx + normalizedQuote.length - 1;
   const end = lastNormIdx + 1 < map.length ? map[lastNormIdx + 1] : sourceText.length;
   return { start, end };
+}
+
+/**
+ * Session 18 (post-v16) — THE ANCHOR MISMATCH.
+ *
+ * Two different notions of "is this text in the filing" had grown up in this
+ * pipeline, and they disagreed. Verification matches through
+ * normalizeForMatch (whitespace runs collapsed, curly quotes and en/em
+ * dashes folded), while every scale lookup located its anchor with a RAW
+ * `String.indexOf`. So a sourceLine could verify as `matchType: "literal"`
+ * and still be unfindable by the code that needed its position — `indexOf`
+ * returns -1, no declaration is read, and the amount is dropped as
+ * scale-indeterminate despite the filing declaring its scale plainly.
+ *
+ * Measured cost before the fix: Molina lost four base-ladder rows this way
+ * ("$ 650", "$ 850", "$ 750", "$ 750") on a filing that declares millions,
+ * while three sibling rows in the same table resolved — the difference was
+ * nothing but whitespace. DaVita lost four cashAmounts to the same cause,
+ * where the one that survived sat 1,014 characters from its declaration and
+ * the four that didn't had no locatable position at all.
+ *
+ * This exposes the fix as a LOCATOR OBJECT rather than a bare function on
+ * purpose. normalizeWithMap is O(n) over the whole filing — up to ~600k
+ * characters — and a debt note has dozens of entries to place. Building it
+ * once per filing and reusing it across every entry keeps that cost linear
+ * instead of quadratic.
+ *
+ * Returns the RAW start offset (what detectDollarScaleAt needs), or null
+ * when the text genuinely is not present under normalization either — a real
+ * absence, still never guessed at.
+ */
+export interface TextLocator {
+  find(needle: string): number | null;
+}
+
+export function createTextLocator(sourceText: string): TextLocator {
+  const { normalized, map } = normalizeWithMap(sourceText);
+  return {
+    find(needle: string): number | null {
+      const normalizedNeedle = normalizeForMatch(needle);
+      if (!normalizedNeedle) return null;
+      const idx = normalized.indexOf(normalizedNeedle);
+      return idx === -1 ? null : map[idx];
+    },
+  };
 }
 
 function extractNormalizedRowText(sourceText: string, start: number, end: number): string {
@@ -169,8 +259,16 @@ function normalizeLiteralMatchText(trimmedQuote: string, sourceText: string): st
   return extractNormalizedRowText(sourceText, span.start, span.end);
 }
 
-/** Checks one quote against a list of candidate texts, literal match first, then table-aware co-occurrence. */
-function verifyClaim(quote: string, candidateTexts: string[]): QuoteVerificationResult {
+/**
+ * Checks one quote against a list of candidate texts, literal match first,
+ * then table-aware co-occurrence. Exported (Session 18) so
+ * lib/agent/loop.ts can verify a debtSchedule row's `sourceLine` against a
+ * SPECIFIC single filing's text (to learn which filing it actually came
+ * from, for LadderRow.citedUrl) — the same verification this file already
+ * does for `quote`, just called per-candidate instead of over the whole
+ * list at once.
+ */
+export function verifyClaim(quote: string, candidateTexts: string[]): QuoteVerificationResult {
   const trimmed = quote.trim();
   if (!trimmed) return { verified: false, displayText: null, normalizedText: null, matchType: null };
 

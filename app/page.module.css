@@ -373,6 +373,34 @@
   margin-top: 10px;
 }
 
+/* --- Session 18 F1: the refi bucket's own completeness statement, above
+   its ladder — "ties to filing ✓" or "does not tie — $X unaccounted,"
+   never suppressed either way. --- */
+.refiCompletenessLine {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 4px 0 2px;
+}
+
+/* --- Session 18 (post-v11): prior-period context — deliberately set apart
+   from the current ladder above it (indent + rule + muted) so a stale
+   schedule shown for context can never be mistaken for the live position. --- */
+
+.refiPriorPeriod {
+  margin-top: 10px;
+  padding-left: 10px;
+  border-left: 2px solid var(--border, rgba(128, 128, 128, 0.3));
+  opacity: 0.78;
+}
+
+.refiPriorPeriodNote {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin: 0 0 4px;
+}
+
 /* --- Session 15 Part B: deterministic table lines — one per gated fact,
    fact + figure + timing + source, no prose, no model call. --- */
 

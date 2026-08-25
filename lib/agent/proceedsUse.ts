@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { ProceedsUse } from "./claude";
+import { recordUsage } from "./costMeter";
 
 // SONNET, not Haiku — a single narrow classification task, not narration
 // (see the ProceedsUse doc comment in claude.ts for why this moved here).
@@ -87,6 +88,7 @@ export async function classifyProceedsUse(params: {
     },
     { timeout: TIMEOUT_MS }
   );
+  recordUsage(SONNET_MODEL, response.usage);
 
   const toolUse = response.content.find((b) => b.type === "tool_use");
   if (!toolUse || toolUse.type !== "tool_use") {

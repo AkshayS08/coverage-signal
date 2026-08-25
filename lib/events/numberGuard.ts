@@ -113,11 +113,27 @@ export function countDistinctFactsReferenced(text: string, factTexts: string[]):
  * this file uses, is what makes "every date/figure in the card traces to
  * a cited filing" true by construction instead of by convention.
  */
+/**
+ * Session 18: a fact's own full text for token-matching purposes —
+ * normalizedText/verifiedText/evidence as before, PLUS seniority (F2) and
+ * redeemsInfo (E1), the two new fields a card is now instructed to state.
+ * Without these here, a bullet correctly stating "redeeming the 6.250%
+ * second lien notes due February 2027" (copied straight from the
+ * new-debt-issuance fact's own redeemsInfo field) would fail the accuracy
+ * guard as an "unverified" figure/date, and would fail
+ * isFullyExplainedByOneFact too — the fact's OWN field wouldn't be found in
+ * the fact's OWN corpus. One shared builder so every consumer in this file
+ * agrees on what a fact's text is.
+ */
+function factOwnText(f: VerifiedFact): string {
+  return `${f.normalizedText} ${f.verifiedText} ${f.evidence ?? ""} ${f.seniority ?? ""} ${f.redeemsInfo ?? ""}`;
+}
+
 export function factsReferencedIn(text: string, factBase: VerifiedFact[]): VerifiedFact[] {
   const textTokens = extractFactTokens(text);
   if (textTokens.length === 0) return [];
   return factBase.filter((f) => {
-    const factTokens = extractFactTokens(`${f.normalizedText} ${f.verifiedText} ${f.evidence ?? ""}`);
+    const factTokens = extractFactTokens(factOwnText(f));
     return textTokens.some((tt) => factTokens.some((ft) => strictFactTokensMatch(tt, ft)));
   });
 }
@@ -144,7 +160,7 @@ export function isFullyExplainedByOneFact(text: string, factBase: VerifiedFact[]
   const textTokens = extractFactTokens(text);
   if (textTokens.length === 0) return true;
   return factBase.some((f) => {
-    const factTokens = extractFactTokens(`${f.normalizedText} ${f.verifiedText} ${f.evidence ?? ""}`);
+    const factTokens = extractFactTokens(factOwnText(f));
     return textTokens.every((tt) => factTokens.some((ft) => strictFactTokensMatch(tt, ft)));
   });
 }
