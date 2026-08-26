@@ -370,7 +370,28 @@ export const EXTRACTION_PROMPT_VERSION = 16;
  * (seniority/redeemsInfo) that didn't exist in any cached body before this
  * version — nothing to replay, there's no prior wording for either.
  */
-export const NARRATION_PROMPT_VERSION = 7;
+/**
+ * v8 (Session 18 stage 2, Group E narration): three changes, all of which
+ * alter what a card says.
+ *
+ *   E4  The card states the tranche's OUTSTANDING balance. An indenture names
+ *       a tranche by its ORIGINAL ISSUE SIZE, and narration was reading that
+ *       name — so a partially repurchased tranche was narrated at the wrong
+ *       number. Cigna's 4.500% due 2030 is named "$1,000 million" and has
+ *       $993M outstanding; its 7.875% Debentures are named "$259 million" and
+ *       carry $260M. Materially wrong, not slightly off.
+ *   E5  A company gets ONE refi card, and the other cardable tranches on the
+ *       same ladder now reach narration as KEY POINTS instead of becoming
+ *       cards of their own.
+ *   E10 WHY NOW states facts and their relation and does not advise, enforced
+ *       by a structural check on modality and evaluation rather than by the
+ *       instruction alone.
+ *
+ * E4 and E5 change buildContext, so their cards would re-narrate on the
+ * context hash regardless. E10 changes only the SYSTEM PROMPT, which the
+ * context hash cannot see — the bump is what invalidates those.
+ */
+export const NARRATION_PROMPT_VERSION = 8;
 
 /**
  * Session 17 Item 0: this project's session prompts have referred to this

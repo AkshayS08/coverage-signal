@@ -34,6 +34,17 @@ import { recordUsage } from "../agent/costMeter";
 // ============================================================================
 
 const SONNET_MODEL = "claude-sonnet-5";
+/**
+ * Raised from 400 (Session 18 stage 2, Group E). E4 and E5 both add content
+ * the card is REQUIRED to state — the outstanding balance as distinct from
+ * the instrument's name, and a KEY POINTS bullet per carried tranche — and
+ * 400 was sized before either existed. Tenet's card came back well-formed and
+ * was truncated mid-structure at exactly 400 output tokens; the code
+ * correctly reported a malformed body rather than accepting half a card. The
+ * fix for a max_tokens stop is the token budget, never the guard that noticed
+ * it.
+ */
+const CARD_MAX_OUTPUT_TOKENS = 700;
 const TIMEOUT_MS = 12000;
 
 let client: Anthropic | null = null;
@@ -52,7 +63,7 @@ Write exactly three fields:
 
 - callAbout: the ACTION, one imperative line, and it MUST name the amount or the date of the thing being called about — a call with neither is not specific enough. "Refinance the $1.5 billion notes due November 2027." — not "debt maturity approaching" and not just "refinance the notes." If the headline fact genuinely has no verifiable dollar amount (never guess one), name the date instead — a date alone is enough, but never neither. Describe timing in plain terms the person on the other end of the call would recognize — "15 months out," never "inside the 15-month refi window" or any other named threshold. The 18-month refi cutoff is this system's own internal rule for what's worth a card at all; it is not a market term, and stating it as one implies a convention that doesn't exist. Write it as a complete sentence, ending in a period, exactly like whyNow and every keyPoints bullet — an imperative line is still a sentence. If the headline fact has a stated seniority (a "seniority:" line), work it in naturally — "Refinance the $1.5 billion senior secured first lien notes due November 2027" — a banker names the tranche precisely, not generically as "notes."
 
-- whyNow: the synthesis — what makes THIS WEEK the moment, not just what happened. One sentence; a second short sentence is allowed only to keep two distinct facts clean, never as extra room for detail. MUST connect the headline event to at least one OTHER given fact that explains why it's live now (a related disclosure, a stated market condition, a second dated event) — a sentence that only restates the headline event, however detailed, is description, not synthesis, and description is exactly what this format replaces. If nothing in the other verified facts genuinely explains why now, do not invent a connection or pad with unrelated detail — write the truest version you can with what you have; a structural check downstream decides whether it qualifies, that is not your call to route around.
+- whyNow: the synthesis — what makes THIS WEEK the moment, not just what happened. One sentence; a second short sentence is allowed only to keep two distinct facts clean, never as extra room for detail. MUST connect the headline event to at least one OTHER given fact that explains why it's live now (a related disclosure, a stated market condition, a second dated event) — a sentence that only restates the headline event, however detailed, is description, not synthesis, and description is exactly what this format replaces. If nothing in the other verified facts genuinely explains why now, do not invent a connection or pad with unrelated detail — write the truest version you can with what you have; a structural check downstream decides whether it qualifies, that is not your call to route around. STATE FACTS AND THEIR RELATION; DO NOT ADVISE. whyNow may say what is true and how two filed facts bear on each other — "the August revolver draw lands three months before the March maturity" — and it must stop there. It must NOT say what the company is able to do, well placed to do, or ought to do: no "ample liquidity to prefund or opportunistically refinance," no "well-positioned to address this maturity," no "gives them room to," no "should be able to." The RM reading this card is the one who forms that judgement, and a card that forms it for them is stating an opinion as though the filings contained it. The relation between two filed facts is allowed; a recommendation, a capability claim, or an evaluation is not.
 
 - keyPoints: 2 to 4 bullets, plain facts in the same register the portfolio table uses — one fact and its own figure or date per bullet, nothing more. The FIRST bullet must be the fact that triggered this card (the headline event itself — the maturity, the announced deal, the proceeds). The rest are supporting facts, each still standing on its own. A bullet states what IS true; it never explains what one fact means for another. Do not write "which gives them a window to," "so the same approach can be," "before it competes with," or any other sentence connecting two facts together — that connective work belongs in whyNow, and only there. If you find yourself writing "so," "which means," "giving them," or "before" to link two bullets' worth of information into one, you have written a whyNow sentence by accident; split it back into two separate, unconnected facts instead. If a given fact you're describing has a "redeemed:" line, state that redemption as part of describing the fact itself — "On November 18, 2025, Tenet issued $1.5 billion of 5.500% first lien notes due 2032 and $750 million of 6.000% senior notes due 2033, redeeming the 6.250% second lien notes due February 2027." — copied from the field, one filed fact about what that issuance did, never phrased as explaining why a DIFFERENT tranche (the headline or any other fact) is live now — that would be asserting a relationship between two facts, which a bullet never does.
 
@@ -125,6 +136,37 @@ function findHeadlineFact(factBase: VerifiedFact[], card: FlashCard): VerifiedFa
   return factBase.find((f) => f.linkedTriggerId === card.headlineTrigger.triggerId);
 }
 
+/**
+ * E10 — the grammar of advice. Two closed classes, both small and both about
+ * SENTENCE MODE rather than subject matter:
+ *   - modality: a claim about ability, permission or obligation rather than
+ *     about what is the case;
+ *   - evaluation: an adjective scoring the company's position rather than
+ *     describing it.
+ * Deliberately does not include ordinary financial vocabulary — "refinance",
+ * "liquidity", "prefund" are all perfectly good facts. It is "ample liquidity
+ * TO prefund" and "WELL-POSITIONED to address" that cross the line, and it is
+ * the modal/evaluative frame that puts them there.
+ */
+// "may" and "might" are deliberately NOT here, and the reason is measured
+// rather than theoretical: Quest's card was rejected twice on a bare "may".
+// They are the weakest modals in the set — "may" carries permission about as
+// often as capability — and "May" is also a MONTH, so a case-insensitive test
+// on it fires on every card about a tranche due May. A guard that trips on
+// "due May 2027" is not testing modality.
+const ADVISORY_MODALS = /\b(?:can|could|should|ought to|able to|unable to|has room to|have room to|gives? (?:them|it) room|allowing (?:them|it) to|positions? (?:them|it) to|enabl(?:es?|ing) (?:them|it) to)\b/gi;
+const ADVISORY_EVALUATIONS = /\b(?:well[- ]positioned|well[- ]placed|comfortabl[ey]|ample|healthy|strong(?:ly)? positioned|favou?rabl[ey] positioned|opportunistic(?:ally)?|prudent(?:ly)?|attractive(?:ly)?)\b/gi;
+
+export function advisoryPhrasesIn(text: string): string[] {
+  const found = new Set<string>();
+  for (const re of [ADVISORY_MODALS, ADVISORY_EVALUATIONS]) {
+    const scan = new RegExp(re.source, "gi");
+    let m: RegExpExecArray | null;
+    while ((m = scan.exec(text))) found.add(m[0].toLowerCase());
+  }
+  return [...found];
+}
+
 function formatFact(f: VerifiedFact): string {
   const sourceStr = f.sourceFiling ? `${f.sourceFiling.form} filed ${f.sourceFiling.date}` : "n/a";
   const evidenceLine = f.evidence ? `\n  evidence: "${f.evidence}"` : "";
@@ -139,7 +181,17 @@ function formatFact(f: VerifiedFact): string {
   // describing the issuance, never as an inference about which live
   // tranche it explains.
   const redeemsLine = f.redeemsInfo ? `\n  redeemed: "${f.redeemsInfo}"` : "";
-  return `- ${f.fact}: "${f.normalizedText}" (source: ${sourceStr})${evidenceLine}${seniorityLine}${redeemsLine}`;
+  // E4: the ONE figure a refi conversation is about, given as its own field
+  // so there is nothing left to choose between. The instrument's NAME carries
+  // its ORIGINAL ISSUE SIZE, and the two diverge the moment any of the
+  // tranche is repurchased — Cigna's 4.500% due 2030 is named "$1,000
+  // million" and has $993M outstanding. Naming the issue size explicitly is
+  // what makes it safe to appear at all.
+  const outstandingLine = f.outstandingAmount ? `\n  OUTSTANDING NOW (state THIS amount): ${f.outstandingAmount}` : "";
+  const issueSizeLine = f.issueSizeInLabel
+    ? `\n  original issue size, taken from the instrument's own name — NOT the current balance (statable only if you label it as the original issue size): ${f.issueSizeInLabel}`
+    : "";
+  return `- ${f.fact}: "${f.normalizedText}" (source: ${sourceStr})${outstandingLine}${issueSizeLine}${evidenceLine}${seniorityLine}${redeemsLine}`;
 }
 
 // Exported so lib/cache/wordingCache.ts can hash EXACTLY what Sonnet will
@@ -150,7 +202,14 @@ export function buildContext(card: FlashCard, factBase: VerifiedFact[]): string 
   // one of its refi cards — see VerifiedFact.ladderRowId for the live case
   // where three Cigna cards all narrated the wrong debt.
   const headlineFact = findHeadlineFact(factBase, card);
-  const otherFacts = factBase.filter((f) => f !== headlineFact);
+  // E5: the other cardable tranches on the SAME ladder, collapsed onto this
+  // card. They are not "other facts about the company" — they are the rest of
+  // one conversation, and they belong in KEY POINTS rather than being weighed
+  // for relevance to WHY NOW.
+  const carriedIds = new Set(card.alsoMaturingRowIds);
+  const carriedFacts = factBase.filter((f) => f !== headlineFact && f.ladderRowId !== null && carriedIds.has(f.ladderRowId));
+  const carried = new Set(carriedFacts);
+  const otherFacts = factBase.filter((f) => f !== headlineFact && !carried.has(f));
 
   const tagLabel = [BUCKET_LABELS[card.bucket], card.secondaryBucket ? BUCKET_LABELS[card.secondaryBucket] : null]
     .filter(Boolean)
@@ -167,6 +226,14 @@ export function buildContext(card: FlashCard, factBase: VerifiedFact[]): string 
       ? formatFact(headlineFact)
       : `- ${card.headlineTrigger.triggerName}: "${card.headlineTrigger.verifiedQuoteNormalized ?? card.headlineTrigger.verifiedQuote ?? "n/a"}"`,
   ];
+
+  if (carriedFacts.length > 0) {
+    lines.push(
+      ``,
+      `ALSO MATURING ON THIS SAME LADDER (${carriedFacts.length} more tranche${carriedFacts.length === 1 ? "" : "s"}) — this company gets ONE refi card and these are part of the same conversation. State each as its own KEY POINTS bullet, with its outstanding amount and its maturity. Do NOT total them, rank them, or draw a conclusion from them:`,
+      ...carriedFacts.map(formatFact)
+    );
+  }
 
   if (otherFacts.length > 0) {
     lines.push(
@@ -186,7 +253,7 @@ async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionI
   const response = await getClient().messages.create(
     {
       model: SONNET_MODEL,
-      max_tokens: 400,
+      max_tokens: CARD_MAX_OUTPUT_TOKENS,
       thinking: { type: "disabled" },
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userContent }],
@@ -283,6 +350,27 @@ export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[], 
 
   const whyNowSentences = body.whyNow.trim() ? sentenceCount(body.whyNow) : 0;
   if (whyNowSentences > 2) reasons.push(`whyNow is ${whyNowSentences} sentences — over the 2-sentence limit`);
+
+  // E10 (Session 18, post-stage-2) — WHY NOW STATES FACTS AND THEIR RELATION,
+  // AND DOES NOT ADVISE.
+  //
+  // Live output carried "ample liquidity to prefund or opportunistically
+  // refinance" and "well-positioned to address this maturity". Neither is in
+  // any filing. Both read as the tool's own view of the company's options,
+  // which is exactly the judgement the RM is paid to form and the one thing
+  // this card must not pre-empt.
+  //
+  // Checked in CODE and not left to the prompt, for the reason this project
+  // has re-learned repeatedly: an instruction holds until the model phrases
+  // it differently. This is a closed-class test on MODALITY and EVALUATION —
+  // the grammar of advice, not its vocabulary — the same shape scrapeGuard.ts
+  // already uses for function words. A factual relation uses neither: "the
+  // draw lands three months before the maturity" contains no modal and makes
+  // no evaluation.
+  const advisory = advisoryPhrasesIn(body.whyNow);
+  if (advisory.length > 0) {
+    reasons.push(`whyNow advises rather than stating facts and their relation (${advisory.join(", ")}) — say what is true and how the facts bear on each other, never what the company can, should, or is well placed to do`);
+  }
 
   // Session 15b: the accuracy corpus now also includes each fact's own
   // evidence sentence, not just verifiedText/normalizedText — the quote

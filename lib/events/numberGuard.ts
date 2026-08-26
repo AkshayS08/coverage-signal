@@ -125,8 +125,25 @@ export function countDistinctFactsReferenced(text: string, factTexts: string[]):
  * the fact's OWN corpus. One shared builder so every consumer in this file
  * agrees on what a fact's text is.
  */
+/**
+ * EVERY field narration is shown must be in here, or the guards reject the
+ * card for saying what it was told to say.
+ *
+ * Found live in Session 18 stage 2: E4 added `outstandingAmount` and
+ * `issueSizeInLabel` to the prompt — the tranche's current balance, given as
+ * its own labelled line precisely so the card would state it — without adding
+ * them to this corpus. The model dutifully wrote "$1.5 billion outstanding",
+ * no single fact appeared to contain that figure (the raw sourceLine holds
+ * "1,481", not the display form), and all three non-Cigna cards were rejected
+ * for a bullet "not fully explained by any single fact". Three blank cards,
+ * caused by the two halves disagreeing about what a fact contains.
+ *
+ * The rule this encodes: this function and sonnetEventBriefing.ts's
+ * formatFact are two views of ONE thing — what this fact says. They must be
+ * changed together.
+ */
 function factOwnText(f: VerifiedFact): string {
-  return `${f.normalizedText} ${f.verifiedText} ${f.evidence ?? ""} ${f.seniority ?? ""} ${f.redeemsInfo ?? ""}`;
+  return [f.normalizedText, f.verifiedText, f.evidence ?? "", f.seniority ?? "", f.redeemsInfo ?? "", f.outstandingAmount ?? "", f.issueSizeInLabel ?? ""].join(" ");
 }
 
 export function factsReferencedIn(text: string, factBase: VerifiedFact[]): VerifiedFact[] {

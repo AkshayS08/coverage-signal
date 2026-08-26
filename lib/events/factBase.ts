@@ -1,6 +1,7 @@
 import type { CompanyResult, TriggerResult } from "../agent";
 import { extractFactTokens, type FactToken } from "../agent/factTokens";
-import { assemblePosition, citationsForLadderRow } from "./position";
+import { assemblePosition, citationsForLadderRow, parseMoneyAmount } from "./position";
+import { formatMoneyForDisplay, formatMoneyValue } from "./money";
 
 /**
  * Figure-binding — deciding WHICH single currency figure (if any) actually
@@ -253,6 +254,33 @@ export interface VerifiedFact {
   seniority: string | null;
   /** Session 18 E1 — new-debt-issuance facts ONLY, when the issuance's own `redeems` field is populated. Verbatim description of what this issuance retired, copied from the field — not an inference, and not evidence that the retired tranche is THIS card's own headline. Null for every other fact, and null when new-debt-issuance fired with nothing redeemed. */
   redeemsInfo: string | null;
+  /**
+   * E4 (Session 18, post-stage-2) — debt-maturity row facts ONLY, null for
+   * every other fact. What this tranche has OUTSTANDING, display-formatted.
+   *
+   * The number a refi conversation is about is the current balance, and until
+   * now narration had no way to find it: `fact` and `normalizedText` both
+   * lead with the instrument's NAME, and an indenture names a tranche by its
+   * original issue size — "$ 550 million, 1.250 % Notes due March 2026" is a
+   * note with $549M outstanding. The two diverge the moment any of it is
+   * repurchased, and the card is then materially wrong rather than slightly
+   * off: Cigna's 7.875% Debentures are labelled $259 million and carry $260
+   * million; its 4.500% due 2030 is labelled $1,000 million against $993
+   * million outstanding; Encompass's 5.875% is labelled $500 million against
+   * $491.0 million.
+   *
+   * Given as its own labelled field rather than left inside a sentence, so
+   * there is exactly one figure for Sonnet to state and no choosing to do.
+   */
+  outstandingAmount: string | null;
+  /**
+   * E4 — the money figure embedded in the instrument's own NAME, when it
+   * differs from the outstanding balance. Present precisely so it can be
+   * named as what it is: the original issue size, statable only when
+   * labelled as such. Null when the label carries no figure, or when the two
+   * agree and there is nothing to disambiguate.
+   */
+  issueSizeInLabel: string | null;
 }
 
 function mostRecentCitation(citations: TriggerResult["citations"]): TriggerResult["citations"][number] | null {
@@ -295,6 +323,8 @@ export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
       dateGranularity: t.dateGranularity,
       eventStatus: t.eventStatus,
       seniority: null,
+      outstandingAmount: null,
+      issueSizeInLabel: null,
       // Session 18 E1: only new-debt-issuance ever carries this; every
       // other trigger's redeems is always null already (Session 18 A2).
       redeemsInfo: t.triggerId === "new-debt-issuance" ? (t.redeems ?? null) : null,
@@ -321,6 +351,23 @@ export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
  * redaction pass as every other fact (defense in depth against an
  * incidental unrelated bare number elsewhere in a table-shaped sourceLine).
  */
+/**
+ * E4 — the money figure printed inside an instrument's NAME, when it is a
+ * different value from what the tranche has outstanding. Returns null when
+ * the label carries no figure, when it cannot be parsed, or when it agrees
+ * with the outstanding balance — in all three cases there is nothing to warn
+ * about and an extra field would only be noise.
+ */
+function issueSizeFromLabel(instrument: string, amount: string): string | null {
+  const outstanding = parseMoneyAmount(amount);
+  const labelValues = extractFactTokens(instrument)
+    .filter((t) => t.kind === "money" && t.moneyValue !== undefined)
+    .map((t) => t.moneyValue!);
+  if (labelValues.length === 0) return null;
+  const differing = labelValues.find((v) => outstanding === null || Math.abs(v) !== Math.abs(outstanding));
+  return differing === undefined ? null : formatMoneyValue(differing);
+}
+
 function buildDebtMaturityFacts(result: CompanyResult): VerifiedFact[] {
   const debtMaturityTrigger = result.results.find((t) => t.triggerId === "debt-maturity");
   if (!debtMaturityTrigger) return [];
@@ -356,6 +403,8 @@ function buildDebtMaturityFacts(result: CompanyResult): VerifiedFact[] {
         eventStatus: row.maturityDate ? "upcoming" : "standing",
         seniority: row.seniority,
         redeemsInfo: null,
+        outstandingAmount: formatMoneyForDisplay(row.amount),
+        issueSizeInLabel: issueSizeFromLabel(row.instrument, row.amount),
       };
     });
 }

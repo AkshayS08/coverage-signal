@@ -495,6 +495,8 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     eventStatus: "upcoming",
     seniority: null,
     redeemsInfo: null,
+    outstandingAmount: null,
+    issueSizeInLabel: null,
   };
   const otherFact: VerifiedFact = {
     linkedTriggerId: "large-cash-balance",
@@ -512,6 +514,8 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     eventStatus: "standing",
     seniority: null,
     redeemsInfo: null,
+    outstandingAmount: null,
+    issueSizeInLabel: null,
   };
   const syntheticFacts = [headlineFact, otherFact];
 
@@ -668,6 +672,8 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     eventStatus: "upcoming",
     seniority: null,
     redeemsInfo: null,
+    outstandingAmount: null,
+    issueSizeInLabel: null,
   };
   const hcaFacts = [...hcaFactsReal.filter((f) => f.linkedTriggerId !== "debt-maturity"), debtMaturity];
 
@@ -729,6 +735,8 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     eventStatus: "completed",
     seniority: null,
     redeemsInfo: "the 6.250% second lien notes due February 2027",
+    outstandingAmount: null,
+    issueSizeInLabel: null,
   };
   const headlineFact: VerifiedFact = {
     linkedTriggerId: "debt-maturity",
@@ -746,6 +754,8 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     eventStatus: "upcoming",
     seniority: "Senior secured first lien notes:",
     redeemsInfo: null,
+    outstandingAmount: null,
+    issueSizeInLabel: null,
   };
   const syntheticFacts = [headlineFact, issuanceFact, otherRealFact];
 

@@ -14,6 +14,8 @@ import { collapseToMostRecentPeriod } from "./evidenceCondense";
 import { assemblePosition } from "./position";
 import { buildEvents, cardCitationGaps } from "./buildEvents";
 import { buildCompanyTableBlock } from "./portfolioTable";
+import { advisoryPhrasesIn, buildContext } from "./sonnetEventBriefing";
+import { buildVerifiedFactBase } from "./factBase";
 
 let passed = 0;
 let failed = 0;
@@ -118,7 +120,7 @@ function company(results: TriggerResult[]): CompanyResult {
   const refi = flashCardCandidates.filter((c) => c.bucket === "refi");
 
   assert(refi.length === 1, `[E5-1] three cardable tranches on one ladder produce ONE refi card, not three (got ${refi.length})`);
-  assert(refi[0].headlineRowId?.startsWith("3.400 % Notes due March 2027"), `[E5-2] ...headlined by the NEAREST tranche (got ${refi[0].headlineRowId})`);
+  assert(refi[0].headlineRowId?.startsWith("3.400 % Notes due March 2027") === true, `[E5-2] ...headlined by the NEAREST tranche (got ${refi[0].headlineRowId})`);
   assert(refi[0].alsoMaturingRowIds.length === 2, `[E5-3] ...with the other two carried on the same card for KEY POINTS (got ${refi[0].alsoMaturingRowIds.length})`);
 
   const urls = new Set(refi[0].citations.map((c) => c.url));
@@ -184,7 +186,7 @@ function company(results: TriggerResult[]): CompanyResult {
     triggerId: "debt-maturity",
     scheduleSequence: [row({ label: "Term Loan Facility", rate: "5.100%", maturityDate: "2027-06-01", amount: "$1,975 million", sourceLine: shared })],
     priorScheduleSequence: [row({ label: "Term Loan Facility", rate: "5.100%", maturityDate: "2027-06-01", amount: "$2,000 million", sourceLine: shared })],
-    debtSchedulePriorFiling: { form: "10-Q", date: "2026-04-28", url: "https://example.com/prior" },
+    debtSchedulePriorFiling: { form: "10-Q", date: "2026-04-28", reportDate: "2026-03-31", url: "https://example.com/prior" },
   });
   const floating = trigger({
     triggerId: "floating-rate-debt",
@@ -239,6 +241,77 @@ function company(results: TriggerResult[]): CompanyResult {
   const phrase = block.refiLadder.nearestLines[0].timingPhrase;
   assert(!/not verifiable/.test(phrase), `[E12-2] a row carrying a real date is never called undated (got ${JSON.stringify(phrase)})`);
   assert(/2026-03-01/.test(phrase), `[E12-3] ...the phrase states the row's own date (got ${JSON.stringify(phrase)})`);
+}
+
+// ============================================================================
+// E4 — CARDS NARRATE THE OUTSTANDING BALANCE, NOT THE INSTRUMENT'S NAME.
+//
+// An indenture names a tranche by its ORIGINAL ISSUE SIZE, and the two
+// diverge the moment any of it is repurchased. Cigna's real rows: the 4.500%
+// due 2030 is named "$1,000 million" and has $993M outstanding; the 7.875%
+// Debentures are named "$259 million" and carry $260M.
+// ============================================================================
+{
+  const dm = trigger({
+    triggerId: "debt-maturity",
+    scheduleSequence: [
+      // Cigna's real row: named $1,500 million, $1,481 million outstanding,
+      // and inside the card window so it actually produces a card.
+      row({ label: "$ 1,500 million, 3.400 % Notes due March 2027", rate: "3.400%", maturityDate: "2027-03-01", dateGranularity: "month", amount: "$1,481 million" }),
+    ],
+  });
+  const co = company([dm]);
+  const facts = buildVerifiedFactBase(co);
+  const f = facts.find((x) => x.ladderRowId !== null)!;
+
+  assert(f.outstandingAmount === "$1.5B", `[E4-1] the fact carries the OUTSTANDING balance as its own field (got ${f.outstandingAmount})`);
+  assert(f.issueSizeInLabel === "$1.5B", `[E4-2] ...and the label's figure separately, identified as the original issue size (got ${f.issueSizeInLabel})`);
+
+  const card = buildEvents([co], NOW).flashCardCandidates[0];
+  const ctx = buildContext(card, facts);
+  assert(ctx.includes("OUTSTANDING NOW (state THIS amount): $1.5B"), "[E4-3] the context tells narration which figure to state, as its own labelled line");
+  assert(ctx.includes("original issue size"), "[E4-4] ...and names the label's figure as the original issue size, statable only when labelled as such");
+}
+
+// --- REVERSE: where the label and the balance AGREE there is nothing to
+// disambiguate, and an extra field would only be noise. ---
+{
+  const dm = trigger({
+    triggerId: "debt-maturity",
+    scheduleSequence: [row({ label: "$ 750 million, 6.000 % Notes due January 2056", rate: "6.000%", maturityDate: "2056-01-15", dateGranularity: "day", amount: "$750 million" })],
+  });
+  const f = buildVerifiedFactBase(company([dm])).find((x) => x.ladderRowId !== null)!;
+  assert(f.outstandingAmount === "$750M", "[E4-5] the outstanding amount is always given");
+  assert(f.issueSizeInLabel === null, "[E4-6] REVERSE: no issue-size field when the label and the balance agree");
+}
+
+// ============================================================================
+// E10 — WHY NOW STATES FACTS AND THEIR RELATION, AND DOES NOT ADVISE.
+//
+// Both offending phrases below are verbatim from live output.
+// ============================================================================
+{
+  assert(advisoryPhrasesIn("Cigna has ample liquidity to prefund or opportunistically refinance the March 2027 maturity.").length > 0, "[E10-1] 'ample liquidity to ... opportunistically refinance' is caught");
+  assert(advisoryPhrasesIn("The company is well-positioned to address this maturity.").length > 0, "[E10-2] 'well-positioned to address this maturity' is caught");
+  assert(advisoryPhrasesIn("The August draw gives them room to wait.").length > 0, "[E10-3] a capability claim is caught even without an evaluative adjective");
+
+  // REVERSE — the half that matters. The rule must not silence a statement of
+  // RELATION, which is exactly what whyNow is for, and must not ban ordinary
+  // financial vocabulary.
+  assert(
+    advisoryPhrasesIn("The $708 million ABL draw in June lands nine months before the March 2027 maturity.").length === 0,
+    "[E10-4] REVERSE: two filed facts and how they bear on each other is allowed — that is what whyNow IS"
+  );
+  assert(
+    advisoryPhrasesIn("Cigna refinanced $4.5 billion across four tranches in September 2025, and $2.3 billion more matures in 2027.").length === 0,
+    "[E10-5] REVERSE: 'refinance' and 'prefund' are ordinary facts — the rule tests the modal frame, not the subject matter"
+  );
+  // REVERSE, found by the live run: "May" is a month. A case-insensitive test
+  // on the modal "may" rejected Quest's card twice for writing a date.
+  assert(
+    advisoryPhrasesIn("The 7.875% Debentures due May 2027 sit three months behind the March 2027 notes.").length === 0,
+    "[E10-6] REVERSE: a tranche due MAY is a date, not a modal — this rejected a real card twice before the list was corrected"
+  );
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);
