@@ -54,47 +54,45 @@ const MAX_LINE_CHARS = 400;
  * limit; otherwise fall back to the word boundary, but strip a trailing
  * connector word first so the ellipsis never follows one.
  */
-const DANGLING_TRAILING_WORDS = new Set([
-  "and", "or", "with", "for", "to", "of", "in", "on", "at", "by",
-  "the", "a", "an", "into", "under", "from", "as", "that",
-]);
-
-function stripTrailingDanglingWords(text: string): string {
-  const words = text.split(" ");
-  while (words.length > 1 && DANGLING_TRAILING_WORDS.has(words[words.length - 1].toLowerCase())) {
-    words.pop();
-  }
-  return words.join(" ");
-}
 
 /**
- * A minimum, not a proportion of maxLen — verified live against DaVita's
- * real 261-char new-debt-issuance evidence, whose only comma-shaped clause
- * boundary (right after "...on May 23, 2025", before "with net proceeds
- * of...") sits at char 125, a hair under half of the 260 cap. A
- * proportional threshold (e.g. "> maxLen * 0.5") rejects that real,
- * perfectly good boundary and falls through to a mid-word cut anyway; an
- * absolute floor accepts it while still refusing a boundary so early it
- * would throw away most of the line.
+ * E8 (Session 18, post-stage-2) — CUT AT A SENTENCE BOUNDARY, OR DO NOT CUT.
+ *
+ * Mid-word truncation kept coming back. Each fix tuned the cap or added
+ * another boundary heuristic — a clause comma, a word break, a dangling-word
+ * stripper, an absolute floor measured against one company's real evidence —
+ * and each held until the corpus moved. The output this session still carried
+ * "...Medical Center) to" and "effective Janua".
+ *
+ * The reason is structural: every one of those rules cuts INSIDE a sentence
+ * and then tries to make the cut look deliberate. A cap calibrated against a
+ * measurement will keep breaking, because the next filing writes a longer
+ * sentence.
+ *
+ * So the cap now selects WHOLE SENTENCES and stops. If not even the first
+ * sentence fits, the line is not cut at all — a long sentence rendered in
+ * full is honest, and a sentence cut mid-word is not. That makes the cap a
+ * preference rather than a guarantee, which is the correct trade: this line
+ * is evidence an RM is going to read, and an unreadable fragment saves
+ * nothing.
+ *
+ * splitSentences below is already decimal-safe and abbreviation-safe (it has
+ * to be — "5.125%", "Alan B. Miller", "U.K." all defeat a naive split), so
+ * the boundary this relies on is one the file already trusts.
  */
-const MIN_CLAUSE_BOUNDARY_CHARS = 100;
-
-/** Word-boundary-safe truncation — never cuts a figure or date in half, prefers a real clause boundary (comma/semicolon) over an arbitrary word break, and never leaves a dangling conjunction/preposition right before the ellipsis. */
 function truncate(text: string, maxLen = MAX_LINE_CHARS): string {
   const trimmed = text.trim();
   if (trimmed.length <= maxLen) return trimmed;
-  const cut = trimmed.slice(0, maxLen);
 
-  const lastComma = cut.lastIndexOf(",");
-  const lastSemi = cut.lastIndexOf(";");
-  const lastClauseBoundary = Math.max(lastComma, lastSemi);
-  if (lastClauseBoundary >= MIN_CLAUSE_BOUNDARY_CHARS) {
-    return `${stripTrailingDanglingWords(cut.slice(0, lastClauseBoundary))}…`;
+  const sentences = splitSentences(trimmed);
+  let kept = "";
+  for (const sentence of sentences) {
+    const next = kept ? `${kept} ${sentence}` : sentence;
+    if (next.length > maxLen) break;
+    kept = next;
   }
-
-  const lastSpace = cut.lastIndexOf(" ");
-  const wordCut = cut.slice(0, lastSpace > 0 ? lastSpace : maxLen);
-  return `${stripTrailingDanglingWords(wordCut)}…`;
+  if (!kept) return trimmed; // one sentence, longer than the cap — rendered whole
+  return kept.length < trimmed.length ? `${kept} …` : kept;
 }
 
 /**
@@ -432,7 +430,50 @@ export function bareLineFallback(f: VerifiedFact): string {
  * "debt-maturity" — that trigger's facts never reach this function (see
  * this file's own top doc comment); every fact condenses the same way now.
  */
+/**
+ * E11.2 (Session 18, post-stage-2) — A MULTI-PERIOD COMPARISON COLLAPSES TO
+ * THE MOST RECENT PERIOD.
+ *
+ * The item-14 rule already does this for standing facts phrased "as of X...
+ * as of Y", by picking the most recent SENTENCE. It regressed on a different
+ * shape, where both periods live in ONE sentence joined by "and":
+ *
+ *   "capital expenditures of $252 million for the six months ended June 30,
+ *    2026 and $225 million for the same period in 2025"
+ *
+ * A line that states two figures for two periods makes the reader work out
+ * which one is current, and the prior-year figure is not what a financing
+ * conversation is about.
+ *
+ * Deliberately narrow, because this is sentence surgery on text an RM reads:
+ * the trailing "and ..." segment is dropped ONLY when it carries a date whose
+ * YEAR is strictly older than a year in the segment before it. A comparison
+ * within one year ("...and $1,119 million for Q1 2026") is left alone —
+ * "Q1 2026" against "six months ended June 30, 2026" is not a comparison this
+ * rule can order without inventing precision, and a wrong cut here is worse
+ * than an uncut line.
+ */
+function yearsIn(text: string): number[] {
+  return extractFactTokens(text)
+    .filter((tok) => tok.kind === "date" && tok.dateValue !== undefined)
+    .map((tok) => tok.dateValue!.year);
+}
+
+export function collapseToMostRecentPeriod(description: string): string {
+  const at = description.lastIndexOf(" and ");
+  if (at < 0) return description;
+  const head = description.slice(0, at);
+  const tail = description.slice(at + " and ".length);
+  const headYears = yearsIn(head);
+  const tailYears = yearsIn(tail);
+  if (headYears.length === 0 || tailYears.length === 0) return description;
+  if (Math.max(...tailYears) >= Math.min(...headYears)) return description;
+  // The tail is an older period. Keep the head, restoring its terminator.
+  const trimmed = head.trim().replace(/[,;]$/, "");
+  return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+}
+
 export function condenseEvidenceDescription(f: VerifiedFact): string {
-  const description = condenseFirstSentence(f);
+  const description = collapseToMostRecentPeriod(condenseFirstSentence(f));
   return description.trim() || bareLineFallback(f);
 }

@@ -10,6 +10,7 @@ import {
   TABLE_BUCKET_ORDER,
   BUCKET_LABELS,
   BUCKET_TRIGGER_COUNTS,
+  formatMoneyForDisplay,
   type FlashCard,
   type FlashCardActiveItem,
   type TableLine,
@@ -373,7 +374,12 @@ export default function Home() {
   // model-drafted; a company's table block is a pure function of its
   // already-streamed CompanyResult (evidenceCondense.ts + portfolioTable.ts).
   function renderTableLine(line: TableLine, i: number) {
-    const text = line.timingPhrase ? `${line.description} — ${line.timingPhrase}` : line.description;
+    // E9: a fact belongs to exactly one bucket. Where it is genuinely
+    // relevant to a second, that bucket keeps a pointer rather than a copy —
+    // never removed, so an exposure is not hidden from the bucket an RM
+    // scans for exposures.
+    const base = line.timingPhrase ? `${line.description} — ${line.timingPhrase}` : line.description;
+    const text = line.crossReferenceTo ? `${base} — also relevant here; shown under ${BUCKET_LABELS[line.crossReferenceTo]}` : base;
     return (
       <li key={i} className={line.isHedgingFlag ? styles.tableLineHedging : styles.tableLine}>
         <span className={styles.tableLineBullet}>{line.isHedgingFlag ? "⚑" : "·"}</span>
@@ -397,7 +403,9 @@ export default function Home() {
   function renderRefiLadderLine(line: RefiLadderLine, i: number) {
     const seniorityPrefix = line.row.seniority ? `${line.row.seniority} ` : "";
     const rateText = line.row.rate ? `${line.row.rate} ` : "";
-    const text = `${line.row.amount} ${rateText}${seniorityPrefix}${line.row.instrument} — ${line.timingPhrase}`;
+    // E13: the movement rides on the same line as the balance it belongs to.
+    const movement = line.movementPhrase ? ` — ${line.movementPhrase}` : "";
+    const text = `${formatMoneyForDisplay(line.row.amount)} ${rateText}${seniorityPrefix}${line.row.instrument} — ${line.timingPhrase}${movement}`;
     return (
       <li key={i} className={styles.tableLine}>
         <span className={styles.tableLineBullet}>·</span>
@@ -435,7 +443,7 @@ export default function Home() {
             <li key={`adjustment-${i}`} className={styles.tableLine}>
               <span className={styles.tableLineBullet}>·</span>
               <span className={styles.tableLineText}>
-                {adj.amount} — {adj.label ?? "(unlabeled adjustment)"}
+                {formatMoneyForDisplay(adj.amount)} — {adj.label ?? "(unlabeled adjustment)"}
               </span>
             </li>
           ))}

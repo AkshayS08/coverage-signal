@@ -70,6 +70,23 @@ export interface CompanyExtractionReport {
   rowsExtracted: number;
   rowsVerified: number;
   rowsDropped: number;
+  /**
+   * E1 (Session 18, post-stage-2) — drops on the BASE LADDER alone: the only
+   * ones either check can see.
+   *
+   * `rowsDropped` sums four arrays, and three of them never enter Check 1 or
+   * Check 2 at all. The prior-period sequence exists solely to find a tranche
+   * that vanished between filings; discarding it costs the current ladder
+   * nothing. Molina is the case that exposed the conflation — a green badge
+   * beside "7 of 16 dropped", read as a ladder missing 44% of its rows, when
+   * its base ladder was complete to the dollar and all seven drops were
+   * prior-period comparative-column entries.
+   *
+   * This is the count the badge is allowed to reason about.
+   */
+  baseRowsExtracted: number;
+  baseRowsVerified: number;
+  baseRowsDropped: number;
   /** Null when no spend was captured for this company (e.g. rebuilding a report from a cached answer, where zero calls were made and zero is not the same as "not measured"). */
   spendUsd: number | null;
   apiCalls: number | null;
@@ -105,6 +122,11 @@ export function buildExtractionReport(result: CompanyResult, spend?: CompanySpen
   // new-debt-issuance's issuedTranches, which would otherwise be invisible.
   const rowsExtracted = result.results.reduce((n, r) => n + r.rowsExtracted, 0);
   const rowsVerified = result.results.reduce((n, r) => n + r.rowsVerified, 0);
+
+  // E1 — the base ladder's own accounting, kept separate from the total.
+  const baseRowsExtracted = dm?.baseRowsExtracted ?? 0;
+  const baseRowsVerified = dm?.scheduleSequence.length ?? 0;
+  const baseRowsDropped = Math.max(0, baseRowsExtracted - baseRowsVerified);
 
   const causes: string[] = [];
 
@@ -157,8 +179,16 @@ export function buildExtractionReport(result: CompanyResult, spend?: CompanySpen
   // a dropped row makes the walk fail, and naming both together is what
   // turns "does not tie" into an actionable cause.
   const rowsDropped = rowsExtracted - rowsVerified;
-  if (rowsDropped > 0) {
-    causes.push(`DROPS: ${rowsDropped} of ${rowsExtracted} extracted entr${rowsDropped === 1 ? "y was" : "ies were"} dropped — failed sourceLine verification, wrong period column, or indeterminate amount scale`);
+  if (baseRowsDropped > 0) {
+    causes.push(
+      `DROPS (base ladder): ${baseRowsDropped} of ${baseRowsExtracted} transcribed entr${baseRowsDropped === 1 ? "y was" : "ies were"} dropped — these are the only drops either check can see`
+    );
+  }
+  const nonBaseDropped = rowsDropped - baseRowsDropped;
+  if (nonBaseDropped > 0) {
+    causes.push(
+      `DROPS (prior period / issued tranches / balance-sheet captions): ${nonBaseDropped} dropped. These do NOT enter Check 1 or Check 2 and do not make this ladder incomplete — the prior-period sequence exists only to detect a tranche that vanished between filings.`
+    );
   }
 
   return {
@@ -171,6 +201,9 @@ export function buildExtractionReport(result: CompanyResult, spend?: CompanySpen
     rowsExtracted,
     rowsVerified,
     rowsDropped,
+    baseRowsExtracted,
+    baseRowsVerified,
+    baseRowsDropped,
     spendUsd: spend ? spend.totalUsd : null,
     apiCalls: spend ? spend.totalCalls : null,
     causes,
@@ -214,7 +247,16 @@ export function formatExtractionReport(report: CompanyExtractionReport): string[
           : `INCOMPLETE — ${comp.subtotalsTranscribed} subtotal(s) transcribed, ${comp.labeledTotalCandidatesInSource} labeled total(s) in source`
     }`
   );
-  lines.push(`  rows:                      ${report.rowsVerified} verified of ${report.rowsExtracted} extracted${report.rowsDropped > 0 ? ` — ${report.rowsDropped} DROPPED` : ""}`);
+  // E1 — the base ladder's own count leads, because it is the one the
+  // verdict is allowed to reason about. The book-wide total still shows, but
+  // never on its own and never next to the badge.
+  lines.push(
+    `  rows (base ladder):        ${report.baseRowsVerified} verified of ${report.baseRowsExtracted} transcribed${report.baseRowsDropped > 0 ? ` — ${report.baseRowsDropped} DROPPED` : ""}`
+  );
+  const otherDropped = report.rowsDropped - report.baseRowsDropped;
+  lines.push(
+    `  rows (all arrays):         ${report.rowsVerified} verified of ${report.rowsExtracted} extracted${otherDropped > 0 ? ` — ${otherDropped} further dropped outside the base ladder, seen by neither check` : ""}`
+  );
   lines.push(
     `  cost:                      ${
       report.spendUsd === null

@@ -80,6 +80,16 @@ export interface FlashCard {
    * trigger's card.
    */
   headlineRowId: string | null;
+  /**
+   * E5 — the OTHER cardable rows on the same ladder, collapsed onto this one
+   * card. Ids only: factBase carries one VerifiedFact per live row keyed by
+   * ladderRowId, so narration looks each one up there rather than being
+   * handed a second copy of the data that could drift from it.
+   *
+   * Empty for every non-refi card, and empty for a refi card whose ladder had
+   * only one cardable row.
+   */
+  alsoMaturingRowIds: string[];
 }
 
 export interface CompanyPortfolio {
@@ -468,6 +478,7 @@ function buildEventsForCompany(
         })),
       freshnessReason: describeFreshness(headline.timing, [headline.trigger], headline.trigger.citations),
       headlineRowId: null,
+      alsoMaturingRowIds: [],
     };
   });
 
@@ -491,8 +502,34 @@ function buildEventsForCompany(
     .filter(({ eligibility }) => eligibility.cardEligible)
     .sort((a, b) => compareUrgency({ timing: a.eligibility.timing, citations: [] }, { timing: b.eligibility.timing, citations: [] }));
 
-  const rowFlashCards: FlashCard[] = debtMaturityTrigger
-    ? rowCandidates.map(({ row, eligibility }) => ({
+  // ==========================================================================
+  // E5 (Session 18, post-stage-2) — ONE REFI CONVERSATION PER COMPANY.
+  //
+  // Every cardable ladder row became its own card, so Cigna produced three
+  // refi cards for three tranches maturing within months of each other. Those
+  // are not three conversations. An RM calls the treasurer once and the
+  // agenda is the whole near-term ladder, headed by whichever tranche comes
+  // first.
+  //
+  // So the nearest cardable row headlines, and the rest ride along on the
+  // same card (alsoMaturingRowIds) for narration to state as KEY POINTS.
+  // rowCandidates is already sorted by urgency, so "the nearest" is simply
+  // the first.
+  //
+  // THIS IS NOT THE PER-COMPANY CAP COMING BACK. That cap was removed
+  // deliberately, and it must stay removed: a maturity and a non-refi event
+  // are genuinely two conversations, and UHS's maturity plus its Talkspace
+  // acquisition still card separately. The collapse is scoped to rows of the
+  // SAME ladder — the one place where "several cards" was really one subject
+  // sliced up.
+  const unionCitations = (all: TriggerResult["citations"]): TriggerResult["citations"] => {
+    const seen = new Set<string>();
+    return all.filter((c) => (seen.has(c.url) ? false : (seen.add(c.url), true)));
+  };
+  const headlineRow = rowCandidates[0];
+  const alsoMaturingRowIds = rowCandidates.slice(1).map(({ row }) => row.id);
+  const rowFlashCards: FlashCard[] = debtMaturityTrigger && headlineRow
+    ? [headlineRow].map(({ row, eligibility }) => ({
         id: `${result.company}::debt-maturity::${row.id}`,
         company: result.company,
         cik: result.cik,
@@ -501,10 +538,20 @@ function buildEventsForCompany(
         bucket: "refi" as const,
         secondaryBucket: null,
         timing: eligibility.timing,
-        citations: citationsForLadderRow(row, debtMaturityTrigger),
+        // E6 — THE CITATION SET IS THE UNION ACROSS EVERY FACT THE CARD
+        // DRAWS ON. With E5 collapsing a ladder's other cardable tranches
+        // onto this card, those rows' filings are part of what the card
+        // states, and a card that cites only its headline row's filing would
+        // be citing less than it says. De-duplicated by url; order preserved
+        // so the headline row's own filing still leads.
+        citations: unionCitations([
+          ...citationsForLadderRow(row, debtMaturityTrigger),
+          ...rowCandidates.slice(1).flatMap(({ row: other }) => citationsForLadderRow(other, debtMaturityTrigger)),
+        ]),
         alsoActive: [], // filled in the cross-reference pass below
         freshnessReason: eligibility.reason,
         headlineRowId: row.id,
+        alsoMaturingRowIds,
       }))
     : [];
 
@@ -566,4 +613,45 @@ export function buildEvents(results: CompanyResult[], now: Date = new Date()): B
     flashCardCandidates,
     portfolio: perCompany.map((c) => c.portfolio),
   };
+}
+
+/**
+ * E6 (Session 18, post-stage-2) — A CARD CANNOT CITE A FILING THAT PREDATES
+ * THE FACTS IT STATES.
+ *
+ * Cards were observed stating period-end figures later than their newest
+ * cited filing's date, and referencing events not in any cited filing. The
+ * class is mechanical and so is the check: every fact a card carries has a
+ * date, every citation has a filing date, and no fact may be newer than the
+ * newest filing the card points at. A reader who follows the link has to
+ * find the fact there.
+ *
+ * Returns the offending facts rather than a boolean, so a failure names WHAT
+ * is unsupported instead of only that something is.
+ */
+export function cardCitationGaps(
+  card: FlashCard,
+  factBase: { linkedTriggerId: string; ladderRowId: string | null; eventDate: string | null; fact: string }[]
+): { fact: string; factDate: string; newestCitation: string | null }[] {
+  const citationDates = card.citations.map((c) => c.date).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
+  const newest = citationDates.length > 0 ? citationDates[citationDates.length - 1] : null;
+
+  const rowIds = new Set([card.headlineRowId, ...card.alsoMaturingRowIds].filter((x): x is string => x !== null));
+  const carried = factBase.filter((f) =>
+    f.ladderRowId !== null ? rowIds.has(f.ladderRowId) : f.linkedTriggerId === card.headlineTrigger.triggerId
+  );
+
+  const gaps: { fact: string; factDate: string; newestCitation: string | null }[] = [];
+  for (const f of carried) {
+    // A bare year cannot be compared against a filing date without inventing
+    // precision the filing never stated — skipped rather than guessed at.
+    if (!f.eventDate || !/^\d{4}-\d{2}-\d{2}$/.test(f.eventDate)) continue;
+    // A MATURITY is a future date by nature and is not "stated by" the filing
+    // in the sense this check is about; only facts at or before today can be
+    // things the filing reported.
+    if (newest === null || f.eventDate > newest) {
+      if (f.eventDate <= new Date().toISOString().slice(0, 10)) gaps.push({ fact: f.fact, factDate: f.eventDate, newestCitation: newest });
+    }
+  }
+  return gaps;
 }

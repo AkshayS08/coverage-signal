@@ -63,6 +63,23 @@ export interface LadderRow {
    * row of its own.
    */
   issuedOn?: { date: string; citedUrl: string };
+  /**
+   * E13 (Session 18, post-stage-2) — this tranche's balance in the PRIOR
+   * period, where the corpus carries one, and where the prior filing came
+   * from.
+   *
+   * A ladder is otherwise a static list: it says a tranche exists and what it
+   * is worth today, and says nothing about whether that number moved. The
+   * movement is the fact an RM reads — a balance falling is deleveraging or a
+   * repurchase, a balance rising is a draw — and it is already extracted, in
+   * the prior filing's own current column.
+   *
+   * Recorded, never interpreted: no inference about WHY it moved, and no
+   * prose parsed to find out. Absent for the three companies whose prior
+   * sequence is empty (no prior filing with a schedule, or every prior entry
+   * column-dropped).
+   */
+  priorBalance?: { amount: string; filing: DebtScheduleFilingRef | null };
 }
 
 export interface CompanyPosition {
@@ -481,6 +498,18 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     return explained ? { ...r, status: "matured" as const, retiredBy: explained } : { ...r, status: "matured" as const };
   });
 
+  // E13 — attach the prior period's balance for the same tranche. Matched on
+  // instrument identity (rowsRepresentSameTranche — maturity and rate, never
+  // amount), for the same reason as everywhere else in this file: the amounts
+  // are expected to differ, and the difference is the whole point.
+  const priorRows = (debtMaturity?.priorScheduleSequence ?? []).filter((e) => e.kind === "row");
+  if (priorRows.length > 0) {
+    rows = rows.map((r) => {
+      const match = priorRows.find((p) => rowsRepresentSameTranche(r, p));
+      return match ? { ...r, priorBalance: { amount: match.amount, filing: debtMaturity?.debtSchedulePriorFiling ?? null } } : r;
+    });
+  }
+
   rows.sort((a, b) => maturitySortKey(a) - maturitySortKey(b));
 
   const adjustments = baseSequence.filter((e) => e.kind === "adjustment");
@@ -683,6 +712,16 @@ export interface BalanceSheetCheckResult {
   matchedSubtotalAmount: number | null;
   /** Gap to the NEAREST subtotal, reported whether or not it's within tolerance — never suppressed. Null only when there's nothing to compare against at all (no captions or no subtotals). */
   nearestGap: number | null;
+  /**
+   * E2 — how the anchor was matched. "section-sum" means the captions were
+   * compared against the sum of the note's own section-closing subtotals
+   * rather than any single one, which is the only correct comparison for a
+   * note that prints no combined rollup.
+   */
+  matchedVia: "single-subtotal" | "section-sum" | null;
+  /** E2 — the categories on each side, so a failure names WHAT was compared with what rather than only how far apart they were. */
+  captionCategories: string[];
+  subtotalCategories: string[];
 }
 
 /**
@@ -704,7 +743,7 @@ export function computeBalanceSheetCheck(
 ): BalanceSheetCheckResult {
   const captionList = captions ?? [];
   if (captionList.length === 0) {
-    return { pass: false, captionSum: 0, captionCount: 0, matchedSubtotalLabel: null, matchedSubtotalAmount: null, nearestGap: null };
+    return { pass: false, captionSum: 0, captionCount: 0, matchedSubtotalLabel: null, matchedSubtotalAmount: null, nearestGap: null, matchedVia: null, captionCategories: [], subtotalCategories: [] };
   }
   const captionValues = captionList.map((c) => parseMoneyAmount(c.amount)).filter((v): v is number => v !== null);
   const captionSum = captionValues.reduce((a, b) => a + b, 0);
@@ -714,18 +753,53 @@ export function computeBalanceSheetCheck(
     .map((e) => ({ label: e.label, amount: parseMoneyAmount(e.amount) }))
     .filter((s): s is { label: string | null; amount: number } => s.amount !== null);
   if (subtotals.length === 0) {
-    return { pass: false, captionSum, captionCount: captionList.length, matchedSubtotalLabel: null, matchedSubtotalAmount: null, nearestGap: null };
+    return { pass: false, captionSum, captionCount: captionList.length, matchedSubtotalLabel: null, matchedSubtotalAmount: null, nearestGap: null, matchedVia: null, captionCategories: captionList.map((c) => c.label), subtotalCategories: [] };
   }
 
   const smallestCaption = captionValues.length > 0 ? Math.min(...captionValues.map(Math.abs)) : Number.POSITIVE_INFINITY;
   const tolerance = Math.min(CHECKSUM_ABSOLUTE_FLOOR, smallestCaption * CHECKSUM_TOLERANCE_FRACTION_OF_SMALLEST_ROW);
 
-  let best = subtotals[0];
+  // E2 (Session 18, post-stage-2) — MATCH THE CATEGORY, NOT THE NEAREST
+  // NUMBER.
+  //
+  // Picking the numerically closest subtotal silently compares a two-category
+  // caption sum against a one-category subtotal. Cigna is the measured case
+  // and the arithmetic gives it away exactly: its balance sheet carries
+  // "Short-term debt $592M" and "Long-term debt $30,871M"; its note is
+  // SECTIONED and closes each section with its own subtotal — $592M and
+  // $30,871M — and prints no combined rollup at all. The nearest single
+  // subtotal is long-term, so the anchor missed by $592M, which is not a gap
+  // but the entire short-term category. Both walks tied throughout; the note
+  // was transcribed perfectly and Cigna still read as FAIL.
+  //
+  // The fix is structural and needs no category vocabulary: when the note
+  // prints section-scoped subtotals, the sum of those sections IS the
+  // combined total the filing never wrote down, and that is what a
+  // multi-caption balance sheet should be compared against. A flat note
+  // (every section null — DaVita's shape) produces no such candidate and
+  // behaves exactly as before.
+  const sectionClosingTotals = new Map<string, number>();
+  for (const e of scheduleSequence ?? []) {
+    if (e.kind !== "subtotal" || !e.section) continue;
+    const v = parseMoneyAmount(e.amount);
+    if (v !== null) sectionClosingTotals.set(e.section, v); // last subtotal per section wins
+  }
+  type Candidate = { label: string | null; amount: number; via: "single-subtotal" | "section-sum" };
+  const candidates: Candidate[] = subtotals.map((s) => ({ ...s, via: "single-subtotal" as const }));
+  if (sectionClosingTotals.size >= 2) {
+    candidates.push({
+      label: `sum of ${[...sectionClosingTotals.keys()].join(" + ")}`,
+      amount: [...sectionClosingTotals.values()].reduce((a, b) => a + b, 0),
+      via: "section-sum",
+    });
+  }
+
+  let best = candidates[0];
   let bestGap = captionSum - best.amount;
-  for (const s of subtotals.slice(1)) {
-    const gap = captionSum - s.amount;
+  for (const c of candidates.slice(1)) {
+    const gap = captionSum - c.amount;
     if (Math.abs(gap) < Math.abs(bestGap)) {
-      best = s;
+      best = c;
       bestGap = gap;
     }
   }
@@ -738,6 +812,9 @@ export function computeBalanceSheetCheck(
     matchedSubtotalLabel: pass ? best.label : null,
     matchedSubtotalAmount: pass ? best.amount : null,
     nearestGap: bestGap,
+    matchedVia: pass ? best.via : null,
+    captionCategories: captionList.map((c) => c.label),
+    subtotalCategories: [...new Set((scheduleSequence ?? []).filter((e) => e.kind === "subtotal").map((e) => e.section ?? e.label ?? "(unlabeled)"))],
   };
 }
 

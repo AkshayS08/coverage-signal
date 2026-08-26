@@ -105,6 +105,7 @@ function baseTriggerResult(over: Partial<TriggerResult> & { triggerId: string })
     debtSchedulePriorFiling: null,
     rowsExtracted: 0,
     rowsVerified: 0,
+    baseRowsExtracted: 0,
     scheduleCompleteness: null,
     redeems: null,
     issuedTranches: [],

@@ -294,6 +294,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     debtSchedulePriorFiling: null,
     rowsExtracted: 0,
     rowsVerified: 0,
+    baseRowsExtracted: 0,
     scheduleCompleteness: null,
     redeems: null,
     issuedTranches: [],

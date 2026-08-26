@@ -229,6 +229,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
           debtSchedulePriorFiling: null,
           rowsExtracted: 0,
           rowsVerified: 0,
+    baseRowsExtracted: 0,
           scheduleCompleteness: null,
           redeems: null,
           issuedTranches: [],

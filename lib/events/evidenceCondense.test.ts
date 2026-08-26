@@ -149,10 +149,36 @@ console.log(`=== Session 15b golden tests (evidence condenser) ===\n`);
   };
   assert(synthetic.evidence!.length > 400, `[8c setup] SYNTHETIC evidence is over the 400-char cap (length=${synthetic.evidence!.length})`);
   const condensedSynthetic = condenseFirstSentence(synthetic);
-  assert(condensedSynthetic.endsWith("…"), `[8c] SYNTHETIC: a genuinely long single sentence still truncates (condensed: ${JSON.stringify(condensedSynthetic)})`);
+
+  // E8 (Session 18, post-stage-2) REVERSES WHAT THIS USED TO ASSERT, and the
+  // reversal is the point. This assertion previously required a long single
+  // sentence to truncate, and every mid-word cut this project has shipped —
+  // "...Medical Center) to", "effective Janua" — came out of honouring the
+  // cap inside a sentence and then dressing the cut up. The cap now selects
+  // whole sentences; a single sentence that does not fit is rendered in full,
+  // because an unreadable fragment saves nothing.
   assert(
-    !/\b(and|or|with|for|to|of|in|on|at|by|the|a|an)…$/i.test(condensedSynthetic),
-    `[8d] SYNTHETIC: the truncated line still does not end on a dangling conjunction/preposition (condensed: ${JSON.stringify(condensedSynthetic)})`
+    !condensedSynthetic.endsWith("…") && condensedSynthetic.endsWith("nationwide."),
+    `[8c] SYNTHETIC: a single sentence longer than the cap is rendered IN FULL rather than cut mid-sentence (condensed: ${JSON.stringify(condensedSynthetic)})`
+  );
+
+  // The multi-sentence case is where the cap still bites, and it must land on
+  // a sentence boundary — never inside a word, a figure or a date.
+  const multi: VerifiedFact = {
+    ...davita,
+    evidence:
+      "On May 23, 2025 the Company completed a private offering of $1.0 billion aggregate principal amount of 6.750% Senior Notes due 2033. " +
+      "Net proceeds of approximately $986 million were used to repay revolving credit facility borrowings and for general corporate purposes. " +
+      "The notes are guaranteed on a senior unsecured basis by substantially all of the Company's wholly owned domestic subsidiaries that guarantee its senior secured credit facilities, subject to customary release provisions described in the indenture.",
+  };
+  const condensedMulti = condenseFirstSentence(multi);
+  assert(
+    !/[A-Za-z0-9,]\s*…$/.test(condensedMulti.replace(/\.\s*…$/, "")),
+    `[8d] the cut lands on a sentence boundary, not mid-word and not mid-figure (condensed: ${JSON.stringify(condensedMulti)})`
+  );
+  assert(
+    !condensedMulti.includes("subject to customary release"),
+    `[8e] ...and the sentence that did not fit is genuinely dropped rather than half-included (condensed: ${JSON.stringify(condensedMulti)})`
   );
 }
 

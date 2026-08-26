@@ -5,7 +5,8 @@ import { bucketForTrigger, type Bucket } from "./buckets";
 import { evaluateEligibility, evaluateRowEligibility } from "./eligibility";
 import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
 import { condenseEvidenceDescription, formatAnnouncedDate, dateTokenMatchesEventDate } from "./evidenceCondense";
-import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, type LadderRow } from "./position";
+import { formatMoneyForDisplay, formatMoneyValue } from "./money";
+import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, parseMoneyAmount, type LadderRow } from "./position";
 import { extractFactTokens } from "../agent/factTokens";
 import type { TimingInfo } from "./textHeuristics";
 
@@ -42,6 +43,14 @@ export interface TableLine {
   cardEligible: boolean;
   /** True for a hedging-bucket line with no card of its own — renders with the ⚑ marker so a standing exposure is never buried. */
   isHedgingFlag: boolean;
+  /**
+   * E9 (Session 18, post-stage-2) — set when this line's FACT is already
+   * rendered in another bucket, and this line is the cross-reference rather
+   * than a second copy. Null on a line that owns its fact.
+   */
+  crossReferenceTo: Bucket | null;
+  /** E9 — the fact's own identity, used only to detect the same fact rendering under two triggers. Empty when the fact has no verified text to key on. */
+  factKey: string;
   /** Session 18 D3 sort rank: 1 for a completed event older than 12 months (sinks to the bucket's bottom), 0 otherwise. Reordering only — a stale line is never removed. */
   d3Rank: number;
   /** Age in months of a completed event, 0 when not applicable — the secondary sort within the stale group, so the oldest line is genuinely last. */
@@ -51,12 +60,40 @@ export interface TableLine {
 export type BucketLines = Record<Bucket, TableLine[]>;
 
 /** One line in the refi ladder — either individually named (a nearest tranche) or folded into the tail summary, per buildRefiLadder below. */
+/**
+ * E13 — "from $X (10-Q 2026-04-22)" where a prior balance exists, or "" where
+ * it does not. States the movement and stops: falling is deleveraging, rising
+ * is a draw, and which one it is is the RM's read, not this function's.
+ */
+/**
+ * E9 — a fact's identity for dedup purposes: its own verified text,
+ * whitespace-normalised. Deliberately the VERIFIED text and not the rendered
+ * description: two triggers that condense the same source sentence differently
+ * are still the same fact, and the description is what the condenser chose to
+ * show, not what the filing said.
+ */
+function factIdentityKey(fact: VerifiedFact): string {
+  return (fact.verifiedText ?? "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function movementPhraseFor(row: LadderRow): string {
+  if (!row.priorBalance) return "";
+  const now = parseMoneyAmount(row.amount);
+  const before = parseMoneyAmount(row.priorBalance.amount);
+  const source = row.priorBalance.filing ? ` (${row.priorBalance.filing.form} ${row.priorBalance.filing.date})` : "";
+  if (now === null || before === null || now === before) return `unchanged from ${formatMoneyForDisplay(row.priorBalance.amount)}${source}`;
+  const delta = now - before;
+  return `${delta < 0 ? "down" : "up"} ${formatMoneyValue(Math.abs(delta))} from ${formatMoneyForDisplay(row.priorBalance.amount)}${source}`;
+}
+
 export interface RefiLadderLine {
   row: LadderRow;
   /** "6mo out", "matures 2026" (never a computed month count for a year-granularity row), or the unconfirmed/date-unverifiable explanation — never blank. */
   timingPhrase: string;
   /** True when this row's own card is one of this company's actual rendered cards above. */
   cardEligible: boolean;
+  /** E13 — how this tranche's balance moved since the prior filing, or "" when the corpus carries no prior balance for it. */
+  movementPhrase: string;
 }
 
 /**
@@ -164,6 +201,25 @@ export const TABLE_BUCKET_ORDER: Bucket[] = ["refi", "new_debt", "treasury", "he
  * (completed/just_announced) and the final never-blank fallback close every
  * remaining eventStatus case.
  */
+/**
+ * E12 — true when the line's own text states a date strictly LATER than
+ * `eventDate`. Reuses the same token extraction as
+ * descriptionAlreadyStatesDate; a token that cannot be resolved to a real
+ * calendar date is skipped rather than guessed at.
+ */
+function descriptionStatesDateLaterThan(description: string, eventDate: string): boolean {
+  const anchor = Date.parse(eventDate.length === 4 ? `${eventDate}-12-31` : eventDate);
+  if (Number.isNaN(anchor)) return false;
+  return extractFactTokens(description)
+    .filter((tok) => tok.kind === "date" && tok.dateValue !== undefined)
+    .some((tok) => {
+      const d = tok.dateValue!;
+      if (d.month === undefined || d.month === null) return false; // a bare year is too coarse to call a contradiction
+      const t = Date.UTC(d.year, d.month - 1, d.day ?? 28);
+      return t > anchor;
+    });
+}
+
 /** True when `description` already states the trigger's own eventDate, at its own granularity — reuses the exact date-matching rule evidenceCondense.ts's debt-maturity clause selection uses, so "does the line already say this" and "which clause matches this date" never disagree. */
 function descriptionAlreadyStatesDate(description: string, eventDate: string, granularity: TriggerResult["dateGranularity"]): boolean {
   if (!granularity) return false;
@@ -257,6 +313,22 @@ function timingPhraseFor(t: TriggerResult, timing: TimingInfo, description: stri
     // date (e.g. a bare "announced") still needs it shown.
     if (!t.eventDate || !t.dateGranularity) return "announced";
     if (descriptionAlreadyStatesDate(description, t.eventDate, t.dateGranularity)) return "announced";
+    // E12 — THE STATUS DATE AND THE LINE'S OWN DATE MUST COME FROM THE SAME
+    // FACT, OR THE STATUS IS OMITTED.
+    //
+    // Real case: a held-for-sale balance stated as of June 30, 2026 rendered
+    // "announced Dec 2025". Both dates are real and neither is wrong on its
+    // own — the balance is a period-end figure, the announcement is when the
+    // classification happened — but printed together on one line they read as
+    // one fact that contradicts itself, and the reader cannot tell which date
+    // the figure belongs to.
+    //
+    // A line whose description states a date LATER than the announcement is
+    // describing a different moment than the announcement does, so the bare
+    // status is used instead of a date that would attach itself to the wrong
+    // figure. Structural: it compares the dates the line already carries, and
+    // needs no knowledge of what kind of fact it is.
+    if (descriptionStatesDateLaterThan(description, t.eventDate)) return "announced";
     return `announced ${formatAnnouncedDate(t.eventDate, t.dateGranularity)}`;
   }
   // Never reached in practice (eventStatus is exhaustive above at
@@ -280,7 +352,17 @@ function refiTimingPhrase(row: LadderRow, timing: TimingInfo): string {
     if (timing.dateGranularity === "year") return `matures ${row.maturityDate}`;
     return `${timing.monthsToNearestFuture}mo out`;
   }
-  return "date not verifiable";
+  // E12 (Session 18, post-stage-2) — THE TIMING MUST NOT CONTRADICT THE ROW.
+  //
+  // "date not verifiable" was returned for every row the window arithmetic
+  // could not place, including rows that state a perfectly good date the
+  // arithmetic simply put in the past. Cigna's 1.250% notes rendered
+  // "maturity 2026-03-01" and "date not verifiable" on the same line, which
+  // are not both true. D3 now catches that specific row as matured; this is
+  // the general rule behind it — the phrase may only deny a date when the row
+  // genuinely has none.
+  if (row.maturityDate) return `stated maturity ${row.maturityDate}, outside the card window`;
+  return "no maturity date stated in this filing";
 }
 
 /**
@@ -330,7 +412,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
 
   const nearestLines: RefiLadderLine[] = nearestRows.map((row) => {
     const { timing } = evaluateRowEligibility(row, now);
-    return { row, timingPhrase: refiTimingPhrase(row, timing), cardEligible: headlineRowIds.has(row.id) };
+    return { row, timingPhrase: refiTimingPhrase(row, timing), cardEligible: headlineRowIds.has(row.id), movementPhrase: movementPhraseFor(row) };
   });
 
   let tailSummary: string | null = null;
@@ -354,8 +436,37 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // filing's own transcription), not the position-adjusted ladder (which
   // could add a real dated tranche via a later issuance even for an
   // otherwise-aggregate company).
+  // E3 (Session 18, post-stage-2) — THE LABEL WAS DERIVED FROM THE WRONG
+  // SIGNAL.
+  //
+  // "aggregate disclosure — no individual tranche maturities stated in this
+  // filing" was inferred from DATE PRECISION, so it rendered directly above
+  // tables of individually identified tranches on every company whose filing
+  // simply prints "due 2031" rather than "due March 15, 2031". Tenet,
+  // Encompass, CHS and UHS all carry rate-identified per-tranche ladders and
+  // all four were labelled aggregate.
+  //
+  // Whether the filing prints a month is a fact about its typography.
+  // Whether a row identifies ONE instrument — a named instrument carrying its
+  // own rate — is a fact about the disclosure, and that is what the label is
+  // trying to say.
+  //
+  // A rate ALONE is not per-tranche identity, and HCA is why. Its note prints
+  // four rows — "Commercial paper", "Other debt", "Senior unsecured credit
+  // facility", "Senior unsecured notes payable through 2095" — and every one
+  // carries a rate, because a category rollup states its WEIGHTED-AVERAGE
+  // rate. Three of the four carry no maturity at all and the fourth is a
+  // seventy-year range. HCA is the one genuinely aggregate filer in this
+  // book, and a bare rate test would relabel it a four-tranche ladder.
+  //
+  // A single instrument has both a rate and a maturity of its own. Measured
+  // across the book, rows carrying both: HCA 1 of 4; Encompass 4 of 7; Tenet
+  // 10 of 11; DaVita 9 of 9; Centene 7 of 8; Quest 12 of 13; Cigna 33 of 36;
+  // CHS 2 of 2; Molina 5 of 5. "Most rows" separates HCA from the rest with
+  // real margin (25% against a next-lowest 57%) and needs no tuned constant.
   const rawRows = (debtMaturity.scheduleSequence ?? []).filter((e) => e.kind === "row");
-  const isAggregateDisclosure = rawRows.length > 0 && rawRows.every((r) => r.dateGranularity !== "day" && r.dateGranularity !== "month");
+  const tranchIdentifiedRows = rawRows.filter((r) => r.rate !== null && r.rate.trim() !== "" && r.maturityDate !== null);
+  const isAggregateDisclosure = rawRows.length > 0 && tranchIdentifiedRows.length * 2 <= rawRows.length;
 
   const sourceCitation: TriggerResult["citations"][number] | null = position.baseFiling
     ? { form: position.baseFiling.form, date: position.baseFiling.date, url: position.baseFiling.url }
@@ -388,7 +499,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
         ? `balance-sheet anchor ties (matches "${balanceSheetCheck.matchedSubtotalLabel ?? "an unlabeled total"}") ✓`
         : balanceSheetCheck.nearestGap === null
           ? "balance-sheet anchor cannot be checked — the note states no subtotal to anchor against"
-          : `balance-sheet anchor does not tie — $${Math.abs(balanceSheetCheck.nearestGap).toLocaleString("en-US")} unaccounted vs. nearest subtotal`;
+          : `balance-sheet anchor does not tie — $${Math.abs(balanceSheetCheck.nearestGap).toLocaleString("en-US")} unaccounted; balance-sheet captions [${balanceSheetCheck.captionCategories.join(", ") || "none"}] against note subtotals [${balanceSheetCheck.subtotalCategories.join(", ") || "none"}]`;
 
   // A3 — when the walk misses by a material share of the stated total, the
   // block leads with what CANNOT be claimed. The note, its filing and its
@@ -457,7 +568,20 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
 
     const { timing } = evaluateEligibility(t, now);
     const cardEligible = headlineTriggerIds.has(t.triggerId);
-    const description = condenseEvidenceDescription(fact);
+    // E11.4 (Session 18, post-stage-2) — ROUTINE PERIOD SPEND IS NOT A
+    // PROJECT. capex-program fires on both "we are building Miller Medical
+    // Plaza" and "capital expenditures totalled $2,350 million for the six
+    // months ended June 30, 2026". The second is a run-rate, and rendering it
+    // under a financing-need heading with no qualifier invites it to be read
+    // as a discrete project needing a facility. The trigger's own
+    // projectName field already separates them — it is null for exactly the
+    // period-total case, which is what D2's capex exemption keys on too, so
+    // the two rules read the same field the same way.
+    //
+    // The BUCKET is unchanged: which bucket a trigger belongs to is
+    // taxonomy, not a render decision.
+    const periodSpendPrefix = t.triggerId === "capex-program" && !t.projectName ? "period spend — " : "";
+    const description = `${periodSpendPrefix}${condenseEvidenceDescription(fact)}`;
 
     buckets[bucket].push({
       triggerId: t.triggerId,
@@ -465,10 +589,54 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
       timingPhrase: timingPhraseFor(t, timing, description, now),
       citations: t.citations,
       cardEligible,
+      crossReferenceTo: null,
+      factKey: factIdentityKey(fact),
       isHedgingFlag: bucket === "hedging" && !cardEligible,
       d3Rank: d3SortRank(t, now),
       d3AgeMonths: monthsSinceCompletion(t, now) ?? 0,
     });
+  }
+
+  // ==========================================================================
+  // E9 (Session 18, post-stage-2) — A FACT APPEARS IN EXACTLY ONE BUCKET.
+  //
+  // Buckets are assigned per TRIGGER, and each trigger has exactly one, so
+  // nothing looked wrong. But two different triggers routinely fire on the
+  // SAME disclosure, and then one facility renders twice under two headings.
+  // Measured across the book, five companies do this:
+  //
+  //   HCA        floating-rate-debt + debt-maturity   "Commercial paper (average life of 38 days...)"
+  //   Encompass  floating-rate-debt + debt-maturity   "Advances under revolving credit facility $ 200.0 $ 130.0"
+  //   Centene    floating-rate-debt + debt-maturity   "Term Loan Facility 1,975"
+  //   CHS        revolver-near-capacity + floating-rate-debt
+  //   Quest      acquisition-announced + new-subsidiary
+  //
+  // So the dedup key is the FACT, not the bucket. The primary bucket is the
+  // earliest in TABLE_BUCKET_ORDER — the order the page already renders in,
+  // so the fact appears where a reader meets it first and the cross-reference
+  // always points backwards. A ladder row counts as refi, which is first, so
+  // a facility on the ladder is never also a free-standing Hedging line.
+  //
+  // NEVER SUPPRESSED: the other bucket keeps a line saying the fact is
+  // relevant there and where it is shown. Removing it outright would hide a
+  // real exposure from the bucket an RM scans for exposures.
+  const ladderFactKeys = new Set(
+    factBase.filter((f) => f.ladderRowId !== null).map((f) => factIdentityKey(f)).filter(Boolean)
+  );
+  const ownerOf = new Map<string, Bucket>();
+  for (const key of ladderFactKeys) ownerOf.set(key, "refi");
+  for (const bucket of TABLE_BUCKET_ORDER) {
+    for (const line of buckets[bucket]) {
+      if (!line.factKey) continue;
+      if (!ownerOf.has(line.factKey)) ownerOf.set(line.factKey, bucket);
+    }
+  }
+  for (const bucket of TABLE_BUCKET_ORDER) {
+    for (const line of buckets[bucket]) {
+      if (!line.factKey) continue;
+      const owner = ownerOf.get(line.factKey);
+      if (owner && owner !== bucket) line.crossReferenceTo = owner;
+    }
   }
 
   // Session 18 D3: stale completions sink to the bottom of their own bucket.

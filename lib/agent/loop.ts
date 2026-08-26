@@ -351,6 +351,14 @@ export interface TriggerResult {
   rowsExtracted: number;
   rowsVerified: number;
   /**
+   * Session 18 E1 — how many entries were TRANSCRIBED for the base ladder
+   * alone, before verification. `rowsExtracted` sums four arrays, three of
+   * which never enter either check; only this one is a statement about
+   * whether the current ladder is complete. Zero for every trigger but
+   * debt-maturity.
+   */
+  baseRowsExtracted: number;
+  /**
    * Session 18 (post-v11) — "debt-maturity" ONLY, null for every other
    * trigger. A deterministic, zero-LLM-cost cross-check of scheduleSequence
    * against the SAME full filing text already fetched — surfaces the class
@@ -770,7 +778,7 @@ export async function runAgentLoop(
       { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
-      { rowsExtracted, rowsVerified },
+      { rowsExtracted, rowsVerified, baseRowsExtracted: v.scheduleSequence.length },
       trigger.id === "debt-maturity" && baseColumnOutcome.total > 0 && baseColumnOutcome.droppedForPeriod === baseColumnOutcome.total,
       scheduleCompleteness
     );
@@ -1517,7 +1525,7 @@ function finalize(
   },
   debtScheduleBaseFiling: DebtScheduleFilingRef | null,
   debtSchedulePriorFiling: DebtScheduleFilingRef | null,
-  rowAccounting: { rowsExtracted: number; rowsVerified: number },
+  rowAccounting: { rowsExtracted: number; rowsVerified: number; baseRowsExtracted: number },
   columnReadFailure: boolean,
   scheduleCompleteness: ScheduleCompletenessResult | null
 ): TriggerResult {
@@ -1553,6 +1561,7 @@ function finalize(
     debtSchedulePriorFiling: trigger.id === "debt-maturity" ? debtSchedulePriorFiling : null,
     rowsExtracted: rowAccounting.rowsExtracted,
     rowsVerified: rowAccounting.rowsVerified,
+    baseRowsExtracted: rowAccounting.baseRowsExtracted,
     columnReadFailure,
     scheduleCompleteness,
     redeems: v.redeems,
