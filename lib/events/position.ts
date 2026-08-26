@@ -55,6 +55,14 @@ export interface LadderRow {
   status: "live" | "retired" | "unconfirmed" | "repaid" | "matured";
   /** Set when status is "retired", or when a "matured" row's retirement IS explained by a redemption in the corpus — the text that explains it, and where it came from. */
   retiredBy?: { evidence: string; citedUrl: string };
+  /**
+   * Set when a pricing 8-K in the corpus prices THIS tranche. The 8-K never
+   * replaces the note's row and never overwrites its outstanding amount — it
+   * contributes only the date the tranche was priced. Present on a note row
+   * that an 8-K also names, and on a post-period issuance that has no note
+   * row of its own.
+   */
+  issuedOn?: { date: string; citedUrl: string };
 }
 
 export interface CompanyPosition {
@@ -362,9 +370,52 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
         : row
     );
   }
+  // THE NOTE'S ROW WINS (Session 18, post-stage-2).
+  //
+  // A tranche disclosed in BOTH the debt note and its own pricing 8-K was
+  // being appended twice, so the same borrowing rendered as two separate
+  // rows: Tenet's 5.500% due 2032 and 6.000% due 2033, Encompass's 5.875% due
+  // 2034 three times over, Molina's 6.500% due 2031, four of Cigna's. Tenet's
+  // "14-row ladder" was really twelve tranches.
+  //
+  // The two sources say different things about the same instrument and only
+  // one of them is the position. The note states what is OUTSTANDING at the
+  // filing's own period end — net of discount, net of repurchases, which is
+  // the number an RM is refinancing. The 8-K states what was ISSUED on one
+  // day, which is the original face amount and is already stale the moment
+  // any of it is repurchased. So the note's row survives and keeps its own
+  // amount; the 8-K contributes only the date the tranche was priced.
+  //
+  // An 8-K tranche earns its own row exactly when the note does not carry it
+  // — the post-period issuance, priced after the base filing's period end and
+  // therefore genuinely absent from the note. That is the case this append
+  // was added for, and it still works: UHS's and Encompass's August pricings
+  // both post-date their base filings.
+  //
+  // Matched on instrument identity via rowsRepresentSameTranche — maturity
+  // and rate, never amount, the same rule redemption matching already uses
+  // and for the same reason (the amounts are EXPECTED to differ here; that
+  // difference is the whole point).
   const issuedTranches = newDebtIssuance?.issuedTranches ?? [];
   if (newDebtIssuance?.fired && issuedTranches.length > 0) {
-    rows = [...rows, ...issuedTranches.map((row) => ladderRowFromIssuedTranche(row, "live"))];
+    const issuanceDateFor = (url: string): string | null => newDebtIssuance.citations.find((c) => c.url === url)?.date ?? null;
+    const newRows: LadderRow[] = [];
+    for (const tranche of issuedTranches) {
+      const candidate = ladderRowFromIssuedTranche(tranche, "live");
+      const existingIdx = rows.findIndex((r) => rowsRepresentSameTranche(r, candidate));
+      const date = issuanceDateFor(tranche.citedUrl);
+      if (existingIdx === -1) {
+        newRows.push(candidate);
+        if (date) newRows[newRows.length - 1].issuedOn = { date, citedUrl: tranche.citedUrl };
+        continue;
+      }
+      // Same tranche. Keep the note's row and its outstanding amount; take
+      // only the pricing date from the 8-K. Status is untouched — a row the
+      // note reports at nil is still repaid, and one a redemption retired is
+      // still retired, whatever its original pricing 8-K said.
+      if (date) rows[existingIdx] = { ...rows[existingIdx], issuedOn: { date, citedUrl: tranche.citedUrl } };
+    }
+    rows = [...rows, ...newRows];
   }
 
   // Unconfirmed pass. A prior-period row can be missing from the current

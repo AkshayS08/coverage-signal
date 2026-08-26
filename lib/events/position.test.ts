@@ -598,6 +598,67 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   assert(r.status === "retired" || (r.status === "matured" && !!r.retiredBy), `[D3-5] a matured tranche an issuance names carries that explanation (status ${r.status}, explained ${!!r.retiredBy})`);
 }
 
+// ============================================================================
+// ISSUED-TRANCHE DEDUP — THE NOTE'S ROW WINS.
+//
+// A tranche disclosed in both the debt note and its own pricing 8-K rendered
+// twice, as two separate live rows for one borrowing. Measured live: Tenet's
+// 5.500% due 2032 and 6.000% due 2033, Encompass's 5.875% due 2034 three
+// times over, Molina's 6.500% due 2031, four of Cigna's.
+//
+// The two sources describe the same instrument differently and only one is
+// the position: the note states what is OUTSTANDING at period end, the 8-K
+// states what was ISSUED on one day. The note wins and keeps its amount; the
+// 8-K contributes only the pricing date.
+// ============================================================================
+{
+  const dm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    scheduleSequence: [
+      // The note carries it NET of a repurchase — 1,450 outstanding against 1,500 issued.
+      row({ label: "5.500 % due 2032", rate: "5.500%", maturityDate: "2032", dateGranularity: "year", amount: "$1,450 million" }),
+    ],
+  });
+  const issuance = baseTriggerResult({
+    triggerId: "new-debt-issuance",
+    citations: [{ form: "8-K", date: "2025-11-18", url: "https://example.com/8k-nov" }],
+    issuedTranches: [
+      { instrument: "5.500% senior secured first lien notes due 2032", rate: "5.500%", seniority: null, maturityDate: "2032", dateGranularity: "year", amount: "$1,500 million", sourceLine: "synthetic", citedUrl: "https://example.com/8k-nov" },
+      // A post-period pricing the note cannot carry — this one DOES earn a row.
+      { instrument: "6.250% senior notes due 2035", rate: "6.250%", seniority: null, maturityDate: "2035", dateGranularity: "year", amount: "$800 million", sourceLine: "synthetic", citedUrl: "https://example.com/8k-nov" },
+    ],
+  });
+  const pos = assemblePosition(companyWith([dm, issuance]), new Date("2026-08-25T00:00:00Z"));
+
+  assert(pos.rows.length === 2, `[DEDUP-1] one borrowing is one row — the note's 2032 tranche and its pricing 8-K do not both render (got ${pos.rows.length})`);
+  const y2032 = pos.rows.find((r) => (r.maturityDate ?? "").startsWith("2032"))!;
+  assert(y2032.amount === "$1,450 million", `[DEDUP-2] the surviving row carries the NOTE's outstanding amount, not the 8-K's issue size (got ${y2032.amount})`);
+  assert(y2032.instrument === "5.500 % due 2032", `[DEDUP-3] ...and the note's own instrument label (got ${JSON.stringify(y2032.instrument)})`);
+  assert(y2032.issuedOn?.date === "2025-11-18", `[DEDUP-4] the 8-K contributes its pricing date and nothing else (got ${JSON.stringify(y2032.issuedOn ?? null)})`);
+
+  const y2035 = pos.rows.find((r) => (r.maturityDate ?? "").startsWith("2035"));
+  assert(!!y2035, "[DEDUP-5] REVERSE: a tranche the note does NOT carry — the post-period issuance — still gets its own row");
+  assert(y2035?.amount === "$800 million" && y2035?.issuedOn?.date === "2025-11-18", "[DEDUP-6] ...with the 8-K's own amount, because there is no note row to defer to");
+}
+
+// --- The dedup must not resurrect a row the note reports at nil, nor
+// un-retire one a redemption already explained. ---
+{
+  const dm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    scheduleSequence: [row({ label: "4.500 % due 2028", rate: "4.500%", maturityDate: "2028", dateGranularity: "year", amount: "$ —" })],
+  });
+  const issuance = baseTriggerResult({
+    triggerId: "new-debt-issuance",
+    citations: [{ form: "8-K", date: "2026-06-01", url: "https://example.com/8k-jun" }],
+    issuedTranches: [{ instrument: "4.500% senior notes due 2028", rate: "4.500%", seniority: null, maturityDate: "2028", dateGranularity: "year", amount: "$400 million", sourceLine: "synthetic", citedUrl: "https://example.com/8k-jun" }],
+  });
+  const pos = assemblePosition(companyWith([dm, issuance]), new Date("2026-08-25T00:00:00Z"));
+  assert(pos.rows.length === 1, "[DEDUP-7] still one row");
+  assert(pos.rows[0].status === "repaid", `[DEDUP-8] a tranche the note reports at nil stays REPAID — an old pricing 8-K does not put it back on the ladder (got ${pos.rows[0].status})`);
+  assert(pos.rows[0].amount === "$ —", "[DEDUP-9] ...and keeps the note's nil balance, not the 8-K's original issue size");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) {
   console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);
