@@ -391,7 +391,38 @@ export const EXTRACTION_PROMPT_VERSION = 16;
  * context hash regardless. E10 changes only the SYSTEM PROMPT, which the
  * context hash cannot see — the bump is what invalidates those.
  */
-export const NARRATION_PROMPT_VERSION = 8;
+
+/**
+ * 8 -> 9. Session 18, stage-2 review — items 13, 14, 15 and 16, all four of
+ * them SYSTEM PROMPT changes that the context hash cannot see.
+ *
+ *   13  One instrument per bullet. A source filing will state four
+ *       instruments in one sentence, and copying that sentence across gives
+ *       a bullet four facts. The guard counts RATES (a rate identifies an
+ *       instrument) rather than amounts, because E4 explicitly requires a
+ *       bullet stating two amounts for one instrument.
+ *   14  Bullets must serve the call. Cards about a 2027 maturity were
+ *       carrying bullets on buybacks and dividend increases — real facts,
+ *       and neither is a reason to make this call.
+ *   15  No month count for a bare-year maturity. "now about 16 months out"
+ *       for a tranche whose filing prints only "due 2027" was the card
+ *       reading back this system's own December-31 windowing convention as
+ *       though the filing had disclosed it.
+ *   16  Availability is a capability claim. "showing the market is open for
+ *       exactly this kind of deal" makes the same move as "well-positioned
+ *       to address this maturity" while carrying neither a modal nor an
+ *       evaluative adjective, so the closed lists missed it.
+ *
+ * A NOTE ON WHY THE PROMPT MOVED TOO, not just the guards: 13's own worked
+ * example in the keyPoints spec WAS the four-instrument sentence its new
+ * guard rejects. Shipping the guard against the old prompt would have made
+ * every card fail, retry, fail again and go to the loud-failure banner — at
+ * two Sonnet calls each. A guard and the instruction it enforces are one
+ * change; the Group E narration overrun ($0.65 against a $0.07 estimate,
+ * five runs, because a failed briefing is never cached) was this same
+ * lesson billed the expensive way.
+ */
+export const NARRATION_PROMPT_VERSION = 9;
 
 /**
  * Session 17 Item 0: this project's session prompts have referred to this
