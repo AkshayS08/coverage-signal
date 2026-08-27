@@ -20,6 +20,7 @@
     "test:cache": "tsx lib/cache/cache.test.ts",
     "test:determinism": "tsx lib/cache/determinism.test.ts",
     "test:live-markers": "tsx lib/cache/liveMarkerScan.test.ts",
+    "preflight": "tsx lib/cache/preflight.ts",
     "test:report": "tsx lib/events/extractionReport.test.ts",
     "test:offline": "tsx lib/events/groupE.test.ts && tsx lib/events/d2Exemption.test.ts && tsx lib/events/partialRedemption.test.ts && tsx lib/events/cardBlockers.test.ts && tsx lib/agent/textLocator.test.ts && tsx lib/agent/amountVerification.test.ts && tsx lib/agent/moneyScale.test.ts && tsx lib/agent/scaleDerivation.test.ts && tsx lib/agent/columnBinding.test.ts && tsx lib/agent/costMeter.test.ts && tsx lib/events/position.test.ts && tsx lib/events/eligibility.test.ts && tsx lib/events/portfolioTable.test.ts && tsx lib/events/evidenceCondense.test.ts && tsx lib/events/narrationIntegrity.test.ts && tsx lib/events/extractionReport.test.ts && tsx lib/fetch/scheduleCompleteness.test.ts && tsx lib/fetch/debtNoteLocator.test.ts && tsx lib/cache/cache.test.ts"
   },
