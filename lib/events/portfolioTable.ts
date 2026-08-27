@@ -7,6 +7,7 @@ import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
 import { condenseEvidenceDescription, formatAnnouncedDate, dateTokenMatchesEventDate, truncateRenderedLine } from "./evidenceCondense";
 import { formatMoneyForDisplay, formatMoneyValue, normalizeMoneyInText } from "./money";
 import { citationDateGaps, strictFactTokensMatch } from "./numberGuard";
+import { normalizeForMatch } from "../agent/verifyQuote";
 import { extractFactTokens } from "../agent/factTokens";
 import { BUCKET_LABELS } from "./buckets";
 import { shortTriggerLabel } from "./labels";
@@ -161,6 +162,25 @@ function movementPhraseFor(row: LadderRow): string {
 
 export interface RefiLadderLine {
   row: LadderRow;
+  /**
+   * True when the instrument's own name already states its rate, so the
+   * renderer must not print the rate field as well. Computed here rather
+   * than in the renderer because it needs the SAME fraction-glyph
+   * equivalence the verifier uses: one filer's rate field reads "6.875%"
+   * while its note's own row label reads "6 7/8%", and a plain string
+   * comparison prints "$42M 6.875% 6 7/8% Senior Notes due 2028".
+   */
+  rateStatedInName: boolean;
+  /**
+   * The instrument's ORIGINAL ISSUE SIZE where its name leads with one, as
+   * some filers name a tranche by what was issued rather than what is
+   * outstanding. Rendering the name verbatim beside the balance printed two
+   * amounts with no way to tell them apart — "$1.1B $ 2,500 million 4.25 %
+   * Senior Notes". Null when the name states no size, which is most filers.
+   */
+  issueSizeInName: string | null;
+  /** The instrument name with any leading issue size removed — what actually renders. */
+  instrumentName: string;
   /** "6mo out", "matures 2026" (never a computed month count for a year-granularity row), or the unconfirmed/date-unverifiable explanation — never blank. */
   timingPhrase: string;
   /** True when this row's own card is one of this company's actual rendered cards above. */
@@ -548,6 +568,25 @@ function buildWalkLines(sequence: VerifiedSequenceEntry[] | null | undefined, ch
   return lines;
 }
 
+/**
+ * Fraction-glyph-aware comparison of a row's rate field against its own
+ * instrument name — see RefiLadderLine.rateStatedInName. Reuses the
+ * verifier's normalizer so the two can never disagree about whether
+ * "6 7/8%" and "6.875%" are the same rate.
+ */
+function rateAppearsInName(rate: string | null, instrument: string): boolean {
+  if (rate === null || rate.trim() === "") return false;
+  const squash = (t: string) => normalizeForMatch(t).replace(/\s+/g, "");
+  return squash(instrument).includes(squash(rate));
+}
+
+/** See RefiLadderLine.issueSizeInName. A leading "$ 2,500 million " on a tranche's own name is its original issue size, not its balance. */
+function splitIssueSizeFromName(instrument: string): { issueSize: string | null; name: string } {
+  const m = instrument.match(/^\s*(\$\s?[\d,.]+\s*(?:thousand|thousands|million|millions|billion|billions)?)\s*,?\s*(.+)$/i);
+  if (!m || !m[2].trim()) return { issueSize: null, name: instrument };
+  return { issueSize: m[1].trim(), name: m[2].trim() };
+}
+
 function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now: Date): RefiLadderBlock {
   const debtMaturity = result.results.find((t) => t.triggerId === "debt-maturity");
   const walkCheck = computeWalkChecksum(debtMaturity?.scheduleSequence);
@@ -586,7 +625,29 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
 
   const nearestLines: RefiLadderLine[] = nearestRows.map((row) => {
     const { timing } = evaluateRowEligibility(row, now);
-    return { row, timingPhrase: refiTimingPhrase(row, timing), cardEligible: headlineRowIds.has(row.id), movementPhrase: movementPhraseFor(row) };
+    const split = splitIssueSizeFromName(row.instrument);
+    // Only worth stating when it DIFFERS from the balance — that difference
+    // is the fact (a partially repurchased tranche), and "issued at $1.5B"
+    // beside a $1.5B balance is the same number twice. E4 makes the same
+    // distinction on the card side.
+    // Compared as they will RENDER, not as raw values. One filer's tranche
+    // is named "$ 1,500 million" and carries $1,481 million — a real $19M
+    // difference that the display rule rounds to "$1.5B" on both sides. The
+    // difference is true and this line cannot show it, and printing "issued
+    // at $1.5B" next to a $1.5B balance asserts a distinction the reader
+    // cannot see. Where the two render the same, the line says one number.
+    const issueSizeShown = split.issueSize === null ? null : formatMoneyForDisplay(split.issueSize);
+    const issueSize = issueSizeShown !== null && issueSizeShown !== formatMoneyForDisplay(row.amount) ? split.issueSize : null;
+    const name = split.name;
+    return {
+      row,
+      timingPhrase: refiTimingPhrase(row, timing),
+      cardEligible: headlineRowIds.has(row.id),
+      movementPhrase: movementPhraseFor(row),
+      rateStatedInName: rateAppearsInName(row.rate, row.instrument),
+      issueSizeInName: issueSize,
+      instrumentName: name,
+    };
   });
 
   let tailSummary: string | null = null;
@@ -870,7 +931,12 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
     const lines = buckets[bucket];
     const tokensOf = lines.map((l) => extractFactTokens(l.description).filter((t) => t.kind !== "percent"));
     for (let i = 0; i < lines.length; i++) {
-      if (tokensOf[i].length === 0) continue;
+      // A restatement of FIGURES needs figures. Without this, a line whose
+      // only token is a date ("formed a new entity in January 2026") is
+      // covered by any line carrying a bare year, because partial-precision
+      // date matching treats a year as matching every month in it — which
+      // is right for verification and wrong here.
+      if (!tokensOf[i].some((t) => t.kind === "money")) continue;
       for (let j = 0; j < lines.length; j++) {
         if (i === j || lines[i].factKey === lines[j].factKey) continue;
         // Fewer tokens is the restatement. On an exact tie — which item 12's

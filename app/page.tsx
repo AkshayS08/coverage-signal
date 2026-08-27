@@ -405,14 +405,14 @@ export default function Home() {
   function renderRefiLadderLine(line: RefiLadderLine, i: number) {
     const seniorityPrefix = line.row.seniority ? `${line.row.seniority} ` : "";
     // Most filers name the tranche BY its rate ("4.625 % Senior Notes"), so
-    // prefixing the rate field printed it twice: "$2.8B 4.625% 4.625% Senior
-    // Notes". Compared with whitespace removed, because the two sources
-    // space the percent sign differently — the rate field says "5.125%" and
-    // the note's own row label says "5.125 % due 2027", which is the same
-    // rate written twice and reads as two.
-    const squash = (t: string) => t.replace(/\s+/g, "");
-    const rateInName = line.row.rate !== null && squash(line.row.instrument).includes(squash(line.row.rate));
-    const rateText = line.row.rate && !rateInName ? `${line.row.rate} ` : "";
+    // printing the rate field as well showed it twice. Decided in
+    // portfolioTable.ts, which can compare the two under the verifier's own
+    // fraction-glyph equivalence — see RefiLadderLine.rateStatedInName.
+    const rateText = line.row.rate && !line.rateStatedInName ? `${line.row.rate} ` : "";
+    // A name that leads with the ORIGINAL ISSUE SIZE is stated as such,
+    // after the balance, rather than sitting beside it as a second bare
+    // amount with nothing to tell them apart.
+    const issuedAt = line.issueSizeInName ? `, issued at ${formatMoneyForDisplay(line.issueSizeInName)}` : "";
     // E13: the movement rides on the same line as the balance it belongs to.
     const movement = line.movementPhrase ? ` — ${line.movementPhrase}` : "";
     // ITEM 8 (stage-2 review): a row from a pricing 8-K answers a different
@@ -422,7 +422,7 @@ export default function Home() {
     // could be trusted" with two rows directly beneath it and nothing
     // marking them as coming from somewhere else entirely.
     const sourceMark = line.row.provenance === "pricing-8-K" ? " [from a pricing 8-K, not the debt note]" : "";
-    const text = `${formatMoneyForDisplay(line.row.amount)} ${rateText}${seniorityPrefix}${line.row.instrument} — ${line.timingPhrase}${movement}${sourceMark}`;
+    const text = `${formatMoneyForDisplay(line.row.amount)} ${rateText}${seniorityPrefix}${line.instrumentName}${issuedAt} — ${line.timingPhrase}${movement}${sourceMark}`;
     return (
       <li key={i} className={styles.tableLine}>
         <span className={styles.tableLineBullet}>·</span>

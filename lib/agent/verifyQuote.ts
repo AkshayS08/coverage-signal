@@ -233,7 +233,8 @@ function normalizeCore(s: string, wantMap: boolean): { normalized: string; map: 
   };
 }
 
-function normalizeForMatch(s: string): string {
+/** Exported so portfolioTable.ts can ask "does this instrument name already state its rate?" under the SAME fraction-glyph equivalence the verifier uses — "6 ⅞%" and "6.875%" must not read as two different rates on one line. */
+export function normalizeForMatch(s: string): string {
   return normalizeCore(s, false).normalized;
 }
 
