@@ -72,7 +72,7 @@ function trigger(over: Partial<TriggerResult> = {}): TriggerResult {
     scheduleSequence: [],
     priorScheduleSequence: [],
     balanceSheetDebtCaptions: [],
-    debtScheduleSourceFiling: { form: "10-Q", date: "2026-06-30", url: "https://example.gov/base" },
+    debtScheduleSourceFiling: { form: "10-Q", date: "2026-06-30", reportDate: "", url: "https://example.gov/base" },
     debtSchedulePriorFiling: null,
     rowsExtracted: 0,
     rowsVerified: 0,
@@ -164,7 +164,7 @@ console.log("=== extractionReport golden tests ===\n");
   });
   const r = buildExtractionReport(company("TENET", dm));
   assert(r.verdict === "fail", `[3a] a non-tying walk is "fail" (got ${r.verdict})`);
-  assert(r.causes.some((c) => c.startsWith("CHECK 1") && c.includes("$1.75B")), `[3b] the gap is stated in dollars (got ${JSON.stringify(r.causes)})`);
+  assert(r.causes.some((c) => c.startsWith("CHECK 1") && c.includes("$1.8B")), `[3b] the gap is stated in dollars (got ${JSON.stringify(r.causes)})`);
   assert(r.rowsDropped === 2 && r.causes.some((c) => c.startsWith("DROPS")), "[3c] the 2 dropped entries are reported as the mechanism");
   assert(r.check2.pass, "[3d] Check 2 still ties here — reported SEPARATELY, never blended into a single verdict bit");
 }
@@ -189,7 +189,7 @@ console.log("=== extractionReport golden tests ===\n");
   const r = buildExtractionReport(company("CHS", dm));
   assert(r.check1.pass, "[4a] the internal walk ties perfectly against itself");
   assert(!r.check2.pass && r.verdict === "fail", "[4b] but the balance-sheet anchor catches it, and the company fails");
-  assert(r.causes.some((c) => c.startsWith("CHECK 2") && c.includes("$1.20B")), `[4c] the anchor gap is named (got ${JSON.stringify(r.causes)})`);
+  assert(r.causes.some((c) => c.startsWith("CHECK 2") && c.includes("$1.2B")), `[4c] the anchor gap is named (got ${JSON.stringify(r.causes)})`);
 }
 
 // ============================================================================

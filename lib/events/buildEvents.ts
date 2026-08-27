@@ -164,12 +164,17 @@ function combineTiming(
   // Carry the granularity of whichever timing actually produced the
   // winning (nearest) months figure, so display code downstream still
   // knows to render "matures <year>" instead of a month count for it.
-  const nearestGranularity = timings.find((t) => t.monthsToNearestFuture === nearest)?.dateGranularity ?? null;
+  const nearestTiming = timings.find((t) => t.monthsToNearestFuture === nearest);
+  const nearestGranularity = nearestTiming?.dateGranularity ?? null;
   return {
     monthsToNearestFuture: nearest,
     alreadyPast: timings.every((t) => t.alreadyPast) && timings.length > 0,
     isPendingLive: timings.some((t) => t.isPendingLive),
     dateGranularity: nearest !== null ? nearestGranularity : null,
+    // Item 15: carried alongside the granularity, from the SAME timing that
+    // produced the winning figure — the year rendered must be the year that
+    // was sorted on.
+    windowDate: nearest !== null ? (nearestTiming?.windowDate ?? null) : null,
   };
 }
 
@@ -616,42 +621,10 @@ export function buildEvents(results: CompanyResult[], now: Date = new Date()): B
 }
 
 /**
- * E6 (Session 18, post-stage-2) — A CARD CANNOT CITE A FILING THAT PREDATES
- * THE FACTS IT STATES.
- *
- * Cards were observed stating period-end figures later than their newest
- * cited filing's date, and referencing events not in any cited filing. The
- * class is mechanical and so is the check: every fact a card carries has a
- * date, every citation has a filing date, and no fact may be newer than the
- * newest filing the card points at. A reader who follows the link has to
- * find the fact there.
- *
- * Returns the offending facts rather than a boolean, so a failure names WHAT
- * is unsupported instead of only that something is.
+ * E6's card-citation check LIVED HERE and has moved to
+ * numberGuard.ts's citationDateGaps, wired into the card structural guard
+ * (sonnetEventBriefing.ts) so it runs on every drafted card in production.
+ * It was never called from anything but its own test here, which is why it
+ * reported clean while the defect it exists for was on screen — see that
+ * function's comment for the full diagnosis.
  */
-export function cardCitationGaps(
-  card: FlashCard,
-  factBase: { linkedTriggerId: string; ladderRowId: string | null; eventDate: string | null; fact: string }[]
-): { fact: string; factDate: string; newestCitation: string | null }[] {
-  const citationDates = card.citations.map((c) => c.date).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
-  const newest = citationDates.length > 0 ? citationDates[citationDates.length - 1] : null;
-
-  const rowIds = new Set([card.headlineRowId, ...card.alsoMaturingRowIds].filter((x): x is string => x !== null));
-  const carried = factBase.filter((f) =>
-    f.ladderRowId !== null ? rowIds.has(f.ladderRowId) : f.linkedTriggerId === card.headlineTrigger.triggerId
-  );
-
-  const gaps: { fact: string; factDate: string; newestCitation: string | null }[] = [];
-  for (const f of carried) {
-    // A bare year cannot be compared against a filing date without inventing
-    // precision the filing never stated — skipped rather than guessed at.
-    if (!f.eventDate || !/^\d{4}-\d{2}-\d{2}$/.test(f.eventDate)) continue;
-    // A MATURITY is a future date by nature and is not "stated by" the filing
-    // in the sense this check is about; only facts at or before today can be
-    // things the filing reported.
-    if (newest === null || f.eventDate > newest) {
-      if (f.eventDate <= new Date().toISOString().slice(0, 10)) gaps.push({ fact: f.fact, factDate: f.eventDate, newestCitation: newest });
-    }
-  }
-  return gaps;
-}

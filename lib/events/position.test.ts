@@ -88,7 +88,7 @@ function baseTriggerResult(over: Partial<TriggerResult> & { triggerId: string })
     mappedNeed: "synthetic",
     needType: "credit",
     confidence: 1,
-    citations: [{ form: "10-Q", date: "2026-06-30", url: "https://example.com/base-filing" }],
+    citations: [{ form: "10-Q", date: "2026-06-30", reportDate: "", url: "https://example.com/base-filing" }],
     quoteVerified: true,
     verifiedQuote: null,
     verifiedQuoteNormalized: null,
@@ -165,7 +165,7 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   const issuance = baseTriggerResult({
     triggerId: "new-debt-issuance",
     redeems: "the 6.250% senior secured second lien notes due February 2027",
-    citations: [{ form: "8-K", date: "2025-11-18", url: "https://example.com/8k-nov2025" }],
+    citations: [{ form: "8-K", date: "2025-11-18", reportDate: "", url: "https://example.com/8k-nov2025" }],
   });
   const pos = assemblePosition(companyWith([dm, issuance]));
   const firstLien = pos.rows.find((r) => r.rate === "5.125%")!;
@@ -592,7 +592,7 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   const issuance = baseTriggerResult({
     triggerId: "new-debt-issuance",
     redeems: "3.45% Senior Notes due June 2026",
-    citations: [{ form: "8-K", date: "2026-05-08", url: "https://example.com/8k" }],
+    citations: [{ form: "8-K", date: "2026-05-08", reportDate: "", url: "https://example.com/8k" }],
   });
   const pos = assemblePosition(companyWith([dm, issuance]), NOW);
   const r = pos.rows[0];
@@ -622,7 +622,7 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   });
   const issuance = baseTriggerResult({
     triggerId: "new-debt-issuance",
-    citations: [{ form: "8-K", date: "2025-11-18", url: "https://example.com/8k-nov" }],
+    citations: [{ form: "8-K", date: "2025-11-18", reportDate: "", url: "https://example.com/8k-nov" }],
     issuedTranches: [
       { instrument: "5.500% senior secured first lien notes due 2032", rate: "5.500%", seniority: null, maturityDate: "2032", dateGranularity: "year", amount: "$1,500 million", sourceLine: "synthetic", citedUrl: "https://example.com/8k-nov" },
       // A post-period pricing the note cannot carry — this one DOES earn a row.
@@ -651,7 +651,7 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   });
   const issuance = baseTriggerResult({
     triggerId: "new-debt-issuance",
-    citations: [{ form: "8-K", date: "2026-06-01", url: "https://example.com/8k-jun" }],
+    citations: [{ form: "8-K", date: "2026-06-01", reportDate: "", url: "https://example.com/8k-jun" }],
     issuedTranches: [{ instrument: "4.500% senior notes due 2028", rate: "4.500%", seniority: null, maturityDate: "2028", dateGranularity: "year", amount: "$400 million", sourceLine: "synthetic", citedUrl: "https://example.com/8k-jun" }],
   });
   const pos = assemblePosition(companyWith([dm, issuance]), new Date("2026-08-25T00:00:00Z"));
@@ -661,6 +661,91 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);
+
+// ============================================================================
+// STAGE-2 REVIEW — THE NOTE IS THE POSITION. A redemption cannot retire a
+// tranche the current note still reports at a balance.
+//
+// REAL shape (Encompass): an 8-K redeems "4.500% senior notes due 2028",
+// naming no quantity and using no partial-redemption wording, while that
+// filer's own debt note reports the tranche at $396.9 million, down from
+// $792.0 million. Half of it was called. Retiring it dropped the company's
+// NEAREST maturity off the ladder — a retired row neither renders nor cards.
+// ============================================================================
+{
+  const dm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    debtScheduleSourceFiling: { form: "10-Q", date: "2026-08-07", reportDate: "2026-06-30", url: "https://example.com/base-filing" },
+    scheduleSequence: [row({ label: "4.50 % Senior Notes due 2028", rate: "4.50%", maturityDate: "2028", dateGranularity: "year", amount: "$ 396.9 million" })],
+  });
+  const issuance = baseTriggerResult({
+    triggerId: "new-debt-issuance",
+    fired: true,
+    // Filed BEFORE the note's own period end, so the note already reflects it.
+    citations: [{ form: "8-K", date: "2026-05-20", reportDate: "", url: "https://example.com/8k" }],
+    redeems: "4.500% senior notes due 2028",
+  });
+  const pos = assemblePosition(companyWith([dm, issuance]));
+  assert(pos.rows.length === 1 && pos.rows[0].status === "live", `[NOTE-WINS-1] a redemption does NOT retire a tranche the note still carries at a balance (got ${pos.rows.map((r) => r.status).join(", ")})`);
+
+  // REVERSE: the same redemption, filed AFTER the note's period end, IS the
+  // newer fact and does retire the row.
+  const laterIssuance = baseTriggerResult({
+    triggerId: "new-debt-issuance",
+    fired: true,
+    citations: [{ form: "8-K", date: "2026-08-20", reportDate: "", url: "https://example.com/8k" }],
+    redeems: "4.500% senior notes due 2028",
+  });
+  const posLater = assemblePosition(companyWith([dm, laterIssuance]));
+  assert(posLater.rows[0].status === "retired", `[NOTE-WINS-2] REVERSE: an 8-K filed AFTER the note's period of report describes what the note could not know, and does retire it (got ${posLater.rows[0].status})`);
+
+  // ...and a tranche the note itself reports at nil is retired either way.
+  const nilDm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    debtScheduleSourceFiling: { form: "10-Q", date: "2026-08-07", reportDate: "2026-06-30", url: "https://example.com/base-filing" },
+    scheduleSequence: [row({ label: "4.50 % Senior Notes due 2028", rate: "4.50%", maturityDate: "2028", dateGranularity: "year", amount: "$ —" })],
+  });
+  assert(assemblePosition(companyWith([nilDm, issuance])).rows[0].status === "retired", "[NOTE-WINS-3] a tranche the note reports at NIL is retired — the note and the 8-K agree");
+}
+
+// ============================================================================
+// STAGE-2 REVIEW — A ROW THAT CANNOT BE MATCHED CANNOT BE MISSING.
+//
+// REAL shape (Encompass): "Advances under revolving credit facility", "Other
+// notes payable" and "Finance lease obligations" carry no rate and no
+// maturity, so rowsRepresentSameTranche can never match them against their
+// own counterparts on the current ladder. All three were declared vanished
+// and re-added as `unconfirmed` beside the identical live rows — six of nine
+// ladder rows were three instruments counted twice.
+// ============================================================================
+{
+  const dm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    scheduleSequence: [
+      row({ label: "Advances under revolving credit facility", rate: null, maturityDate: null, dateGranularity: null, amount: "$ 200.0 million" }),
+      row({ label: "5.875 % Senior Notes due 2034", rate: "5.875%", maturityDate: "2034", dateGranularity: "year", amount: "$ 491.0 million" }),
+      // A tying subtotal, so the base ladder is trustworthy and the
+      // unconfirmed pass actually runs (it is skipped wholesale when the
+      // base ladder reconciles against nothing — see assemblePosition).
+      subtotal({ label: "Total debt", amount: "$ 691.0 million" }),
+    ],
+    priorScheduleSequence: [
+      row({ label: "Advances under revolving credit facility", rate: null, maturityDate: null, dateGranularity: null, amount: "$ 220.0 million" }),
+      row({ label: "4.75 % Senior Notes due 2030", rate: "4.75%", maturityDate: "2030", dateGranularity: "year", amount: "$ 787.7 million" }),
+    ],
+  });
+  const pos = assemblePosition(companyWith([dm]));
+  const unconfirmed = pos.rows.filter((r) => r.status === "unconfirmed");
+  assert(
+    !unconfirmed.some((r) => r.instrument.includes("revolving credit facility")),
+    `[UNMATCHABLE-1] an undated, unrated caption is NOT re-added as unconfirmed — it could never have matched, so its non-match proves nothing (got ${unconfirmed.map((r) => r.instrument).join(", ")})`
+  );
+  assert(
+    unconfirmed.some((r) => r.instrument.includes("4.75")),
+    "[UNMATCHABLE-2] REVERSE: an IDENTIFIED tranche that genuinely dropped off is still reported unconfirmed — the rule narrows what can be checked, it does not stop checking"
+  );
+}
+
 if (failed > 0) {
   console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);
   process.exit(1);

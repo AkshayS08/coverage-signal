@@ -199,7 +199,7 @@ async function main() {
         mappedNeed: "Refi or add-on financing",
         needType: "credit",
         confidence: 0.95,
-        citations: [{ form: "10-Q", date: "2026-05-05", url: "https://example.com/genuine" }],
+        citations: [{ form: "10-Q", date: "2026-05-05", reportDate: "", url: "https://example.com/genuine" }],
         quoteVerified: true,
         verifiedQuote: genuineResult.displayText ?? genuine,
         verifiedQuoteNormalized: genuineResult.normalizedText ?? genuineResult.displayText ?? genuine,

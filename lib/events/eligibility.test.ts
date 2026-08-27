@@ -83,6 +83,7 @@ import type { LadderRow } from "./position";
 function syntheticLadderRow(over: Partial<LadderRow> & { maturityDate: string; dateGranularity: DateGranularity }): LadderRow {
   return {
     id: `synthetic::${over.maturityDate}::${over.dateGranularity}`,
+    provenance: "note",
     instrument: "synthetic",
     rate: null,
     seniority: null,
@@ -541,7 +542,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
   const controlledDebtMaturityCitedUrl = "https://example.com/synthetic-controlled-debt-maturity-10q";
   const controlledDebtMaturity: TriggerResult = {
     ...realDebtMaturity,
-    citations: [{ form: "10-Q", date: isoDaysBeforeNow(30), url: controlledDebtMaturityCitedUrl }],
+    citations: [{ form: "10-Q", date: isoDaysBeforeNow(30), reportDate: "", url: controlledDebtMaturityCitedUrl }],
     scheduleSequence: [
       {
         kind: "row",
@@ -568,7 +569,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     // Deliberately disjoint from debt-maturity's (controlled) citations —
     // this is what makes it land in a genuinely different dedup cluster,
     // not just a different trigger.
-    citations: [{ form: "8-K", date: isoDaysBeforeNow(30), url: "https://example.com/synthetic-controlled-acquisition-8k" }],
+    citations: [{ form: "8-K", date: isoDaysBeforeNow(30), reportDate: "", url: "https://example.com/synthetic-controlled-acquisition-8k" }],
   };
   const uhsControlled: CompanyResult = {
     ...uhs,

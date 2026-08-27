@@ -378,8 +378,10 @@ export default function Home() {
     // relevant to a second, that bucket keeps a pointer rather than a copy —
     // never removed, so an exposure is not hidden from the bucket an RM
     // scans for exposures.
-    const base = line.timingPhrase ? `${line.description} — ${line.timingPhrase}` : line.description;
-    const text = line.crossReferenceTo ? `${base} — also relevant here; shown under ${BUCKET_LABELS[line.crossReferenceTo]}` : base;
+    // Item 10: the line is composed AND truncated in portfolioTable.ts, in
+    // one place, after every clause exists. Nothing is appended here — that
+    // was the bug: text added after the cut rendered past it.
+    const text = line.text;
     return (
       <li key={i} className={line.isHedgingFlag ? styles.tableLineHedging : styles.tableLine}>
         <span className={styles.tableLineBullet}>{line.isHedgingFlag ? "⚑" : "·"}</span>
@@ -402,10 +404,25 @@ export default function Home() {
   // debt-maturity cards, one per qualifying tranche.
   function renderRefiLadderLine(line: RefiLadderLine, i: number) {
     const seniorityPrefix = line.row.seniority ? `${line.row.seniority} ` : "";
-    const rateText = line.row.rate ? `${line.row.rate} ` : "";
+    // Most filers name the tranche BY its rate ("4.625 % Senior Notes"), so
+    // prefixing the rate field printed it twice: "$2.8B 4.625% 4.625% Senior
+    // Notes". Compared with whitespace removed, because the two sources
+    // space the percent sign differently — the rate field says "5.125%" and
+    // the note's own row label says "5.125 % due 2027", which is the same
+    // rate written twice and reads as two.
+    const squash = (t: string) => t.replace(/\s+/g, "");
+    const rateInName = line.row.rate !== null && squash(line.row.instrument).includes(squash(line.row.rate));
+    const rateText = line.row.rate && !rateInName ? `${line.row.rate} ` : "";
     // E13: the movement rides on the same line as the balance it belongs to.
     const movement = line.movementPhrase ? ` — ${line.movementPhrase}` : "";
-    const text = `${formatMoneyForDisplay(line.row.amount)} ${rateText}${seniorityPrefix}${line.row.instrument} — ${line.timingPhrase}${movement}`;
+    // ITEM 8 (stage-2 review): a row from a pricing 8-K answers a different
+    // question than the block header does. The header describes the debt
+    // NOTE — how many rows it had, whether they walk, whether they anchor —
+    // and on a company whose note could not be read at all it said "none
+    // could be trusted" with two rows directly beneath it and nothing
+    // marking them as coming from somewhere else entirely.
+    const sourceMark = line.row.provenance === "pricing-8-K" ? " [from a pricing 8-K, not the debt note]" : "";
+    const text = `${formatMoneyForDisplay(line.row.amount)} ${rateText}${seniorityPrefix}${line.row.instrument} — ${line.timingPhrase}${movement}${sourceMark}`;
     return (
       <li key={i} className={styles.tableLine}>
         <span className={styles.tableLineBullet}>·</span>
@@ -434,20 +451,42 @@ export default function Home() {
               <span className={styles.tableLineText}>{refi.tailSummary}</span>
             </li>
           )}
-          {/* Session 18 (post-v9 redesign): adjustment entries rendered as
-              their own visible lines — previously only fed the checksum's
-              invisible sum. A figure like "amounts due within one year:
-              $6,264 million" is real, useful timing information even with
-              no per-tranche breakdown at all. */}
-          {refi.adjustments.map((adj, i) => (
-            <li key={`adjustment-${i}`} className={styles.tableLine}>
+          {/* ITEM 6 (stage-2 review): tranches a pricing 8-K names that
+              cannot be added to a ladder reporting category totals — they
+              are inside one of those totals already. Stated, never dropped. */}
+          {refi.issuancesInsideAggregate.map((row, i) => (
+            <li key={`inside-aggregate-${i}`} className={styles.tableLine}>
               <span className={styles.tableLineBullet}>·</span>
               <span className={styles.tableLineText}>
-                {formatMoneyForDisplay(adj.amount)} — {adj.label ?? "(unlabeled adjustment)"}
+                {formatMoneyForDisplay(row.amount)} {row.rate ? `${row.rate} ` : ""}{row.instrument} — priced by an 8-K
+                {row.issuedOn ? ` on ${row.issuedOn.date}` : ""}; this filing reports its debt by category, so this tranche is inside one of the
+                category totals above rather than a line of its own
               </span>
             </li>
           ))}
         </ul>
+        {/* ITEM 7 (stage-2 review): the note's own reconciliation, in its own
+            order — the rows sum, each adjustment applies, each subtotal
+            states whether it lands. Replaces a bare list of adjustment
+            label/number pairs that gave no indication what they adjusted or
+            what they reconciled to. */}
+        {refi.walkLines.length > 0 && (
+          <div className={styles.refiWalk}>
+            <p className={styles.refiWalkCaption}>How the note reconciles</p>
+            <ul className={styles.refiWalkList}>
+              {refi.walkLines.map((w, i) => (
+                <li key={`walk-${i}`} className={w.kind === "subtotal" ? styles.refiWalkSubtotal : styles.refiWalkLine}>
+                  <span className={styles.refiWalkLabel}>
+                    {w.kind === "adjustment" ? "less " : w.kind === "subtotal" ? "= " : ""}
+                    {w.label}
+                  </span>
+                  <span className={styles.refiWalkAmount}>{w.amount}</span>
+                  {w.tie !== null && <span className={styles.refiWalkTie}>{w.tie ? "✓" : "does not tie"}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {refi.sourceCitation && (
           <div className={styles.tableLineSources}>
             <a href={refi.sourceCitation.url} target="_blank" rel="noreferrer" className={styles.citation}>

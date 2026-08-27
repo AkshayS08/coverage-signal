@@ -104,6 +104,7 @@ export function computeTiming(
         alreadyPast: false,
         isPendingLive,
         dateGranularity: granularity,
+        windowDate,
       };
     }
     // The date itself has passed — but for "just_announced" that's the
@@ -119,6 +120,7 @@ export function computeTiming(
       alreadyPast: eventStatus !== "just_announced",
       isPendingLive,
       dateGranularity: granularity,
+      windowDate,
     };
   }
   return {
@@ -126,5 +128,6 @@ export function computeTiming(
     alreadyPast: eventStatus === "completed",
     isPendingLive,
     dateGranularity: null,
+    windowDate: null,
   };
 }

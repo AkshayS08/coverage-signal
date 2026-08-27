@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { dedupeCitations, type FlashCard } from "./buildEvents";
 import type { VerifiedFact } from "./factBase";
 import { failedEventBriefing, type DraftedEventBriefing } from "./eventBriefing";
-import { checkNumbersAgainstQuotes, countDistinctFactsReferenced, factsReferencedIn, isFullyExplainedByOneFact } from "./numberGuard";
+import { checkNumbersAgainstQuotes, citationDateGaps, countDistinctFactsReferenced, factOwnText, factsReferencedIn, isFullyExplainedByOneFact } from "./numberGuard";
 import { isScrapeShapedText } from "./scrapeGuard";
 import { compactLabelWithTiming } from "./labels";
 import { BUCKET_LABELS } from "./buckets";
@@ -156,10 +156,36 @@ function findHeadlineFact(factBase: VerifiedFact[], card: FlashCard): VerifiedFa
 // "due May 2027" is not testing modality.
 const ADVISORY_MODALS = /\b(?:can|could|should|ought to|able to|unable to|has room to|have room to|gives? (?:them|it) room|allowing (?:them|it) to|positions? (?:them|it) to|enabl(?:es?|ing) (?:them|it) to)\b/gi;
 const ADVISORY_EVALUATIONS = /\b(?:well[- ]positioned|well[- ]placed|comfortabl[ey]|ample|healthy|strong(?:ly)? positioned|favou?rabl[ey] positioned|opportunistic(?:ally)?|prudent(?:ly)?|attractive(?:ly)?)\b/gi;
+/**
+ * ITEM 16 (stage-2 review) — AVAILABILITY IS A CAPABILITY CLAIM.
+ *
+ * The modal and evaluation lists caught "well-positioned to address this
+ * maturity" and "ample liquidity", and let through two sentences that make
+ * exactly the same move without a modal or an evaluative adjective:
+ *
+ *   "showing the same playbook is available to address the December 2027
+ *    notes ahead of maturity"
+ *   "showing the market is open for exactly this kind of deal"
+ *
+ * Neither is in any filing. Both tell the RM what their options are, which
+ * is the judgement the RM is paid to form and the one thing the card must
+ * not pre-empt.
+ *
+ * The rule, structurally: whyNow may state facts and their temporal or
+ * arithmetic relation. It may not characterise what is POSSIBLE, ADVISABLE,
+ * or AVAILABLE. This is the availability half — a predicate asserting that
+ * a course of action exists, rather than that an event occurred. Still a
+ * grammatical frame and not a subject-matter list: "the market" and "a
+ * playbook" are perfectly good subjects of a filed fact ("Quest tapped the
+ * market in May 2026"), and only become a claim when the predicate says
+ * they are open, available, or there to be used.
+ */
+const ADVISORY_AVAILABILITY =
+  /\b(?:is|are|was|were|remains?|stays?)\s+(?:still\s+|clearly\s+|widely\s+)?(?:available|open|accessible|receptive)\b|\bshowing\s+(?:that\s+)?(?:the|a|an|its|their|same)\b|\bdemonstrat(?:es?|ing)\s+(?:that\s+)?(?:it|they|the)\b/gi;
 
 export function advisoryPhrasesIn(text: string): string[] {
   const found = new Set<string>();
-  for (const re of [ADVISORY_MODALS, ADVISORY_EVALUATIONS]) {
+  for (const re of [ADVISORY_MODALS, ADVISORY_EVALUATIONS, ADVISORY_AVAILABILITY]) {
     const scan = new RegExp(re.source, "gi");
     let m: RegExpExecArray | null;
     while ((m = scan.exec(text))) found.add(m[0].toLowerCase());
@@ -338,7 +364,20 @@ export interface StructuralGuardResult {
  * the HEADLINE fact specifically (factsReferencedIn, Item 4's fix) — not
  * just any fact.
  */
-export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[], headlineTriggerId?: string): StructuralGuardResult {
+export function checkCardStructure(
+  body: RawCardBody,
+  factBase: VerifiedFact[],
+  headlineTriggerId?: string,
+  /**
+   * Item 1 (stage-2 review): the headline fact's own citations, so the guard
+   * can build the SAME citation set draftEventBriefing will attach to the
+   * card and check the card's stated periods against it. Optional only so
+   * the offline structural suites can exercise the other checks without
+   * constructing a citation set; production always passes it, and the
+   * period check is the one thing that cannot run without it.
+   */
+  citationContext?: { headlineCitations: { form: string; date: string; reportDate: string }[]; today?: string }
+): StructuralGuardResult {
   const reasons: string[] = [];
 
   if (!body.callAbout.trim()) reasons.push("callAbout is empty");
@@ -383,8 +422,37 @@ export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[], 
   // correctly stating a redemption's own rate/date, copied straight from
   // redeemsInfo, must not fail this check for want of its source being
   // included here.
-  const accuracyCorpus = factBase.flatMap((f) => [f.normalizedText, f.verifiedText, f.evidence ?? "", f.seniority ?? "", f.redeemsInfo ?? ""]);
+  //
+  // Item 1 (stage-2 review): this list is now factOwnText, the SAME builder
+  // numberGuard's own set-cover checks use, rather than a hand-maintained
+  // copy of it. It had already drifted — factOwnText carries E4's
+  // outstandingAmount and issueSizeInLabel and this list did not — and that
+  // exact divergence, in the other direction, is what blanked three cards
+  // during Group E (see factOwnText's comment). Two lists of "what a fact
+  // says" is one list too many.
+  const accuracyCorpus = factBase.map(factOwnText);
   const auditText = `${body.callAbout} ${body.whyNow} ${keyPoints.join(" ")}`;
+
+  // Item 1 (stage-2 review) — the card's stated periods against the filings
+  // it will actually cite. Built here from the SAME two inputs
+  // draftEventBriefing uses for the citation set itself, so the guard can
+  // never be checking a different set than the one that renders.
+  if (citationContext) {
+    const referenced = factsReferencedIn(auditText, factBase);
+    const cited = [...citationContext.headlineCitations, ...referenced.flatMap((f) => f.citations)];
+    const gaps = citationDateGaps(auditText, cited, citationContext.today ?? new Date().toISOString().slice(0, 10));
+    // One reason per DATE, not per mention — the same period restated in
+    // whyNow and again in a bullet is one problem, and repeating it in the
+    // correction instruction just makes the retry prompt noisier.
+    const seen = new Set<string>();
+    for (const g of gaps) {
+      if (seen.has(g.statedIso)) continue;
+      seen.add(g.statedIso);
+      reasons.push(
+        `states "${g.stated}" but the newest filing this card cites was filed ${g.newestCitation} — a filing cannot state a fact about a day that had not happened when it was submitted`
+      );
+    }
+  }
   const numberGuard = checkNumbersAgainstQuotes(auditText, accuracyCorpus);
   if (!numberGuard.ok) {
     reasons.push(`stated a number, rate, or date not found in any given fact (${numberGuard.unverifiedTokens.join(", ")})`);
@@ -419,6 +487,38 @@ export function checkCardStructure(body: RawCardBody, factBase: VerifiedFact[], 
   const multiFactBullets = keyPoints.filter((k) => !isFullyExplainedByOneFact(k, factBase));
   if (multiFactBullets.length > 0) {
     reasons.push(`${multiFactBullets.length} keyPoints bullet(s) are not fully explained by any single fact — a bullet states one fact, it never connects two`);
+  }
+
+  // ITEM 13 (stage-2 review) — ONE INSTRUMENT PER BULLET.
+  //
+  // isFullyExplainedByOneFact above asks whether some single FACT covers the
+  // bullet, and a bullet can pass that while still stating four things,
+  // because the source filing states all four in one sentence and the whole
+  // sentence is one fact's evidence. Seen live:
+  //
+  //   "On November 18, 2025, Tenet issued $1.5 billion of 5.500% senior
+  //    secured first lien notes due 2032 and $750 million of 6.000% senior
+  //    notes due 2033, redeeming $1.5 billion of 6.250% second lien notes
+  //    due 2027 and partially redeeming $750 million of 6.125% senior notes
+  //    due 2028."
+  //
+  // Four instruments, four amounts, four maturities, one bullet. It passes
+  // the set-cover test and is still four facts on a line meant to carry one.
+  //
+  // A RATE identifies an instrument, which makes the count structural: two
+  // distinct rates in a bullet is two instruments, and two instruments is
+  // two facts. Checked against the live book, every well-formed bullet
+  // names at most one rate — including E4's required "$1.1 billion
+  // outstanding on the 4.25% Senior Notes ... against an original issue size
+  // of $2.5 billion", which states two AMOUNTS for one instrument and so
+  // could never be caught by counting money. The offending bullet names
+  // four. Counting rates separates them with nothing in between.
+  const ratesIn = (text: string) => new Set(extractFactTokens(text).filter((t) => t.kind === "percent" && t.percentValue !== undefined).map((t) => t.percentValue!.toFixed(3)));
+  const multiInstrumentBullets = keyPoints.filter((k) => ratesIn(k).size > 1);
+  if (multiInstrumentBullets.length > 0) {
+    reasons.push(
+      `${multiInstrumentBullets.length} keyPoints bullet(s) name more than one interest rate — a rate identifies an instrument, so a bullet naming two names two facts; split the source sentence rather than copying it`
+    );
   }
 
   // Session 17 Item 17: the FIRST bullet must be the fact that triggered
@@ -481,14 +581,20 @@ export async function draftEventBriefing(card: FlashCard, factBase: VerifiedFact
   }
 
   try {
+    // Item 1 (stage-2 review): the period check needs the headline fact's
+    // own citations, and gets them here rather than being reconstructed
+    // later from the finished card — the guard and the rendered citation
+    // set are built from one pair of inputs, so they cannot disagree.
+    const citationContext = { headlineCitations: headlineFact.citations };
+
     let body = await callSonnet(card, factBase);
-    let guard = checkCardStructure(body, factBase, card.headlineTrigger.triggerId);
+    let guard = checkCardStructure(body, factBase, card.headlineTrigger.triggerId, citationContext);
 
     if (!guard.ok) {
       const instruction = buildCorrectionInstruction(guard);
       console.warn(`[eventBriefing] ${card.company} (${card.id}) retrying once: ${instruction}`);
       body = await callSonnet(card, factBase, instruction);
-      guard = checkCardStructure(body, factBase, card.headlineTrigger.triggerId);
+      guard = checkCardStructure(body, factBase, card.headlineTrigger.triggerId, citationContext);
     }
 
     if (!guard.ok) {

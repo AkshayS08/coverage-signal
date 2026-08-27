@@ -696,3 +696,58 @@
     }
   }
 }
+
+/* --- Item 7: the debt note's own reconciliation walk --- */
+.refiWalk {
+  margin: 10px 0 4px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--panel-border);
+  background: var(--panel-bg);
+}
+
+.refiWalkCaption {
+  margin: 0 0 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.refiWalkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.refiWalkLine,
+.refiWalkSubtotal {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.refiWalkLine {
+  color: var(--text-secondary);
+}
+
+.refiWalkSubtotal {
+  font-weight: 600;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 3px;
+  margin-top: 2px;
+}
+
+.refiWalkAmount {
+  font-variant-numeric: tabular-nums;
+}
+
+.refiWalkTie {
+  font-size: 11px;
+  color: var(--text-secondary);
+}

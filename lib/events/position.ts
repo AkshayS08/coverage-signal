@@ -80,11 +80,34 @@ export interface LadderRow {
    * column-dropped).
    */
   priorBalance?: { amount: string; filing: DebtScheduleFilingRef | null };
+  /**
+   * Item 8 (stage-2 review) — WHICH SOURCE THIS ROW CAME FROM.
+   *
+   * The block's header describes the debt NOTE: how many rows it had,
+   * whether they walk, whether they anchor. Rows appended from a pricing
+   * 8-K are not in that scope and never were, and until now nothing said
+   * so. On a company whose note could not be read at all, the header said
+   * "none could be trusted" and two rows rendered directly beneath it with
+   * no visible distinction — a block contradicting itself in its first two
+   * lines.
+   *
+   * The rows are legitimate. What was missing is that they answer a
+   * different question than the header does.
+   */
+  provenance: "note" | "pricing-8-K";
 }
 
 export interface CompanyPosition {
   /** Sorted by maturity date. Built from the base filing's scheduleSequence "row" entries, adjusted for redemptions/new issuance/unconfirmed drops. */
   rows: LadderRow[];
+  /**
+   * Item 6 (stage-2 review) — tranches priced by an 8-K that CANNOT be added
+   * to this ladder because the note reports category totals, and a new
+   * issuance is inside one of those categories by construction. Empty for
+   * every itemized filer. Never dropped — the render states them beneath the
+   * ladder, as what they are.
+   */
+  issuancesInsideAggregate: LadderRow[];
   /** The base filing's "adjustment" entries (discount/issuance costs, current portion, etc.) — for display; see portfolioTable.ts. Not summed here; Check 1 (computeWalkChecksum) does that from the raw TriggerResult directly. */
   adjustments: VerifiedSequenceEntry[];
   /** The LAST "subtotal" entry in the base filing's sequence — the natural "headline total" for display. Null if the sequence has no subtotals at all. */
@@ -165,6 +188,84 @@ function ladderRowId(row: DebtRowLike & { instrument: string }): string {
   return `${row.instrument}::${row.rate ?? "?"}::${row.maturityDate ?? "no-maturity-stated"}`;
 }
 
+/**
+ * Does a row identify ONE instrument? A named instrument carries both its
+ * own rate and its own maturity. A category rollup carries at most one of
+ * them — and often a rate, because a rollup states its WEIGHTED-AVERAGE
+ * rate, which is why a rate alone cannot be the test.
+ *
+ * Moved here from portfolioTable.ts (item 5, stage-2 review) because it now
+ * decides ROW MEMBERSHIP, not only a label: an 8-K tranche cannot be added
+ * to a ladder that reports category totals without double-counting it
+ * inside one. Two callers, one definition.
+ */
+export function rowIdentifiesOneTranche(r: { rate: string | null; maturityDate: string | null }): boolean {
+  return r.rate !== null && r.rate.trim() !== "" && r.maturityDate !== null;
+}
+
+/**
+ * True when the base note reports CATEGORY TOTALS rather than individual
+ * tranches. "Most rows" separates the one genuinely aggregate filer in this
+ * book from the rest with real margin (25% against a next-lowest 57%) and
+ * needs no tuned constant.
+ */
+export function scheduleIsAggregateDisclosure(scheduleSequence: VerifiedSequenceEntry[] | null | undefined): boolean {
+  const rows = (scheduleSequence ?? []).filter((e) => e.kind === "row");
+  if (rows.length === 0) return false;
+  return rows.filter(rowIdentifiesOneTranche).length * 2 <= rows.length;
+}
+
+/**
+ * Item 3 (stage-2 review) — WHEN A BALANCE MOVEMENT IS A PRINCIPAL CHANGE.
+ *
+ * A ladder's amount column is not one measure across filers, and the
+ * difference decides what a movement between periods MEANS. Read out of the
+ * three live notes where it matters:
+ *
+ *   One filer's rows moved 2,211 -> 1,067 on a note whose own label says
+ *   "$2,500 million 4.25% Senior Notes", and its prose two paragraphs below
+ *   the table says it "repurchased $118 million ... of its par value Senior
+ *   Notes". Those rows are PRINCIPAL, and the movement is real.
+ *
+ *   Another filer's 4.75% notes moved 787.7 -> 788.4 in a quarter. That is
+ *   $700K on an untouched fixed-rate note, and the very next table in that
+ *   same filing prints its two measures side by side under the headings
+ *   "Face Amount" and "Net Amount" — 788.4 is the Net one. That movement is
+ *   discount accretion, and rendering it as a change invites a call about
+ *   something that did not happen.
+ *
+ * CLASSIFYING THE MEASURE ITSELF WAS TRIED AND ABANDONED, deliberately. The
+ * structural candidate — an adjustment for unamortized discount sitting
+ * between the rows and the subtotal they walk into — is right for six of the
+ * ten and wrong for at least one: that filer prints its PRINCIPAL total
+ * first and deducts the discount after it, so the discount adjustment sits
+ * downstream of the subtotal the rows sum into and the test reads its
+ * par rows as carrying value. Separating a discount deduction from a
+ * current-portion reclassification needs the labels' meaning, and a
+ * vocabulary guard is the one thing this codebase does not do. A measure
+ * label that is wrong on a tenth of the book is worse on screen than no
+ * label, so there is none — the walk (portfolioTable.ts) renders the
+ * adjustments instead, which shows the same thing without asserting it.
+ *
+ * What IS decidable is the MOVEMENT, on its own relative size. Measured
+ * across every moving row in the book:
+ *
+ *   accretion-shaped   0.076%, 0.089%, 0.2%   of the prior balance
+ *   principal-shaped   6.1%, 10.0%
+ *
+ * A 30x gap with nothing in it. The threshold below sits in the middle of
+ * that gap and is not tuned to either end.
+ */
+export const MATERIAL_MOVEMENT_FRACTION = 0.01;
+
+export type MovementKind = "unchanged" | "material" | "immaterial";
+
+export function movementKindOf(nowValue: number, priorValue: number): MovementKind {
+  if (nowValue === priorValue) return "unchanged";
+  if (priorValue === 0) return "material";
+  return Math.abs(nowValue - priorValue) / Math.abs(priorValue) >= MATERIAL_MOVEMENT_FRACTION ? "material" : "immaterial";
+}
+
 function ladderRowFromSequenceEntry(entry: VerifiedSequenceEntry, status: LadderRow["status"]): LadderRow {
   const instrument = entry.label ?? "(unlabeled)";
   return {
@@ -178,11 +279,12 @@ function ladderRowFromSequenceEntry(entry: VerifiedSequenceEntry, status: Ladder
     citedUrl: entry.citedUrl,
     id: ladderRowId({ instrument, rate: entry.rate, maturityDate: entry.maturityDate, dateGranularity: entry.dateGranularity }),
     status,
+    provenance: "note",
   };
 }
 
 function ladderRowFromIssuedTranche(row: VerifiedIssuedTranche, status: LadderRow["status"]): LadderRow {
-  return { ...row, id: ladderRowId(row), status };
+  return { ...row, id: ladderRowId(row), status, provenance: "pricing-8-K" };
 }
 
 /**
@@ -381,11 +483,39 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   if (newDebtIssuance?.fired && newDebtIssuance.redeems) {
     const redeemsText = newDebtIssuance.redeems;
     const retiredByEvidence = { evidence: redeemsText, citedUrl: newDebtIssuance.citations[0]?.url ?? "" };
-    rows = rows.map((row) =>
-      row.status === "live" && redemptionRetiresRow(row, redeemsText)
-        ? { ...row, status: "retired" as const, retiredBy: retiredByEvidence }
-        : row
-    );
+    rows = rows.map((row) => {
+      if (row.status !== "live" || !redemptionRetiresRow(row, redeemsText)) return row;
+      // THE NOTE IS THE POSITION (found live, stage-2 review). An 8-K
+      // describes an ACTION; the note states the RESULT, at the filing's own
+      // period end. Where the two disagree, the note wins — the same rule
+      // the issued-tranche merge below already applies for amounts.
+      //
+      // The case: one filer's 8-K redeems "4.500% senior notes due 2028",
+      // naming no quantity and using no partial-redemption wording, while
+      // its own debt note reports that tranche at $396.9 million, down from
+      // $792.0 million. Half of it was called. Text alone cannot show that;
+      // the note already has. Retiring it dropped this company's NEAREST
+      // maturity off the ladder entirely — a retired row does not render and
+      // cannot card, so the single most callable thing about the company
+      // became invisible.
+      //
+      // redemptionRetiresRow's own partial-redemption parsing still runs and
+      // still matters for a tranche the note no longer carries. This is the
+      // check that comes first when the note does carry it.
+      // ...but only where the note is the NEWER fact. An 8-K that prices or
+      // calls a tranche AFTER the base filing's period of report is
+      // describing something that note could not yet know, and there the
+      // 8-K is the current word. The comparison is the base filing's own
+      // period of report against the issuance's filing date — both already
+      // carried, neither inferred. When either is missing there is nothing
+      // to compare and the redemption stands, which is the prior behaviour.
+      const basePeriod = debtMaturity?.debtScheduleSourceFiling?.reportDate ?? "";
+      const issuanceDate = newDebtIssuance.citations[0]?.date ?? "";
+      const noteIsNewer = /^\d{4}-\d{2}-\d{2}$/.test(basePeriod) && /^\d{4}-\d{2}-\d{2}$/.test(issuanceDate) && issuanceDate <= basePeriod;
+      const balance = parseMoneyAmount(row.amount);
+      if (noteIsNewer && balance !== null && balance !== 0) return row;
+      return { ...row, status: "retired" as const, retiredBy: retiredByEvidence };
+    });
   }
   // THE NOTE'S ROW WINS (Session 18, post-stage-2).
   //
@@ -413,6 +543,23 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // and rate, never amount, the same rule redemption matching already uses
   // and for the same reason (the amounts are EXPECTED to differ here; that
   // difference is the whole point).
+  //
+  // ITEM 6 (stage-2 review) — AND NOT WHEN THE NOTE REPORTS CATEGORY TOTALS.
+  //
+  // rowsRepresentSameTranche matches on maturity and rate, so it can only
+  // ever match a row that HAS them. An aggregate rollup — "Senior unsecured
+  // notes payable through 2095" — has neither, so a newly-priced tranche can
+  // never match it, and three tranches got their own rows sitting inside a
+  // rollup that already contains them. The same run rendered "4 more
+  // tranches, 2095": four category totals, sorted by a seventy-year range
+  // read as a maturity, described as bonds.
+  //
+  // A tranche cannot be added to a ladder that has no place to add it. Where
+  // the note reports categories, a new issuance is inside one of those
+  // categories by construction, so it is withheld from the rows and carried
+  // separately — stated in full beneath the ladder, never silently dropped.
+  const noteIsAggregate = scheduleIsAggregateDisclosure(baseSequence);
+  const issuancesInsideAggregate: LadderRow[] = [];
   const issuedTranches = newDebtIssuance?.issuedTranches ?? [];
   if (newDebtIssuance?.fired && issuedTranches.length > 0) {
     const issuanceDateFor = (url: string): string | null => newDebtIssuance.citations.find((c) => c.url === url)?.date ?? null;
@@ -422,8 +569,12 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
       const existingIdx = rows.findIndex((r) => rowsRepresentSameTranche(r, candidate));
       const date = issuanceDateFor(tranche.citedUrl);
       if (existingIdx === -1) {
-        newRows.push(candidate);
-        if (date) newRows[newRows.length - 1].issuedOn = { date, citedUrl: tranche.citedUrl };
+        const row = { ...candidate };
+        if (date) row.issuedOn = { date, citedUrl: tranche.citedUrl };
+        // Item 6: inside a category total already on the ladder — stated,
+        // not laddered.
+        if (noteIsAggregate) issuancesInsideAggregate.push(row);
+        else newRows.push(row);
         continue;
       }
       // Same tranche. Keep the note's row and its outstanding amount; take
@@ -469,6 +620,21 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     ? { evidence: redeemsText, citedUrl: newDebtIssuance?.citations[0]?.url ?? "" }
     : null;
   for (const priorEntry of priorRowEntries) {
+    // A ROW THAT CANNOT BE MATCHED CANNOT BE MISSING (found live, stage-2
+    // review). rowsRepresentSameTranche keys on rate and maturity, so a row
+    // carrying neither — "Advances under revolving credit facility", "Other
+    // notes payable", "Finance lease obligations" — can never match its own
+    // counterpart on the current ladder. It is therefore declared vanished
+    // every single time, and re-added beside the identical live row it
+    // failed to match: one filer rendered its revolver, its other notes and
+    // its finance leases twice each, once live and once "dropped from the
+    // newest filing with no redemption explaining it". Six of the nine rows
+    // on that ladder were three instruments counted twice.
+    //
+    // The absence of a match is only evidence of absence when a match was
+    // possible. These rows are on the current ladder, under the same
+    // caption, and nothing about them is unconfirmed.
+    if (!rowIdentifiesOneTranche(priorEntry)) continue;
     if (rows.some((r) => rowsRepresentSameTranche(r, priorEntry))) continue; // still on the current ladder (live or already retired above) — nothing to add
     if (redeemsText && retiredByEvidence && redemptionRetiresRow(priorEntry, redeemsText)) {
       rows.push(ladderRowFromSequenceEntry({ ...priorEntry, citedUrl: priorEntry.citedUrl }, "retired"));
@@ -519,6 +685,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   const walkGapFraction = walkGapFractionOf(baseWalk);
   return {
     rows,
+    issuancesInsideAggregate,
     adjustments,
     finalSubtotal,
     baseFiling: debtMaturity?.debtScheduleSourceFiling ?? null,
@@ -830,5 +997,5 @@ export function computeBalanceSheetCheck(
  */
 export function citationsForLadderRow(row: LadderRow, debtMaturityTrigger: TriggerResult): TriggerResult["citations"] {
   const known = debtMaturityTrigger.citations.find((c) => c.url === row.citedUrl);
-  return [known ?? { form: "filing", date: "", url: row.citedUrl }];
+  return [known ?? { form: "filing", date: "", reportDate: "", url: row.citedUrl }];
 }

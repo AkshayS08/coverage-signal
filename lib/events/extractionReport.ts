@@ -2,6 +2,7 @@ import type { CompanyResult, TriggerResult } from "../agent";
 import type { DebtScheduleFilingRef } from "../agent/claude";
 import type { CompanySpend } from "../agent/costMeter";
 import type { ScheduleCompletenessResult } from "../fetch/scheduleCompleteness";
+import { formatMoneyValue } from "./money";
 import {
   computeBalanceSheetCheck,
   computeWalkChecksum,
@@ -102,13 +103,13 @@ function debtMaturityTrigger(result: CompanyResult): TriggerResult | undefined {
   return result.results.find((r) => r.triggerId === "debt-maturity");
 }
 
-/** Compact money for a report line — these are full dollar values, so thousands separators alone are unreadable at $45,828,000,000. */
-function briefUsd(value: number): string {
-  const abs = Math.abs(value);
-  if (abs >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
-  if (abs >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
-  return `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
-}
+/**
+ * Item 2 (stage-2 review): the trace drawer reads the same money the screen
+ * does, so it goes through the same formatter. It had its own near-identical
+ * copy at two decimals, which is how "$2.75B" and "$2.8B" could both be the
+ * same figure depending on which surface it was read from.
+ */
+const briefUsd = formatMoneyValue;
 
 export function buildExtractionReport(result: CompanyResult, spend?: CompanySpend | null): CompanyExtractionReport {
   const dm = debtMaturityTrigger(result);

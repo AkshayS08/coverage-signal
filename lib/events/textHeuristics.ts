@@ -52,6 +52,16 @@ export interface TimingInfo {
   isPendingLive: boolean;
   /** Precision the filing actually discloses ("year"/"month"/"day"), or null when there's no dated fact at all. When "year", monthsToNearestFuture was computed from a code-chosen worst-case convention date (windowDate), NOT a real disclosed date — display code MUST branch on this and never render a month count or "Dec <year>" for it; see eligibility.ts's debt-maturity case and buildEvents.ts's describeFreshness. */
   dateGranularity: DateGranularity | null;
+  /**
+   * Item 15 (stage-2 review): the window date this timing was computed
+   * from, so display code that must branch on year-granularity has the
+   * YEAR available without re-deriving it from a month count — a
+   * re-derivation could disagree with the value everything else sorted on.
+   * Null when there is no dated fact. For year granularity this is the
+   * code-chosen December-31 convention and is NEVER rendered as-is; only
+   * its leading four digits are.
+   */
+  windowDate: string | null;
 }
 
 const EVENT_DATE_MONTH_NAMES: Record<string, number> = {

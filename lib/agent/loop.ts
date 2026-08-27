@@ -293,7 +293,7 @@ export interface TriggerResult {
   mappedNeed: string;
   needType: "credit" | "treasury" | "distress";
   confidence: number;
-  citations: { form: string; date: string; url: string }[];
+  citations: { form: string; date: string; url: string; /** EDGAR's period of report — "" when the filing states none (8-Ks). A periodic report cannot report a period ending after this date. */ reportDate: string }[];
   /** Did the model's `quote` field appear verbatim in the filing text we actually fetched? */
   quoteVerified: boolean;
   /** The verbatim source sentence(s) backing this trigger — only set when quoteVerified is true. Always the raw filing text, never scale-adjusted (see verifiedQuoteNormalized). */
@@ -462,8 +462,12 @@ export async function runAgentLoop(
     url: f.primaryDocUrl,
   }));
 
+  // reportDate rides along with form/filingDate because a periodic report's
+  // PERIOD OF REPORT is the only thing that says what a 10-Q is allowed to
+  // have reported. Free EDGAR metadata, already fetched — see
+  // numberGuard.ts's citationDateGaps for what reads it and why.
   const citationLookup = new Map(
-    filingsResult.filings.map((f) => [f.primaryDocUrl, { form: f.form, date: f.filingDate }])
+    filingsResult.filings.map((f) => [f.primaryDocUrl, { form: f.form, date: f.filingDate, reportDate: f.reportDate }])
   );
 
   const baseline = selectBaselineFilings(filingsResult.filings);
@@ -1512,7 +1516,7 @@ function narrowCitationsToBackedFilings(verifiedText: string | null, citedUrls: 
 
 function finalize(
   trigger: TriggerDef,
-  citationLookup: Map<string, { form: string; date: string }>,
+  citationLookup: Map<string, { form: string; date: string; reportDate: string }>,
   v: TriggerVerdict,
   verification: { verified: boolean; displayText: string | null; normalizedText: string | null; matchType: "literal" | "co-occurrence" | null },
   dateGuard: EventDateGuardResult,
@@ -1545,7 +1549,7 @@ function finalize(
     confidence: v.confidence,
     citations: narrowedCitedUrls.map((url) => {
       const known = citationLookup.get(url);
-      return { form: known?.form ?? "filing", date: known?.date ?? "", url };
+      return { form: known?.form ?? "filing", date: known?.date ?? "", reportDate: known?.reportDate ?? "", url };
     }),
     quoteVerified: verification.verified,
     verifiedQuote: verification.verified ? verification.displayText : null,

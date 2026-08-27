@@ -121,7 +121,7 @@ function syntheticSubtotal(label: string | null, amount: string) {
     syntheticRow({ label: "E", rate: "3.000%", maturityDate: "2035-06-01", dateGranularity: "day" }),
   ];
   const controlled = debtMaturityWithSchedule(realDebtMaturity, {
-    citations: [{ form: "10-Q", date: "2026-06-30", url: "https://example.com/synthetic-10q" }],
+    citations: [{ form: "10-Q", date: "2026-06-30", reportDate: "", url: "https://example.com/synthetic-10q" }],
     scheduleSequence: [...rows, syntheticSubtotal("Total debt", "$5.0 billion")],
   });
   const companyControlled: CompanyResult = { ...real, results: real.results.map((t) => (t.triggerId === "debt-maturity" ? controlled : t)) };
@@ -139,7 +139,7 @@ function syntheticSubtotal(label: string | null, amount: string) {
   const real = companyFor("THC");
   const realDebtMaturity = real.results.find((r) => r.triggerId === "debt-maturity")!;
   const controlled = debtMaturityWithSchedule(realDebtMaturity, {
-    citations: [{ form: "10-Q", date: "2026-06-30", url: "https://example.com/synthetic-10q" }],
+    citations: [{ form: "10-Q", date: "2026-06-30", reportDate: "", url: "https://example.com/synthetic-10q" }],
     scheduleSequence: [
       syntheticRow({ label: "A", rate: "5.000%", maturityDate: "2027-06-01", dateGranularity: "day" }),
       syntheticSubtotal("Total debt", "$2.5 billion"), // $1.5B unaccounted — a real gap
@@ -148,7 +148,7 @@ function syntheticSubtotal(label: string | null, amount: string) {
   const companyControlled: CompanyResult = { ...real, results: real.results.map((t) => (t.triggerId === "debt-maturity" ? controlled : t)) };
   const table = buildCompanyTableBlock(companyControlled, []);
   assert(!table.refiLadder.walkCheck.pass, "[F1b] a genuine $1.5B gap does not tie -- Check 1 fails");
-  assert(/does not tie/.test(table.refiLadder.completenessStatement) && /1,500,000,000/.test(table.refiLadder.completenessStatement), `[F1b] rendered anyway, states the dollar gap, never suppressed (got: "${table.refiLadder.completenessStatement}")`);
+  assert(/does not tie/.test(table.refiLadder.completenessStatement) && /\$1\.5B/.test(table.refiLadder.completenessStatement), `[F1b] rendered anyway, states the dollar gap through the SAME money formatter as every other surface (item 2), never suppressed (got: "${table.refiLadder.completenessStatement}")`);
   assert(table.refiLadder.nearestLines.length === 1, "[F1b] the ladder itself still renders despite not tying — completeness and display are separate");
 }
 
@@ -159,7 +159,7 @@ function syntheticSubtotal(label: string | null, amount: string) {
   const real = companyFor("THC");
   const realDebtMaturity = real.results.find((r) => r.triggerId === "debt-maturity")!;
   const controlled = debtMaturityWithSchedule(realDebtMaturity, {
-    citations: [{ form: "10-Q", date: "2026-06-30", url: "https://example.com/synthetic-10q" }],
+    citations: [{ form: "10-Q", date: "2026-06-30", reportDate: "", url: "https://example.com/synthetic-10q" }],
     scheduleSequence: [syntheticRow({ label: "A", rate: "5.000%", maturityDate: "2027-06-01", dateGranularity: "day" }), syntheticSubtotal("Total debt", "$1.0 billion")],
     priorScheduleSequence: [
       syntheticRow({ label: "A", rate: "5.000%", maturityDate: "2027-06-01", dateGranularity: "day" }),
@@ -194,7 +194,7 @@ function syntheticSubtotal(label: string | null, amount: string) {
   const rowA = syntheticRow({ label: "A", rate: "5.000%", maturityDate: "2027-06-01", dateGranularity: "day" });
   const rowB = syntheticRow({ label: "B", rate: "4.500%", maturityDate: "2029-06-01", dateGranularity: "day" });
   const controlled = debtMaturityWithSchedule(realDebtMaturity, {
-    citations: [{ form: "10-Q", date: "2026-06-30", url: "https://example.com/synthetic-10q" }],
+    citations: [{ form: "10-Q", date: "2026-06-30", reportDate: "", url: "https://example.com/synthetic-10q" }],
     scheduleSequence: [rowA, rowB, syntheticSubtotal("Total debt", "$2.0 billion")],
   });
   const companyControlled: CompanyResult = { ...real, results: real.results.map((t) => (t.triggerId === "debt-maturity" ? controlled : t)) };
@@ -226,7 +226,7 @@ function chsShapedCompany(over: Partial<TriggerResult>): CompanyResult {
   const real = companyFor("THC");
   const realDebtMaturity = real.results.find((r) => r.triggerId === "debt-maturity")!;
   const controlled = debtMaturityWithSchedule(realDebtMaturity, {
-    citations: [{ form: "10-Q", date: "2026-07-23", url: "https://example.com/synthetic-10q" }],
+    citations: [{ form: "10-Q", date: "2026-07-23", reportDate: "", url: "https://example.com/synthetic-10q" }],
     debtScheduleSourceFiling: { form: "10-Q", date: "2026-07-23", reportDate: "2026-06-30", url: "https://example.com/synthetic-10q" },
     ...over,
   });

@@ -80,6 +80,17 @@ const MAX_LINE_CHARS = 400;
  * to be — "5.125%", "Alan B. Miller", "U.K." all defeat a naive split), so
  * the boundary this relies on is one the file already trusts.
  */
+/**
+ * Item 10 (stage-2 review): exported so the RENDERED line — description plus
+ * timing plus any cross-reference or period note — goes through this same
+ * sentence-boundary rule, applied once and last. Composing onto an
+ * already-truncated string put the appended clauses past the cap, which is
+ * exactly the bug this rule exists to prevent.
+ */
+export function truncateRenderedLine(text: string, maxLen = MAX_LINE_CHARS): string {
+  return truncate(text, maxLen);
+}
+
 function truncate(text: string, maxLen = MAX_LINE_CHARS): string {
   const trimmed = text.trim();
   if (trimmed.length <= maxLen) return trimmed;
@@ -459,7 +470,43 @@ function yearsIn(text: string): number[] {
     .map((tok) => tok.dateValue!.year);
 }
 
+/**
+ * ITEM 12 (stage-2 review) — " and " WAS NOT THE ONLY JOIN.
+ *
+ * E11.2 only ever looked for " and ", so the other half of the shape walked
+ * straight through it:
+ *
+ *   "$152 million during the six months ended June 30, 2026, compared to
+ *    $176 million in the prior year period"
+ *
+ * Two joins are missing from that: an explicit comparison connective, and a
+ * tail that names its period only as "the prior year period" — no year token
+ * at all, so the year comparison below had nothing to compare and returned
+ * the sentence unchanged.
+ *
+ * An EXPLICIT comparison connective ("compared to", "versus") says outright
+ * that the tail is a benchmark for the head, which the neutral " and " does
+ * not. That licenses a cut the year test cannot make on its own: with an
+ * explicit connective, a tail carrying no year of its own is a prior period
+ * by construction, because the sentence has just said so.
+ */
+const COMPARISON_JOINS = [", compared to ", " compared to ", ", compared with ", " compared with ", ", versus ", " versus ", ", vs. ", " vs. "];
+
 export function collapseToMostRecentPeriod(description: string): string {
+  for (const join of COMPARISON_JOINS) {
+    const at = description.lastIndexOf(join);
+    if (at < 0) continue;
+    const head = description.slice(0, at);
+    const tail = description.slice(at + join.length);
+    const headYears = yearsIn(head);
+    if (headYears.length === 0) continue;
+    const tailYears = yearsIn(tail);
+    // An explicit comparison to something with no year of its own IS the
+    // prior period; with a year, it still has to actually be older.
+    if (tailYears.length > 0 && Math.max(...tailYears) >= Math.min(...headYears)) continue;
+    return terminate(head);
+  }
+
   const at = description.lastIndexOf(" and ");
   if (at < 0) return description;
   const head = description.slice(0, at);
@@ -469,6 +516,10 @@ export function collapseToMostRecentPeriod(description: string): string {
   if (headYears.length === 0 || tailYears.length === 0) return description;
   if (Math.max(...tailYears) >= Math.min(...headYears)) return description;
   // The tail is an older period. Keep the head, restoring its terminator.
+  return terminate(head);
+}
+
+function terminate(head: string): string {
   const trimmed = head.trim().replace(/[,;]$/, "");
   return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
 }

@@ -142,9 +142,109 @@ export function countDistinctFactsReferenced(text: string, factTexts: string[]):
  * formatFact are two views of ONE thing — what this fact says. They must be
  * changed together.
  */
-function factOwnText(f: VerifiedFact): string {
+export function factOwnText(f: VerifiedFact): string {
   return [f.normalizedText, f.verifiedText, f.evidence ?? "", f.seniority ?? "", f.redeemsInfo ?? "", f.outstandingAmount ?? "", f.issueSizeInLabel ?? ""].join(" ");
 }
+
+/**
+ * Item 1 (Session 18, stage-2 review) — A CARD MAY NOT STATE A PERIOD THE
+ * FILINGS IT CITES COULD NOT HAVE REPORTED.
+ *
+ * The class, seen live: a card cited a 10-K filed 2026-02-26 and stated a
+ * cash balance "as of June 30, 2026". A filing cannot report a period that
+ * ends after it was filed, so a reader following the link finds nothing.
+ *
+ * Why the previous version of this check could not fire, all three
+ * independently (diagnosed against real Cigna data before this rewrite):
+ *
+ *   1. It was never called outside its own test file — dead code that read
+ *      as a shipped guard.
+ *   2. It filtered candidate facts to the card's OWN trigger, and the
+ *      offending fact was a large-cash-balance fact on a debt-maturity
+ *      card. The very cross-trigger bullet that causes this class was the
+ *      one thing the filter excluded.
+ *   3. It compared VerifiedFact.eventDate, and the offending fact's
+ *      eventDate is null — "June 30, 2026" exists only inside the fact's
+ *      prose. A structured-date check cannot see a date that was never
+ *      structured.
+ *
+ * So this reads the DATES THE CARD ACTUALLY STATES, out of the text the
+ * model actually wrote, and compares them against the citation set that
+ * card actually carries. Text in, citations in — no third source of truth
+ * that can drift from what renders.
+ *
+ * Exempt, deliberately:
+ *   - Future dates. A maturity is not something a filing "reported late".
+ *   - Bare years. A 10-K filed in February 2026 legitimately states facts
+ *     "in 2026", and there is no precision available to tell those from a
+ *     December 2026 period-end. Flagging them would fire on correct cards.
+ *   - Month precision compares against the FIRST of that month, so a filing
+ *     dated mid-May can state "May 2026" without being flagged.
+ */
+export interface CitationDateGap {
+  /** The date exactly as the line states it. */
+  stated: string;
+  /** That date resolved to ISO, for the comparison actually made. */
+  statedIso: string;
+  /** Filing date of the newest filing the line cites. */
+  newestCitation: string;
+}
+
+export function citationDateGaps(
+  text: string,
+  citations: { form: string; date: string; reportDate: string }[],
+  today: string
+): CitationDateGap[] {
+  // THE BOUND IS THE FILING DATE, not the period of report. Both were
+  // measured against the live book before choosing:
+  //
+  //   filing date  — 3 fires: 2 real defects, 1 over-fire
+  //   period of report — 6 fires: the same 2 real defects, 4 over-fires
+  //
+  // The period-of-report bound flags every SUBSEQUENT EVENT, which is a
+  // normal and correct thing for a filing to disclose: a 10-Q for the June
+  // quarter, filed in July, legitimately reports a dividend declared on
+  // July 22. A filing date bounds the only genuinely impossible thing —
+  // a filing stating a fact about a day that had not happened when it was
+  // submitted.
+  const filed = citations.map((c) => c.date).filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
+  if (filed.length === 0) return [];
+  const newest = filed[filed.length - 1];
+
+  const gaps: CitationDateGap[] = [];
+  for (const token of extractFactTokens(text)) {
+    if (token.kind !== "date" || !token.dateValue) continue;
+    const { year, month, day } = token.dateValue;
+    // A bare year carries no precision this comparison can use: a 10-K for
+    // FY2025 legitimately states facts "in 2025", and nothing distinguishes
+    // that from a December 2025 period-end.
+    if (month === null) continue;
+    // Month precision compares against the FIRST of the month, so a filing
+    // dated mid-May can state "May 2026".
+    const iso = `${year}-${String(month).padStart(2, "0")}-${String(day ?? 1).padStart(2, "0")}`;
+    // Still in the future: a maturity, or a scheduled event that has not
+    // happened yet. Neither is a period anything is asked to have reported.
+    if (iso > today) continue;
+    if (iso > newest) gaps.push({ stated: token.raw, statedIso: iso, newestCitation: newest });
+  }
+  return gaps;
+}
+
+/**
+ * KNOWN AND ACCEPTED OVER-FIRE, stated here rather than tuned away: a filing
+ * may announce a date that had not yet arrived when it was filed — an 8-K
+ * declaring in February a dividend payable on April 20. That line states a
+ * date after every filing it cites and is nonetheless correct. One such line
+ * exists in the current book (of fifty), against two genuine defects, and
+ * nothing structural separates "a scheduled future date" from "a period this
+ * filing could not have reported" — both are simply dates after the filing.
+ *
+ * So the flagged line still RENDERS, with what is true about it stated: it
+ * states this date, and it cites nothing filed on or after it. That sentence
+ * is accurate for the over-fire too, and an RM can see in one glance which
+ * kind they are looking at. Suppressing the line, or quietly narrowing the
+ * rule until the count reached zero, would both hide the two real ones.
+ */
 
 export function factsReferencedIn(text: string, factBase: VerifiedFact[]): VerifiedFact[] {
   const textTokens = extractFactTokens(text);

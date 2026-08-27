@@ -4,10 +4,13 @@ import type { FlashCard } from "./buildEvents";
 import { bucketForTrigger, type Bucket } from "./buckets";
 import { evaluateEligibility, evaluateRowEligibility } from "./eligibility";
 import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
-import { condenseEvidenceDescription, formatAnnouncedDate, dateTokenMatchesEventDate } from "./evidenceCondense";
-import { formatMoneyForDisplay, formatMoneyValue } from "./money";
-import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, parseMoneyAmount, type LadderRow } from "./position";
+import { condenseEvidenceDescription, formatAnnouncedDate, dateTokenMatchesEventDate, truncateRenderedLine } from "./evidenceCondense";
+import { formatMoneyForDisplay, formatMoneyValue, normalizeMoneyInText } from "./money";
+import { citationDateGaps, strictFactTokensMatch } from "./numberGuard";
 import { extractFactTokens } from "../agent/factTokens";
+import { BUCKET_LABELS } from "./buckets";
+import { shortTriggerLabel } from "./labels";
+import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, movementKindOf, parseMoneyAmount, rowIdentifiesOneTranche, scheduleIsAggregateDisclosure, type LadderRow, type SubtotalCheck } from "./position";
 import type { TimingInfo } from "./textHeuristics";
 
 /**
@@ -55,6 +58,56 @@ export interface TableLine {
   d3Rank: number;
   /** Age in months of a completed event, 0 when not applicable — the secondary sort within the stale group, so the oldest line is genuinely last. */
   d3AgeMonths: number;
+  /**
+   * Item 1 (stage-2 review) — set when this line states a date later than
+   * every filing it cites was filed, which is a thing no filing can do. The
+   * line still renders; this states what is wrong with it.
+   *
+   * Two real instances in the current book, both the same shape: the
+   * extraction's `evidence` paraphrase carries a period its own VERIFIED
+   * QUOTE contradicts. One trigger's quote reads "As of March 31, 2026, we
+   * had approximately $373 million of borrowings outstanding" — verified,
+   * correctly cited to the 10-Q that reports the March quarter — while the
+   * evidence sentence rendered beside it says "As of June 30, 2026". The
+   * quote goes through lib/agent/verifyQuote.ts; the paraphrase never did,
+   * and the paraphrase is what the table renders.
+   */
+  periodGapNote: string | null;
+  /**
+   * ITEM 9 (stage-2 review) — set when every figure and date this line
+   * states is already stated by ANOTHER line in the SAME bucket, which
+   * makes it a restatement rather than a second fact.
+   *
+   * E9 deduped ACROSS buckets, on fact identity, and one bucket carried the
+   * same figure twice: a filer's UK revenue of $1.001 billion in 2025 as its
+   * own line, and again inside a foreign-currency exposure line that
+   * restates it. Two different triggers, two different verified quotes, so
+   * two different factKeys — E9 could not see them as the same thing,
+   * because on its own terms they are not. What repeats is the FIGURE.
+   *
+   * Set on the line with LESS to say, so the fuller statement survives. The
+   * line still renders: the restated figure is a real disclosure under that
+   * trigger, and the marker says where the reader already saw it rather
+   * than removing the line that carries the exposure.
+   */
+  restatesFiguresOf: string | null;
+  /**
+   * Item 10 (stage-2 review) — THE WHOLE LINE, composed once and truncated
+   * once, at the end.
+   *
+   * The renderer used to build this by concatenating the cross-reference and
+   * the timing phrase onto `description`, which had ALREADY been cut to the
+   * 400-char sentence-boundary cap. Anything appended after the cut therefore
+   * rendered past it: "…also relevant here; shown under Refi (debt maturity)"
+   * arrived truncated mid-clause, and E8's careful sentence-boundary rule had
+   * no say over the part that was actually cut.
+   *
+   * Every rendered string goes through one truncation rule, and that rule
+   * runs last. `description` stays as the fact's own condensed text (the
+   * cross-reference and timing are presentation, and other consumers read it
+   * without them); `text` is what renders.
+   */
+  text: string;
 }
 
 export type BucketLines = Record<Bucket, TableLine[]>;
@@ -76,14 +129,34 @@ function factIdentityKey(fact: VerifiedFact): string {
   return (fact.verifiedText ?? "").replace(/\s+/g, " ").trim().toLowerCase();
 }
 
+/**
+ * Item 3 (stage-2 review) — a movement is stated as what the note can
+ * support, never as more than that. See position.ts's movementKindOf for the
+ * measured basis of the threshold.
+ *
+ * An immaterial movement is NOT suppressed: it renders with its own size and
+ * says why it cannot be read as a repayment. Hiding it would be the third
+ * option this project does not take, and an RM who opens the filing should
+ * find the tool already told them what is there.
+ */
 function movementPhraseFor(row: LadderRow): string {
   if (!row.priorBalance) return "";
   const now = parseMoneyAmount(row.amount);
   const before = parseMoneyAmount(row.priorBalance.amount);
   const source = row.priorBalance.filing ? ` (${row.priorBalance.filing.form} ${row.priorBalance.filing.date})` : "";
-  if (now === null || before === null || now === before) return `unchanged from ${formatMoneyForDisplay(row.priorBalance.amount)}${source}`;
+  const priorText = formatMoneyForDisplay(row.priorBalance.amount);
+  if (now === null || before === null) return `unchanged from ${priorText}${source}`;
+
+  const kind = movementKindOf(now, before);
+  if (kind === "unchanged") return `unchanged from ${priorText}${source}`;
+
   const delta = now - before;
-  return `${delta < 0 ? "down" : "up"} ${formatMoneyValue(Math.abs(delta))} from ${formatMoneyForDisplay(row.priorBalance.amount)}${source}`;
+  const direction = delta < 0 ? "down" : "up";
+  const pct = before === 0 ? null : Math.abs(delta / before) * 100;
+  const pctText = pct === null ? "" : ` (${pct < 0.1 ? "<0.1" : pct.toFixed(1)}%)`;
+
+  if (kind === "material") return `${direction} ${formatMoneyValue(Math.abs(delta))}${pctText} from ${priorText}${source}`;
+  return `${direction} ${formatMoneyValue(Math.abs(delta))}${pctText} from ${priorText}${source} — too small to read as a repayment; a move this size is what unamortized discount does as it accretes`;
 }
 
 export interface RefiLadderLine {
@@ -126,6 +199,10 @@ export interface RefiLadderBlock {
   nearestLines: RefiLadderLine[];
   /** "N more tranches, YYYY to YYYY" for whatever didn't fit in nearestLines, or null when everything fit. */
   tailSummary: string | null;
+  /** Item 7 — the note's own reconciliation, in its own order. Empty when the note has no sequence to walk. */
+  walkLines: WalkLine[];
+  /** Item 6 — 8-K tranches withheld from an aggregate ladder, stated beneath it rather than laddered inside a category total that already contains them. */
+  issuancesInsideAggregate: LadderRow[];
   /** The base filing this ladder's rows trace to, for the trailing source link — the SAME filing lib/fetch/debtNoteLocator.ts determined and the model was told to use (position.baseFiling), not just whichever citation happened to be listed first. */
   sourceCitation: TriggerResult["citations"][number] | null;
   /**
@@ -376,6 +453,101 @@ function refiTimingPhrase(row: LadderRow, timing: TimingInfo): string {
  * exactly the point of the status (never suppressed, per the checksum's own
  * "never suppress" rule).
  */
+/**
+ * Item 1 (stage-2 review) — see TableLine.periodGapNote. Never suppresses:
+ * the line renders, with the discrepancy stated beside it.
+ */
+function periodGapNoteFor(description: string, citations: TriggerResult["citations"], now: Date): string | null {
+  const gaps = citationDateGaps(description, citations, now.toISOString().slice(0, 10));
+  if (gaps.length === 0) return null;
+  // One note per line, naming the earliest offending date — several
+  // mentions of the same impossible period are one problem.
+  const earliest = gaps.map((g) => g.stated)[0];
+  return `states ${earliest}, but cites nothing filed on or after it (newest: ${gaps[0].newestCitation}) — check the filing before using this date`;
+}
+
+/**
+ * Item 10 — the one place a rendered table line is assembled, and the one
+ * place it is cut. See TableLine.text.
+ */
+export function composeTableLineText(line: TableLine): string {
+  const parts = [line.description];
+  if (line.timingPhrase) parts.push(line.timingPhrase);
+  if (line.crossReferenceTo) parts.push(`also relevant here; shown under ${BUCKET_LABELS[line.crossReferenceTo]}`);
+  if (line.restatesFiguresOf) parts.push(`restates the figures already shown on the ${line.restatesFiguresOf} line`);
+  if (line.periodGapNote) parts.push(line.periodGapNote);
+  return truncateRenderedLine(parts.join(" — "));
+}
+
+/**
+ * ITEM 7 (stage-2 review) — RENDER THE WALK, NOT A LIST OF ADJUSTMENTS.
+ *
+ * Adjustments rendered as bare label-and-number — "($66.5M) Discount,
+ * premium and deferred financing costs · ($117.2M) Less current portion" —
+ * gave an RM no way to see what they adjust or what they reconcile to. The
+ * reconciliation was implied, and showing it is the entire reason those
+ * lines are on screen.
+ *
+ * So the note's own sequence renders in its own order: the rows sum, each
+ * adjustment applies, each subtotal states whether it lands. That makes the
+ * measure visible without asserting it — where a discount deduction sits
+ * between the row sum and the total, the reader can see for themselves that
+ * the rows are principal and the total is carrying value (see position.ts's
+ * MATERIAL_MOVEMENT_FRACTION for why the measure is shown rather than
+ * labelled).
+ */
+export interface WalkLine {
+  label: string;
+  amount: string;
+  kind: "rows" | "adjustment" | "subtotal";
+  /** Subtotals only: whether the running sum landed on the stated figure. */
+  tie: boolean | null;
+}
+
+function buildWalkLines(sequence: VerifiedSequenceEntry[] | null | undefined, checks: SubtotalCheck[]): WalkLine[] {
+  const seq = sequence ?? [];
+  if (seq.length === 0) return [];
+  const lines: WalkLine[] = [];
+  let pendingRows = 0;
+  let pendingRowCount = 0;
+  let checkIdx = 0;
+
+  const flushRows = () => {
+    if (pendingRowCount === 0) return;
+    lines.push({
+      // "rows in the note", never "tranches" — the note's own row count and
+      // the LADDER's count are different sets on purpose (the ladder drops
+      // redeemed rows and can add post-period issuances), and item 4's whole
+      // point is that two counts on one screen must not look like the same
+      // number disagreeing with itself.
+      label: `${pendingRowCount} row${pendingRowCount === 1 ? "" : "s"} in the note sum to`,
+      amount: formatMoneyValue(pendingRows),
+      kind: "rows",
+      tie: null,
+    });
+    pendingRows = 0;
+    pendingRowCount = 0;
+  };
+
+  for (const entry of seq) {
+    const value = parseMoneyAmount(entry.amount);
+    if (entry.kind === "row") {
+      if (value !== null) { pendingRows += value; pendingRowCount++; }
+      continue;
+    }
+    if (entry.kind === "adjustment") {
+      flushRows();
+      lines.push({ label: entry.label ?? "(unlabeled adjustment)", amount: formatMoneyForDisplay(entry.amount), kind: "adjustment", tie: null });
+      continue;
+    }
+    flushRows();
+    const check = checks[checkIdx++];
+    lines.push({ label: entry.label ?? "(unlabeled total)", amount: formatMoneyForDisplay(entry.amount), kind: "subtotal", tie: check ? check.tie : null });
+  }
+  flushRows();
+  return lines;
+}
+
 function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now: Date): RefiLadderBlock {
   const debtMaturity = result.results.find((t) => t.triggerId === "debt-maturity");
   const walkCheck = computeWalkChecksum(debtMaturity?.scheduleSequence);
@@ -389,6 +561,8 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       completenessStatement: "",
       nearestLines: [],
       tailSummary: null,
+      walkLines: [],
+      issuancesInsideAggregate: [],
       sourceCitation: null,
       isAggregateDisclosure: false,
       adjustments: [],
@@ -424,11 +598,46 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       // constructor.
       .map((r) => (r.maturityDate === null ? NaN : r.dateGranularity === "year" ? Number(r.maturityDate) : new Date(r.maturityDate).getUTCFullYear()))
       .filter((y) => !Number.isNaN(y));
-    const yearRange = years.length > 0 ? `, ${Math.min(...years) === Math.max(...years) ? Math.min(...years) : `${Math.min(...years)} to ${Math.max(...years)}`}` : "";
-    tailSummary = `${tailRows.length} more tranche${tailRows.length === 1 ? "" : "s"}${yearRange}`;
+    // ITEM 6 (stage-2 review) — a category rollup is not a bond, and a
+    // seventy-year range is not a maturity. "4 more tranches, 2095" described
+    // four category totals ("Senior unsecured notes payable through 2095")
+    // as four bonds all maturing in one far-future year, which is not a real
+    // instrument and reads as an extraction error to anyone who knows debt.
+    // The tail names what the rows ARE, and only states a year range for
+    // rows that carry a maturity of their own.
+    const tailIdentified = tailRows.filter(rowIdentifiesOneTranche).length;
+    const tailCategories = tailRows.length - tailIdentified;
+    const noun =
+      tailCategories === 0
+        ? `more tranche${tailRows.length === 1 ? "" : "s"}`
+        : tailIdentified === 0
+          ? `more line${tailRows.length === 1 ? "" : "s"} reported as ${tailRows.length === 1 ? "a category total" : "category totals"}`
+          : `more (${tailIdentified} tranche${tailIdentified === 1 ? "" : "s"}, ${tailCategories} category total${tailCategories === 1 ? "" : "s"})`;
+    const datedYears = tailRows.filter(rowIdentifiesOneTranche).length > 0 ? years : [];
+    const yearRange = datedYears.length > 0 ? `, ${Math.min(...datedYears) === Math.max(...datedYears) ? Math.min(...datedYears) : `${Math.min(...datedYears)} to ${Math.max(...datedYears)}`}` : "";
+    tailSummary = `${tailRows.length} ${noun}${yearRange}`;
   }
 
-  const tranchCount = walkCheck.rowCount;
+  // ITEM 4 (stage-2 review) — THE HEADER COUNTS WHAT RENDERS BENEATH IT.
+  //
+  // The count came from walkCheck.rowCount, which is the RAW base sequence's
+  // row count — a different set from the rows on screen, which are the
+  // position-adjusted ladder (8-K issuances added, redeemed rows removed,
+  // repaid and matured rows kept). On four of ten companies the header's N
+  // and the "3 shown + M more" beneath it did not add up, because they were
+  // counting two different things.
+  //
+  // One set. The header, the named rows and the tail are all displayRows, so
+  // 3 + M = N holds by construction rather than by coincidence.
+  const tranchCount = displayRows.length;
+  const liveCount = displayRows.filter((r) => r.status === "live").length;
+  const statusNote = (() => {
+    const counts = new Map<string, number>();
+    for (const r of displayRows) if (r.status !== "live") counts.set(r.status, (counts.get(r.status) ?? 0) + 1);
+    if (counts.size === 0) return "";
+    const parts = [...counts.entries()].map(([st, n]) => `${n} ${st}`);
+    return `, of which ${liveCount} live and ${parts.join(", ")}`;
+  })();
 
   // Session 18 (post-v9 redesign): structural, not company-specific — see
   // RefiLadderBlock.isAggregateDisclosure's doc comment. Checked against
@@ -464,12 +673,13 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // 10 of 11; DaVita 9 of 9; Centene 7 of 8; Quest 12 of 13; Cigna 33 of 36;
   // CHS 2 of 2; Molina 5 of 5. "Most rows" separates HCA from the rest with
   // real margin (25% against a next-lowest 57%) and needs no tuned constant.
-  const rawRows = (debtMaturity.scheduleSequence ?? []).filter((e) => e.kind === "row");
-  const tranchIdentifiedRows = rawRows.filter((r) => r.rate !== null && r.rate.trim() !== "" && r.maturityDate !== null);
-  const isAggregateDisclosure = rawRows.length > 0 && tranchIdentifiedRows.length * 2 <= rawRows.length;
+  const isAggregateDisclosure = scheduleIsAggregateDisclosure(debtMaturity.scheduleSequence);
+
+  const identifiedCount = displayRows.filter(rowIdentifiesOneTranche).length;
+  const categoryTotalCount = tranchCount - identifiedCount;
 
   const sourceCitation: TriggerResult["citations"][number] | null = position.baseFiling
-    ? { form: position.baseFiling.form, date: position.baseFiling.date, url: position.baseFiling.url }
+    ? { form: position.baseFiling.form, date: position.baseFiling.date, reportDate: position.baseFiling.reportDate, url: position.baseFiling.url }
     : (debtMaturity.citations[0] ?? null);
   const sourceCitationText = sourceCitation ? `${sourceCitation.form} ${sourceCitation.date}` : "the base filing";
 
@@ -485,7 +695,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
         ? `internal walk ties — ${walkCheck.subtotalChecks.length} subtotal${walkCheck.subtotalChecks.length === 1 ? "" : "s"} reconcile ✓`
         : `internal walk does not tie — ${walkCheck.subtotalChecks
             .filter((c) => !c.tie)
-            .map((c) => `"${c.label ?? "(unlabeled)"}" off by $${Math.abs(c.gap).toLocaleString("en-US")}`)
+            .map((c) => `"${c.label ?? "(unlabeled)"}" off by ${formatMoneyValue(Math.abs(c.gap))}`)
             .join("; ")}`;
   // The nearestGap === null branch is NOT cosmetic: null means there was
   // nothing to compare against at all (no subtotal in the sequence), and
@@ -499,7 +709,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
         ? `balance-sheet anchor ties (matches "${balanceSheetCheck.matchedSubtotalLabel ?? "an unlabeled total"}") ✓`
         : balanceSheetCheck.nearestGap === null
           ? "balance-sheet anchor cannot be checked — the note states no subtotal to anchor against"
-          : `balance-sheet anchor does not tie — $${Math.abs(balanceSheetCheck.nearestGap).toLocaleString("en-US")} unaccounted; balance-sheet captions [${balanceSheetCheck.captionCategories.join(", ") || "none"}] against note subtotals [${balanceSheetCheck.subtotalCategories.join(", ") || "none"}]`;
+          : `balance-sheet anchor does not tie — ${formatMoneyValue(Math.abs(balanceSheetCheck.nearestGap))} unaccounted; balance-sheet captions [${balanceSheetCheck.captionCategories.join(", ") || "none"}] against note subtotals [${balanceSheetCheck.subtotalCategories.join(", ") || "none"}]`;
 
   // A3 — when the walk misses by a material share of the stated total, the
   // block leads with what CANNOT be claimed. The note, its filing and its
@@ -519,8 +729,14 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
     : position.rowsNotVerifiedAsTranscribed
     ? `TRANSCRIPTION NOT VERIFIED — the note states ${finalSubtotalText ?? "a total"}, but the rows below sum ${gapPct}% short of it. The rows are shown as extracted and are NOT this company's position; read the filing. (${check1Clause}; ${check2Clause})`
     : isAggregateDisclosure
-      ? `aggregate disclosure — ${tranchCount} line${tranchCount === 1 ? "" : "s"} reported as category total${tranchCount === 1 ? "" : "s"}, no individual tranche maturities stated in this filing (${check1Clause}; ${check2Clause})`
-      : `${tranchCount} tranche${tranchCount === 1 ? "" : "s"} — ${check1Clause}; ${check2Clause}`;
+      ? // ITEM 5 — the label counts the rows it sits above, so it can no longer
+        // contradict them. It previously said "no individual tranche
+        // maturities stated in this filing" directly over three individually
+        // named, rated, dated tranches: the label was computed from the base
+        // note and the rows included 8-K issuances the note never carried.
+        // Both halves are now the same set.
+        `${categoryTotalCount} of ${tranchCount} line${tranchCount === 1 ? "" : "s"} below ${categoryTotalCount === 1 ? "is a category total" : "are category totals"} rather than a named tranche — this filing reports its debt by category${identifiedCount > 0 ? `; the other ${identifiedCount} ${identifiedCount === 1 ? "is an individually named tranche" : "are individually named tranches"}` : ""} (${check1Clause}; ${check2Clause})`
+      : `${tranchCount} tranche${tranchCount === 1 ? "" : "s"}${statusNote} — ${check1Clause}; ${check2Clause}`;
 
   // Session 18 (post-v6): prefer the deterministically-selected base filing
   // (position.baseFiling — exactly what lib/fetch/debtNoteLocator.ts found
@@ -533,7 +749,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // when the base ladder failed BOTH checks does the older filing's schedule
   // get surfaced at all, and even then it sits beneath the base ladder's own
 
-  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
+  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, walkLines: buildWalkLines(debtMaturity.scheduleSequence, walkCheck.subtotalChecks), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
 
 /**
@@ -581,7 +797,9 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
     // The BUCKET is unchanged: which bucket a trigger belongs to is
     // taxonomy, not a render decision.
     const periodSpendPrefix = t.triggerId === "capex-program" && !t.projectName ? "period spend — " : "";
-    const description = `${periodSpendPrefix}${condenseEvidenceDescription(fact)}`;
+    // Item 2 — the bucket lines render a written paraphrase, which is why
+    // the display formatter never reached them. See normalizeMoneyInText.
+    const description = normalizeMoneyInText(`${periodSpendPrefix}${condenseEvidenceDescription(fact)}`);
 
     buckets[bucket].push({
       triggerId: t.triggerId,
@@ -594,6 +812,11 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
       isHedgingFlag: bucket === "hedging" && !cardEligible,
       d3Rank: d3SortRank(t, now),
       d3AgeMonths: monthsSinceCompletion(t, now) ?? 0,
+      periodGapNote: periodGapNoteFor(description, t.citations, now),
+      restatesFiguresOf: null,
+      // Replaced by composeTableLineText once the cross-reference pass has
+      // run — every clause must exist before the line is cut.
+      text: "",
     });
   }
 
@@ -636,6 +859,39 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
       if (!line.factKey) continue;
       const owner = ownerOf.get(line.factKey);
       if (owner && owner !== bucket) line.crossReferenceTo = owner;
+    }
+  }
+
+  // ITEM 9 — within one bucket, a line whose whole figure/date set is
+  // already covered by another line in that same bucket is a restatement.
+  // Set-cover, the same question isFullyExplainedByOneFact asks of a card
+  // bullet, asked here of a table line against its neighbours.
+  for (const bucket of TABLE_BUCKET_ORDER) {
+    const lines = buckets[bucket];
+    const tokensOf = lines.map((l) => extractFactTokens(l.description).filter((t) => t.kind !== "percent"));
+    for (let i = 0; i < lines.length; i++) {
+      if (tokensOf[i].length === 0) continue;
+      for (let j = 0; j < lines.length; j++) {
+        if (i === j || lines[i].factKey === lines[j].factKey) continue;
+        // Fewer tokens is the restatement. On an exact tie — which item 12's
+        // period collapse creates, by trimming the fuller line's prior-year
+        // figure away — the LATER line is, deterministically, the repeat.
+        if (tokensOf[i].length > tokensOf[j].length) continue;
+        if (tokensOf[i].length === tokensOf[j].length && i < j) continue;
+        const covered = tokensOf[i].every((a) => tokensOf[j].some((b) => strictFactTokensMatch(a, b)));
+        if (covered) {
+          lines[i].restatesFiguresOf = shortTriggerLabel(lines[j].triggerId, lines[j].triggerId);
+          break;
+        }
+      }
+    }
+  }
+
+  // Item 10 — compose the full line and truncate ONCE, after every clause
+  // that renders has been appended. See TableLine.text.
+  for (const bucket of TABLE_BUCKET_ORDER) {
+    for (const line of buckets[bucket]) {
+      line.text = composeTableLineText(line);
     }
   }
 

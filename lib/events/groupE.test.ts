@@ -9,13 +9,15 @@
  * Run: npx tsx lib/events/groupE.test.ts
  */
 import type { CompanyResult, TriggerResult, VerifiedSequenceEntry } from "../agent";
-import { formatMoneyForDisplay, formatMoneyValue } from "./money";
+import { formatMoneyForDisplay, formatMoneyValue, normalizeMoneyInText } from "./money";
 import { collapseToMostRecentPeriod } from "./evidenceCondense";
 import { assemblePosition } from "./position";
-import { buildEvents, cardCitationGaps } from "./buildEvents";
+import { buildEvents } from "./buildEvents";
 import { buildCompanyTableBlock } from "./portfolioTable";
-import { advisoryPhrasesIn, buildContext } from "./sonnetEventBriefing";
-import { buildVerifiedFactBase } from "./factBase";
+import { advisoryPhrasesIn, buildContext, checkCardStructure } from "./sonnetEventBriefing";
+import { compactLabelWithTiming } from "./labels";
+import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
+import { citationDateGaps } from "./numberGuard";
 
 let passed = 0;
 let failed = 0;
@@ -42,7 +44,7 @@ function trigger(over: Partial<TriggerResult> & { triggerId: string }): TriggerR
   return {
     triggerName: "synthetic", fired: true, dataAvailable: true, evidence: null,
     mappedNeed: "synthetic", needType: "credit", confidence: 1,
-    citations: [{ form: "10-Q", date: "2026-07-29", url: "https://example.com/base" }],
+    citations: [{ form: "10-Q", date: "2026-07-29", reportDate: "", url: "https://example.com/base" }],
     quoteVerified: true, verifiedQuote: null, verifiedQuoteNormalized: null, quoteMatchType: null,
     quoteHasFigure: false, eventDate: null, dateGranularity: null, eventStatus: "upcoming",
     proceedsUse: null, scheduleSequence: [], priorScheduleSequence: [], balanceSheetDebtCaptions: [],
@@ -55,6 +57,29 @@ function trigger(over: Partial<TriggerResult> & { triggerId: string }): TriggerR
 
 function company(results: TriggerResult[]): CompanyResult {
   return { company: "SYNTHETIC CO.", cik: "0000000000", ticker: "SYN", verdict: "CALL", relationshipFlags: [], results };
+}
+
+/** A minimal VerifiedFact for the guard-level cases — only the fields these assertions read. */
+function fact(over: Partial<VerifiedFact> & { linkedTriggerId: string }): VerifiedFact {
+  return {
+    linkedTriggerId: over.linkedTriggerId,
+    ladderRowId: over.ladderRowId ?? null,
+    fact: over.fact ?? over.linkedTriggerId,
+    verifiedText: over.verifiedText ?? over.normalizedText ?? "",
+    normalizedText: over.normalizedText ?? "",
+    figures: over.figures ?? [],
+    dates: over.dates ?? [],
+    sourceFiling: over.sourceFiling ?? null,
+    citations: over.citations ?? [],
+    evidence: over.evidence ?? null,
+    eventDate: over.eventDate ?? null,
+    dateGranularity: over.dateGranularity ?? null,
+    eventStatus: over.eventStatus ?? null,
+    seniority: over.seniority ?? null,
+    redeemsInfo: over.redeemsInfo ?? null,
+    outstandingAmount: over.outstandingAmount ?? null,
+    issueSizeInLabel: over.issueSizeInLabel ?? null,
+  } as VerifiedFact;
 }
 
 // ============================================================================
@@ -107,8 +132,8 @@ function company(results: TriggerResult[]): CompanyResult {
   const dm = trigger({
     triggerId: "debt-maturity",
     citations: [
-      { form: "10-K", date: "2026-02-26", url: "https://example.com/base" },
-      { form: "10-Q", date: "2026-07-30", url: "https://example.com/other" },
+      { form: "10-K", date: "2026-02-26", reportDate: "", url: "https://example.com/base" },
+      { form: "10-Q", date: "2026-07-30", reportDate: "", url: "https://example.com/other" },
     ],
     scheduleSequence: [
       row({ label: "3.400 % Notes due March 2027", rate: "3.400%", maturityDate: "2027-03-01", amount: "$1,481 million" }),
@@ -153,28 +178,76 @@ function company(results: TriggerResult[]): CompanyResult {
 }
 
 // ============================================================================
-// E6 — the mechanical assertion: no card carries a fact newer than its newest
-// cited filing.
+// E6 (rewritten, stage-2 review item 1) — THE PERIOD CHECK, ON THE TEXT THE
+// CARD ACTUALLY STATES.
+//
+// The previous version of this asserted against a hand-built list of
+// structured fact dates, and passed while the live defect was on screen. It
+// could not have caught it: the offending fact was on another trigger, and
+// its eventDate was null — "June 30, 2026" existed only in its prose. So
+// these cases go through the CARD TEXT, which is where the date the reader
+// sees actually comes from.
 // ============================================================================
 {
-  const dm = trigger({
-    triggerId: "debt-maturity",
-    citations: [{ form: "10-K", date: "2026-02-26", url: "https://example.com/base" }],
-    scheduleSequence: [row({ label: "5.000 % Notes due June 2027", rate: "5.000%", maturityDate: "2027-06-01", amount: "$500 million" })],
-  });
-  const { flashCardCandidates } = buildEvents([company([dm])], NOW);
-  const card = flashCardCandidates.find((c) => c.bucket === "refi")!;
+  const FEB = [{ form: "10-K", date: "2026-02-26", reportDate: "2025-12-31" }];
+  const TODAY = "2026-08-26";
 
-  assert(cardCitationGaps(card, []).length === 0, "[E6-3] a card with no facts to check reports no gap rather than a false one");
-  const stated = [{ linkedTriggerId: "debt-maturity", ladderRowId: card.headlineRowId, eventDate: "2026-06-30", fact: "period-end cash balance" }];
+  // The live case, verbatim in shape: a February 10-K, a June 30 balance.
+  const gaps = citationDateGaps("Cigna held $6.3 billion of cash and cash equivalents as of June 30, 2026.", FEB, TODAY);
+  assert(gaps.length === 1 && gaps[0].statedIso === "2026-06-30", `[E6-3] a June 30 period stated over a February filing is a gap (got ${JSON.stringify(gaps)})`);
+
+  // ...and closes the moment the card cites the filing that could report it.
   assert(
-    cardCitationGaps(card, stated).length === 1,
-    "[E6-4] a fact dated after the card's newest cited filing is reported as a gap — the mechanical check that catches the whole class"
+    citationDateGaps("Cigna held $6.3 billion of cash and cash equivalents as of June 30, 2026.", [{ form: "10-K", date: "2026-02-26", reportDate: "2025-12-31" }, { form: "10-Q", date: "2026-07-30", reportDate: "2026-06-30" }], TODAY).length === 0,
+    "[E6-4] REVERSE: adding the 10-Q that CAN report that period closes the gap — the fix is the citation set, not the sentence"
   );
-  const supported = [{ linkedTriggerId: "debt-maturity", ladderRowId: card.headlineRowId, eventDate: "2026-01-31", fact: "a fact the cited 10-K could carry" }];
-  assert(cardCitationGaps(card, supported).length === 0, "[E6-5] REVERSE: a fact the cited filing could carry is not reported");
-  const maturity = [{ linkedTriggerId: "debt-maturity", ladderRowId: card.headlineRowId, eventDate: "2027-06-01", fact: "the tranche's own maturity" }];
-  assert(cardCitationGaps(card, maturity).length === 0, "[E6-6] REVERSE: a FUTURE maturity is not something the filing 'stated late' — never flagged");
+
+  assert(citationDateGaps("Refinance the $500 million notes due June 2027.", FEB, TODAY).length === 0, "[E6-5] REVERSE: a FUTURE maturity is not a period the filing failed to report");
+  assert(citationDateGaps("The company completed the sale in 2025.", FEB, TODAY).length === 0, "[E6-6] REVERSE: a bare year carries no precision to compare — never flagged");
+  assert(citationDateGaps("The Board declared a dividend on February 10, 2026.", FEB, TODAY).length === 0, "[E6-7] REVERSE: a date the cited filing could carry is not flagged");
+  assert(citationDateGaps("As of May 2026 the revolver was undrawn.", [{ form: "10-Q", date: "2026-05-15", reportDate: "2026-04-30" }], TODAY).length === 0, "[E6-8] REVERSE: month precision compares against the 1st, so a mid-month filing can state its own month");
+  assert(citationDateGaps("nothing dated here at all", FEB, TODAY).length === 0, "[E6-9] REVERSE: a card with no dates reports no gap rather than a false one");
+}
+
+// --- E6 through the REAL guard, which is the half that was missing. A guard
+// that is never called is not a guard.
+//
+// What this actually catches, stated precisely, because the first draft of
+// this test asserted something the architecture already guarantees: the
+// card's citation set is the UNION over every fact its text draws on, so a
+// correctly-cited fact always brings its own filing with it and no period
+// gap can survive. The gap that CAN survive is a fact whose own citations
+// cannot support its own dates — a June 30 balance cited only to a February
+// 10-K. That is an extraction defect, it is invisible to every other guard
+// here, and it is exactly what reaches the reader as a dead link.
+{
+  const junePeriodFact = (citations: TriggerResult["citations"]) => [
+    fact({ linkedTriggerId: "debt-maturity", ladderRowId: "row-1", normalizedText: "$500 million 5.000 % Notes due June 2027", evidence: "The company has $500 million of 5.000% notes due June 2027.", citations: [{ form: "10-K", date: "2026-02-26", reportDate: "2025-12-31", url: "https://example.com/k" }] }),
+    fact({ linkedTriggerId: "large-cash-balance", ladderRowId: null, normalizedText: "Cash and cash equivalents were $6.3 billion as of June 30, 2026", evidence: "Cash and cash equivalents were $6.3 billion as of June 30, 2026.", citations }),
+  ];
+  const body = {
+    callAbout: "Refinance the $500 million 5.000% notes due June 2027.",
+    whyNow: "The $500 million maturity due June 2027 sits against $6.3 billion of cash as of June 30, 2026.",
+    keyPoints: ["$500 million of 5.000% notes come due in June 2027.", "Cash and cash equivalents were $6.3 billion as of June 30, 2026."],
+  };
+  const ctx = { headlineCitations: [{ form: "10-K", date: "2026-02-26", reportDate: "2025-12-31" }], today: "2026-08-26" };
+
+  // The cash fact states a June 30 period but is cited ONLY to the February
+  // 10-K. Nothing the card can cite reports that period.
+  const bad = checkCardStructure(body, junePeriodFact([{ form: "10-K", date: "2026-02-26", reportDate: "2025-12-31", url: "https://example.com/k" }]), "debt-maturity", ctx);
+  assert(
+    !bad.ok && bad.reasons.some((r) => r.includes("cannot state a fact about a day")),
+    `[E6-10] the STRUCTURAL GUARD — the one production actually calls — rejects a card whose June-period fact is cited only to a February filing (reasons: ${bad.reasons.join("; ")})`
+  );
+
+  // The same fact, correctly cited to the 10-Q that reports that period: the
+  // union picks the 10-Q up and the card passes. This is the shape all ten
+  // live companies are in today.
+  const good = checkCardStructure(body, junePeriodFact([{ form: "10-Q", date: "2026-07-30", reportDate: "2026-06-30", url: "https://example.com/q" }]), "debt-maturity", ctx);
+  assert(
+    !good.reasons.some((r) => r.includes("cannot state a fact about a day")),
+    `[E6-11] REVERSE: the same card whose fact carries the 10-Q that reports that period raises no period gap (reasons: ${good.reasons.join("; ")})`
+  );
 }
 
 // ============================================================================
@@ -202,7 +275,8 @@ function company(results: TriggerResult[]): CompanyResult {
   assert(hedging[0].crossReferenceTo === "refi", `[E9-2] ...it becomes a CROSS-REFERENCE to the bucket that owns the fact (got ${hedging[0].crossReferenceTo})`);
 
   const line = block.refiLadder.nearestLines[0];
-  assert(line.movementPhrase.startsWith("down $25M from $2.0B"), `[E13-1] the ladder row states how the balance MOVED since the prior filing (got ${JSON.stringify(line.movementPhrase)})`);
+  assert(line.movementPhrase.startsWith("down $25M (1.3%) from $2.0B"), `[E13-1] the ladder row states how the balance MOVED since the prior filing, with its relative size (got ${JSON.stringify(line.movementPhrase)})`);
+  assert(!line.movementPhrase.includes("too small to read"), "[E13-1b] ...and a 1.3% move is stated as a real change, not as accretion");
   assert(line.movementPhrase.includes("10-Q 2026-04-28"), "[E13-2] ...and which filing the prior balance came from");
 }
 
@@ -315,6 +389,121 @@ function company(results: TriggerResult[]): CompanyResult {
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);
+
+// ============================================================================
+// STAGE-2 REVIEW — items 2, 12, 13, 15, 16. One block per rule, each with the
+// live sentence that motivated it and a REVERSE case for the shape it must
+// not touch.
+// ============================================================================
+
+// --- ITEM 2: the formatter reaches prose, and knows what to leave alone. ---
+{
+  const a = normalizeMoneyInText("Repurchased $2,350 million for the six months ended June 30, 2026");
+  assert(a === "Repurchased $2.4B for the six months ended June 30, 2026", `[I2-1] a unit word inside a sentence is formatted in place (got ${a})`);
+  assert(normalizeMoneyInText("cash of $1,435,000 thousand") === "cash of $1.4B", "[I2-2] ...including 'thousand', which no surface should ever print");
+  assert(normalizeMoneyInText("notes of $600,000,000") === "notes of $600M", "[I2-3] a $-prefixed figure written out in full carries its own scale and is formatted");
+  assert(
+    normalizeMoneyInText("raised the quarterly dividend from $0.80 to $0.86 per share") === "raised the quarterly dividend from $0.80 to $0.86 per share",
+    "[I2-4] REVERSE: per-share amounts survive verbatim — rounding these would turn a real disclosure into '$1 to $1'"
+  );
+  assert(
+    normalizeMoneyInText("Total debt principal outstanding 10,847,516") === "Total debt principal outstanding 10,847,516",
+    "[I2-5] REVERSE: a bare figure whose scale the filing never stated is left alone — inventing the scale here would undo every guard upstream that correctly refused to"
+  );
+}
+
+// --- ITEM 12: " and " was not the only join. ---
+{
+  const capex = "Capital expenditures were $152 million during the six months ended June 30, 2026, compared to $176 million in the prior year period.";
+  assert(
+    collapseToMostRecentPeriod(capex) === "Capital expenditures were $152 million during the six months ended June 30, 2026.",
+    `[I12-1] an explicit comparison to an UNYEARED prior period is dropped — the connective itself says the tail is the benchmark (got ${collapseToMostRecentPeriod(capex)})`
+  );
+  assert(collapseToMostRecentPeriod("revenues of $1.001 billion in 2025 and $880 million in 2024") === "revenues of $1.001 billion in 2025.", "[I12-2] the original ' and ' rule still holds");
+  const sameYear = "Repurchased $2,350 million for the six months ended June 30, 2026 and $1,119 million for Q1 2026";
+  assert(
+    collapseToMostRecentPeriod(sameYear) === sameYear,
+    "[I12-3] REVERSE: two periods inside ONE year are left uncut — nothing here can order them without inventing precision, and a wrong cut is worse than an uncut line"
+  );
+  const twoInstruments = "As of June 30, 2026 the company had $373 million drawn on the revolver and $1.455 billion on the Tranche A term loan.";
+  assert(collapseToMostRecentPeriod(twoInstruments) === twoInstruments, "[I12-4] REVERSE: an ordinary 'and' joining two instruments in one period is not a comparison");
+}
+
+// --- ITEM 16: availability is a capability claim. ---
+{
+  assert(advisoryPhrasesIn("showing the same playbook is available to address the December 2027 notes ahead of maturity").length > 0, "[I16-1] 'the same playbook is available' — a capability claim carrying no modal and no evaluative adjective");
+  assert(advisoryPhrasesIn("showing the market is open for exactly this kind of deal").length > 0, "[I16-2] 'the market is open' — the same move, made about the market rather than the company");
+  assert(
+    advisoryPhrasesIn("Quest just tapped the market in May 2026 for $500 million of 10-year senior notes to refinance a June 2026 maturity").length === 0,
+    "[I16-3] REVERSE: the market as the SUBJECT of a filed fact is fine — the rule tests the predicate, not the noun"
+  );
+  assert(
+    advisoryPhrasesIn("the August revolver draw lands three months before the March maturity").length === 0,
+    "[I16-4] REVERSE: two filed facts and the arithmetic between them is exactly what whyNow is for"
+  );
+}
+
+// --- ITEM 13: one instrument per bullet. ---
+{
+  const FOUR_IN_ONE =
+    "On November 18, 2025, Tenet issued $1.5 billion of 5.500% senior secured first lien notes due 2032 and $750 million of 6.000% senior notes due 2033, redeeming $1.5 billion of 6.250% second lien notes due 2027 and partially redeeming $750 million of 6.125% senior notes due 2028.";
+  const facts: VerifiedFact[] = [
+    fact({
+      linkedTriggerId: "new-debt-issuance",
+      normalizedText: FOUR_IN_ONE,
+      evidence: FOUR_IN_ONE,
+      citations: [{ form: "8-K", date: "2025-11-18", reportDate: "", url: "https://example.com/8k" }],
+    }),
+  ];
+  const guard = checkCardStructure(
+    { callAbout: "Refinance the notes.", whyNow: "The maturity lands soon.", keyPoints: [FOUR_IN_ONE, "A second bullet."] },
+    facts,
+    "new-debt-issuance"
+  );
+  assert(
+    guard.reasons.some((r) => r.includes("more than one interest rate")),
+    `[I13-1] a bullet naming four instruments is caught — it passes the set-cover test (one FACT does cover it) and is still four facts (reasons: ${guard.reasons.join("; ")})`
+  );
+
+  // REVERSE — E4 REQUIRES a bullet stating two amounts for ONE instrument, so
+  // counting MONEY would reject exactly the bullet the system asks for.
+  // Counting rates does not.
+  const oneInstrument = checkCardStructure(
+    {
+      callAbout: "Refinance the notes.",
+      whyNow: "The maturity lands soon.",
+      keyPoints: ["$1.1 billion outstanding on the 4.25% Senior Notes due December 15, 2027, against an original issue size of $2.5 billion.", "A second bullet."],
+    },
+    facts,
+    "new-debt-issuance"
+  );
+  assert(
+    !oneInstrument.reasons.some((r) => r.includes("more than one interest rate")),
+    "[I13-2] REVERSE: two AMOUNTS for one instrument is one fact, and is the bullet shape E4 exists to require"
+  );
+}
+
+// --- ITEM 15: no month count for a bare-year maturity. ---
+{
+  const yearOnly = compactLabelWithTiming("debt-maturity", "debt maturity approaching", {
+    monthsToNearestFuture: 16,
+    alreadyPast: false,
+    isPendingLive: false,
+    dateGranularity: "year",
+    windowDate: "2027-12-31",
+  });
+  assert(yearOnly === "refi window matures 2027", `[I15-1] a bare-year maturity states its YEAR — never a month count derived from the code-chosen Dec-31 convention (got ${yearOnly})`);
+
+  const monthKnown = compactLabelWithTiming("debt-maturity", "debt maturity approaching", {
+    monthsToNearestFuture: 15,
+    alreadyPast: false,
+    isPendingLive: false,
+    dateGranularity: "month",
+    windowDate: "2027-12-01",
+  });
+  assert(monthKnown === "refi window ~15mo", `[I15-2] REVERSE: a filing that PRINTS the month keeps its real month count (got ${monthKnown})`);
+}
+
 if (failed > 0) {
   console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);
   process.exit(1);
