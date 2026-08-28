@@ -195,7 +195,8 @@ export function advisoryPhrasesIn(text: string): string[] {
   return [...found];
 }
 
-function formatFact(f: VerifiedFact): string {
+/** Exported for the guard-coverage assertion in narrationIntegrity.test.ts (Session 19, item 1a): the test needs the model's actual view of a fact to prove the derived corpus covers every field this shows. */
+export function formatFact(f: VerifiedFact): string {
   const sourceStr = f.sourceFiling ? `${f.sourceFiling.form} filed ${f.sourceFiling.date}` : "n/a";
   const evidenceLine = f.evidence ? `\n  evidence: "${f.evidence}"` : "";
   // Session 18 F2: a debt-maturity row's seniority (from the debt note's

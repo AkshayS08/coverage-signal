@@ -99,51 +99,69 @@ export function countDistinctFactsReferenced(text: string, factTexts: string[]):
 }
 
 /**
- * Session 17 Item 4: which VERIFIED FACTS a drafted card body actually
- * draws a number/date/rate from — the source of truth for a card's own
- * citation set, computed from the text Sonnet actually wrote rather than
- * a pre-narration guess. Real bug this fixes: Quest's card cited only its
- * headline fact's own filing (a 10-Q) while WHY NOW asserted a May 2026
- * notes-pricing event stated only in an 8-K from a DIFFERENT dedup
- * cluster (debt-maturity has no 8-K citation of its own, so it can never
- * cluster with anything on citation-sharing grounds — a cluster-based
- * union would not have covered this case either). Checking which facts'
- * own text (normalizedText + verifiedText + evidence) actually shares a
- * token with the card text, using the same scale-exact match the rest of
- * this file uses, is what makes "every date/figure in the card traces to
- * a cited filing" true by construction instead of by convention.
+ * Session 17 Item 4 kept this file's shared answer to "what text does this
+ * fact consist of", because several checks here have to agree on it: which
+ * facts a drafted card draws from (factsReferencedIn, which computes the
+ * card's citation set), whether a bullet is covered by a single fact, and
+ * what the accuracy audit compares against. Session 18 grew the list twice.
+ * Session 19 stopped it being a list — see below.
  */
 /**
- * Session 18: a fact's own full text for token-matching purposes —
- * normalizedText/verifiedText/evidence as before, PLUS seniority (F2) and
- * redeemsInfo (E1), the two new fields a card is now instructed to state.
- * Without these here, a bullet correctly stating "redeeming the 6.250%
- * second lien notes due February 2027" (copied straight from the
- * new-debt-issuance fact's own redeemsInfo field) would fail the accuracy
- * guard as an "unverified" figure/date, and would fail
- * isFullyExplainedByOneFact too — the fact's OWN field wouldn't be found in
- * the fact's OWN corpus. One shared builder so every consumer in this file
- * agrees on what a fact's text is.
+ * Session 19, item 1a. The excluded keys, each with the reason it is out.
+ * The DEFAULT IS INCLUSION: a field absent from this set is in the corpus,
+ * so adding a field to VerifiedFact adds it to the guard with no second
+ * edit anywhere.
  */
+const EXCLUDED_FROM_GUARD_CORPUS = new Set<string>([
+  // Filing METADATA, not content. "10-Q filed 2026-07-29" is a fact about
+  // the document, not a claim the document makes, and narration is shown it
+  // as provenance. If these dates entered the corpus, a card could state a
+  // FILING date as though it were a disclosed event date and the accuracy
+  // guard would wave it through. Excluded on purpose, and the only fields
+  // formatFact shows that this corpus deliberately does not cover.
+  "sourceFiling",
+  "citations",
+  // Internal routing identifiers, never quotable content. Harmless to
+  // include and excluded only to keep the corpus to things a filing said.
+  "linkedTriggerId",
+  // Enum-valued classification, not a figure or a date the model may state.
+  "dateGranularity",
+  "eventStatus",
+]);
+
 /**
- * EVERY field narration is shown must be in here, or the guards reject the
- * card for saying what it was told to say.
+ * THE GUARD CORPUS IS DERIVED, NOT ENUMERATED (Session 19, item 1a).
  *
- * Found live in Session 18 stage 2: E4 added `outstandingAmount` and
- * `issueSizeInLabel` to the prompt — the tranche's current balance, given as
- * its own labelled line precisely so the card would state it — without adding
- * them to this corpus. The model dutifully wrote "$1.5 billion outstanding",
- * no single fact appeared to contain that figure (the raw sourceLine holds
- * "1,481", not the display form), and all three non-Cigna cards were rejected
- * for a bullet "not fully explained by any single fact". Three blank cards,
- * caused by the two halves disagreeing about what a fact contains.
+ * This function used to be a hand-maintained list of seven field names, and
+ * that list is what broke Centene: E4 added `outstandingAmount` to the
+ * PROMPT and the list did not gain it, so the model was told to state a
+ * figure the guard could not see, and the guard rejected the card for saying
+ * what it was told to say. Rule 6 is the record of the same defect in the
+ * other direction, where it blanked three cards.
  *
- * The rule this encodes: this function and sonnetEventBriefing.ts's
- * formatFact are two views of ONE thing — what this fact says. They must be
- * changed together.
+ * Extending the list would have fixed Centene and left the next field to
+ * find the same hole. So the list is DELETED. The corpus now walks the fact
+ * object itself: every string-valued field, and every array of strings, is
+ * in unless it is named in EXCLUDED_FROM_GUARD_CORPUS above with a reason.
+ *
+ * What this buys, structurally rather than procedurally: `formatFact` builds
+ * the model's view by reading fields off this same object, so any field it
+ * can show is a field this walk already collected. "Do not add a field the
+ * guards cannot see" stops being a thing to remember and becomes a thing
+ * that cannot happen — and `guardCorpusCoversFormatFact` in
+ * narrationIntegrity.test.ts asserts it, per-field, with sentinels.
  */
 export function factOwnText(f: VerifiedFact): string {
-  return [f.normalizedText, f.verifiedText, f.evidence ?? "", f.seniority ?? "", f.redeemsInfo ?? "", f.outstandingAmount ?? "", f.issueSizeInLabel ?? ""].join(" ");
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(f)) {
+    if (EXCLUDED_FROM_GUARD_CORPUS.has(key)) continue;
+    if (typeof value === "string") {
+      parts.push(value);
+    } else if (Array.isArray(value)) {
+      for (const item of value) if (typeof item === "string") parts.push(item);
+    }
+  }
+  return parts.join(" ");
 }
 
 /**

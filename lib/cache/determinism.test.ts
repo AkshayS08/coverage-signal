@@ -21,6 +21,7 @@ import { runAgentLoop } from "../agent";
 import { buildEvents, buildVerifiedFactBase, buildCompanyTableBlock } from "../events";
 import { cachedDraftEventBriefing } from "./wordingCache";
 import { cacheStats } from "./stats";
+import { CompanyFetchError, formatPassErrors, runPassWithRetries, type PassResult } from "./passHarness";
 
 const COMPANIES = (process.argv[2] || "DaVita").split(",").map((s) => s.trim());
 const RUNS = Number(process.argv[3] || 3);
@@ -28,7 +29,10 @@ const RUNS = Number(process.argv[3] || 3);
 async function runBookOnce(companies: string[]): Promise<unknown[]> {
   const outputs: unknown[] = [];
   for (const company of companies) {
-    const result = await runAgentLoop(company);
+    // Session 19, item 1b: name the company on the way out so the separate
+    // error channel can say which fetch failed. This harness never swallowed
+    // errors, so nothing about the compared bytes changes here.
+    const result = await runAgentLoop(company).catch((err) => { throw new CompanyFetchError(company, err); });
     const { flashCardCandidates } = buildEvents([result]);
     const factBase = buildVerifiedFactBase(result);
 
@@ -51,14 +55,30 @@ async function main() {
   const jsonPerRun: string[] = [];
   const timings: number[] = [];
 
+  const incompletePasses: PassResult[] = [];
   for (let i = 1; i <= RUNS; i++) {
-    cacheStats.reset();
-    const t0 = Date.now();
-    const output = await runBookOnce(COMPANIES);
-    const elapsed = Date.now() - t0;
-    timings.push(elapsed);
-    jsonPerRun.push(JSON.stringify(output, null, 2));
-    console.log(`run ${i}: ${elapsed}ms — ${cacheStats.summary()}`);
+    const pass = await runPassWithRetries(async () => {
+      cacheStats.reset();
+      const t0 = Date.now();
+      const output = await runBookOnce(COMPANIES);
+      return { json: JSON.stringify(output, null, 2), elapsedMs: Date.now() - t0, hitSummary: cacheStats.summary() };
+    });
+    for (const line of formatPassErrors(pass.errors)) console.log(line);
+    if (pass.status === "clean") {
+      timings.push(pass.elapsedMs);
+      jsonPerRun.push(pass.json);
+      console.log(`run ${i}: ${pass.elapsedMs}ms — ${pass.hitSummary}${pass.attempts > 1 ? ` (clean on attempt ${pass.attempts})` : ""}`);
+    } else {
+      incompletePasses.push(pass);
+      console.log(`run ${i}: INCOMPLETE after ${pass.attempts} attempts — excluded from the comparison`);
+    }
+  }
+
+  if (jsonPerRun.length < 2) {
+    console.log(`
+⊘ INCOMPLETE — only ${jsonPerRun.length} clean pass(es); the sample could not be taken. This is NOT a determinism failure.`);
+    for (const p of incompletePasses) for (const line of formatPassErrors(p.errors)) console.log(line);
+    process.exit(2);
   }
 
   let allIdentical = true;

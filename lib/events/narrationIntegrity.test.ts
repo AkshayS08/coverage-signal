@@ -26,8 +26,8 @@ import { buildEvents } from "./buildEvents";
 import { isScrapeShapedText } from "./scrapeGuard";
 import { failedEventBriefing } from "./eventBriefing";
 import { buildVerifiedFactBase, hasDeterminableScale, type VerifiedFact } from "./factBase";
-import { checkCardStructure, buildCorrectionInstruction, parseKeyPoints, type RawCardBody } from "./sonnetEventBriefing";
-import { checkNumbersAgainstQuotes, countDistinctFactsReferenced, factsReferencedIn, isFullyExplainedByOneFact } from "./numberGuard";
+import { checkCardStructure, buildCorrectionInstruction, formatFact, parseKeyPoints, type RawCardBody } from "./sonnetEventBriefing";
+import { checkNumbersAgainstQuotes, countDistinctFactsReferenced, factOwnText, factsReferencedIn, isFullyExplainedByOneFact } from "./numberGuard";
 import { dedupeCitations } from "./buildEvents";
 
 interface Fixture {
@@ -804,6 +804,72 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
       `[14c] F2: callAbout naming the fact's own seniority phrase alongside its figure/date is not penalized (reasons: ${r.reasons.join("; ")})`
     );
   }
+}
+
+
+// ============================================================================
+// SESSION 19, ITEM 1a — THE GUARD CORPUS COVERS EVERY FIELD NARRATION IS SHOWN.
+//
+// This is the assertion that makes Rule 6 structural instead of procedural.
+// It checks no list of field names. It puts a unique sentinel in every string
+// field of a VerifiedFact, renders the model's ACTUAL view of it with
+// formatFact, and requires that every sentinel visible to the model is also
+// visible to the guard. A field added to the prompt fails this test on the
+// same run it is added, with nobody needing to remember anything.
+// ============================================================================
+{
+  const sentinelFor = (key: string) => `SENTINEL${key.toUpperCase()}VALUE`;
+  const probe = {
+    linkedTriggerId: sentinelFor("linkedTriggerId"),
+    ladderRowId: sentinelFor("ladderRowId"),
+    fact: sentinelFor("fact"),
+    verifiedText: sentinelFor("verifiedText"),
+    normalizedText: sentinelFor("normalizedText"),
+    figures: [sentinelFor("figures")],
+    dates: [sentinelFor("dates")],
+    sourceFiling: { form: sentinelFor("sourceFilingForm"), date: sentinelFor("sourceFilingDate"), url: "https://example.com/x" },
+    citations: [{ form: "10-Q", date: "2026-07-30", reportDate: "2026-06-30", url: "https://example.com/x" }],
+    evidence: sentinelFor("evidence"),
+    eventDate: sentinelFor("eventDate"),
+    dateGranularity: null,
+    eventStatus: null,
+    seniority: sentinelFor("seniority"),
+    redeemsInfo: sentinelFor("redeemsInfo"),
+    outstandingAmount: sentinelFor("outstandingAmount"),
+    issueSizeInLabel: sentinelFor("issueSizeInLabel"),
+  } as unknown as VerifiedFact;
+
+  const shown = formatFact(probe);
+  const corpus = factOwnText(probe);
+
+  // Every sentinel the MODEL can see must be one the GUARD can see. The two
+  // sourceFiling sentinels are the documented exception — filing metadata is
+  // provenance, not a claim — and EXCLUDED_FROM_GUARD_CORPUS says why.
+  const METADATA_EXEMPT = ["sourceFilingForm", "sourceFilingDate"];
+  const leaked: string[] = [];
+  for (const key of Object.keys(probe)) {
+    for (const candidate of [key, `${key}Form`, `${key}Date`]) {
+      const sentinel = sentinelFor(candidate);
+      if (!shown.includes(sentinel)) continue;
+      if (METADATA_EXEMPT.includes(candidate)) continue;
+      if (!corpus.includes(sentinel)) leaked.push(candidate);
+    }
+  }
+  assert(
+    leaked.length === 0,
+    `[19-1a] every field formatFact SHOWS the model is in the derived guard corpus — a field reaching the prompt without reaching the guard is what blanked three cards (Rule 6) and rejected Centene's real $1.1B (leaked: ${leaked.join(", ")})`
+  );
+
+  assert(
+    shown.includes(sentinelFor("sourceFilingDate")) && !corpus.includes(sentinelFor("sourceFilingDate")),
+    "[19-1a2] REVERSE: the filing DATE is shown as provenance and deliberately kept out of the corpus — a card must not be able to state a filing date as though it were a disclosed event date"
+  );
+
+  const withFutureField = { ...probe, someFieldAddedLater: "SENTINELFUTUREVALUE" } as unknown as VerifiedFact;
+  assert(
+    factOwnText(withFutureField).includes("SENTINELFUTUREVALUE"),
+    "[19-1a3] a string field nobody has written yet is already in the corpus — the walk is derived, not enumerated, so the default is inclusion"
+  );
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);
