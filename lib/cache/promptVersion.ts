@@ -330,8 +330,29 @@
  * the hole that let a real caption carry a fabricated figure; and cashAmount
  * finally routes through deriveScaleFromFilingDeclaration like the other
  * three fields of its class.
+ * v17 (Session 19, run B) — THE ONE-SLOT SCHEMA, OPENED EVERYWHERE IT WAS
+ * STILL ONE SLOT. Session 18 fixed one slot, for debt-maturity only, and the
+ * two defects that survived its review — CHS's second divestiture and
+ * Centene's note-prose repurchases — were both the SAME shape one trigger
+ * over: a company had two of something and the schema had room for one.
+ * (2a) SIX triggers now return an array of instances, on the rule that a
+ * trigger whose real-world instance count per period is plausibly greater
+ * than one returns an array, decided once for the class and not per company:
+ * asset-sale, acquisition-announced, capex-program, ipo-secondary,
+ * dividend-buyback, new-subsidiary. Each entry carries its own sourceLine
+ * under the same bounded verification contract a ladder row has (BRD 8.3) —
+ * transcription in printed order, never selection.
+ * (2b) noteRetirements: retirements and repurchases stated in the debt
+ * note's OWN PROSE, which no field could previously hold — an 8-K field
+ * cannot, because there is no 8-K. Copied verbatim, verified inside the
+ * located note's own span, never inferred.
+ * (2c) projectCompletionDate + granularity, so a dated project's status is
+ * DERIVED from its date in code rather than defaulting to `standing`.
+ * All four fields are optional and default — a pre-v17 cached answer has
+ * them as undefined, not empty, and must never replay as equivalent to a
+ * fresh one. That is what the bump is for.
  */
-export const EXTRACTION_PROMPT_VERSION = 16;
+export const EXTRACTION_PROMPT_VERSION = 17;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

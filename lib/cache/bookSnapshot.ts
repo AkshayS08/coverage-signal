@@ -28,17 +28,15 @@
  *   2. `loadEnvQuietly` turns the tip off at the source, for every script,
  *      so nothing downstream has to remember to strip it.
  */
-import dotenv from "dotenv";
 import { runAgentLoop } from "../agent";
 import { buildEvents, buildVerifiedFactBase, buildCompanyTableBlock } from "../events";
 import { cachedDraftEventBriefing } from "./wordingCache";
 import { cacheStats } from "./stats";
 import { CompanyFetchError } from "./passHarness";
 
-/** dotenv's banner is stdout noise with a randomized tip; `quiet` removes it. */
-export function loadEnvQuietly(): void {
-  dotenv.config({ path: ".env.local", quiet: true });
-}
+/** Re-exported so existing callers keep one import; defined in loadEnv.ts,
+ * which preflight.ts imports without pulling the Anthropic SDK in behind it. */
+export { loadEnvQuietly } from "./loadEnv";
 
 export interface BookSnapshot {
   /** The compared/persisted bytes. The ONLY thing either mechanism reads. */

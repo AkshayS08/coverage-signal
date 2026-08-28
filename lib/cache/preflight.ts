@@ -24,8 +24,8 @@
  *
  * Run: npm run preflight
  */
-import dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
+import { loadEnvQuietly } from "./loadEnv";
+loadEnvQuietly();
 import { head } from "@vercel/blob";
 import { getRecentFilings } from "../fetch";
 import { corpusFingerprint, baseAnswerKey } from "./answerCache";
