@@ -438,3 +438,48 @@ export const NARRATION_PROMPT_VERSION = 9;
  * a functional gap, and this project's own standing rules favor fixing
  * the shape of a real problem over cosmetic churn.
  */
+
+/**
+ * SESSION 19, RUN A — proceedsUse KEYS ON ITS OWN VERSION.
+ *
+ * It was keyed on EXTRACTION_PROMPT_VERSION, which is the wrong constant for
+ * it: proceedsUse is a different model (Sonnet, not Haiku), a different
+ * prompt, and a different input contract from the base classification. They
+ * shared a key only because they were written at the same time.
+ *
+ * That sharing makes the standing "one substantive change per paid run"
+ * constraint unachievable for this call. Run A changes ONLY what proceedsUse
+ * is fed; bumping the shared constant to re-run it would also invalidate
+ * every base classification and re-extract the whole book under a prompt
+ * that Stage 2 had just changed for other reasons — two substantive changes
+ * in one pass, with a baseline diff nobody could attribute.
+ *
+ * Split, so each call is invalidated by the thing that actually changed it.
+ * A run that touches only the proceedsUse input now costs only the
+ * proceedsUse calls, and the 2a/2b/2c extraction changes stay genuinely
+ * inert until EXTRACTION_PROMPT_VERSION moves in run B.
+ *
+ * THE KEY IS NAMESPACED "pu-v", AND THAT IS NOT COSMETIC. Splitting a
+ * constant out of a shared key path does not give it a fresh namespace — it
+ * gives it the OTHER constant's history. This path interpolated
+ * EXTRACTION_PROMPT_VERSION for its whole life, so `.../v2.json` and
+ * `.../v3.json` already exist for most companies, written on 2026-08-21
+ * when that constant was 2 and 3, under a different prompt and unbounded
+ * input. Setting this constant to 2 read them straight back.
+ *
+ * It was caught only because the cost meter said 0 calls for eight
+ * companies that should all have missed, and two of them came back with
+ * DIFFERENT values — which would have been reported as the input bound
+ * flipping two classifications. It was a seven-day-old answer to a
+ * different question.
+ *
+ * The rule: a version constant split out of a shared key path needs a
+ * namespace of its own, not a number nobody has used yet. Numbers get
+ * reused; a prefix does not.
+ *
+ * 1 -> 2: the input is bounded (lib/agent/proceedsUseInput.ts). The
+ * classification prompt itself is unchanged; what changed is that it no
+ * longer receives each company's most recent 10-Q whole, which measured 83%
+ * of this call's entire input.
+ */
+export const PROCEEDS_USE_PROMPT_VERSION = 2;

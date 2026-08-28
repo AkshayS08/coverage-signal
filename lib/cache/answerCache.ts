@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { readCache, writeCache } from "../fetch/cache";
-import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
+import { PROCEEDS_USE_PROMPT_VERSION, EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 import { cacheStats } from "./stats";
 
 function sha256(input: string): string {
@@ -80,5 +80,9 @@ export async function cachedProceedsUse<T>(
   fingerprint: string,
   compute: () => Promise<T>
 ): Promise<{ data: T; hit: boolean }> {
-  return getOrCompute(`answer/${cik}/proceedsUse/${fingerprint}/v${EXTRACTION_PROMPT_VERSION}.json`, compute);
+  // NAMESPACED "pu-v", not "v" — see PROCEEDS_USE_PROMPT_VERSION's comment.
+  // This path previously interpolated EXTRACTION_PROMPT_VERSION, so
+  // ".../v2.json" already exists on disk from the week that constant was 2.
+  // A bare "v${N}" here would silently read those.
+  return getOrCompute(`answer/${cik}/proceedsUse/${fingerprint}/pu-v${PROCEEDS_USE_PROMPT_VERSION}.json`, compute);
 }
