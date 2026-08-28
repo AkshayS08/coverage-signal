@@ -10,49 +10,15 @@
  *
  * Run: npx tsx lib/cache/acceptance.test.ts
  */
-import dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
+loadEnvQuietly();
 
-import { runAgentLoop } from "../agent";
-import { buildEvents, buildVerifiedFactBase, buildCompanyTableBlock } from "../events";
-import { cachedDraftEventBriefing } from "./wordingCache";
-import { cacheStats } from "./stats";
-import { CompanyFetchError, formatPassErrors, runPassWithRetries, type PassResult } from "./passHarness";
+import { formatPassErrors, runPassWithRetries, type PassResult } from "./passHarness";
+import { captureBookSnapshot, loadEnvQuietly } from "./bookSnapshot";
 
 const BOOK_A = ["DaVita", "HCA Healthcare", "Tenet Healthcare", "Universal Health Services", "Encompass Health"];
 const BOOK_B = ["Community Health Systems", "Quest Diagnostics", "Centene Corporation", "Cigna Group", "Molina Healthcare"];
 
-async function runBookOnce(companies: string[]): Promise<{ json: string; elapsedMs: number; hitSummary: string }> {
-  cacheStats.reset();
-  const t0 = Date.now();
-  const outputs: unknown[] = [];
-  for (const company of companies) {
-    try {
-      const result = await runAgentLoop(company);
-      const { flashCardCandidates } = buildEvents([result]);
-      const factBase = buildVerifiedFactBase(result);
-
-      const eventBriefings = [];
-      for (const card of flashCardCandidates) {
-        const briefing = await cachedDraftEventBriefing(card, factBase);
-        eventBriefings.push({ eventId: card.id, briefing });
-      }
-      // Deterministic — included in the diffed output for full coverage,
-      // though a pure function can't be the source of any drift.
-      const table = buildCompanyTableBlock(result, flashCardCandidates);
-
-      outputs.push({ company, result, eventBriefings, table });
-    } catch (err) {
-      // Session 19, item 1b: the error does NOT enter the compared bytes.
-      // Production's route.ts still swallows a bad name so one company
-      // cannot abort a book; a determinism SAMPLE must do the opposite and
-      // discard the whole pass, or it reports the network as a code defect.
-      throw new CompanyFetchError(company, err);
-    }
-  }
-  const elapsedMs = Date.now() - t0;
-  return { json: JSON.stringify(outputs, null, 2), elapsedMs, hitSummary: cacheStats.summary() };
-}
+const runBookOnce = captureBookSnapshot;
 
 function diffFirstLine(a: string, b: string): string {
   const al = a.split("\n");

@@ -1,0 +1,82 @@
+/**
+ * SESSION 19 — ONE SERIALIZER FOR A BOOK, SHARED BY THE HARNESSES AND THE
+ * BASELINE WRITER.
+ *
+ * The rule: A BASELINE CAPTURES PRODUCT OUTPUT, NEVER PROCESS STDOUT.
+ *
+ * The baselines this project persists after every paid run were being
+ * captured by redirecting a script's stdout to a file. That silently makes
+ * the baseline a recording of the PROCESS rather than of the PRODUCT, and it
+ * bit immediately: `dotenv` prints a rotating marketing tip to stdout on
+ * load, so two captures of an identical book differed on line 1 —
+ *
+ *   ◇ injected env (4) from .env.local // tip: ⌘ suppress logs { quiet: true }
+ *   ◇ injected env (4) from .env.local // tip: ⌁ auth for agents [...]
+ *
+ * — and every trace line, every ⚠ warning and every future console.log in the
+ * pipeline was in there with it. A Stage 3 line-level diff against that is
+ * unreadable at best and wrong at worst, since a changed warning would read
+ * as a changed result.
+ *
+ * Two things follow, and this file is both:
+ *
+ *   1. The snapshot is built from the same in-memory objects the determinism
+ *      harnesses compare, by the same function, so a baseline and a
+ *      determinism pass CANNOT disagree about what a book's output is. They
+ *      were previously two independent serializations that merely looked
+ *      alike.
+ *   2. `loadEnvQuietly` turns the tip off at the source, for every script,
+ *      so nothing downstream has to remember to strip it.
+ */
+import dotenv from "dotenv";
+import { runAgentLoop } from "../agent";
+import { buildEvents, buildVerifiedFactBase, buildCompanyTableBlock } from "../events";
+import { cachedDraftEventBriefing } from "./wordingCache";
+import { cacheStats } from "./stats";
+import { CompanyFetchError } from "./passHarness";
+
+/** dotenv's banner is stdout noise with a randomized tip; `quiet` removes it. */
+export function loadEnvQuietly(): void {
+  dotenv.config({ path: ".env.local", quiet: true });
+}
+
+export interface BookSnapshot {
+  /** The compared/persisted bytes. The ONLY thing either mechanism reads. */
+  json: string;
+  elapsedMs: number;
+  hitSummary: string;
+}
+
+/**
+ * Runs a book and serializes it. Throws CompanyFetchError naming the company
+ * on any failure — the caller decides what that means (passHarness.ts
+ * discards the pass; production swallows it per company).
+ */
+export async function captureBookSnapshot(companies: string[]): Promise<BookSnapshot> {
+  cacheStats.reset();
+  const t0 = Date.now();
+  const outputs: unknown[] = [];
+
+  for (const company of companies) {
+    try {
+      const result = await runAgentLoop(company);
+      const { flashCardCandidates } = buildEvents([result]);
+      const factBase = buildVerifiedFactBase(result);
+
+      const eventBriefings = [];
+      for (const card of flashCardCandidates) {
+        const briefing = await cachedDraftEventBriefing(card, factBase);
+        eventBriefings.push({ eventId: card.id, briefing });
+      }
+      // Deterministic — included for full coverage, though a pure function
+      // cannot be the source of any drift.
+      const table = buildCompanyTableBlock(result, flashCardCandidates);
+
+      outputs.push({ company, result, eventBriefings, table });
+    } catch (err) {
+      throw new CompanyFetchError(company, err);
+    }
+  }
+
+  return { json: JSON.stringify(outputs, null, 2), elapsedMs: Date.now() - t0, hitSummary: cacheStats.summary() };
+}

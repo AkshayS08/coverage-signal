@@ -14,39 +14,14 @@
  *   arg1 = comma-separated company book (default: DaVita)
  *   arg2 = number of runs (default: 3)
  */
-import dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
+loadEnvQuietly();
 
-import { runAgentLoop } from "../agent";
-import { buildEvents, buildVerifiedFactBase, buildCompanyTableBlock } from "../events";
-import { cachedDraftEventBriefing } from "./wordingCache";
-import { cacheStats } from "./stats";
-import { CompanyFetchError, formatPassErrors, runPassWithRetries, type PassResult } from "./passHarness";
+import { formatPassErrors, runPassWithRetries, type PassResult } from "./passHarness";
+import { captureBookSnapshot, loadEnvQuietly } from "./bookSnapshot";
 
 const COMPANIES = (process.argv[2] || "DaVita").split(",").map((s) => s.trim());
 const RUNS = Number(process.argv[3] || 3);
 
-async function runBookOnce(companies: string[]): Promise<unknown[]> {
-  const outputs: unknown[] = [];
-  for (const company of companies) {
-    // Session 19, item 1b: name the company on the way out so the separate
-    // error channel can say which fetch failed. This harness never swallowed
-    // errors, so nothing about the compared bytes changes here.
-    const result = await runAgentLoop(company).catch((err) => { throw new CompanyFetchError(company, err); });
-    const { flashCardCandidates } = buildEvents([result]);
-    const factBase = buildVerifiedFactBase(result);
-
-    const eventBriefings = [];
-    for (const card of flashCardCandidates) {
-      const briefing = await cachedDraftEventBriefing(card, factBase);
-      eventBriefings.push({ eventId: card.id, briefing });
-    }
-    const table = buildCompanyTableBlock(result, flashCardCandidates);
-
-    outputs.push({ company, result, eventBriefings, table });
-  }
-  return outputs;
-}
 
 async function main() {
   console.log(`=== Session 14 run-to-run identity test ===`);
@@ -57,12 +32,7 @@ async function main() {
 
   const incompletePasses: PassResult[] = [];
   for (let i = 1; i <= RUNS; i++) {
-    const pass = await runPassWithRetries(async () => {
-      cacheStats.reset();
-      const t0 = Date.now();
-      const output = await runBookOnce(COMPANIES);
-      return { json: JSON.stringify(output, null, 2), elapsedMs: Date.now() - t0, hitSummary: cacheStats.summary() };
-    });
+    const pass = await runPassWithRetries(() => captureBookSnapshot(COMPANIES));
     for (const line of formatPassErrors(pass.errors)) console.log(line);
     if (pass.status === "clean") {
       timings.push(pass.elapsedMs);
