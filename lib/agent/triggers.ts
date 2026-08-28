@@ -163,3 +163,52 @@ export const TRIGGERS: TriggerDef[] = [
     itemCodes: ["2.04", "1.03"],
   },
 ];
+
+/**
+ * SESSION 19, ITEM 2a — WHICH TRIGGERS RETURN AN ARRAY.
+ *
+ * The rule, applied once to the class rather than per company: a trigger
+ * whose real-world instance count IN ONE PERIOD is plausibly greater than
+ * one returns an array of instances. A genuinely singular CONDITION — a cash
+ * balance, a covenant status, a floating-rate exposure — stays scalar,
+ * because there is only ever one of it to state.
+ *
+ * The distinction is EVENT versus CONDITION, and it is worth naming because
+ * it does the work: an event happens, is dated, and can happen again next
+ * week; a condition obtains, is measured, and has exactly one value at a
+ * time. A company can close two divestitures in a quarter. It cannot have
+ * two cash balances.
+ *
+ * `debt-maturity` is absent from this list because it already returns an
+ * array of a richer shape — an ordered row/adjustment/subtotal sequence that
+ * has to walk arithmetically — and nothing here replaces it.
+ */
+export const MULTI_INSTANCE_TRIGGERS = new Set<string>([
+  "asset-sale",
+  "acquisition-announced",
+  "capex-program",
+  "ipo-secondary",
+  "dividend-buyback",
+  "new-subsidiary",
+]);
+
+/**
+ * The two calls that were close, recorded so the next person does not have
+ * to re-derive them:
+ *
+ * `new-debt-issuance` — DECIDED NO, this session. It is plainly a
+ * multi-instance event (one filer priced $500M in May and a $100M add-on in
+ * August, and today those collapse into one verdict), and it already returns
+ * `issuedTranches`. But that array is at the TRANCHE level, which is what
+ * the position layer consumes as ladder rows. Supporting several ISSUANCES
+ * each with several tranches is a NESTING change, not an array change — it
+ * needs a tranche-to-issuance association that nothing currently carries.
+ * Different shape, different risk, its own decision. The gap is real and
+ * stated rather than half-fixed.
+ *
+ * `revolver-near-capacity` — DECIDED SCALAR. A company can hold several
+ * credit facilities, so the instance count argument is available. It loses
+ * to the event/condition test: "near capacity" is a utilization state read
+ * at a point in time, not something that occurs. A second facility is
+ * another instrument, not a second event.
+ */

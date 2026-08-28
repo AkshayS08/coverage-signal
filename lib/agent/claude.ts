@@ -228,6 +228,30 @@ export interface IssuedTrancheRow {
   sourceLine: string;
 }
 
+/** Session 19, item 2a — one entry per real-world instance of a multi-instance trigger. See EVENT_INSTANCE_SCHEMA. */
+export interface EventInstanceRow {
+  /** What happened, as the filing names it. */
+  description: string;
+  /** This instance's OWN amount, unit attached, or null when the filing states none for it. Never another instance's figure. */
+  amount: string | null;
+  eventDate: string | null;
+  dateGranularity: DateGranularity | null;
+  eventStatus: EventStatus;
+  /** Verbatim from the filing, verified literally and bounded to its own region — the same contract a ladder row's sourceLine carries. */
+  sourceLine: string;
+}
+
+/** Session 19, item 2b — a retirement or repurchase the debt note states in its own prose. See NOTE_RETIREMENT_SCHEMA. */
+export interface NoteRetirementRow {
+  /** The instrument as the note names it. */
+  instrument: string;
+  /** The amount retired or repurchased, unit attached, or null when the prose names none. */
+  amount: string | null;
+  eventDate: string | null;
+  dateGranularity: DateGranularity | null;
+  sourceLine: string;
+}
+
 export interface TriggerVerdict {
   triggerId: string;
   fired: boolean;
@@ -302,6 +326,25 @@ export interface TriggerVerdict {
    */
   issuedTranches: IssuedTrancheRow[];
   /**
+   * Session 19, item 2a — ONLY for the multi-instance triggers (see
+   * MULTI_INSTANCE_TRIGGERS in lib/agent/triggers.ts), empty for the rest.
+   * Every qualifying event in the period, in printed order.
+   */
+  eventInstances: EventInstanceRow[];
+  /**
+   * Session 19, item 2b — "debt-maturity" ONLY, empty for every other
+   * trigger. Retirements and repurchases stated in the debt note's own
+   * narrative rather than in an 8-K.
+   */
+  noteRetirements: NoteRetirementRow[];
+  /**
+   * Session 19, item 2c — "capex-program" ONLY, null elsewhere. The stated
+   * completion date of a named project, which is what makes its status
+   * derivable instead of defaulting to `standing`.
+   */
+  projectCompletionDate: string | null;
+  projectCompletionGranularity: DateGranularity | null;
+  /**
    * Session 18 A3 — every trigger. The amount THIS event's own filing text
    * states for it, or null. Not a general dollar figure that happens to
    * appear near the disclosure — the amount actually being received, paid,
@@ -366,6 +409,65 @@ const ISSUED_TRANCHE_SCHEMA = {
   required: ["instrument", "amount", "sourceLine"],
 };
 
+/**
+ * SESSION 19, ITEM 2a — ONE ENTRY PER REAL-WORLD INSTANCE.
+ *
+ * The one-slot shape that Session 18 replaced for `debt-maturity` is still
+ * everywhere else, and it strands facts that were extracted successfully.
+ * CHS's filing describes TWO divestitures; the structured slot took the
+ * smaller, more recent $110M deal, and the larger — "the sale of Crestwood
+ * Medical Center in Huntsville, Alabama on April 1, 2026 for $459 million in
+ * cash" — survived only as prose inside `evidence`, which the condenser then
+ * trimmed. Nothing was missed by the model. There was nowhere to put it.
+ *
+ * Same verification contract as a ladder row (BRD 8.3): every entry carries
+ * its OWN sourceLine, verified literally, bounded to its own region. This is
+ * TRANSCRIPTION, not selection — copy every qualifying event in printed
+ * order, never rank, never choose, never keep "the most important one".
+ */
+const EVENT_INSTANCE_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    description: { type: "string" },
+    amount: { type: ["string", "null"] },
+    eventDate: { type: ["string", "null"] },
+    dateGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
+    eventStatus: { type: "string", enum: ["upcoming", "just_announced", "completed", "standing"] },
+    sourceLine: { type: "string" },
+  },
+  required: ["description", "sourceLine", "eventStatus"],
+};
+
+/**
+ * SESSION 19, ITEM 2b — A RETIREMENT THE DEBT NOTE STATES IN ITS OWN PROSE.
+ *
+ * An 8-K's `redeems` field is currently the ONLY path to a retired ladder
+ * row. A repayment described in the note's own narrative cannot reach the
+ * position layer at all: the row either vanishes from the schedule and comes
+ * back marked "dropped from the newest filing with no redemption explaining
+ * it" — while the filing explains it two paragraphs below the table — or it
+ * moves and the ladder reports a balance change with no cause.
+ *
+ * Centene is the shape: "During the three and six months ended June 30,
+ * 2026, the Company repurchased $118 million and $1,147 million,
+ * respectively, of its par value Senior Notes due 2027." That text is inside
+ * the located note span and already in the model's input. There was no field.
+ *
+ * Copied verbatim, never inferred, with the amount and the instrument as the
+ * filing names them.
+ */
+const NOTE_RETIREMENT_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    instrument: { type: "string" },
+    amount: { type: ["string", "null"] },
+    eventDate: { type: ["string", "null"] },
+    dateGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
+    sourceLine: { type: "string" },
+  },
+  required: ["instrument", "sourceLine"],
+};
+
 const VERDICT_ITEM_SCHEMA = {
   type: "object" as const,
   properties: {
@@ -392,6 +494,10 @@ const VERDICT_ITEM_SCHEMA = {
     issuedTranches: { type: "array", items: ISSUED_TRANCHE_SCHEMA },
     cashAmount: { type: ["string", "null"] },
     projectName: { type: ["string", "null"] },
+    eventInstances: { type: "array", items: EVENT_INSTANCE_SCHEMA },
+    noteRetirements: { type: "array", items: NOTE_RETIREMENT_SCHEMA },
+    projectCompletionDate: { type: ["string", "null"] },
+    projectCompletionGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
   },
   required: ["triggerId", "fired", "dataAvailable", "eventStatus", "quoteHasFigure", "confidence", "needsDig"],
 };
@@ -442,6 +548,32 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
 - cashAmount / projectName — EVERY trigger.
   - cashAmount: the dollar amount THIS SPECIFIC event's own filing text states for it, with its unit — or null. Not any dollar figure that happens to appear nearby; the amount actually being received, paid, committed, or raised for this exact event. A classification with no realized cash movement (e.g. assets reclassified as held-for-sale, which states a carrying value but nothing has actually been sold or received yet) is null, even though a dollar figure is present in the disclosure — the carrying value is not this event's cashAmount. An announcement, launch, or formation with no dollar figure stated anywhere for it is null. Do not extract which direction the cash moves (in or out) — that already comes from the trigger itself; do not create a second, possibly disagreeing answer to a question this schema doesn't ask.
   - projectName: the discrete, NAMED project or facility the filing calls out for this event (e.g. "Alan B. Miller Medical Center"), or null when the amount is a period total with no specific named thing behind it (e.g. "capital expenditures of $348 million for the six months ended..."). Amount plus a name is a named project; amount with no name is period spend — this field is only what tells the two apart, never a judgment about whether either one matters.
+
+- eventInstances — ONLY for these six triggers: "asset-sale", "acquisition-announced", "capex-program", "ipo-secondary", "dividend-buyback", "new-subsidiary". Leave it at its empty default ([]) for every other trigger.
+  - WHY THIS EXISTS: these are events, and a company routinely has more than one of them in a single period. Until now this schema had exactly one slot per trigger, so a second real event had nowhere to go — one filing describes TWO hospital divestitures, the slot took the smaller one, and the larger (a $459 million sale) survived only as prose inside evidence and was then trimmed for length. Nothing was missed by the reader of the filing. There was nowhere to put it.
+  - TRANSCRIPTION, NOT SELECTION. Copy EVERY qualifying event the filings state, in the order they are printed. Do not rank them, do not choose the most important, do not keep only the most recent, and do not stop at one because one feels like enough. If the filings describe four acquisitions, return four entries. If they describe one, return one. If none, return [].
+  - Each entry carries its OWN fields, describing THAT event and no other:
+    - description: what happened, in the filing's own terms — enough that a reader knows which event this is ("the sale of Crestwood Medical Center in Huntsville, Alabama").
+    - amount: THIS event's own amount with its unit attached, or null when the filing states none FOR THIS EVENT. Never borrow the figure from a sibling event, and never use a combined total covering several of them.
+    - eventDate + dateGranularity: THIS event's own date, under the exact same copy-never-compute rules as the top-level eventDate above. A bare year stays a bare year.
+    - eventStatus: THIS event's own status, from the same four values.
+    - sourceLine: copied VERBATIM, character-for-character, from the filing text given above — held to the EXACT SAME standard as the "quote" field (re-read its instructions). The filing's own raw text for this event, never a sentence you compose describing it. This is verified in code against the filing, and an entry whose sourceLine cannot be found is dropped.
+  - The top-level evidence/quote/eventDate/cashAmount fields still describe the trigger as a whole and are unchanged. eventInstances is additional, not a replacement — fill both.
+
+- noteRetirements — ONLY for the "debt-maturity" trigger. Leave it at its empty default ([]) for every other trigger.
+  - A debt note often states, IN ITS OWN PROSE rather than in the table, that some of an instrument was repaid, repurchased, called, or redeemed during the period — e.g. "During the three and six months ended June 30, 2026, the Company repurchased $118 million and $1,147 million, respectively, of its par value Senior Notes due 2027." That text is inside the debt note you were already given, and until now there was no field for it, so the ladder could show a balance moving with no stated cause.
+  - Read ONLY the located debt note — the same section the schedule came from. Do NOT go looking through the rest of the filing for retirement language; the note's own narrative is the whole scope of this field.
+  - One entry per retirement the note describes. Copy, never infer:
+    - instrument: the instrument as the note names it.
+    - amount: the amount retired or repurchased, unit attached, or null when the prose names no figure. Where the note states several figures for different periods (a three-month and a six-month figure in one sentence), record the one matching THIS FILING'S OWN PERIOD OF REPORT, named in the guidance section above.
+    - eventDate + dateGranularity: the date the note states for it, or null. Same copy-never-compute rules.
+    - sourceLine: VERBATIM from the note, same standard as everywhere else.
+  - If the note's prose describes no retirement at all, return []. Do not manufacture one from the fact that a balance changed.
+
+- projectCompletionDate / projectCompletionGranularity — ONLY for the "capex-program" trigger. Leave both null for every other trigger.
+  - When the filing states when a named project is expected to be, or was, completed — "scheduled to be completed in December 2026", "opened during the second quarter of 2026" — copy that date here under the same copy-never-compute rules as every other date in this schema. A bare year stays a bare year; a quarter with no month stated is that quarter's own year unless the filing names a month.
+  - Null when the filing names no completion date, which is the normal case for a period-spend figure with no specific project behind it.
+  - Do NOT derive a status from this date yourself — code does that. Your job is only to copy the date the filing states.
 
 Return a result for every one of the 15 triggers, even ones with no signal at all.`;
 
@@ -537,6 +669,13 @@ const SESSION18_OPTIONAL_FIELDS = [
   "issuedTranches",
   "cashAmount",
   "projectName",
+  // Session 19 fields join the same list for the same reason: optional in
+  // the tool schema so an unrelated trigger is never disturbed by their
+  // addition, defaulted here so no downstream reader ever sees undefined.
+  "eventInstances",
+  "noteRetirements",
+  "projectCompletionDate",
+  "projectCompletionGranularity",
 ] as const;
 type Session18OptionalField = (typeof SESSION18_OPTIONAL_FIELDS)[number];
 /** A raw verdict as the tool call (or a hand-built synthetic one) may legitimately omit the Session 18 fields — the shape withFieldDefaults accepts. */
@@ -573,6 +712,20 @@ export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
     issuedTranches: (v.issuedTranches ?? []).map(normalizeRow),
     cashAmount: v.cashAmount ?? null,
     projectName: v.projectName ?? null,
+    eventInstances: (v.eventInstances ?? []).map((e) => ({
+      ...e,
+      amount: e.amount ?? null,
+      eventDate: e.eventDate ?? null,
+      dateGranularity: e.dateGranularity ?? null,
+    })),
+    noteRetirements: (v.noteRetirements ?? []).map((r) => ({
+      ...r,
+      amount: r.amount ?? null,
+      eventDate: r.eventDate ?? null,
+      dateGranularity: r.dateGranularity ?? null,
+    })),
+    projectCompletionDate: v.projectCompletionDate ?? null,
+    projectCompletionGranularity: v.projectCompletionGranularity ?? null,
   };
 }
 

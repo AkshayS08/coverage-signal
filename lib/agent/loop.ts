@@ -22,6 +22,7 @@ import {
 import { verifyTriggerQuote, verifyClaim, discriminatingDigitGroups } from "./verifyQuote";
 import { verifyEventDate, type EventDateGuardResult } from "./factGuard";
 import { classifyProceedsUse } from "./proceedsUse";
+import { boundProceedsFilingText } from "./proceedsUseInput";
 import { extractFactTokens, factTokensMatch, type FactToken } from "./factTokens";
 import { assertBlobConfigured } from "../fetch/cache";
 import { corpusFingerprint, cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
@@ -996,7 +997,25 @@ export async function runAgentLoop(
         .filter((f) => f.form === "10-Q")
         .sort((a, b) => b.filingDate.localeCompare(a.filingDate))[0];
       const urls = new Set([...issuance.citations.map((c) => c.url), ...(mostRecentTenQ ? [mostRecentTenQ.primaryDocUrl] : [])]);
-      const filingTexts = [...urls].map((url) => textByUrl.get(url)).filter((t): t is string => !!t);
+      // Session 19, item 2d: each filing's contribution is BOUNDED before it
+      // is sent. The cited pricing 8-Ks still go whole; the supplementary
+      // 10-Q, which measured 83% of this call's entire input, is reduced to
+      // regions around the issuance's own figures. See proceedsUseInput.ts
+      // for the bound and the measurements behind it.
+      const anchorText = [issuance.verifiedQuote ?? "", issuance.evidence ?? ""].join(" ");
+      const bounded = [...urls]
+        .map((url) => ({ url, text: textByUrl.get(url) }))
+        .filter((f): f is { url: string; text: string } => !!f.text)
+        .map((f) => ({ url: f.url, ...boundProceedsFilingText(f.text, anchorText) }));
+      for (const b of bounded) {
+        if (b.mode === "whole") continue;
+        log(
+          b.mode === "no-anchor"
+            ? `  proceedsUse input: ${b.originalChars.toLocaleString()} chars DROPPED — this issuance's own figures appear nowhere in that filing, so there is no region to excerpt`
+            : `  proceedsUse input: ${b.originalChars.toLocaleString()} → ${b.sentChars.toLocaleString()} chars across ${b.regions} region(s)`
+        );
+      }
+      const filingTexts = bounded.map((b) => b.text).filter((t) => t.length > 0);
       const { data: proceedsUse, hit: proceedsHit } = await cachedProceedsUse(filingsResult.cik, fingerprint, () =>
         classifyProceedsUse({
           companyName,
