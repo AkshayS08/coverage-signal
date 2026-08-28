@@ -20,6 +20,10 @@
  * real debt schedule shares regardless of company-specific phrasing or
  * table-to-text formatting.
  */
+// Imported, not restated. This was a hand-written duplicate of
+// verifyQuote.ts's own glyph table and the two had already drifted apart in
+// both directions — see that table's comment.
+import { VULGAR_FRACTION_CLASS } from "../agent/verifyQuote";
 
 /**
  * Session 18 (post-v16) — THE DEBT-NOTE HEADING ASSERTION.
@@ -107,7 +111,7 @@ export type DebtNoteLocation =
  * edge case: CHS carries 16 fraction coupons in each 10-Q and 161 in its
  * 10-K.
  */
-const VULGAR_FRACTION_CLASS = "¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞";
+
 const COUPON_SRC = `(?:\\d{1,2}\\.\\d{2,4}|\\d{1,2}\\s?[${VULGAR_FRACTION_CLASS}])\\s?%`;
 /** A coupon rate loosely followed by a maturity year, in either order and however far HTML-to-text stripping put whitespace between them — the one shape a debt-schedule row (or a dense cluster of them) reliably has. */
 const COUPON_NEAR_YEAR_RE = new RegExp(

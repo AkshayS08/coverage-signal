@@ -76,20 +76,47 @@ import { detectDollarScaleAt, formatScaledDollars } from "./scaleNormalize";
  * never stated; those glyphs are left alone (they do not occur in coupon
  * rates, and leaving them is exactly today's behaviour, so no regression).
  */
+/**
+ * THE ONE FRACTION-GLYPH TABLE. Every layer that has to know a vulgar
+ * fraction is a number reads it from here.
+ *
+ * Found during the stage-2 review, when checking whether the renderer had
+ * grown its own copy of this walker (it had not — it imports
+ * normalizeForMatch). One layer over, it had: lib/fetch/debtNoteLocator.ts
+ * carried its own hand-written glyph string for the coupon regex, and the
+ * two had ALREADY diverged. The locator knew six glyphs this table did not
+ * (⅐ ⅑ ⅓ ⅔ ⅙ ⅚), which meant a "6 ⅓%" coupon could be found by the
+ * locator, transcribed, and then fail every downstream comparison that
+ * needs to know it equals 6.3333 — verification, rate matching, and the
+ * ladder's own rate-dedup.
+ *
+ * The locator cannot use normalizeForMatch (it matches RAW filing text
+ * before anything is normalized, which is the whole point of a locator), so
+ * it gets the character class instead. One list, two shapes, no drift.
+ */
 const VULGAR_FRACTIONS: Record<string, string> = {
   "½": ".5",
   "¼": ".25",
   "¾": ".75",
+  "⅓": ".3333",
+  "⅔": ".6667",
   "⅕": ".2",
   "⅖": ".4",
   "⅗": ".6",
   "⅘": ".8",
+  "⅙": ".1667",
+  "⅚": ".8333",
   "⅛": ".125",
   "⅜": ".375",
   "⅝": ".625",
   "⅞": ".875",
+  "⅐": ".1429",
+  "⅑": ".1111",
   "⅒": ".1",
 };
+
+/** The same set as a regex character class, for callers that must match RAW text (lib/fetch/debtNoteLocator.ts). Derived, never hand-written. */
+export const VULGAR_FRACTION_CLASS = Object.keys(VULGAR_FRACTIONS).join("");
 
 function isSpaceOrCurrency(code: number): boolean {
   // space, tab, LF, CR, FF, VT, NBSP, and the currency glyphs

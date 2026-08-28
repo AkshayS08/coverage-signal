@@ -6,7 +6,7 @@ import { evaluateEligibility, evaluateRowEligibility } from "./eligibility";
 import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
 import { condenseEvidenceDescription, formatAnnouncedDate, dateTokenMatchesEventDate, truncateRenderedLine } from "./evidenceCondense";
 import { formatMoneyForDisplay, formatMoneyValue, normalizeMoneyInText } from "./money";
-import { citationDateGaps, strictFactTokensMatch } from "./numberGuard";
+import { citationDateGaps, sameFactForDisplay } from "./numberGuard";
 import { normalizeForMatch } from "../agent/verifyQuote";
 import { extractFactTokens } from "../agent/factTokens";
 import { BUCKET_LABELS } from "./buckets";
@@ -931,11 +931,8 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
     const lines = buckets[bucket];
     const tokensOf = lines.map((l) => extractFactTokens(l.description).filter((t) => t.kind !== "percent"));
     for (let i = 0; i < lines.length; i++) {
-      // A restatement of FIGURES needs figures. Without this, a line whose
-      // only token is a date ("formed a new entity in January 2026") is
-      // covered by any line carrying a bare year, because partial-precision
-      // date matching treats a year as matching every month in it — which
-      // is right for verification and wrong here.
+      // A restatement of FIGURES needs figures — a line carrying only a date
+      // is not a repeat of a figure however its dates line up.
       if (!tokensOf[i].some((t) => t.kind === "money")) continue;
       for (let j = 0; j < lines.length; j++) {
         if (i === j || lines[i].factKey === lines[j].factKey) continue;
@@ -944,7 +941,10 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
         // figure away — the LATER line is, deterministically, the repeat.
         if (tokensOf[i].length > tokensOf[j].length) continue;
         if (tokensOf[i].length === tokensOf[j].length && i < j) continue;
-        const covered = tokensOf[i].every((a) => tokensOf[j].some((b) => strictFactTokensMatch(a, b)));
+        // sameFactForDisplay, not strictFactTokensMatch: deciding whether to
+        // SHOW a line requires an exact-precision match. See the precision
+        // boundary in numberGuard.ts.
+        const covered = tokensOf[i].every((a) => tokensOf[j].some((b) => sameFactForDisplay(a, b)));
         if (covered) {
           lines[i].restatesFiguresOf = shortTriggerLabel(lines[j].triggerId, lines[j].triggerId);
           break;

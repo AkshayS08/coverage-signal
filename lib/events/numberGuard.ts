@@ -147,6 +147,40 @@ export function factOwnText(f: VerifiedFact): string {
 }
 
 /**
+ * THE PRECISION BOUNDARY — VERIFICATION MATCHES LOOSELY, RENDER SURFACES
+ * MATCH EXACTLY.
+ *
+ * strictFactTokensMatch deliberately treats a bare year as matching any
+ * date inside it, because for VERIFICATION the question is "could this fact
+ * be the one the filing states", and a filing that prints "due 2027" must
+ * not fail against a claim of "due December 2027". Being permissive there
+ * is correct and stays.
+ *
+ * On a RENDER SURFACE the question is the opposite one — "does this line add
+ * anything the line above it didn't" — and permissiveness inverts: two lines
+ * about genuinely different things get called the same. Found live on a
+ * bucket where a line whose only token was "January 2026" was reported as
+ * restating a line that says "the first half of 2026", because a bare year
+ * matches every month in it.
+ *
+ * So: any comparison that decides whether to SHOW something requires an
+ * exact-precision match. A year matches only a year, a month only the same
+ * month, a day only the same day. Verification keeps the loose rule; the
+ * renderer gets this one.
+ */
+export function sameFactForDisplay(a: FactToken, b: FactToken): boolean {
+  if (a.kind !== b.kind) return false;
+  if (a.kind === "date") {
+    if (!a.dateValue || !b.dateValue) return false;
+    // Equal precision, or they are not the same stated thing.
+    if ((a.dateValue.month === null) !== (b.dateValue.month === null)) return false;
+    if ((a.dateValue.day === null) !== (b.dateValue.day === null)) return false;
+    return a.dateValue.year === b.dateValue.year && a.dateValue.month === b.dateValue.month && a.dateValue.day === b.dateValue.day;
+  }
+  return strictFactTokensMatch(a, b);
+}
+
+/**
  * Item 1 (Session 18, stage-2 review) — A CARD MAY NOT STATE A PERIOD THE
  * FILINGS IT CITES COULD NOT HAVE REPORTED.
  *
