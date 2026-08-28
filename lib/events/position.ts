@@ -1,4 +1,4 @@
-import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry } from "../agent";
+import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry, VerifiedNoteRetirement } from "../agent";
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
 import { extractFactTokens, factTokensMatch, type FactToken } from "../agent/factTokens";
 import { isStatedZeroAmount } from "../agent/moneyScale";
@@ -80,6 +80,13 @@ export interface LadderRow {
    * column-dropped).
    */
   priorBalance?: { amount: string; filing: DebtScheduleFilingRef | null };
+  /**
+   * Session 19, item 2b — the debt note's OWN prose explaining why this
+   * row's balance moved, when it names this tranche unambiguously. Never
+   * changes the amount: the note's table is already net of what its prose
+   * describes. Distinct from retiredBy, which means the row is gone.
+   */
+  retiredByNote?: { evidence: string; citedUrl: string };
   /**
    * Item 8 (stage-2 review) — WHICH SOURCE THIS ROW CAME FROM.
    *
@@ -466,6 +473,65 @@ function maturitySortKey(row: DebtRowLike): number {
  * step 2 applies at most one issuance's delta — the same pre-existing limit
  * new-debt-issuance already has today, out of this session's scope to lift.
  */
+/**
+ * SESSION 19, ITEM 2b — A RETIREMENT THE NOTE STATES IN ITS OWN PROSE.
+ *
+ * The authority rule, extended as written: an 8-K wins only when it
+ * post-dates the note's period of report, because it describes an action the
+ * note could not yet know about. Prose INSIDE the note is different — it is
+ * the note speaking about itself, and it is authoritative for that note's
+ * own period without any date comparison at all.
+ *
+ * A CORRECTION TO WHAT THIS WAS ASKED TO DO, stated rather than silently
+ * applied either way. The instruction was "a partial reduces the balance and
+ * the row stays live". Applied literally that DOUBLE-COUNTS, and the reason
+ * is the same rule that motivated the field: the note's table is as-of the
+ * period end, so it ALREADY reflects every repurchase the note's prose
+ * describes. Centene's table prints $1,067 million for the 2027 notes; the
+ * prose two paragraphs below says $118 million was repurchased in the
+ * quarter; $1,067 is the figure AFTER that repurchase. Subtracting again
+ * would report $949 million, a number in no filing.
+ *
+ * So a note-prose retirement never changes a balance. It supplies the CAUSE
+ * of a movement the ladder already shows — which is exactly the gap this
+ * field was added to close, since the ladder could previously show a balance
+ * falling with nothing saying why. The three outcomes the instruction asks
+ * to see are all still distinguishable, they are just reached without
+ * arithmetic:
+ *
+ *   FULL      the note carries the tranche at nil, or no longer carries it
+ *             at all. The row is retired (C1 already does the nil case) and
+ *             the prose is attached as what explains it, instead of the row
+ *             reading "dropped with no redemption explaining it".
+ *   PARTIAL   the note still carries a balance. The row stays LIVE at the
+ *             note's own figure, with the retirement attached as the reason
+ *             it moved.
+ *   AMBIGUOUS the prose names an instrument that cannot be matched to one
+ *             ladder row — no rate, no maturity, or several rows equally
+ *             consistent. Nothing is attached and nothing is changed. Fails
+ *             safe toward KEEPING, per BRD 6.0.
+ */
+function applyNoteRetirements(rows: LadderRow[], retirements: VerifiedNoteRetirement[]): LadderRow[] {
+  if (retirements.length === 0) return rows;
+  return rows.map((row) => {
+    // Match on the retirement's own text against the row, using the SAME
+    // identity rule redemptions use — never on amount, which is expected to
+    // differ here (the prose states what was retired, the row states what
+    // remains).
+    const matches = retirements.filter((r) => rowMatchesRedemptionText(row, `${r.instrument} ${r.sourceLine}`));
+    // AMBIGUOUS: not exactly one. Attach nothing, change nothing.
+    if (matches.length !== 1) return row;
+    const retirement = matches[0];
+    const explains = { evidence: retirement.sourceLine, citedUrl: retirement.citedUrl };
+    // FULL: the note itself already carries this at nil, so C1 has marked it
+    // repaid. The prose turns "repaid, cause unknown" into "repaid, and here
+    // is the sentence that says so".
+    if (row.status === "repaid" || row.status === "retired") return { ...row, retiredBy: row.retiredBy ?? explains };
+    // PARTIAL: live, at the note's own post-repurchase figure, with the cause.
+    return { ...row, retiredBy: undefined, retiredByNote: explains };
+  });
+}
+
 export function assemblePosition(result: CompanyResult, now: Date = new Date()): CompanyPosition {
   const debtMaturity = result.results.find((r) => r.triggerId === "debt-maturity");
   const newDebtIssuance = result.results.find((r) => r.triggerId === "new-debt-issuance");
@@ -675,6 +741,11 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
       return match ? { ...r, priorBalance: { amount: match.amount, filing: debtMaturity?.debtSchedulePriorFiling ?? null } } : r;
     });
   }
+
+  // Session 19, item 2b — the note's own prose, applied after every other
+  // status rule so it explains whatever those produced rather than competing
+  // with them.
+  rows = applyNoteRetirements(rows, debtMaturity?.noteRetirements ?? []);
 
   rows.sort((a, b) => maturitySortKey(a) - maturitySortKey(b));
 

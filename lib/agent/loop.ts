@@ -15,6 +15,8 @@ import {
   type EventStatus,
   type FilingCatalogEntry,
   type IssuedTrancheRow,
+  type EventInstanceRow,
+  type NoteRetirementRow,
   type ProceedsUse,
   type ScheduleSequenceEntry,
   type TriggerVerdict,
@@ -280,6 +282,16 @@ export interface VerifiedIssuedTranche extends IssuedTrancheRow {
   citedUrl: string;
 }
 
+/** Session 19, item 2a — an eventInstance whose sourceLine verified. An unverified entry never reaches this shape; it is dropped. */
+export interface VerifiedEventInstance extends EventInstanceRow {
+  citedUrl: string;
+}
+
+/** Session 19, item 2b — a note-prose retirement whose sourceLine verified INSIDE the located note (Rule 5). */
+export interface VerifiedNoteRetirement extends NoteRetirementRow {
+  citedUrl: string;
+}
+
 /** Same verification, for balanceSheetDebtCaptions (Check 2's input). */
 export interface VerifiedBalanceSheetCaption extends BalanceSheetDebtCaption {
   citedUrl: string;
@@ -378,6 +390,13 @@ export interface TriggerResult {
   cashAmount: string | null;
   /** Session 18 A3 — every trigger. The discrete named project this event's filing calls out, or null when the amount is a period total with no named project. */
   projectName: string | null;
+  /** Session 19, item 2a — the multi-instance triggers ONLY. Every qualifying event in the period, each sourceLine-verified. Empty elsewhere. */
+  eventInstances: VerifiedEventInstance[];
+  /** Session 19, item 2b — "debt-maturity" ONLY. Retirements stated in the note's own prose, each verified INSIDE the located note. Empty elsewhere. */
+  noteRetirements: VerifiedNoteRetirement[];
+  /** Session 19, item 2c — "capex-program" ONLY. The stated completion date of a named project, or null. Code derives the status from it; the model only copies it. */
+  projectCompletionDate: string | null;
+  projectCompletionGranularity: DateGranularity | null;
   /**
    * Session 18 C3 — "debt-maturity" ONLY, false for every other trigger.
    * True when the base filing's debt note WAS located and transcribed but
@@ -720,6 +739,19 @@ export async function runAgentLoop(
     const scheduleSequence = verifySequenceEntries(unitScoped.scheduleSequence, v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
     const priorScheduleSequence = verifySequenceEntries(unitScoped.priorScheduleSequence, v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
     const issuedTranches = verifyIssuedTranches(v.issuedTranches, v.citedUrls ?? [], textByUrl, log, label);
+    // Session 19: the new arrays go through the SAME walk. A field in the
+    // schema and the prompt but not here is the drift item 1a killed on the
+    // guard side, one layer over.
+    const eventInstances = verifyEventInstances(v.eventInstances ?? [], v.citedUrls ?? [], textByUrl, log, label);
+    const noteRetirements = verifyNoteRetirements(v.noteRetirements ?? [], v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
+    const instancesDropped = (v.eventInstances ?? []).length - eventInstances.length;
+    if (instancesDropped > 0) {
+      log(`  ⚠ ${instancesDropped} event instance(s) for ${label} failed sourceLine verification — dropped, not trusted`);
+    }
+    const retirementsDropped = (v.noteRetirements ?? []).length - noteRetirements.length;
+    if (retirementsDropped > 0) {
+      log(`  ⚠ ${retirementsDropped} note-prose retirement(s) for ${label} could not be verified INSIDE the located debt note — dropped, not trusted (Rule 5: a claim about the note must be found in the note)`);
+    }
     const balanceSheetDebtCaptions = verifyBalanceSheetCaptions(unitScoped.balanceSheetDebtCaptions, v.citedUrls ?? [], textByUrl, log, label);
     const rowsExtracted = v.scheduleSequence.length + v.priorScheduleSequence.length + v.issuedTranches.length + v.balanceSheetDebtCaptions.length;
     const rowsVerified = scheduleSequence.length + priorScheduleSequence.length + issuedTranches.length + balanceSheetDebtCaptions.length;
@@ -780,7 +812,7 @@ export async function runAgentLoop(
       result,
       dateGuard,
       textByUrl,
-      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions },
+      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
       { rowsExtracted, rowsVerified, baseRowsExtracted: v.scheduleSequence.length },
@@ -1256,7 +1288,7 @@ export function amountCorroborated(
   return groups.some((g) => filingText.slice(from, to).includes(g));
 }
 
-function verifySourceLineAndScale<T extends { sourceLine: string; amount: string }>(
+function verifySourceLineAndScale<T extends { sourceLine: string; amount: string | null }>(
   entries: T[],
   citedUrls: string[],
   textByUrl: Map<string, string>,
@@ -1276,10 +1308,20 @@ function verifySourceLineAndScale<T extends { sourceLine: string; amount: string
   const out: (T & { citedUrl: string })[] = [];
   for (const entry of entries) {
     if (!entry.sourceLine || !entry.sourceLine.trim()) continue;
-    const scaleCheck = checkMoneyScale(entry.amount);
-    if (!scaleCheck.determinable) {
-      log(`  ⚠ AMOUNT SCALE INDETERMINATE for ${label} — "${describe(entry)}: ${scaleCheck.raw}" has no determinable unit; dropped, not trusted for arithmetic`);
-      continue;
+    // Session 19: an entry may legitimately state NO amount. Every ladder
+    // row has one — a debt row without a balance is meaningless — but an
+    // acquisition or a subsidiary formation routinely names none, and the
+    // eventInstances array carries those. A null amount is not an
+    // indeterminate scale; there is simply nothing to scale, and nothing to
+    // corroborate the sourceLine against either. The sourceLine itself is
+    // still verified literally and still bounded, which is the part that
+    // matters.
+    if (entry.amount !== null) {
+      const scaleCheck = checkMoneyScale(entry.amount);
+      if (!scaleCheck.determinable) {
+        log(`  ⚠ AMOUNT SCALE INDETERMINATE for ${label} — "${describe(entry)}: ${scaleCheck.raw}" has no determinable unit; dropped, not trusted for arithmetic`);
+        continue;
+      }
     }
     let matched = false;
     let sourceLineFoundButAmountAbsent = false;
@@ -1290,7 +1332,7 @@ function verifySourceLineAndScale<T extends { sourceLine: string; amount: string
       // A2 — a co-occurrence match must carry this entry's own amount, not
       // just an instrument caption that happens to sit near a matching year.
       const noteSpan = noteSpanWithMargin(noteSpanByUrl?.get(url));
-      const result = verifyClaim(entry.sourceLine, [text], { requireAmount: entry.amount, preferWithin: [noteSpan] });
+      const result = verifyClaim(entry.sourceLine, [text], { requireAmount: entry.amount ?? undefined, preferWithin: [noteSpan] });
       if (!result.verified) continue;
 
       // A1, first bound — the row must come from inside the located debt
@@ -1306,7 +1348,11 @@ function verifySourceLineAndScale<T extends { sourceLine: string; amount: string
       // A1, second bound — the amount must be printed near the row it is
       // claimed for. Checked per-filing rather than across the corpus, so a
       // figure that is only real in some OTHER filing can never rescue it.
-      if (!amountCorroborated(entry.amount, result.displayText ?? entry.sourceLine, text, result.sourceSpan, noteSpan)) {
+      // Session 19: no amount, nothing to corroborate. The sourceLine has
+      // already been verified literally and bounded above; this bound exists
+      // to stop a figure being attached to a row that does not print it, and
+      // an entry claiming no figure cannot commit that error.
+      if (entry.amount !== null && !amountCorroborated(entry.amount, result.displayText ?? entry.sourceLine, text, result.sourceSpan, noteSpan)) {
         sourceLineFoundButAmountAbsent = true;
         continue;
       }
@@ -1491,6 +1537,54 @@ function verifyIssuedTranches(
   return verified.map((row) => withVerifiedMaturity(recoverStatedMonth(row, log, label, (r) => r.instrument), log, label, (r) => r.instrument));
 }
 
+/**
+ * SESSION 19, ITEM 2a — THE SAME VERIFICATION WALK, FOR eventInstances.
+ *
+ * A field that exists in the schema and the prompt but not in the verifier's
+ * walk is the drift item 1a just killed on the guard side, one layer over:
+ * the model would be asked for a sourceLine held to the quote standard, and
+ * nothing would ever check it. Every entry goes through the SAME
+ * verifySourceLineAndScale every ladder row goes through — literal match
+ * against the cited filing, money-scale determinable, and an entry that
+ * fails is DROPPED rather than trusted.
+ *
+ * `amount` is nullable here and is not on a ladder row: an acquisition or a
+ * subsidiary formation genuinely often states no figure. The shared verifier
+ * now takes a nullable amount and skips the scale and corroboration checks
+ * when there is none — the sourceLine is still verified literally and still
+ * bounded, which is the part that matters.
+ */
+export function verifyEventInstances(
+  rows: EventInstanceRow[],
+  citedUrls: string[],
+  textByUrl: Map<string, string>,
+  log: (line: string) => void,
+  label: string
+): VerifiedEventInstance[] {
+  return verifySourceLineAndScale(rows, citedUrls, textByUrl, log, label, (r) => r.description);
+}
+
+/**
+ * SESSION 19, ITEM 2b — SAME WALK, BOUNDED TO THE NOTE (Rule 5).
+ *
+ * noteSpanByUrl is passed, and that is the whole point of the field. A
+ * retirement is claimed to be stated in the debt note's own prose, so its
+ * sourceLine must be found INSIDE the located note — not merely somewhere in
+ * a 180,000-character filing, which is the unbounded search Rule 5 exists to
+ * forbid. An entry whose text sits outside the note is dropped exactly as a
+ * ladder row outside the note is dropped.
+ */
+export function verifyNoteRetirements(
+  rows: NoteRetirementRow[],
+  citedUrls: string[],
+  textByUrl: Map<string, string>,
+  log: (line: string) => void,
+  label: string,
+  noteSpanByUrl: Map<string, { start: number; end: number }>
+): VerifiedNoteRetirement[] {
+  return verifySourceLineAndScale(rows, citedUrls, textByUrl, log, label, (r) => r.instrument, noteSpanByUrl);
+}
+
 /** Same sourceLine+scale verification, for Check 2's balance-sheet captions — no maturity concept at all for these. */
 function verifyBalanceSheetCaptions(
   captions: BalanceSheetDebtCaption[],
@@ -1541,6 +1635,8 @@ function finalize(
   dateGuard: EventDateGuardResult,
   textByUrl: Map<string, string>,
   debtFields: {
+    eventInstances: VerifiedEventInstance[];
+    noteRetirements: VerifiedNoteRetirement[];
     scheduleSequence: VerifiedSequenceEntry[];
     priorScheduleSequence: VerifiedSequenceEntry[];
     issuedTranches: VerifiedIssuedTranche[];
@@ -1589,6 +1685,10 @@ function finalize(
     scheduleCompleteness,
     redeems: v.redeems,
     issuedTranches: debtFields.issuedTranches,
+    eventInstances: debtFields.eventInstances,
+    noteRetirements: debtFields.noteRetirements,
+    projectCompletionDate: v.projectCompletionDate ?? null,
+    projectCompletionGranularity: v.projectCompletionGranularity ?? null,
     cashAmount: v.cashAmount,
     projectName: v.projectName,
     eventStatus: v.eventStatus ?? "standing",

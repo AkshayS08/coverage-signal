@@ -1,3 +1,4 @@
+import type { DateGranularity, EventStatus } from "../agent/claude";
 import type { TriggerResult } from "../agent";
 import { computeTiming, computeWindowDate, daysBetween } from "./eventTiming";
 import { isFreshEvent, parseQoQIncreasePercent, type TimingInfo } from "./textHeuristics";
@@ -80,6 +81,45 @@ export const PROCEEDS_RECENCY_DAYS = 90;
  */
 function namedProjectExemptFromD2(trigger: TriggerResult): boolean {
   return trigger.triggerId === "capex-program" && trigger.projectName !== null && trigger.projectName.trim() !== "";
+}
+
+/**
+ * SESSION 19, ITEM 2c — A DATED PROJECT IS NEVER `standing`.
+ *
+ * `standing` means an undated recurring disclosure — a programme the company
+ * runs every year with no particular date attached. A project with a STATED
+ * completion date is not that. It is upcoming before that date and completed
+ * after it, and which one it is follows from the date and today, with
+ * nothing left to judge.
+ *
+ * Deliberately in CODE, not in extraction. The model copies the date the
+ * filing prints and stops there — item 2c's prompt says so explicitly — for
+ * the same reason every other derived value in this pipeline is derived
+ * here: a status is a comparison against `now`, `now` is not in the filing,
+ * and a cached extraction would freeze whatever `now` happened to be on the
+ * day it ran. One filer's medical office building is "scheduled to be
+ * completed in December 2026"; that is `upcoming` today and `completed` in
+ * January, from the same extracted string.
+ *
+ * A bare year is compared at its END (December 31), the same worst-case
+ * convention eventTiming.ts uses for windowing — a project stated as
+ * completing "in 2027" is not finished until 2027 is.
+ */
+export function statusFromProjectCompletion(
+  completionDate: string | null,
+  granularity: DateGranularity | null,
+  now: Date
+): EventStatus | null {
+  if (!completionDate) return null;
+  const iso =
+    granularity === "year" || /^\d{4}$/.test(completionDate)
+      ? `${completionDate.slice(0, 4)}-12-31`
+      : completionDate.length === 7
+        ? `${completionDate}-28`
+        : completionDate;
+  const at = Date.parse(iso);
+  if (Number.isNaN(at)) return null;
+  return at >= now.getTime() ? "upcoming" : "completed";
 }
 
 export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date()): EligibilityResult {
@@ -176,6 +216,16 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
       // freshness check at all (the single largest source of false
       // positives found in the Step 1 audit: "each year"/"actively pursue"
       // standing programs carding unconditionally).
+      {
+        // Session 19, item 2c: a project with a stated completion date has a
+        // derived status and is never `standing`. Applied here, before the
+        // freshness heuristic, because a dated project does not need one —
+        // "is it recurring boilerplate" is the question you ask when there
+        // is no date to ask a better one.
+        const derived = statusFromProjectCompletion(trigger.projectCompletionDate, trigger.projectCompletionGranularity, now);
+        if (derived === "upcoming") return { cardEligible: true, reason: "project with a stated completion date still ahead", timing };
+        if (derived === "completed") return { cardEligible: false, reason: "project completed — its stated completion date has passed", timing };
+      }
       return isFreshEvent(trigger.evidence)
         ? { cardEligible: true, reason: "capex program newly announced", timing }
         : { cardEligible: false, reason: "ongoing/recurring capex program", timing };

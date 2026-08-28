@@ -48,12 +48,38 @@ async function getOrCompute<T>(key: string, compute: () => Promise<T>): Promise<
  * — not per-filing-per-trigger; restructuring that call shape is out of
  * scope for this session, see the final report).
  */
+/**
+ * SESSION 19, RULE 12 AUDIT — ONE CONSTRUCTION PER KEY, ONE NAMESPACE PER
+ * CONSTANT.
+ *
+ * Every cache key in this codebase is built here or is documented here. Two
+ * defects the audit found, both the same shape as the pu-v incident:
+ *
+ *   1. The base-answer key was constructed in TWO places — here and,
+ *      by hand, in preflight.ts. A preflight that builds its own copy of the
+ *      key is checking a key nothing reads the moment either drifts, and
+ *      preflight exists precisely to be believed about whether a run is
+ *      free. One exported builder now, used by both.
+ *
+ *   2. `wording/card/` was keyed on the pre-split PROMPT_VERSION and is now
+ *      keyed on NARRATION_PROMPT_VERSION — same path, constant swapped,
+ *      which is exactly how .../v2.json served a seven-day-old proceedsUse
+ *      answer. It is less exposed than pu-v was, because the version sits
+ *      inside a hash that also covers the card's whole context, so a
+ *      collision needs the same number AND byte-identical context. "Less
+ *      exposed" is not a namespace. The version is now its own path segment,
+ *      "nar-v", and cannot collide with any number the old constant reached.
+ */
+export function baseAnswerKey(cik: string, fingerprint: string): string {
+  return `answer/${cik}/base/${fingerprint}/v${EXTRACTION_PROMPT_VERSION}.json`;
+}
+
 export async function cachedBaseClassification<T>(
   cik: string,
   fingerprint: string,
   compute: () => Promise<T>
 ): Promise<{ data: T; hit: boolean }> {
-  return getOrCompute(`answer/${cik}/base/${fingerprint}/v${EXTRACTION_PROMPT_VERSION}.json`, compute);
+  return getOrCompute(baseAnswerKey(cik, fingerprint), compute);
 }
 
 /** A single-trigger dig follow-up against one specific extra filing. */

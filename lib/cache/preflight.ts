@@ -28,7 +28,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 import { head } from "@vercel/blob";
 import { getRecentFilings } from "../fetch";
-import { corpusFingerprint } from "./answerCache";
+import { corpusFingerprint, baseAnswerKey } from "./answerCache";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 const ALL=["DaVita","HCA Healthcare","Tenet Healthcare","Universal Health Services","Encompass Health","Community Health Systems","Quest Diagnostics","Centene Corporation","Cigna Group","Molina Healthcare"];
 async function main(){
@@ -38,7 +38,10 @@ async function main(){
   for(const c of ALL){
     const f=await getRecentFilings(c,["8-K","10-Q","10-K"]);
     const fp=corpusFingerprint(f.filings);
-    const key=`answer/${f.cik}/base/${fp}/v${EXTRACTION_PROMPT_VERSION}.json`;
+    // Rule 12 audit: the SAME builder cachedBaseClassification uses. A
+    // hand-copied key here would let preflight report "cached" about a key
+    // nothing reads, which is the one thing preflight must never do.
+    const key=baseAnswerKey(f.cik,fp);
     let present=false;
     try{ await head(key,{token}); present=true; }catch{ present=false; }
     if(!present) missing++;

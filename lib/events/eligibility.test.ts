@@ -299,6 +299,10 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     scheduleCompleteness: null,
     redeems: null,
     issuedTranches: [],
+    eventInstances: [],
+    noteRetirements: [],
+    projectCompletionDate: null,
+    projectCompletionGranularity: null,
     cashAmount: "$500 million", // Session 18 D2: a real completed issuance states its own amount — null here would (correctly) block the card for an unrelated reason and defeat this test's actual purpose
     projectName: null,
     columnReadFailure: false,

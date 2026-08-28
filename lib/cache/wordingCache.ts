@@ -54,6 +54,12 @@ export async function cachedDraftEventBriefing(
   factBase: VerifiedFact[]
 ): Promise<DraftedEventBriefing> {
   const context = buildCardContext(card, factBase);
-  const key = `wording/card/${sha256(`v${NARRATION_PROMPT_VERSION}\n${context}`)}.json`;
+  // Rule 12 (Session 19): the version is its OWN PATH SEGMENT, "nar-v", not
+  // a number folded into a hash on a path the pre-split PROMPT_VERSION also
+  // used. Same shape as the pu-v incident — same path, constant swapped —
+  // and less exposed only because the hash also covers the card's whole
+  // context, so a collision needed the same number AND identical context.
+  // "Less exposed" is not a namespace.
+  const key = `wording/card/nar-v${NARRATION_PROMPT_VERSION}/${sha256(context)}.json`;
   return getOrCompute(key, () => draftEventBriefing(card, factBase));
 }
