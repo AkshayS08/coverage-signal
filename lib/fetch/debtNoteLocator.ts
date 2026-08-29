@@ -546,10 +546,51 @@ export function buildExtractionText(params: { form: string; url: string; fullTex
   // filing's note might already be within LEAD_CHARS) — splice only the
   // non-overlapping remainder so the model never sees the same text twice.
   const noteSpan = { start: location.start, end: location.end };
-  if (location.end <= LEAD_CHARS) return { text: lead, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
+
+  // SESSION 19 (run B diagnosis) — EVERY BRANCH THAT HANDS INPUT TO THE
+  // MODEL MARKS IT IDENTICALLY.
+  //
+  // This function had a marker on ONE branch. A note falling past LEAD_CHARS
+  // was spliced in under an explicit "where the debt-schedule note was
+  // located" banner; a note that happened to fall INSIDE the lead was handed
+  // over as an unannotated 40,000-character slab, and the locator's entire
+  // gain — knowing which text is the note — was discarded before the model
+  // ever saw it. Which branch ran was an accident of where in the filing the
+  // note sat, not a decision, and nothing in the model's input recorded that
+  // a decision had been made at all.
+  //
+  // Molina is the cost. Its §7 Debt note sits at offset 37,461 and a "Fair
+  // Value Measurements – Disclosure Only" table at 28,783 — both inside the
+  // lead, nine thousand characters apart, sharing five nearly identical row
+  // labels that differ only by carrying value versus face. With nothing
+  // marking the note, v17 took labels from the debt note and amounts from
+  // the fair-value table for three of five tranches. Verification caught and
+  // dropped every composite, which is the guard working — but the ladder
+  // lost three real rows to a defect that exists only because two branches
+  // disagreed about what to say.
+  //
+  // THE RULE: a marker present only when one branch happens to run is an
+  // accident, not a design. Both branches delimit the note the same way, in
+  // the same words, so the model's input no longer depends on where in a
+  // filing the note happens to sit.
+  const OPEN = `[... the debt-schedule note was located at character offset ${location.start} of the full filing; it is delimited below ...]`;
+  const CLOSE = "[... end of the located debt-schedule note ...]";
+
+  if (location.end <= LEAD_CHARS) {
+    // Already inside the lead: delimit it IN PLACE rather than appending a
+    // copy — the same text twice invites the model to read one occurrence as
+    // corroboration of the other.
+    const text =
+      fullText.slice(0, location.start) +
+      `\n\n${OPEN}\n\n` +
+      fullText.slice(location.start, location.end) +
+      `\n\n${CLOSE}\n\n` +
+      fullText.slice(location.end, LEAD_CHARS);
+    return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
+  }
   const excerptStart = Math.max(location.start, LEAD_CHARS);
   const excerpt = fullText.slice(excerptStart, location.end);
-  const text = `${lead}\n\n[... document continues; excerpt below resumes at character offset ${excerptStart} of the full filing, where the debt-schedule note was located ...]\n\n${excerpt}`;
+  const text = `${lead}\n\n[... document continues; excerpt below resumes at character offset ${excerptStart} of the full filing ...]\n\n${OPEN}\n\n${excerpt}\n\n${CLOSE}`;
   return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
 }
 

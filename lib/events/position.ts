@@ -542,7 +542,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // lack them — plain JSON.parse has no way to apply loop.ts's own
   // withFieldDefaults. Never crash on legacy-shaped input; treat a missing
   // field exactly like an empty/null one.
-  const baseSequence = debtMaturity?.scheduleSequence ?? [];
+  const baseSequence = retypeEmbeddedSubtotals(debtMaturity?.scheduleSequence, reportRetype);
   const baseRowEntries = baseSequence.filter((e) => e.kind === "row");
   let rows: LadderRow[] = baseRowEntries.map((entry) => ladderRowFromSequenceEntry(entry, "live"));
 
@@ -680,7 +680,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   const baseAnchor = computeBalanceSheetCheck(debtMaturity?.balanceSheetDebtCaptions, baseSequence);
   const baseLadderUntrustworthy = !baseWalk.pass && !baseAnchor.pass;
 
-  const priorRowEntries = baseLadderUntrustworthy ? [] : (debtMaturity?.priorScheduleSequence ?? []).filter((e) => e.kind === "row");
+  const priorRowEntries = baseLadderUntrustworthy ? [] : retypeEmbeddedSubtotals(debtMaturity?.priorScheduleSequence, reportRetype).filter((e) => e.kind === "row");
   const redeemsText = newDebtIssuance?.fired ? newDebtIssuance.redeems : null;
   const retiredByEvidence = redeemsText
     ? { evidence: redeemsText, citedUrl: newDebtIssuance?.citations[0]?.url ?? "" }
@@ -734,7 +734,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // instrument identity (rowsRepresentSameTranche — maturity and rate, never
   // amount), for the same reason as everywhere else in this file: the amounts
   // are expected to differ, and the difference is the whole point.
-  const priorRows = (debtMaturity?.priorScheduleSequence ?? []).filter((e) => e.kind === "row");
+  const priorRows = retypeEmbeddedSubtotals(debtMaturity?.priorScheduleSequence, reportRetype).filter((e) => e.kind === "row");
   if (priorRows.length > 0) {
     rows = rows.map((r) => {
       const match = priorRows.find((p) => rowsRepresentSameTranche(r, p));
@@ -822,6 +822,124 @@ export function parseMoneyAmount(raw: string): number | null {
   return isNegative ? -Math.abs(magnitude) : magnitude;
 }
 
+/**
+ * SESSION 19 (run B diagnosis) — AN ENTRY THAT EQUALS THE ROWS ABOVE IT IS
+ * NOT A ROW.
+ *
+ * Centene's v17 note came back with `Total senior notes 14,204` typed
+ * `kind: "row"`. The seven note rows above it sum to exactly 14,204, so the
+ * walk counted the subtotal alongside the rows that produce it and reported
+ * $30.4B against a stated $16.0B. The model typed both OUTER subtotals
+ * correctly ("Total debt", "Long-term debt") and this one INNER subtotal
+ * wrong; nowhere in the raw response is it typed correctly, so there is
+ * nothing to recover downstream and the shape has to be re-derived here.
+ *
+ * THE TEST IS ARITHMETIC, NOT VOCABULARY. A guard keying on /^total/ would
+ * be a wording guard, and this project does not ship those: it would miss a
+ * subtotal captioned "Senior notes, net" and would fire on a genuine row in
+ * a filing that happens to caption a tranche "Total Return Swap Facility".
+ * What actually identifies a subtotal is that it restates the sum of the
+ * consecutive rows immediately preceding it, which no genuine tranche does
+ * except by coincidence.
+ *
+ * THE FALSE-POSITIVE MODE, NAMED: a real row whose amount coincidentally
+ * equals the running sum of the rows above it. Two guards, and then the log.
+ *   - At least two preceding rows. A single row "summing" to itself is not
+ *     evidence of anything, and two equal-sized tranches in sequence are
+ *     common enough to be a real hazard.
+ *   - Exact equality, to float representation only. The epsilon here is
+ *     1e-9 RELATIVE, which exists because 1067+2160+... accumulates binary
+ *     error, not because a near-miss should pass. This is not a tolerance
+ *     that can be widened to make a company tie.
+ * Every re-typing is reported through `onRetype` and printed book-wide, so a
+ * coincidence is visible in the log rather than silently folded into a
+ * ladder. That is the whole reason the callback exists.
+ *
+ * Idempotent: re-running over already-corrected entries changes nothing,
+ * which is what lets all three read sites apply it without coordinating.
+ */
+/**
+ * The book-wide re-typing log. Every correction the normalizer makes prints
+ * once, wherever it was triggered from — a coincidental row-equals-running-
+ * sum is the false-positive mode, and this line is the only way anyone would
+ * see it. Deduplicated because four read sites normalize the same sequence
+ * and the correction is a property of the filing, not of who asked.
+ */
+const reportedRetypes = new Set<string>();
+
+export function reportRetype(r: SubtotalRetype): void {
+  const key = `${r.label}|${r.amount}|${r.runningSum}`;
+  if (reportedRetypes.has(key)) return;
+  reportedRetypes.add(key);
+  console.log(
+    `  SUBTOTAL RE-TYPED — ${JSON.stringify(r.label)} states ${JSON.stringify(r.amount)}, which is exactly the sum of the ${r.rowsSummed} rows immediately above it (${r.runningSum.toLocaleString("en-US")}); it was emitted as kind="row" and would have been walked alongside the rows that produce it. Re-typed to "subtotal". If this label names a real tranche, this is the coincidence case and the ladder is now wrong — say so rather than trusting it.`
+  );
+}
+
+/** Test seam: the dedupe set is process-lifetime, which a suite asserting the log must be able to clear. */
+export function resetRetypeLog(): void {
+  reportedRetypes.clear();
+}
+
+export interface SubtotalRetype {
+  label: string;
+  amount: string;
+  /** The sum this entry restated — equal to its own parsed amount, by construction. */
+  runningSum: number;
+  /** How many consecutive preceding rows produced that sum. */
+  rowsSummed: number;
+}
+
+export function retypeEmbeddedSubtotals(
+  scheduleSequence: VerifiedSequenceEntry[] | null | undefined,
+  onRetype?: (r: SubtotalRetype) => void
+): VerifiedSequenceEntry[] {
+  const entries = scheduleSequence ?? [];
+  const out: VerifiedSequenceEntry[] = [];
+  let runSum = 0;
+  let runCount = 0;
+
+  for (const entry of entries) {
+    if (entry.kind !== "row") {
+      // An adjustment or an already-correct subtotal closes the group. The
+      // next row starts a fresh run rather than continuing across it.
+      runSum = 0;
+      runCount = 0;
+      out.push(entry);
+      continue;
+    }
+    const value = parseMoneyAmount(entry.amount);
+    if (value === null) {
+      // Indeterminate amount: it cannot extend a run (the sum would be
+      // wrong) and it cannot be tested against one.
+      runSum = 0;
+      runCount = 0;
+      out.push(entry);
+      continue;
+    }
+    // ZERO IS DEGENERATE, AND IT IS NOT HYPOTHETICAL. A nil balance is a
+    // legitimate row (C1: the filing states a repaid tranche as "$ —"), and a
+    // run of them sums to zero, so a third nil row "equals the running sum"
+    // and every one after it would be re-typed out of the ladder. Cigna has
+    // exactly this: two matured tranches carrying "$ —". They must render as
+    // repaid rows, not disappear into a subtotal that restates nothing. A
+    // subtotal of zero also carries no information, so nothing is lost by
+    // refusing the test here.
+    const epsilon = Math.abs(runSum) * 1e-9;
+    if (runCount >= 2 && runSum !== 0 && value !== 0 && Math.abs(value - runSum) <= epsilon) {
+      onRetype?.({ label: entry.label ?? "(unlabeled)", amount: entry.amount, runningSum: runSum, rowsSummed: runCount });
+      out.push({ ...entry, kind: "subtotal" });
+      runSum = 0;
+      runCount = 0;
+      continue;
+    }
+    runSum += value;
+    runCount += 1;
+    out.push(entry);
+  }
+  return out;
+}
+
 export interface SubtotalCheck {
   /** Verbatim, or null when the filing prints this figure with no "Total ..." caption at all (real and expected). */
   label: string | null;
@@ -882,7 +1000,10 @@ export interface WalkChecksumResult {
  * of how position.ts later layers 8-K deltas on top of it.
  */
 export function computeWalkChecksum(scheduleSequence: VerifiedSequenceEntry[] | undefined): WalkChecksumResult {
-  const entries = scheduleSequence ?? [];
+  // Session 19: a mistyped inner subtotal is re-typed before it is walked,
+  // or it is counted alongside the rows that produce it. Idempotent, so the
+  // three read sites need not coordinate about who normalizes.
+  const entries = retypeEmbeddedSubtotals(scheduleSequence, reportRetype);
   const rowValues = entries
     .filter((e) => e.kind === "row")
     .map((e) => parseMoneyAmount(e.amount))
@@ -986,7 +1107,7 @@ export function computeBalanceSheetCheck(
   const captionValues = captionList.map((c) => parseMoneyAmount(c.amount)).filter((v): v is number => v !== null);
   const captionSum = captionValues.reduce((a, b) => a + b, 0);
 
-  const subtotals = (scheduleSequence ?? [])
+  const subtotals = retypeEmbeddedSubtotals(scheduleSequence, reportRetype)
     .filter((e) => e.kind === "subtotal")
     .map((e) => ({ label: e.label, amount: parseMoneyAmount(e.amount) }))
     .filter((s): s is { label: string | null; amount: number } => s.amount !== null);
