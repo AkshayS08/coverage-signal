@@ -217,7 +217,11 @@ export function rowIdentifiesOneTranche(r: { rate: string | null; maturityDate: 
  * needs no tuned constant.
  */
 export function scheduleIsAggregateDisclosure(scheduleSequence: VerifiedSequenceEntry[] | null | undefined): boolean {
-  const rows = (scheduleSequence ?? []).filter((e) => e.kind === "row");
+  // Normalizes internally rather than trusting callers to have done it.
+  // Both callers currently pass a normalized sequence; "currently" is not a
+  // property, and a mistyped subtotal counted as a row skews the very ratio
+  // this function exists to compute. Idempotent, so it costs nothing.
+  const rows = normalizeScheduleSequence(scheduleSequence).filter((e) => e.kind === "row");
   if (rows.length === 0) return false;
   return rows.filter(rowIdentifiesOneTranche).length * 2 <= rows.length;
 }
@@ -1187,7 +1191,16 @@ export function computeBalanceSheetCheck(
   const captionValues = captionList.map((c) => parseMoneyAmount(c.amount)).filter((v): v is number => v !== null);
   const captionSum = captionValues.reduce((a, b) => a + b, 0);
 
-  const subtotals = normalizeScheduleSequence(scheduleSequence)
+  // Session 19 — normalized ONCE for this whole function. It previously
+  // normalized for `subtotals` and then read the RAW sequence twice more
+  // below (the section-closing totals, and the reported subtotalCategories),
+  // so a re-typed subtotal was visible to the check that matched and
+  // invisible to the check that built its candidates. Same
+  // one-caller-bypasses-the-normalizer shape as the Centene render defect,
+  // this time inside a single function.
+  const normalized = normalizeScheduleSequence(scheduleSequence);
+
+  const subtotals = normalized
     .filter((e) => e.kind === "subtotal")
     .map((e) => ({ label: e.label, amount: parseMoneyAmount(e.amount) }))
     .filter((s): s is { label: string | null; amount: number } => s.amount !== null);
@@ -1218,7 +1231,7 @@ export function computeBalanceSheetCheck(
   // (every section null — DaVita's shape) produces no such candidate and
   // behaves exactly as before.
   const sectionClosingTotals = new Map<string, number>();
-  for (const e of scheduleSequence ?? []) {
+  for (const e of normalized) {
     if (e.kind !== "subtotal" || !e.section) continue;
     const v = parseMoneyAmount(e.amount);
     if (v !== null) sectionClosingTotals.set(e.section, v); // last subtotal per section wins
@@ -1253,7 +1266,7 @@ export function computeBalanceSheetCheck(
     nearestGap: bestGap,
     matchedVia: pass ? best.via : null,
     captionCategories: captionList.map((c) => c.label),
-    subtotalCategories: [...new Set((scheduleSequence ?? []).filter((e) => e.kind === "subtotal").map((e) => e.section ?? e.label ?? "(unlabeled)"))],
+    subtotalCategories: [...new Set(normalized.filter((e) => e.kind === "subtotal").map((e) => e.section ?? e.label ?? "(unlabeled)"))],
   };
 }
 

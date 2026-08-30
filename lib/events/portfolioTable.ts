@@ -1,8 +1,8 @@
 import type { CompanyResult, TriggerResult, VerifiedSequenceEntry } from "../agent";
-import type { DebtScheduleFilingRef } from "../agent/claude";
+import type { DebtScheduleFilingRef, DateGranularity } from "../agent/claude";
 import type { FlashCard } from "./buildEvents";
 import { bucketForTrigger, type Bucket } from "./buckets";
-import { evaluateEligibility, evaluateRowEligibility } from "./eligibility";
+import { evaluateEligibility, evaluateRowEligibility, statusFromProjectCompletion } from "./eligibility";
 import { buildVerifiedFactBase, type VerifiedFact } from "./factBase";
 import { condenseEvidenceDescription, formatAnnouncedDate, dateTokenMatchesEventDate, truncateRenderedLine } from "./evidenceCondense";
 import { formatMoneyForDisplay, formatMoneyValue, normalizeMoneyInText } from "./money";
@@ -346,6 +346,17 @@ function descriptionAlreadyStatesDate(description: string, eventDate: string, gr
  */
 const D3_STALE_MONTHS = 12;
 
+/** Session 19: the date math, shared with instanceTimingPhrase — an instance ages the same way a trigger does, and two copies is how they drift. */
+function monthsSinceDate(date: string | null, now: Date): number | null {
+  if (!date) return null;
+  const m = date.match(/^(\d{4})(?:-(\d{2}))?/);
+  if (!m) return null;
+  const year = Number(m[1]);
+  const month = m[2] ? Number(m[2]) - 1 : 6;
+  const months = (now.getFullYear() - year) * 12 + (now.getMonth() - month);
+  return months >= 0 ? months : null;
+}
+
 function monthsSinceCompletion(t: TriggerResult, now: Date): number | null {
   if (t.eventStatus !== "completed" || !t.eventDate) return null;
   const m = t.eventDate.match(/^(\d{4})(?:-(\d{2}))?/);
@@ -366,7 +377,77 @@ function d3SortRank(t: TriggerResult, now: Date): number {
   return months !== null && months >= D3_STALE_MONTHS ? 1 : 0;
 }
 
+
+/** A stated completion date, printed at the granularity the filing gave it — never a month the filing did not state. */
+function formatCompletionDate(date: string, granularity: DateGranularity | null): string {
+  if (granularity === "year" || /^\d{4}$/.test(date)) return date.slice(0, 4);
+  const [y, m, d] = date.split("-");
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const monthName = m ? MONTHS[Number(m) - 1] : undefined;
+  if (!monthName) return date;
+  return granularity === "day" && d ? `${monthName} ${Number(d)}, ${y}` : `${monthName} ${y}`;
+}
+
+
+/**
+ * The timing phrase for ONE instance of a multi-instance trigger. It reads
+ * the instance's own status and date, never the trigger's — the whole point
+ * of separate lines is that each states its own facts. Deliberately simpler
+ * than timingPhraseFor: an instance carries no maturity window, so there is
+ * no month-count convention to get wrong.
+ */
+function instanceTimingPhrase(
+  inst: { description: string; eventStatus: string | null; eventDate: string | null; dateGranularity: DateGranularity | null },
+  t: TriggerResult,
+  now: Date
+): string {
+  // 2c REACHES THE INSTANCE PATH TOO, BUT ONLY THE INSTANCE IT BELONGS TO.
+  //
+  // The completion date is a TRIGGER-level field and a multi-instance
+  // trigger has several projects under it: Quest's capex-program carries
+  // Project Nova (completion 2032) alongside an undated automation
+  // programme. Applying the trigger's date to every instance is precisely
+  // the conflation that put UHS's Plaza date on the Medical Center's name,
+  // so it is attributed by the trigger's own projectName and to nothing
+  // else. An instance the date does not name keeps its own status.
+  if (t.projectCompletionDate && t.projectName && inst.description.includes(t.projectName)) {
+    const derived = statusFromProjectCompletion(t.projectCompletionDate, t.projectCompletionGranularity, now);
+    if (derived === "upcoming") return `completion stated ${formatCompletionDate(t.projectCompletionDate, t.projectCompletionGranularity)}`;
+    if (derived === "completed") return "completed";
+  }
+  if (inst.eventStatus === "completed") {
+    const months = monthsSinceDate(inst.eventDate, now);
+    if (months !== null && months >= D3_STALE_MONTHS) {
+      const years = Math.floor(months / 12);
+      const rem = months % 12;
+      const age = years >= 1 ? (rem === 0 ? `${years}yr` : `${years}yr ${rem}mo`) : `${months}mo`;
+      return `completed ${age} ago`;
+    }
+    return "completed";
+  }
+  if (inst.eventStatus === "just_announced") return "announced";
+  if (inst.eventStatus === "upcoming") return "upcoming";
+  return "ongoing";
+}
+
 function timingPhraseFor(t: TriggerResult, timing: TimingInfo, description: string, now: Date): string {
+  // SESSION 19, ITEM 2C — THE STATUS WORD COMES FROM THE DERIVATION, NOT
+  // FROM THE MODEL'S OWN eventStatus.
+  //
+  // 2c derived a dated project's status in code and wired it to the GATE
+  // only, so the rule was enforced on the eligibility path and violated on
+  // the render path in the same run, for the same fact: Quest's Project
+  // Nova, completion stated 2032, printed "ongoing" while the gate had
+  // already decided it was upcoming. `eventStatus` is exactly the field the
+  // rule exists to distrust, so the render must not be the one place that
+  // still believes it.
+  //
+  // The phrase states the filing's own completion date rather than a bare
+  // "upcoming" — the date is the fact; "upcoming" is a category.
+  const derivedProjectStatus = statusFromProjectCompletion(t.projectCompletionDate, t.projectCompletionGranularity, now);
+  if (derivedProjectStatus === "upcoming" && t.projectCompletionDate) {
+    return `completion stated ${formatCompletionDate(t.projectCompletionDate, t.projectCompletionGranularity)}`;
+  }
   if (timing.monthsToNearestFuture !== null) {
     if (timing.dateGranularity === "year") {
       // A bare-year maturity (e.g. "due 2026", no month ever disclosed)
@@ -383,8 +464,10 @@ function timingPhraseFor(t: TriggerResult, timing: TimingInfo, description: stri
   // condition; "recurring" reads as a schedule, which a standing fact
   // usually isn't. Never blank — the never-blank rule this session's own
   // acceptance criteria re-affirms wins over the option to omit entirely.
-  if (t.eventStatus === "standing") return "ongoing";
-  if (t.eventStatus === "completed") {
+  // A dated project is never standing (2c). If the derivation says the date
+  // has passed, the completed branch below owns it — never "ongoing".
+  if (t.eventStatus === "standing" && derivedProjectStatus !== "completed") return "ongoing";
+  if (t.eventStatus === "completed" || derivedProjectStatus === "completed") {
     // Session 18 D3: a completed event keeps its line forever, but an OLD
     // one must say how old. "completed" alone reads as recent, and Cigna's
     // HCSC sale (March 2025) sat in Treasury indistinguishable from
@@ -864,6 +947,53 @@ export function buildCompanyTableBlock(result: CompanyResult, cardsForCompany: F
     // Item 2 — the bucket lines render a written paraphrase, which is why
     // the display formatter never reached them. See normalizeMoneyInText.
     const description = normalizeMoneyInText(`${periodSpendPrefix}${condenseEvidenceDescription(fact)}`);
+
+    // SESSION 19, ITEM 2A — MULTIPLE FACTS OF ONE KIND RENDER AS SEPARATE
+    // LINES, EACH WITH ITS OWN SOURCE.
+    //
+    // The schema stopped being the constraint in run B and the constraint
+    // moved one layer down, to here. CHS returned BOTH divestitures in
+    // eventInstances -- $459M Crestwood and $110M Arkansas -- and this loop
+    // rendered ONE line, because it read the scalar `evidence` field. Worse
+    // than lossy: v17 and v18 filled that one slot with DIFFERENT sales, so
+    // a reader comparing weeks watched Arkansas vanish and Crestwood appear.
+    // A rotation, not a gain.
+    //
+    // ONE CONVERSATION, NOT SEVERAL CARDS. The standing dedup rule is
+    // unchanged, so only the gated instance carries cardEligible; every
+    // other instance renders table-only. Two divestitures in one period
+    // therefore produce one card and one table line, which is what the gate
+    // deciding per FACT rather than per TRIGGER means in practice.
+    const instances = t.eventInstances ?? [];
+    if (instances.length > 1) {
+      instances.forEach((inst, i) => {
+        const instDescription = normalizeMoneyInText(
+          inst.amount ? `${inst.description} — ${inst.amount}` : inst.description
+        );
+        // Each line carries ITS OWN source, never the trigger's whole
+        // citation list: the point of separate lines is separate provenance.
+        const own = t.citations.filter((c) => c.url === inst.citedUrl);
+        const citations = own.length > 0 ? own : t.citations;
+        buckets[bucket].push({
+          triggerId: t.triggerId,
+          description: instDescription,
+          timingPhrase: instanceTimingPhrase(inst, t, now),
+          citations,
+          cardEligible: cardEligible && i === 0,
+          crossReferenceTo: null,
+          // Distinct per instance, or the cross-bucket dedup collapses the
+          // very lines this change exists to separate.
+          factKey: `${factIdentityKey(fact)}#${i}`,
+          isHedgingFlag: bucket === "hedging" && !(cardEligible && i === 0),
+          d3Rank: d3SortRank(t, now),
+          d3AgeMonths: monthsSinceCompletion(t, now) ?? 0,
+          periodGapNote: periodGapNoteFor(instDescription, citations, now),
+          restatesFiguresOf: null,
+          text: "",
+        });
+      });
+      continue;
+    }
 
     buckets[bucket].push({
       triggerId: t.triggerId,
