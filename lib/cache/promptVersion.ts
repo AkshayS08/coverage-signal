@@ -373,8 +373,26 @@
  * Input changes for DaVita, HCA, Tenet, Molina (previously unmarked) and
  * Quest (previously truncated). UHS, Encompass, CHS and Cigna are untouched
  * and are this run's control.
+ * v19 (Session 19) — the v18 marker, corrected, plus a verification hole
+ * v18 exposed. Again no prompt WORDING change; the input changed and so did
+ * what verification accepts.
+ * (1) The marker asserted "the debt-schedule note was located here". UHS's
+ * locator has always landed on its INTEREST-EXPENSE table — the book's only
+ * `via=density` match, every other company matching `via=heading`. Unmarked,
+ * the model read that span and correctly returned nothing. Marked, it
+ * complied and produced five rows from interest expense. The marker now
+ * states only that a region MATCHED the locator, that it may not be a debt
+ * schedule, and that the answer is an EMPTY sequence if it is not.
+ * (2) An amount that verifies only inside the instrument's own label is not
+ * a verified balance. UHS's amounts corroborated by VALUE against the issue
+ * size in each row's own name, and columnReadFailure went true -> false
+ * because a model that never reads the columns leaves no inconsistency to
+ * detect. Closed on the value-equality and digit-group paths both.
+ * Expected effect: UHS returns to an empty schedule, stated rather than
+ * implied. Molina keeps its five tranches — its rows print their own
+ * balances and never depended on either path.
  */
-export const EXTRACTION_PROMPT_VERSION = 18;
+export const EXTRACTION_PROMPT_VERSION = 19;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.
