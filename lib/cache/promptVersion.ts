@@ -351,8 +351,30 @@
  * All four fields are optional and default — a pre-v17 cached answer has
  * them as undefined, not empty, and must never replay as equivalent to a
  * fresh one. That is what the bump is for.
+ * v18 (Session 19, run B2) — NO PROMPT WORDING CHANGED. The bump is for a
+ * changed INPUT, which is the same reason v16 needed one for the locator:
+ * a cached answer is keyed to the text the model was handed, and that text
+ * is now different for five of ten companies.
+ * buildExtractionText marked the located debt note on ONE of its two
+ * branches. A note past LEAD_CHARS was spliced in under an explicit banner;
+ * a note inside the lead was handed over as an unannotated 40,000-character
+ * slab, so the locator's whole gain was discarded before the model saw it,
+ * purely as an accident of where in the filing the note sat. Molina paid for
+ * it: its note at 37,461 and a fair-value table at 28,783 share five nearly
+ * identical row labels differing only by carrying value versus face, and
+ * v17 took labels from one and amounts from the other for three of five
+ * tranches. Verification dropped every composite, so the ladder lost three
+ * real rows rather than reporting wrong ones.
+ * A third case surfaced while checking which companies this touches: a note
+ * that STRADDLES the cap. Quest's starts at 39,415 and ends past 40,000, and
+ * the old end-based branch sliced its excerpt from 40,000 — cutting the
+ * note's first 585 characters, heading included, every run since the cap
+ * existed. Branching on `start` delimits it whole.
+ * Input changes for DaVita, HCA, Tenet, Molina (previously unmarked) and
+ * Quest (previously truncated). UHS, Encompass, CHS and Cigna are untouched
+ * and are this run's control.
  */
-export const EXTRACTION_PROMPT_VERSION = 17;
+export const EXTRACTION_PROMPT_VERSION = 18;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

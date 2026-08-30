@@ -11,7 +11,7 @@ import { normalizeForMatch } from "../agent/verifyQuote";
 import { extractFactTokens } from "../agent/factTokens";
 import { BUCKET_LABELS } from "./buckets";
 import { shortTriggerLabel } from "./labels";
-import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, movementKindOf, parseMoneyAmount, rowIdentifiesOneTranche, scheduleIsAggregateDisclosure, type LadderRow, type SubtotalCheck } from "./position";
+import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, movementKindOf, parseMoneyAmount, rowIdentifiesOneTranche, scheduleIsAggregateDisclosure, type LadderRow, type SubtotalCheck, retypeEmbeddedSubtotals, reportRetype } from "./position";
 import type { TimingInfo } from "./textHeuristics";
 
 /**
@@ -589,8 +589,15 @@ function splitIssueSizeFromName(instrument: string): { issueSize: string | null;
 
 function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now: Date): RefiLadderBlock {
   const debtMaturity = result.results.find((t) => t.triggerId === "debt-maturity");
-  const walkCheck = computeWalkChecksum(debtMaturity?.scheduleSequence);
-  const balanceSheetCheck = computeBalanceSheetCheck(debtMaturity?.balanceSheetDebtCaptions, debtMaturity?.scheduleSequence);
+  // Session 19: normalized ONCE, here, and used by every read below. The
+  // checks already normalize internally, so leaving the RENDER on the raw
+  // sequence made the two disagree in public: Centene's subtotals reconciled
+  // while the drawer above them still read "9 rows in the note sum to
+  // $30.4B" against a stated $16.0B. A guard that ties over a line that says
+  // it does not is worse than either alone.
+  const normalizedSequence = retypeEmbeddedSubtotals(debtMaturity?.scheduleSequence, reportRetype);
+  const walkCheck = computeWalkChecksum(normalizedSequence);
+  const balanceSheetCheck = computeBalanceSheetCheck(debtMaturity?.balanceSheetDebtCaptions, normalizedSequence);
 
   if (!debtMaturity || !debtMaturity.fired) {
     return {
@@ -734,7 +741,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // 10 of 11; DaVita 9 of 9; Centene 7 of 8; Quest 12 of 13; Cigna 33 of 36;
   // CHS 2 of 2; Molina 5 of 5. "Most rows" separates HCA from the rest with
   // real margin (25% against a next-lowest 57%) and needs no tuned constant.
-  const isAggregateDisclosure = scheduleIsAggregateDisclosure(debtMaturity.scheduleSequence);
+  const isAggregateDisclosure = scheduleIsAggregateDisclosure(normalizedSequence);
 
   const identifiedCount = displayRows.filter(rowIdentifiesOneTranche).length;
   const categoryTotalCount = tranchCount - identifiedCount;
@@ -810,7 +817,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // when the base ladder failed BOTH checks does the older filing's schedule
   // get surfaced at all, and even then it sits beneath the base ladder's own
 
-  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, walkLines: buildWalkLines(debtMaturity.scheduleSequence, walkCheck.subtotalChecks), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
+  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
 
 /**
