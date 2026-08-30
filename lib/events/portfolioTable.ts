@@ -580,12 +580,8 @@ function rateAppearsInName(rate: string | null, instrument: string): boolean {
   return squash(instrument).includes(squash(rate));
 }
 
-/** See RefiLadderLine.issueSizeInName. A leading "$ 2,500 million " on a tranche's own name is its original issue size, not its balance. */
-function splitIssueSizeFromName(instrument: string): { issueSize: string | null; name: string } {
-  const m = instrument.match(/^\s*(\$\s?[\d,.]+\s*(?:thousand|thousands|million|millions|billion|billions)?)\s*,?\s*(.+)$/i);
-  if (!m || !m[2].trim()) return { issueSize: null, name: instrument };
-  return { issueSize: m[1].trim(), name: m[2].trim() };
-}
+/** See RefiLadderLine.issueSizeInName. Moved to lib/agent/issueSize.ts in Session 19 — extraction needs the same rule, and two copies is how they drift apart. */
+import { splitIssueSizeFromName } from "../agent/issueSize";
 
 function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now: Date): RefiLadderBlock {
   const debtMaturity = result.results.find((t) => t.triggerId === "debt-maturity");

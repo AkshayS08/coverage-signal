@@ -33,8 +33,8 @@ function note(tag: string): string {
   );
 }
 
-const MARKER = "the debt-schedule note was located at character offset";
-const CLOSE = "end of the located debt-schedule note";
+const MARKER = "matched the debt-note locator at character offset";
+const CLOSE = "end of the region that matched the debt-note locator";
 const FILLER = "Filler narrative sentence about operations and segments. ";
 
 console.log("\n=== [1] EARLY note — the branch that was silent ===");
@@ -112,5 +112,15 @@ console.log("\n=== [4] Branches with nothing to mark are unchanged ===");
     "[4c] no located note means no marker — the marker asserts a fact, so it is never printed speculatively");
 }
 
+console.log("\n=== [5] The marker describes provenance, it does not assert identity ===");
+{
+  const r = buildExtractionText({ form: "10-Q", url: "u", fullText: FILLER.repeat(640) + note("P") + FILLER.repeat(1250) });
+  assert(!r.text.includes("the debt-schedule note was located"),
+    "[5a] the marker no longer CLAIMS the region is a debt note — UHS's locator lands on an interest-expense table, and the claim is what made the model manufacture rows from it");
+  assert(r.text.includes("it may not be a debt schedule"),
+    "[5b] it states the uncertainty the locator actually has");
+  assert(r.text.includes("return an EMPTY schedule sequence"),
+    "[5c] and names the out, pairing with the v16 rule that an absent schedule means an empty sequence");
+}
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }

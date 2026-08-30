@@ -26,6 +26,7 @@ import { verifyEventDate, type EventDateGuardResult } from "./factGuard";
 import { classifyProceedsUse } from "./proceedsUse";
 import { boundProceedsFilingText } from "./proceedsUseInput";
 import { extractFactTokens, factTokensMatch, type FactToken } from "./factTokens";
+import { textOutsideInstrumentLabel, splitIssueSizeFromName } from "./issueSize";
 import { assertBlobConfigured } from "../fetch/cache";
 import { corpusFingerprint, cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
 import { buildExtractionText, assertCompanyHasLocatableDebtNote, type DebtNoteFilingStatus } from "../fetch/debtNoteLocator";
@@ -1256,7 +1257,17 @@ export function amountCorroborated(
 ): boolean {
   const claimed = moneyValuesOf(amount);
   if (claimed.length > 0) {
-    const printed = moneyValuesOf(verifiedText);
+    // SESSION 19 — AN ISSUE SIZE IN A NAME IS A NAME, NOT A BALANCE.
+    // This path was written FOR UHS, to let "$800,000 thousands" corroborate
+    // against a note the filing names "$800 million" — identical value, no
+    // shared digits. That reads as a scale win and is actually the hole: the
+    // "$800 million" it matched is the issue size printed inside the row's
+    // OWN LABEL, not a balance in any column. In an interest-expense table
+    // whose real columns hold 5,357 and 10,713, every row's amount
+    // corroborated against its own title and five interest rows verified as
+    // a debt ladder. A balance must be corroborated by something other than
+    // the instrument's name.
+    const printed = moneyValuesOf(textOutsideInstrumentLabel(verifiedText));
     // Exact value equality — not a tolerance. Two figures that are merely
     // close are two different figures, and this is a fabrication check.
     if (claimed.some((c) => printed.some((p) => Math.abs(c) === Math.abs(p)))) return true;
@@ -1285,7 +1296,19 @@ export function amountCorroborated(
     to = Math.min(to, noteSpan.end);
   }
   if (to <= from) return false;
-  return groups.some((g) => filingText.slice(from, to).includes(g));
+  // The row's OWN issue size is inside this window, so an unmasked search
+  // finds Centene's "$2,500 million" name and calls it corroboration of a
+  // $2,500M balance. Value equality was only half the hole; the digit-group
+  // path reaches the same label by another route. Mask this row's issue size
+  // where it sits — one occurrence, inside the row's own matched span — and
+  // leave every other appearance in the window searchable.
+  let window = filingText.slice(from, to);
+  const ownIssueSize = splitIssueSizeFromName(verifiedText).issueSize;
+  if (ownIssueSize) {
+    const rel = filingText.slice(from, to).indexOf(ownIssueSize, Math.max(0, span.start - from));
+    if (rel !== -1) window = window.slice(0, rel) + " ".repeat(ownIssueSize.length) + window.slice(rel + ownIssueSize.length);
+  }
+  return groups.some((g) => window.includes(g));
 }
 
 function verifySourceLineAndScale<T extends { sourceLine: string; amount: string | null }>(

@@ -573,8 +573,25 @@ export function buildExtractionText(params: { form: string; url: string; fullTex
   // accident, not a design. Both branches delimit the note the same way, in
   // the same words, so the model's input no longer depends on where in a
   // filing the note happens to sit.
-  const OPEN = `[... the debt-schedule note was located at character offset ${location.start} of the full filing; it is delimited below ...]`;
-  const CLOSE = "[... end of the located debt-schedule note ...]";
+  // SESSION 19 — THE MARKER DESCRIBES ITS PROVENANCE, IT DOES NOT ASSERT AN
+  // IDENTITY.
+  //
+  // The first wording said "the debt-schedule note was located here", which
+  // is a claim the locator is not always entitled to make. UHS is the case:
+  // its locator has always landed on the INTEREST-EXPENSE table (the book's
+  // only `via=density` match, every other company matching `via=heading`).
+  // Unmarked, the model read that span and correctly returned no schedule.
+  // Marked as a debt note, it complied — manufacturing five rows out of an
+  // interest table by reading each row's issue size out of its own name.
+  // Asserting a wrong locator result converts an honest failure into a
+  // confident wrong answer, which is strictly worse than saying nothing.
+  //
+  // So the marker now states only what is true — that this region MATCHED a
+  // locator — and names the out. It pairs with the v16 prompt rule that an
+  // absent schedule means an EMPTY sequence, which the old wording was
+  // effectively overriding.
+  const OPEN = `[... the region below matched the debt-note locator at character offset ${location.start} of the full filing; it may not be a debt schedule. If it is not one — for example an interest-expense table, a fair-value disclosure, or narrative — return an EMPTY schedule sequence rather than composing rows from it ...]`;
+  const CLOSE = "[... end of the region that matched the debt-note locator ...]";
 
   // THE BRANCH IS ON WHERE THE NOTE STARTS, NOT WHERE IT ENDS.
   //

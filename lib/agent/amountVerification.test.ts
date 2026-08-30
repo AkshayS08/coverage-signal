@@ -110,9 +110,33 @@ const spanOf = (text: string, row: string) => {
 };
 const WHOLE = (text: string) => ({ start: 0, end: text.length });
 
+// SESSION 19 — [6c] IS INVERTED, NOT DELETED.
+//
+// This assertion pinned the value-equality path as a WIN: "$800,000
+// thousands" was kept because it equalled the "$800 million" its own row
+// prints. Read again with the row in front of you —
+//
+//   $800 million, 2.65% Senior Notes due 2030 (a.)  5,300  5,100
+//
+// — the only columns are 5,300 and 5,100, which are INTEREST EXPENSE. The
+// "$800 million" it matched is the issue size inside the instrument's own
+// NAME. So the assertion was pinning a row's title as corroboration of its
+// balance, and in v18 that let five interest-expense rows verify as UHS's
+// debt ladder, silencing columnReadFailure on the way past because the
+// model never touched the columns at all.
+//
+// The render side had already drawn this line (splitIssueSizeFromName, so a
+// card would not read the issue size aloud as a balance). Extraction had
+// not, and one asymmetry cost a whole company. Same treatment as v15's
+// moneyScale [11]/[12]: the old assertion was not wrong about the
+// MECHANISM, it was wrong about which way the mechanism should point.
 assert(
-  amountCorroborated("$800,000 thousands", UHS_LINE, UHS_FILING, spanOf(UHS_FILING, UHS_LINE), null),
-  "[6c] $800,000 thousands is KEPT, because its VALUE matches the '$800 million' its own verified row prints"
+  !amountCorroborated("$800,000 thousands", UHS_LINE, UHS_FILING, spanOf(UHS_FILING, UHS_LINE), null),
+  "[6c] INVERTED (Session 19): $800,000 thousands is REJECTED — an issue size in an instrument's own name is a name, not a balance, and it is the only place this figure appears"
+);
+assert(
+  amountCorroborated("$5,300 thousands", UHS_LINE, UHS_FILING, spanOf(UHS_FILING, UHS_LINE), null),
+  "[6c-r] REVERSE: a figure the row actually PRINTS still corroborates — the rule removes the label, not the row"
 );
 assert(
   !amountCorroborated("$373,000 thousands", "Revolving credit facility (a.) 3,371 2,692", UHS_FILING, null, null),
