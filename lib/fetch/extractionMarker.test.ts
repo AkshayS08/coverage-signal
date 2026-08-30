@@ -76,6 +76,29 @@ console.log("\n=== [3] The two branches agree — the rule itself ===");
     "[3b] both branches still report noteSpan, which is what bounds verification");
 }
 
+console.log("\n=== [3.5] The STRADDLE — a note that begins inside the cap and ends past it ===");
+{
+  // Quest's real shape: note starts at 39,415, runs past LEAD_CHARS (40,000).
+  // Branching on location.end sent this down the excerpt path, which sliced
+  // from max(start, 40,000) and silently cut the note's first 585 chars.
+  const before = FILLER.repeat(683);           // ~39.4k — note starts just under the cap
+  const fullText = before + note("STRADDLE") + FILLER.repeat(1200);
+  const r = buildExtractionText({ form: "10-Q", url: "u", fullText });
+
+  assert(r.debtNoteStatus === "found", `[3.5a] the locator finds a straddling note (status=${r.debtNoteStatus})`);
+  assert(r.text.includes("7. Debt The following table"),
+    "[3.5b] THE FIX: the note's HEADING survives — branching on end truncated it at the cap");
+  assert(r.text.includes("4.375 % STRADDLE Notes due June 15, 2028"),
+    "[3.5c] and its first row, which is what the truncation actually cost");
+  assert(r.text.includes("6.250 % STRADDLE Notes due January 15, 2033"),
+    "[3.5d] through to its last row — the note is delimited whole, across the cap");
+  const openAt = r.text.indexOf(MARKER);
+  const firstRowAt = r.text.indexOf("4.375 % STRADDLE");
+  assert(openAt !== -1 && openAt < firstRowAt,
+    "[3.5e] the marker does not LIE: it precedes the note's real first character rather than announcing an offset it then skips past");
+  assert(r.text.indexOf("4.375 % STRADDLE") === r.text.lastIndexOf("4.375 % STRADDLE"),
+    "[3.5f] still exactly one copy — the lead is not re-emitted around the delimited note");
+}
 console.log("\n=== [4] Branches with nothing to mark are unchanged ===");
 {
   const short = buildExtractionText({ form: "10-Q", url: "u", fullText: "a short filing" });

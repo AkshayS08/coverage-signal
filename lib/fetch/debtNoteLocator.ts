@@ -576,21 +576,31 @@ export function buildExtractionText(params: { form: string; url: string; fullTex
   const OPEN = `[... the debt-schedule note was located at character offset ${location.start} of the full filing; it is delimited below ...]`;
   const CLOSE = "[... end of the located debt-schedule note ...]";
 
-  if (location.end <= LEAD_CHARS) {
-    // Already inside the lead: delimit it IN PLACE rather than appending a
-    // copy — the same text twice invites the model to read one occurrence as
-    // corroboration of the other.
+  // THE BRANCH IS ON WHERE THE NOTE STARTS, NOT WHERE IT ENDS.
+  //
+  // Testing `location.end` leaves a third case that neither branch handles:
+  // a note that STRADDLES the cap. Quest's note starts at 39,415 and runs
+  // past 40,000, so the old code took the excerpt path and sliced from
+  // max(39,415, 40,000) — silently cutting the note's first 585 characters,
+  // its heading and opening rows among them, while the lead carried those
+  // same characters unmarked. Branching on `start` makes the straddle the
+  // same case as an early note: delimited from its own first character,
+  // once, whole.
+  if (location.start < LEAD_CHARS) {
+    // The note begins inside the lead. Delimit it IN PLACE rather than
+    // appending a copy — the same text twice invites the model to read one
+    // occurrence as corroboration of the other. For a straddling note the
+    // trailing remainder is empty, so the note simply runs to its own end.
     const text =
       fullText.slice(0, location.start) +
       `\n\n${OPEN}\n\n` +
       fullText.slice(location.start, location.end) +
       `\n\n${CLOSE}\n\n` +
-      fullText.slice(location.end, LEAD_CHARS);
+      fullText.slice(location.end, Math.max(LEAD_CHARS, location.end));
     return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
   }
-  const excerptStart = Math.max(location.start, LEAD_CHARS);
-  const excerpt = fullText.slice(excerptStart, location.end);
-  const text = `${lead}\n\n[... document continues; excerpt below resumes at character offset ${excerptStart} of the full filing ...]\n\n${OPEN}\n\n${excerpt}\n\n${CLOSE}`;
+  const excerpt = fullText.slice(location.start, location.end);
+  const text = `${lead}\n\n[... document continues; excerpt below resumes at character offset ${location.start} of the full filing ...]\n\n${OPEN}\n\n${excerpt}\n\n${CLOSE}`;
   return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
 }
 
