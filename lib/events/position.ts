@@ -542,7 +542,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // lack them — plain JSON.parse has no way to apply loop.ts's own
   // withFieldDefaults. Never crash on legacy-shaped input; treat a missing
   // field exactly like an empty/null one.
-  const baseSequence = retypeEmbeddedSubtotals(debtMaturity?.scheduleSequence, reportRetype);
+  const baseSequence = normalizeScheduleSequence(debtMaturity?.scheduleSequence);
   const baseRowEntries = baseSequence.filter((e) => e.kind === "row");
   let rows: LadderRow[] = baseRowEntries.map((entry) => ladderRowFromSequenceEntry(entry, "live"));
 
@@ -680,7 +680,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   const baseAnchor = computeBalanceSheetCheck(debtMaturity?.balanceSheetDebtCaptions, baseSequence);
   const baseLadderUntrustworthy = !baseWalk.pass && !baseAnchor.pass;
 
-  const priorRowEntries = baseLadderUntrustworthy ? [] : retypeEmbeddedSubtotals(debtMaturity?.priorScheduleSequence, reportRetype).filter((e) => e.kind === "row");
+  const priorRowEntries = baseLadderUntrustworthy ? [] : normalizeScheduleSequence(debtMaturity?.priorScheduleSequence).filter((e) => e.kind === "row");
   const redeemsText = newDebtIssuance?.fired ? newDebtIssuance.redeems : null;
   const retiredByEvidence = redeemsText
     ? { evidence: redeemsText, citedUrl: newDebtIssuance?.citations[0]?.url ?? "" }
@@ -734,7 +734,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // instrument identity (rowsRepresentSameTranche — maturity and rate, never
   // amount), for the same reason as everywhere else in this file: the amounts
   // are expected to differ, and the difference is the whole point.
-  const priorRows = retypeEmbeddedSubtotals(debtMaturity?.priorScheduleSequence, reportRetype).filter((e) => e.kind === "row");
+  const priorRows = normalizeScheduleSequence(debtMaturity?.priorScheduleSequence).filter((e) => e.kind === "row");
   if (priorRows.length > 0) {
     rows = rows.map((r) => {
       const match = priorRows.find((p) => rowsRepresentSameTranche(r, p));
@@ -940,6 +940,86 @@ export function retypeEmbeddedSubtotals(
   return out;
 }
 
+
+/**
+ * SESSION 19 — A STATED DEDUCTION IS NEGATIVE, HOWEVER IT IS PUNCTUATED.
+ *
+ * Tenet's note uses BOTH conventions in the same table:
+ *
+ *   Unamortized issue costs and note discounts   ( 85 )   ( 94 )
+ *   Less: Current portion                          160       79
+ *   Long-term debt, net of current portion     $ 13,088  $ 13,092
+ *
+ * One line is parenthesised; the next carries its sign in the LABEL and
+ * prints the figure bare. The model transcribed both faithfully. The walk
+ * read the sign only from punctuation, added 160 where the filing subtracts
+ * it, and reported "off by $320M" — twice the figure, the signature of a
+ * dropped sign rather than a missing row.
+ *
+ * This is the em-dash lesson again: the label carries meaning the digits do
+ * not. Reading "Less:" is READING THE FILING, not guessing at it — which is
+ * what separates this from a vocabulary guard. The project's rule bans
+ * guards keyed on how the MODEL happens to word something; this is keyed on
+ * a printing convention the filing itself uses, transcribed verbatim.
+ *
+ * Scoped tightly, because the cost of over-applying is a silently wrong
+ * balance:
+ *   - `adjustment` entries only. A row is a position, not a deduction.
+ *   - Only when the amount is not ALREADY negative, so a filing that both
+ *     labels and parenthesises is not double-negated back to positive.
+ *   - The marker must LEAD the label. "Less: current portion" is a
+ *     deduction; "Notes issued at less than par" is not.
+ * Every correction logs, for the same reason every re-typing does.
+ */
+const STATED_DEDUCTION = /^\s*(?:less|deduct|deductions|minus)\b\s*:?/i;
+
+export interface DeductionSignFix {
+  label: string;
+  amount: string;
+}
+
+export function applyStatedDeductionSigns(
+  entries: VerifiedSequenceEntry[],
+  onFix?: (f: DeductionSignFix) => void
+): VerifiedSequenceEntry[] {
+  return entries.map((e) => {
+    if (e.kind !== "adjustment") return e;
+    const label = e.label ?? "";
+    if (!STATED_DEDUCTION.test(label)) return e;
+    const value = parseMoneyAmount(e.amount);
+    if (value === null || value <= 0) return e; // already negative, nil, or unparseable — leave it exactly as the filing printed it
+    onFix?.({ label, amount: e.amount });
+    // The AMOUNT STRING is rewritten to the accounting form the rest of the
+    // pipeline already parses, rather than carrying a sign flag no other
+    // reader would know to check.
+    return { ...e, amount: `(${e.amount.trim()})` };
+  });
+}
+
+/**
+ * The one normalization every reader of a schedule sequence applies. Both
+ * corrections are shape corrections over transcribed text, both are
+ * idempotent, and keeping them behind one name is what stops a future reader
+ * from applying one and not the other — which is precisely the bug the
+ * render side had when it walked the raw sequence while the checks walked
+ * the normalized one.
+ */
+export function normalizeScheduleSequence(
+  scheduleSequence: VerifiedSequenceEntry[] | null | undefined
+): VerifiedSequenceEntry[] {
+  return applyStatedDeductionSigns(retypeEmbeddedSubtotals(scheduleSequence, reportRetype), reportDeductionFix);
+}
+
+const reportedFixes = new Set<string>();
+export function reportDeductionFix(f: DeductionSignFix): void {
+  const key = `${f.label}|${f.amount}`;
+  if (reportedFixes.has(key)) return;
+  reportedFixes.add(key);
+  console.log(
+    `  STATED DEDUCTION SIGNED — ${JSON.stringify(f.label)} prints ${JSON.stringify(f.amount)} unsigned, but its own label states a deduction, so it is subtracted. If this line is not a deduction, the walk is now wrong in the other direction — say so rather than trusting it.`
+  );
+}
+
 export interface SubtotalCheck {
   /** Verbatim, or null when the filing prints this figure with no "Total ..." caption at all (real and expected). */
   label: string | null;
@@ -1003,7 +1083,7 @@ export function computeWalkChecksum(scheduleSequence: VerifiedSequenceEntry[] | 
   // Session 19: a mistyped inner subtotal is re-typed before it is walked,
   // or it is counted alongside the rows that produce it. Idempotent, so the
   // three read sites need not coordinate about who normalizes.
-  const entries = retypeEmbeddedSubtotals(scheduleSequence, reportRetype);
+  const entries = normalizeScheduleSequence(scheduleSequence);
   const rowValues = entries
     .filter((e) => e.kind === "row")
     .map((e) => parseMoneyAmount(e.amount))
@@ -1107,7 +1187,7 @@ export function computeBalanceSheetCheck(
   const captionValues = captionList.map((c) => parseMoneyAmount(c.amount)).filter((v): v is number => v !== null);
   const captionSum = captionValues.reduce((a, b) => a + b, 0);
 
-  const subtotals = retypeEmbeddedSubtotals(scheduleSequence, reportRetype)
+  const subtotals = normalizeScheduleSequence(scheduleSequence)
     .filter((e) => e.kind === "subtotal")
     .map((e) => ({ label: e.label, amount: parseMoneyAmount(e.amount) }))
     .filter((s): s is { label: string | null; amount: number } => s.amount !== null);

@@ -3,8 +3,8 @@ import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
 import { runAgentLoop } from "../agent";
 import { buildCompanyTableBlock, buildEvents } from "../events";
-import { computeWalkChecksum, retypeEmbeddedSubtotals, walkGapFractionOf } from "../events/position";
-import type { SubtotalRetype } from "../events/position";
+import { computeWalkChecksum, retypeEmbeddedSubtotals, applyStatedDeductionSigns, walkGapFractionOf } from "../events/position";
+import type { SubtotalRetype, DeductionSignFix } from "../events/position";
 
 const BOTH_BOOKS = [
   "DaVita", "HCA Healthcare", "Tenet Healthcare", "Universal Health Services", "Encompass Health",
@@ -24,16 +24,19 @@ async function main() {
     retypeEmbeddedSubtotals(dm?.priorScheduleSequence, (r) => prior.push(r));
     totalRetypes += seen.length + prior.length;
 
+    const signs: DeductionSignFix[] = [];
+    applyStatedDeductionSigns(retypeEmbeddedSubtotals(dm?.scheduleSequence), (f) => signs.push(f));
     const walk = computeWalkChecksum(dm?.scheduleSequence);
     const gap = walkGapFractionOf(walk);
     const { flashCardCandidates } = buildEvents([result]);
     const table = buildCompanyTableBlock(result, flashCardCandidates);
 
     lines.push(
-      `${company.padEnd(28)} retypes=${String(seen.length + prior.length).padStart(2)}  walk=${walk.pass ? "TIES " : "FAILS"}  rows=${String(walk.rowCount).padStart(2)}  gap=${gap === null ? "  —  " : gap.toFixed(4)}  cards=${table.cardCount}`
+      `${company.padEnd(28)} retypes=${String(seen.length + prior.length).padStart(2)}  signs=${String(signs.length).padStart(2)}  walk=${walk.pass ? "TIES " : "FAILS"}  rows=${String(walk.rowCount).padStart(2)}  gap=${gap === null ? "  —  " : gap.toFixed(4)}  cards=${table.cardCount}`
     );
     for (const r of seen) lines.push(`      current : ${JSON.stringify(r.label)} = ${r.amount}  (sum of ${r.rowsSummed} rows)`);
     for (const r of prior) lines.push(`      prior   : ${JSON.stringify(r.label)} = ${r.amount}  (sum of ${r.rowsSummed} rows)`);
+    for (const s of signs) lines.push(`      SIGNED  : ${JSON.stringify(s.label)} printed ${s.amount} unsigned -> subtracted`);
   }
   console.error("\n\n================ BOOK-WIDE SUBTOTAL RE-TYPING ================");
   for (const l of lines) console.error(l);

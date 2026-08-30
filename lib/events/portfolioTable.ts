@@ -11,7 +11,7 @@ import { normalizeForMatch } from "../agent/verifyQuote";
 import { extractFactTokens } from "../agent/factTokens";
 import { BUCKET_LABELS } from "./buckets";
 import { shortTriggerLabel } from "./labels";
-import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, movementKindOf, parseMoneyAmount, rowIdentifiesOneTranche, scheduleIsAggregateDisclosure, type LadderRow, type SubtotalCheck, retypeEmbeddedSubtotals, reportRetype } from "./position";
+import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, movementKindOf, parseMoneyAmount, rowIdentifiesOneTranche, scheduleIsAggregateDisclosure, type LadderRow, type SubtotalCheck, normalizeScheduleSequence } from "./position";
 import type { TimingInfo } from "./textHeuristics";
 
 /**
@@ -591,7 +591,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // while the drawer above them still read "9 rows in the note sum to
   // $30.4B" against a stated $16.0B. A guard that ties over a line that says
   // it does not is worse than either alone.
-  const normalizedSequence = retypeEmbeddedSubtotals(debtMaturity?.scheduleSequence, reportRetype);
+  const normalizedSequence = normalizeScheduleSequence(debtMaturity?.scheduleSequence);
   const walkCheck = computeWalkChecksum(normalizedSequence);
   const balanceSheetCheck = computeBalanceSheetCheck(debtMaturity?.balanceSheetDebtCaptions, normalizedSequence);
 
