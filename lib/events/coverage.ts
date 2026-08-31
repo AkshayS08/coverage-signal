@@ -64,6 +64,8 @@ export interface CapturedEntry {
   amount: number | null;
   /** "row" (from the schedule table) or "prose" (from the note's narrative). Stated so the coverage line can name what it counted. */
   from: "row" | "prose";
+  /** Why this entry counts as debt, or why it counts as capacity instead. Rendered, never inferred by the reader. */
+  basisNote?: string;
 }
 
 export interface CoverageResult {
@@ -80,6 +82,8 @@ export interface CoverageResult {
   categoriesMissing: DebtCategory[];
   categoriesCaptured: DebtCategory[];
   entries: CapturedEntry[];
+  /** Committed but undrawn — reported separately, never summed as debt, never dropped. */
+  capacity: CapturedEntry[];
   /** The captions summed, named on the rendered surface per the spec. */
   anchorCaptions: string[];
   line: string;
@@ -102,17 +106,95 @@ function isCurrentPortion(label: string | null | undefined): boolean {
  * Matched on CATEGORY plus AMOUNT, never on name: a filing calls the same
  * facility different things in different sentences.
  */
+/**
+ * SESSION 20, STAGE 4 — ONE INSTRUMENT IN TWO UNITS IS STILL ONE.
+ *
+ * Matching was exact equality on the parsed amount, which is exact equality
+ * on how the filing chose to PRINT the figure. The same term loan written
+ * "$ 1.448 billion" in a sentence and "1,447,500" in a table stated in
+ * thousands is 1.448e9 against 1.4475e9 — a 0.03% difference that is not a
+ * difference at all, it is one number rounded for prose.
+ *
+ * The test is not a tolerance band. It is the rounding relationship itself:
+ * the more precise figure MATCHES the less precise one when it rounds to it
+ * at the less precise one's OWN PRINTED PRECISION. "$1.448 billion" carries
+ * three decimals of a billion, 1.4475e9 rounds to 1.448e9 there, so they
+ * match; "$1.155 billion" also carries three, 1.1625e9 rounds to 1.163e9
+ * there, so they do not — and they should not, because those two ARE
+ * different balances of an amortising loan at two different dates.
+ */
+function printedPrecision(raw: string): number {
+  const m = raw.match(/([\d,]+)(?:\.(\d+))?\s*(thousand|million|billion|bn|mm|k)?/i);
+  if (!m) return 0;
+  const unit = (m[3] ?? "").toLowerCase();
+  const scale = unit.startsWith("b") ? 1e9 : unit.startsWith("m") ? 1e6 : unit.startsWith("t") || unit === "k" ? 1e3 : 1;
+  return scale / Math.pow(10, (m[2] ?? "").length);
+}
+
+/** Do two printed amounts state the same figure, once units are normalised and the coarser one's own rounding is allowed for? */
+export function sameNormalisedAmount(a: string | null | undefined, b: string | null | undefined): boolean {
+  if (!a || !b) return false;
+  const va = parseMoneyAmount(a);
+  const vb = parseMoneyAmount(b);
+  if (va === null || vb === null || va <= 0 || vb <= 0) return false;
+  if (va === vb) return true;
+  // Round the finer figure at the coarser one's precision and compare there.
+  const step = Math.max(printedPrecision(a), printedPrecision(b));
+  if (!Number.isFinite(step) || step <= 0) return false;
+  return Math.round(va / step) === Math.round(vb / step);
+}
+
+/** A four-digit maturity year, from an ISO date or a bare year. Null when the entry states none. */
+function maturityYear(v: string | null | undefined): number | null {
+  const m = (v ?? "").match(/\b(19|20)\d{2}\b/);
+  return m ? Number(m[0]) : null;
+}
+
+/** Coupon rate as a number, when stated. */
+function rateOf(v: string | null | undefined): number | null {
+  const m = (v ?? "").match(/(\d{1,2}(?:\.\d+)?)\s*%/);
+  return m ? Number(m[1]) : null;
+}
+
+/**
+ * INSTRUMENT CONTINUITY. Two entries are the same instrument only if nothing
+ * they BOTH state contradicts. A maturity or a rate stated on both and
+ * differing is the filing telling us these are two instruments, whatever
+ * their sizes are — which is what keeps UHS's three separate $500 million
+ * senior notes (2029, 2032, 2034) three, and would keep them three even if
+ * every other signal collapsed them.
+ */
+interface Continuity { maturityDate: string | null; rate: string | null; label?: string | null; name?: string | null }
+
+/**
+ * An instrument's distinguishing facts, read from wherever the filing put
+ * them. A transcribed bullet often carries its maturity in its own LABEL
+ * ("4.625 % senior secured notes due in October, 2029") and nowhere else,
+ * and a rule that only reads the maturityDate field would find no
+ * contradiction between three notes that plainly contradict.
+ */
+function statedYear(e: Continuity): number | null {
+  return maturityYear(e.maturityDate) ?? maturityYear(e.label ?? e.name);
+}
+function statedRate(e: Continuity): number | null {
+  return rateOf(e.rate) ?? rateOf(e.label ?? e.name);
+}
+
+function contradicts(a: Continuity, b: Continuity): boolean {
+  const ya = statedYear(a), yb = statedYear(b);
+  if (ya !== null && yb !== null && ya !== yb) return true;
+  const ra = statedRate(a), rb = statedRate(b);
+  if (ra !== null && rb !== null && Math.abs(ra - rb) > 0.001) return true;
+  return false;
+}
+
 export function dedupAgainstRows(
   prose: ProseInstrumentRow[],
   rows: VerifiedSequenceEntry[]
 ): { kept: ProseInstrumentRow[]; suppressed: ProseInstrumentRow[] } {
-  const rowAmounts = new Set(
-    rows.map((r) => parseMoneyAmount(r.amount)).filter((v): v is number => v !== null && v > 0)
-  );
   const kept: ProseInstrumentRow[] = [];
   const suppressed: ProseInstrumentRow[] = [];
   for (const p of prose) {
-    const amt = p.amount ? parseMoneyAmount(p.amount) : null;
     // DEDUP IS AGAINST ROWS ONLY, NEVER PROSE AGAINST PROSE.
     //
     // An earlier cut also collapsed prose entries sharing a category and an
@@ -122,10 +204,53 @@ export function dedupAgainstRows(
     // amount is the signature of a duplicate only when one of the two is a
     // TABLE ROW — because then the note has printed the instrument twice, once
     // in each form. Two sentences are two instruments.
-    if (amt !== null && rowAmounts.has(amt)) suppressed.push(p);
+    const twin = rows.find((r) => sameNormalisedAmount(r.amount, p.amount) && !contradicts(r, p));
+    if (twin) suppressed.push(p);
     else kept.push(p);
   }
   return { kept, suppressed };
+}
+
+/**
+ * SESSION 20, STAGE 4 — DEBT IS WHAT IS DRAWN.
+ *
+ * An undrawn commitment is capacity. It is a real fact, it belongs on the
+ * liquidity line, and it is not owed. The distinction was already drawn once
+ * here — the delayed-draw facility was excluded — and drawn in ONE PLACE
+ * only, as a category name rather than as the distinction itself, so every
+ * other facility went through uncounted. Measured on v22: Molina contributed
+ * its $1.25 billion facility SIZE against nothing drawn, Tenet its $1.900
+ * billion against $0 drawn, and both rendered above 100% coverage.
+ *
+ * Three tests, in order, none of them a list of facility names:
+ *   1. A revolving facility contributes its DRAWN balance and nothing else.
+ *      The drawn figure has its own field precisely because size and balance
+ *      are different numbers; where the note states no drawn balance, the
+ *      facility contributes zero.
+ *   2. An amount the note itself states as a commitment contributes zero,
+ *      whatever kind of instrument it is. This is the general form, and it
+ *      is why a facility type nobody has seen yet is handled.
+ *   3. Otherwise the stated amount is a balance and counts.
+ *
+ * Nothing excluded is silently dropped — every one is returned as capacity
+ * and rendered on its own line.
+ */
+export function debtContribution(
+  p: ProseInstrumentRow,
+  revolver: RevolverRow | null | undefined
+): { amount: number | null; capacity: boolean; why: string } {
+  if (p.category === "revolver") {
+    const drawn = revolver?.drawn ? parseMoneyAmount(revolver.drawn) : null;
+    if (drawn === null) return { amount: null, capacity: true, why: "revolving facility, no drawn balance stated — capacity, not debt" };
+    return { amount: drawn, capacity: drawn === 0, why: drawn === 0 ? "revolving facility, nothing drawn" : "revolving facility, drawn balance" };
+  }
+  if (p.category === "delayed-draw-term-loan") {
+    return { amount: null, capacity: true, why: "committed but undrawn — capacity, not debt" };
+  }
+  if (p.amountBasis === "commitment") {
+    return { amount: null, capacity: true, why: "the note states this amount as a commitment, not a balance outstanding" };
+  }
+  return { amount: p.amount ? parseMoneyAmount(p.amount) : null, capacity: false, why: "stated balance outstanding" };
 }
 
 /**
@@ -148,14 +273,38 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
     .filter((e) => !(hasCurrentCaption && isCurrentPortion(e.label)))
     .reduce((a, e) => a + (parseMoneyAmount(e.amount) ?? 0), 0);
 
-  const { kept: prose } = dedupAgainstRows(debtMaturity?.proseInstruments ?? [], rows);
-
+  // CAPACITY IS SPLIT OFF BEFORE DEDUP, AND THE ORDER IS LOAD-BEARING.
+  //
+  // A table row is a balance. Capacity is not a balance, so a commitment can
+  // never be the same instrument as a row no matter what the two figures
+  // are — and running dedup first made exactly that mistake on the worked
+  // example: UHS's $700 million Twelfth Amendment delayed-draw facility was
+  // suppressed as a duplicate of its $700 million 1.65% senior notes due
+  // 2026, two entirely different things that happen to be the same size and
+  // state nothing that contradicts.
+  const capacity: CapturedEntry[] = [];
+  const debtBearing: ProseInstrumentRow[] = [];
+  const contributionOf = new Map<ProseInstrumentRow, { amount: number | null; why: string }>();
+  for (const p of debtMaturity?.proseInstruments ?? []) {
+    const c = debtContribution(p, debtMaturity?.revolver);
+    if (c.capacity) {
+      capacity.push({ category: p.category, label: p.name ?? p.category, amount: p.amount ? parseMoneyAmount(p.amount) : null, from: "prose", basisNote: c.why });
+    } else {
+      debtBearing.push(p);
+      contributionOf.set(p, { amount: c.amount, why: c.why });
+    }
+  }
+  const { kept: prose } = dedupAgainstRows(debtBearing, rows);
+  const proseEntries: CapturedEntry[] = prose.map((p) => ({
+    category: p.category,
+    label: p.name ?? p.category,
+    amount: contributionOf.get(p)?.amount ?? null,
+    from: "prose" as const,
+    basisNote: contributionOf.get(p)?.why,
+  }));
   const entries: CapturedEntry[] = [
     ...rows.map((r) => ({ category: "table-row" as const, label: r.label ?? "(unlabeled)", amount: parseMoneyAmount(r.amount), from: "row" as const })),
-    // Undrawn capacity is NOT debt and never counts toward coverage.
-    ...prose
-      .filter((p) => p.category !== "delayed-draw-term-loan")
-      .map((p) => ({ category: p.category, label: p.name ?? p.category, amount: p.amount ? parseMoneyAmount(p.amount) : null, from: "prose" as const })),
+    ...proseEntries,
   ];
 
   const capturedFace = entries.reduce((a, e) => a + (e.amount ?? 0), 0);
@@ -168,8 +317,12 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
   const capturedCategories = new Set<DebtCategory>(
     entries.filter((e) => e.category !== "table-row" && e.amount !== null).map((e) => e.category as DebtCategory)
   );
+  // A facility whose only stated figure is a commitment is NOT "missing" —
+  // it is accounted for, as capacity. Flagging it would report a gap that
+  // does not exist; omitting it entirely would hide a real instrument.
+  const reportedAsCapacity = new Set<DebtCategory>(capacity.map((e) => e.category as DebtCategory));
   const categoriesMissing = [...statedCategories].filter(
-    (c) => c !== "delayed-draw-term-loan" && !capturedCategories.has(c)
+    (c) => c !== "delayed-draw-term-loan" && !capturedCategories.has(c) && !reportedAsCapacity.has(c)
   );
 
   return {
@@ -182,8 +335,9 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
     categoriesMissing,
     categoriesCaptured: [...capturedCategories],
     entries,
+    capacity,
     anchorCaptions,
-    line: coverageLine({ statedTotalDebt, capturedFace, residualFraction, residualPasses, categoriesMissing, anchorCaptions, entries }),
+    line: coverageLine({ statedTotalDebt, capturedFace, residualFraction, residualPasses, categoriesMissing, anchorCaptions, entries, capacity }),
   };
 }
 
@@ -200,6 +354,7 @@ function coverageLine(r: {
   categoriesMissing: DebtCategory[];
   anchorCaptions: string[];
   entries: CapturedEntry[];
+  capacity: CapturedEntry[];
 }): string {
   const b = (n: number) => (Math.abs(n) >= 1e9 ? `$${(n / 1e9).toFixed(2)}B` : `$${(n / 1e6).toFixed(0)}M`);
   if (r.statedTotalDebt === null) {
@@ -211,11 +366,15 @@ function coverageLine(r: {
   const counted = `${rowN} row${rowN === 1 ? "" : "s"}${proseN > 0 ? ` + ${proseN} prose instrument${proseN === 1 ? "" : "s"}` : ""}`;
   const head = `${counted} cover ${b(r.capturedFace)} of ${b(r.statedTotalDebt)} stated total debt (${pct}%), against ${r.anchorCaptions.join(" + ")}`;
   const missing = r.categoriesMissing.length > 0 ? ` — STATED BUT NOT CAPTURED: ${r.categoriesMissing.join(", ")}` : "";
+  const cap =
+    r.capacity.length > 0
+      ? ` — plus ${b(r.capacity.reduce((a, e) => a + (e.amount ?? 0), 0))} of undrawn capacity NOT counted as debt (${r.capacity.map((e) => `${e.label}: ${e.basisNote}`).join("; ")})`
+      : "";
   const resid =
     r.residualPasses === false && r.residualFraction !== null
       ? ` — ${(r.residualFraction * 100).toFixed(1)}% unexplained, above the ${(COVERAGE_RESIDUAL_LIMIT * 100).toFixed(1)}% line`
       : "";
-  return head + missing + resid;
+  return head + missing + resid + cap;
 }
 
 /**

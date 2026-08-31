@@ -84,9 +84,30 @@ import { VULGAR_FRACTION_CLASS } from "../agent/verifyQuote";
  * function is asked. Tightening it further (requiring the separator to bind
  * tight to the number) was measured and rejected — it also threw out Cigna's
  * spaced-dash "Note 7 – Debt".
+ *
+ * SESSION 20, STAGE 4 — THE TITLE-LENGTH BOUND WAS ONE WORD TOO TIGHT.
+ *
+ * The bound below was {0,4} leading words. UHS titles its note "(4) Treasury
+ * Credit Facilities and Outstanding Debt Securities" — five words before
+ * "Debt" — so it matched nothing at all, and UHS was the only company of ten
+ * whose located span was not anchored to a heading. Everything downstream
+ * followed from that: the span was a bare coupon cluster holding the five
+ * senior-note bullets and neither the term loan above them nor the other
+ * debt below, so half the capital structure was never in the text the model
+ * was given.
+ *
+ * Measured across the ten real anchor filings before changing it: {0,5}
+ * adds exactly one true heading (UHS's) and five captions that are not
+ * headings at all — "4 — Interest expense and amortization of debt",
+ * "5 ) Loss on early extinguishment of debt", "25. Loss from early
+ * extinguishment of debt". Every one of those is an income-statement line,
+ * and every one is removed by the attachment test the finder already
+ * applies (tableBlockForHeading: a table must begin within
+ * HEADING_TO_TABLE_CHARS below the heading). The bound moves; the guard
+ * that makes a generous pattern safe does not.
  */
 const MAX_NOTE_NUMBER = 30;
-const DEBT_NOTE_HEADING_RE = /(?:\bnotes?\s+)?(\d{1,2})\s*[.)–—:-]\s+((?:[A-Za-z][A-Za-z-]*\s+){0,4}?debt)\b/gi;
+const DEBT_NOTE_HEADING_RE = /(?:\bnotes?\s+)?(\d{1,2})\s*([.)–—:-])\s+((?:[A-Za-z][A-Za-z-]*\s+){0,5}?debt)\b/gi;
 
 /**
  * How far BEFORE the span start a heading may sit and still count. A cluster
@@ -488,9 +509,16 @@ const HEADING_LEAD_CHARS = 200;
  */
 const HEADING_TO_TABLE_CHARS = 1200;
 
-function findAllDebtNoteHeadings(text: string): number[] {
+/** A matched debt-note heading, with the numbering it announces itself in — the number and separator are what locate its SIBLING, and so the note's own end. */
+interface DebtNoteHeading {
+  at: number;
+  number: number;
+  separator: string;
+}
+
+function findAllDebtNoteHeadings(text: string): DebtNoteHeading[] {
   const re = new RegExp(DEBT_NOTE_HEADING_RE.source, "gi");
-  const found: number[] = [];
+  const found: DebtNoteHeading[] = [];
   let m: RegExpExecArray | null;
   while ((m = re.exec(text))) {
     const raw = m[1];
@@ -498,10 +526,113 @@ function findAllDebtNoteHeadings(text: string): number[] {
     // A note number is 1..MAX_NOTE_NUMBER and is never zero-padded. Both
     // rejections are real: "02 )" and "0 —" are cash-flow table figures that
     // happen to precede a caption ending in "debt", not note numbers.
-    if (n >= 1 && n <= MAX_NOTE_NUMBER && !/^0/.test(raw)) found.push(m.index);
+    if (n >= 1 && n <= MAX_NOTE_NUMBER && !/^0/.test(raw)) found.push({ at: m.index, number: n, separator: m[2] });
     if (re.lastIndex === m.index) re.lastIndex++;
   }
   return found;
+}
+
+/**
+ * SESSION 20, STAGE 4 — THE SPAN IS THE NOTE, NOT THE TABLE INSIDE IT.
+ *
+ * Every rule above this one asks "where is the debt TABLE", and every one of
+ * them ends the span where the table's own content stops being contiguous.
+ * That was right when a ladder was a table and nothing else counted. It is
+ * wrong now: a debt note routinely states half its capital structure in
+ * sentences ON EITHER SIDE of its table, and those sentences carry no
+ * coupon-near-year signature at all, so no contiguity rule can ever reach
+ * them.
+ *
+ * Measured on the ten real anchor filings, the located spans were carrying
+ * roughly a third of their notes:
+ *
+ *   Encompass    981 chars of a 4,298-char note      Molina  941 of 3,417
+ *   Centene    1,328 of 2,828                        Tenet 1,294 of 2,441
+ *   DaVita     3,409 of 7,510                        CHS   2,863 of 8,139
+ *   UHS        3,210 of 13,398 — and the 3,210 held neither the term loan
+ *              above the bullets nor the other debt below them
+ *
+ * A NOTE'S OWN BOUNDARY IS PRINTED ON THE PAGE. Filings number their notes,
+ * and note N ends where note N+1 begins. The numbering style does not have
+ * to be guessed either — the heading we already matched states it, so the
+ * successor is that number plus one in that same style. No vocabulary, no
+ * threshold, and it reads the document the way a person does.
+ *
+ * PURELY ADDITIVE, BY CONSTRUCTION. This only ever widens: the start moves
+ * back to the heading if the span did not already reach it, and the end
+ * moves forward to the sibling if the sibling sits beyond it. A filing whose
+ * sibling heading lands INSIDE the chosen span (HCA's does, at 34,288
+ * against a span ending at 34,562) keeps its span untouched, because losing
+ * located table text to a boundary rule would be a regression and the rule
+ * has nothing to say about text already known to be part of the schedule.
+ */
+function nextSiblingHeadingAt(text: string, heading: DebtNoteHeading): number | null {
+  const sep = heading.separator.replace(/[.*+?^${}()|[\]\\/-]/g, (c) => "\\" + c);
+  const re = new RegExp(String.raw`(?:\bNotes?\s+)?\b` + (heading.number + 1) + String.raw`\s*` + sep + String.raw`\s+[A-Z]`, "g");
+  // Start past the heading itself so a heading whose own title contains the
+  // successor's number cannot match itself.
+  re.lastIndex = heading.at + 1;
+  const m = re.exec(text);
+  return m ? m.index : null;
+}
+
+/** Widens a located span to the bounds of the note it sits in. Never contracts it; never crosses MAX_EXCERPT_CHARS. */
+export function expandToNoteBounds(text: string, span: { start: number; end: number }): { start: number; end: number; expanded: boolean } {
+  // CONTAINMENT, NOT DISTANCE. The governing heading is the nearest one at
+  // or before the span whose OWN SIBLING sits at or after the span start —
+  // which is precisely what "the span is inside note N" means, and needs no
+  // lookback constant to say it.
+  //
+  // A distance bound was tried first and it failed on the one company this
+  // whole rule exists for: HEADING_LOOKBACK_CHARS is 2,000, UHS's heading
+  // sits 3,344 characters above its span, and the expansion silently did
+  // nothing. Widening the constant would have fixed UHS and told the next
+  // filing nothing. Containment is the test that was meant all along.
+  //
+  // TWO GUARDS, AND BOTH WERE FOUND BY MEASURING. Containment alone picks
+  // the WRONG heading badly: DEBT_NOTE_HEADING_RE also matches cash-flow and
+  // income-statement captions ("17 ) Debt", "2 ) Deferred financing costs
+  // and other debt"), those captions have no successor heading anywhere, so
+  // an "is it still open" test declares them open forever and they swallow
+  // the document — measured, four of ten companies expanded to the 25,000
+  // character ceiling and lost their notes entirely.
+  //
+  //   1. The heading must have a SCHEDULE ATTACHED — the same
+  //      tableBlockForHeading test the finder already uses to tell a note
+  //      heading from a caption. A caption governs nothing.
+  //   2. Its sibling must actually be PRINTED. The rule reads a boundary off
+  //      the page; where the page prints no boundary there is nothing to
+  //      read, and the span stands as selected.
+  const headings = findAllDebtNoteHeadings(text);
+  let governing: DebtNoteHeading | null = null;
+  let governingSibling: number | null = null;
+  //
+  // The heading must also OPEN the span rather than sit somewhere inside it.
+  // Every heading-path span is constructed as heading − HEADING_LEAD_CHARS,
+  // so that bound is the exact window an opening heading occupies; a match
+  // further in is one of the nested subtotal captions the selection loop
+  // already documents ("15 ) Debt" inside Quest's own note), and letting one
+  // of those govern would read the boundary of a note that does not exist.
+  const opensSpanBy = span.start + HEADING_LEAD_CHARS;
+  for (const h of headings) {
+    if (h.at > opensSpanBy) break;
+    const sib = nextSiblingHeadingAt(text, h);
+    if (sib === null || sib < span.start) continue; // no printed boundary, or note N closed before the span began
+    // A caption, not a note heading. The test is the SAME table assertion
+    // the finder uses, but scanned over the whole note rather than the
+    // 1,200 characters below the heading: UHS opens its debt note with
+    // 3,344 characters of credit-agreement prose before the first coupon,
+    // and the attachment bound — correct for choosing a table — rejects the
+    // heading of the very note that table is in.
+    if (!assertSpanContainsTable(text, h.at, sib).ok) continue;
+    governing = h;
+    governingSibling = sib;
+  }
+  if (!governing) return { ...span, expanded: false };
+
+  const start = Math.min(span.start, Math.max(0, governing.at - HEADING_LEAD_CHARS));
+  const end = Math.min(Math.max(span.end, governingSibling ?? span.end), start + MAX_EXCERPT_CHARS, text.length);
+  return { start, end, expanded: start !== span.start || end !== span.end };
 }
 
 /** The table block under one heading, or null when that heading has no table attached beneath it (a contents entry, a cash-flow caption, a risk paragraph). */
@@ -593,7 +724,7 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
   // entries. A candidate landing within one cluster gap of a kept block
   // EXTENDS it rather than competing with it.
   const headingCandidates: { at: number; block: { start: number; end: number; matchCount: number } }[] = [];
-  for (const at of findAllDebtNoteHeadings(text)) {
+  for (const { at } of findAllDebtNoteHeadings(text)) {
     const host = headingCandidates.find((k) => at >= k.block.start && at <= k.block.end + CLUSTER_GAP_CHARS);
     const block = tableBlockForHeading(text, at);
     if (host) {
@@ -615,7 +746,8 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
         bestMagnitude = magnitude;
       }
     }
-    return { status: "found", start: best.start, end: best.end, matchCount: best.matchCount, via: "heading" };
+    const bounds = expandToNoteBounds(text, best);
+    return { status: "found", start: bounds.start, end: bounds.end, matchCount: best.matchCount, via: "heading" };
   }
 
   const positions = findMatches(text);
@@ -744,10 +876,11 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
   // Provenance records which signal actually decided, so a wrong location is
   // traceable to the rule that made it — `via=content` only when content
   // narrowed the field, never when it merely abstained and magnitude chose.
+  const bounds = expandToNoteBounds(text, bestSpan);
   return {
     status: "found",
-    start: bestSpan.start,
-    end: bestSpan.end,
+    start: bounds.start,
+    end: bounds.end,
     matchCount: best.length,
     via: contentDecided ? "content" : "density",
   };

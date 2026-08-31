@@ -562,22 +562,48 @@ export async function runAgentLoop(
   // "under_cap" both mean the filing's own debt note is reachable in the
   // text the model was given; "not_found" means it isn't, regardless of how
   // recent the filing is. Newest-first among the reachable ones.
-  const USABLE_DEBT_NOTE_STATUSES = new Set<DebtNoteFilingStatus>(["found", "under_cap"]);
-  const usableDebtNoteFilings = debtNoteStatusByFiling
-    .filter((f) => USABLE_DEBT_NOTE_STATUSES.has(f.status))
-    .sort((a, b) => b.filingDate.localeCompare(a.filingDate));
-  // Reassigned by the search-order fallback below when the newest filing
-  // turns out not to carry a real schedule — see that block for why the
-  // decision cannot be made here, before extraction.
-  let debtScheduleGuidance: DebtScheduleFilingGuidance = {
-    base: usableDebtNoteFilings[0] ? { form: usableDebtNoteFilings[0].form, date: usableDebtNoteFilings[0].filingDate, reportDate: usableDebtNoteFilings[0].reportDate, url: usableDebtNoteFilings[0].url } : null,
-    prior: usableDebtNoteFilings[1] ? { form: usableDebtNoteFilings[1].form, date: usableDebtNoteFilings[1].filingDate, reportDate: usableDebtNoteFilings[1].reportDate, url: usableDebtNoteFilings[1].url } : null,
+  //
+  // SESSION 20, STAGE 4 — THE ANCHOR IS THE MOST RECENT 10-Q/10-K. FULL STOP.
+  //
+  // The rule above filtered to filings whose debt note the LOCATOR could
+  // reach, then took the newest of those. That reads as a sensible
+  // precondition and is in fact a fallback wearing a precondition's clothes:
+  // when the newest filing's note is prose, or abbreviated, or simply
+  // unlocatable, the anchor silently becomes an older filing — and every
+  // downstream check then validates the older filing's position as though it
+  // were current.
+  //
+  // Measured on the committed v22 book, this had already happened to two of
+  // ten, and to more fields than the ladder:
+  //
+  //   UHS    11 rows from the 10-K (period Dec 31 2025), balance-sheet
+  //          captions read off the June 10-Q's DECEMBER COMPARATIVE column,
+  //          prose instruments from a THIRD filing (the Q1 10-Q). One
+  //          rendered position assembled from three dates.
+  //   Cigna  38 rows from the 10-K (period Dec 31 2025) beside a June 30
+  //          balance sheet; its captions were "Short-term debt 2,792   592"
+  //          read as 592 — again the December column.
+  //
+  // AND THE COLUMN READS WERE NOT THE MODEL'S MISTAKE. The guidance section
+  // names the base filing's period of report, the prompt says read the
+  // column matching it, and the guidance was saying December 31 2025. The
+  // model did as instructed. Fixing the anchor is what fixes the columns;
+  // there is no separate column defect to chase.
+  //
+  // So: newest 10-Q/10-K, whatever its note looks like. A filing whose note
+  // yields no ladder renders EMPTY WITH REASON. The locator's per-filing
+  // status is still logged — it is diagnostic, and it is no longer allowed
+  // to choose which quarter the reader is looking at.
+  const anchorCandidates = [...debtNoteStatusByFiling].sort((a, b) => b.filingDate.localeCompare(a.filingDate));
+  const debtScheduleGuidance: DebtScheduleFilingGuidance = {
+    base: anchorCandidates[0] ? { form: anchorCandidates[0].form, date: anchorCandidates[0].filingDate, reportDate: anchorCandidates[0].reportDate, url: anchorCandidates[0].url } : null,
+    prior: anchorCandidates[1] ? { form: anchorCandidates[1].form, date: anchorCandidates[1].filingDate, reportDate: anchorCandidates[1].reportDate, url: anchorCandidates[1].url } : null,
   };
   log(
     debtScheduleGuidance.base
-      ? `  debt-schedule base filing selected: ${debtScheduleGuidance.base.form} ${debtScheduleGuidance.base.date}` +
+      ? `  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): ${debtScheduleGuidance.base.form} ${debtScheduleGuidance.base.date} (period ${debtScheduleGuidance.base.reportDate}), note locator says ${anchorCandidates[0].status}` +
           (debtScheduleGuidance.prior ? `; prior: ${debtScheduleGuidance.prior.form} ${debtScheduleGuidance.prior.date}` : "; no prior filing available")
-      : `  debt-schedule base filing: NONE — no 10-Q/10-K in this corpus has a locatable schedule`
+      : `  debt-schedule ANCHOR: NONE — this corpus contains no 10-Q or 10-K`
   );
 
   // News isn't wired up yet (later session) — call the stub but don't narrate an empty result.
@@ -804,20 +830,35 @@ export async function runAgentLoop(
     const eventInstances = verifyEventInstances(v.eventInstances ?? [], v.citedUrls ?? [], textByUrl, log, label);
     const noteRetirements = verifyNoteRetirements(v.noteRetirements ?? [], v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
     // Session 20, 3a/3b — bounded to the located note, same contract as a row.
-    const proseInstruments = verifyProseInstruments(v.proseInstruments ?? [], v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
-    const proseDropped = (v.proseInstruments ?? []).length - proseInstruments.length;
+    const proseVerified = verifyProseInstruments(v.proseInstruments ?? [], v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
+    const proseDropped = (v.proseInstruments ?? []).length - proseVerified.length;
     if (proseDropped > 0) {
       log(`  ⚠ ${proseDropped} prose instrument(s) for ${label} could not be verified INSIDE the located note — dropped, not trusted (Rule 5)`);
     }
+    // Stage 4 — and then the anchor rule, same as a row. UHS's v22 prose came
+    // from the MARCH 10-Q while its ladder was dated June; an instrument
+    // balance is as of the filing that states it, and a position assembled
+    // from two dates is a position at neither.
+    const { kept: proseInstruments, dropped: offAnchorProse } = onAnchor(proseVerified, anchorUrl);
+    if (offAnchorProse.length > 0) {
+      log(
+        `  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for ${label} — ${offAnchorProse.length} instrument(s) (${offAnchorProse.map((p) => p.name ?? p.category).join(", ")}) verified against ${[...new Set(offAnchorProse.map((p) => p.citedUrl))].join(", ")}, not the anchor ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date}. A balance is as of the filing that states it.`
+      );
+    }
     const revolverVerified = v.revolver
       ? verifyProseInstruments(
-          [{ category: "revolver", name: null, amount: null, asOfDate: v.revolver.asOfDate ?? null, dateGranularity: null, maturityDate: null, rate: null, sourceLine: v.revolver.sourceLine }],
+          [{ category: "revolver", name: null, amount: null, amountBasis: null, asOfDate: v.revolver.asOfDate ?? null, dateGranularity: null, maturityDate: null, rate: null, sourceLine: v.revolver.sourceLine }],
           v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl
         )
       : [];
-    const revolver = v.revolver && revolverVerified.length === 1 ? { ...v.revolver, citedUrl: revolverVerified[0].citedUrl } : null;
+    const revolverOnAnchor = onAnchor(revolverVerified, anchorUrl).kept;
+    const revolver = v.revolver && revolverOnAnchor.length === 1 ? { ...v.revolver, citedUrl: revolverOnAnchor[0].citedUrl } : null;
     if (v.revolver && !revolver) {
-      log(`  ⚠ revolver figures for ${label} could not be verified inside the located note — dropped, not trusted`);
+      log(
+        revolverVerified.length === 1
+          ? `  ⚠ OFF-ANCHOR REVOLVER DROPPED for ${label} — the revolver figures verify against ${revolverVerified[0].citedUrl}, not the anchor ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date}; drawn and available are as-of figures and stale ones read as current`
+          : `  ⚠ revolver figures for ${label} could not be verified inside the located note — dropped, not trusted`
+      );
     }
     const instancesDropped = (v.eventInstances ?? []).length - eventInstances.length;
     if (instancesDropped > 0) {
@@ -827,7 +868,16 @@ export async function runAgentLoop(
     if (retirementsDropped > 0) {
       log(`  ⚠ ${retirementsDropped} note-prose retirement(s) for ${label} could not be verified INSIDE the located debt note — dropped, not trusted (Rule 5: a claim about the note must be found in the note)`);
     }
-    const balanceSheetDebtCaptions = verifyBalanceSheetCaptions(unitScoped.balanceSheetDebtCaptions, v.citedUrls ?? [], textByUrl, log, label);
+    const captionsVerified = verifyBalanceSheetCaptions(unitScoped.balanceSheetDebtCaptions, v.citedUrls ?? [], textByUrl, log, label);
+    // Stage 4 — the anchor rule reaches the DENOMINATOR too. Stated total
+    // debt is the number coverage divides by; a caption from another filing
+    // measures this quarter's ladder against last year's balance sheet.
+    const { kept: balanceSheetDebtCaptions, dropped: offAnchorCaptions } = onAnchor(captionsVerified, anchorUrl);
+    if (offAnchorCaptions.length > 0) {
+      log(
+        `  ⚠ OFF-ANCHOR BALANCE-SHEET CAPTIONS DROPPED for ${label} — ${offAnchorCaptions.length} caption(s) (${offAnchorCaptions.map((c) => c.label).join(", ")}) verified against ${[...new Set(offAnchorCaptions.map((c) => c.citedUrl))].join(", ")}, not the anchor. Coverage renders unmeasured rather than measured against another filing's balance sheet.`
+      );
+    }
     const rowsExtracted = v.scheduleSequence.length + v.priorScheduleSequence.length + v.issuedTranches.length + v.balanceSheetDebtCaptions.length;
     const rowsVerified = scheduleSequence.length + priorScheduleSequence.length + issuedTranches.length + balanceSheetDebtCaptions.length;
     const droppedCount = rowsExtracted - rowsVerified;
@@ -986,110 +1036,44 @@ export async function runAgentLoop(
   }
 
   // ==========================================================================
-  // Session 18 (post-v16) — LOCATOR SEARCH ORDER.
+  // SESSION 20, STAGE 4 — THE SEARCH-ORDER FALLBACK IS GONE.
   //
-  // The rule: try the newest 10-Q, then walk backwards in filing date through
-  // the prior 10-Q and the 10-K, and take the FIRST filing that actually
-  // yields a debt schedule. A filing that abbreviates its debt note is
-  // ordinary — most 10-Qs do not reprint the full ladder every quarter — so an
-  // abbreviated note is not an error and must not end the search. Cigna is the
-  // general case made concrete: its table exists ONLY in the 10-K, and both
-  // its 10-Qs genuinely have no schedule to find.
+  // It walked backwards from the newest 10-Q through older periodic filings
+  // and took the first one that yielded a schedule. Its reasoning was sound
+  // on its own terms — an abbreviated 10-Q note is ordinary, not an error —
+  // and its conclusion was still wrong, because the thing it produced was a
+  // ladder dated one quarter to three quarters before the balance sheet
+  // printed beside it. Two guards were bolted on over two sessions (a
+  // wrong-column read suppresses it; an off-anchor drop suppresses it) and
+  // each one was a signal-specific patch on a rule that should not run at
+  // all.
   //
-  // WHY THE TEST IS POST-EXTRACTION. "Does this filing carry a real schedule"
-  // would ideally be decided before spending a model call, and five separate
-  // pre-extraction proxies were built and measured against all 30 real
-  // filings. Every one was falsified: coupon-cluster density selects
-  // interest-expense tables; cluster-median magnitude and document-p95 ratio
-  // cannot separate HCA's correct table (0.049) from UHS's wrong one (0.013);
-  // a "Total ..." caption count is zero for HCA, UHS, Encompass and CHS, all
-  // of which carry real notes; and a period-range header test ("Three Months
-  // Ended") fires on CHS, Centene, Cigna and Tenet's 10-K, whose notes are all
-  // real — the 400-char pad pulls neighbouring narrative into the span.
-  // Cluster MAX magnitude shipped and helps, but only reaches two of the four
-  // known misses. So the only reliable test is the outcome itself: did any
-  // entry actually survive transcription and verification. That is what this
-  // uses.
+  // The replacement is one line of policy, keyed on the structural
+  // condition and not on any signal: THE ANCHOR IS THE MOST RECENT
+  // 10-Q/10-K, AND IF ITS DEBT NOTE YIELDS NO LADDER THE LADDER RENDERS
+  // EMPTY WITH REASON. An RM told "the June 10-Q states no schedule" knows
+  // exactly what they have. An RM shown February's ladder under a June
+  // heading does not, and cannot tell from the page.
   //
-  // The two conditions this must satisfy, both structural:
-  //   - It stops at the FIRST filing that yields a schedule, never the one
-  //     that reconciles most tidily. There is deliberately no scoring across
-  //     filings — preferring a better-looking older ladder is exactly the
-  //     failure Check 2 exists to catch, and it would let the tool present a
-  //     stale position because it was neater.
-  //   - Whichever filing wins is recorded in debtScheduleSourceFiling, so an
-  //     older-sourced ladder renders with its own form and date visible
-  //     (lib/events/portfolioTable.ts) and can never be mistaken for current.
-  //
-  // Supersedes the earlier "prior-period context, never merged" handling: that
-  // surfaced an older filing beside a failing base ladder as labelled context,
-  // which was the timid version of this. Advancing the base filing outright is
-  // the direct answer, and it is safe precisely because the search stops at
-  // the first real schedule rather than shopping for the best one.
-  //
-  // Cost is bounded and only paid when it is earned: the retry fires solely
-  // when the chosen filing yielded ZERO verified entries, and each attempt is
-  // cached under its own key so a re-run never re-bills it.
-  //
-  // C3 (Session 18, post-stage-2) — "WRONG COLUMN" IS NOT "NO SCHEDULE".
-  //
-  // The outcome test above asks only whether any entry survived, and two
-  // completely different failures produce the same zero. Measured on UHS:
-  // both of its 10-Qs carry a located, transcribed debt note, and every
-  // single entry of each was discarded because the model read the December 31
-  // comparative column instead of the filing's own period. The search then
-  // walked silently back to a February 10-K and rendered an eight-month-old
-  // ladder as the current position, beside an August 8-K.
-  //
-  // The fallback exists for a filing that ABBREVIATES its note — ordinary,
-  // and not an error. A filing whose note was read wrong is an error, and
-  // walking backwards past it hides the error behind a stale but tidy answer.
-  // So that case fails loudly and stops here, leaving the bucket to state
-  // that the note was found and misread — which is the truth, and is more
-  // use to an RM than a ladder quietly dated eight months ago.
+  // Cigna is the case that costs the most and settles it: its 10-Q debt note
+  // is four narrative paragraphs ending "For more information regarding our
+  // short-term and long-term debt, see Note 7 to the Consolidated Financial
+  // Statements in the Company's 2025 Form 10-K." Following that cross-
+  // reference is what produced a 38-row ladder as of December 31 2025 beside
+  // a June 30 2026 balance sheet. The filing is telling the reader where the
+  // ladder is; it is not telling them the ladder is current.
   const debtIdx = results.findIndex((r) => r.triggerId === "debt-maturity");
   const debtTriggerDef = TRIGGERS.find((t) => t.id === "debt-maturity");
-  // Session 20: an off-anchor drop suppresses the fallback for the SAME
-  // reason a column misread does — the fallback's job is to find a schedule
-  // in an older filing, and here an older filing's schedule is precisely what
-  // was just rejected. Letting it run would re-admit through the back door
-  // the stale ladder the rule exists to keep out.
-  if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && baseOffAnchorFailure) {
-    log(
-      `  ⚠ DEBT SCHEDULE READ FAILURE for ${debtTriggerDef.name.toLowerCase()} — every transcribed row was verified against a filing OTHER than this company's anchor, so none states the anchor's own position and all were dropped. The ladder renders empty with this reason rather than showing another filing's balances as though they were current.`
-    );
-  } else if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && baseColumnReadFailure) {
-    log(
-      `  ⚠ DEBT SCHEDULE READ FAILURE for ${debtTriggerDef.name.toLowerCase()} — the base filing's debt note was located and transcribed, but every entry stated a period column other than that filing's own period of report. This is a misread, not an absent schedule, so the search-order fallback does NOT run: an older filing's ladder would render clean while being months stale.`
-    );
-  } else if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && usableDebtNoteFilings.length > 1) {
+  if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0) {
     const label = debtTriggerDef.name.toLowerCase();
-    for (let next = 1; next < usableDebtNoteFilings.length; next++) {
-      const candidate = usableDebtNoteFilings[next];
-      log(
-        `  debt-schedule SEARCH ORDER: ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date} yielded no verified schedule entries — ` +
-          `falling back to ${candidate.form} ${candidate.filingDate} (an abbreviated note is normal, not a failure)`
-      );
-      const after = usableDebtNoteFilings[next + 1];
-      debtScheduleGuidance = {
-        base: { form: candidate.form, date: candidate.filingDate, reportDate: candidate.reportDate, url: candidate.url },
-        prior: after ? { form: after.form, date: after.filingDate, reportDate: after.reportDate, url: after.url } : null,
-      };
-      const { data: retryVerdicts, hit } = await cachedBaseClassification(
-        filingsResult.cik,
-        `${fingerprint}-base${next}`,
-        () => classifyAllTriggers({ companyName: filingsResult.company, triggers: TRIGGERS, catalog, corpus, debtScheduleGuidance })
-      );
-      log(`  answer cache ${hit ? "HIT" : "MISS"} (search-order retry ${next}, base ${candidate.form} ${candidate.filingDate})`);
-      const retryVerdict = retryVerdicts.find((x) => x.triggerId === "debt-maturity");
-      if (!retryVerdict) continue;
-      const retried = finalizeVerified(debtTriggerDef, withFieldDefaults(retryVerdict), label);
-      if (retried.scheduleSequence.length > 0) {
-        log(`  debt-schedule base filing RESOLVED to ${candidate.form} ${candidate.filingDate} — ${retried.scheduleSequence.length} verified entr(y/ies)`);
-        results[debtIdx] = retried;
-        break;
-      }
-    }
+    const why = baseOffAnchorFailure
+      ? "every transcribed row was verified against a filing OTHER than the anchor, so none states the anchor's own position"
+      : baseColumnReadFailure
+        ? "the anchor's debt note was located and transcribed, but every entry stated a period column other than the anchor's own period of report — a misread, not an absent schedule"
+        : "the anchor's debt note yields no transcribable ladder (an abbreviated or narrative note is ordinary, and is not a reason to show an older filing's table)";
+    log(
+      `  ⚠ NO LADDER AT THE ANCHOR for ${label} — ${why}. The anchor is ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date} (period ${debtScheduleGuidance.base?.reportDate}) and the ladder renders EMPTY WITH THIS REASON. It is never filled from an older filing.`
+    );
   }
 
   // proceedsUse: one Sonnet call, at most, per company — only when the
@@ -1682,18 +1666,46 @@ function verifyIssuedTranches(
  * off, and dropping every row would turn "we could not tell" into "there is
  * no debt".
  */
-export function rowsOnAnchor(
-  entries: VerifiedSequenceEntry[],
+/**
+ * SESSION 20, STAGE 4 — THE RULE COVERS THE POSITION, NOT ONE FIELD OF IT.
+ *
+ * This was written for `scheduleSequence` and applied there alone. Three
+ * other fields state the same position and none of them was checked, so the
+ * rule held on a quarter of its own domain:
+ *
+ *   balanceSheetDebtCaptions   the denominator the whole coverage check
+ *                              divides by
+ *   proseInstruments           half a capital structure, for a prose filer
+ *   revolver                   what is drawn, and the liquidity line
+ *
+ * Measured on v22: UHS's rows came from the 10-K, its captions from the
+ * June 10-Q's December column, and its prose instruments from the MARCH
+ * 10-Q — three filings, three dates, one rendered position, and the rule
+ * that exists to stop exactly that was watching one of the three.
+ *
+ * Generic over anything carrying a citedUrl, so a fifth position-bearing
+ * field cannot be added without this applying to it.
+ */
+export function onAnchor<T extends { citedUrl?: string | null }>(
+  entries: T[],
   anchorUrl: string | null
-): { kept: VerifiedSequenceEntry[]; dropped: VerifiedSequenceEntry[] } {
+): { kept: T[]; dropped: T[] } {
   if (!anchorUrl) return { kept: entries, dropped: [] };
-  const kept: VerifiedSequenceEntry[] = [];
-  const dropped: VerifiedSequenceEntry[] = [];
+  const kept: T[] = [];
+  const dropped: T[] = [];
   for (const e of entries) {
     if (!e.citedUrl || e.citedUrl === anchorUrl) kept.push(e);
     else dropped.push(e);
   }
   return { kept, dropped };
+}
+
+/** The schedule-row case, kept as its own name because that is how the rule is referred to everywhere it is discussed. */
+export function rowsOnAnchor(
+  entries: VerifiedSequenceEntry[],
+  anchorUrl: string | null
+): { kept: VerifiedSequenceEntry[]; dropped: VerifiedSequenceEntry[] } {
+  return onAnchor(entries, anchorUrl);
 }
 
 /**

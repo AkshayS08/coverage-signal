@@ -427,8 +427,38 @@
  * $3.7B written out in bullets rather than absent from the filing.
  * Coverage now runs at the anchor over rows plus prose, with the note's own
  * discount line subtracted rather than tolerated (Rule 17).
+ * v23 (Session 20, Stage 4) — THE ANCHOR, THE NOTE, AND WHAT COUNTS AS DEBT.
+ * Four changes, one of which is a capability the extractor never had.
+ * (a) BULLETED AND SENTENCE-FORM SCHEDULES TRANSCRIBE. A ladder entry is any
+ * statement of principal, rate and maturity for one instrument, whatever the
+ * typography. Until now "row" meant table row and a prose filer had no
+ * ladder at all — UHS's five senior secured notes are five bullets, and they
+ * were never extracted from the filing that states them. periodColumn is
+ * null for an entry that came from no column, which the binder already
+ * keeps.
+ * (b) THE ANCHOR IS THE MOST RECENT 10-Q/10-K, FULL STOP. The old rule
+ * filtered to filings whose note the LOCATOR could reach and then took the
+ * newest of those — a fallback wearing a precondition's clothes. Measured on
+ * v22, two of ten had silently anchored on a 10-K: UHS assembled one
+ * position from three filings and three dates, and Cigna rendered a 38-row
+ * December ladder beside a June balance sheet. And the wrong-column caption
+ * reads were downstream of it, not separate — the guidance section was
+ * naming December 31 2025 as the base period, so the model read the December
+ * column exactly as instructed. A filing whose note yields no ladder now
+ * renders EMPTY WITH REASON; the search-order fallback is deleted, not
+ * suppressed.
+ * (c) THE ANCHOR RULE COVERS THE POSITION, NOT ONE FIELD OF IT. It applied
+ * to scheduleSequence alone while balanceSheetDebtCaptions (the coverage
+ * denominator), proseInstruments and revolver went unchecked.
+ * (d) DEBT IS WHAT IS DRAWN. New amountBasis field: the model copies whether
+ * a stated amount is a balance outstanding or a commitment. A revolving
+ * facility contributes its drawn balance and never its size — Molina's
+ * $1.25B facility (nothing drawn) and Tenet's $1.900B (drawn $0) were both
+ * summed as debt in v22 and both read above 100% coverage.
+ * Bumped for (a), (c) and (d), all of which change extraction output; (b)
+ * changes which filing is extracted from, which is the same thing twice.
  */
-export const EXTRACTION_PROMPT_VERSION = 22;
+export const EXTRACTION_PROMPT_VERSION = 23;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

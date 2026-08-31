@@ -78,5 +78,54 @@ console.log("\n=== [5] The headline never lets a clean book read like an unrun o
   assert(/1 flag across 1 of 1 compan/.test(dirty.headline), `[5b] and a flagged book names its coverage (got ${dirty.headline})`);
 }
 
+console.log("\n=== [9] Coverage reaches the queue, both halves ===");
+{
+  // A ladder can tie internally and tie to the balance sheet and still be
+  // missing an entire term loan — that is the whole reason coverage exists,
+  // and until Stage 4 it was computed and shown nowhere at all.
+  const withResidual = flagsForCompany(
+    {
+      company: "Synthetic Corp",
+      buckets: {},
+      refiLadder: {
+        hasData: true,
+        walkCheck: { pass: true },
+        balanceSheetCheck: { pass: true },
+        completenessStatement: "3 tranches",
+        coverage: {
+          statedTotalDebt: 4_851_847_000, capturedFace: 1_100_000_000, statedBridge: 0,
+          residual: 3_751_847_000, residualFraction: 0.773, residualPasses: false,
+          categoriesMissing: [], categoriesCaptured: [], entries: [], capacity: [],
+          anchorCaptions: ["Current maturities of long-term debt", "Long-term debt"],
+          line: "2 rows cover $1.10B of $4.85B stated total debt (23%)",
+        },
+      },
+    } as never,
+    { results: [] } as never
+  );
+  assert(withResidual.some((f) => f.kind === "coverage-incomplete"),
+    "[9a] a 77% unexplained residual is flagged even though BOTH existing checks pass — the case the other two cannot see");
+
+  const unmeasured = flagsForCompany(
+    {
+      company: "Synthetic Corp",
+      buckets: {},
+      refiLadder: {
+        hasData: true, walkCheck: { pass: true }, balanceSheetCheck: { pass: true },
+        completenessStatement: "3 tranches",
+        coverage: {
+          statedTotalDebt: null, capturedFace: 0, statedBridge: 0, residual: null,
+          residualFraction: null, residualPasses: null, categoriesMissing: [],
+          categoriesCaptured: [], entries: [], capacity: [], anchorCaptions: [],
+          line: "coverage unmeasured — the anchor filing states no balance-sheet debt caption to measure against",
+        },
+      },
+    } as never,
+    { results: [] } as never
+  );
+  assert(unmeasured.some((f) => f.kind === "coverage-incomplete" && f.what.includes("unmeasured")),
+    "[9b] and a ladder that CANNOT be measured is flagged as unmeasured rather than passing quietly — never suppress applies to the check itself");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }

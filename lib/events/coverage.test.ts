@@ -17,7 +17,7 @@ const row = (label: string, amount: string, kind: VerifiedSequenceEntry["kind"] 
   ({ kind, label, amount, rate: null, seniority: null, maturityDate: null, dateGranularity: null,
      sourceLine: label, citedUrl: "u", section: null, periodColumn: null } as VerifiedSequenceEntry);
 const prose = (o: Partial<ProseInstrumentRow> & { category: ProseInstrumentRow["category"] }): ProseInstrumentRow =>
-  ({ name: null, amount: null, asOfDate: null, dateGranularity: null, maturityDate: null, rate: null,
+  ({ name: null, amount: null, amountBasis: "outstanding", asOfDate: null, dateGranularity: null, maturityDate: null, rate: null,
      sourceLine: `s:${o.category}`, ...o } as ProseInstrumentRow);
 
 function dm(o: Partial<TriggerResult> = {}): TriggerResult {
@@ -41,32 +41,69 @@ console.log("\n=== [1] REAL: UHS before prose instruments — correctly terrible
     `[1c] the line names the captions it summed rather than asserting a total from nowhere (${c.line.slice(0, 90)})`);
 }
 
-console.log("\n=== [2] REAL: UHS after 3a/3b — the acceptance test ===");
+console.log("\n=== [2] REAL: UHS after Stage 4 — THE ACCEPTANCE TEST, at the anchor ===");
+{
+  // Every figure below is copied from UHS's 10-Q filed 2026-08-07 (period
+  // June 30 2026) — the anchor. The five senior notes are that note's own
+  // BULLETS, transcribed as rows now that typography is not the test; the
+  // term loan, the drawn revolver and the Trust financial liabilities are
+  // sentences in the same note. Nothing here comes from the 10-K, from the
+  // Q1 10-Q, or from the prospectus.
+  const c = computeCoverage(dm({
+    balanceSheetDebtCaptions: [
+      { label: "Current maturities of long-term debt", amount: "$771,910 thousands" },
+      { label: "Long-term debt", amount: "$4,079,937 thousands" },
+    ] as never,
+    scheduleSequence: [
+      row("1.65 % senior secured notes due in September, 2026", "$700 million"),
+      row("4.625 % senior secured notes due in October, 2029", "$500 million"),
+      row("2.65 % senior secured notes due in October, 2030", "$800 million"),
+      row("2.65 % senior secured notes due in January, 2032", "$500 million"),
+      row("5.050 % senior secured notes due in October, 2034", "$500 million"),
+    ],
+    proseInstruments: [
+      prose({ category: "term-loan", name: "term loan A", amount: "$ 1.448 billion", amountBasis: "outstanding" }),
+      prose({ category: "revolver", name: "revolving credit facility", amount: "$ 225 million", amountBasis: "outstanding" }),
+      prose({ category: "other", name: "Trust financial liabilities included in debt", amount: "$ 68 million", amountBasis: "outstanding" }),
+      // Committed but undrawn, twice over — the Eleventh Amendment's delayed
+      // draw and the Twelfth Amendment's short-term facility.
+      prose({ category: "delayed-draw-term-loan", name: "delayed draw term loan A", amount: "$ 400 million", amountBasis: "commitment" }),
+      prose({ category: "other", name: "delayed draw short term loan", amount: "$ 700 million", amountBasis: "commitment" }),
+    ] as never,
+    revolver: { facilitySize: "$ 1.5 billion", drawn: "$ 225 million", lettersOfCredit: "$ 3 million", available: "$ 1.272 billion", delayedDrawCapacity: "$ 400 million", asOfDate: "2026-06-30", sourceLine: "s" } as never,
+  }));
+  assert(Math.abs(c.capturedFace - 4_741_000_000) < 1_000_000,
+    `[2a] captured face is five notes ($3.0B) + term loan A ($1.448B) + drawn revolver ($225M) + Trust liabilities ($68M) = $4.741B (got ${(c.capturedFace / 1e9).toFixed(3)}B)`);
+  assert(c.residualPasses === true,
+    `[2b] THE ACCEPTANCE TEST: residual ${((c.residualFraction ?? 1) * 100).toFixed(2)}% against $4,851,847K stated is inside the ${(COVERAGE_RESIDUAL_LIMIT * 100).toFixed(1)}% line — coverage climbs from 0% to 98%`);
+  assert(c.capacity.length === 2 && !c.entries.some((e) => e.category === "delayed-draw-term-loan"),
+    "[2c] the $400M delayed draw and the $700M Twelfth Amendment facility are EXCLUDED from debt and REPORTED as capacity — $1.1B of committed headroom is a fact, and it is not owed");
+  assert(c.line.includes("undrawn capacity NOT counted as debt"),
+    `[2d] and the line says so, rather than leaving a reader to work out where they went (${c.line.slice(-150)})`);
+  assert(c.categoriesMissing.length === 0,
+    `[2e] nothing the note states is left unaccounted for (missing: ${c.categoriesMissing.join(", ") || "none"})`);
+}
+
+console.log("\n=== [2R] REAL: the acceptance test turns on the span reaching the whole note ===");
 {
   const c = computeCoverage(dm({
     balanceSheetDebtCaptions: [
       { label: "Current maturities of long-term debt", amount: "$771,910 thousands" },
       { label: "Long-term debt", amount: "$4,079,937 thousands" },
     ] as never,
+    scheduleSequence: [
+      row("1.65 % notes 2026", "$700 million"), row("4.625 % notes 2029", "$500 million"),
+      row("2.65 % notes 2030", "$800 million"), row("2.65 % notes 2032", "$500 million"),
+      row("5.050 % notes 2034", "$500 million"),
+    ],
     proseInstruments: [
-      prose({ category: "term-loan", name: "Tranche A term loan", amount: "$1,447,500 thousand" }),
-      prose({ category: "senior-notes", name: "1.65% notes due 2026", amount: "$700 million" }),
-      prose({ category: "senior-notes", name: "4.625% notes due 2029", amount: "$500 million" }),
-      prose({ category: "senior-notes", name: "2.65% notes due 2030", amount: "$800 million" }),
-      prose({ category: "senior-notes", name: "2.65% notes due 2032", amount: "$500 million" }),
-      prose({ category: "senior-notes", name: "5.050% notes due 2034", amount: "$500 million" }),
-      prose({ category: "revolver", name: "revolving credit facility", amount: "$225,000 thousand" }),
-      prose({ category: "other", name: "other debt", amount: "$197,052 thousand" }),
-      // Committed but undrawn — capacity, never debt.
-      prose({ category: "delayed-draw-term-loan", name: "delayed draw term loan A", amount: "$400 million" }),
+      prose({ category: "term-loan", name: "term loan A", amount: "$ 1.448 billion", amountBasis: "outstanding" }),
+      prose({ category: "revolver", name: "revolver", amount: "$ 225 million", amountBasis: "outstanding" }),
     ] as never,
+    revolver: { facilitySize: "$ 1.5 billion", drawn: "$ 225 million", lettersOfCredit: "$ 3 million", available: "$ 1.272 billion", delayedDrawCapacity: null, asOfDate: null, sourceLine: "s" } as never,
   }));
-  assert(Math.abs(c.capturedFace - 4_869_552_000) < 1_000_000,
-    `[2a] captured face is term loan + five notes + revolver + other = $4.87B (got ${(c.capturedFace / 1e9).toFixed(3)}B)`);
-  assert(c.residualPasses === true,
-    `[2b] THE ACCEPTANCE TEST: residual ${((c.residualFraction ?? 1) * 100).toFixed(2)}% is inside the ${(COVERAGE_RESIDUAL_LIMIT * 100).toFixed(1)}% line — coverage climbs from 0% to ~100%`);
-  assert(!c.entries.some((e) => e.category === "delayed-draw-term-loan"),
-    "[2c] the $400M delayed-draw facility is EXCLUDED — committed capacity is not drawn debt, and counting it would overstate the position");
+  assert(c.residualPasses === false && c.residualFraction !== null && c.residualFraction > 0.036,
+    `[2R] WITHOUT the note's "$ 68 million ... included in debt" sentence the residual is ${((c.residualFraction ?? 0) * 100).toFixed(2)}% and coverage FAILS — that sentence sits 2,100 characters past where the old span ended, which is the whole reason the span had to become the note rather than the table`);
 }
 
 console.log("\n=== [3] Category completeness has no threshold ===");
@@ -140,6 +177,89 @@ console.log("\n=== [8] 3b — the revolver's free arithmetic ===");
     lettersOfCredit: null, available: null, delayedDrawCapacity: null, asOfDate: null, sourceLine: "s" } as never);
   assert(!partial.checked && partial.note.includes("not checkable"),
     "[8c] fewer than four figures is stated as not checkable — never derived, because deriving one makes the check circular");
+}
+
+console.log("\n=== [9] REAL: the two facility sizes v22 counted as debt ===");
+{
+  // Molina's note states a $1.25 billion revolving facility and NO drawn
+  // balance at all. v22 added the whole $1.25B to coverage and read 134%.
+  const molina = computeCoverage(dm({
+    balanceSheetDebtCaptions: [{ label: "Long-term debt", amount: "$3,769 million" }] as never,
+    scheduleSequence: [row("notes", "$3,800 million"), row("Deferred debt issuance costs", "($31 million)", "adjustment")],
+    proseInstruments: [prose({ category: "revolver", name: "Credit Facility", amount: "$ 1.25 billion", amountBasis: "commitment" })] as never,
+    revolver: { facilitySize: "$ 1.25 billion", drawn: null, lettersOfCredit: null, available: null, delayedDrawCapacity: "$ 800 million", asOfDate: "2026-06-30", sourceLine: "s" } as never,
+  }));
+  assert(Math.abs(molina.capturedFace - 3_800_000_000) < 1_000_000,
+    `[9a] Molina: the $1.25B facility contributes NOTHING, because nothing is drawn against it — captured stays $3.80B (got ${(molina.capturedFace / 1e9).toFixed(3)}B, was $5.05B and 134%)`);
+  assert(molina.capacity.length === 1 && molina.capacity[0].amount === 1_250_000_000,
+    "[9b] and the $1.25B is REPORTED as capacity rather than deleted — an RM wants to know the headroom exists");
+
+  // Tenet states the facility size AND that drawn is zero. Same answer, by
+  // the drawn figure rather than by the missing one.
+  const tenet = computeCoverage(dm({
+    balanceSheetDebtCaptions: [{ label: "Long-term debt", amount: "$13,300 million" }] as never,
+    scheduleSequence: [row("notes", "$13,385 million"), row("Unamortized issue costs and note discounts", "($85 million)", "adjustment")],
+    proseInstruments: [prose({ category: "revolver", name: "senior secured revolving credit facility", amount: "$ 1.900 billion", amountBasis: "commitment" })] as never,
+    revolver: { facilitySize: "$ 1.900 billion", drawn: "$ 0 million", lettersOfCredit: "$ 105 million", available: "$ 1.900 billion", delayedDrawCapacity: null, asOfDate: "2026-06-30", sourceLine: "s" } as never,
+  }));
+  assert(Math.abs(tenet.capturedFace - 13_385_000_000) < 1_000_000,
+    `[9c] Tenet: drawn is stated as $0, so the revolver contributes $0 — captured stays $13.385B (got ${(tenet.capturedFace / 1e9).toFixed(3)}B, was $15.285B and 115%)`);
+  assert(tenet.residualPasses === true && (tenet.residualFraction ?? 1) < 0.001,
+    `[9d] and Tenet now reconciles instead of over-reading (residual ${((tenet.residualFraction ?? 0) * 100).toFixed(2)}%)`);
+}
+
+console.log("\n=== [10] REAL: Cigna's commercial paper is NOT capacity ===");
+{
+  // The distinction has to cut both ways or it is just a different exclusion
+  // list. Cigna's "$ 1.0 billion outstanding as of June 30, 2026" is drawn
+  // money under a program whose SIZE is $6.5 billion; the outstanding figure
+  // counts and the program size does not.
+  const c = computeCoverage(dm({
+    balanceSheetDebtCaptions: [
+      { label: "Short-term debt", amount: "$2,792 million" },
+      { label: "Long-term debt", amount: "$29,086 million" },
+    ] as never,
+    proseInstruments: [
+      prose({ category: "other", name: "Commercial paper program", amount: "$ 1.0 billion", amountBasis: "outstanding" }),
+      prose({ category: "revolver", name: "Revolving Credit Agreement", amount: null, amountBasis: "commitment" }),
+    ] as never,
+    revolver: { facilitySize: "$ 6.5 billion", drawn: null, lettersOfCredit: null, available: "$ 6.5 billion", delayedDrawCapacity: null, asOfDate: "2026-06-30", sourceLine: "s" } as never,
+  }));
+  assert(c.capturedFace === 1_000_000_000,
+    `[10a] the $1.0B outstanding commercial paper COUNTS (got ${(c.capturedFace / 1e9).toFixed(2)}B) — a drawn balance is debt whatever the facility is called`);
+  assert(c.residualPasses === false,
+    "[10b] and Cigna's anchor 10-Q states no ladder, so coverage correctly FAILS at 3% against $31.9B — the honest answer, where a 10-K ladder would have shown a tidy stale one");
+}
+
+console.log("\n=== [11] Dedup across units, and the three notes that stay three ===");
+{
+  // UHS's term loan A: the note writes "$ 1.448 billion" in a sentence and
+  // 1,447,500 in a table stated in thousands. One instrument.
+  const kept1 = dedupAgainstRows(
+    [prose({ category: "term-loan", name: "term loan A", amount: "$ 1.448 billion" })] as never,
+    [row("Tranche A term loan", "$1,447,500 thousand")]
+  );
+  assert(kept1.kept.length === 0 && kept1.suppressed.length === 1,
+    "[11a] $1.448 billion and $1,447,500 thousand are ONE term loan — units normalised, and the 0.03% is the filing rounding its own figure for prose");
+
+  // The same loan eight months earlier is a DIFFERENT balance, not a
+  // rounding of this one, and must not be silently merged into it.
+  const kept2 = dedupAgainstRows(
+    [prose({ category: "term-loan", name: "term loan A", amount: "$ 1.155 billion" })] as never,
+    [row("Tranche A term loan", "$1,447,500 thousand")]
+  );
+  assert(kept2.kept.length === 1,
+    "[11b] $1.155 billion does NOT round to $1,447,500 thousand at its own printed precision, so it is not merged — a balance from another date is a different number, and the anchor rule is what keeps it out, not dedup");
+
+  // Three real notes, same category, same size, different maturities.
+  const three = dedupAgainstRows(
+    [prose({ category: "senior-notes", name: "2029 Notes", amount: "$ 500 million", maturityDate: "2029-10-15" }),
+     prose({ category: "senior-notes", name: "2032 Notes", amount: "$ 500 million", maturityDate: "2032-01-15" }),
+     prose({ category: "senior-notes", name: "2034 Notes", amount: "$ 500 million", maturityDate: "2034-10-15" })] as never,
+    [row("4.625 % senior secured notes due in October, 2029", "$500 million", "row")]
+  );
+  assert(three.suppressed.length === 1 && three.kept.length === 2,
+    `[11c] only the 2029 note matches the 2029 ROW — the 2032 and 2034 notes survive because their maturities contradict it (kept ${three.kept.map((k) => k.name).join(", ")})`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

@@ -205,10 +205,36 @@ const FULL_DOC_WITH_SCHEDULE = `${LEAD_FILLER}\n\nLong-Term Debt\n${REAL_SHAPE_S
 // zero model calls. It does need filing access, so it is a hard dependency
 // rather than a skip — a pin that quietly skips protects nothing.
 async function checkPins() {
-  const PINS: { company: string; form: string; via: "heading" | "density" | "content"; start: number; end: number; matchCount: number }[] = [
-    { company: "DaVita", form: "10-Q", via: "heading", start: 26757, end: 30166, matchCount: 10 },
+  // SESSION 20, STAGE 4 — EVERY `end` RE-PINNED, AND ONE `start`.
+  //
+  // Not a relaxation. locateDebtNoteSection now expands whatever span it
+  // selects to the bounds of the NOTE that span sits in (expandToNoteBounds),
+  // because a note states half its instruments in sentences either side of
+  // its table and no contiguity rule over coupon matches can ever reach
+  // those. The pins moved in exactly one direction — every start is
+  // unchanged except UHS's, and every end moved forward or stayed — which is
+  // the evidence the rule is additive rather than a re-selection.
+  //
+  // Measured, before and after:
+  //   Encompass    981 -> 4,298    Molina      941 -> 3,417
+  //   Centene    1,328 -> 2,828    Tenet     1,294 -> 2,441
+  //   DaVita     3,409 -> 7,510    CHS       2,863 -> 8,139
+  //   Quest      3,119 -> 3,173    Cigna     4,090 -> 6,991
+  //   HCA        2,090 -> 2,090  (its sibling heading sits INSIDE the span,
+  //                               so there is nothing to reach and nothing
+  //                               moves — the never-contract half of the
+  //                               rule, exercised on real data)
+  //   UHS        3,210 -> 13,398 (and its start moves back 3,544 characters
+  //                               to its own heading, "(4) Treasury Credit
+  //                               Facilities and Outstanding Debt
+  //                               Securities" — the term loan A balance and
+  //                               the drawn revolver live in that stretch,
+  //                               and the $68 million of Trust liabilities
+  //                               "included in debt" lives past the old end)
+  const PINS: { company: string; form: string; via: "heading" | "density" | "content" | "not_found"; start: number; end: number; matchCount: number }[] = [
+    { company: "DaVita", form: "10-Q", via: "heading", start: 26757, end: 34267, matchCount: 10 },
     { company: "HCA Healthcare", form: "10-Q", via: "heading", start: 32472, end: 34562, matchCount: 5 },
-    { company: "Tenet Healthcare", form: "10-Q", via: "heading", start: 33013, end: 34307, matchCount: 10 },
+    { company: "Tenet Healthcare", form: "10-Q", via: "heading", start: 33013, end: 35454, matchCount: 10 },
     // SESSION 20, STAGE 2 — RE-PINNED DELIBERATELY, NOT RELAXED.
     //
     // Was via=density start=279162 end=282193 matches=9: the INTEREST-EXPENSE
@@ -228,41 +254,54 @@ async function checkPins() {
     // unchanged, which is the evidence that content DISQUALIFIES rather than
     // re-ranks: nine spans are undecided or unaffected and magnitude still
     // chooses among them exactly as before.
-    { company: "Universal Health Services", form: "10-Q", via: "content", start: 44363, end: 47573, matchCount: 6 },
-    { company: "Encompass Health", form: "10-Q", via: "heading", start: 40129, end: 41110, matchCount: 4 },
-    { company: "Community Health Systems", form: "10-Q", via: "heading", start: 48294, end: 51157, matchCount: 13 },
-    { company: "Quest Diagnostics", form: "10-Q", via: "heading", start: 39415, end: 42534, matchCount: 13 },
-    { company: "Centene Corporation", form: "10-Q", via: "heading", start: 52644, end: 53972, matchCount: 7 },
-    { company: "Cigna Group", form: "10-K", via: "heading", start: 318174, end: 322264, matchCount: 37 },
-    { company: "Molina Healthcare", form: "10-Q", via: "heading", start: 37461, end: 38402, matchCount: 5 },
+    { company: "Universal Health Services", form: "10-Q", via: "content", start: 40819, end: 54217, matchCount: 6 },
+    { company: "Encompass Health", form: "10-Q", via: "heading", start: 40129, end: 44427, matchCount: 4 },
+    { company: "Community Health Systems", form: "10-Q", via: "heading", start: 48294, end: 56433, matchCount: 13 },
+    { company: "Quest Diagnostics", form: "10-Q", via: "heading", start: 39415, end: 42588, matchCount: 13 },
+    { company: "Centene Corporation", form: "10-Q", via: "heading", start: 52644, end: 55472, matchCount: 7 },
+    // SESSION 20, STAGE 4 — Cigna is pinned as NOT LOCATABLE, on purpose.
+    //
+    // Its anchor is now its most recent 10-Q (the anchor is the most recent
+    // 10-Q/10-K, full stop), and that filing's "Note 6 - Debt" is four
+    // narrative paragraphs ending "see Note 7 to the Consolidated Financial
+    // Statements in the Company's 2025 Form 10-K." There is no ladder in it,
+    // and this pin records that there is none rather than reaching for the
+    // 10-K's. Until Stage 4 the base rule walked back to that 10-K and
+    // rendered its December 31 2025 ladder beside a June 30 2026 balance
+    // sheet, 38 rows deep and eight months stale.
+    { company: "Cigna Group", form: "10-Q", via: "not_found", start: -1, end: -1, matchCount: -1 },
+    { company: "Molina Healthcare", form: "10-Q", via: "heading", start: 37461, end: 40878, matchCount: 5 },
   ];
-
-  const USABLE = new Set<DebtNoteFilingStatus>(["found", "under_cap"]);
 
   for (const pin of PINS) {
     // Same call loop.ts makes — company name, all three forms.
     const filings = await getRecentFilings(pin.company, ["8-K", "10-Q", "10-K"]);
-    // Reproduces loop.ts's own base-filing rule exactly: newest-first among
-    // the 10-Q/10-K filings whose debt note is actually reachable.
-    const reachable: { form: string; filingDate: string; url: string }[] = [];
-    for (const filing of selectBaselineFilings(filings.filings)) {
-      if (filing.form !== "10-Q" && filing.form !== "10-K") continue;
-      const { text } = await getFilingText(filing.primaryDocUrl);
-      const status = buildExtractionText({ form: filing.form, url: filing.primaryDocUrl, fullText: text }).debtNoteStatus;
-      if (USABLE.has(status)) reachable.push({ form: filing.form, filingDate: filing.filingDate, url: filing.primaryDocUrl });
-    }
-    reachable.sort((a, b) => b.filingDate.localeCompare(a.filingDate));
-    const base = reachable[0];
+    // Reproduces loop.ts's own anchor rule exactly, INCLUDING the part that
+    // changed in Stage 4: the anchor is the most recent 10-Q/10-K, and the
+    // locator's opinion of it is not allowed to choose a different quarter.
+    // The old version of this loop filtered to filings whose note was
+    // reachable and then took the newest of those, which is the fallback
+    // this session removed — a test reproducing a rule the code no longer
+    // has protects nothing.
+    const periodic = selectBaselineFilings(filings.filings)
+      .filter((f) => f.form === "10-Q" || f.form === "10-K")
+      .sort((a, b) => b.filingDate.localeCompare(a.filingDate));
+    const base = periodic[0];
     if (!base) {
-      assert(false, `[13] ${pin.company}: no base filing with a reachable debt note — the pin cannot be checked`);
+      assert(false, `[13] ${pin.company}: no 10-Q or 10-K in the corpus — the pin cannot be checked`);
       continue;
     }
-    assert(base.form === pin.form, `[13] ${pin.company}: base filing is still a ${pin.form} (got ${base.form} — a new filing changed the base; re-measure, do not retune)`);
+    assert(base.form === pin.form, `[13] ${pin.company}: anchor is still a ${pin.form} (got ${base.form} — a new filing changed the anchor; re-measure, do not retune)`);
 
-    const { text } = await getFilingText(base.url);
+    const { text } = await getFilingText(base.primaryDocUrl);
     const loc = locateDebtNoteSection(text);
+    if (pin.via === "not_found") {
+      assert(loc.status === "not_found",
+        `[13] ${pin.company}: its anchor ${pin.form} is pinned as carrying NO locatable debt note — a narrative note that cross-references the 10-K is not a ladder (got ${loc.status})`);
+      continue;
+    }
     if (loc.status !== "found") {
-      assert(false, `[13] ${pin.company}: locator returned ${loc.status} on its own base filing`);
+      assert(false, `[13] ${pin.company}: locator returned ${loc.status} on its own anchor filing`);
       continue;
     }
     assert(
@@ -289,8 +328,12 @@ async function checkPins() {
 // filing gets regardless of the locator. The heading now selects the real
 // note directly, in the 10-Q and the 10-K alike.
 //
-// UHS stays null: its 10-Q carries no numbered debt-note heading, which is a
-// fact about the filing. See [13].
+// UHS flipped from null to "4) Treasury Credit Facilities and Outstanding
+// Debt" in Stage 4. It was never true that its 10-Q carried no numbered
+// debt-note heading — the heading pattern required the title to END in
+// "debt" within four leading words, and UHS's title has "Debt" fifth of six.
+// That one-word bound was the reason UHS alone had an unanchored span, and
+// the reason its note was handed to the model in thirds. See [13].
 //
 // Values are emitted by the assertion itself, never hand-written, so a pin
 // can never encode what someone wished were true.
@@ -300,11 +343,15 @@ async function checkHeadingPins() {
     { company: "DaVita", form: "10-Q", hasHeading: true, heading: "6. Long-term debt" },
     { company: "HCA Healthcare", form: "10-Q", hasHeading: true, heading: "3) Debt" },
     { company: "Tenet Healthcare", form: "10-Q", hasHeading: true, heading: "NOTE 5. LONG-TERM DEBT" },
-    { company: "Universal Health Services", form: "10-Q", hasHeading: false, heading: null },
+    { company: "Universal Health Services", form: "10-Q", hasHeading: true, heading: "4) Treasury Credit Facilities and Outstanding Debt" },
     { company: "Encompass Health", form: "10-Q", hasHeading: true, heading: "4. Long-term Debt" },
     { company: "Community Health Systems", form: "10-Q", hasHeading: true, heading: "6. LONG-TERM DEBT" },
     { company: "Quest Diagnostics", form: "10-Q", hasHeading: true, heading: "7. DEBT" },
     { company: "Centene Corporation", form: "10-Q", hasHeading: true, heading: "8. Debt" },
+    // [14] audits heading DETECTION per filing, so Cigna is still checked
+    // against the 10-K that has a heading to detect. Note that this is no
+    // longer the filing Cigna anchors on — see [13], where its anchor 10-Q
+    // is pinned as carrying no locatable note at all.
     { company: "Cigna Group", form: "10-K", hasHeading: true, heading: "Note 7 – Debt" },
     { company: "Molina Healthcare", form: "10-Q", hasHeading: true, heading: "7. Debt" },
   ];

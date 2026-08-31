@@ -19,6 +19,7 @@ import type { CompanyResult } from "../agent";
 export type FlagKind =
   | "walk-does-not-tie"
   | "anchor-does-not-tie"
+  | "coverage-incomplete"
   | "rows-not-verified"
   | "no-schedule-located"
   | "card-suppressed"
@@ -43,10 +44,11 @@ const KIND_RANK: Record<FlagKind, number> = {
   "rows-not-verified": 1,
   "walk-does-not-tie": 2,
   "anchor-does-not-tie": 3,
-  "no-schedule-located": 4,
-  "read-failure": 5,
-  "card-suppressed": 6,
-  "period-gap": 7,
+  "coverage-incomplete": 4,
+  "no-schedule-located": 5,
+  "read-failure": 6,
+  "card-suppressed": 7,
+  "period-gap": 8,
 };
 
 /**
@@ -83,6 +85,38 @@ export function flagsForCompany(table: CompanyTableBlock, result: CompanyResult)
       what: "Check 2 (balance-sheet anchor) does not tie",
       why: ladder.completenessStatement || "no subtotal matched the balance-sheet debt captions",
       where: "refi ladder — completeness line",
+    });
+  }
+
+  // SESSION 20, STAGE 4 — COVERAGE IS A FLAG, NOT ONLY A LINE.
+  //
+  // "Does this ladder describe the company's debt" is the question the other
+  // two checks cannot ask, so a ladder that ties internally and to the
+  // balance sheet while missing an entire term loan reaches this queue only
+  // through here. Both halves are flagged, separately, because they mean
+  // different things: an unexplained residual is a size problem, a stated
+  // category with nothing captured is a whole instrument nobody has.
+  if (ladder?.hasData && ladder.coverage && ladder.coverage.statedTotalDebt !== null && (ladder.coverage.residualPasses === false || ladder.coverage.categoriesMissing.length > 0)) {
+    out.push({
+      company: table.company,
+      kind: "coverage-incomplete",
+      what:
+        ladder.coverage.residualPasses === false
+          ? "coverage: the ladder does not account for the anchor's stated total debt"
+          : "coverage: an instrument the note states is not captured",
+      why: ladder.coverage.line,
+      where: "refi ladder — coverage line",
+    });
+  }
+  // And a ladder that cannot be measured at all says so rather than passing
+  // silently: no anchor caption means the denominator is missing.
+  if (ladder?.hasData && ladder.coverage && ladder.coverage.statedTotalDebt === null) {
+    out.push({
+      company: table.company,
+      kind: "coverage-incomplete",
+      what: "coverage is unmeasured — no balance-sheet debt caption from the anchor",
+      why: ladder.coverage.line,
+      where: "refi ladder — coverage line",
     });
   }
 

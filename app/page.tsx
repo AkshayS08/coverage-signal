@@ -451,6 +451,15 @@ export default function Home() {
     return (
       <>
         <p className={styles.refiCompletenessLine}>{refi.completenessStatement}</p>
+        {/* SESSION 20, STAGE 4 — THE COVERAGE CHECK IS RENDERED.
+            It was computed in Stage 3 and displayed nowhere, which is the
+            suppression this project's own standing rule forbids: a check
+            that runs and is not shown is a check nobody can act on. It
+            renders on every ladder, including when it cannot resolve. */}
+        <p className={styles.refiCompletenessLine}>{refi.coverage.line}</p>
+        {refi.revolverCheck.checked && (
+          <p className={styles.refiCompletenessLine}>{refi.revolverCheck.note}</p>
+        )}
         <ul className={styles.tableLineList}>
           {refi.nearestLines.map((line, i) => renderRefiLadderLine(line, i))}
           {refi.tailSummary && (
