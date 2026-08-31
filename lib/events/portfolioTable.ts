@@ -1,3 +1,4 @@
+import { computeCoverage, checkRevolverArithmetic, type CoverageResult } from "./coverage";
 import type { CompanyResult, TriggerResult, VerifiedSequenceEntry } from "../agent";
 import type { DebtScheduleFilingRef, DateGranularity } from "../agent/claude";
 import type { FlashCard } from "./buildEvents";
@@ -257,6 +258,10 @@ export interface RefiLadderBlock {
    * none of them cards.
    */
   rowsNotVerifiedAsTranscribed: boolean;
+  /** Session 20, 3d — coverage AT THE ANCHOR. Never blended with post-anchor layers. */
+  coverage: CoverageResult;
+  /** Session 20, 3b — the revolver's arithmetic check, rendered as its own flag. */
+  revolverCheck: { checked: boolean; ok: boolean; note: string };
   /** The size of that miss as a fraction of the stated total, reported whether or not it crosses the threshold. Null when Check 1 has nothing to compare. */
   walkGapFraction: number | null;
 }
@@ -687,6 +692,8 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       nearestLines: [],
       tailSummary: null,
       walkLines: [],
+      coverage: computeCoverage(debtMaturity),
+      revolverCheck: checkRevolverArithmetic(debtMaturity?.revolver),
       issuancesInsideAggregate: [],
       sourceCitation: null,
       isAggregateDisclosure: false,
@@ -896,7 +903,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // when the base ladder failed BOTH checks does the older filing's schedule
   // get surfaced at all, and even then it sits beneath the base ladder's own
 
-  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
+  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
 
 /**

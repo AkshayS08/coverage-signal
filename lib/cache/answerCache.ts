@@ -104,11 +104,30 @@ export async function cachedDigClassification<T>(
 export async function cachedProceedsUse<T>(
   cik: string,
   fingerprint: string,
+  /**
+   * SESSION 20, 3F — THE KEY NOW COVERS ITS OWN INPUT.
+   *
+   * This key was `(cik, fingerprint, pu-v)`, justified by the comment above
+   * saying the call is "fully determined by the cached base-pass result for a
+   * fixed corpus fingerprint". Since Session 19's item 2d that is false: the
+   * bounded input is selected by an anchor built from the issuance's verified
+   * quote and evidence, which are base-pass OUTPUT, and the base pass is keyed
+   * on EXTRACTION_PROMPT_VERSION as well as the fingerprint. So an extraction
+   * bump changed proceedsUse's input while its key stood still, and the stale
+   * answer was served.
+   *
+   * Nothing in the book was wrong — those were real answers from real inputs —
+   * but they were not reproducible from the current run's input, which is the
+   * property a cache key is supposed to guarantee. Session 19 logged it and
+   * deferred the fix to the next legitimate re-bill, because correcting it
+   * forces a full proceedsUse pass. This bump is that re-bill.
+   */
+  inputHash: string,
   compute: () => Promise<T>
 ): Promise<{ data: T; hit: boolean }> {
   // NAMESPACED "pu-v", not "v" — see PROCEEDS_USE_PROMPT_VERSION's comment.
   // This path previously interpolated EXTRACTION_PROMPT_VERSION, so
   // ".../v2.json" already exists on disk from the week that constant was 2.
   // A bare "v${N}" here would silently read those.
-  return getOrCompute(`answer/${cik}/proceedsUse/${fingerprint}/pu-v${PROCEEDS_USE_PROMPT_VERSION}.json`, compute);
+  return getOrCompute(`answer/${cik}/proceedsUse/${fingerprint}/pu-v${PROCEEDS_USE_PROMPT_VERSION}-${inputHash}.json`, compute);
 }

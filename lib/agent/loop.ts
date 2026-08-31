@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { TRIGGERS, type TriggerDef } from "./triggers";
 import { selectBaselineFilings } from "./selectFilings";
 import { getRecentFilings, readFiling, searchNews } from "./tools";
@@ -17,6 +18,8 @@ import {
   type IssuedTrancheRow,
   type EventInstanceRow,
   type NoteRetirementRow,
+  type ProseInstrumentRow,
+  type RevolverRow,
   type ProceedsUse,
   type ScheduleSequenceEntry,
   type TriggerVerdict,
@@ -289,6 +292,16 @@ export interface VerifiedEventInstance extends EventInstanceRow {
 }
 
 /** Session 19, item 2b — a note-prose retirement whose sourceLine verified INSIDE the located note (Rule 5). */
+/** Session 20, 3a — a prose instrument whose sourceLine verified INSIDE the located note. An unverified entry never reaches this shape; it is dropped. */
+export interface VerifiedProseInstrument extends ProseInstrumentRow {
+  citedUrl: string;
+}
+
+/** Session 20, 3b — the revolver figures, once the sentence carrying them verified. */
+export interface VerifiedRevolver extends RevolverRow {
+  citedUrl: string;
+}
+
 export interface VerifiedNoteRetirement extends NoteRetirementRow {
   citedUrl: string;
 }
@@ -395,6 +408,10 @@ export interface TriggerResult {
   eventInstances: VerifiedEventInstance[];
   /** Session 19, item 2b — "debt-maturity" ONLY. Retirements stated in the note's own prose, each verified INSIDE the located note. Empty elsewhere. */
   noteRetirements: VerifiedNoteRetirement[];
+  /** Session 20, 3a — verified instruments from the note's narrative. Empty except on debt-maturity. */
+  proseInstruments: VerifiedProseInstrument[];
+  /** Session 20, 3b — verified revolver figures, or null. */
+  revolver: VerifiedRevolver | null;
   /** Session 19, item 2c — "capex-program" ONLY. The stated completion date of a named project, or null. Code derives the status from it; the model only copies it. */
   projectCompletionDate: string | null;
   projectCompletionGranularity: DateGranularity | null;
@@ -786,6 +803,22 @@ export async function runAgentLoop(
     // guard side, one layer over.
     const eventInstances = verifyEventInstances(v.eventInstances ?? [], v.citedUrls ?? [], textByUrl, log, label);
     const noteRetirements = verifyNoteRetirements(v.noteRetirements ?? [], v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
+    // Session 20, 3a/3b — bounded to the located note, same contract as a row.
+    const proseInstruments = verifyProseInstruments(v.proseInstruments ?? [], v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
+    const proseDropped = (v.proseInstruments ?? []).length - proseInstruments.length;
+    if (proseDropped > 0) {
+      log(`  ⚠ ${proseDropped} prose instrument(s) for ${label} could not be verified INSIDE the located note — dropped, not trusted (Rule 5)`);
+    }
+    const revolverVerified = v.revolver
+      ? verifyProseInstruments(
+          [{ category: "revolver", name: null, amount: null, asOfDate: v.revolver.asOfDate ?? null, dateGranularity: null, maturityDate: null, rate: null, sourceLine: v.revolver.sourceLine }],
+          v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl
+        )
+      : [];
+    const revolver = v.revolver && revolverVerified.length === 1 ? { ...v.revolver, citedUrl: revolverVerified[0].citedUrl } : null;
+    if (v.revolver && !revolver) {
+      log(`  ⚠ revolver figures for ${label} could not be verified inside the located note — dropped, not trusted`);
+    }
     const instancesDropped = (v.eventInstances ?? []).length - eventInstances.length;
     if (instancesDropped > 0) {
       log(`  ⚠ ${instancesDropped} event instance(s) for ${label} failed sourceLine verification — dropped, not trusted`);
@@ -855,7 +888,7 @@ export async function runAgentLoop(
       result,
       dateGuard,
       textByUrl,
-      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements },
+      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, revolver },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
       { rowsExtracted, rowsVerified, baseRowsExtracted: v.scheduleSequence.length },
@@ -1100,7 +1133,13 @@ export async function runAgentLoop(
         );
       }
       const filingTexts = bounded.map((b) => b.text).filter((t) => t.length > 0);
-      const { data: proceedsUse, hit: proceedsHit } = await cachedProceedsUse(filingsResult.cik, fingerprint, () =>
+      // 3f: the key covers the bounded input, so a changed anchor cannot serve
+      // an answer computed from different text. Hashes exactly what is sent.
+      const proceedsInputHash = createHash("sha256")
+        .update(JSON.stringify({ evidence: issuance.evidence, quote: issuance.verifiedQuote, filingTexts }))
+        .digest("hex")
+        .slice(0, 12);
+      const { data: proceedsUse, hit: proceedsHit } = await cachedProceedsUse(filingsResult.cik, fingerprint, proceedsInputHash, () =>
         classifyProceedsUse({
           companyName,
           evidence: issuance.evidence,
@@ -1657,6 +1696,38 @@ export function rowsOnAnchor(
   return { kept, dropped };
 }
 
+/**
+ * SESSION 20, 3A/3B — THE PROSE HALF GOES THROUGH THE SAME WALK.
+ *
+ * A field in the schema and the prompt but not in the verifier is the drift
+ * Session 19's item 1a killed on the guard side. These verify exactly as a
+ * ladder row does: literal match first, bounded to the LOCATED NOTE'S OWN
+ * SPAN. A claim about the note must be found in the note (Rule 5).
+ *
+ * Amounts are deliberately NOT scale-corroborated here. A prose amount is
+ * written out with its unit ("$1.448 billion"), so there is no bare figure
+ * whose scale has to be inferred — the corroboration step exists for table
+ * cells and would only add a way to drop a correct entry.
+ */
+export function verifyProseInstruments(
+  rows: ProseInstrumentRow[],
+  citedUrls: string[],
+  textByUrl: Map<string, string>,
+  log: (line: string) => void,
+  label: string,
+  noteSpanByUrl?: Map<string, { start: number; end: number }>
+): VerifiedProseInstrument[] {
+  return verifySourceLineAndScale(
+    rows.map((r) => ({ ...r, amount: null })),
+    citedUrls,
+    textByUrl,
+    log,
+    `${label} (prose instruments)`,
+    (e) => `${e.category}${e.name ? ` "${e.name}"` : ""}`,
+    noteSpanByUrl
+  ).map((v, i) => ({ ...rows[i], citedUrl: v.citedUrl })) as VerifiedProseInstrument[];
+}
+
 export function verifyEventInstances(
   rows: EventInstanceRow[],
   citedUrls: string[],
@@ -1740,6 +1811,8 @@ function finalize(
   debtFields: {
     eventInstances: VerifiedEventInstance[];
     noteRetirements: VerifiedNoteRetirement[];
+    proseInstruments: VerifiedProseInstrument[];
+    revolver: VerifiedRevolver | null;
     scheduleSequence: VerifiedSequenceEntry[];
     priorScheduleSequence: VerifiedSequenceEntry[];
     issuedTranches: VerifiedIssuedTranche[];
@@ -1757,6 +1830,8 @@ function finalize(
     textByUrl
   );
   return {
+    proseInstruments: trigger.id === "debt-maturity" ? debtFields.proseInstruments : [],
+    revolver: trigger.id === "debt-maturity" ? debtFields.revolver : null,
     triggerId: trigger.id,
     triggerName: trigger.name,
     fired: v.fired,

@@ -20,3 +20,4 @@ export * from "./extractionReport";
 // is computed client-side from `results`, same as buildEvents itself.
 export * from "./money";
 export * from "./flaggedItems";
+export * from "./coverage";

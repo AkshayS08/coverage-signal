@@ -81,6 +81,8 @@ function trigger(over: Partial<TriggerResult> = {}): TriggerResult {
     issuedTranches: [],
     eventInstances: [],
     noteRetirements: [],
+    proseInstruments: [],
+    revolver: null,
     projectCompletionDate: null,
     projectCompletionGranularity: null,
     cashAmount: null,

@@ -241,6 +241,29 @@ export interface EventInstanceRow {
   sourceLine: string;
 }
 
+/** Session 20, item 3a — an instrument stated in the located note's narrative. See PROSE_INSTRUMENT_SCHEMA. */
+export interface ProseInstrumentRow {
+  category: "term-loan" | "revolver" | "delayed-draw-term-loan" | "senior-notes" | "finance-lease" | "other";
+  name: string | null;
+  amount: string | null;
+  asOfDate: string | null;
+  dateGranularity: DateGranularity | null;
+  maturityDate: string | null;
+  rate: string | null;
+  sourceLine: string;
+}
+
+/** Session 20, item 3b — the revolver's four figures, kept separate so drawn + LCs + available = size can be checked. See REVOLVER_SCHEMA. */
+export interface RevolverRow {
+  facilitySize: string | null;
+  drawn: string | null;
+  lettersOfCredit: string | null;
+  available: string | null;
+  delayedDrawCapacity: string | null;
+  asOfDate: string | null;
+  sourceLine: string;
+}
+
 /** Session 19, item 2b — a retirement or repurchase the debt note states in its own prose. See NOTE_RETIREMENT_SCHEMA. */
 export interface NoteRetirementRow {
   /** The instrument as the note names it. */
@@ -337,6 +360,10 @@ export interface TriggerVerdict {
    * narrative rather than in an 8-K.
    */
   noteRetirements: NoteRetirementRow[];
+  /** Session 20, 3a — instruments stated in the note's narrative. Empty for every trigger except debt-maturity. */
+  proseInstruments: ProseInstrumentRow[];
+  /** Session 20, 3b — the revolver's own figures. Null when the note states none. */
+  revolver: RevolverRow | null;
   /**
    * Session 19, item 2c — "capex-program" ONLY, null elsewhere. The stated
    * completion date of a named project, which is what makes its status
@@ -456,6 +483,80 @@ const EVENT_INSTANCE_SCHEMA = {
  * Copied verbatim, never inferred, with the amount and the instrument as the
  * filing names them.
  */
+/**
+ * SESSION 20, ITEM 3A — AN INSTRUMENT STATED IN THE NOTE'S NARRATIVE.
+ *
+ * Half a capital structure can live in prose. UHS is the measured case: its
+ * rendered ladder covers $1.1B of a stated $4,851,847K, and the missing
+ * $3.7B is not missing from the FILING — it is a term loan, a revolver and
+ * five senior notes written out in sentences and bullets, in the same note
+ * the table would have been in if there were a table.
+ *
+ * CATEGORY-TYPED, NEVER NAME-MATCHED. A company has one term loan A and one
+ * revolver; "Eleventh Amendment" and "Twelfth Amendment" are display text
+ * describing the same facility, not two facilities. Identity across periods
+ * is category plus amount continuity, so the category is a required field
+ * and the name is not a key.
+ *
+ * NO STATED AMOUNT MEANS NO COVERAGE ENTRY. An instrument the filing
+ * mentions without sizing is narrative context; counting it as captured
+ * would let coverage claim completeness it cannot demonstrate, and counting
+ * it as missing would flag every passing reference. It is extracted with a
+ * null amount and excluded from the sum, which is a third state and is
+ * stated as one.
+ */
+const PROSE_INSTRUMENT_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    category: {
+      type: "string",
+      enum: ["term-loan", "revolver", "delayed-draw-term-loan", "senior-notes", "finance-lease", "other"],
+    },
+    /** The filing's own name for it, verbatim. Display only — never a match key. */
+    name: { type: ["string", "null"] },
+    /** Verbatim, with its unit as printed. Null when the filing states the instrument but not its size. */
+    amount: { type: ["string", "null"] },
+    /** The date the amount is stated AS OF, verbatim from the sentence that carries it. */
+    asOfDate: { type: ["string", "null"] },
+    dateGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
+    maturityDate: { type: ["string", "null"] },
+    rate: { type: ["string", "null"] },
+    /** The verbatim sentence. Verified inside the located note, same contract as a ladder row (BRD 8.3). */
+    sourceLine: { type: "string" },
+  },
+  required: ["category", "sourceLine"],
+};
+
+/**
+ * SESSION 20, ITEM 3B — REVOLVER AND LIQUIDITY, AS SEPARATE NAMED FIELDS.
+ *
+ * "What is owed and when" is only half a treasury conversation; the other
+ * half is what they can reach for. These are extracted as distinct fields
+ * rather than one blob precisely so the arithmetic can be checked:
+ *
+ *   drawn + letters of credit + available = facility size
+ *
+ * UHS states all four in one sentence — a $1.5B facility, $225M drawn, $3M
+ * of letters of credit, $1.272B available — and 225 + 3 + 1,272 = 1,500.
+ * A filing whose four numbers do not reconcile has been misread or misprints,
+ * and either way that renders as its own flag rather than as a liquidity
+ * figure someone might act on.
+ */
+const REVOLVER_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    facilitySize: { type: ["string", "null"] },
+    drawn: { type: ["string", "null"] },
+    lettersOfCredit: { type: ["string", "null"] },
+    available: { type: ["string", "null"] },
+    /** Capacity committed but not yet drawn — a delayed-draw term loan is not a revolver but belongs on the same liquidity line. */
+    delayedDrawCapacity: { type: ["string", "null"] },
+    asOfDate: { type: ["string", "null"] },
+    sourceLine: { type: "string" },
+  },
+  required: ["sourceLine"],
+};
+
 const NOTE_RETIREMENT_SCHEMA = {
   type: "object" as const,
   properties: {
@@ -496,6 +597,9 @@ const VERDICT_ITEM_SCHEMA = {
     projectName: { type: ["string", "null"] },
     eventInstances: { type: "array", items: EVENT_INSTANCE_SCHEMA },
     noteRetirements: { type: "array", items: NOTE_RETIREMENT_SCHEMA },
+    // Session 20, 3a/3b — the prose half of the capital structure.
+    proseInstruments: { type: "array", items: PROSE_INSTRUMENT_SCHEMA },
+    revolver: { type: ["object", "null"], properties: REVOLVER_SCHEMA.properties },
     projectCompletionDate: { type: ["string", "null"] },
     projectCompletionGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
   },
@@ -569,6 +673,26 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
     - eventDate + dateGranularity: the date the note states for it, or null. Same copy-never-compute rules.
     - sourceLine: VERBATIM from the note, same standard as everywhere else.
   - If the note's prose describes no retirement at all, return []. Do not manufacture one from the fact that a balance changed.
+
+
+- proseInstruments — ONLY for the "debt-maturity" trigger. Leave it at its empty default ([]) for every other trigger.
+  - HALF A CAPITAL STRUCTURE CAN LIVE IN PROSE. Some companies present their debt as a table; others describe it in sentences and bullets in the same note, with no table at all. When there is no table, the schedule sequence above will be empty and this field is the ONLY record of what the company owes. When there IS a table, this field captures what the table leaves out — typically the credit agreement's term loan and revolver, which are often described in narrative even by companies whose notes are tabular.
+  - Read ONLY the located debt note — the same section everything else came from. Do NOT search the rest of the filing.
+  - One entry per instrument the note states. Copy, never infer:
+    - category: which KIND of instrument, from the fixed list — term-loan, revolver, delayed-draw-term-loan, senior-notes, finance-lease, other. This is the field identity is matched on, so choose it by what the instrument IS, not by what it is called. A "Tranche A term loan" is term-loan. A "delayed draw term loan A facility" is delayed-draw-term-loan, because undrawn capacity is not drawn debt.
+    - name: the filing's own name for it, verbatim, or null. This is DISPLAY TEXT ONLY. "Eleventh Amendment" and "Twelfth Amendment" describe amendments to the same facility, not two facilities — never treat a name as an identity.
+    - amount: the outstanding or stated amount, VERBATIM with its unit as printed ("$ 1.448 billion", "$225 million"). If the note states the instrument but gives it no amount, set this to null — do NOT estimate, and do NOT borrow a figure from a neighbouring sentence about a different instrument.
+    - asOfDate + dateGranularity: the date the amount is stated AS OF, copied from the sentence carrying it ("$1.448 billion outstanding as of June 30, 2026" -> asOfDate "2026-06-30"). Null if the sentence states no date.
+    - maturityDate, rate: only when the note states them for this instrument. Null otherwise.
+    - sourceLine: copied VERBATIM, character-for-character, from the located note. Held to the EXACT same standard as "quote". This is verified in code against the note's own span, and an entry whose sourceLine cannot be found there is dropped.
+  - AN AMOUNT AND ITS INSTRUMENT MUST COME FROM THE SAME SENTENCE. A sentence about a revolver's capacity sitting next to a sentence about a term loan's balance are two instruments, not one; do not combine them.
+  - Do NOT duplicate rows that are already in the schedule sequence. If an instrument appears as a row in the table above, it does not belong here as well.
+
+- revolver — ONLY for the "debt-maturity" trigger. Null for every other trigger, and null when the located note states nothing about a revolving facility.
+  - A revolver's SIZE, what is DRAWN against it, letters of credit issued under it, and what remains AVAILABLE are four different numbers, and filings usually state them in one sentence: "we had $1.272 billion of available borrowing capacity pursuant to the terms of our $1.5 billion revolving credit facility (net of $225 million of outstanding borrowings and $3 million of letters of credit)".
+  - Copy each into its OWN field, verbatim with units — facilitySize, drawn, lettersOfCredit, available. Any the note does not state stays null. Do not compute a missing one from the others; code checks that drawn + lettersOfCredit + available equals facilitySize, and that check is only meaningful if all four were read rather than derived.
+  - delayedDrawCapacity: committed but undrawn term-loan capacity, when the note states it. This is capacity, not debt.
+  - asOfDate: the date those figures are stated as of. sourceLine: the verbatim sentence, same standard as above.
 
 - projectCompletionDate / projectCompletionGranularity — ONLY for the "capex-program" trigger. Leave both null for every other trigger.
   - When the filing states when a named project is expected to be, or was, completed — "scheduled to be completed in December 2026", "opened during the second quarter of 2026" — copy that date here under the same copy-never-compute rules as every other date in this schema. A bare year stays a bare year; a quarter with no month stated is that quarter's own year unless the filing names a month.
@@ -674,6 +798,8 @@ const SESSION18_OPTIONAL_FIELDS = [
   // addition, defaulted here so no downstream reader ever sees undefined.
   "eventInstances",
   "noteRetirements",
+  "proseInstruments",
+  "revolver",
   "projectCompletionDate",
   "projectCompletionGranularity",
 ] as const;
@@ -724,6 +850,26 @@ export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
       eventDate: r.eventDate ?? null,
       dateGranularity: r.dateGranularity ?? null,
     })),
+    proseInstruments: (v.proseInstruments ?? []).map((p) => ({
+      ...p,
+      name: p.name ?? null,
+      amount: p.amount ?? null,
+      asOfDate: p.asOfDate ?? null,
+      dateGranularity: p.dateGranularity ?? null,
+      maturityDate: p.maturityDate ?? null,
+      rate: p.rate ?? null,
+    })),
+    revolver: v.revolver
+      ? {
+          facilitySize: v.revolver.facilitySize ?? null,
+          drawn: v.revolver.drawn ?? null,
+          lettersOfCredit: v.revolver.lettersOfCredit ?? null,
+          available: v.revolver.available ?? null,
+          delayedDrawCapacity: v.revolver.delayedDrawCapacity ?? null,
+          asOfDate: v.revolver.asOfDate ?? null,
+          sourceLine: v.revolver.sourceLine,
+        }
+      : null,
     projectCompletionDate: v.projectCompletionDate ?? null,
     projectCompletionGranularity: v.projectCompletionGranularity ?? null,
   };

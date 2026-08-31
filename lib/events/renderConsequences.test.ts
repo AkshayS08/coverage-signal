@@ -27,6 +27,8 @@ function trigger(over: Partial<TriggerResult> & { triggerId: string }): TriggerR
     balanceSheetDebtCaptions: [], debtScheduleSourceFiling: null, redeems: null, issuedTranches: [],
     cashAmount: "$1 million", projectName: null, projectCompletionDate: null, projectCompletionGranularity: null,
     eventInstances: [], noteRetirements: [],
+    proseInstruments: [],
+    revolver: null,
     ...over,
   } as TriggerResult;
 }

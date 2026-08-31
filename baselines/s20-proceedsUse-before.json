@@ -1,0 +1,12 @@
+{
+  "DaVita": "partly_unapplied",
+  "HCA Healthcare": "partly_unapplied",
+  "Tenet Healthcare": "refinancing_only",
+  "Universal Health Services": "refinancing_only",
+  "Encompass Health": "refinancing_only",
+  "Community Health Systems": null,
+  "Quest Diagnostics": "refinancing_only",
+  "Centene Corporation": null,
+  "Cigna Group": "partly_unapplied",
+  "Molina Healthcare": "partly_unapplied"
+}
