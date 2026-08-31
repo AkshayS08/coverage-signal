@@ -110,7 +110,7 @@ export function findDebtNoteHeading(text: string, spanStart: number, spanEnd: nu
 }
 
 export type DebtNoteLocation =
-  | { status: "found"; start: number; end: number; matchCount: number; via: "heading" | "density" }
+  | { status: "found"; start: number; end: number; matchCount: number; via: "heading" | "density" | "content" }
   | { status: "not_found" };
 
 /**
@@ -156,6 +156,224 @@ const MAX_EXCERPT_CHARS = 25000;
 const GROUPED_FIGURE_RE = /\d{1,3}(?:,\d{3})+/g;
 
 /** The largest comma-grouped figure inside a span — the discriminating signal. See selectCluster. */
+/**
+ * SESSION 20, STAGE 2 — A DEBT NOTE IS IDENTIFIABLE BY WHAT IT CONTAINS,
+ * NOT ONLY BY WHAT IT IS TITLED.
+ *
+ * The magnitude fallback's own doc comment states the assumption this
+ * breaks: "the exact test would compare each cluster against the balance
+ * sheet's own debt captions, which is not available here — those captions
+ * are produced BY extraction." The captions are not available. The
+ * MAGNITUDES are, and they are in the text this function already holds.
+ *
+ * UHS is why. Its locator has always landed on the interest-expense table,
+ * which clusters MORE densely than the real note (9 coupon matches to 5) and
+ * also wins on magnitude, so neither existing signal separates them. What
+ * separates them is arithmetic that is already printed on the page:
+ *
+ *   $800 million, 2.65% Senior Notes due 2030 ... 5,357   ← interest
+ *   $700 million, 1.65% Senior Notes due 2026 ... 2,931   ← interest
+ *
+ * Each row's amount is 0.67% of the principal named in its OWN LABEL. A
+ * quarter's coupon on $800M at 2.65% is $5.3M, so the ratio is the coupon
+ * rate divided by four — structurally between roughly 0.1% and 10% for any
+ * real instrument. A balance, by contrast, is the principal itself or a
+ * repurchased fraction of it: between roughly 20% and 105%.
+ *
+ * That is the decisive disqualifier and it needs no vocabulary at all. It
+ * reads two numbers off one row and asks whether the second could be the
+ * first. It is also the same fact Rule 15 is built on, one layer earlier:
+ * an issue size in a name is a name — here it is a REFERENCE that tells us
+ * what kind of table we are looking at.
+ */
+
+/** A row's own stated issue size, when its label carries one, paired with the amount printed beside it. */
+/**
+ * TWO BOUNDS HERE ARE LOAD-BEARING, AND BOTH WERE SET BY MEASUREMENT
+ * AGAINST THE REAL TEN.
+ *
+ * `[\s\S]` rather than `[^\n]`: stripped filing text keeps newlines between
+ * a row's issue size and its coupon, and the first cut of this pattern
+ * matched nothing at all on the real UHS filing while matching perfectly on
+ * the same text with its whitespace collapsed. A pattern that only works on
+ * prettified input is not a pattern.
+ *
+ * The gap after the maturity year is TIGHT (12 characters, enough for " $ ")
+ * because loosening it turns prose into a false row. CHS's note contains
+ * sentences of the form "$750 million aggregate principal amount of 10.875%
+ * Senior Notes due 2032" followed some distance later by an unrelated
+ * figure; at a 40-character gap those matched and dragged CHS's real note to
+ * a median 9.51% — a schedule misread as an interest table. A balance is
+ * printed ON its row, immediately after the label. A sentence is not a row.
+ */
+const ISSUE_SIZE_ROW_RE = new RegExp(
+  String.raw`\$\s?([\d,.]+)\s*(thousand|million|billion)[\s\S]{0,90}?` +
+    COUPON_SRC +
+    String.raw`[\s\S]{0,80}?\b(?:19|20)\d{2}\b[^\d]{0,12}(\d{1,3}(?:,\d{3})+|\d{1,4})`,
+  "gi"
+);
+
+const MAGNITUDE_AMOUNT_RE = /\$\s?([\d,.]+)\s*(thousand|million|billion)/gi;
+
+const MAGNITUDE: Record<string, number> = { thousand: 1e3, million: 1e6, billion: 1e9 };
+
+/**
+ * The fraction of its own stated issue size that each row's amount
+ * represents, with WHERE it was found. A schedule's rows are balances (~0.2
+ * to ~1.05); an interest table's are periodic coupon (~0.001 to ~0.10).
+ *
+ * Positions are kept because the ratio test is only meaningful on a TABLE.
+ * See classifySpanByContent's tabular precondition — applied to prose it
+ * produces exactly the wrong answer, and UHS is the case that proves it.
+ */
+export function issueSizeRatiosAt(region: string): { ratio: number; at: number }[] {
+  const out: { ratio: number; at: number }[] = [];
+  for (const m of region.matchAll(ISSUE_SIZE_ROW_RE)) {
+    const size = Number(m[1].replace(/,/g, "")) * (MAGNITUDE[m[2].toLowerCase()] ?? 1);
+    const amount = Number(m[3].replace(/,/g, ""));
+    if (!Number.isFinite(size) || !Number.isFinite(amount) || size <= 0 || amount <= 0) continue;
+    // THE AMOUNT'S SCALE IS NOT PRINTED ON THE ROW. A table stated in
+    // millions prints "1,067" for $1,067M, and the issue size beside it is
+    // written out in full ("$2,500 million"). So the raw quotient is
+    // meaningless and has to be put on a common scale.
+    //
+    // The scale is recoverable without being told, from one fact: AN AMOUNT
+    // CANNOT EXCEED THE PRINCIPAL ITS OWN LABEL NAMES. Every plausible scale
+    // is a power of a thousand, so the correct one is the LARGEST that keeps
+    // the ratio at or under unity (1.05 leaves room for premium and
+    // rounding). Scaling past that would claim a tranche carries more than
+    // it was issued at.
+    //
+    //   Centene  1,067 against $2,500 million → 4.3e-7 → 4.3e-4 → 0.427  (a balance)
+    //   UHS      5,357 against $800 million   → 6.7e-6 → 6.7e-3         (a quarter's coupon)
+    let r = amount / size;
+    while (r * 1000 <= 1.05) r *= 1000;
+    out.push({ ratio: r, at: m.index ?? 0 });
+  }
+  return out;
+}
+
+/** Kept for callers that only want the ratios. */
+export function issueSizeRatios(region: string): number[] {
+  return issueSizeRatiosAt(region).map((r) => r.ratio);
+}
+
+/** Below this, a row's amount cannot be the balance of the instrument its own label names. Set at the top of the coupon band, well clear of the balance band's floor. */
+const MAX_COUPON_RATIO = 0.12;
+/** At least this many issue-size rows before the ratio is allowed to decide anything. Two rows agreeing is a coincidence; three is a table. */
+const MIN_RATIO_ROWS = 3;
+/**
+ * A TABLE'S ROWS ARE ADJACENT; PROSE'S ARE PARAGRAPHS APART.
+ *
+ * This precondition is the one that stops the disqualifier eating the very
+ * note it exists to find. UHS's real disclosure is a bulleted narrative —
+ * "$700 million of aggregate principal amount of 1.65% senior secured notes
+ * due in September, 2026 ... which were issued on August 24, 2021" — where
+ * the number following the maturity year is not a balance at all. Read as
+ * rows, those bullets produced ratios of 0.29% and were disqualified as an
+ * interest table, which is the exact opposite of the truth.
+ *
+ * Measured on the real ten: interest-table and schedule rows sit ~60–90
+ * characters apart; UHS's bullets sit ~250+ apart. The bound is set between
+ * them with room, and a span that fails it is UNDECIDED, never disqualified.
+ */
+const MAX_TABULAR_ROW_GAP = 160;
+
+export type SpanVerdict =
+  | { kind: "schedule"; reason: string }
+  | { kind: "not-a-schedule"; reason: string }
+  | { kind: "undecided"; reason: string };
+
+/** Every "$N million/billion/thousand" amount in a region, in dollars. */
+export function magnitudeAmounts(region: string): number[] {
+  const out: number[] = [];
+  for (const m of region.matchAll(MAGNITUDE_AMOUNT_RE)) {
+    const v = Number(m[1].replace(/,/g, "")) * (MAGNITUDE[m[2].toLowerCase()] ?? 1);
+    if (Number.isFinite(v) && v > 0) out.push(v);
+  }
+  return out;
+}
+
+/**
+ * THE QUALIFIER: does one figure in this span equal the sum of several
+ * others in it?
+ *
+ * A debt disclosure states its parts and their total. That is true of a
+ * table and equally true of a narrative — UHS writes "aggregate principal of
+ * $3.0 billion from the following senior secured notes:" and then bullets
+ * $700M, $500M, $800M, $500M, $500M, which sum to exactly $3.0 billion.
+ *
+ * This is what lets a PROSE note be recognised at all. Magnitude never can:
+ * maxGroupedFigure only sees comma-grouped digits, and UHS's bullets contain
+ * none, so the real note scores zero against an interest table's 44,358.
+ *
+ * Purely arithmetic — no caption, no vocabulary. The tolerance is 2%,
+ * because a filing rounds its own aggregate ("$3.0 billion" for $3,000M is
+ * exact, but "$1.4 billion" for $1,448M is not).
+ */
+export function sumsTowardATotal(region: string): { ok: boolean; total: number; parts: number } {
+  const amounts = magnitudeAmounts(region);
+  for (let i = 0; i < amounts.length; i++) {
+    const total = amounts[i];
+    const rest = amounts.filter((_, j) => j !== i);
+    // Greedy: take the largest others first, stopping once they reach the
+    // candidate total. A real parts-list reaches it in a handful of terms.
+    const sorted = [...rest].sort((a, b) => b - a).filter((v) => v <= total);
+    let sum = 0;
+    let used = 0;
+    for (const v of sorted) {
+      if (sum + v > total * 1.02) continue;
+      sum += v;
+      used++;
+      if (Math.abs(sum - total) <= total * 0.02 && used >= 3) return { ok: true, total, parts: used };
+    }
+  }
+  return { ok: false, total: 0, parts: 0 };
+}
+
+/**
+ * Classifies a candidate span by what its numbers ARE.
+ *
+ * Order matters and is the whole design: DISQUALIFY, then QUALIFY, then
+ * abstain. An interest table can also sum toward its own expense total, so
+ * the qualifier alone does not separate it from a schedule — the ratio test
+ * has to remove it first. And a span the tests cannot judge returns
+ * `undecided` rather than guessing, which leaves the existing magnitude rule
+ * in charge and is why most of the book is unaffected.
+ */
+export function classifySpanByContent(region: string): SpanVerdict {
+  const rows = issueSizeRatiosAt(region);
+  const pct = (r: number) => `${(r * 100).toFixed(2)}%`;
+
+  if (rows.length >= MIN_RATIO_ROWS) {
+    const gaps: number[] = [];
+    for (let i = 1; i < rows.length; i++) gaps.push(rows[i].at - rows[i - 1].at);
+    const medianGap = [...gaps].sort((a, b) => a - b)[Math.floor(gaps.length / 2)] ?? Infinity;
+    if (medianGap <= MAX_TABULAR_ROW_GAP) {
+      const sorted = rows.map((r) => r.ratio).sort((a, b) => a - b);
+      const median = sorted[Math.floor(sorted.length / 2)];
+      if (median <= MAX_COUPON_RATIO) {
+        return {
+          kind: "not-a-schedule",
+          reason: `${rows.length} tabular rows (median gap ${medianGap}ch) state an issue size and their amounts are a median ${pct(median)} of it — a periodic coupon, not a balance`,
+        };
+      }
+      return {
+        kind: "schedule",
+        reason: `${rows.length} tabular rows state an issue size and their amounts are a median ${pct(median)} of it — balances`,
+      };
+    }
+  }
+
+  const sum = sumsTowardATotal(region);
+  if (sum.ok) {
+    const b = (n: number) => `$${(n / 1e9).toFixed(2)}B`;
+    return { kind: "schedule", reason: `${sum.parts} stated amounts sum to ${b(sum.total)}, a figure the span also states — a parts list with its own total` };
+  }
+
+  return { kind: "undecided", reason: `no tabular issue-size rows and no amounts summing to a stated total; the content test abstains` };
+}
+
 function maxGroupedFigure(text: string, start: number, end: number): number {
   let max = 0;
   for (const raw of text.slice(start, end).match(GROUPED_FIGURE_RE) ?? []) {
@@ -480,11 +698,37 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
   });
   if (tableClusters.length === 0) return { status: "not_found" };
 
-  let best = tableClusters[0];
-  let bestSpan = spanOf(best);
-  let bestMagnitude = maxGroupedFigure(text, bestSpan.start, bestSpan.end);
-  for (const c of tableClusters.slice(1)) {
+  // SESSION 20, STAGE 2 — CONTENT DISQUALIFIES BEFORE MAGNITUDE CHOOSES.
+  //
+  // Magnitude cannot separate UHS's interest-expense table from its real
+  // note: the wrong table clusters denser AND scores higher. It is not a
+  // miscalibrated signal, it is the wrong question — magnitude asks "which
+  // of these is biggest", and both tables are about the same instruments at
+  // the same scale. Content asks whether each candidate's numbers can be
+  // balances at all, which is the question that actually differs.
+  //
+  // Ordered as a DISQUALIFIER, not a scorer: a span whose rows are periodic
+  // coupon is removed from contention entirely, and magnitude then chooses
+  // among what remains, unchanged. A span the test cannot judge (no rows
+  // stating their own issue size) is left in — abstention keeps the previous
+  // behaviour rather than guessing, which is why nine companies are
+  // unaffected by this change.
+  const contentJudged = tableClusters.map((c) => {
     const span = spanOf(c);
+    return { c, span, verdict: classifySpanByContent(text.slice(span.start, span.end)) };
+  });
+  const survivors = contentJudged.filter((j) => j.verdict.kind !== "not-a-schedule");
+  // Never disqualify the whole field. If content rules out every candidate,
+  // it has told us something is wrong with the filing, not which span to
+  // pick — so the ranking runs over all of them and the caller still sees
+  // via=density rather than a silent not_found.
+  const contended = survivors.length > 0 ? survivors : contentJudged;
+  const contentDecided = survivors.length > 0 && survivors.length < contentJudged.length;
+
+  let best = contended[0].c;
+  let bestSpan = contended[0].span;
+  let bestMagnitude = maxGroupedFigure(text, bestSpan.start, bestSpan.end);
+  for (const { c, span } of contended.slice(1)) {
     const magnitude = maxGroupedFigure(text, span.start, span.end);
     // Ties fall back to the old rule (denser cluster wins, then earliest) so
     // a filing whose clusters are genuinely indistinguishable by magnitude
@@ -497,7 +741,16 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
     }
   }
 
-  return { status: "found", start: bestSpan.start, end: bestSpan.end, matchCount: best.length, via: "density" };
+  // Provenance records which signal actually decided, so a wrong location is
+  // traceable to the rule that made it — `via=content` only when content
+  // narrowed the field, never when it merely abstained and magnitude chose.
+  return {
+    status: "found",
+    start: bestSpan.start,
+    end: bestSpan.end,
+    matchCount: best.length,
+    via: contentDecided ? "content" : "density",
+  };
 }
 
 /**

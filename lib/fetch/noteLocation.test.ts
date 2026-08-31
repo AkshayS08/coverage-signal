@@ -205,11 +205,30 @@ const FULL_DOC_WITH_SCHEDULE = `${LEAD_FILLER}\n\nLong-Term Debt\n${REAL_SHAPE_S
 // zero model calls. It does need filing access, so it is a hard dependency
 // rather than a skip — a pin that quietly skips protects nothing.
 async function checkPins() {
-  const PINS: { company: string; form: string; via: "heading" | "density"; start: number; end: number; matchCount: number }[] = [
+  const PINS: { company: string; form: string; via: "heading" | "density" | "content"; start: number; end: number; matchCount: number }[] = [
     { company: "DaVita", form: "10-Q", via: "heading", start: 26757, end: 30166, matchCount: 10 },
     { company: "HCA Healthcare", form: "10-Q", via: "heading", start: 32472, end: 34562, matchCount: 5 },
     { company: "Tenet Healthcare", form: "10-Q", via: "heading", start: 33013, end: 34307, matchCount: 10 },
-    { company: "Universal Health Services", form: "10-Q", via: "density", start: 279162, end: 282193, matchCount: 9 },
+    // SESSION 20, STAGE 2 — RE-PINNED DELIBERATELY, NOT RELAXED.
+    //
+    // Was via=density start=279162 end=282193 matches=9: the INTEREST-EXPENSE
+    // table, which clusters denser than the real disclosure (9 matches to 6)
+    // and also wins on magnitude, so neither prior signal could reject it.
+    // It is the span that produced five interest rows as a debt ladder in
+    // v18 and cost UHS a whole session.
+    //
+    // Now via=content start=44363 end=47573: the "Treasury / Credit
+    // Facilities and Outstanding Debt Securities" note, holding the bulleted
+    // list of all five senior secured notes ($700M 1.65% 2026, $500M 4.625%
+    // 2029, $800M 2.65% 2030, $500M 2.65% 2032, $500M 5.050% 2034 — summing
+    // to the $3.0 billion aggregate the same passage states) plus the term
+    // loan A and revolver prose.
+    //
+    // The change is one company's. Every other pin in this table is
+    // unchanged, which is the evidence that content DISQUALIFIES rather than
+    // re-ranks: nine spans are undecided or unaffected and magnitude still
+    // chooses among them exactly as before.
+    { company: "Universal Health Services", form: "10-Q", via: "content", start: 44363, end: 47573, matchCount: 6 },
     { company: "Encompass Health", form: "10-Q", via: "heading", start: 40129, end: 41110, matchCount: 4 },
     { company: "Community Health Systems", form: "10-Q", via: "heading", start: 48294, end: 51157, matchCount: 13 },
     { company: "Quest Diagnostics", form: "10-Q", via: "heading", start: 39415, end: 42534, matchCount: 13 },
