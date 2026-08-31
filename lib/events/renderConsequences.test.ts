@@ -4,7 +4,7 @@
  * Run: npx tsx lib/events/renderConsequences.test.ts
  */
 import { buildCompanyTableBlock } from "./portfolioTable";
-import type { CompanyResult, TriggerResult } from "../agent";
+import type { CompanyResult, TriggerResult, VerifiedEventInstance } from "../agent";
 
 let passed = 0, failed = 0;
 const failures: string[] = [];
@@ -33,7 +33,7 @@ function trigger(over: Partial<TriggerResult> & { triggerId: string }): TriggerR
 function company(results: TriggerResult[]): CompanyResult {
   return { company: "Synthetic Co", cik: "1", ticker: "SYN", results, verdict: null, relationshipFlags: [] } as unknown as CompanyResult;
 }
-const inst = (description: string, over: Record<string, unknown> = {}) => ({
+const inst = (description: string, over: Partial<VerifiedEventInstance> = {}): VerifiedEventInstance => ({
   description, amount: null, eventDate: null, dateGranularity: null,
   eventStatus: "completed", sourceLine: description, citedUrl: URL_A, ...over,
 });
