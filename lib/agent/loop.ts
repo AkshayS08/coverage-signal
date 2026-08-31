@@ -509,6 +509,11 @@ export async function runAgentLoop(
   // be confused with the filing having no schedule (see the search-order
   // block below).
   let baseColumnReadFailure = false;
+  // Session 20: tracked SEPARATELY from the column failure. Both end in an
+  // empty ladder, but a note read against the wrong PERIOD and a row read
+  // from the wrong FILING need different fixes, and a single flag would send
+  // the next reader to the wrong one.
+  let baseOffAnchorFailure = false;
   // Session 18 A1: where each filing's debt note was located, in that
   // filing's FULL text — the bound verification uses to reject a "row" that
   // is really a cash-flow line or a narrative mention. Only 10-Q/10-K
@@ -737,8 +742,44 @@ export async function runAgentLoop(
       }
     }
 
-    const scheduleSequence = verifySequenceEntries(unitScoped.scheduleSequence, v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
+    const verifiedBaseSequence = verifySequenceEntries(unitScoped.scheduleSequence, v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
     const priorScheduleSequence = verifySequenceEntries(unitScoped.priorScheduleSequence, v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl);
+
+    // SESSION 20 — THE ANCHOR FILING IS THE POSITION, ACROSS FILINGS.
+    //
+    // BRD 6.0's authority rule already says the note is the position and an
+    // 8-K wins only when it post-dates it. That rule was written about
+    // EVENTS. It says nothing about where a SCHEDULE ROW may come from, and
+    // the gap is not theoretical: UHS's v20 ladder carried
+    //
+    //   "1.65 % Senior Secured Notes due 2026 , net of unamortized discount
+    //    of $ 113 in 2025 and $ 288 in 2024"   $699,887 thousands
+    //
+    // transcribed from the 10-K's December 2025 table, while the ladder's own
+    // debtScheduleSourceFiling named the June 2026 10-Q. Every existing guard
+    // passed it: the sourceLine verifies literally, the amount corroborates,
+    // the note bound holds — all against the WRONG FILING, because nothing
+    // required the row's filing and the position's filing to be the same one.
+    // A stale carrying amount then rendered as the current ladder and carded.
+    //
+    // So the rule extends: a schedule row must cite the anchor. A row cited
+    // from any other filing is dropped with its reason stated, never shown as
+    // the current position. Two comparative columns inside the anchor's own
+    // table are unaffected — those cite the anchor, which is why the prior
+    // schedule legitimately does too on a two-column note.
+    const anchorUrl = debtScheduleGuidance.base?.url ?? null;
+    const { kept: scheduleSequence, dropped: offAnchor } = rowsOnAnchor(verifiedBaseSequence, anchorUrl);
+    // THE GUARD THAT ENFORCES IT. Without this the drop is silent and the
+    // ladder just looks thin; the mismatch is a READ FAILURE and says so, so
+    // an empty ladder states why it is empty rather than implying there is
+    // nothing to find.
+    const offAnchorReadFailure = offAnchor.length > 0;
+    if (offAnchorReadFailure) {
+      const from = [...new Set(offAnchor.map((e) => e.citedUrl))].join(", ");
+      log(
+        `  ⚠ OFF-ANCHOR ROWS DROPPED for ${label} — ${offAnchor.length} schedule row(s) verified against ${from}, but this company's anchor filing is ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date} (${anchorUrl}). A row from another filing is a balance as of THAT filing's date; rendering it as the current ladder states a position the anchor does not report.`
+      );
+    }
     const issuedTranches = verifyIssuedTranches(v.issuedTranches, v.citedUrls ?? [], textByUrl, log, label);
     // Session 19: the new arrays go through the SAME walk. A field in the
     // schema and the prompt but not here is the drift item 1a killed on the
@@ -804,6 +845,7 @@ export async function runAgentLoop(
 
     if (trigger.id === "debt-maturity") {
       baseColumnReadFailure = baseColumnOutcome.total > 0 && baseColumnOutcome.droppedForPeriod === baseColumnOutcome.total;
+      baseOffAnchorFailure = offAnchorReadFailure && scheduleSequence.length === 0;
     }
 
     return finalize(
@@ -974,7 +1016,16 @@ export async function runAgentLoop(
   // use to an RM than a ladder quietly dated eight months ago.
   const debtIdx = results.findIndex((r) => r.triggerId === "debt-maturity");
   const debtTriggerDef = TRIGGERS.find((t) => t.id === "debt-maturity");
-  if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && baseColumnReadFailure) {
+  // Session 20: an off-anchor drop suppresses the fallback for the SAME
+  // reason a column misread does — the fallback's job is to find a schedule
+  // in an older filing, and here an older filing's schedule is precisely what
+  // was just rejected. Letting it run would re-admit through the back door
+  // the stale ladder the rule exists to keep out.
+  if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && baseOffAnchorFailure) {
+    log(
+      `  ⚠ DEBT SCHEDULE READ FAILURE for ${debtTriggerDef.name.toLowerCase()} — every transcribed row was verified against a filing OTHER than this company's anchor, so none states the anchor's own position and all were dropped. The ladder renders empty with this reason rather than showing another filing's balances as though they were current.`
+    );
+  } else if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0 && baseColumnReadFailure) {
     log(
       `  ⚠ DEBT SCHEDULE READ FAILURE for ${debtTriggerDef.name.toLowerCase()} — the base filing's debt note was located and transcribed, but every entry stated a period column other than that filing's own period of report. This is a misread, not an absent schedule, so the search-order fallback does NOT run: an older filing's ladder would render clean while being months stale.`
     );
@@ -1583,6 +1634,29 @@ function verifyIssuedTranches(
  * when there is none — the sourceLine is still verified literally and still
  * bounded, which is the part that matters.
  */
+/**
+ * Splits verified schedule entries into those that state the ANCHOR's own
+ * position and those transcribed from some other filing. Exported so the
+ * rule is testable on its own terms rather than only through a full run.
+ *
+ * A null anchor abstains: with no anchor identified there is nothing to be
+ * off, and dropping every row would turn "we could not tell" into "there is
+ * no debt".
+ */
+export function rowsOnAnchor(
+  entries: VerifiedSequenceEntry[],
+  anchorUrl: string | null
+): { kept: VerifiedSequenceEntry[]; dropped: VerifiedSequenceEntry[] } {
+  if (!anchorUrl) return { kept: entries, dropped: [] };
+  const kept: VerifiedSequenceEntry[] = [];
+  const dropped: VerifiedSequenceEntry[] = [];
+  for (const e of entries) {
+    if (!e.citedUrl || e.citedUrl === anchorUrl) kept.push(e);
+    else dropped.push(e);
+  }
+  return { kept, dropped };
+}
+
 export function verifyEventInstances(
   rows: EventInstanceRow[],
   citedUrls: string[],

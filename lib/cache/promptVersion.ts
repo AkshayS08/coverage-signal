@@ -391,8 +391,34 @@
  * Expected effect: UHS returns to an empty schedule, stated rather than
  * implied. Molina keeps its five tranches — its rows print their own
  * balances and never depended on either path.
+ * v20 (Session 20, Stage 2) — LOCATOR BY CONTENT. No prompt wording change
+ * again; the INPUT changes for exactly one company, and only because the
+ * span handed to the model is a different region of the same filing.
+ * UHS's locator had always landed on its INTEREST-EXPENSE table, which
+ * clusters denser than the real disclosure (9 matches to 6) and also wins on
+ * magnitude, so neither prior signal could reject it. Content now
+ * disqualifies it structurally: each row's amount is a median 1.16% of the
+ * principal its own label names, which is a quarter's coupon, not a balance.
+ * The span moves to 44,363–47,573 — the "Treasury / Credit Facilities and
+ * Outstanding Debt Securities" note, whose five bulleted senior notes sum to
+ * the $3.0 billion aggregate the same passage states.
+ * Nine companies' spans, provenance and match counts are unchanged, so nine
+ * cached answers would be identical were they not orphaned by this bump.
+ * v21 (Session 20, Stage 2 corrected) — THE ANCHOR FILING IS THE POSITION,
+ * ACROSS FILINGS. v20 moved UHS's span to the right note and then carried a
+ * row transcribed from the 10-K's December 2025 table into the current
+ * ladder, under a source attribution naming the June 2026 10-Q. Every guard
+ * passed it: the sourceLine verified literally, the amount corroborated, the
+ * note bound held — all against the wrong filing, because nothing required
+ * the row's filing and the position's filing to be the same one.
+ * A schedule row must now cite the anchor; a row from any other filing is
+ * dropped with its reason stated, and when that empties the ladder the
+ * fallback is suppressed — the fallback looks for a schedule in an OLDER
+ * filing, which is exactly what was just rejected.
+ * Bumped because the dropped rows are a verification outcome baked into
+ * every cached answer, not something the assembly layer can undo.
  */
-export const EXTRACTION_PROMPT_VERSION = 19;
+export const EXTRACTION_PROMPT_VERSION = 21;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.
