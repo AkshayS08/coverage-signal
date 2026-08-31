@@ -27,7 +27,7 @@ function assert(condition: boolean, label: string) {
 }
 
 // A synthetic debt note carrying a real coupon-near-year cluster (3 rows,
-// same structural signature debtNoteLocator.ts looks for in real filings)
+// same structural signature noteLocation.ts looks for in real filings)
 // so locateDebtNoteSection finds this section exactly like it would a real
 // one — the completeness check is only ever run against a located section.
 const ROW_1 = "4.625% Senior Notes due 2030 $1,000";
@@ -129,7 +129,7 @@ console.log("=== scheduleCompleteness.ts golden tests ===\n");
 }
 
 // --- 4. A company with no locatable debt-note section at all (per
-// debtNoteLocator's own "not_found" case) -> checked=false, never a false
+// noteLocation's own "not_found" case) -> checked=false, never a false
 // "complete" or "incomplete" verdict on nothing to compare against. ---
 {
   const c = computeScheduleCompleteness(NARRATIVE_ONLY_TEXT, [{ kind: "row", sourceLine: "irrelevant" }]);

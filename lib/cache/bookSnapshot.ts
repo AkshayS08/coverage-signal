@@ -32,7 +32,7 @@ import { runAgentLoop } from "../agent";
 import { buildEvents, buildVerifiedFactBase, buildCompanyTableBlock } from "../events";
 import { cachedDraftEventBriefing } from "./wordingCache";
 import { cacheStats } from "./stats";
-import { CompanyFetchError } from "./passHarness";
+import { CompanyFetchError, CompanyNarrationError } from "./passHarness";
 
 /** Re-exported so existing callers keep one import; defined in loadEnv.ts,
  * which preflight.ts imports without pulling the Anthropic SDK in behind it. */
@@ -43,14 +43,32 @@ export interface BookSnapshot {
   json: string;
   elapsedMs: number;
   hitSummary: string;
+  /** The as-of date the book was rendered against — see captureBookSnapshot. */
+  asOf: string;
 }
+
+/**
+ * SESSION 20 (1b) — THE AS-OF DATE IS PINNED INTO THE BOOK, NOT LEFT TO THE
+ * WALL CLOCK.
+ *
+ * Timing phrases are computed against `now`. Two captures a day apart are
+ * therefore not byte-comparable through no fault of the code: Session 20's
+ * first byte-identity proof showed CHS at "29mo out" and then "28mo out",
+ * and Molina "54mo" then "53mo", purely because the calendar rolled. A month
+ * boundary must never read as a regression.
+ *
+ * So the date is an INPUT, recorded alongside the bytes. A byte-identity
+ * comparison is only valid between captures sharing an `asOf`; a diff across
+ * two different `asOf` values must say so rather than report the difference
+ * as a change in behaviour.
+ */
 
 /**
  * Runs a book and serializes it. Throws CompanyFetchError naming the company
  * on any failure — the caller decides what that means (passHarness.ts
  * discards the pass; production swallows it per company).
  */
-export async function captureBookSnapshot(companies: string[]): Promise<BookSnapshot> {
+export async function captureBookSnapshot(companies: string[], now: Date = new Date()): Promise<BookSnapshot> {
   cacheStats.reset();
   const t0 = Date.now();
   const outputs: unknown[] = [];
@@ -58,23 +76,31 @@ export async function captureBookSnapshot(companies: string[]): Promise<BookSnap
   for (const company of companies) {
     try {
       const result = await runAgentLoop(company);
-      const { flashCardCandidates } = buildEvents([result]);
+      const { flashCardCandidates } = buildEvents([result], now);
       const factBase = buildVerifiedFactBase(result);
 
       const eventBriefings = [];
       for (const card of flashCardCandidates) {
         const briefing = await cachedDraftEventBriefing(card, factBase);
+        // A failed card renders honestly on the primary surface and must
+        // never become a baseline. See CompanyNarrationError.
+        if (briefing.source === "failed") {
+          throw new CompanyNarrationError(company, card.id, briefing.failureReason ?? "(no reason given)");
+        }
         eventBriefings.push({ eventId: card.id, briefing });
       }
       // Deterministic — included for full coverage, though a pure function
       // cannot be the source of any drift.
-      const table = buildCompanyTableBlock(result, flashCardCandidates);
+      const table = buildCompanyTableBlock(result, flashCardCandidates, now);
 
       outputs.push({ company, result, eventBriefings, table });
     } catch (err) {
+      // A narration failure already names itself; wrapping it would relabel
+      // it as a fetch failure and send the next reader to the wrong fix.
+      if (err instanceof CompanyNarrationError) throw err;
       throw new CompanyFetchError(company, err);
     }
   }
 
-  return { json: JSON.stringify(outputs, null, 2), elapsedMs: Date.now() - t0, hitSummary: cacheStats.summary() };
+  return { json: JSON.stringify(outputs, null, 2), elapsedMs: Date.now() - t0, hitSummary: cacheStats.summary(), asOf: now.toISOString().slice(0, 10) };
 }

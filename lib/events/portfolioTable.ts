@@ -223,7 +223,7 @@ export interface RefiLadderBlock {
   walkLines: WalkLine[];
   /** Item 6 — 8-K tranches withheld from an aggregate ladder, stated beneath it rather than laddered inside a category total that already contains them. */
   issuancesInsideAggregate: LadderRow[];
-  /** The base filing this ladder's rows trace to, for the trailing source link — the SAME filing lib/fetch/debtNoteLocator.ts determined and the model was told to use (position.baseFiling), not just whichever citation happened to be listed first. */
+  /** The base filing this ladder's rows trace to, for the trailing source link — the SAME filing lib/fetch/noteLocation.ts determined and the model was told to use (position.baseFiling), not just whichever citation happened to be listed first. */
   sourceCitation: TriggerResult["citations"][number] | null;
   /**
    * Session 18 (post-v6, live-diagnosed against REAL HCA data): true when
@@ -886,7 +886,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       : `${tranchCount} tranche${tranchCount === 1 ? "" : "s"}${statusNote} — ${check1Clause}; ${check2Clause}`;
 
   // Session 18 (post-v6): prefer the deterministically-selected base filing
-  // (position.baseFiling — exactly what lib/fetch/debtNoteLocator.ts found
+  // (position.baseFiling — exactly what lib/fetch/noteLocation.ts found
   // and what the model was explicitly told to use) over citations[0], which
   // is just whichever citation the model happened to list first and isn't
   // guaranteed to be the actual debtSchedule source filing.

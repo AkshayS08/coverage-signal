@@ -1,4 +1,23 @@
 /**
+ * NOTE LOCATION — ONE MODULE, ONE JOB: filing text in, located and marked
+ * note out.
+ *
+ * Everything that decides WHERE a company's debt note is, and how that
+ * region is delimited for the model, lives here and nowhere else: the
+ * heading finder, the fallback, the lead-window rule, the span marking, and
+ * the coupon pattern's fraction handling. Callers get a located span and a
+ * marked text; they never re-derive either.
+ *
+ * What deliberately does NOT live here: fetching and cleaning the filing
+ * (filingText.ts — a different job), and the fraction-glyph table itself
+ * (VULGAR_FRACTION_CLASS in verifyQuote.ts, imported — Rule 7 says one
+ * table and every layer reads it, so a second copy here would be the
+ * defect, not the consolidation).
+ *
+ * Session 20 renamed this from debtNoteLocator.ts. The rename is the
+ * smaller half; see LEAD_CHARS for the part that was actually broken.
+ */
+/**
  * Locates the debt-schedule section within a filing's FULL stripped text,
  * so the extraction corpus can include it even when it sits well past the
  * lead-40k-char window most other triggers' facts live inside.
@@ -417,7 +436,7 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
   // established against one snapshot of base filings, and a new 10-K
   // becoming someone's base could reintroduce exactly the stray-figure case
   // that sank it before. So the choice is PINNED PER COMPANY in
-  // debtNoteLocator.test.ts — every one of the 10 has its expected offset
+  // noteLocation.test.ts — every one of the 10 has its expected offset
   // asserted against its real cached filing, and a future filing that makes
   // this rule reselect fails the suite loudly instead of quietly changing
   // which table gets extracted. Do not relax those assertions to make a new
@@ -438,7 +457,7 @@ export function locateDebtNoteSection(text: string): DebtNoteLocation {
   // note 301,386 vs this rule's pick 319,999) and becomes the base filing the
   // moment it is the newest filing carrying a schedule. findDebtNoteHeading
   // below is what currently notices: it returns null for both Molina 10-Qs,
-  // and that is pinned in debtNoteLocator.test.ts [14].
+  // and that is pinned in noteLocation.test.ts [14].
   //
   // Measured effect at adoption (all 10 real base filings, zero API cost):
   // corrects DaVita (interest-rate-cap table -> real note, max 3,500,000 ->
@@ -506,7 +525,23 @@ export class DebtNoteNotFoundError extends Error {
   }
 }
 
-const LEAD_CHARS = 40000;
+/**
+ * The lead window: how much of a long filing is sent to the model before the
+ * located note is spliced or delimited.
+ *
+ * EXPORTED, AND THAT IS THE POINT. loop.ts carried its own copy of this
+ * number as `SINGLE_EVENT_FILING_CHARS`, under a comment reading "Mirrors
+ * buildExtractionText's LEAD_CHARS" — two constants, one value, two files,
+ * and a comment as the only thing holding them together.
+ *
+ * It is load-bearing for a VERIFICATION BOUND, not just for cost.
+ * amountCorroborated treats a filing at or under this length as its own
+ * bound, on the reasoning that such a filing was sent to the model whole.
+ * Had these two drifted, that reasoning would have silently applied to
+ * filings that were never sent whole, and an amount would have been
+ * corroborated against text the model never saw. One definition now.
+ */
+export const LEAD_CHARS = 40000;
 
 export type DebtNoteFilingStatus = "not_applicable" | "under_cap" | "found" | "not_found";
 

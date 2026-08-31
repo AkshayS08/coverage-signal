@@ -15,7 +15,7 @@
  * way HCA's v10 gap was originally found).
  *
  * Two structural checks against the same located debt-note section
- * (lib/fetch/debtNoteLocator.ts's locateDebtNoteSection, re-run here at
+ * (lib/fetch/noteLocation.ts's locateDebtNoteSection, re-run here at
  * zero cost — the SAME deterministic bounds already used to build the
  * extraction corpus, not re-derived differently):
  *   1. Labeled-total candidates: every "Total ... <number>"-shaped span in
@@ -38,7 +38,7 @@
  * missing/trailing, never less — a conservative bias in the right
  * direction for a visibility signal, never a false "complete."
  */
-import { locateDebtNoteSection } from "./debtNoteLocator";
+import { locateDebtNoteSection } from "./noteLocation";
 
 export interface ScheduleCompletenessResult {
   /** False when there was no locatable debt-note section to check against at all (nothing to compare — never reported as either complete or incomplete). */

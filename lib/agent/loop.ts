@@ -29,7 +29,7 @@ import { extractFactTokens, factTokensMatch, type FactToken } from "./factTokens
 import { textOutsideInstrumentLabel, splitIssueSizeFromName } from "./issueSize";
 import { assertBlobConfigured } from "../fetch/cache";
 import { corpusFingerprint, cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
-import { buildExtractionText, assertCompanyHasLocatableDebtNote, type DebtNoteFilingStatus } from "../fetch/debtNoteLocator";
+import { LEAD_CHARS, buildExtractionText, assertCompanyHasLocatableDebtNote, type DebtNoteFilingStatus } from "../fetch/noteLocation";
 import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "../fetch/scheduleCompleteness";
 import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isSelfDescribingAmount, scaleWordFromDeclaration } from "./moneyScale";
 import { detectDollarScaleAt } from "./scaleNormalize";
@@ -339,7 +339,7 @@ export interface TriggerResult {
   priorScheduleSequence: VerifiedSequenceEntry[];
   /** Session 18 (post-v9) — "debt-maturity" ONLY. The base filing's own balance-sheet debt captions, verified the same way — Check 2's input (lib/events/position.ts's computeBalanceSheetCheck). Empty for every other trigger. */
   balanceSheetDebtCaptions: VerifiedBalanceSheetCaption[];
-  /** Session 18 (post-v6) — "debt-maturity" ONLY. Which filing scheduleSequence was actually transcribed from — determined in code (lib/fetch/debtNoteLocator.ts) BEFORE the model was asked, not self-reported. Null when no filing had a locatable schedule (scheduleSequence is then also empty). Surfaced so the render layer can state which filing the ladder came from, and so a caller can tell "genuinely no schedule anywhere" apart from "schedule exists but wasn't reachable this run." Null for every other trigger. */
+  /** Session 18 (post-v6) — "debt-maturity" ONLY. Which filing scheduleSequence was actually transcribed from — determined in code (lib/fetch/noteLocation.ts) BEFORE the model was asked, not self-reported. Null when no filing had a locatable schedule (scheduleSequence is then also empty). Surfaced so the render layer can state which filing the ladder came from, and so a caller can tell "genuinely no schedule anywhere" apart from "schedule exists but wasn't reachable this run." Null for every other trigger. */
   debtScheduleSourceFiling: DebtScheduleFilingRef | null;
   /**
    * Session 18 (post-v11) — "debt-maturity" ONLY. Which filing
@@ -606,7 +606,7 @@ export async function runAgentLoop(
   const verdictById = new Map(baseVerdicts.map((v) => [v.triggerId, withFieldDefaults(v)]));
 
   // Session 18: company-level hard failure (never per-filing — see
-  // debtNoteLocator.ts's doc comment: a SINGLE 10-Q genuinely not repeating
+  // noteLocation.ts's doc comment: a SINGLE 10-Q genuinely not repeating
   // the full ladder is normal, confirmed live for 4 of 30 real filings
   // across companies whose 10-K carried it instead). If debt-maturity
   // fired but the locator found a cluster in NONE of this company's fetched
@@ -1233,8 +1233,14 @@ const AMOUNT_PROXIMITY_CHARS = 300;
  */
 const NOTE_SPAN_MARGIN_CHARS = 3000;
 
-/** Mirrors buildExtractionText's LEAD_CHARS: a filing this short was sent to the model whole and is about one event. */
-const SINGLE_EVENT_FILING_CHARS = 40000;
+/**
+ * A filing at or under the lead window was sent to the model WHOLE, so it is
+ * its own bound. Session 20: imported from noteLocation.ts rather than
+ * re-declared here. This file used to carry its own 40000 under a comment
+ * saying it "mirrors" the locator's — a verification bound depending on two
+ * constants agreeing, with nothing but prose enforcing it.
+ */
+const SINGLE_EVENT_FILING_CHARS = LEAD_CHARS;
 
 function noteSpanWithMargin(span: { start: number; end: number } | undefined): { start: number; end: number } | null {
   if (!span) return null;

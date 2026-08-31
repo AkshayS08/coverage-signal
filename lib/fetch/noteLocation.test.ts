@@ -1,5 +1,5 @@
 /**
- * Session 18 — lib/fetch/debtNoteLocator.ts, offline/synthetic where noted,
+ * Session 18 — lib/fetch/noteLocation.ts, offline/synthetic where noted,
  * plus real-shape fixtures modeled on the actual coupon-row text captured
  * during zero-LLM-cost diagnosis against real SEC filings for all 10
  * companies (see diag_locator.ts, diag_misses.ts — throwaway, not
@@ -7,7 +7,7 @@
  * both Cigna 10-Qs) were confirmed genuine absences, not locator bugs —
  * modeled here as [8]/[9].
  *
- * Run: npx tsx lib/fetch/debtNoteLocator.test.ts
+ * Run: npx tsx lib/fetch/noteLocation.test.ts
  */
 import * as dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
@@ -19,7 +19,7 @@ import {
   DebtNoteNotFoundError,
   findDebtNoteHeading,
   type DebtNoteFilingStatus,
-} from "./debtNoteLocator";
+} from "./noteLocation";
 import { getRecentFilings } from "./filings";
 import { getFilingText } from "./filingText";
 import { selectBaselineFilings } from "../agent/selectFilings";

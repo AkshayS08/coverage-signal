@@ -20,7 +20,7 @@ import { secFetchText } from "./http";
 // exceeded the old 40k cap. Fetching and caching the FULL stripped text
 // (still bounded by SANITY_CEILING_CHARS below, just to stop a genuinely
 // pathological document from being cached unbounded) lets
-// lib/fetch/debtNoteLocator.ts do the actual windowing downstream, at
+// lib/fetch/noteLocation.ts do the actual windowing downstream, at
 // corpus-assembly time, where it can also serve verification (which needs
 // the full text, not just whatever window was sent to the model) — see
 // runAgentLoop in lib/agent/loop.ts.
@@ -91,7 +91,7 @@ function urlToCacheKey(url: string): string {
  * header/hidden-facts blocks); the FULL stripped text is cached (see
  * SANITY_CEILING_CHARS above for why this is no longer truncated to 40k
  * here) — callers that need a bounded excerpt for the model prompt build it
- * downstream via lib/fetch/debtNoteLocator.ts's buildExtractionText.
+ * downstream via lib/fetch/noteLocation.ts's buildExtractionText.
  *
  * Cache path is versioned ("v2") so every filing-text entry cached under
  * the OLD 40k-truncated regime is cleanly orphaned rather than silently

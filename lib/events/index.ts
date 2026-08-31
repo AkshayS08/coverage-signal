@@ -19,3 +19,4 @@ export * from "./extractionReport";
 // portfolioTable.ts has no SDK dependency, so it's safe in this barrel and
 // is computed client-side from `results`, same as buildEvents itself.
 export * from "./money";
+export * from "./flaggedItems";

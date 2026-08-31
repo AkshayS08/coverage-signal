@@ -40,7 +40,7 @@ export interface PassError {
 }
 
 export type PassResult =
-  | { status: "clean"; json: string; elapsedMs: number; hitSummary: string; attempts: number; errors: PassError[] }
+  | { status: "clean"; json: string; elapsedMs: number; hitSummary: string; asOf: string; attempts: number; errors: PassError[] }
   | { status: "incomplete"; attempts: number; errors: PassError[] };
 
 /** Thrown by a runner to say WHICH company failed, so the log can name it. */
@@ -49,6 +49,42 @@ export class CompanyFetchError extends Error {
     super(cause instanceof Error ? cause.message : String(cause));
     this.name = "CompanyFetchError";
   }
+}
+
+/**
+ * SESSION 20 (1b) — A NARRATION FAILURE INVALIDATES A PASS EXACTLY AS A
+ * FETCH FAILURE DOES.
+ *
+ * A card whose structural check fails renders a failure banner rather than a
+ * card. That is correct on the primary surface — never suppress — but it must
+ * not become a BASELINE, and Session 19 proved why by shipping one: the
+ * s19-final capture recorded Tenet's card as `source: "failed"`, the
+ * determinism passes that ran afterwards re-narrated it successfully, and the
+ * persisted reference therefore described a book the product never shipped.
+ *
+ * A failed briefing is deliberately not cached (wordingCache.ts), so a fresh
+ * pass is a genuinely fresh attempt — which is exactly the condition the
+ * whole-pass retry already assumes for fetches. Same rule, same mechanism:
+ * a baseline is written only from a clean pass.
+ */
+export class CompanyNarrationError extends Error {
+  constructor(readonly company: string, readonly cardId: string, readonly reason: string) {
+    super(`card "${cardId}" failed its structural check: ${reason}`);
+    this.name = "CompanyNarrationError";
+  }
+}
+
+/** The company named by either failure kind, for the separate-channel log. */
+function companyOf(err: unknown): string {
+  if (err instanceof CompanyFetchError || err instanceof CompanyNarrationError) return err.company;
+  return "(unknown)";
+}
+
+/** What KIND of failure invalidated the pass — the two need different fixes and must not read alike. */
+function kindOf(err: unknown): string {
+  if (err instanceof CompanyNarrationError) return "a narration failure";
+  if (err instanceof CompanyFetchError) return "a fetch failure";
+  return "an unexpected error";
 }
 
 export const MAX_PASS_ATTEMPTS = 3;
@@ -62,23 +98,23 @@ export const MAX_PASS_ATTEMPTS = 3;
  * retry keeps the sample a sample.
  */
 export async function runPassWithRetries(
-  runOnce: () => Promise<{ json: string; elapsedMs: number; hitSummary: string }>,
+  runOnce: () => Promise<{ json: string; elapsedMs: number; hitSummary: string; asOf: string }>,
   maxAttempts: number = MAX_PASS_ATTEMPTS,
   log: (line: string) => void = (l) => console.error(l)
 ): Promise<PassResult> {
   const errors: PassError[] = [];
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      const { json, elapsedMs, hitSummary } = await runOnce();
-      return { status: "clean", json, elapsedMs, hitSummary, attempts: attempt, errors };
+      const { json, elapsedMs, hitSummary, asOf } = await runOnce();
+      return { status: "clean", json, elapsedMs, hitSummary, asOf, attempts: attempt, errors };
     } catch (err) {
       const entry: PassError = {
-        company: err instanceof CompanyFetchError ? err.company : "(unknown)",
+        company: companyOf(err),
         error: err instanceof Error ? err.message : String(err),
         timestamp: new Date().toISOString(),
       };
       errors.push(entry);
-      log(`  ⚠ pass attempt ${attempt}/${maxAttempts} invalidated by a fetch failure — ${entry.company}: ${entry.error}`);
+      log(`  ⚠ pass attempt ${attempt}/${maxAttempts} invalidated by ${kindOf(err)} — ${entry.company}: ${entry.error}`);
     }
   }
   return { status: "incomplete", attempts: maxAttempts, errors };

@@ -112,6 +112,12 @@ export default function Home() {
   const [eventBriefings, setEventBriefings] = useState<Record<string, DraftedEventBriefing>>({});
   const [running, setRunning] = useState(false);
   const [asOfDate, setAsOfDate] = useState<Date | null>(null);
+  // SESSION 20 (1b) — A COMPANY ATTEMPTED AND FAILED IS PART OF THE BOOK.
+  // Failures previously reached the trace and nothing else, so a ten-name run
+  // with one failed fetch read "9 companies assessed" on the primary surface
+  // — a smaller book presented as a complete one. The assessed count counts
+  // ATTEMPTS; what failed is named where the count is.
+  const [failures, setFailures] = useState<{ company: string; message: string }[]>([]);
 
   const { flashCardCandidates } = useMemo(() => buildEvents(results), [results]);
 
@@ -144,6 +150,7 @@ export default function Home() {
     setRunning(true);
     setTrace([]);
     setResults([]);
+    setFailures([]);
     setEventBriefings({});
     setAsOfDate(new Date());
 
@@ -198,6 +205,7 @@ export default function Home() {
         }
       } else if (event.type === "error") {
         queueTrace(event.company, `error: ${event.message}`);
+        setFailures((prev) => (prev.some((f) => f.company === event.company) ? prev : [...prev, { company: event.company, message: event.message }]));
       }
     };
 
@@ -592,7 +600,19 @@ export default function Home() {
               {flashCardCandidates.length === 1 ? "" : "s"} across {companiesWithEvents} compan
               {companiesWithEvents === 1 ? "y" : "ies"}
             </div>
-            <div className={styles.summaryLine}>{results.length} companies assessed</div>
+            <div className={styles.summaryLine}>
+              {results.length + failures.length} companies assessed
+              {failures.length > 0 && `, ${failures.length} failed`}
+            </div>
+            {failures.length > 0 && (
+              <div className={styles.failureList}>
+                {failures.map((f) => (
+                  <div key={f.company} className={styles.failureLine}>
+                    <strong>{f.company}</strong> — could not be assessed: {f.message}
+                  </div>
+                ))}
+              </div>
+            )}
           </>
         )}
       </section>

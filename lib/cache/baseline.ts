@@ -40,14 +40,25 @@ async function main() {
   const pass = await runPassWithRetries(() => captureBookSnapshot(companies));
   for (const line of formatPassErrors(pass.errors)) console.error(line);
   if (pass.status !== "clean") {
-    console.error(`\n⊘ INCOMPLETE after ${pass.attempts} attempts — no baseline written. A partial book would read as deletions in the next diff.`);
+    // SESSION 20 (1b): INCOMPLETE now covers narration as well as fetches.
+    // One rule on two surfaces — a company attempted and failed renders as
+    // a failed attempt, and a baseline is written only from a clean pass.
+    // Session 19 shipped s19-final.json carrying Tenet's card as
+    // `source: "failed"`; the determinism runs that followed healed it, so
+    // the persisted reference described a book that never shipped.
+    console.error(`
+⊘ INCOMPLETE after ${pass.attempts} attempts — no baseline written. A pass that could not complete cleanly is not a reference: a partial book reads as deletions in the next diff, and a healed failure reads as a change that never happened.`);
     process.exit(2);
   }
 
   mkdirSync(OUT_DIR, { recursive: true });
   const path = join(OUT_DIR, `${label}.json`);
   writeFileSync(path, pass.json, "utf8");
-  console.error(`wrote ${path} — ${pass.json.length} bytes, ${companies.length} companies, ${pass.elapsedMs}ms, ${pass.hitSummary}`);
+  // The as-of date sits beside the bytes, not inside them: a byte-identity
+  // comparison is only valid between captures sharing one, and a diff across
+  // two must say so rather than report a month rollover as a regression.
+  writeFileSync(join(OUT_DIR, `${label}.meta.json`), JSON.stringify({ asOf: pass.asOf, companies, bytes: pass.json.length, attempts: pass.attempts }, null, 2), "utf8");
+  console.error(`wrote ${path} — ${pass.json.length} bytes, ${companies.length} companies, as-of ${pass.asOf}, ${pass.elapsedMs}ms, ${pass.hitSummary}`);
 }
 
 main();

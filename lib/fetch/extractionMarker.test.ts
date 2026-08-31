@@ -9,7 +9,7 @@
  *
  * Run: npx tsx lib/fetch/extractionMarker.test.ts
  */
-import { buildExtractionText } from "./debtNoteLocator";
+import { buildExtractionText } from "./noteLocation";
 
 let passed = 0;
 let failed = 0;

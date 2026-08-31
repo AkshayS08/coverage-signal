@@ -751,3 +751,19 @@
   font-size: 11px;
   color: var(--text-secondary);
 }
+
+/* Session 20 (1b): a failed attempt is part of the book, stated where the
+   count is rather than buried in the trace. */
+.failureList {
+  margin: 6px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.failureLine {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--warn-fg, #9E3F24);
+  border-left: 3px solid var(--warn-fg, #9E3F24);
+  padding-left: 10px;
+}

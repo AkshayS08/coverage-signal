@@ -82,7 +82,7 @@ import { detectDollarScaleAt, formatScaledDollars } from "./scaleNormalize";
  *
  * Found during the stage-2 review, when checking whether the renderer had
  * grown its own copy of this walker (it had not — it imports
- * normalizeForMatch). One layer over, it had: lib/fetch/debtNoteLocator.ts
+ * normalizeForMatch). One layer over, it had: lib/fetch/noteLocation.ts
  * carried its own hand-written glyph string for the coupon regex, and the
  * two had ALREADY diverged. The locator knew six glyphs this table did not
  * (⅐ ⅑ ⅓ ⅔ ⅙ ⅚), which meant a "6 ⅓%" coupon could be found by the
@@ -115,7 +115,7 @@ const VULGAR_FRACTIONS: Record<string, string> = {
   "⅒": ".1",
 };
 
-/** The same set as a regex character class, for callers that must match RAW text (lib/fetch/debtNoteLocator.ts). Derived, never hand-written. */
+/** The same set as a regex character class, for callers that must match RAW text (lib/fetch/noteLocation.ts). Derived, never hand-written. */
 export const VULGAR_FRACTION_CLASS = Object.keys(VULGAR_FRACTIONS).join("");
 
 function isSpaceOrCurrency(code: number): boolean {

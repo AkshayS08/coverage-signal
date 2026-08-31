@@ -50,7 +50,7 @@
  * that cap (as far as 613k characters in). The model wasn't failing to
  * transcribe verbatim; the debt note usually wasn't in the text it was
  * given at all. Fixed at the fetch/corpus layer, not here — see
- * lib/fetch/debtNoteLocator.ts (a density-based locator that splices a
+ * lib/fetch/noteLocation.ts (a density-based locator that splices a
  * bounded excerpt around the debt note into the corpus) and
  * lib/fetch/filingText.ts (now caches the FULL stripped text, versioned
  * v2, so old 40k-truncated cache entries are never silently replayed).
@@ -94,7 +94,7 @@
  * v7 (Session 18, after the v6 pilot's 3-condition review): three
  * structural fixes. (1) Base/prior filing selection for
  * debtSchedule/priorDebtSchedule is now determined in CODE
- * (lib/fetch/debtNoteLocator.ts's per-filing status, computed before the
+ * (lib/fetch/noteLocation.ts's per-filing status, computed before the
  * model is ever asked) and handed to the model as an explicit filing
  * reference — never "find the most recent 10-Q or 10-K yourself." That old
  * instruction is exactly what let Centene's extraction fabricate 28 rows
@@ -316,13 +316,13 @@
  * example states outright that an absent schedule means an EMPTY sequence.
  * A prompt edit changes nothing until the cache is invalidated, so this
  * alone requires the bump.
- * (2) LOCATOR: debtNoteLocator.ts now selects the debt-note cluster by
+ * (2) LOCATOR: noteLocation.ts now selects the debt-note cluster by
  * MAGNITUDE rather than coupon density. That changes the excerpt text the
  * model is handed — a different input, so cached answers keyed to the old
  * excerpt are stale by definition. Corrects DaVita (was reading the
  * interest-rate-cap table) and CHS (was reading ABL prose); the other eight
  * companies' selection is unchanged. The choice is PINNED PER COMPANY in
- * debtNoteLocator.test.ts [13] so a future filing that flips it fails
+ * noteLocation.test.ts [13] so a future filing that flips it fails
  * loudly rather than silently changing which table is extracted.
  * Also in this version, though neither needs a bump on its own: an entry's
  * AMOUNT must now be corroborated in the filing (by value against its own

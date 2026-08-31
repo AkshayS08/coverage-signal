@@ -609,7 +609,7 @@ function formatCorpus(docs: CorpusDoc[]): string {
  * have picked a 10-Q with nothing there). A locator miss and a fabrication
  * risk are the same event: whichever filing the model is asked to
  * transcribe from should be one CODE has already confirmed has a real,
- * locatable schedule (lib/fetch/debtNoteLocator.ts), never one merely
+ * locatable schedule (lib/fetch/noteLocation.ts), never one merely
  * guessed to be "most recent." This is computed once per company in
  * loop.ts (deterministic, zero LLM cost) and handed to the model as a
  * closed choice instead of an open search.

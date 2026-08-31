@@ -36,7 +36,7 @@ async function main() {
       // Fail the FIRST attempt part-way through the book, the way a real
       // EDGAR or blob timeout does.
       if (attempts === 1) throw new CompanyFetchError("Universal Health Services", new Error("fetch failed: ETIMEDOUT"));
-      return { json: CLEAN_JSON, elapsedMs: 10, hitSummary: "answer cache 10/10 (100%) hit" };
+      return { json: CLEAN_JSON, elapsedMs: 10, hitSummary: "answer cache 10/10 (100%) hit", asOf: "2026-08-31" };
     }, 3, silent);
 
     assert(result.status === "clean", `[1a] a pass whose fetch throws once still completes CLEAN on retry (got ${result.status})`);
@@ -88,7 +88,7 @@ async function main() {
   // ==========================================================================
   {
     let calls = 0;
-    const result = await runPassWithRetries(async () => { calls++; return { json: CLEAN_JSON, elapsedMs: 5, hitSummary: "hit" }; }, 3, silent);
+    const result = await runPassWithRetries(async () => { calls++; return { json: CLEAN_JSON, elapsedMs: 5, hitSummary: "hit", asOf: "2026-08-31" }; }, 3, silent);
     assert(result.status === "clean" && result.attempts === 1, "[4a] REVERSE: a pass with no fault runs exactly once");
     assert(calls === 1, `[4b] REVERSE: ...the runner is called once, never speculatively retried (got ${calls})`);
     assert(result.errors.length === 0 && formatPassErrors(result.errors).length === 0, "[4c] REVERSE: ...and its error log is empty, so a clean report stays clean");
