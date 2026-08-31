@@ -44,7 +44,7 @@ async function main() {
   }
 
   mkdirSync("baselines", { recursive: true });
-  writeFileSync("baselines/_s20-stage2b.json", JSON.stringify(outputs, null, 2), "utf8");
+  writeFileSync("baselines/_s20-stage3.json", JSON.stringify(outputs, null, 2), "utf8");
 
   console.error("\n\n================ RUN B EXTRACTION ================");
   for (const line of perCompany) console.error(line);

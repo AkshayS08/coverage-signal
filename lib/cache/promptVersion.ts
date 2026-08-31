@@ -417,8 +417,18 @@
  * filing, which is exactly what was just rejected.
  * Bumped because the dropped rows are a verification outcome baked into
  * every cached answer, not something the assembly layer can undo.
+ * v22 (Session 20, Stage 3) — THE PROSE HALF OF THE CAPITAL STRUCTURE.
+ * Two new fields on debt-maturity, both prompt-driven and both verified
+ * inside the located note: proseInstruments (category-typed instruments the
+ * note states in narrative rather than in a table) and revolver (facility
+ * size, drawn, letters of credit, available, delayed-draw capacity, kept as
+ * five separate figures so drawn + LCs + available = size can be checked).
+ * UHS is why: $1.1B rendered against $4,851,847K stated, with the missing
+ * $3.7B written out in bullets rather than absent from the filing.
+ * Coverage now runs at the anchor over rows plus prose, with the note's own
+ * discount line subtracted rather than tolerated (Rule 17).
  */
-export const EXTRACTION_PROMPT_VERSION = 21;
+export const EXTRACTION_PROMPT_VERSION = 22;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

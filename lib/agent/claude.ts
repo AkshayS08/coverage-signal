@@ -949,7 +949,23 @@ async function attemptClassifyAllTriggers(params: {
     // real HCA/Cigna (both ~10-tranche companies) response size during the
     // pilot re-extraction and raise further if assertNotTruncated ever
     // fires for a real company.
-    max_tokens: 12000,
+    // SESSION 20, STAGE 3 — RAISED FROM 12,000, BY MEASUREMENT.
+    //
+    // Cigna carries the book's largest note (38 schedule entries) and was
+    // already generating ~11,600 output tokens at v17 — 96% of the old
+    // ceiling. Adding proseInstruments and revolver pushed it over, and
+    // assertNotTruncated stopped the run rather than banking a partial
+    // extraction, which is exactly what that guard is for: a truncated
+    // response and a wrong one both fail the checksum, and they need
+    // different fixes. The error names this one.
+    //
+    // An unused ceiling costs nothing — output tokens are billed as
+    // generated, not as budgeted — so the headroom is set well clear of the
+    // largest real response rather than just above it. The 8 companies
+    // already extracted under the old ceiling are unaffected: they stopped
+    // on end_turn, so they are complete, and max_tokens is not part of the
+    // cache key.
+    max_tokens: 20000,
     temperature: 0,
     system: INSTRUCTIONS,
     messages: [{ role: "user", content: userContent }],
