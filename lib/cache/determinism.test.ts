@@ -21,6 +21,16 @@ import { captureBookSnapshot, loadEnvQuietly } from "./bookSnapshot";
 
 const COMPANIES = (process.argv[2] || "DaVita").split(",").map((s) => s.trim());
 const RUNS = Number(process.argv[3] || 3);
+/**
+ * SESSION 20 — THE AS-OF DATE IS PINNED, NOT READ FROM THE WALL CLOCK.
+ *
+ * captureBookSnapshot defaults `now` to new Date(), and `now` reaches the
+ * eligibility gate (a maturity is cardable within 18 months OF NOW). Three
+ * runs straddling midnight, or a re-run on a later day, therefore compare
+ * two different questions and report the difference as non-determinism. The
+ * date is an INPUT and is pinned like one.
+ */
+const AS_OF = new Date((process.argv[4] || "2026-09-01") + "T00:00:00Z");
 
 
 async function main() {
@@ -32,7 +42,7 @@ async function main() {
 
   const incompletePasses: PassResult[] = [];
   for (let i = 1; i <= RUNS; i++) {
-    const pass = await runPassWithRetries(() => captureBookSnapshot(COMPANIES));
+    const pass = await runPassWithRetries(() => captureBookSnapshot(COMPANIES, AS_OF));
     for (const line of formatPassErrors(pass.errors)) console.log(line);
     if (pass.status === "clean") {
       timings.push(pass.elapsedMs);
