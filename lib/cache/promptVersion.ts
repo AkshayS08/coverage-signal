@@ -481,8 +481,32 @@
  * 3.69% and fails, because the $68 million of Trust financial liabilities
  * its note describes in a sentence is part of the balance the balance sheet
  * reports.
+ *
+ * v25 (Session 20, Stage 4 corrected again) — ONE INSTRUMENT, ONE FIELD.
+ * v24's "typography is not the test" is REVERTED in full. Making a sentence
+ * a schedule row did not add the bullets; it moved the problem. The model
+ * transcribed UHS's three SENTENCES as rows, skipped the bulleted list
+ * entirely, and returned the same three instruments in BOTH scheduleSequence
+ * and proseInstruments in different units — "$1,448,000 thousand" as a row
+ * against "$1,448 billion" as prose, which is a misplaced decimal, $1.448
+ * TRILLION, and it reached a ladder line.
+ * Two fields that can both hold the same instrument will eventually disagree,
+ * and no amount of "do not duplicate" wording fixes a schema that permits it.
+ * So the boundary is the filing's own typography, decided once: what the
+ * note prints as a TABLE goes in scheduleSequence, what it prints as a
+ * BULLET or a SENTENCE goes in proseInstruments, one entry each. A note with
+ * no table returns an empty scheduleSequence and a full proseInstruments
+ * list, and that is a complete answer rather than a failure.
+ * Previewed free before spending: UHS's note contains no table at all (its
+ * six issue-size statements sit a median 270 characters apart, where a
+ * table's rows sit 60-90), and all eight of its instruments plus both
+ * undrawn facilities locate inside the note span. Eight instruments, eight
+ * single destinations, nothing routable twice.
+ * The v24 unit rule (copy the digits as printed, never restate them) is
+ * KEPT — it was measured safe on eight table-reading companies and is now
+ * stated for prose amounts too. The "included in debt" rule is kept.
  */
-export const EXTRACTION_PROMPT_VERSION = 24;
+export const EXTRACTION_PROMPT_VERSION = 25;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

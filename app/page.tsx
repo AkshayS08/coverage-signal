@@ -462,6 +462,21 @@ export default function Home() {
         )}
         <ul className={styles.tableLineList}>
           {refi.nearestLines.map((line, i) => renderRefiLadderLine(line, i))}
+          {/* Instruments the note states in narrative rather than in a table.
+              A note may have no table at all, in which case these ARE the
+              ladder — and until Stage 4 they reached the coverage figure and
+              never the page, so such a company rendered an empty ladder
+              under a line claiming near-complete coverage. */}
+          {refi.proseLines.map((p, i) => (
+            <li key={`prose-${i}`} className={styles.tableLine}>
+              <span className={styles.tableLineBullet}>·</span>
+              <span className={styles.tableLineText}>
+                {p.amount} {p.label}
+                {p.rate ? ` — ${p.rate}` : ""}
+                {p.maturity ? `, due ${p.maturity}` : ""} — stated in the note&apos;s narrative ({p.basis})
+              </span>
+            </li>
+          ))}
           {refi.tailSummary && (
             <li className={styles.tableLine}>
               <span className={styles.tableLineBullet}>·</span>

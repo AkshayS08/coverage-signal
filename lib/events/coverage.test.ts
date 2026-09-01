@@ -41,47 +41,54 @@ console.log("\n=== [1] REAL: UHS before prose instruments — correctly terrible
     `[1c] the line names the captions it summed rather than asserting a total from nowhere (${c.line.slice(0, 90)})`);
 }
 
-console.log("\n=== [2] REAL: UHS after Stage 4 — THE ACCEPTANCE TEST, at the anchor ===");
+console.log("\n=== [2] REAL: UHS at the anchor — THE ACCEPTANCE TEST, in the shape routing actually produces ===");
 {
-  // Every figure below is copied from UHS's 10-Q filed 2026-08-07 (period
-  // June 30 2026) — the anchor. The five senior notes are that note's own
-  // BULLETS, transcribed as rows now that typography is not the test; the
-  // term loan, the drawn revolver and the Trust financial liabilities are
-  // sentences in the same note. Nothing here comes from the 10-K, from the
-  // Q1 10-Q, or from the prospectus.
+  // Every figure is copied from UHS's 10-Q filed 2026-08-07 (period June 30
+  // 2026), in the unit that filing prints it in.
+  //
+  // ZERO SCHEDULE ROWS IS THE POINT. This note contains no table — measured:
+  // its six issue-size statements sit a median 270 characters apart, where a
+  // table's rows sit 60–90 apart. So every instrument routes to
+  // proseInstruments and NOTHING can be double-routed. The v24 run failed
+  // precisely because the two fields both took the same three instruments,
+  // in different units, and dedup could not see across "$1,448,000 thousand"
+  // and "$1,448 billion".
   const c = computeCoverage(dm({
     balanceSheetDebtCaptions: [
       { label: "Current maturities of long-term debt", amount: "$771,910 thousands" },
       { label: "Long-term debt", amount: "$4,079,937 thousands" },
     ] as never,
-    scheduleSequence: [
-      row("1.65 % senior secured notes due in September, 2026", "$700 million"),
-      row("4.625 % senior secured notes due in October, 2029", "$500 million"),
-      row("2.65 % senior secured notes due in October, 2030", "$800 million"),
-      row("2.65 % senior secured notes due in January, 2032", "$500 million"),
-      row("5.050 % senior secured notes due in October, 2034", "$500 million"),
-    ],
+    scheduleSequence: [],
     proseInstruments: [
       prose({ category: "term-loan", name: "term loan A", amount: "$ 1.448 billion", amountBasis: "outstanding" }),
       prose({ category: "revolver", name: "revolving credit facility", amount: "$ 225 million", amountBasis: "outstanding" }),
+      prose({ category: "senior-notes", name: "2026 Notes", amount: "$ 700 million", amountBasis: "outstanding", rate: "1.65 %", maturityDate: "2026-09-01" }),
+      prose({ category: "senior-notes", name: "2029 Notes", amount: "$ 500 million", amountBasis: "outstanding", rate: "4.625 %", maturityDate: "2029-10-15" }),
+      prose({ category: "senior-notes", name: "2030 Notes", amount: "$ 800 million", amountBasis: "outstanding", rate: "2.65 %", maturityDate: "2030-10-15" }),
+      prose({ category: "senior-notes", name: "2032 Notes", amount: "$ 500 million", amountBasis: "outstanding", rate: "2.65 %", maturityDate: "2032-01-15" }),
+      prose({ category: "senior-notes", name: "2034 Notes", amount: "$ 500 million", amountBasis: "outstanding", rate: "5.050 %", maturityDate: "2034-10-15" }),
       prose({ category: "other", name: "Trust financial liabilities included in debt", amount: "$ 68 million", amountBasis: "outstanding" }),
-      // Committed but undrawn, twice over — the Eleventh Amendment's delayed
-      // draw and the Twelfth Amendment's short-term facility.
+      // Committed but undrawn, twice over.
       prose({ category: "delayed-draw-term-loan", name: "delayed draw term loan A", amount: "$ 400 million", amountBasis: "commitment" }),
       prose({ category: "other", name: "delayed draw short term loan", amount: "$ 700 million", amountBasis: "commitment" }),
     ] as never,
     revolver: { facilitySize: "$ 1.5 billion", drawn: "$ 225 million", lettersOfCredit: "$ 3 million", available: "$ 1.272 billion", delayedDrawCapacity: "$ 400 million", asOfDate: "2026-06-30", sourceLine: "s" } as never,
   }));
   assert(Math.abs(c.capturedFace - 4_741_000_000) < 1_000_000,
-    `[2a] captured face is five notes ($3.0B) + term loan A ($1.448B) + drawn revolver ($225M) + Trust liabilities ($68M) = $4.741B (got ${(c.capturedFace / 1e9).toFixed(3)}B)`);
+    `[2a] five notes ($3.0B) + term loan A ($1.448B) + drawn revolver ($225M) + Trust liabilities ($68M) = $4.741B (got ${(c.capturedFace / 1e9).toFixed(3)}B)`);
   assert(c.residualPasses === true,
-    `[2b] THE ACCEPTANCE TEST: residual ${((c.residualFraction ?? 1) * 100).toFixed(2)}% against $4,851,847K stated is inside the ${(COVERAGE_RESIDUAL_LIMIT * 100).toFixed(1)}% line — coverage climbs from 0% to 98%`);
+    `[2b] THE ACCEPTANCE TEST: residual ${((c.residualFraction ?? 1) * 100).toFixed(2)}% against $4,851,847K stated is inside the ${(COVERAGE_RESIDUAL_LIMIT * 100).toFixed(1)}% line — coverage 98%`);
+  assert(c.entries.filter((e) => e.from === "prose").length === 8 && c.entries.every((e) => e.from === "prose"),
+    `[2c] EIGHT entries, all from one field — no instrument can appear twice when only one field is populated (got ${c.entries.length} entries, ${c.entries.filter((e) => e.from === "row").length} of them rows)`);
   assert(c.capacity.length === 2 && !c.entries.some((e) => e.category === "delayed-draw-term-loan"),
-    "[2c] the $400M delayed draw and the $700M Twelfth Amendment facility are EXCLUDED from debt and REPORTED as capacity — $1.1B of committed headroom is a fact, and it is not owed");
-  assert(c.line.includes("undrawn capacity NOT counted as debt"),
-    `[2d] and the line says so, rather than leaving a reader to work out where they went (${c.line.slice(-150)})`);
-  assert(c.categoriesMissing.length === 0,
-    `[2e] nothing the note states is left unaccounted for (missing: ${c.categoriesMissing.join(", ") || "none"})`);
+    "[2d] the $400M delayed draw and the $700M Twelfth Amendment facility are excluded from debt and reported as $1.1B of capacity");
+  assert(c.impossible.length === 0 && c.categoriesMissing.length === 0,
+    `[2e] nothing impossible, nothing stated-but-uncaptured (${c.impossible.length} / ${c.categoriesMissing.join(", ") || "none"})`);
+  assert(
+    c.entries.filter((e) => e.category === "senior-notes").length === 5 &&
+      c.entries.filter((e) => e.category === "senior-notes" && e.amount === 500_000_000).length === 3,
+    "[2f] all five notes survive, and the three that are each $500 million stay three — same category, same size, different maturities"
+  );
 }
 
 console.log("\n=== [2R] REAL: the acceptance test turns on the span reaching the whole note ===");
