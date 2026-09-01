@@ -56,6 +56,29 @@ import type { TriggerResult, ProseInstrumentRow, RevolverRow, VerifiedSequenceEn
  */
 export const COVERAGE_RESIDUAL_LIMIT = 0.025;
 
+/**
+ * How far past its own stated total a single entry may reach before it is a
+ * transcription error rather than a balance. MEASURED, like the residual
+ * limit, and the two populations are not close:
+ *
+ *   largest legitimate single entry, across three full books
+ *     HCA "Senior unsecured notes payable through 2095" $44,200 million   0.889x
+ *     Encompass "4.75 % Senior Notes due 2030" $788.4 million             0.299x
+ *   a row may also slightly EXCEED the carrying total, because carrying is
+ *     net of the note's own discount — measured at 1.008x on Molina's
+ *     3,800 against 3,769
+ *   the error this exists for
+ *     UHS "Tranche A term loan $1,448 billion" (the note prints
+ *     "$ 1.448 billion")                                               298.443x
+ *
+ * Nothing at all sits between 1.008 and 298. The line is set at 2x: double
+ * the largest legitimate figure and two orders of magnitude below the error.
+ * It can afford to be generous because a scale error is a factor of a
+ * thousand and never a factor of two — this is not a tuned boundary between
+ * neighbouring populations, it is a bound on the impossible.
+ */
+const IMPOSSIBLE_ENTRY_MULTIPLE = 2;
+
 export type DebtCategory = ProseInstrumentRow["category"];
 
 export interface CapturedEntry {
@@ -82,6 +105,8 @@ export interface CoverageResult {
   categoriesMissing: DebtCategory[];
   categoriesCaptured: DebtCategory[];
   entries: CapturedEntry[];
+  /** Entries larger than the total they are meant to be part of — a transcription error, excluded from the sum and stated as one. */
+  impossible: CapturedEntry[];
   /** Committed but undrawn — reported separately, never summed as debt, never dropped. */
   capacity: CapturedEntry[];
   /** The captions summed, named on the rendered surface per the spec. */
@@ -307,7 +332,21 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
     ...proseEntries,
   ];
 
-  const capturedFace = entries.reduce((a, e) => a + (e.amount ?? 0), 0);
+  // ONE INSTRUMENT CANNOT BE LARGER THAN THE TOTAL IT IS PART OF.
+  //
+  // Arithmetic, not vocabulary, and it needs nothing but the denominator this
+  // function already holds. UHS at v24 is why: the note prints "$ 1.448
+  // billion" and the model returned "$1,448 billion" — one misplaced decimal,
+  // $1.448 TRILLION, rendered on a ladder line as this company's term loan.
+  // Coverage read 29,880%, so nothing was silently wrong; but the LINE was
+  // wrong, and a line is what an RM reads.
+  //
+  // A component of a stated total cannot exceed that total. The entry is
+  // excluded from the sum and rendered as impossible, with both figures, so
+  // the reader sees a transcription error rather than a balance.
+  const impossible = statedTotalDebt === null ? [] : entries.filter((e) => e.amount !== null && Math.abs(e.amount) > Math.abs(statedTotalDebt) * IMPOSSIBLE_ENTRY_MULTIPLE);
+  const countable = entries.filter((e) => !impossible.includes(e));
+  const capturedFace = countable.reduce((a, e) => a + (e.amount ?? 0), 0);
   const residual = statedTotalDebt === null ? null : statedTotalDebt - (capturedFace + statedBridge);
   const residualFraction = residual === null || !statedTotalDebt ? null : Math.abs(residual) / Math.abs(statedTotalDebt);
   const residualPasses = residualFraction === null ? null : residualFraction <= COVERAGE_RESIDUAL_LIMIT;
@@ -315,7 +354,7 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
   const statedCategories = new Set<DebtCategory>((debtMaturity?.proseInstruments ?? []).map((p) => p.category));
   if (debtMaturity?.revolver) statedCategories.add("revolver");
   const capturedCategories = new Set<DebtCategory>(
-    entries.filter((e) => e.category !== "table-row" && e.amount !== null).map((e) => e.category as DebtCategory)
+    countable.filter((e) => e.category !== "table-row" && e.amount !== null).map((e) => e.category as DebtCategory)
   );
   // A facility whose only stated figure is a commitment is NOT "missing" —
   // it is accounted for, as capacity. Flagging it would report a gap that
@@ -334,10 +373,11 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
     residualPasses,
     categoriesMissing,
     categoriesCaptured: [...capturedCategories],
-    entries,
+    entries: countable,
+    impossible,
     capacity,
     anchorCaptions,
-    line: coverageLine({ statedTotalDebt, capturedFace, residualFraction, residualPasses, categoriesMissing, anchorCaptions, entries, capacity }),
+    line: coverageLine({ statedTotalDebt, capturedFace, residualFraction, residualPasses, categoriesMissing, anchorCaptions, entries: countable, capacity, impossible }),
   };
 }
 
@@ -355,6 +395,7 @@ function coverageLine(r: {
   anchorCaptions: string[];
   entries: CapturedEntry[];
   capacity: CapturedEntry[];
+  impossible: CapturedEntry[];
 }): string {
   const b = (n: number) => (Math.abs(n) >= 1e9 ? `$${(n / 1e9).toFixed(2)}B` : `$${(n / 1e6).toFixed(0)}M`);
   if (r.statedTotalDebt === null) {
@@ -374,7 +415,11 @@ function coverageLine(r: {
     r.residualPasses === false && r.residualFraction !== null
       ? ` — ${(r.residualFraction * 100).toFixed(1)}% unexplained, above the ${(COVERAGE_RESIDUAL_LIMIT * 100).toFixed(1)}% line`
       : "";
-  return head + missing + resid + cap;
+  const imp =
+    r.impossible.length > 0
+      ? ` — IMPOSSIBLE AMOUNT, EXCLUDED: ${r.impossible.map((e) => `${e.label} reads ${b(e.amount ?? 0)}, larger than the ${b(r.statedTotalDebt ?? 0)} total it is part of`).join("; ")}. Read the filing; this is a transcription error, not a balance.`
+      : "";
+  return head + missing + resid + cap + imp;
 }
 
 /**

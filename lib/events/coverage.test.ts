@@ -262,5 +262,33 @@ console.log("\n=== [11] Dedup across units, and the three notes that stay three 
     `[11c] only the 2029 note matches the 2029 ROW — the 2032 and 2034 notes survive because their maturities contradict it (kept ${three.kept.map((k) => k.name).join(", ")})`);
 }
 
+console.log("\n=== [12] REAL: one instrument cannot be larger than the total it is part of ===");
+{
+  // UHS at v24. Its note prints "$ 1.448 billion" and the model returned
+  // "$1,448 billion" — one misplaced decimal, $1.448 TRILLION, on a ladder
+  // line reading "Tranche A term loan". Coverage read 29,880%, so nothing was
+  // silently wrong; but a line is what an RM reads, and that line was wrong.
+  const c = computeCoverage(dm({
+    balanceSheetDebtCaptions: [
+      { label: "Current maturities of long-term debt", amount: "$771,910 thousands" },
+      { label: "Long-term debt", amount: "$4,079,937 thousands" },
+    ] as never,
+    scheduleSequence: [
+      row("Tranche A term loan", "$1,448,000 thousand"),
+      row("Revolving credit facility", "$225,000 thousand"),
+      row("Financial liabilities from failed sale leaseback", "$68,000 thousand"),
+    ],
+    proseInstruments: [
+      prose({ category: "term-loan", name: "Tranche A term loan", amount: "$1,448 billion", amountBasis: "outstanding" }),
+    ] as never,
+  }));
+  assert(c.impossible.length === 1 && Math.abs(c.capturedFace - 1_741_000_000) < 1_000_000,
+    `[12a] the $1.448 TRILLION entry is excluded and the sum is the three real rows, $1.741B (got $${(c.capturedFace / 1e9).toFixed(3)}B) — a component of a total cannot exceed it, which is arithmetic and needs no vocabulary`);
+  assert(c.line.includes("IMPOSSIBLE AMOUNT, EXCLUDED") && c.line.includes("Read the filing"),
+    `[12b] and it is RENDERED as a transcription error rather than dropped — excluding it silently would leave a reader with a ladder short by a term loan and no reason why (${c.line.slice(-190)})`);
+  assert(c.residualPasses === false,
+    "[12c] coverage still fails, on the real gap (the five senior-note bullets) rather than on the typo — the guard removes a wrong number, it does not manufacture a pass");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }
