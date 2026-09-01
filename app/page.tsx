@@ -429,7 +429,12 @@ export default function Home() {
     // and on a company whose note could not be read at all it said "none
     // could be trusted" with two rows directly beneath it and nothing
     // marking them as coming from somewhere else entirely.
-    const sourceMark = line.row.provenance === "pricing-8-K" ? " [from a pricing 8-K, not the debt note]" : "";
+    const sourceMark =
+      line.row.provenance === "pricing-8-K"
+        ? " [from a pricing 8-K, not the debt note]"
+        : line.row.provenance === "note-narrative"
+          ? (line.row.isCapacity ? " [stated in the note’s narrative — committed but undrawn, capacity not debt]" : " [stated in the note’s narrative, not in a table]")
+          : "";
     const text = `${formatMoneyForDisplay(line.row.amount)} ${rateText}${seniorityPrefix}${line.instrumentName}${issuedAt} — ${line.timingPhrase}${movement}${sourceMark}`;
     return (
       <li key={i} className={styles.tableLine}>
@@ -462,27 +467,6 @@ export default function Home() {
         )}
         <ul className={styles.tableLineList}>
           {refi.nearestLines.map((line, i) => renderRefiLadderLine(line, i))}
-          {/* Instruments the note states in narrative rather than in a table.
-              A note may have no table at all, in which case these ARE the
-              ladder — and until Stage 4 they reached the coverage figure and
-              never the page, so such a company rendered an empty ladder
-              under a line claiming near-complete coverage. */}
-          {refi.proseLines.map((p, i) => (
-            <li key={`prose-${i}`} className={styles.tableLine}>
-              <span className={styles.tableLineBullet}>·</span>
-              <span className={styles.tableLineText}>
-                {p.amount} {p.label}
-                {p.rate ? ` — ${p.rate}` : ""}
-                {p.maturity ? `, due ${p.maturity}` : ""} — stated in the note&apos;s narrative ({p.basis})
-              </span>
-            </li>
-          ))}
-          {refi.tailSummary && (
-            <li className={styles.tableLine}>
-              <span className={styles.tableLineBullet}>·</span>
-              <span className={styles.tableLineText}>{refi.tailSummary}</span>
-            </li>
-          )}
           {/* ITEM 6 (stage-2 review): tranches a pricing 8-K names that
               cannot be added to a ladder reporting category totals — they
               are inside one of those totals already. Stated, never dropped. */}

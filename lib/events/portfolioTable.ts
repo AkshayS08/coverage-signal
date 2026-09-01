@@ -1,4 +1,4 @@
-import { computeCoverage, checkRevolverArithmetic, debtContribution, type CoverageResult } from "./coverage";
+import { computeCoverage, checkRevolverArithmetic, type CoverageResult } from "./coverage";
 import type { CompanyResult, TriggerResult, VerifiedSequenceEntry } from "../agent";
 import type { DebtScheduleFilingRef, DateGranularity } from "../agent/claude";
 import type { FlashCard } from "./buildEvents";
@@ -218,18 +218,6 @@ export interface RefiLadderBlock {
   completenessStatement: string;
   /** Every row in the CURRENT (position-adjusted) ladder that isn't `retired` — a retired row never gets its own table line, it only explains a live one via a card's KEY POINT (E1). Nearest-first. */
   nearestLines: RefiLadderLine[];
-  /**
-   * SESSION 20, STAGE 4 — THE PROSE HALF REACHES THE PAGE.
-   *
-   * proseInstruments fed computeCoverage and nothing else, so a company whose
-   * note has no table at all rendered an EMPTY ladder beneath a coverage line
-   * saying 98% covered. That is not a subtle inconsistency; it is a page that
-   * contradicts itself, and it would have made UHS's acceptance test pass
-   * while showing an RM nothing. Rendered as its own list, labelled as stated
-   * in the note's narrative rather than in a table, because that is what it
-   * is and the distinction is worth keeping visible.
-   */
-  proseLines: { label: string; amount: string; rate: string | null; maturity: string | null; basis: string }[];
   /** "N more tranches, YYYY to YYYY" for whatever didn't fit in nearestLines, or null when everything fit. */
   tailSummary: string | null;
   /** Item 7 — the note's own reconciliation, in its own order. Empty when the note has no sequence to walk. */
@@ -702,7 +690,6 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       balanceSheetCheck,
       completenessStatement: "",
       nearestLines: [],
-      proseLines: [],
       tailSummary: null,
       walkLines: [],
       coverage: computeCoverage(debtMaturity),
@@ -932,35 +919,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // when the base ladder failed BOTH checks does the older filing's schedule
   // get surfaced at all, and even then it sits beneath the base ladder's own
 
-  // THE LINE AND THE COVERAGE FIGURE READ THE SAME FUNCTION.
-  //
-  // The first cut of this decided "is it capacity" here, from amountBasis,
-  // while coverage decided it in debtContribution — and the two disagreed on
-  // the first real company they met. UHS's revolver rendered as
-  // "$1.5 billion ... capacity, not debt" while coverage was counting its
-  // $225 million drawn balance as debt, so the ladder could not be
-  // reconciled to the total printed above it. Two places deciding one thing
-  // is the same defect as two fields holding one instrument (Rule 21); the
-  // fix is the same shape. debtContribution decides, once.
-  const proseLines = (debtMaturity.proseInstruments ?? [])
-    .filter((p) => p.amount)
-    .map((p) => {
-      const c = debtContribution(p, debtMaturity.revolver);
-      return {
-        label: p.name ?? p.category,
-        // What is OWED, where that differs from what the sentence states: a
-        // revolver's line must show its drawn balance, with the facility it
-        // is drawn under named beside it rather than in place of it.
-        amount: c.amount !== null && c.amount > 0 && p.amount && parseMoneyAmount(p.amount) !== c.amount
-          ? `${c.amount >= 1e9 ? "$" + (c.amount / 1e9).toFixed(3).replace(/\.?0+$/, "") + " billion" : "$" + Math.round(c.amount / 1e6) + " million"} drawn under ${p.amount}`
-          : (p.amount as string),
-        rate: p.rate ?? null,
-        maturity: p.maturityDate ?? null,
-        basis: c.why,
-      };
-    });
-
-  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, proseLines, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
+  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
 
 /**

@@ -1,4 +1,5 @@
-import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry, VerifiedNoteRetirement } from "../agent";
+import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry, VerifiedNoteRetirement, ProseInstrumentRow, RevolverRow } from "../agent";
+import { dedupAgainstRows, debtContribution } from "./instrument";
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
 import { extractFactTokens, factTokensMatch, type FactToken } from "../agent/factTokens";
 import { isStatedZeroAmount } from "../agent/moneyScale";
@@ -101,7 +102,23 @@ export interface LadderRow {
    * The rows are legitimate. What was missing is that they answer a
    * different question than the header does.
    */
-  provenance: "note" | "pricing-8-K";
+  /**
+   * SESSION 21 — "note-narrative" joins the two that were here.
+   *
+   * A note may state an instrument in a table, in a bullet, or in a
+   * sentence. All three are the same kind of fact, and the position must
+   * carry all three or a prose-only filer has no position at all — which is
+   * exactly the state UHS was in: nine instruments, 98% coverage, and
+   * NOTHING in `rows`, so no ladder line to render and no instrument to
+   * build a card from.
+   */
+  provenance: "note" | "pricing-8-K" | "note-narrative";
+  /**
+   * Committed but undrawn. Renders on the ladder — headroom is a fact an RM
+   * wants — and never cards, because there is no maturity conversation to
+   * have about money nobody has borrowed.
+   */
+  isCapacity?: boolean;
 }
 
 export interface CompanyPosition {
@@ -292,6 +309,49 @@ function ladderRowFromSequenceEntry(entry: VerifiedSequenceEntry, status: Ladder
     status,
     provenance: "note",
   };
+}
+
+/**
+ * SESSION 21, ITEM 1A — AN INSTRUMENT IS AN INSTRUMENT, WHATEVER FIELD IT
+ * ARRIVED IN.
+ *
+ * `debtContribution` decides what this instrument owes — the same function
+ * the coverage figure is built from — so a ladder line and the total above
+ * it cannot disagree about a revolver's drawn balance again.
+ */
+function ladderRowFromProseInstrument(
+  p: ProseInstrumentRow & { citedUrl?: string },
+  revolver: RevolverRow | null | undefined,
+  status: LadderRow["status"]
+): LadderRow {
+  const c = debtContribution(p, revolver);
+  const instrument = p.name ?? p.category;
+  // A revolver's line leads with what is DRAWN, naming the facility it is
+  // drawn under rather than in place of it.
+  const stated = p.amount ? parseMoneyAmount(p.amount) : null;
+  const showsDrawn = c.amount !== null && c.amount > 0 && stated !== null && stated !== c.amount;
+  const amount = showsDrawn
+    ? `${formatPlainMoney(c.amount as number)} drawn under ${p.amount}`
+    : (p.amount ?? "(no amount stated)");
+  return {
+    instrument,
+    rate: p.rate,
+    seniority: null,
+    amount,
+    maturityDate: p.maturityDate,
+    dateGranularity: p.dateGranularity,
+    sourceLine: p.sourceLine,
+    citedUrl: p.citedUrl ?? "",
+    id: ladderRowId({ instrument, rate: p.rate, maturityDate: p.maturityDate, dateGranularity: p.dateGranularity }),
+    status,
+    provenance: "note-narrative",
+    isCapacity: c.capacity,
+  };
+}
+
+/** Whole-unit money for a derived figure the filing did not print in that form. */
+function formatPlainMoney(n: number): string {
+  return n >= 1e9 ? `$${(n / 1e9).toFixed(3).replace(/\.?0+$/, "")} billion` : `$${Math.round(n / 1e6)} million`;
 }
 
 function ladderRowFromIssuedTranche(row: VerifiedIssuedTranche, status: LadderRow["status"]): LadderRow {
@@ -549,6 +609,17 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   const baseSequence = normalizeScheduleSequence(debtMaturity?.scheduleSequence);
   const baseRowEntries = baseSequence.filter((e) => e.kind === "row");
   let rows: LadderRow[] = baseRowEntries.map((entry) => ladderRowFromSequenceEntry(entry, "live"));
+
+  // SESSION 21, ITEM 1A — the note's narrative half joins the position.
+  //
+  // Deduped against the table rows by the SAME function coverage uses, so
+  // the ladder and the coverage figure count one set. A prose entry that
+  // duplicates a table row is one instrument; three notes that are each
+  // $500 million with different maturities stay three (Rule 19).
+  const proseKept = dedupAgainstRows(debtMaturity?.proseInstruments ?? [], baseRowEntries).kept;
+  rows = rows.concat(
+    proseKept.map((p) => ladderRowFromProseInstrument(p as ProseInstrumentRow & { citedUrl?: string }, debtMaturity?.revolver, "live"))
+  );
 
   if (newDebtIssuance?.fired && newDebtIssuance.redeems) {
     const redeemsText = newDebtIssuance.redeems;

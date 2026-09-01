@@ -282,6 +282,17 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
 export function evaluateRowEligibility(row: LadderRow, now: Date = new Date()): EligibilityResult {
   const timing = computeTiming("upcoming", row.maturityDate, row.dateGranularity, now);
 
+  // SESSION 21, ITEM 1A — CAPACITY NEVER CARDS.
+  //
+  // A committed but undrawn facility renders on the ladder, because
+  // headroom is a fact an RM wants beside a maturity. It is not a
+  // refinancing conversation: there is nothing to refinance until it is
+  // drawn. Decided on the flag the position set from debtContribution, so
+  // the ladder, the coverage figure and this gate all read one decision.
+  if (row.isCapacity) {
+    return { cardEligible: false, reason: "committed but undrawn — capacity, not a maturity to refinance", timing };
+  }
+
   if (row.status === "retired") {
     return { cardEligible: false, reason: "retired — redeemed by a later issuance", timing };
   }
@@ -307,7 +318,30 @@ export function evaluateRowEligibility(row: LadderRow, now: Date = new Date()): 
   }
 
   if (timing.monthsToNearestFuture === null) {
-    return { cardEligible: false, reason: "approaching maturity, but no verifiable date — held to table", timing };
+    // SESSION 21, ITEM 1C — A DATE IN THE PAST IS NOT A MISSING DATE.
+    //
+    // computeTiming returns null for BOTH "the filing states no maturity"
+    // and "the maturity it states has already gone by", and this branch
+    // reported both as "no verifiable date". Measured on the worked
+    // example: UHS's $700M 1.65% notes card on 2026-09-01 and, on
+    // 2026-09-02, leave the card surface entirely under a reason saying the
+    // date could not be verified — when the filing states it exactly and
+    // the note has simply matured with nothing in the corpus confirming
+    // repayment. That is the most callable item in the book disappearing
+    // behind a false explanation, which is Rule 3 twice over: suppressed,
+    // and mislabelled on the way out.
+    //
+    // The two cases are told apart by whether a date was stated at all. A
+    // matured instrument is still held to the table here — Session 22's
+    // Tier 2 is what gives it a pending state — but it says what it is.
+    if (row.maturityDate) {
+      return {
+        cardEligible: false,
+        reason: `matured ${row.maturityDate} — the stated maturity has passed and nothing in the corpus confirms repayment; held to table pending an 8-K`,
+        timing,
+      };
+    }
+    return { cardEligible: false, reason: "approaching maturity, but the filing states no date for it — held to table", timing };
   }
   if (timing.monthsToNearestFuture > REFI_WINDOW_MONTHS) {
     return { cardEligible: false, reason: "maturity 18+ months out", timing };
