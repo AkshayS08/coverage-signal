@@ -1,4 +1,4 @@
-import { computeCoverage, checkRevolverArithmetic, type CoverageResult } from "./coverage";
+import { computeCoverage, checkRevolverArithmetic, debtContribution, type CoverageResult } from "./coverage";
 import type { CompanyResult, TriggerResult, VerifiedSequenceEntry } from "../agent";
 import type { DebtScheduleFilingRef, DateGranularity } from "../agent/claude";
 import type { FlashCard } from "./buildEvents";
@@ -891,7 +891,23 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // not run here (lib/agent/loop.ts), so there is no older ladder standing in
   // front of this statement.
   const columnReadFailure = debtMaturity.columnReadFailure;
-  const completenessStatement = columnReadFailure
+  // SESSION 20, STAGE 4 — A NOTE WITH NO TABLE IS NOT A NOTE READ WRONG.
+  //
+  // This statement was written when the ladder could only come from a table,
+  // so an empty schedule meant something had gone wrong. It no longer does:
+  // a note may state its whole capital structure in bullets and sentences,
+  // and UHS is the case — its schedule is empty, its nine prose instruments
+  // cover 98% of stated total debt, and the page led with "READ WRONG ...
+  // Read the filing" directly above them. The headline has to describe the
+  // position that is actually rendered.
+  //
+  // The column misread is still real and still stated; it is now the
+  // subordinate clause it should always have been when a prose ladder
+  // stands.
+  const proseCarriesTheLadder = (debtMaturity.proseInstruments ?? []).some((p) => p.amount);
+  const completenessStatement = columnReadFailure && proseCarriesTheLadder
+    ? `NO TABLE IN THIS NOTE — ${(debtMaturity.proseInstruments ?? []).filter((p) => p.amount).length} instrument(s) below are stated in the note's own narrative rather than in a table, which is how this filer discloses. (A table WAS attempted from ${sourceCitationText} and every row of it carried a period column other than that filing's own period of report, so none was trusted; the narrative is the disclosure, not a fallback.)`
+    : columnReadFailure
     ? `NOTE FOUND BUT READ WRONG — the debt note in ${sourceCitationText} was located and transcribed, but every row carried a period column other than that filing's own period of report, so none could be trusted. This is a misread, not an absent disclosure; an older filing's ladder is deliberately NOT substituted. Read the filing.`
     : position.rowsNotVerifiedAsTranscribed
     ? `TRANSCRIPTION NOT VERIFIED — the note states ${finalSubtotalText ?? "a total"}, but the rows below sum ${gapPct}% short of it. The rows are shown as extracted and are NOT this company's position; read the filing. (${check1Clause}; ${check2Clause})`
@@ -916,17 +932,33 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // when the base ladder failed BOTH checks does the older filing's schedule
   // get surfaced at all, and even then it sits beneath the base ladder's own
 
+  // THE LINE AND THE COVERAGE FIGURE READ THE SAME FUNCTION.
+  //
+  // The first cut of this decided "is it capacity" here, from amountBasis,
+  // while coverage decided it in debtContribution — and the two disagreed on
+  // the first real company they met. UHS's revolver rendered as
+  // "$1.5 billion ... capacity, not debt" while coverage was counting its
+  // $225 million drawn balance as debt, so the ladder could not be
+  // reconciled to the total printed above it. Two places deciding one thing
+  // is the same defect as two fields holding one instrument (Rule 21); the
+  // fix is the same shape. debtContribution decides, once.
   const proseLines = (debtMaturity.proseInstruments ?? [])
     .filter((p) => p.amount)
-    .map((p) => ({
-      label: p.name ?? p.category,
-      amount: p.amount as string,
-      rate: p.rate ?? null,
-      maturity: p.maturityDate ?? null,
-      // Capacity is labelled as capacity ON THE LINE, so a reader never has
-      // to infer from the coverage sentence which of these is owed.
-      basis: p.category === "delayed-draw-term-loan" || p.amountBasis === "commitment" ? "committed, undrawn — capacity, not debt" : "outstanding",
-    }));
+    .map((p) => {
+      const c = debtContribution(p, debtMaturity.revolver);
+      return {
+        label: p.name ?? p.category,
+        // What is OWED, where that differs from what the sentence states: a
+        // revolver's line must show its drawn balance, with the facility it
+        // is drawn under named beside it rather than in place of it.
+        amount: c.amount !== null && c.amount > 0 && p.amount && parseMoneyAmount(p.amount) !== c.amount
+          ? `${c.amount >= 1e9 ? "$" + (c.amount / 1e9).toFixed(3).replace(/\.?0+$/, "") + " billion" : "$" + Math.round(c.amount / 1e6) + " million"} drawn under ${p.amount}`
+          : (p.amount as string),
+        rate: p.rate ?? null,
+        maturity: p.maturityDate ?? null,
+        basis: c.why,
+      };
+    });
 
   return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, proseLines, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
