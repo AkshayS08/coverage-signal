@@ -161,3 +161,53 @@ export function formatCompanyCostLine(spend: CompanySpend = currentCompanySpend(
   const warn = spend.hasUnpricedModel ? `  ⚠ UNPRICED MODEL(S): ${spend.unpricedModels.join(", ")} — tokens counted, cost NOT included, total understates` : "";
   return `  cost: ${formatUsd(spend.totalUsd)} across ${spend.totalCalls} API call(s) — ${parts.join("; ")}${warn}`;
 }
+
+/**
+ * SESSION 20, STAGE 4 — A BACKGROUNDED RUN PERSISTS ITS OWN COST, OR RULE 13
+ * CANNOT BE CHECKED AFTER THE FACT.
+ *
+ * The meter printed a per-company line into the run trace and stored nothing.
+ * That is sufficient exactly as long as someone is watching the trace. The
+ * Stage 4 run was moved to the background, its captured output was truncated
+ * to the last few kilobytes, and eight of the ten per-company cost lines were
+ * simply gone — so a run whose spend was pre-registered under Rule 13 could
+ * not be reconciled against that registration at all, and the reported figure
+ * had to be reconstructed from the two companies that happened to survive.
+ *
+ * A pre-registered cost that cannot be checked afterwards is not a control.
+ * Every scope now appends a line to a JSONL file as it closes, so the record
+ * outlives the terminal it was printed in.
+ *
+ * Append-only and best-effort: a cost meter must never be able to break an
+ * extraction (see recordUsage), and that applies at least as much to a
+ * filesystem write as to an unknown model price.
+ */
+const COST_LOG_PATH = process.env.COST_LOG_PATH ?? "baselines/cost-log.jsonl";
+
+export function persistCompanySpend(spend: CompanySpend = currentCompanySpend(), at: Date = new Date()): void {
+  try {
+    // Required lazily so this module stays importable from any environment
+    // that has no filesystem; the meter is not worth a hard dependency.
+    const { appendFileSync, mkdirSync } = require("node:fs") as typeof import("node:fs");
+    const { dirname } = require("node:path") as typeof import("node:path");
+    mkdirSync(dirname(COST_LOG_PATH), { recursive: true });
+    appendFileSync(
+      COST_LOG_PATH,
+      JSON.stringify({
+        at: at.toISOString(),
+        company: spend.company,
+        totalUsd: Number(spend.totalUsd.toFixed(6)),
+        totalCalls: spend.totalCalls,
+        byModel: spend.byModel.map((m) => ({
+          model: m.model, calls: m.calls, inputTokens: m.inputTokens, outputTokens: m.outputTokens,
+          cacheReadTokens: m.cacheReadTokens, cacheWriteTokens: m.cacheWriteTokens, usd: Number(m.usd.toFixed(6)),
+        })),
+        unpricedModels: spend.unpricedModels,
+      }) + "\n",
+      "utf8"
+    );
+  } catch {
+    // Deliberately silent. A run that cannot write its cost log is still a
+    // valid run; the trace line above it is the fallback record.
+  }
+}

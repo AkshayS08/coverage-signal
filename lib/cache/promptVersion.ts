@@ -457,8 +457,32 @@
  * summed as debt in v22 and both read above 100% coverage.
  * Bumped for (a), (c) and (d), all of which change extraction output; (b)
  * changes which filing is extracted from, which is the same thing twice.
+ * v24 (Session 20, Stage 4 corrected) — COPY THE DIGITS AS PRINTED.
+ * v23's bulleted-schedule capability worked and was thrown away by one word.
+ * UHS's five senior-note bullets transcribed verbatim, inside the located
+ * note, at offsets 46,083 / 46,352 / 46,649 / 46,919 / 47,184 — and all five
+ * were dropped, because the model rendered the bullet's "$ 700 million" as
+ * "$ 700,000 thousand" to match the units of the table it thought it was
+ * building. The value is identical; the digits are not printed anywhere near
+ * the row, so amountCorroborated reads a restated figure as an invented one
+ * and discards it. Measured both ways against the real filing: as the model
+ * wrote them, none of the five corroborate; as the filing prints them, all
+ * five do.
+ * The rule is copy-as-printed and it cuts both ways, which is what makes it
+ * safe: a table cell reading "700,000" under an "(In thousands)" caption
+ * stays "$700,000 thousand", and a bullet reading "$ 700 million" stays
+ * "$700 million". Neither converts. A ladder mixing a thousands table and
+ * millions bullets carries both units exactly as each was printed; making
+ * them uniform is not tidying, it is altering the source.
+ * Also: a liability the note states is INCLUDED IN DEBT is an instrument
+ * even where the sentence names no facility, and where one sentence gives
+ * figures for two dates the anchor's own period wins — the same rule already
+ * applied to a comparative table's columns. Without it UHS reconciles to
+ * 3.69% and fails, because the $68 million of Trust financial liabilities
+ * its note describes in a sentence is part of the balance the balance sheet
+ * reports.
  */
-export const EXTRACTION_PROMPT_VERSION = 23;
+export const EXTRACTION_PROMPT_VERSION = 24;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

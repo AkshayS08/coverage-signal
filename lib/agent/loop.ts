@@ -37,7 +37,7 @@ import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "..
 import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isSelfDescribingAmount, scaleWordFromDeclaration } from "./moneyScale";
 import { detectDollarScaleAt } from "./scaleNormalize";
 import { createTextLocator } from "./verifyQuote";
-import { beginCompanyCostScope, currentCompanySpend, formatCompanyCostLine } from "./costMeter";
+import { beginCompanyCostScope, currentCompanySpend, formatCompanyCostLine, persistCompanySpend } from "./costMeter";
 
 /** Session 18 (post-v11): rewrites each entry's `amount` with its own table's declared unit where the amount states none — see moneyScale.ts's applyTableUnitToAmount. Generic over every money-bearing extracted array (sequence entries, balance-sheet captions) since all of them share the `amount` field and hit the identical bug. */
 function applyTableUnit<T extends { amount: string }>(entries: T[], declaration: string | null): T[] {
@@ -1162,6 +1162,10 @@ export async function runAgentLoop(
   // EXTRACTION subtotal; callers that also build cards should read
   // currentCompanySpend() afterwards for the all-in figure.
   log(formatCompanyCostLine());
+  // Written as well as printed: a backgrounded run's trace can be truncated,
+  // and a pre-registered Rule 13 cost that cannot be reconciled afterwards is
+  // not a control. See persistCompanySpend.
+  persistCompanySpend();
 
   return {
     company: filingsResult.company,
