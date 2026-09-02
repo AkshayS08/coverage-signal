@@ -670,6 +670,45 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   assert(pos.rows[0].amount === "$ —", "[DEDUP-9] ...and keeps the note's nil balance, not the 8-K's original issue size");
 }
 
+console.log("\n=== [S21] BOTH GATES, AND EACH ONE ALONE IS NOT ENOUGH ===");
+{
+  // A retirement removes real debt from a banker's screen, so it needs both
+  // halves of the claim to hold: the sentence must BE in the filing
+  // (verifiedRedemption) and the sentence must SAY the payment happened
+  // (status "completed", after corroboration). Confirmed here as two
+  // independent gates rather than one, because if only one were
+  // load-bearing the other would be decoration and nobody would know which.
+  //
+  // Molina at v26 is the live case: "We used the net proceeds for repayment
+  // of $740 million in term loan debt" corroborates on tense — it is a real
+  // past-tense payment — and its sourceLine is not in the filing it cites.
+  // It must not retire, and the reason must be the missing evidence.
+  const ladder = baseTriggerResult({
+    triggerId: "debt-maturity",
+    scheduleSequence: [
+      row({ label: "6.250% senior secured second lien notes", seniority: "Senior secured second lien notes:", rate: "6.250%", maturityDate: "2027-02-01", dateGranularity: "month", amount: "$1.5 billion" }),
+    ],
+  });
+  const issuanceWith = (status: "completed" | "intended", verified: boolean) =>
+    baseTriggerResult({
+      triggerId: "new-debt-issuance",
+      redeems: { instrument: "the 6.250% senior secured second lien notes due February 2027", amount: null, status, sourceLine: "we redeemed the 6.250% senior secured second lien notes due February 2027" },
+      verifiedRedemption: verified,
+      citations: [{ form: "8-K", date: "2026-08-20", reportDate: "", url: "https://example.com/8k" }],
+    });
+  const statusOf = (status: "completed" | "intended", verified: boolean) =>
+    assemblePosition(companyWith([ladder, issuanceWith(status, verified)])).rows.find((r) => r.rate === "6.250%")?.status;
+
+  assert(statusOf("completed", true) === "retired",
+    "[S21a] corroborated completed AND a verified sourceLine — this is the only combination that retires anything");
+  assert(statusOf("completed", false) === "live",
+    "[S21b] MOLINA'S CASE: the status corroborates on tense, but the sourceLine is not in the cited filing — the tranche stays LIVE. Verification is load-bearing on its own");
+  assert(statusOf("intended", true) === "live",
+    "[S21c] TENET AND CIGNA'S CASE: the sourceLine verifies, but it states an intention — the tranche stays LIVE. Corroboration is load-bearing on its own");
+  assert(statusOf("intended", false) === "live",
+    "[S21d] and neither alone, which is the trivial case and is asserted so the table of four is complete rather than three-quarters checked");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 
 // ============================================================================
