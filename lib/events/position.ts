@@ -1,5 +1,6 @@
 import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry, VerifiedNoteRetirement, ProseInstrumentRow, RevolverRow } from "../agent";
 import { dedupAgainstRows, debtContribution } from "./instrument";
+import { buildTier2, isPostAnchorSource, type Tier2 } from "./tier2";
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
 import { extractFactTokens, factTokensMatch, type FactToken } from "../agent/factTokens";
 import { isStatedZeroAmount } from "../agent/moneyScale";
@@ -132,6 +133,16 @@ export interface CompanyPosition {
    * ladder, as what they are.
    */
   issuancesInsideAggregate: LadderRow[];
+  /**
+   * SESSION 21, STAGE 3 — events since the anchor, kept OUT of `rows`.
+   *
+   * `rows` is the anchor position and nothing else, because that is the only
+   * thing the coverage percentage can be checked against. A tranche priced
+   * three weeks after the anchor is real and is not part of a June 30
+   * balance sheet, and blending the two produced a position true at no date
+   * at all.
+   */
+  tier2: Tier2;
   /** The base filing's "adjustment" entries (discount/issuance costs, current portion, etc.) — for display; see portfolioTable.ts. Not summed here; Check 1 (computeWalkChecksum) does that from the raw TriggerResult directly. */
   adjustments: VerifiedSequenceEntry[];
   /** The LAST "subtotal" entry in the base filing's sequence — the natural "headline total" for display. Null if the sequence has no subtotals at all. */
@@ -880,8 +891,53 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   const finalSubtotal = subtotalEntries.length > 0 ? subtotalEntries[subtotalEntries.length - 1] : null;
 
   const walkGapFraction = walkGapFractionOf(baseWalk);
+  // SESSION 21, STAGE 3 — THE TIER SPLIT.
+  //
+  // Identity first (see tier2.ts): a document that IS the anchor cannot
+  // describe an event since the anchor, whatever its filing date says. Only
+  // a pricing 8-K that is a DIFFERENT document and post-dates the anchor's
+  // period of report moves a row out of Tier 1.
+  const anchorRef = debtMaturity?.debtScheduleSourceFiling ?? null;
+  const postAnchorIssuances = rows.filter(
+    (r) => r.provenance === "pricing-8-K" && isPostAnchorSource(r.issuedOn?.citedUrl ?? r.citedUrl, r.issuedOn?.date ?? null, anchorRef)
+  );
+  rows = rows.filter((r) => !postAnchorIssuances.includes(r));
+
+  // The pending state: matured, still carried, and nothing in the corpus
+  // says it was paid. It stays in Tier 1 as well — it is still owed — and
+  // Tier 2 states its status.
+  const maturedUnconfirmed = rows.filter((r) => r.status === "matured" && !r.retiredBy);
+
+  // A repayment reaches Tier 2 only on the same two gates a retirement needs
+  // anywhere: corroborated COMPLETED status and a verified sourceLine.
+  const confirmedRepayments =
+    newDebtIssuance?.fired &&
+    redemption &&
+    redemptionIsActionable &&
+    isPostAnchorSource(newDebtIssuance.citations[0]?.url, newDebtIssuance.citations[0]?.date, anchorRef)
+      ? [
+          {
+            instrument: redemption.instrument,
+            amount: redemption.amount ? parseMoneyAmount(redemption.amount) : null,
+            date: newDebtIssuance.citations[0]?.date ?? null,
+            sourceLine: redemption.sourceLine ?? redemption.instrument,
+            citedUrl: newDebtIssuance.citations[0]?.url ?? "",
+          },
+        ]
+      : [];
+
+  const tier2 = buildTier2({
+    anchor: anchorRef,
+    anchorCapturedFace: rows.reduce((a, r) => a + (r.isCapacity ? 0 : parseMoneyAmount(r.amount) ?? 0), 0) || null,
+    postAnchorIssuances,
+    maturedUnconfirmed,
+    confirmedRepayments,
+    parseAmount: parseMoneyAmount,
+  });
+
   return {
     rows,
+    tier2,
     issuancesInsideAggregate,
     adjustments,
     finalSubtotal,

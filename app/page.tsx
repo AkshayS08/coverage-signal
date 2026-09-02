@@ -462,6 +462,36 @@ export default function Home() {
             that runs and is not shown is a check nobody can act on. It
             renders on every ladder, including when it cannot resolve. */}
         <p className={styles.refiCompletenessLine}>{refi.coverage.line}</p>
+        {/* SESSION 21, STAGE 3 — TIER 2, BENEATH TIER 1 AND NEVER MERGED.
+            Each post-anchor event as its own line with its date, its signed
+            effect, and the filing that states it. No coverage percentage
+            lives here: there is no balance sheet for "the anchor plus three
+            weeks", so there is nothing to divide by. */}
+        {refi.tier2.events.length > 0 && (
+          <>
+            <p className={styles.refiCompletenessLine}>
+              TIER 2 — events since the anchor ({refi.tier2.anchorDate}). Each line is one filing&apos;s own statement; these are NOT part of the
+              coverage figure above, which measures the anchor position against the anchor&apos;s balance sheet.
+            </p>
+            <ul className={styles.tableLineList}>
+              {refi.tier2.events.map((e, i) => (
+                <li key={`tier2-${i}`} className={styles.tableLine}>
+                  <span className={styles.tableLineBullet}>·</span>
+                  <span className={styles.tableLineText}>
+                    {e.date ?? "(no date stated)"} — {e.instrument} — {e.note}
+                    <br />
+                    <em>&ldquo;{e.sourceLine}&rdquo;</em>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {refi.tier2.rolledTotal !== null && (
+              <p className={styles.refiCompletenessLine}>
+                {formatMoneyForDisplay(String(refi.tier2.rolledTotal))} — {refi.tier2.rolledLabel}
+              </p>
+            )}
+          </>
+        )}
         {/* SESSION 21, 2d — the filer's own contractual maturity ladder, as a
             FLOOR beneath the transcribed one. Renders wherever the filer tags
             it, so no company shows nothing; absent where it does not, with

@@ -301,7 +301,11 @@ function coverageLine(r: {
     r.denominatorSource === "xbrl"
       ? `${r.anchorCaptions.join(" + ")} (the filer's own XBRL tags)`
       : `${r.anchorCaptions.join(" + ")} (read from the anchor's balance sheet — this filer tags no debt total at that period end)`;
-  const head = `${counted} cover ${b(r.capturedFace)} of ${b(r.statedTotalDebt)} stated total debt (${pct}%), against ${provenance}`;
+  // SESSION 21, STAGE 3 — the percentage names the tier it belongs to.
+  // Coverage divides by a balance sheet, and there is only one of those; a
+  // reader seeing a percentage above a two-tier ladder must not have to
+  // guess whether it counted the tranches priced last month.
+  const head = `TIER 1 (the anchor position): ${counted} cover ${b(r.capturedFace)} of ${b(r.statedTotalDebt)} stated total debt (${pct}%), against ${provenance}`;
   const missing = r.categoriesMissing.length > 0 ? ` — STATED BUT NOT CAPTURED: ${r.categoriesMissing.join(", ")}` : "";
   const cap =
     r.capacity.length > 0

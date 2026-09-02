@@ -1,4 +1,5 @@
 import { computeCoverage, checkRevolverArithmetic, type CoverageResult } from "./coverage";
+import type { Tier2 } from "./tier2";
 import type { CompanyResult, TriggerResult, VerifiedSequenceEntry } from "../agent";
 import type { DebtScheduleFilingRef, DateGranularity } from "../agent/claude";
 import type { FlashCard } from "./buildEvents";
@@ -232,6 +233,8 @@ export interface RefiLadderBlock {
    * this is empty and NOTHING is fabricated to fill it.
    */
   maturityFloor: { label: string; value: number }[];
+  /** SESSION 21, STAGE 3 — events since the anchor, rendered BENEATH Tier 1 and never merged into it. Empty for a company with no post-anchor 8-K. */
+  tier2: Tier2;
   /** The period the floor is stated as of — its own date, never assumed to be the anchor's. */
   maturityFloorAsOf: string | null;
   /** "N more tranches, YYYY to YYYY" for whatever didn't fit in nearestLines, or null when everything fit. */
@@ -707,6 +710,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       completenessStatement: "",
       nearestLines: [],
       maturityFloor: [],
+      tier2: { events: [], rolledTotal: null, rolledLabel: null, anchorDate: null },
       maturityFloorAsOf: null,
       tailSummary: null,
       walkLines: [],
@@ -940,6 +944,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   const floor = debtMaturity.xbrlMaturityBuckets ?? null;
 
   return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines,
+    tier2: position.tier2,
     maturityFloor: (floor?.buckets ?? []).map((x) => ({ label: x.label, value: x.value })),
     maturityFloorAsOf: floor && floor.buckets.length > 0 ? floor.asOf : null, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
