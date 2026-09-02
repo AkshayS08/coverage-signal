@@ -38,6 +38,7 @@ import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "..
 import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isSelfDescribingAmount, scaleWordFromDeclaration } from "./moneyScale";
 import { detectDollarScaleAt } from "./scaleNormalize";
 import { createTextLocator } from "./verifyQuote";
+import { corroborateRedemptionStatus } from "./redemptionStatus";
 import { beginCompanyCostScope, currentCompanySpend, formatCompanyCostLine, persistCompanySpend } from "./costMeter";
 
 /** Session 18 (post-v11): rewrites each entry's `amount` with its own table's declared unit where the amount states none — see moneyScale.ts's applyTableUnitToAmount. Generic over every money-bearing extracted array (sequence entries, balance-sheet captions) since all of them share the `amount` field and hit the identical bug. */
@@ -876,6 +877,19 @@ export async function runAgentLoop(
     // announced in an 8-K's body rather than inside a debt note, so it takes
     // the same contract as an event instance: the sourceLine must be found
     // literally in one of THIS trigger's own cited filings.
+    // ...and its STATUS is corroborated against that same sourceLine before
+    // anything acts on it. Verification asks whether the sentence is in the
+    // filing; corroboration asks whether the sentence says what the claim
+    // says it says. Both, or the claim falls to the safe side. See
+    // redemptionStatus.ts.
+    const statusCheck = corroborateRedemptionStatus(v.redeems?.status ?? null, v.redeems?.sourceLine ?? null);
+    if (v.redeems && statusCheck.demotedReason) {
+      log(
+        `  ⚠ REDEMPTION STATUS NOT CORROBORATED for ${label} — "${v.redeems.instrument}" ${statusCheck.demotedReason}. Treated as INTENDED; the tranche stays on the ladder. An intention is not a completion.`
+      );
+    }
+    if (v.redeems) v = { ...v, redeems: { ...v.redeems, status: statusCheck.status } };
+
     let verifiedRedemption = false;
     if (v.redeems?.sourceLine) {
       verifiedRedemption = (v.citedUrls ?? []).some((url) => {
