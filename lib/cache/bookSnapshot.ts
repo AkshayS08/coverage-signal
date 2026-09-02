@@ -77,7 +77,7 @@ export async function captureBookSnapshot(companies: string[], now: Date = new D
     try {
       const result = await runAgentLoop(company);
       const { flashCardCandidates } = buildEvents([result], now);
-      const factBase = buildVerifiedFactBase(result);
+      const factBase = buildVerifiedFactBase(result, now);
 
       const eventBriefings = [];
       for (const card of flashCardCandidates) {

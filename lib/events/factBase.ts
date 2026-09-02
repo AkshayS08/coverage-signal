@@ -297,7 +297,7 @@ function mostRecentCitation(citations: TriggerResult["citations"]): TriggerResul
  * (e.g. DaVita's "$1.75B due Dec 31, 2026") from ever reaching Sonnet, in
  * any card, for any company, under any framing.
  */
-export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
+export function buildVerifiedFactBase(result: CompanyResult, now: Date = new Date()): VerifiedFact[] {
   const facts: VerifiedFact[] = [];
   for (const t of result.results) {
     // Session 18: "debt-maturity" is handled entirely separately below —
@@ -339,7 +339,7 @@ export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
           : null,
     });
   }
-  facts.push(...buildDebtMaturityFacts(result));
+  facts.push(...buildDebtMaturityFacts(result, now));
   return facts;
 }
 
@@ -377,10 +377,12 @@ function issueSizeFromLabel(instrument: string, amount: string): string | null {
   return differing === undefined ? null : formatMoneyValue(differing);
 }
 
-function buildDebtMaturityFacts(result: CompanyResult): VerifiedFact[] {
+function buildDebtMaturityFacts(result: CompanyResult, now: Date = new Date()): VerifiedFact[] {
   const debtMaturityTrigger = result.results.find((t) => t.triggerId === "debt-maturity");
   if (!debtMaturityTrigger) return [];
-  const position = assemblePosition(result);
+  // One clock — see buildEvents.ts. The fact base decides which rows are
+  // live, and it must decide it on the same date the gate does.
+  const position = assemblePosition(result, now);
   return position.rows
     .filter((row) => row.status === "live")
     .map((row) => {

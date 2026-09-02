@@ -495,7 +495,17 @@ function buildEventsForCompany(
   // genuinely different tranches inside the window are two different refi
   // conversations, not one.
   const debtMaturityTrigger = result.results.find((t) => t.triggerId === "debt-maturity");
-  const position = assemblePosition(result);
+  // SESSION 21 — ONE CLOCK.
+  //
+  // assemblePosition defaults `now` to the wall clock, and this call omitted
+  // it while evaluateRowEligibility a few lines below was handed the PINNED
+  // as-of date. Two clocks decided one question: the position marked UHS's
+  // $700M 1.65% notes "matured" from today's date while the gate, reading
+  // the pinned date, found them live and cardable — so the row was eligible
+  // and no candidate existed to be eligible. A pinned as-of that does not
+  // reach every layer is not pinned; it is pinned in the places somebody
+  // remembered.
+  const position = assemblePosition(result, now);
   // A3 (Session 18, post-stage-2): a ladder whose walk misses by a material
   // share of its own stated total does not card. The rows still RENDER —
   // portfolioTable.ts states the note, its filing, its total and the size of
