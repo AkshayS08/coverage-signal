@@ -621,9 +621,28 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     proseKept.map((p) => ladderRowFromProseInstrument(p as ProseInstrumentRow & { citedUrl?: string }, debtMaturity?.revolver, "live"))
   );
 
-  if (newDebtIssuance?.fired && newDebtIssuance.redeems) {
-    const redeemsText = newDebtIssuance.redeems;
-    const retiredByEvidence = { evidence: redeemsText, citedUrl: newDebtIssuance.citations[0]?.url ?? "" };
+  // SESSION 21, ITEM 1D — ONLY A VERIFIED, COMPLETED RETIREMENT RETIRES.
+  //
+  // Three conditions, and each one was a real defect before it was a
+  // condition:
+  //
+  //   verifiedRedemption   the claim's own sourceLine was found in a cited
+  //                        filing. Cigna and Molina both state a redeems
+  //                        whose instrument appears nowhere in the filing
+  //                        they cite.
+  //   status "completed"   the filing describes something DONE. Tenet's says
+  //                        it "intends to use the net proceeds ... to
+  //                        finance ... the redemption", which is a plan.
+  //   the row still matches the described instrument, as before.
+  //
+  // UHS is the case that cost the most: its 8-K names the "Existing 2026
+  // Notes" in a clause listing what the new notes rank alongside, and a live
+  // $700 million obligation was retired on that naming alone.
+  const redemption = newDebtIssuance?.redeems ?? null;
+  const redemptionIsActionable = !!redemption && newDebtIssuance?.verifiedRedemption === true && redemption.status === "completed";
+  if (newDebtIssuance?.fired && redemption && redemptionIsActionable) {
+    const redeemsText = [redemption.instrument, redemption.sourceLine ?? ""].join(" ");
+    const retiredByEvidence = { evidence: redemption.sourceLine ?? redemption.instrument, citedUrl: newDebtIssuance.citations[0]?.url ?? "" };
     rows = rows.map((row) => {
       if (row.status !== "live" || !redemptionRetiresRow(row, redeemsText)) return row;
       // THE NOTE IS THE POSITION (found live, stage-2 review). An 8-K
@@ -650,9 +669,34 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
       // period of report against the issuance's filing date — both already
       // carried, neither inferred. When either is missing there is nothing
       // to compare and the redemption stands, which is the prior behaviour.
+      // SESSION 21 — A CLAIM STATED INSIDE THE ANCHOR CANNOT BE NEWER THAN
+      // THE ANCHOR.
+      //
+      // The comparison below puts the redemption document's FILING DATE
+      // against the anchor's PERIOD OF REPORT, and a filing date is always
+      // after its own period. So whenever the redemption is described in the
+      // anchor filing's own debt note — which is the ordinary case, not an
+      // edge one — the test concludes the redemption is newer than the note
+      // that contains it, and the note-wins rule never runs.
+      //
+      // Measured across the book: three of the four companies whose
+      // redemption retires anything cite the ANCHOR ITSELF (Encompass, Quest,
+      // HCA). Encompass is the one it cost: its own June 30 table carries the
+      // 4.50% 2028 notes at $396.9 million, down from $792.0 million after a
+      // $400 million partial call, and the row was retired anyway — removing
+      // a live $396.9 million obligation seventeen months from maturity, and
+      // with it the company's nearest cardable tranche.
+      //
+      // Identity, not chronology: if the redemption's own citation IS the
+      // anchor, the anchor states the result and wins outright.
+      const anchorUrl = debtMaturity?.debtScheduleSourceFiling?.url ?? "";
+      const redemptionCitedUrl = newDebtIssuance.citations[0]?.url ?? "";
+      const redemptionIsFromAnchor = anchorUrl !== "" && redemptionCitedUrl === anchorUrl;
       const basePeriod = debtMaturity?.debtScheduleSourceFiling?.reportDate ?? "";
       const issuanceDate = newDebtIssuance.citations[0]?.date ?? "";
-      const noteIsNewer = /^\d{4}-\d{2}-\d{2}$/.test(basePeriod) && /^\d{4}-\d{2}-\d{2}$/.test(issuanceDate) && issuanceDate <= basePeriod;
+      const noteIsNewer =
+        redemptionIsFromAnchor ||
+        (/^\d{4}-\d{2}-\d{2}$/.test(basePeriod) && /^\d{4}-\d{2}-\d{2}$/.test(issuanceDate) && issuanceDate <= basePeriod);
       const balance = parseMoneyAmount(row.amount);
       if (noteIsNewer && balance !== null && balance !== 0) return row;
       return { ...row, status: "retired" as const, retiredBy: retiredByEvidence };
@@ -756,7 +800,14 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   const baseLadderUntrustworthy = !baseWalk.pass && !baseAnchor.pass;
 
   const priorRowEntries = baseLadderUntrustworthy ? [] : normalizeScheduleSequence(debtMaturity?.priorScheduleSequence).filter((e) => e.kind === "row");
-  const redeemsText = newDebtIssuance?.fired ? newDebtIssuance.redeems : null;
+  // Same gate as the live pass above: an unverified or merely intended
+  // claim explains nothing, so it cannot mark a prior-period row retired
+  // either — it would relabel "we do not know what happened to this" as "it
+  // was redeemed", which is the more confident of the two and the wrong one.
+  const redeemsText =
+    newDebtIssuance?.fired && redemption && redemptionIsActionable
+      ? [redemption.instrument, redemption.sourceLine ?? ""].join(" ")
+      : null;
   const retiredByEvidence = redeemsText
     ? { evidence: redeemsText, citedUrl: newDebtIssuance?.citations[0]?.url ?? "" }
     : null;

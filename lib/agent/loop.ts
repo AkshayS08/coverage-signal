@@ -21,6 +21,7 @@ import {
   type ProseInstrumentRow,
   type RevolverRow,
   type ProceedsUse,
+  type RedeemsClaim,
   type ScheduleSequenceEntry,
   type TriggerVerdict,
 } from "./claude";
@@ -396,8 +397,10 @@ export interface TriggerResult {
    * locatable debt-note section to check against (nothing to compare).
    */
   scheduleCompleteness: ScheduleCompletenessResult | null;
-  /** Session 18 — "new-debt-issuance" ONLY. Verbatim description of what this issuance redeems/repays, or null. Null for every other trigger. */
-  redeems: string | null;
+  /** Session 18 — "new-debt-issuance" ONLY. What this issuance retires, with the filing's own words and its verified evidence, or null. Session 21 item 1d: `verifiedRedemption` is false unless the sourceLine was found in a cited filing, and only a verified COMPLETED claim ever retires a ladder row. */
+  redeems: RedeemsClaim | null;
+  /** True only when redeems.sourceLine was located literally in one of this trigger's cited filings. Optional so legacy-shaped fixtures and cached bodies read as UNVERIFIED, which is what they are. */
+  verifiedRedemption?: boolean;
   /** Session 18 — "new-debt-issuance" ONLY. The row(s) for the tranche(s) this issuance itself priced, verified the same way scheduleSequence rows are. Empty for every other trigger. */
   issuedTranches: VerifiedIssuedTranche[];
   /** Session 18 A3 — every trigger. The amount this event's OWN filing text states for it, or null — never a figure merely present nearby. Feeds gate restriction D2 (cashAmount: null never cards, any trigger except debt-maturity). */
@@ -868,6 +871,30 @@ export async function runAgentLoop(
     if (retirementsDropped > 0) {
       log(`  ⚠ ${retirementsDropped} note-prose retirement(s) for ${label} could not be verified INSIDE the located debt note — dropped, not trusted (Rule 5: a claim about the note must be found in the note)`);
     }
+    // SESSION 21, ITEM 1D — the redemption claim goes through the same walk
+    // as every other claim about a filing. Unbounded, because a retirement is
+    // announced in an 8-K's body rather than inside a debt note, so it takes
+    // the same contract as an event instance: the sourceLine must be found
+    // literally in one of THIS trigger's own cited filings.
+    let verifiedRedemption = false;
+    if (v.redeems?.sourceLine) {
+      verifiedRedemption = (v.citedUrls ?? []).some((url) => {
+        const text = textByUrl.get(url);
+        return !!text && createTextLocator(text).find(v.redeems!.sourceLine as string) !== null;
+      });
+      if (!verifiedRedemption) {
+        log(
+          `  ⚠ REDEMPTION CLAIM UNVERIFIED for ${label} — "${v.redeems.instrument}" is claimed ${v.redeems.status ?? "(no status)"}, but its stated sourceLine is not in any cited filing. A claim that removes debt from the ladder must be found in the filing; nothing retired.`
+        );
+      } else if (v.redeems.status !== "completed") {
+        log(
+          `  redemption for ${label} is stated as ${JSON.stringify(v.redeems.status)} rather than completed — "${v.redeems.instrument}" stays on the ladder; an intent is not a retirement`
+        );
+      }
+    } else if (v.redeems) {
+      log(`  ⚠ REDEMPTION CLAIM WITHOUT EVIDENCE for ${label} — "${v.redeems.instrument}" carries no sourceLine; nothing retired.`);
+    }
+
     const captionsVerified = verifyBalanceSheetCaptions(unitScoped.balanceSheetDebtCaptions, v.citedUrls ?? [], textByUrl, log, label);
     // Stage 4 — the anchor rule reaches the DENOMINATOR too. Stated total
     // debt is the number coverage divides by; a caption from another filing
@@ -938,7 +965,7 @@ export async function runAgentLoop(
       result,
       dateGuard,
       textByUrl,
-      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, revolver },
+      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, revolver, verifiedRedemption },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
       { rowsExtracted, rowsVerified, baseRowsExtracted: v.scheduleSequence.length },
@@ -1833,6 +1860,7 @@ function finalize(
     priorScheduleSequence: VerifiedSequenceEntry[];
     issuedTranches: VerifiedIssuedTranche[];
     balanceSheetDebtCaptions: VerifiedBalanceSheetCaption[];
+    verifiedRedemption?: boolean;
   },
   debtScheduleBaseFiling: DebtScheduleFilingRef | null,
   debtSchedulePriorFiling: DebtScheduleFilingRef | null,
@@ -1878,6 +1906,7 @@ function finalize(
     columnReadFailure,
     scheduleCompleteness,
     redeems: v.redeems,
+    verifiedRedemption: debtFields.verifiedRedemption ?? false,
     issuedTranches: debtFields.issuedTranches,
     eventInstances: debtFields.eventInstances,
     noteRetirements: debtFields.noteRetirements,

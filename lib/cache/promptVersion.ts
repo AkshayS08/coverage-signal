@@ -505,8 +505,27 @@
  * The v24 unit rule (copy the digits as printed, never restate them) is
  * KEPT — it was measured safe on eight table-reading companies and is now
  * stated for prose amounts too. The "included in debt" rule is kept.
+ *
+ * v26 (Session 21, item 1d) — THE LAST BALANCE-MOVING FIELD GETS A SOURCE
+ * LINE. `redeems` was free text: a description, verified against nothing,
+ * with no statement of whether the retirement had happened, and it removed
+ * rows from the ladder on that basis for twenty sessions. It now carries
+ * { instrument, amount, status, sourceLine }, the sourceLine is verified
+ * literally against a cited filing exactly as every other claim is, and only
+ * a VERIFIED COMPLETED claim retires anything.
+ * Measured across the book before the change — four distinct states in seven
+ * companies: HCA and Quest genuinely completed ("we redeemed all $1.500
+ * billion...", "repaid in full at maturity"); Tenet an intent ("intends to
+ * use the net proceeds ... to finance ... the redemption"); Cigna and Molina
+ * describing an instrument that appears nowhere in the filing they cite; and
+ * UHS naming its 2026 notes only in a clause listing what the NEW notes rank
+ * alongside — the "Existing 2026 Notes" — which retired a live $700 million
+ * obligation.
+ * Bumped because the field's shape changes and every cached body carries the
+ * old one. A legacy string normalises to status:null, sourceLine:null — an
+ * unverified claim, which is exactly what it always was.
  */
-export const EXTRACTION_PROMPT_VERSION = 25;
+export const EXTRACTION_PROMPT_VERSION = 26;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

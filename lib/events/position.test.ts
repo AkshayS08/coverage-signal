@@ -170,7 +170,8 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   });
   const issuance = baseTriggerResult({
     triggerId: "new-debt-issuance",
-    redeems: "the 6.250% senior secured second lien notes due February 2027",
+    redeems: { instrument: "the 6.250% senior secured second lien notes due February 2027", amount: null, status: "completed" as const, sourceLine: "the 6.250% senior secured second lien notes due February 2027" },
+    verifiedRedemption: true,
     citations: [{ form: "8-K", date: "2025-11-18", reportDate: "", url: "https://example.com/8k-nov2025" }],
   });
   const pos = assemblePosition(companyWith([dm, issuance]));
@@ -178,7 +179,7 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   const secondLien = pos.rows.find((r) => r.rate === "6.250%")!;
   assert(firstLien.status === "live", "[2a] REVERSE ASSERTION (Tenet worked example): the 5.125% first lien due Nov 2027 stays LIVE — the retirement logic does nothing to it");
   assert(secondLien.status === "retired", "[2b] the 6.250% second lien due Feb 2027 — the one actually named in redeems — is retired");
-  assert(secondLien.retiredBy?.evidence === issuance.redeems, "[2c] the retired row carries the redemption evidence that explains it");
+  assert(secondLien.retiredBy?.evidence === issuance.redeems?.sourceLine, "[2c] the retired row carries the redemption evidence that explains it");
 }
 
 // --- 3. issuedTranches append as new live rows — the newly priced notes
@@ -190,7 +191,8 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   });
   const issuance = baseTriggerResult({
     triggerId: "new-debt-issuance",
-    redeems: "the 6.250% second lien notes due February 2027",
+    redeems: { instrument: "the 6.250% second lien notes due February 2027", amount: null, status: "completed" as const, sourceLine: "the 6.250% second lien notes due February 2027" },
+    verifiedRedemption: true,
     issuedTranches: [
       { instrument: "5.500% first lien notes", rate: "5.500%", seniority: null, maturityDate: "2032-01-01", dateGranularity: "year", amount: "$1.5 billion", sourceLine: "synthetic", citedUrl: "https://example.com/8k" },
       { instrument: "6.000% senior notes", rate: "6.000%", seniority: null, maturityDate: "2033-01-01", dateGranularity: "year", amount: "$750 million", sourceLine: "synthetic", citedUrl: "https://example.com/8k" },
@@ -252,7 +254,8 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   });
   const issuance = baseTriggerResult({
     triggerId: "new-debt-issuance",
-    redeems: "the 6.250% second lien notes due February 2027",
+    redeems: { instrument: "the 6.250% second lien notes due February 2027", amount: null, status: "completed" as const, sourceLine: "the 6.250% second lien notes due February 2027" },
+    verifiedRedemption: true,
   });
   const pos = assemblePosition(companyWith([dm, issuance]));
   const secondLien = pos.rows.find((r) => r.rate === "6.250%");
@@ -597,7 +600,8 @@ console.log("=== Session 18 Part B/C golden tests (position.ts) ===\n");
   });
   const issuance = baseTriggerResult({
     triggerId: "new-debt-issuance",
-    redeems: "3.45% Senior Notes due June 2026",
+    redeems: { instrument: "3.45% Senior Notes due June 2026", amount: null, status: "completed" as const, sourceLine: "3.45% Senior Notes due June 2026" },
+    verifiedRedemption: true,
     citations: [{ form: "8-K", date: "2026-05-08", reportDate: "", url: "https://example.com/8k" }],
   });
   const pos = assemblePosition(companyWith([dm, issuance]), NOW);
@@ -689,7 +693,8 @@ console.log(`\n${passed} passed, ${failed} failed.`);
     fired: true,
     // Filed BEFORE the note's own period end, so the note already reflects it.
     citations: [{ form: "8-K", date: "2026-05-20", reportDate: "", url: "https://example.com/8k" }],
-    redeems: "4.500% senior notes due 2028",
+    redeems: { instrument: "4.500% senior notes due 2028", amount: null, status: "completed" as const, sourceLine: "4.500% senior notes due 2028" },
+    verifiedRedemption: true,
   });
   const pos = assemblePosition(companyWith([dm, issuance]));
   assert(pos.rows.length === 1 && pos.rows[0].status === "live", `[NOTE-WINS-1] a redemption does NOT retire a tranche the note still carries at a balance (got ${pos.rows.map((r) => r.status).join(", ")})`);
@@ -700,7 +705,8 @@ console.log(`\n${passed} passed, ${failed} failed.`);
     triggerId: "new-debt-issuance",
     fired: true,
     citations: [{ form: "8-K", date: "2026-08-20", reportDate: "", url: "https://example.com/8k" }],
-    redeems: "4.500% senior notes due 2028",
+    redeems: { instrument: "4.500% senior notes due 2028", amount: null, status: "completed" as const, sourceLine: "4.500% senior notes due 2028" },
+    verifiedRedemption: true,
   });
   const posLater = assemblePosition(companyWith([dm, laterIssuance]));
   assert(posLater.rows[0].status === "retired", `[NOTE-WINS-2] REVERSE: an 8-K filed AFTER the note's period of report describes what the note could not know, and does retire it (got ${posLater.rows[0].status})`);

@@ -327,7 +327,16 @@ export function buildVerifiedFactBase(result: CompanyResult): VerifiedFact[] {
       issueSizeInLabel: null,
       // Session 18 E1: only new-debt-issuance ever carries this; every
       // other trigger's redeems is always null already (Session 18 A2).
-      redeemsInfo: t.triggerId === "new-debt-issuance" ? (t.redeems ?? null) : null,
+      // SESSION 21, ITEM 1D — narration states a redemption only when the
+      // claim was VERIFIED and describes something COMPLETED. This field
+      // feeds "state the redemption as a KEY POINT" (Session 18 E1), so an
+      // unverified claim here put an untrue sentence on a card: UHS's cited
+      // 8-K names its 2026 notes as still outstanding, and the card would
+      // have said they were redeemed.
+      redeemsInfo:
+        t.triggerId === "new-debt-issuance" && t.redeems && t.verifiedRedemption && t.redeems.status === "completed"
+          ? `${t.redeems.instrument}${t.redeems.amount ? ` (${t.redeems.amount})` : ""}`
+          : null,
     });
   }
   facts.push(...buildDebtMaturityFacts(result));

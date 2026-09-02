@@ -241,6 +241,18 @@ export interface EventInstanceRow {
   sourceLine: string;
 }
 
+/** Session 21, item 1d — a retirement this issuance claims, with the filing's own words for it. See REDEEMS_SCHEMA. */
+export interface RedeemsClaim {
+  /** The instrument being retired, as the filing names it. */
+  instrument: string;
+  /** The amount retired where the filing states one — a partial call names a figure. Null when it states none. */
+  amount: string | null;
+  /** "completed" when the filing describes the retirement as done; "intended" when it describes a plan or a use of proceeds. */
+  status: "completed" | "intended" | null;
+  /** Verbatim, verified literally against the cited filing. A claim that moves a balance carries its evidence. */
+  sourceLine: string | null;
+}
+
 /** Session 20, item 3a — an instrument stated in the located note's narrative. See PROSE_INSTRUMENT_SCHEMA. */
 export interface ProseInstrumentRow {
   category: "term-loan" | "revolver" | "delayed-draw-term-loan" | "senior-notes" | "finance-lease" | "other";
@@ -353,7 +365,30 @@ export interface TriggerVerdict {
   /** Session 18 (post-v11) — "debt-maturity" ONLY. Same, for the BALANCE SHEET's own unit declaration — a different statement from the debt note, with its own caption, so never assume the note's unit carries over. */
   balanceSheetTableUnit: string | null;
   /** Session 18 A2 — "new-debt-issuance" ONLY. Verbatim description of the notes named as being redeemed/repaid by THIS issuance, or null. Copied, never inferred — this is what lets lib/events/position.ts retire the right ladder row instead of leaving a card pointed at dead debt. Null for every other trigger. */
-  redeems: string | null;
+  /**
+   * SESSION 21, ITEM 1D — THE LAST BALANCE-MOVING FIELD WITH NO SOURCE LINE.
+   *
+   * This was free text: a description with nothing verifying it and no
+   * statement of whether the retirement had HAPPENED. It retired ladder rows
+   * on that basis for twenty sessions. Measured on the book:
+   *
+   *   UHS      "1.650% Senior Secured Notes due 2026" — and the cited 8-K
+   *            names those notes only in a ranking clause, as the "Existing
+   *            2026 Notes" the new notes rank alongside. A live $700 million
+   *            obligation rendered as retired.
+   *   Tenet    the filing says "intends to use the net proceeds ... to
+   *            finance ... the redemption" — an intent, not an event.
+   *   Cigna,   the described instrument does not appear in the cited filing
+   *   Molina   at all.
+   *   HCA,     "we redeemed all $1.500 billion ..." / "repaid in full at
+   *   Quest    maturity" — genuinely completed, and these must keep working.
+   *
+   * Rule 15 one layer up: an instrument NAMED in a filing is a name, not an
+   * event. The claim now carries its own verbatim sourceLine, verified
+   * literally like every other claim in this schema, and states whether the
+   * filing describes something done or something intended.
+   */
+  redeems: RedeemsClaim | null;
   /**
    * Session 18 — "new-debt-issuance" ONLY, empty array for every other
    * trigger. The row(s) for the tranche(s) THIS issuance just priced,
@@ -609,7 +644,16 @@ const VERDICT_ITEM_SCHEMA = {
     scheduleTableUnit: { type: ["string", "null"] },
     priorScheduleTableUnit: { type: ["string", "null"] },
     balanceSheetTableUnit: { type: ["string", "null"] },
-    redeems: { type: ["string", "null"] },
+    redeems: {
+      type: ["object", "null"],
+      properties: {
+        instrument: { type: "string" },
+        amount: { type: ["string", "null"] },
+        status: { type: ["string", "null"], enum: ["completed", "intended", null] },
+        sourceLine: { type: "string" },
+      },
+      required: ["instrument", "status", "sourceLine"],
+    },
     issuedTranches: { type: "array", items: ISSUED_TRANCHE_SCHEMA },
     cashAmount: { type: ["string", "null"] },
     projectName: { type: ["string", "null"] },
@@ -673,7 +717,12 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
   - balanceSheetDebtCaptions: from the SAME base filing's own BALANCE SHEET — a different section of the same document from the debt note, not the note's own totals. Every debt-related line item that balance sheet actually prints (e.g. "Current portion of long-term debt," "Long-term debt," and, for some companies, a separate "Commercial paper" caption). This is NOT a fixed set of captions to fill in — read whichever ones THIS SPECIFIC company's balance sheet actually states; some companies split out finance leases separately, some fold commercial paper into a combined line, some have no separate short-term caption at all. Copy each caption's own label and amount verbatim (unit always attached), with sourceLine verified the same verbatim way as everything else. The balance sheet is comparative too — read ONLY the current-period column and record its header in that caption's own periodColumn, same rule and same code check as scheduleSequence above. Leave empty only if the balance sheet genuinely states no debt captions at all — should be rare.
 
 - redeems / issuedTranches — ONLY for the "new-debt-issuance" trigger. Leave both at their empty default (null, []) for every other trigger.
-  - redeems: a verbatim description of the notes named as being redeemed, repaid, or retired by THIS issuance, copied exactly as the filing states it — or null if the filing names nothing being retired. Never infer this from context; only from the filing's own words.
+  - redeems: the instrument THIS issuance retires, or null. This field REMOVES DEBT FROM THE LADDER, so it is held to the same standard as every other claim here: copy what the filing says, and give the sentence you copied it from.
+    - instrument: the instrument being retired, as the filing names it.
+    - amount: the amount retired, verbatim with its unit, when the filing states one. A partial call names a figure ("redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028") — the amount is the $400 million being redeemed, not the $800 million outstanding. Null when the filing states no figure.
+    - status: "completed" when the filing describes the retirement as something that HAS HAPPENED ("we redeemed all $1.500 billion aggregate principal amount of...", "repaid in full at maturity"). "intended" when it describes a plan, an expectation, or a use of proceeds ("intends to use the net proceeds ... to finance ... the redemption of..."). The difference is the whole point of the field: an intent is not a retirement, and a tranche is not removed from a company's debt because somebody said they meant to pay it.
+    - sourceLine: the sentence stating it, copied VERBATIM, character for character, to the EXACT SAME standard as "quote". This is verified in code against the cited filing, and a claim whose sourceLine cannot be found there is discarded.
+  - AN INSTRUMENT NAMED IS NOT AN INSTRUMENT RETIRED. A pricing 8-K routinely lists a company's other outstanding notes to say what the new notes rank alongside — "secured equally and ratably with the Issuer's senior secured credit facility, the Issuer's 1.650% Senior Secured Notes due 2026 (the 'Existing 2026 Notes'), 4.625% Senior Secured Notes due 2029 ...". Every instrument in that sentence is OUTSTANDING; the sentence exists to say so. It is not a redemption of any of them. Return null rather than reading a list of existing obligations as a retirement.
   - issuedTranches: the row(s) for the tranche(s) THIS issuance itself just priced (instrument/rate/seniority/amount/maturityDate/dateGranularity/sourceLine) — a pricing 8-K states these just as concretely as a periodic debt note does. One row per distinct tranche priced in this issuance. sourceLine here follows the exact same verbatim-copy rule as scheduleSequence's sourceLine above — copy the pricing 8-K's own text for that tranche, never a composed summary sentence.
 
 - cashAmount / projectName — EVERY trigger.
@@ -867,7 +916,16 @@ export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
     scheduleTableUnit: v.scheduleTableUnit ?? null,
     priorScheduleTableUnit: v.priorScheduleTableUnit ?? null,
     balanceSheetTableUnit: v.balanceSheetTableUnit ?? null,
-    redeems: v.redeems ?? null,
+    // A legacy cached answer carries `redeems` as a bare string: a
+    // description with no evidence and no status. It is normalised to the
+    // object shape with BOTH missing, which is precisely what it is — an
+    // unverified claim — and the position layer will not retire on it.
+    redeems:
+      typeof v.redeems === "string"
+        ? { instrument: v.redeems, amount: null, status: null, sourceLine: null }
+        : v.redeems
+          ? { instrument: v.redeems.instrument, amount: v.redeems.amount ?? null, status: v.redeems.status ?? null, sourceLine: v.redeems.sourceLine ?? null }
+          : null,
     issuedTranches: (v.issuedTranches ?? []).map(normalizeRow),
     cashAmount: v.cashAmount ?? null,
     projectName: v.projectName ?? null,
