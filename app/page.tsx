@@ -462,6 +462,16 @@ export default function Home() {
             that runs and is not shown is a check nobody can act on. It
             renders on every ladder, including when it cannot resolve. */}
         <p className={styles.refiCompletenessLine}>{refi.coverage.line}</p>
+        {/* SESSION 21, 2d — the filer's own contractual maturity ladder, as a
+            FLOOR beneath the transcribed one. Renders wherever the filer tags
+            it, so no company shows nothing; absent where it does not, with
+            nothing fabricated in its place. */}
+        {refi.maturityFloor.length > 0 && (
+          <p className={styles.refiCompletenessLine}>
+            the filer&apos;s own tagged maturity schedule at {refi.maturityFloorAsOf} —{" "}
+            {refi.maturityFloor.map((b) => `${b.label}: ${formatMoneyForDisplay(String(b.value))}`).join(", ")} — a floor beneath the ladder above, not a substitute for it
+          </p>
+        )}
         {refi.revolverCheck.checked && (
           <p className={styles.refiCompletenessLine}>{refi.revolverCheck.note}</p>
         )}

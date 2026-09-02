@@ -297,5 +297,57 @@ console.log("\n=== [12] REAL: one instrument cannot be larger than the total it 
     "[12c] coverage still fails, on the real gap (the five senior-note bullets) rather than on the typo — the guard removes a wrong number, it does not manufacture a pass");
 }
 
+console.log("\n=== [13] The denominator, its provenance, and the disagreement rule ===");
+{
+  const caps = [
+    { label: "Current maturities of long-term debt", amount: "$771,910 thousands" },
+    { label: "Long-term debt", amount: "$4,079,937 thousands" },
+  ] as never;
+  const rows = [row("notes", "$4,000 million")];
+
+  // 1. XBRL present and agreeing — the ordinary case, nine of ten in the book.
+  const agree = computeCoverage(dm({
+    balanceSheetDebtCaptions: caps,
+    scheduleSequence: rows,
+    xbrlDebtTotal: { total: 4_851_847_000, asOf: "2026-06-30", parts: [{ tag: "LongTermDebtCurrent", value: 771_910_000 }, { tag: "LongTermDebtNoncurrent", value: 4_079_937_000 }], separateLeases: [], unavailableReason: null },
+  } as never));
+  assert(agree.denominatorSource === "xbrl" && agree.statedTotalDebt === 4_851_847_000 && agree.denominatorDisagreement === null,
+    "[13a] where the filer tags a total, that is the denominator and the source says so");
+  assert(agree.line.includes("the filer's own XBRL tags"),
+    `[13b] and the LINE says which source it divided by — a percentage whose denominator is unstated is a percentage a reader cannot check (${agree.line.slice(0, 130)})`);
+
+  // 2. XBRL absent — HCA's real state, whose company-facts data stops a
+  //    quarter before its anchor. The read captions stand and are LABELLED.
+  const fallback = computeCoverage(dm({
+    balanceSheetDebtCaptions: caps,
+    scheduleSequence: rows,
+    xbrlDebtTotal: { total: null, asOf: "2026-06-30", parts: [], separateLeases: [], unavailableReason: "its company-facts data does not reach the anchor's period end" },
+  } as never));
+  assert(fallback.denominatorSource === "model-read" && fallback.statedTotalDebt === 4_851_847_000,
+    "[13c] HCA'S CASE: no XBRL total, so the read captions stand — never a hole where a stable correct number was");
+  assert(fallback.line.includes("read from the anchor's balance sheet"),
+    `[13d] and it is labelled as read rather than tagged, so the two are never confused (${fallback.line.slice(0, 130)})`);
+
+  // 3. BOTH present and DISAGREEING. This happens nowhere in the ten-name
+  //    book — nine of ten agree to the dollar — and it will at forty names.
+  //    Decided now so it is a rule rather than a discovery.
+  const conflict = computeCoverage(dm({
+    balanceSheetDebtCaptions: caps,
+    scheduleSequence: rows,
+    xbrlDebtTotal: { total: 5_036_000_000, asOf: "2026-06-30", parts: [{ tag: "LongTermDebtAndCapitalLeaseObligations", value: 5_036_000_000 }], separateLeases: [], unavailableReason: null },
+  } as never));
+  assert(conflict.statedTotalDebt === 5_036_000_000 && conflict.denominatorSource === "xbrl",
+    "[13e] THE RULE: when both exist and disagree, XBRL IS THE NUMBER — it is the company's own tag, and it does not move when our prompt does");
+  assert(conflict.denominatorDisagreement !== null && conflict.line.includes("DENOMINATOR DISAGREEMENT"),
+    "[13f] and the model-read discrepancy renders as a FLAG, never a silent choice between two totals");
+  assert((conflict.denominatorDisagreement ?? "").includes("$184M"),
+    `[13g] the flag states the size of the gap, which is what tells a reader whether to go and read the balance sheet (${conflict.denominatorDisagreement})`);
+
+  // 4. Neither.
+  const none = computeCoverage(dm({ scheduleSequence: rows } as never));
+  assert(none.denominatorSource === "none" && none.statedTotalDebt === null && none.line.includes("unmeasured"),
+    "[13h] neither source is still a rendered state — coverage unmeasured, never a blank");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }

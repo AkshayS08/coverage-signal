@@ -94,7 +94,20 @@ export interface CapturedEntry {
   basisNote?: string;
 }
 
+/**
+ * SESSION 21, STAGE 2 — WHERE THE DENOMINATOR CAME FROM.
+ *
+ * Never inferred by a reader from the shape of the number. Coverage's whole
+ * claim rests on what it divided by, so the surface says which source that
+ * was and, when two sources disagree, which one it used.
+ */
+export type DenominatorSource = "xbrl" | "model-read" | "none";
+
 export interface CoverageResult {
+  /** Which source the denominator came from. Rendered, never implicit. */
+  denominatorSource: DenominatorSource;
+  /** Set when XBRL and the model-read caption set BOTH exist and disagree. XBRL is the number; this is the flag. */
+  denominatorDisagreement: string | null;
   /** Null when no anchor captions were extracted — coverage is then UNMEASURED, which is a rendered state, not silence. */
   statedTotalDebt: number | null;
   capturedFace: number;
@@ -131,8 +144,32 @@ function isCurrentPortion(label: string | null | undefined): boolean {
  */
 export function computeCoverage(debtMaturity: TriggerResult | undefined): CoverageResult {
   const caps = debtMaturity?.balanceSheetDebtCaptions ?? [];
-  const anchorCaptions = caps.map((c) => c.label);
-  const statedTotalDebt = caps.length > 0 ? caps.reduce((a, c) => a + (parseMoneyAmount(c.amount) ?? 0), 0) : null;
+  const modelRead = caps.length > 0 ? caps.reduce((a, c) => a + (parseMoneyAmount(c.amount) ?? 0), 0) : null;
+
+  // THE DENOMINATOR, AND WHICH SOURCE IT CAME FROM.
+  //
+  // XBRL is the number wherever the filer tags one: it is the company's own
+  // statement of what its debt is, and it does not move when our prompt
+  // does. The model-read caption set stands where XBRL does not reach —
+  // measured on HCA, whose company-facts data stops a quarter before its
+  // anchor — because trading a stable correct number for a hole is worse
+  // than either source alone.
+  //
+  // WHEN BOTH EXIST AND DISAGREE, XBRL IS THE NUMBER AND THE DISAGREEMENT IS
+  // THE FLAG. It did not happen anywhere in this ten-name book — nine of ten
+  // agree to the dollar — but it will at forty names, and deciding it now is
+  // the difference between a rule and a discovery. Asserted in
+  // coverage.test.ts rather than left to the first company that hits it.
+  const xbrl = debtMaturity?.xbrlDebtTotal ?? null;
+  const xbrlTotal = xbrl?.total ?? null;
+  const statedTotalDebt = xbrlTotal ?? modelRead;
+  const denominatorSource: DenominatorSource = xbrlTotal !== null ? "xbrl" : modelRead !== null ? "model-read" : "none";
+  const disagrees = xbrlTotal !== null && modelRead !== null && Math.abs(xbrlTotal - modelRead) >= 1_000_000;
+  const denominatorDisagreement = disagrees
+    ? `the filer's own XBRL tags total ${fmtB(xbrlTotal)} (${(xbrl?.parts ?? []).map((p) => `${p.tag} ${fmtB(p.value)}`).join(" + ")}) while its balance-sheet captions as read total ${fmtB(modelRead)} — a ${fmtB(Math.abs(xbrlTotal - modelRead))} difference. COVERAGE USES THE XBRL FIGURE, because it is the company's own tag; the read captions are the witness, and they do not agree. Read the balance sheet.`
+    : null;
+  const anchorCaptions =
+    denominatorSource === "xbrl" ? (xbrl?.parts ?? []).map((p) => p.tag) : caps.map((c) => c.label);
 
   const seq = normalizeScheduleSequence(debtMaturity?.scheduleSequence);
   const rows = seq.filter((e) => e.kind === "row");
@@ -216,12 +253,14 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
     residualFraction,
     residualPasses,
     categoriesMissing,
+    denominatorSource,
+    denominatorDisagreement,
     categoriesCaptured: [...capturedCategories],
     entries: countable,
     impossible,
     capacity,
     anchorCaptions,
-    line: coverageLine({ statedTotalDebt, capturedFace, residualFraction, residualPasses, categoriesMissing, anchorCaptions, entries: countable, capacity, impossible }),
+    line: coverageLine({ statedTotalDebt, capturedFace, residualFraction, residualPasses, categoriesMissing, anchorCaptions, entries: countable, capacity, impossible, denominatorSource, denominatorDisagreement }),
   };
 }
 
@@ -230,6 +269,11 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
  * rendered state; silence is not. A reader must be able to tell a book we
  * checked and found complete from one we could not check.
  */
+/** Billions/millions for the denominator prose, where the entry formatter is out of scope. */
+function fmtB(n: number): string {
+  return Math.abs(n) >= 1e9 ? `$${(n / 1e9).toFixed(2)}B` : `$${(n / 1e6).toFixed(0)}M`;
+}
+
 function coverageLine(r: {
   statedTotalDebt: number | null;
   capturedFace: number;
@@ -240,6 +284,8 @@ function coverageLine(r: {
   entries: CapturedEntry[];
   capacity: CapturedEntry[];
   impossible: CapturedEntry[];
+  denominatorSource: DenominatorSource;
+  denominatorDisagreement: string | null;
 }): string {
   const b = (n: number) => (Math.abs(n) >= 1e9 ? `$${(n / 1e9).toFixed(2)}B` : `$${(n / 1e6).toFixed(0)}M`);
   if (r.statedTotalDebt === null) {
@@ -249,7 +295,13 @@ function coverageLine(r: {
   const rowN = r.entries.filter((e) => e.from === "row").length;
   const proseN = r.entries.filter((e) => e.from === "prose").length;
   const counted = `${rowN} row${rowN === 1 ? "" : "s"}${proseN > 0 ? ` + ${proseN} prose instrument${proseN === 1 ? "" : "s"}` : ""}`;
-  const head = `${counted} cover ${b(r.capturedFace)} of ${b(r.statedTotalDebt)} stated total debt (${pct}%), against ${r.anchorCaptions.join(" + ")}`;
+  // The provenance rides on the same clause that names what was summed, so a
+  // reader never has to work out which source a percentage rests on.
+  const provenance =
+    r.denominatorSource === "xbrl"
+      ? `${r.anchorCaptions.join(" + ")} (the filer's own XBRL tags)`
+      : `${r.anchorCaptions.join(" + ")} (read from the anchor's balance sheet — this filer tags no debt total at that period end)`;
+  const head = `${counted} cover ${b(r.capturedFace)} of ${b(r.statedTotalDebt)} stated total debt (${pct}%), against ${provenance}`;
   const missing = r.categoriesMissing.length > 0 ? ` — STATED BUT NOT CAPTURED: ${r.categoriesMissing.join(", ")}` : "";
   const cap =
     r.capacity.length > 0
@@ -263,7 +315,8 @@ function coverageLine(r: {
     r.impossible.length > 0
       ? ` — IMPOSSIBLE AMOUNT, EXCLUDED: ${r.impossible.map((e) => `${e.label} reads ${b(e.amount ?? 0)}, larger than the ${b(r.statedTotalDebt ?? 0)} total it is part of`).join("; ")}. Read the filing; this is a transcription error, not a balance.`
       : "";
-  return head + missing + resid + cap + imp;
+  const disagree = r.denominatorDisagreement ? ` — DENOMINATOR DISAGREEMENT: ${r.denominatorDisagreement}` : "";
+  return head + missing + resid + cap + imp + disagree;
 }
 
 /**

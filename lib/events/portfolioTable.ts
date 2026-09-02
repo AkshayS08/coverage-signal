@@ -218,6 +218,22 @@ export interface RefiLadderBlock {
   completenessStatement: string;
   /** Every row in the CURRENT (position-adjusted) ladder that isn't `retired` — a retired row never gets its own table line, it only explains a live one via a card's KEY POINT (E1). Nearest-first. */
   nearestLines: RefiLadderLine[];
+  /**
+   * SESSION 21, 2D — THE FILER'S OWN MATURITY LADDER, AS A FLOOR.
+   *
+   * Every company that tags contractual maturities renders them beneath its
+   * ladder, so no company renders blank — Cigna's empty-with-reason state
+   * gets a floor rather than nothing. A FLOOR, never a substitute: the
+   * ladder is the product, and these six figures cannot tell an RM which
+   * tranche or at what rate.
+   *
+   * It degrades exactly as the denominator does. Where the filer tags no
+   * buckets, or its company-facts data does not reach the anchor's period,
+   * this is empty and NOTHING is fabricated to fill it.
+   */
+  maturityFloor: { label: string; value: number }[];
+  /** The period the floor is stated as of — its own date, never assumed to be the anchor's. */
+  maturityFloorAsOf: string | null;
   /** "N more tranches, YYYY to YYYY" for whatever didn't fit in nearestLines, or null when everything fit. */
   tailSummary: string | null;
   /** Item 7 — the note's own reconciliation, in its own order. Empty when the note has no sequence to walk. */
@@ -690,6 +706,8 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       balanceSheetCheck,
       completenessStatement: "",
       nearestLines: [],
+      maturityFloor: [],
+      maturityFloorAsOf: null,
       tailSummary: null,
       walkLines: [],
       coverage: computeCoverage(debtMaturity),
@@ -919,7 +937,11 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
   // when the base ladder failed BOTH checks does the older filing's schedule
   // get surfaced at all, and even then it sits beneath the base ladder's own
 
-  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
+  const floor = debtMaturity.xbrlMaturityBuckets ?? null;
+
+  return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines,
+    maturityFloor: (floor?.buckets ?? []).map((x) => ({ label: x.label, value: x.value })),
+    maturityFloorAsOf: floor && floor.buckets.length > 0 ? floor.asOf : null, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
 
 /**

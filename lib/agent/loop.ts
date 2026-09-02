@@ -34,6 +34,7 @@ import { textOutsideInstrumentLabel, splitIssueSizeFromName } from "./issueSize"
 import { assertBlobConfigured } from "../fetch/cache";
 import { corpusFingerprint, cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
 import { LEAD_CHARS, buildExtractionText, assertCompanyHasLocatableDebtNote, type DebtNoteFilingStatus } from "../fetch/noteLocation";
+import { fetchXbrlDebtTotal, fetchXbrlMaturityBuckets, type XbrlDebtTotal, type XbrlMaturityBuckets } from "../fetch/xbrlDebt";
 import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "../fetch/scheduleCompleteness";
 import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isSelfDescribingAmount, scaleWordFromDeclaration } from "./moneyScale";
 import { detectDollarScaleAt } from "./scaleNormalize";
@@ -400,6 +401,15 @@ export interface TriggerResult {
   scheduleCompleteness: ScheduleCompletenessResult | null;
   /** Session 18 — "new-debt-issuance" ONLY. What this issuance retires, with the filing's own words and its verified evidence, or null. Session 21 item 1d: `verifiedRedemption` is false unless the sourceLine was found in a cited filing, and only a verified COMPLETED claim ever retires a ladder row. */
   redeems: RedeemsClaim | null;
+  /**
+   * SESSION 21, STAGE 2 — "debt-maturity" ONLY. Stated total debt from the
+   * filer's own XBRL tags at the anchor's period end, or an explained
+   * absence. Fetched in the loop (cached HTTP, no model call) and attached
+   * here so computeCoverage stays a pure function of a TriggerResult.
+   */
+  xbrlDebtTotal?: XbrlDebtTotal | null;
+  /** Session 21, 2d — the filer's own contractual maturity ladder, where it tags one. The floor beneath the ladder. */
+  xbrlMaturityBuckets?: XbrlMaturityBuckets | null;
   /** True only when redeems.sourceLine was located literally in one of this trigger's cited filings. Optional so legacy-shaped fixtures and cached bodies read as UNVERIFIED, which is what they are. */
   verifiedRedemption?: boolean;
   /** Session 18 — "new-debt-issuance" ONLY. The row(s) for the tranche(s) this issuance itself priced, verified the same way scheduleSequence rows are. Empty for every other trigger. */
@@ -1103,6 +1113,18 @@ export async function runAgentLoop(
   // reference is what produced a 38-row ladder as of December 31 2025 beside
   // a June 30 2026 balance sheet. The filing is telling the reader where the
   // ladder is; it is not telling them the ladder is current.
+  // SESSION 21, STAGE 2 — THE DENOMINATOR AND THE FLOOR, FROM THE FILER'S
+  // OWN TAGS.
+  //
+  // Two cached HTTP reads of the SEC's public company-facts endpoint, no
+  // model call, at the ANCHOR's own period end. Attached to the trigger so
+  // computeCoverage stays a pure function of what it is given — a coverage
+  // figure that had to await a network read could not be recomputed in an
+  // offline test, and every threshold this project has is pinned by one.
+  //
+  // Absence is normal and is carried as an explained absence, never as a
+  // failure: HCA's company-facts data stops a quarter short of its anchor,
+  // and its coverage must keep working on the read captions and say so.
   const debtIdx = results.findIndex((r) => r.triggerId === "debt-maturity");
   const debtTriggerDef = TRIGGERS.find((t) => t.id === "debt-maturity");
   if (debtIdx !== -1 && debtTriggerDef && results[debtIdx].fired && results[debtIdx].scheduleSequence.length === 0) {
@@ -1114,6 +1136,26 @@ export async function runAgentLoop(
         : "the anchor's debt note yields no transcribable ladder (an abbreviated or narrative note is ordinary, and is not a reason to show an older filing's table)";
     log(
       `  ⚠ NO LADDER AT THE ANCHOR for ${label} — ${why}. The anchor is ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date} (period ${debtScheduleGuidance.base?.reportDate}) and the ladder renders EMPTY WITH THIS REASON. It is never filled from an older filing.`
+    );
+  }
+
+  if (debtIdx !== -1 && results[debtIdx].fired) {
+    const period = debtScheduleGuidance.base?.reportDate ?? "";
+    const [xbrlDebtTotal, xbrlMaturityBuckets] = await Promise.all([
+      fetchXbrlDebtTotal(filingsResult.cik, period),
+      fetchXbrlMaturityBuckets(filingsResult.cik, period),
+    ]);
+    results[debtIdx] = { ...results[debtIdx], xbrlDebtTotal, xbrlMaturityBuckets };
+    log(
+      xbrlDebtTotal.total !== null
+        ? `  XBRL stated total debt at ${period}: ${xbrlDebtTotal.parts.map((p) => `${p.tag}=${p.value.toLocaleString("en-US")}`).join(" + ")} — the denominator comes from the filer's own tags` +
+            (xbrlDebtTotal.separateLeases.length ? `; leases tagged SEPARATELY and not added: ${xbrlDebtTotal.separateLeases.map((l) => l.tag).join(", ")}` : "")
+        : `  ⚠ NO XBRL DEBT TOTAL at ${period} — ${xbrlDebtTotal.unavailableReason}. The denominator falls back to the balance-sheet captions as read, labelled as such on the surface.`
+    );
+    log(
+      xbrlMaturityBuckets.buckets.length > 0
+        ? `  XBRL maturity buckets at ${period}: ${xbrlMaturityBuckets.buckets.map((b) => `${b.label} ${b.value.toLocaleString("en-US")}`).join("; ")}`
+        : `  no XBRL maturity buckets at ${period} — the ladder stands alone; no floor is fabricated`
     );
   }
 
