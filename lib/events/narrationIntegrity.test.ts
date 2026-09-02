@@ -231,7 +231,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
           rowsVerified: 0,
     baseRowsExtracted: 0,
           scheduleCompleteness: null,
-          redeems: null,
+          redeems: [],
           issuedTranches: [],
           eventInstances: [],
           noteRetirements: [],

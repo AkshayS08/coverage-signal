@@ -297,7 +297,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     rowsVerified: 0,
     baseRowsExtracted: 0,
     scheduleCompleteness: null,
-    redeems: null,
+    redeems: [],
     issuedTranches: [],
     eventInstances: [],
     noteRetirements: [],

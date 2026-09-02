@@ -143,6 +143,18 @@ export interface CompanyPosition {
    * at all.
    */
   tier2: Tier2;
+  /**
+   * SESSION 21 — retirements the filer STATED AN INTENTION about, verified
+   * but not completed. They are not Tier 2 unless their filing post-dates
+   * the anchor, because an intention announced BEFORE the anchor's period
+   * end is already resolved one way or the other inside the anchor's own
+   * balance sheet — rendering it as an event "since" the anchor would state
+   * the wrong date about a real fact.
+   *
+   * They still render: for a filer with no ladder rows at all, a stated
+   * intention is the only instrument-level signal there is.
+   */
+  statedIntentions: { instrument: string; amount: string | null; date: string | null; sourceLine: string; citedUrl: string; postAnchor: boolean }[];
   /** The base filing's "adjustment" entries (discount/issuance costs, current portion, etc.) — for display; see portfolioTable.ts. Not summed here; Check 1 (computeWalkChecksum) does that from the raw TriggerResult directly. */
   adjustments: VerifiedSequenceEntry[];
   /** The LAST "subtotal" entry in the base filing's sequence — the natural "headline total" for display. Null if the sequence has no subtotals at all. */
@@ -649,11 +661,17 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // UHS is the case that cost the most: its 8-K names the "Existing 2026
   // Notes" in a clause listing what the new notes rank alongside, and a live
   // $700 million obligation was retired on that naming alone.
-  const redemption = newDebtIssuance?.redeems ?? null;
-  const redemptionIsActionable = !!redemption && newDebtIssuance?.verifiedRedemption === true && redemption.status === "completed";
-  if (newDebtIssuance?.fired && redemption && redemptionIsActionable) {
-    const redeemsText = [redemption.instrument, redemption.sourceLine ?? ""].join(" ");
-    const retiredByEvidence = { evidence: redemption.sourceLine ?? redemption.instrument, citedUrl: newDebtIssuance.citations[0]?.url ?? "" };
+  // SESSION 21 — EVERY claim is judged on its own, and only the ones that
+  // pass BOTH gates act. One filing does several things and they can need
+  // opposite answers: UHS's August 8-K repays a revolver (completed,
+  // verified) and names its 2026 notes in a ranking clause (no retirement at
+  // all).
+  const allClaims = newDebtIssuance?.redeems ?? [];
+  const actionableClaims = allClaims.filter((c) => c.verified && c.status === "completed");
+  const statedIntentions = allClaims.filter((c) => c.verified && c.status === "intended");
+  if (newDebtIssuance?.fired && actionableClaims.length > 0) {
+    const redeemsText = actionableClaims.map((c) => [c.instrument, c.sourceLine ?? ""].join(" ")).join(" ;; ");
+    const retiredByEvidence = { evidence: actionableClaims.map((c) => c.sourceLine ?? c.instrument).join("; "), citedUrl: newDebtIssuance.citations[0]?.url ?? "" };
     rows = rows.map((row) => {
       if (row.status !== "live" || !redemptionRetiresRow(row, redeemsText)) return row;
       // THE NOTE IS THE POSITION (found live, stage-2 review). An 8-K
@@ -816,8 +834,8 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // either — it would relabel "we do not know what happened to this" as "it
   // was redeemed", which is the more confident of the two and the wrong one.
   const redeemsText =
-    newDebtIssuance?.fired && redemption && redemptionIsActionable
-      ? [redemption.instrument, redemption.sourceLine ?? ""].join(" ")
+    newDebtIssuance?.fired && actionableClaims.length > 0
+      ? actionableClaims.map((c) => [c.instrument, c.sourceLine ?? ""].join(" ")).join(" ;; ")
       : null;
   const retiredByEvidence = redeemsText
     ? { evidence: redeemsText, citedUrl: newDebtIssuance?.citations[0]?.url ?? "" }
@@ -910,21 +928,26 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
 
   // A repayment reaches Tier 2 only on the same two gates a retirement needs
   // anywhere: corroborated COMPLETED status and a verified sourceLine.
-  const confirmedRepayments =
-    newDebtIssuance?.fired &&
-    redemption &&
-    redemptionIsActionable &&
-    isPostAnchorSource(newDebtIssuance.citations[0]?.url, newDebtIssuance.citations[0]?.date, anchorRef)
-      ? [
-          {
-            instrument: redemption.instrument,
-            amount: redemption.amount ? parseMoneyAmount(redemption.amount) : null,
-            date: newDebtIssuance.citations[0]?.date ?? null,
-            sourceLine: redemption.sourceLine ?? redemption.instrument,
-            citedUrl: newDebtIssuance.citations[0]?.url ?? "",
-          },
-        ]
-      : [];
+  const eventIsPostAnchor =
+    !!newDebtIssuance?.fired && isPostAnchorSource(newDebtIssuance.citations[0]?.url, newDebtIssuance.citations[0]?.date, anchorRef);
+  const confirmedRepayments = eventIsPostAnchor
+    ? actionableClaims.map((c) => ({
+        instrument: c.instrument,
+        amount: c.amount ? parseMoneyAmount(c.amount) : null,
+        date: newDebtIssuance?.citations[0]?.date ?? null,
+        sourceLine: c.sourceLine ?? c.instrument,
+        citedUrl: newDebtIssuance?.citations[0]?.url ?? "",
+      }))
+    : [];
+
+  const intentions = statedIntentions.map((c) => ({
+    instrument: c.instrument,
+    amount: c.amount,
+    date: newDebtIssuance?.citations[0]?.date ?? null,
+    sourceLine: c.sourceLine ?? c.instrument,
+    citedUrl: newDebtIssuance?.citations[0]?.url ?? "",
+    postAnchor: eventIsPostAnchor,
+  }));
 
   const tier2 = buildTier2({
     anchor: anchorRef,
@@ -932,12 +955,17 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     postAnchorIssuances,
     maturedUnconfirmed,
     confirmedRepayments,
+    // A stated intention from a filing that POST-DATES the anchor is an
+    // event since it, and belongs in Tier 2 as a pending line. One from
+    // before the anchor is not.
+    pendingIntentions: intentions.filter((i) => i.postAnchor),
     parseAmount: parseMoneyAmount,
   });
 
   return {
     rows,
     tier2,
+    statedIntentions: intentions,
     issuancesInsideAggregate,
     adjustments,
     finalSubtotal,

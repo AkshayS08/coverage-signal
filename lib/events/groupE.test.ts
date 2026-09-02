@@ -53,7 +53,7 @@ function trigger(over: Partial<TriggerResult> & { triggerId: string }): TriggerR
     proceedsUse: null, scheduleSequence: [], priorScheduleSequence: [], balanceSheetDebtCaptions: [],
     debtScheduleSourceFiling: null, debtSchedulePriorFiling: null,
     rowsExtracted: 0, rowsVerified: 0, baseRowsExtracted: 0, scheduleCompleteness: null,
-    redeems: null, issuedTranches: [], cashAmount: null, projectName: null, columnReadFailure: false,
+    redeems: [], issuedTranches: [], cashAmount: null, projectName: null, columnReadFailure: false,
     ...over,
   };
 }

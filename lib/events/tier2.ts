@@ -94,9 +94,12 @@ export function buildTier2(params: {
   postAnchorIssuances: LadderRow[];
   maturedUnconfirmed: LadderRow[];
   confirmedRepayments: { instrument: string; amount: number | null; date: string | null; sourceLine: string; citedUrl: string }[];
+  /** Intentions stated by a filing that post-dates the anchor. They subtract nothing — an intention is not a completion — and they render so a reader knows one exists. */
+  pendingIntentions?: { instrument: string; amount: string | null; date: string | null; sourceLine: string; citedUrl: string }[];
   parseAmount: (raw: string) => number | null;
 }): Tier2 {
   const { anchor, anchorCapturedFace, postAnchorIssuances, maturedUnconfirmed, confirmedRepayments, parseAmount } = params;
+  const pendingIntentions = params.pendingIntentions ?? [];
   const events: Tier2Event[] = [];
 
   for (const row of postAnchorIssuances) {
@@ -121,6 +124,18 @@ export function buildTier2(params: {
       sourceLine: r.sourceLine,
       citedUrl: r.citedUrl,
       note: `repayment confirmed by the filing — SUBTRACTS ${r.amount === null ? "an unstated amount" : money(Math.abs(r.amount))} against this tranche`,
+    });
+  }
+
+  for (const i of pendingIntentions) {
+    events.push({
+      kind: "pending",
+      date: i.date,
+      effect: null,
+      instrument: i.instrument,
+      sourceLine: i.sourceLine,
+      citedUrl: i.citedUrl,
+      note: `PENDING — the filing states an INTENTION to repay${i.amount ? ` ${i.amount}` : ""}, not a repayment. Nothing is subtracted; it moves only when a filing says it happened`,
     });
   }
 

@@ -524,8 +524,25 @@
  * Bumped because the field's shape changes and every cached body carries the
  * old one. A legacy string normalises to status:null, sourceLine:null — an
  * unverified claim, which is exactly what it always was.
+ *
+ * v27 (Session 21, Stage 3) — `redeems` BECOMES AN ARRAY. The Session 18
+ * one-slot fix reaching the last single-slot field in the schema. One filing
+ * routinely retires several things: UHS's August 8-K repays the outstanding
+ * borrowings under its revolving credit facility (a real, completed
+ * retirement, stated in the filing) AND names the 2026 notes in a clause
+ * listing what the new notes rank alongside (not a retirement at all). A
+ * single slot holds one of them — and after v26 correctly refused the false
+ * one, there was nowhere left to put the true one, so a confirmed $225
+ * million repayment went unrendered.
+ * Each entry is corroborated on tense and verified against its cited filing
+ * INDEPENDENTLY, because the same document needs opposite answers about its
+ * two claims. Both gates per claim, each load-bearing alone (position.test
+ * [S21a]-[S21d]).
+ * Legacy shapes — a bare string, a single object — normalise into the array
+ * with status and sourceLine null, which is an unverified claim and is what
+ * they always were.
  */
-export const EXTRACTION_PROMPT_VERSION = 26;
+export const EXTRACTION_PROMPT_VERSION = 27;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

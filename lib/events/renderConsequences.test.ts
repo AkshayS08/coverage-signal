@@ -24,7 +24,7 @@ function trigger(over: Partial<TriggerResult> & { triggerId: string }): TriggerR
     quoteVerified: true, verifiedQuote: "synthetic evidence stating $1 million", verifiedQuoteNormalized: null,
     quoteMatchType: "literal", quoteHasFigure: true, eventDate: null, dateGranularity: null,
     eventStatus: "standing", proceedsUse: null, scheduleSequence: [], priorScheduleSequence: [],
-    balanceSheetDebtCaptions: [], debtScheduleSourceFiling: null, redeems: null, issuedTranches: [],
+    balanceSheetDebtCaptions: [], debtScheduleSourceFiling: null, redeems: [], issuedTranches: [],
     cashAmount: "$1 million", projectName: null, projectCompletionDate: null, projectCompletionGranularity: null,
     eventInstances: [], noteRetirements: [],
     proseInstruments: [],

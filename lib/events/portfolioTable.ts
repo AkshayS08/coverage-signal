@@ -235,6 +235,18 @@ export interface RefiLadderBlock {
   maturityFloor: { label: string; value: number }[];
   /** SESSION 21, STAGE 3 — events since the anchor, rendered BENEATH Tier 1 and never merged into it. Empty for a company with no post-anchor 8-K. */
   tier2: Tier2;
+  /**
+   * SESSION 21 — verified intentions to repay from a filing that PRE-DATES
+   * the anchor. Not Tier 2, because an intention announced before the
+   * anchor's period end is already resolved inside the anchor's own balance
+   * sheet, and calling it an event "since" the anchor states the wrong date
+   * about a real fact.
+   *
+   * Rendered anyway, and under Tier 1 where it belongs: for a filer whose
+   * anchor note carries no ladder at all — Cigna — a stated intention is the
+   * only instrument-level signal in the whole company.
+   */
+  priorIntentions: { instrument: string; amount: string | null; date: string | null; sourceLine: string }[];
   /** The period the floor is stated as of — its own date, never assumed to be the anchor's. */
   maturityFloorAsOf: string | null;
   /** "N more tranches, YYYY to YYYY" for whatever didn't fit in nearestLines, or null when everything fit. */
@@ -711,6 +723,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       nearestLines: [],
       maturityFloor: [],
       tier2: { events: [], rolledTotal: null, rolledLabel: null, anchorDate: null },
+      priorIntentions: [],
       maturityFloorAsOf: null,
       tailSummary: null,
       walkLines: [],
@@ -945,6 +958,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
 
   return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines,
     tier2: position.tier2,
+    priorIntentions: position.statedIntentions.filter((i) => !i.postAnchor).map((i) => ({ instrument: i.instrument, amount: i.amount, date: i.date, sourceLine: i.sourceLine })),
     maturityFloor: (floor?.buckets ?? []).map((x) => ({ label: x.label, value: x.value })),
     maturityFloorAsOf: floor && floor.buckets.length > 0 ? floor.asOf : null, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }

@@ -77,7 +77,7 @@ function trigger(over: Partial<TriggerResult> = {}): TriggerResult {
     rowsExtracted: 0,
     rowsVerified: 0,
     scheduleCompleteness: null,
-    redeems: null,
+    redeems: [],
     issuedTranches: [],
     eventInstances: [],
     noteRetirements: [],

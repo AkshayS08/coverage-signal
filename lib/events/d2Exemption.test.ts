@@ -39,7 +39,7 @@ function trig(over: Partial<TriggerResult>): TriggerResult {
     verifiedQuoteNormalized: null, eventDate: "2026-12-01", dateGranularity: "month",
     eventStatus: "upcoming", proceedsUse: null, scheduleSequence: [], priorScheduleSequence: [],
     balanceSheetDebtCaptions: [], debtScheduleSourceFiling: null, debtSchedulePriorFiling: null,
-    rowsExtracted: 0, rowsVerified: 0, scheduleCompleteness: null, redeems: null, issuedTranches: [],
+    rowsExtracted: 0, rowsVerified: 0, scheduleCompleteness: null, redeems: [], issuedTranches: [],
     cashAmount: null, projectName: null, ...over,
   } as TriggerResult;
 }

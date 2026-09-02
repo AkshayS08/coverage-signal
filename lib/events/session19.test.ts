@@ -43,7 +43,7 @@ function baseTrigger(over: Partial<TriggerResult> & { triggerId: string }): Trig
     rowsVerified: 0,
     baseRowsExtracted: 0,
     scheduleCompleteness: null,
-    redeems: null,
+    redeems: [],
     issuedTranches: [],
     eventInstances: [],
     noteRetirements: [],

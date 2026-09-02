@@ -334,8 +334,11 @@ export function buildVerifiedFactBase(result: CompanyResult, now: Date = new Dat
       // 8-K names its 2026 notes as still outstanding, and the card would
       // have said they were redeemed.
       redeemsInfo:
-        t.triggerId === "new-debt-issuance" && t.redeems && t.verifiedRedemption && t.redeems.status === "completed"
-          ? `${t.redeems.instrument}${t.redeems.amount ? ` (${t.redeems.amount})` : ""}`
+        t.triggerId === "new-debt-issuance"
+          ? (t.redeems ?? [])
+              .filter((r) => r.verified && r.status === "completed")
+              .map((r) => `${r.instrument}${r.amount ? ` (${r.amount})` : ""}`)
+              .join("; ") || null
           : null,
     });
   }

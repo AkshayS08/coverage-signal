@@ -22,6 +22,7 @@ import {
   type RevolverRow,
   type ProceedsUse,
   type RedeemsClaim,
+  normalizeRedeems,
   type ScheduleSequenceEntry,
   type TriggerVerdict,
 } from "./claude";
@@ -301,6 +302,11 @@ export interface VerifiedProseInstrument extends ProseInstrumentRow {
 }
 
 /** Session 20, 3b — the revolver figures, once the sentence carrying them verified. */
+/** A redemption claim after both gates: its status corrected by corroboration, and whether its sourceLine was found. */
+export interface VerifiedRedeemsClaim extends RedeemsClaim {
+  verified: boolean;
+}
+
 export interface VerifiedRevolver extends RevolverRow {
   citedUrl: string;
 }
@@ -399,8 +405,15 @@ export interface TriggerResult {
    * locatable debt-note section to check against (nothing to compare).
    */
   scheduleCompleteness: ScheduleCompletenessResult | null;
-  /** Session 18 — "new-debt-issuance" ONLY. What this issuance retires, with the filing's own words and its verified evidence, or null. Session 21 item 1d: `verifiedRedemption` is false unless the sourceLine was found in a cited filing, and only a verified COMPLETED claim ever retires a ladder row. */
-  redeems: RedeemsClaim | null;
+  /**
+   * Session 18 — "new-debt-issuance" ONLY. EVERY retirement this issuance
+   * states, each with the filing's own words for it. Session 21: an array,
+   * because one filing does several things; each entry's `status` has
+   * already been corroborated against its own sourceLine and each carries
+   * its own `verified` flag. Only a claim that is BOTH corroborated
+   * "completed" AND verified ever retires a ladder row.
+   */
+  redeems: VerifiedRedeemsClaim[];
   /**
    * SESSION 21, STAGE 2 — "debt-maturity" ONLY. Stated total debt from the
    * filer's own XBRL tags at the anchor's period end, or an explained
@@ -410,8 +423,6 @@ export interface TriggerResult {
   xbrlDebtTotal?: XbrlDebtTotal | null;
   /** Session 21, 2d — the filer's own contractual maturity ladder, where it tags one. The floor beneath the ladder. */
   xbrlMaturityBuckets?: XbrlMaturityBuckets | null;
-  /** True only when redeems.sourceLine was located literally in one of this trigger's cited filings. Optional so legacy-shaped fixtures and cached bodies read as UNVERIFIED, which is what they are. */
-  verifiedRedemption?: boolean;
   /** Session 18 — "new-debt-issuance" ONLY. The row(s) for the tranche(s) this issuance itself priced, verified the same way scheduleSequence rows are. Empty for every other trigger. */
   issuedTranches: VerifiedIssuedTranche[];
   /** Session 18 A3 — every trigger. The amount this event's OWN filing text states for it, or null — never a figure merely present nearby. Feeds gate restriction D2 (cashAmount: null never cards, any trigger except debt-maturity). */
@@ -882,42 +893,48 @@ export async function runAgentLoop(
     if (retirementsDropped > 0) {
       log(`  ⚠ ${retirementsDropped} note-prose retirement(s) for ${label} could not be verified INSIDE the located debt note — dropped, not trusted (Rule 5: a claim about the note must be found in the note)`);
     }
-    // SESSION 21, ITEM 1D — the redemption claim goes through the same walk
-    // as every other claim about a filing. Unbounded, because a retirement is
-    // announced in an 8-K's body rather than inside a debt note, so it takes
-    // the same contract as an event instance: the sourceLine must be found
-    // literally in one of THIS trigger's own cited filings.
-    // ...and its STATUS is corroborated against that same sourceLine before
-    // anything acts on it. Verification asks whether the sentence is in the
-    // filing; corroboration asks whether the sentence says what the claim
-    // says it says. Both, or the claim falls to the safe side. See
-    // redemptionStatus.ts.
-    const statusCheck = corroborateRedemptionStatus(v.redeems?.status ?? null, v.redeems?.sourceLine ?? null);
-    if (v.redeems && statusCheck.demotedReason) {
-      log(
-        `  ⚠ REDEMPTION STATUS NOT CORROBORATED for ${label} — "${v.redeems.instrument}" ${statusCheck.demotedReason}. Treated as INTENDED; the tranche stays on the ladder. An intention is not a completion.`
-      );
-    }
-    if (v.redeems) v = { ...v, redeems: { ...v.redeems, status: statusCheck.status } };
-
-    let verifiedRedemption = false;
-    if (v.redeems?.sourceLine) {
-      verifiedRedemption = (v.citedUrls ?? []).some((url) => {
-        const text = textByUrl.get(url);
-        return !!text && createTextLocator(text).find(v.redeems!.sourceLine as string) !== null;
-      });
-      if (!verifiedRedemption) {
+    // SESSION 21, ITEM 1D — EVERY redemption claim goes through the same
+    // walk as every other claim about a filing, INDEPENDENTLY of the others.
+    //
+    // Two gates per claim, and each is load-bearing alone (pinned as
+    // position.test.ts [S21a]-[S21d]):
+    //   corroboration — does the claim's OWN sourceLine state a completed
+    //                   payment, or only an intention (redemptionStatus.ts)
+    //   verification  — is that sourceLine actually in one of this trigger's
+    //                   cited filings
+    // Per claim, because one filing does several things: UHS's August 8-K
+    // repays a revolver AND names its 2026 notes in a ranking clause, and
+    // those two need opposite answers from the same document.
+    const verifiedRedeems: VerifiedRedeemsClaim[] = (v.redeems ?? []).map((claim) => {
+      const check = corroborateRedemptionStatus(claim.status, claim.sourceLine);
+      if (check.demotedReason) {
         log(
-          `  ⚠ REDEMPTION CLAIM UNVERIFIED for ${label} — "${v.redeems.instrument}" is claimed ${v.redeems.status ?? "(no status)"}, but its stated sourceLine is not in any cited filing. A claim that removes debt from the ladder must be found in the filing; nothing retired.`
-        );
-      } else if (v.redeems.status !== "completed") {
-        log(
-          `  redemption for ${label} is stated as ${JSON.stringify(v.redeems.status)} rather than completed — "${v.redeems.instrument}" stays on the ladder; an intent is not a retirement`
+          `  ⚠ REDEMPTION STATUS NOT CORROBORATED for ${label} — "${claim.instrument}" ${check.demotedReason}. Treated as INTENDED; the tranche stays on the ladder. An intention is not a completion.`
         );
       }
-    } else if (v.redeems) {
-      log(`  ⚠ REDEMPTION CLAIM WITHOUT EVIDENCE for ${label} — "${v.redeems.instrument}" carries no sourceLine; nothing retired.`);
+      const verified = !!claim.sourceLine && (v.citedUrls ?? []).some((url) => {
+        const text = textByUrl.get(url);
+        return !!text && createTextLocator(text).find(claim.sourceLine as string) !== null;
+      });
+      if (!claim.sourceLine) {
+        log(`  ⚠ REDEMPTION CLAIM WITHOUT EVIDENCE for ${label} — "${claim.instrument}" carries no sourceLine; nothing retired.`);
+      } else if (!verified) {
+        log(
+          `  ⚠ REDEMPTION CLAIM UNVERIFIED for ${label} — "${claim.instrument}" is claimed ${claim.status ?? "(no status)"}, but its stated sourceLine is not in any cited filing. A claim that removes debt from the ladder must be found in the filing; nothing retired.`
+        );
+      } else if (check.status !== "completed") {
+        log(
+          `  redemption for ${label} is stated as ${JSON.stringify(check.status)} rather than completed — "${claim.instrument}" stays on the ladder; an intent is not a retirement`
+        );
+      }
+      return { ...claim, status: check.status, verified };
+    });
+    if (verifiedRedeems.length > 1) {
+      log(
+        `  ${verifiedRedeems.length} redemption claim(s) for ${label}, judged independently — ${verifiedRedeems.map((r) => `${r.instrument}: ${r.status}${r.verified ? ", verified" : ", UNVERIFIED"}`).join("; ")}`
+      );
     }
+    v = { ...v, redeems: verifiedRedeems };
 
     const captionsVerified = verifyBalanceSheetCaptions(unitScoped.balanceSheetDebtCaptions, v.citedUrls ?? [], textByUrl, log, label);
     // Stage 4 — the anchor rule reaches the DENOMINATOR too. Stated total
@@ -989,7 +1006,7 @@ export async function runAgentLoop(
       result,
       dateGuard,
       textByUrl,
-      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, revolver, verifiedRedemption },
+      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, revolver },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
       { rowsExtracted, rowsVerified, baseRowsExtracted: v.scheduleSequence.length },
@@ -1916,7 +1933,6 @@ function finalize(
     priorScheduleSequence: VerifiedSequenceEntry[];
     issuedTranches: VerifiedIssuedTranche[];
     balanceSheetDebtCaptions: VerifiedBalanceSheetCaption[];
-    verifiedRedemption?: boolean;
   },
   debtScheduleBaseFiling: DebtScheduleFilingRef | null,
   debtSchedulePriorFiling: DebtScheduleFilingRef | null,
@@ -1961,8 +1977,7 @@ function finalize(
     baseRowsExtracted: rowAccounting.baseRowsExtracted,
     columnReadFailure,
     scheduleCompleteness,
-    redeems: v.redeems,
-    verifiedRedemption: debtFields.verifiedRedemption ?? false,
+    redeems: normalizeRedeems(v.redeems).map((c, i) => ({ ...c, verified: (v.redeems as VerifiedRedeemsClaim[])[i]?.verified ?? false })),
     issuedTranches: debtFields.issuedTranches,
     eventInstances: debtFields.eventInstances,
     noteRetirements: debtFields.noteRetirements,

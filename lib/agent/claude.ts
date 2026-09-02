@@ -241,6 +241,21 @@ export interface EventInstanceRow {
   sourceLine: string;
 }
 
+/** Normalises every historical shape of `redeems` — a bare string, a single object, or the array — into the array. */
+export function normalizeRedeems(raw: unknown): RedeemsClaim[] {
+  const one = (o: Record<string, unknown>): RedeemsClaim => ({
+    instrument: String(o.instrument ?? ""),
+    amount: (o.amount as string | null) ?? null,
+    status: (o.status as RedeemsClaim["status"]) ?? null,
+    sourceLine: (o.sourceLine as string | null) ?? null,
+  });
+  if (raw === null || raw === undefined) return [];
+  if (typeof raw === "string") return raw.trim() ? [{ instrument: raw, amount: null, status: null, sourceLine: null }] : [];
+  if (Array.isArray(raw)) return raw.filter((r): r is Record<string, unknown> => !!r && typeof r === "object").map(one).filter((r) => r.instrument !== "");
+  if (typeof raw === "object") return [one(raw as Record<string, unknown>)].filter((r) => r.instrument !== "");
+  return [];
+}
+
 /** Session 21, item 1d — a retirement this issuance claims, with the filing's own words for it. See REDEEMS_SCHEMA. */
 export interface RedeemsClaim {
   /** The instrument being retired, as the filing names it. */
@@ -388,7 +403,20 @@ export interface TriggerVerdict {
    * literally like every other claim in this schema, and states whether the
    * filing describes something done or something intended.
    */
-  redeems: RedeemsClaim | null;
+  /**
+   * SESSION 21, STAGE 3 — AN ARRAY, BECAUSE ONE ISSUANCE RETIRES MORE THAN
+   * ONE THING.
+   *
+   * This is the Session 18 one-slot fix reaching the last single-slot field
+   * in the schema. UHS's August 8-K does two things: it repays the
+   * outstanding borrowings under the revolving credit facility (a real,
+   * completed retirement) and it names the 2026 notes in a clause listing
+   * what the new notes rank alongside (not a retirement at all). A single
+   * slot holds one of them. Post-1d the model correctly refused the false
+   * one — and in doing so there was nowhere left to put the true one, so a
+   * confirmed $225 million repayment went unrendered.
+   */
+  redeems: RedeemsClaim[];
   /**
    * Session 18 — "new-debt-issuance" ONLY, empty array for every other
    * trigger. The row(s) for the tranche(s) THIS issuance just priced,
@@ -645,7 +673,9 @@ const VERDICT_ITEM_SCHEMA = {
     priorScheduleTableUnit: { type: ["string", "null"] },
     balanceSheetTableUnit: { type: ["string", "null"] },
     redeems: {
-      type: ["object", "null"],
+      type: "array",
+      items: {
+      type: "object",
       properties: {
         instrument: { type: "string" },
         amount: { type: ["string", "null"] },
@@ -653,6 +683,7 @@ const VERDICT_ITEM_SCHEMA = {
         sourceLine: { type: "string" },
       },
       required: ["instrument", "status", "sourceLine"],
+      },
     },
     issuedTranches: { type: "array", items: ISSUED_TRANCHE_SCHEMA },
     cashAmount: { type: ["string", "null"] },
@@ -717,7 +748,7 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
   - balanceSheetDebtCaptions: from the SAME base filing's own BALANCE SHEET — a different section of the same document from the debt note, not the note's own totals. Every debt-related line item that balance sheet actually prints (e.g. "Current portion of long-term debt," "Long-term debt," and, for some companies, a separate "Commercial paper" caption). This is NOT a fixed set of captions to fill in — read whichever ones THIS SPECIFIC company's balance sheet actually states; some companies split out finance leases separately, some fold commercial paper into a combined line, some have no separate short-term caption at all. Copy each caption's own label and amount verbatim (unit always attached), with sourceLine verified the same verbatim way as everything else. The balance sheet is comparative too — read ONLY the current-period column and record its header in that caption's own periodColumn, same rule and same code check as scheduleSequence above. Leave empty only if the balance sheet genuinely states no debt captions at all — should be rare.
 
 - redeems / issuedTranches — ONLY for the "new-debt-issuance" trigger. Leave both at their empty default (null, []) for every other trigger.
-  - redeems: the instrument THIS issuance retires, or null. This field REMOVES DEBT FROM THE LADDER, so it is held to the same standard as every other claim here: copy what the filing says, and give the sentence you copied it from.
+  - redeems: EVERY retirement this issuance states, as an array — one entry per instrument retired, and [] when it retires nothing. One filing routinely does several things at once: an 8-K may repay a revolver AND redeem a note AND state an intention about a third, and each is its own entry with its own status and its own evidence. Do not choose the most important; do not stop at one. This field REMOVES DEBT FROM THE LADDER, so it is held to the same standard as every other claim here: copy what the filing says, and give the sentence you copied it from.
     - instrument: the instrument being retired, as the filing names it.
     - amount: the amount retired, verbatim with its unit, when the filing states one. A partial call names a figure ("redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028") — the amount is the $400 million being redeemed, not the $800 million outstanding. Null when the filing states no figure.
     - status: "completed" when the filing describes the retirement as something that HAS HAPPENED ("we redeemed all $1.500 billion aggregate principal amount of...", "repaid in full at maturity"). "intended" when it describes a plan, an expectation, or a use of proceeds ("intends to use the net proceeds ... to finance ... the redemption of..."). The difference is the whole point of the field: an intent is not a retirement, and a tranche is not removed from a company's debt because somebody said they meant to pay it.
@@ -920,12 +951,10 @@ export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
     // description with no evidence and no status. It is normalised to the
     // object shape with BOTH missing, which is precisely what it is — an
     // unverified claim — and the position layer will not retire on it.
-    redeems:
-      typeof v.redeems === "string"
-        ? { instrument: v.redeems, amount: null, status: null, sourceLine: null }
-        : v.redeems
-          ? { instrument: v.redeems.instrument, amount: v.redeems.amount ?? null, status: v.redeems.status ?? null, sourceLine: v.redeems.sourceLine ?? null }
-          : null,
+    // Legacy shapes normalise INTO the array, and an old bare string keeps
+    // arriving as what it always was: a claim with no evidence and no
+    // status, which nothing will act on.
+    redeems: normalizeRedeems(v.redeems),
     issuedTranches: (v.issuedTranches ?? []).map(normalizeRow),
     cashAmount: v.cashAmount ?? null,
     projectName: v.projectName ?? null,

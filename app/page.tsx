@@ -492,6 +492,25 @@ export default function Home() {
             )}
           </>
         )}
+        {/* SESSION 21 — intentions stated BEFORE the anchor. Not Tier 2: the
+            anchor's own balance sheet already reflects whatever became of
+            them. Shown because for a filer with no ladder rows this is the
+            only instrument-level signal there is. */}
+        {refi.priorIntentions.length > 0 && (
+          <ul className={styles.tableLineList}>
+            {refi.priorIntentions.map((i, n) => (
+              <li key={`intent-${n}`} className={styles.tableLine}>
+                <span className={styles.tableLineBullet}>·</span>
+                <span className={styles.tableLineText}>
+                  stated intention to repay {i.amount ?? "an unstated amount"} of {i.instrument}, from a filing dated {i.date ?? "(undated)"} — BEFORE this
+                  anchor, so whatever became of it is already inside the balance sheet above; it is not an event since the anchor
+                  <br />
+                  <em>&ldquo;{i.sourceLine}&rdquo;</em>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
         {/* SESSION 21, 2d — the filer's own contractual maturity ladder, as a
             FLOOR beneath the transcribed one. Renders wherever the filer tags
             it, so no company shows nothing; absent where it does not, with
