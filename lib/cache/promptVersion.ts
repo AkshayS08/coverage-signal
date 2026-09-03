@@ -541,8 +541,28 @@
  * Legacy shapes — a bare string, a single object — normalise into the array
  * with status and sourceLine null, which is an unverified claim and is what
  * they always were.
+ *
+ * v28 (Session 21, Rule 22) — THE SCHEMA WITHHOLDS THE FIELD THE SOURCE DOES
+ * NOT HAVE. When the located debt disclosure prints no comma-grouped figure
+ * anywhere it cannot be a table of balances, and scheduleSequence,
+ * priorScheduleSequence and both table-unit fields are REMOVED from the
+ * schema the model is shown — not discouraged in prose.
+ * This is the fix for a reproducibility defect, not an accuracy one. The
+ * routing rule was already correct and already stated, and compliance with
+ * it varied between runs on byte-identical instructions: UHS returned nine
+ * prose instruments and 98% coverage at v26 and one instrument and 10% at
+ * v27, with every mis-routed row correctly dropped by the note-span and
+ * amount bounds. An instruction is a request; a schema is a fact.
+ * The measurement it rests on became possible only once the note boundary
+ * stopped at the debt disclosure (debtContent.ts): on the un-narrowed span
+ * all thirteen of UHS's comma-grouped figures belong to a foreign-currency
+ * table and a cash reconciliation sharing its Treasury note, and three
+ * separate framings each read a prose-only note as tabular.
+ * Threshold is ZERO, not three: the field is withdrawn only on unambiguous
+ * absence. Molina prints one grouped figure, keeps both fields, and keeps
+ * its passing Check 1.
  */
-export const EXTRACTION_PROMPT_VERSION = 27;
+export const EXTRACTION_PROMPT_VERSION = 28;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.
