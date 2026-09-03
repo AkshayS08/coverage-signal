@@ -1028,6 +1028,8 @@ export async function classifyAllTriggers(params: {
   catalog: FilingCatalogEntry[];
   corpus: CorpusDoc[];
   debtScheduleGuidance: DebtScheduleFilingGuidance;
+  /** Rule 22: false withholds the schedule field from the schema entirely. */
+  anchorNoteTabular?: boolean;
 }): Promise<TriggerVerdict[]> {
   try {
     return await attemptClassifyAllTriggers(params);
@@ -1037,14 +1039,43 @@ export async function classifyAllTriggers(params: {
   }
 }
 
+/**
+ * SESSION 21, RULE 22 — A FIELD THE MODEL MAY FILL MUST BE A FIELD THE
+ * SOURCE STRUCTURALLY HAS.
+ *
+ * When the located debt disclosure prints no comma-grouped figure anywhere
+ * it cannot be a table of balances, and `scheduleSequence` is not offered at
+ * all — removed from the schema the model is shown, not argued against in
+ * prose. This is the difference the whole stage turns on: the routing RULE
+ * was already correct and stated, and compliance with it varied between runs
+ * on byte-identical instructions (UHS at v26 returned nine prose instruments
+ * and 98% coverage; at v27, one and 10%). An instruction is a request. A
+ * schema is a fact.
+ *
+ * The tabular case is untouched: both fields are offered and the existing
+ * per-source rule routes within the note.
+ */
+export function verdictSchemaFor(tabular: boolean): typeof VERDICT_ITEM_SCHEMA {
+  if (tabular) return VERDICT_ITEM_SCHEMA;
+  const properties = { ...VERDICT_ITEM_SCHEMA.properties } as Record<string, unknown>;
+  delete properties.scheduleSequence;
+  delete properties.priorScheduleSequence;
+  delete properties.scheduleTableUnit;
+  delete properties.priorScheduleTableUnit;
+  return { ...VERDICT_ITEM_SCHEMA, properties } as typeof VERDICT_ITEM_SCHEMA;
+}
+
 async function attemptClassifyAllTriggers(params: {
   companyName: string;
   triggers: TriggerDef[];
   catalog: FilingCatalogEntry[];
   corpus: CorpusDoc[];
   debtScheduleGuidance: DebtScheduleFilingGuidance;
+  /** False when the anchor's debt disclosure prints no grouped figure — the schedule field is then not offered at all. */
+  anchorNoteTabular?: boolean;
 }): Promise<TriggerVerdict[]> {
   const { companyName, triggers, catalog, corpus, debtScheduleGuidance } = params;
+  const tabular = params.anchorNoteTabular !== false;
 
   const userContent = [
     `Company: ${companyName}`,
@@ -1053,6 +1084,9 @@ async function attemptClassifyAllTriggers(params: {
     formatTriggers(triggers),
     ``,
     formatDebtScheduleGuidance(debtScheduleGuidance),
+    tabular
+      ? ``
+      : `## This filer's debt note is NOT a table\n\nThe located debt note prints no comma-grouped figure anywhere in its debt disclosure: it states its instruments in sentences and bullets, in words ("$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026"). There is no schedule to transcribe and the scheduleSequence field has been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nEvery instrument this note states is a proseInstruments entry, one per instrument, with its amount copied in the unit the note prints it in. That is the complete and correct answer for a filer of this shape, not a degraded one.`,
     ``,
     `## Full filing catalog (available for digging; not all are excerpted below)`,
     formatCatalog(catalog),
@@ -1097,7 +1131,7 @@ async function attemptClassifyAllTriggers(params: {
         input_schema: {
           type: "object",
           properties: {
-            results: { type: "array", items: VERDICT_ITEM_SCHEMA },
+            results: { type: "array", items: verdictSchemaFor(tabular) },
           },
           required: ["results"],
         },

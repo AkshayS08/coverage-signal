@@ -545,7 +545,7 @@ export async function runAgentLoop(
   // must still verify, not be falsely dropped because of a prompt-cost
   // bound that has nothing to do with whether the claim is real.
   const textByUrl = new Map<string, string>();
-  const debtNoteStatusByFiling: { form: string; filingDate: string; reportDate: string; url: string; status: DebtNoteFilingStatus }[] = [];
+  const debtNoteStatusByFiling: { form: string; filingDate: string; reportDate: string; url: string; status: DebtNoteFilingStatus; tabular?: boolean }[] = [];
   // C3 — set when EVERY transcribed base-ladder entry was discarded for
   // stating the wrong period column. That is a read failure, and it must not
   // be confused with the filing having no schedule (see the search-order
@@ -568,10 +568,11 @@ export async function runAgentLoop(
     textByUrl.set(filing.primaryDocUrl, fullText);
     if (extraction.noteSpan) noteSpanByUrl.set(filing.primaryDocUrl, extraction.noteSpan);
     if (filing.form === "10-Q" || filing.form === "10-K") {
-      debtNoteStatusByFiling.push({ form: filing.form, filingDate: filing.filingDate, reportDate: filing.reportDate, url: filing.primaryDocUrl, status: extraction.debtNoteStatus });
+      debtNoteStatusByFiling.push({ form: filing.form, filingDate: filing.filingDate, reportDate: filing.reportDate, url: filing.primaryDocUrl, status: extraction.debtNoteStatus, tabular: extraction.debtNoteTabular });
       log(
         `  debt-note locator: ${filing.form} ${filing.filingDate} → ${extraction.debtNoteStatus}` +
-          (extraction.matchCount !== undefined ? ` (${extraction.matchCount} matches)` : "")
+          (extraction.matchCount !== undefined ? ` (${extraction.matchCount} matches)` : "") +
+          (extraction.debtNoteTabular === undefined ? "" : extraction.debtNoteTabular ? " [tabular]" : " [PROSE-ONLY — the schedule field is withheld from the schema for this filer]")
       );
     }
   }
@@ -665,6 +666,10 @@ export async function runAgentLoop(
         catalog,
         corpus,
         debtScheduleGuidance,
+        // Rule 22: when the anchor's debt disclosure is not a table, the
+        // schedule field is withheld from the schema entirely rather than
+        // argued against in the prompt.
+        anchorNoteTabular: anchorCandidates[0]?.tabular,
       })
   );
   log(`  answer cache ${baseHit ? "HIT" : "MISS"} (base classification, fingerprint ${fingerprint.slice(0, 8)})`);

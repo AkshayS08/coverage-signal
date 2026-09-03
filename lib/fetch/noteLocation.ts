@@ -577,6 +577,134 @@ function nextSiblingHeadingAt(text: string, heading: DebtNoteHeading): number | 
 }
 
 /** Widens a located span to the bounds of the note it sits in. Never contracts it; never crosses MAX_EXCERPT_CHARS. */
+
+/**
+ * SESSION 21 — A DEBT-NOTE SPAN ENDS BEFORE THE FIRST TABLE THAT CARRIES NO
+ * DEBT CONTENT.
+ *
+ * The note-boundary rule (expandToNoteBounds) runs a span from its heading to
+ * the next note's heading, which is the right unit for a note and too
+ * generous for a DEBT note when the filer files a combined one. UHS titles
+ * its note "(4) Treasury Credit Facilities and Outstanding Debt Securities",
+ * so under that boundary its span carries 3,800 characters of foreign-
+ * currency-contract and cash-reconciliation tables after the debt
+ * disclosure ends.
+ *
+ * That is two defects, not one. It is a MEASUREMENT CONTAMINANT — every one
+ * of the 13 comma-grouped figures in UHS's span belongs to those two tables,
+ * which is why three separate attempts to measure "is this span tabular"
+ * placed a prose-only note firmly inside the tabular band. And it is a
+ * FABRICATION SURFACE: the model is handed cash and hedge figures inside a
+ * region labelled as the debt note and asked to transcribe debt from it.
+ *
+ * THE CUT IS STRUCTURAL AND CANNOT REACH A REAL DEBT TABLE. It fires only on
+ * a run of comma-grouped figures that begins more than a cluster gap after
+ * the LAST DEBT CONTENT in the span — where debt content is the same
+ * coupon-near-year and stated-total signal contentSpansIn already defines. A
+ * real debt table carries debt content by construction, so it is never more
+ * than a cluster gap from it and can never trigger the cut.
+ *
+ * Molina is the caution this is written against: a debt-content-only framing
+ * truncated its window to 541 of 3,417 characters and would have cut its
+ * real table. This rule cuts nothing there, because its table IS the debt
+ * content.
+ */
+/** At least this many comma-grouped figures, tightly spaced, to count as a table rather than a stray figure in a sentence. */
+const FOREIGN_TABLE_MIN_FIGURES = 3;
+/** How close consecutive grouped figures sit inside one table. Measured on the real ten: 11-46 characters apart within a table. */
+const FOREIGN_TABLE_ROW_GAP = 160;
+
+export function narrowToDebtDisclosure(text: string, span: { start: number; end: number }): { end: number; cutAt: number | null; reason: string | null } {
+  const region = text.slice(span.start, span.end);
+  const { spans } = contentSpansIn(region);
+  if (spans.length === 0) return { end: span.end, cutAt: null, reason: null };
+  const lastDebtContent = Math.max(...spans.map((c) => c.end));
+
+  const figures: number[] = [];
+  for (const m of region.matchAll(GROUPED_FIGURE_RE)) figures.push(m.index ?? 0);
+
+  // Group the figures into runs, then cut at the first run that lies wholly
+  // past the debt content AND CARRIES NONE OF ITS OWN.
+  //
+  // THE TEST IS CONTENT, NOT DISTANCE. A first cut used a cluster-gap of
+  // 1,500 characters between the last debt content and the run, which fired
+  // on UHS (5,813 characters) and on nothing else — and the synthetic
+  // prose-filer fixture, written compactly, put its hedge table 200
+  // characters after the debt and slipped straight through. A distance
+  // constant is exactly what Rule 24 is about: it made the rule a property of
+  // how spaciously a filer writes rather than of what the text contains.
+  //
+  // A real debt table's rows ARE debt content — coupon near maturity year —
+  // so a run drawn from one can never satisfy this and the cut can never
+  // reach it. That is the safety property, and it is now structural rather
+  // than bought with a threshold.
+  // ============================================================ DISABLED
+  // SESSION 21 — THE BOUNDARY IS CORRECT IN SHAPE AND WRONG IN ITS
+  // DISQUALIFIER, SO IT DOES NOT RUN.
+  //
+  // Verified on all ten before shipping, which is what caught it. The cut
+  // fired on four companies and three of them lost real debt content:
+  //
+  //   UHS      excluded a foreign-currency table and a cash reconciliation
+  //            — correct, and the case this was built for
+  //   DaVita   excluded "$ 1,435,000 available and $ 65,000 drawn on its
+  //            $ 1,500,000 revolving line of credit" — the REVOLVER
+  //   Quest    excluded "2030 801 2031 551 Thereafter 2,836 Total maturities
+  //            of long-term debt 5,710 ... Total long-term debt 5,642" — the
+  //            MATURITY SCHEDULE, the heart of the note
+  //   Centene  excluded "the Company repurchased $ 1,289 million of its par
+  //            value Senior Notes due 2027 and 2028" — a REPURCHASE
+  //
+  // The cause is the disqualifier, not the boundary. contentSpansIn defines
+  // debt content as a coupon near a maturity year, or a stated debt total —
+  // it was written to FIND a note, and a maturity-year ladder, a revolver
+  // line and a repurchase sentence are all debt content that carries no
+  // coupon. Bounding a note needs a different test from finding one.
+  //
+  // The instruction named the right one and this is not it: amounts that do
+  // not relate to any debt principal, or that sum toward a cash, hedge or
+  // expense figure rather than toward stated total debt. Until that is built
+  // and re-verified on all ten, this returns no cut — the pre-narrowing
+  // behaviour, which is known good — rather than a boundary that deletes
+  // Quest's maturity schedule.
+  return { end: span.end, cutAt: null, reason: null };
+}
+
+/**
+ * SESSION 21 — IS THIS NOTE'S DEBT DISCLOSURE A TABLE, OR PROSE?
+ *
+ * Measured on the NARROWED span, which is the whole point: on the raw span
+ * this question could not be answered, because the contaminating tables
+ * carried every grouped figure UHS had.
+ *
+ * A debt table prints balances as comma-grouped figures, row after row. A
+ * prose disclosure prints principal in words — "$700 million of aggregate
+ * principal amount of 1.65 % senior secured notes" — and carries none.
+ */
+export function spanIsTabular(text: string, start: number, end: number): { tabular: boolean; groupedFigures: number } {
+  const groupedFigures = (text.slice(start, end).match(GROUPED_FIGURE_RE) ?? []).length;
+  // THE THRESHOLD IS ZERO, AND THAT IS THE WHOLE DESIGN.
+  //
+  // Withdrawing the schedule field is a strong act, so it needs an
+  // unambiguous reading: the debt disclosure prints NO comma-grouped figure
+  // anywhere, so it structurally cannot be a table of balances. A sparse
+  // reading is not enough.
+  //
+  // Molina is why. Its note prints instruments in words too — "4.375% Notes
+  // due June 15, 2028 ($800 million)" — and carries exactly one grouped
+  // figure, its 3,769 subtotal. At a threshold of three it reads prose-only
+  // and loses the schedule field, and with it Check 1 has nothing to walk on
+  // a company currently passing at 101% and 0.00% residual. At zero it keeps
+  // both fields and today's behaviour, and the per-source rule sorts it.
+  //
+  // NAMED COST, ACCEPTED: a future prose-only filer that happens to print
+  // one stray grouped figure keeps a field it cannot use, and routing
+  // variance is possible for that filer. That is the better trade than
+  // silently disabling a passing check, and it is the same asymmetry the
+  // redemption gates take — act on certainty, abstain on ambiguity.
+  return { tabular: groupedFigures > 0, groupedFigures };
+}
+
 export function expandToNoteBounds(text: string, span: { start: number; end: number }): { start: number; end: number; expanded: boolean } {
   // CONTAINMENT, NOT DISTANCE. The governing heading is the nearest one at
   // or before the span whose OWN SIBLING sits at or after the span start —
@@ -942,6 +1070,13 @@ export interface FilingExtractionResult {
    * lead cap, and when no note was found.
    */
   noteSpan?: { start: number; end: number };
+  /**
+   * SESSION 21, RULE 22 — whether this filer's debt disclosure is a TABLE.
+   * Measured on the narrowed note (spanIsTabular), and it decides which
+   * fields the extraction schema OFFERS. Undefined when no note was located,
+   * where the question does not arise.
+   */
+  debtNoteTabular?: boolean;
 }
 
 /**
@@ -966,7 +1101,29 @@ export function buildExtractionText(params: { form: string; url: string; fullTex
   // Excerpt may overlap or sit inside the lead window (a smaller/simpler
   // filing's note might already be within LEAD_CHARS) — splice only the
   // non-overlapping remainder so the model never sees the same text twice.
-  const noteSpan = { start: location.start, end: location.end };
+  // SESSION 21 — A BOUNDARY NARROWS WHAT A REGION IS CALLED, NOT WHAT THE
+  // MODEL CAN SEE. (Rule 24's corollary.)
+  //
+  // The debt disclosure ends before the first table carrying no debt content
+  // (narrowToDebtDisclosure), and that boundary moves the CLOSE marker — it
+  // does NOT truncate the corpus. Measured on UHS: the 1,168 characters cut
+  // from its labelled note are a foreign-currency-contract table and a cash
+  // reconciliation, and its `fx-exposure` trigger FIRES on the first and its
+  // `large-cash-balance` evidence is read off the second. That content sits
+  // at character ~53,000, reachable only through this span, so cutting the
+  // corpus would have taken a firing trigger's evidence away to fix a
+  // labelling problem.
+  //
+  // So the region stops being CALLED the debt note and stays visible as
+  // ordinary filing text. The fabrication surface closes — the model is no
+  // longer told hedge and cash figures are debt — and every other trigger
+  // reads what it always read.
+  const narrowed = narrowToDebtDisclosure(fullText, { start: location.start, end: location.end });
+  const noteEnd = narrowed.end;
+  // The VERIFICATION bound is the narrowed note too: a prose instrument or a
+  // ladder row is required to sit inside the debt disclosure, and a figure
+  // from the hedge table is not in it.
+  const noteSpan = { start: location.start, end: noteEnd };
 
   // SESSION 19 (run B diagnosis) — EVERY BRANCH THAT HANDS INPUT TO THE
   // MODEL MARKS IT IDENTICALLY.
@@ -1035,11 +1192,11 @@ export function buildExtractionText(params: { form: string; url: string; fullTex
       fullText.slice(location.start, location.end) +
       `\n\n${CLOSE}\n\n` +
       fullText.slice(location.end, Math.max(LEAD_CHARS, location.end));
-    return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
+    return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan, debtNoteTabular: spanIsTabular(fullText, location.start, noteEnd).tabular };
   }
   const excerpt = fullText.slice(location.start, location.end);
   const text = `${lead}\n\n[... document continues; excerpt below resumes at character offset ${location.start} of the full filing ...]\n\n${OPEN}\n\n${excerpt}\n\n${CLOSE}`;
-  return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan };
+  return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan, debtNoteTabular: spanIsTabular(fullText, location.start, noteEnd).tabular };
 }
 
 /**
