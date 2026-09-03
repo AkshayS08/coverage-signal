@@ -43,6 +43,7 @@
 // verifyQuote.ts's own glyph table and the two had already drifted apart in
 // both directions — see that table's comment.
 import { VULGAR_FRACTION_CLASS } from "../agent/verifyQuote";
+import { printedFigures, runIsNonDebtTable, figureIsDebtContent, type DebtContentContext, type PrintedFigure } from "./debtContent";
 
 /**
  * Session 18 (post-v16) — THE DEBT-NOTE HEADING ASSERTION.
@@ -614,60 +615,67 @@ const FOREIGN_TABLE_MIN_FIGURES = 3;
 /** How close consecutive grouped figures sit inside one table. Measured on the real ten: 11-46 characters apart within a table. */
 const FOREIGN_TABLE_ROW_GAP = 160;
 
-export function narrowToDebtDisclosure(text: string, span: { start: number; end: number }): { end: number; cutAt: number | null; reason: string | null } {
+export function narrowToDebtDisclosure(
+  text: string,
+  span: { start: number; end: number },
+  xbrlStatedTotal: number | null = null
+): { end: number; cutAt: number | null; reason: string | null } {
   const region = text.slice(span.start, span.end);
   const { spans } = contentSpansIn(region);
   if (spans.length === 0) return { end: span.end, cutAt: null, reason: null };
-  const lastDebtContent = Math.max(...spans.map((c) => c.end));
+  const lastCoupon = Math.max(...spans.map((c) => c.end));
 
-  const figures: number[] = [];
-  for (const m of region.matchAll(GROUPED_FIGURE_RE)) figures.push(m.index ?? 0);
+  const figs = printedFigures(region);
+  if (figs.length === 0) return { end: span.end, cutAt: null, reason: null };
 
-  // Group the figures into runs, then cut at the first run that lies wholly
-  // past the debt content AND CARRIES NONE OF ITS OWN.
+  // Everything printed at or before the last coupon-near-maturity match is
+  // the note's established debt disclosure. Its figures become the
+  // known-debt set, so the same balance restated later in prose is
+  // recognised rather than cut.
+  const ctx: DebtContentContext = {
+    xbrlStatedTotal,
+    knownDebtFigures: new Set(figs.filter((f) => f.at <= lastCoupon).map((f) => f.value)),
+    couponSites: spans.map((c) => c.start),
+  };
+
+  // Walk forward through the figures that follow the debt disclosure,
+  // grouping adjacent ones into runs, and cut at the first run that is a
+  // non-debt table by the definition in debtContent.ts.
+  const after = figs.filter((f) => f.at > lastCoupon);
+  let run: PrintedFigure[] = [];
+  const consider = (r: PrintedFigure[]): { end: number; cutAt: number | null; reason: string | null } | null => {
+    if (r.length < FOREIGN_TABLE_MIN_FIGURES) return null;
+    const verdict = runIsNonDebtTable(r, ctx);
+    if (!verdict.nonDebt) return null;
+    return {
+      end: span.start + r[0].at,
+      cutAt: span.start + r[0].at,
+      reason:
+        `a run of ${r.length} figures past the debt disclosure, none of which relates to this filer's debt — ` +
+        (verdict.sumsTo !== null
+          ? `they close on their own subtotal of ${verdict.sumsTo.toLocaleString("en-US")}, which is not the stated total debt`
+          : `no coupon beside any of them, no match to the stated total at any scale, and none restated from the note's own debt disclosure`),
+    };
+  };
+  // A RUN BREAKS ON DEBT CONTENT, NOT ON DISTANCE.
   //
-  // THE TEST IS CONTENT, NOT DISTANCE. A first cut used a cluster-gap of
-  // 1,500 characters between the last debt content and the run, which fired
-  // on UHS (5,813 characters) and on nothing else — and the synthetic
-  // prose-filer fixture, written compactly, put its hedge table 200
-  // characters after the debt and slipped straight through. A distance
-  // constant is exactly what Rule 24 is about: it made the rule a property of
-  // how spaciously a filer writes rather than of what the text contains.
-  //
-  // A real debt table's rows ARE debt content — coupon near maturity year —
-  // so a run drawn from one can never satisfy this and the cut can never
-  // reach it. That is the safety property, and it is now structural rather
-  // than bought with a threshold.
-  // ============================================================ DISABLED
-  // SESSION 21 — THE BOUNDARY IS CORRECT IN SHAPE AND WRONG IN ITS
-  // DISQUALIFIER, SO IT DOES NOT RUN.
-  //
-  // Verified on all ten before shipping, which is what caught it. The cut
-  // fired on four companies and three of them lost real debt content:
-  //
-  //   UHS      excluded a foreign-currency table and a cash reconciliation
-  //            — correct, and the case this was built for
-  //   DaVita   excluded "$ 1,435,000 available and $ 65,000 drawn on its
-  //            $ 1,500,000 revolving line of credit" — the REVOLVER
-  //   Quest    excluded "2030 801 2031 551 Thereafter 2,836 Total maturities
-  //            of long-term debt 5,710 ... Total long-term debt 5,642" — the
-  //            MATURITY SCHEDULE, the heart of the note
-  //   Centene  excluded "the Company repurchased $ 1,289 million of its par
-  //            value Senior Notes due 2027 and 2028" — a REPURCHASE
-  //
-  // The cause is the disqualifier, not the boundary. contentSpansIn defines
-  // debt content as a coupon near a maturity year, or a stated debt total —
-  // it was written to FIND a note, and a maturity-year ladder, a revolver
-  // line and a repurchase sentence are all debt content that carries no
-  // coupon. Bounding a note needs a different test from finding one.
-  //
-  // The instruction named the right one and this is not it: amounts that do
-  // not relate to any debt principal, or that sum toward a cash, hedge or
-  // expense figure rather than toward stated total debt. Until that is built
-  // and re-verified on all ten, this returns no cut — the pre-narrowing
-  // behaviour, which is known good — rather than a boundary that deletes
-  // Quest's maturity schedule.
-  return { end: span.end, cutAt: null, reason: null };
+  // Grouping by proximity merged the sentence "the average outstanding
+  // borrowings under our revolving credit, term loan B and senior notes were
+  // approximately $ 5.4 billion" — which relates to debt principal and is
+  // debt content — into the hedge table 91 characters after it, and one debt
+  // figure in the run made the whole run debt. A run is a maximal sequence
+  // of figures NONE of which passes a positive test, which is the
+  // definition, stated directly.
+  for (const f of after) {
+    if (figureIsDebtContent(f, ctx).debt) {
+      const cut = consider(run);
+      if (cut) return cut;
+      run = [];
+      continue;
+    }
+    run.push(f);
+  }
+  return consider(run) ?? { end: span.end, cutAt: null, reason: null };
 }
 
 /**
@@ -1089,7 +1097,18 @@ export interface FilingExtractionResult {
  * for SOME of a company's filings, not a per-filing failure. The caller is
  * responsible for the company-level check (assertCompanyHasLocatableDebtNote).
  */
-export function buildExtractionText(params: { form: string; url: string; fullText: string }): FilingExtractionResult {
+export function buildExtractionText(params: {
+  form: string;
+  url: string;
+  fullText: string;
+  /**
+   * The filer's own XBRL stated total debt, when known. The debt-note
+   * boundary relates the figures it sees to this and to nothing else — see
+   * debtContent.ts's circularity guard. Absent, the boundary abstains and
+   * cuts nothing, which is the safe direction.
+   */
+  xbrlStatedTotal?: number | null;
+}): FilingExtractionResult {
   const { form, fullText } = params;
   if (fullText.length <= LEAD_CHARS) return { text: fullText, debtNoteStatus: "under_cap" };
   if (form !== "10-Q" && form !== "10-K") return { text: fullText.slice(0, LEAD_CHARS), debtNoteStatus: "not_applicable" };
@@ -1118,7 +1137,7 @@ export function buildExtractionText(params: { form: string; url: string; fullTex
   // ordinary filing text. The fabrication surface closes — the model is no
   // longer told hedge and cash figures are debt — and every other trigger
   // reads what it always read.
-  const narrowed = narrowToDebtDisclosure(fullText, { start: location.start, end: location.end });
+  const narrowed = narrowToDebtDisclosure(fullText, { start: location.start, end: location.end }, params.xbrlStatedTotal ?? null);
   const noteEnd = narrowed.end;
   // The VERIFICATION bound is the narrowed note too: a prose instrument or a
   // ladder row is required to sit inside the debt disclosure, and a figure

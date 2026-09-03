@@ -561,9 +561,18 @@ export async function runAgentLoop(
   // is really a cash-flow line or a narrative mention. Only 10-Q/10-K
   // filings have one; an 8-K has no note to locate.
   const noteSpanByUrl = new Map<string, { start: number; end: number }>();
+  // SESSION 21 — the debt-note BOUNDARY needs the filer's own stated total,
+  // and it runs while the corpus is built, so the XBRL read moves ahead of
+  // classification. One cached HTTP call, at the newest periodic filing's own
+  // period end; absent, the boundary abstains and cuts nothing.
+  const newestPeriodic = [...baseline]
+    .filter((f) => f.form === "10-Q" || f.form === "10-K")
+    .sort((a, b) => b.filingDate.localeCompare(a.filingDate))[0];
+  const anchorXbrl = newestPeriodic ? await fetchXbrlDebtTotal(filingsResult.cik, newestPeriodic.reportDate) : null;
+
   for (const filing of baseline) {
     const { text: fullText } = await readFiling(filing.primaryDocUrl);
-    const extraction = buildExtractionText({ form: filing.form, url: filing.primaryDocUrl, fullText });
+    const extraction = buildExtractionText({ form: filing.form, url: filing.primaryDocUrl, fullText, xbrlStatedTotal: anchorXbrl?.total ?? null });
     corpus.push({ form: filing.form, filingDate: filing.filingDate, url: filing.primaryDocUrl, text: extraction.text });
     textByUrl.set(filing.primaryDocUrl, fullText);
     if (extraction.noteSpan) noteSpanByUrl.set(filing.primaryDocUrl, extraction.noteSpan);

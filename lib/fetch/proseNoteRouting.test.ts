@@ -12,14 +12,13 @@
  * If this passes and UHS regresses, the rule is right and something else
  * broke. If this fails, the rule is wrong. That separation is the point.
  *
- * STATUS: [1c] AND [2a] FAIL ON PURPOSE, AND ARE NOT IN THE OFFLINE SUITE.
- * They are the acceptance test for a boundary that is not built. The
- * ten-company verification caught the first attempt removing real debt
- * content from three filers — DaVita's revolver, Quest's maturity schedule,
- * Centene's repurchase — so narrowToDebtDisclosure returns no cut and this
- * fixture records the gap instead of hiding it. When the disqualifier is
- * right (amounts that do not relate to any debt principal, rather than
- * amounts carrying no coupon), these two pass and the file joins the suite.
+ * HISTORY WORTH KEEPING: [1c] and [2a] failed for two rounds. The first
+ * boundary cut on a coupon-contiguity test and removed real debt content
+ * from three filers — DaVita's revolver, Quest's maturity schedule,
+ * Centene's repurchase — because a maturity-year ladder, a facility balance
+ * and a repurchase all carry no coupon. The second cut on a 1,500-character
+ * distance, which fired on UHS and let this compactly-written fixture
+ * through at 200. Both are recorded in the assertions below.
  *
  * Run: npx tsx lib/fetch/proseNoteRouting.test.ts
  */
@@ -32,6 +31,14 @@ function assert(c: boolean, label: string) {
   if (c) { console.log(`  ✓ PASS — ${label}`); passed++; }
   else { console.error(`  ✗ FAIL — ${label}`); failed++; failures.push(label); }
 }
+
+/**
+ * Meridian's own XBRL stated total debt: term loan B $2.111B + revolver drawn
+ * $111M + $3.3B of senior notes + $55M of sale-leaseback liabilities. The
+ * boundary is allowed the filer's own tags and the figures printed in the
+ * span, and nothing else — see debtContent.ts's circularity guard.
+ */
+const MERIDIAN_XBRL_TOTAL = 5_577_000_000;
 
 /** A prose-only debt note, followed by a hedge table sharing the same note. */
 const PROSE_FILER =
@@ -59,7 +66,7 @@ console.log("\n=== [1] The locator finds the note, and the note ends before the 
   const loc = locateDebtNoteSection(PROSE_FILER);
   assert(loc.status === "found", `[1a] a bulleted disclosure is still a locatable debt note (${loc.status})`);
   if (loc.status !== "found") process.exit(1);
-  const n = narrowToDebtDisclosure(PROSE_FILER, { start: loc.start, end: loc.end });
+  const n = narrowToDebtDisclosure(PROSE_FILER, { start: loc.start, end: loc.end }, MERIDIAN_XBRL_TOTAL);
   const kept = PROSE_FILER.slice(loc.start, n.end);
   assert(kept.includes("$ 55 million"),
     "[1b] the boundary KEEPS the sale-leaseback liability, which is debt content stated in prose with no coupon anywhere near it — the cut must not be a coupon-contiguity rule in disguise");
@@ -70,7 +77,7 @@ console.log("\n=== [1] The locator finds the note, and the note ends before the 
 console.log("\n=== [2] Measured on the narrowed note, this filer is prose-only ===");
 {
   const loc = locateDebtNoteSection(PROSE_FILER) as { status: "found"; start: number; end: number };
-  const n = narrowToDebtDisclosure(PROSE_FILER, { start: loc.start, end: loc.end });
+  const n = narrowToDebtDisclosure(PROSE_FILER, { start: loc.start, end: loc.end }, MERIDIAN_XBRL_TOTAL);
   const wide = spanIsTabular(PROSE_FILER, loc.start, loc.end);
   const narrow = spanIsTabular(PROSE_FILER, loc.start, n.end);
   assert(narrow.groupedFigures === 0 && narrow.tabular === false,
