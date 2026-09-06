@@ -11,6 +11,10 @@ import {
   BUCKET_LABELS,
   BUCKET_TRIGGER_COUNTS,
   formatMoneyForDisplay,
+  assemblePosition,
+  buildDerivedLines,
+  runDateLabel,
+  type DerivedBlock,
   type FlashCard,
   type FlashCardActiveItem,
   type TableLine,
@@ -119,7 +123,37 @@ export default function Home() {
   // ATTEMPTS; what failed is named where the count is.
   const [failures, setFailures] = useState<{ company: string; message: string }[]>([]);
 
-  const { flashCardCandidates } = useMemo(() => buildEvents(results), [results]);
+  // SESSION 21, STAGE 5 — ONE CLOCK, PINNED AT THE RUN.
+  //
+  // This called buildEvents(results) with no date, so every re-render built a
+  // fresh `new Date()` while the surface displayed the asOfDate pinned when
+  // the run started. Two clocks deciding one thing — the Session 18 defect
+  // that was fixed inside the position layer and survived here, at the call
+  // site. Derived lines compute month counts against this date, so it is now
+  // passed explicitly everywhere it is used.
+  const { flashCardCandidates } = useMemo(
+    () => (asOfDate ? buildEvents(results, asOfDate) : buildEvents(results)),
+    [results, asOfDate]
+  );
+
+  // Derived lines: arithmetic over verified fields, computed here, never
+  // narrated. Keyed by card id.
+  const derivedByCard = useMemo(() => {
+    const asOf = asOfDate ?? new Date();
+    const out: Record<string, DerivedBlock> = {};
+    for (const card of flashCardCandidates) {
+      const result = results.find((r) => r.cik === card.cik);
+      if (!result) continue;
+      out[card.id] = buildDerivedLines({
+        card,
+        position: assemblePosition(result, asOf),
+        debtMaturity: result.results.find((t) => t.triggerId === "debt-maturity"),
+        newDebtIssuance: result.results.find((t) => t.triggerId === "new-debt-issuance"),
+        asOf,
+      });
+    }
+    return out;
+  }, [flashCardCandidates, results, asOfDate]);
 
   // Session 15b Part A: the portfolio table renders per TRIGGER (its own
   // bucket), not per buildEvents.ts cluster — computed from `results`
@@ -321,6 +355,40 @@ export default function Home() {
             </div>
           </>
         )}
+        {(() => {
+          // SESSION 21, STAGE 5 — DERIVED LINES.
+          //
+          // Computed in code from verified fields (lib/events/derived.ts),
+          // deliberately outside the Sonnet-drafted body above: arithmetic
+          // needs no model, and a line the model never sees cannot drift
+          // from what the guards check. Nothing here is about markets,
+          // rates, or timing — see that module's header.
+          const block = derivedByCard[card.id];
+          if (!block || (block.lines.length === 0 && block.withheld.length === 0)) return null;
+          return (
+            <div className={styles.derivedBlock}>
+              <span className={styles.cardFieldLabel}>
+                Derived (arithmetic on verified facts, as of {runDateLabel(asOfDate ?? new Date())})
+              </span>
+              <ul className={styles.keyPointsList}>
+                {block.lines.map((l) => (
+                  <li key={l.kind}>
+                    <strong>{l.label}:</strong> {l.text}
+                  </li>
+                ))}
+                {/* A line the guard rejected is REPORTED, never blanked. It was
+                    computed, it states a figure no source sentence behind it
+                    contains, and saying so is the only honest disposition. */}
+                {block.withheld.map((w) => (
+                  <li key={`withheld-${w.kind}`} className={styles.derivedWithheld}>
+                    <strong>{w.kind}:</strong> withheld — {w.unverified.join(", ")} appears in no source
+                    sentence behind this line, so it is not rendered as a fact.
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })()}
         {card.alsoActive.length > 0 && (
           <p className={styles.alsoActiveLine}>
             <strong>Also active:</strong> {card.alsoActive.map(compactActiveLabel).join(" · ")} — see
@@ -462,6 +530,30 @@ export default function Home() {
             that runs and is not shown is a check nobody can act on. It
             renders on every ladder, including when it cannot resolve. */}
         <p className={styles.refiCompletenessLine}>{refi.coverage.line}</p>
+        {/* SESSION 21, STAGE 4 — A ROW THE NOTE'S OWN SUBTOTAL NEVER COUNTS.
+            It stays a row, and its exclusion is stated here rather than the
+            row being moved to prose, which would take it out of the one
+            check that could ever find it. Empty across all ten at v28; this
+            is the guarantee, not a repair. */}
+        {refi.rowsOutsideSubtotal.length > 0 && (
+          <>
+            <p className={styles.refiCompletenessLine}>
+              OUTSIDE THE NOTE&apos;S OWN SUBTOTAL — {refi.rowsOutsideSubtotal.length} row(s) below are counted in the ladder and in the coverage
+              figure above, and no subtotal in the filing checks them. Check 1 passes on the rows it can see; these are not among them.
+            </p>
+            <ul className={styles.tableLineList}>
+              {refi.rowsOutsideSubtotal.map((r, i) => (
+                <li key={`outside-${i}`} className={styles.tableLine}>
+                  <span className={styles.tableLineBullet}>·</span>
+                  <span className={styles.tableLineText}>
+                    {r.label} — {r.amount}
+                    {r.section ? ` (section: ${r.section})` : ""} — {r.why}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
         {/* SESSION 21, STAGE 3 — TIER 2, BENEATH TIER 1 AND NEVER MERGED.
             Each post-anchor event as its own line with its date, its signed
             effect, and the filing that states it. No coverage percentage

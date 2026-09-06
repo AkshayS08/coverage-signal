@@ -1,5 +1,6 @@
 import { computeCoverage, checkRevolverArithmetic, type CoverageResult } from "./coverage";
 import type { Tier2 } from "./tier2";
+import type { RowOutsideSubtotal } from "./position";
 import type { CompanyResult, TriggerResult, VerifiedSequenceEntry } from "../agent";
 import type { DebtScheduleFilingRef, DateGranularity } from "../agent/claude";
 import type { FlashCard } from "./buildEvents";
@@ -235,6 +236,8 @@ export interface RefiLadderBlock {
   maturityFloor: { label: string; value: number }[];
   /** SESSION 21, STAGE 3 — events since the anchor, rendered BENEATH Tier 1 and never merged into it. Empty for a company with no post-anchor 8-K. */
   tier2: Tier2;
+  /** SESSION 21, STAGE 4 — rows the note's own subtotal never counts. Empty across all ten at v28; rendered whenever it is not, because a row nothing checks passing silently is the failure this exists to prevent. */
+  rowsOutsideSubtotal: RowOutsideSubtotal[];
   /**
    * SESSION 21 — verified intentions to repay from a filing that PRE-DATES
    * the anchor. Not Tier 2, because an intention announced before the
@@ -723,6 +726,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       nearestLines: [],
       maturityFloor: [],
       tier2: { events: [], rolledTotal: null, rolledLabel: null, anchorDate: null },
+      rowsOutsideSubtotal: [],
       priorIntentions: [],
       maturityFloorAsOf: null,
       tailSummary: null,
@@ -958,6 +962,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
 
   return { hasData: true, walkCheck, balanceSheetCheck, completenessStatement, nearestLines,
     tier2: position.tier2,
+    rowsOutsideSubtotal: position.rowsOutsideSubtotal,
     priorIntentions: position.statedIntentions.filter((i) => !i.postAnchor).map((i) => ({ instrument: i.instrument, amount: i.amount, date: i.date, sourceLine: i.sourceLine })),
     maturityFloor: (floor?.buckets ?? []).map((x) => ({ label: x.label, value: x.value })),
     maturityFloorAsOf: floor && floor.buckets.length > 0 ? floor.asOf : null, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };

@@ -1,0 +1,1449 @@
+{
+  "signature": {
+    "signedBy": "Akshay Sahani",
+    "signedOn": "2026-09-06",
+    "basis": "Hand-verified against the anchor 10-Q: every ladder row, the note's own subtotals, and the balance-sheet captions tie to the dollar (Session 21 check sheet). Reproduced three-for-three on independent CACHE_BUST re-asks at v28."
+  },
+  "attestation": {
+    "rowsCorrect": true,
+    "instrumentTypeFaithful": true,
+    "reproducedThreeTimes": true,
+    "by": "Akshay Sahani",
+    "on": "2026-09-06"
+  },
+  "criteria": [
+    {
+      "id": "1",
+      "kind": "attested",
+      "name": "every row's amount, maturity and instrument correct against the filing",
+      "pass": true,
+      "detail": "attested by Akshay Sahani on 2026-09-06 against 10-Q 2026-07-23",
+      "defends": "a ladder that ties to itself and to nothing in the world"
+    },
+    {
+      "id": "2",
+      "kind": "computed",
+      "name": "every amount in the unit the filing prints, with its basis stated",
+      "pass": true,
+      "detail": "all 13 row(s) carry a printed unit; no narrative instruments, so no basis to state",
+      "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+    },
+    {
+      "id": "3",
+      "kind": "computed",
+      "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+      "pass": true,
+      "detail": "all 13 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+      "defends": "one position assembled from three filings and three dates"
+    },
+    {
+      "id": "4",
+      "kind": "computed",
+      "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+      "pass": true,
+      "detail": "Total long-term debt: gap 0 TIES; Total long-term debt, net of current portion: gap 0 TIES",
+      "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+    },
+    {
+      "id": "5",
+      "kind": "computed",
+      "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+      "pass": true,
+      "detail": "the filer's own XBRL tags, $5,642,000,000",
+      "defends": "a coverage percentage whose denominator nobody could name"
+    },
+    {
+      "id": "6",
+      "kind": "computed",
+      "name": "coverage passes both tests — category-complete and residual under threshold",
+      "pass": true,
+      "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+      "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+    },
+    {
+      "id": "7",
+      "kind": "computed",
+      "name": "capacity separated and excluded from the debt sum",
+      "pass": true,
+      "detail": "this filer states no undrawn capacity",
+      "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+    },
+    {
+      "id": "8a",
+      "kind": "computed",
+      "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+      "pass": true,
+      "detail": "13 per-instrument row(s)",
+      "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+    },
+    {
+      "id": "8b",
+      "kind": "computed",
+      "name": "structure faithful in PRIORITY CLASS — stated for every debt row, or for none",
+      "pass": true,
+      "detail": "no row carries a priority class",
+      "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list"
+    },
+    {
+      "id": "8c",
+      "kind": "attested",
+      "name": "structure faithful in INSTRUMENT TYPE",
+      "pass": true,
+      "detail": "attested by Akshay Sahani",
+      "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+    },
+    {
+      "id": "9a",
+      "kind": "computed",
+      "name": "Tier 2 events status-corroborated and source-verified",
+      "pass": true,
+      "detail": "no Tier 2 events",
+      "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+    },
+    {
+      "id": "9b",
+      "kind": "attested",
+      "name": "the whole state reproduces on three independent re-asks",
+      "pass": true,
+      "detail": "attested by Akshay Sahani — three CACHE_BUST re-asks at a fixed prompt version",
+      "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+    }
+  ],
+  "state": {
+    "company": "QUEST DIAGNOSTICS INC",
+    "cik": "0001022079",
+    "anchor": {
+      "form": "10-Q",
+      "date": "2026-07-23",
+      "reportDate": "2026-06-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+    },
+    "filingSet": [
+      "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000005/dgx-20260210.htm",
+      "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000043/dgx-20260331.htm",
+      "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm",
+      "https://www.sec.gov/Archives/edgar/data/1022079/000110465926054141/tm2613096d1_8k.htm",
+      "https://www.sec.gov/Archives/edgar/data/1022079/000110465926057938/tm2613096d2_8k.htm"
+    ],
+    "asOf": "2026-09-04",
+    "rows": [
+      {
+        "instrument": "3.45 % Senior Note due June 2026",
+        "amount": "$ —",
+        "maturityDate": "2026-06-01",
+        "dateGranularity": "month",
+        "status": "retired",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "3.45 % Senior Note due June 2026 $ —   $ 501"
+      },
+      {
+        "instrument": "4.60 % Senior Notes due December 2027",
+        "amount": "400 millions",
+        "maturityDate": "2027-12-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "4.60 % Senior Notes due December 2027 400   400"
+      },
+      {
+        "instrument": "4.20 % Senior Notes due June 2029",
+        "amount": "500 millions",
+        "maturityDate": "2029-06-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "4.20 % Senior Notes due June 2029 500   499"
+      },
+      {
+        "instrument": "4.625 % Senior Notes due December 2029",
+        "amount": "600 millions",
+        "maturityDate": "2029-12-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "4.625 % Senior Notes due December 2029 600   600"
+      },
+      {
+        "instrument": "2.95 % Senior Notes due June 2030",
+        "amount": "799 millions",
+        "maturityDate": "2030-06-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "2.95 % Senior Notes due June 2030 799   799"
+      },
+      {
+        "instrument": "2.80 % Senior Notes due June 2031",
+        "amount": "551 millions",
+        "maturityDate": "2031-06-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "2.80 % Senior Notes due June 2031 551   564"
+      },
+      {
+        "instrument": "6.40 % Senior Notes due November 2033",
+        "amount": "748 millions",
+        "maturityDate": "2033-11-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "6.40 % Senior Notes due November 2033 748   756"
+      },
+      {
+        "instrument": "5.00 % Senior Notes due December 2034",
+        "amount": "826 millions",
+        "maturityDate": "2034-12-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "5.00 % Senior Notes due December 2034 826   840"
+      },
+      {
+        "instrument": "5.00 % Senior Notes due June 2036",
+        "amount": "494 millions",
+        "maturityDate": "2036-06-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "5.00 % Senior Notes due June 2036 494   —"
+      },
+      {
+        "instrument": "6.95 % Senior Notes due July 2037",
+        "amount": "175 millions",
+        "maturityDate": "2037-07-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "6.95 % Senior Notes due July 2037 175   175"
+      },
+      {
+        "instrument": "5.75 % Senior Notes due January 2040",
+        "amount": "246 millions",
+        "maturityDate": "2040-01-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "5.75 % Senior Notes due January 2040 246   246"
+      },
+      {
+        "instrument": "4.70 % Senior Notes due March 2045",
+        "amount": "300 millions",
+        "maturityDate": "2045-03-01",
+        "dateGranularity": "month",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "4.70 % Senior Notes due March 2045 300   300"
+      },
+      {
+        "instrument": "Other",
+        "amount": "35 millions",
+        "maturityDate": null,
+        "dateGranularity": null,
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "Other 35   21"
+      }
+    ],
+    "coverage": {
+      "denominatorSource": "xbrl",
+      "statedTotalDebt": 5642000000,
+      "capturedFace": 5674000000,
+      "statedBridge": -32000000,
+      "residualFraction": 0,
+      "residualPasses": true
+    },
+    "tier2": [],
+    "rowsOutsideSubtotal": 0,
+    "cards": [
+      {
+        "triggerId": "debt-maturity",
+        "bucket": "refi",
+        "headlineRowId": "4.60 % Senior Notes due December 2027::4.60%::2027-12-01",
+        "derived": [
+          {
+            "kind": "months-to-maturity",
+            "text": "15 months out — matures 2027-12-01.",
+            "computed": "15 months",
+            "inputs": [
+              "4.60 % Senior Notes due December 2027 400   400"
+            ],
+            "fieldInputs": []
+          },
+          {
+            "kind": "refi-pattern",
+            "text": "Last refinanced 4 months ago — an issuance dated 2026-05-06 whose proceeds retired 3.45% Senior Notes due June 2026. That issuance came 1 months ahead of the retired tranche's stated 2026-06-01 maturity.",
+            "computed": "4 months",
+            "inputs": [
+              "On June 1, 2026, the net proceeds from the 2036 Senior Notes and cash on hand were used to repay in full at maturity the outstanding indebtedness under the Company's $ 500  million of 3.45 % senior notes.",
+              "On May 6, 2026, Quest Diagnostics Incorporated (the \"Company\") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the \"Notes\").",
+              "3.45 % Senior Note due June 2026 $ —   $ 501"
+            ],
+            "fieldInputs": [
+              {
+                "value": "2026-05-06",
+                "verifiedBy": "the event-date guard, against the filing text — the same guard that rejected one filer's claimed 2028-04-01 and normalized another's fabricated 2025-01-01"
+              }
+            ]
+          },
+          {
+            "kind": "next-tranche",
+            "text": "4.20 % Senior Notes due June 2029, maturing 2029-06-01. 18 months behind this one.",
+            "computed": "18 months",
+            "inputs": [
+              "4.60 % Senior Notes due December 2027 400   400",
+              "4.20 % Senior Notes due June 2029 500   499"
+            ],
+            "fieldInputs": []
+          },
+          {
+            "kind": "liquidity",
+            "text": "The anchor filing states no revolving facility, so no liquidity figure sits beside this maturity.",
+            "computed": null,
+            "inputs": [],
+            "fieldInputs": []
+          }
+        ],
+        "withheld": []
+      }
+    ]
+  },
+  "sourceResult": {
+    "company": "QUEST DIAGNOSTICS INC",
+    "cik": "0001022079",
+    "ticker": "DGX",
+    "results": [
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "debt-maturity",
+        "triggerName": "Debt maturity approaching",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "4.60% Senior Notes due December 2027 with $400 million outstanding as of June 30, 2026; 4.20% Senior Notes due June 2029 with $500 million outstanding; 4.625% Senior Notes due December 2029 with $600 million outstanding. These tranches mature within the next 12-18 months from the filing date.",
+        "mappedNeed": "Refinancing",
+        "needType": "credit",
+        "confidence": 0.95,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "form": "10-Q",
+            "date": "2026-04-22",
+            "reportDate": "2026-03-31",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000043/dgx-20260331.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "4.60 % Senior Notes due December 2027 400",
+        "verifiedQuoteNormalized": "4.60 % Senior Notes due December 2027 400",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2027-12-01",
+        "dateGranularity": "month",
+        "scheduleSequence": [
+          {
+            "kind": "row",
+            "label": "3.45 % Senior Note due June 2026",
+            "amount": "$ —",
+            "rate": "3.45%",
+            "maturityDate": "2026-06-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "3.45 % Senior Note due June 2026 $ —   $ 501",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.60 % Senior Notes due December 2027",
+            "amount": "400 millions",
+            "rate": "4.60%",
+            "maturityDate": "2027-12-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "4.60 % Senior Notes due December 2027 400   400",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.20 % Senior Notes due June 2029",
+            "amount": "500 millions",
+            "rate": "4.20%",
+            "maturityDate": "2029-06-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "4.20 % Senior Notes due June 2029 500   499",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.625 % Senior Notes due December 2029",
+            "amount": "600 millions",
+            "rate": "4.625%",
+            "maturityDate": "2029-12-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "4.625 % Senior Notes due December 2029 600   600",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "2.95 % Senior Notes due June 2030",
+            "amount": "799 millions",
+            "rate": "2.95%",
+            "maturityDate": "2030-06-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "2.95 % Senior Notes due June 2030 799   799",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "2.80 % Senior Notes due June 2031",
+            "amount": "551 millions",
+            "rate": "2.80%",
+            "maturityDate": "2031-06-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "2.80 % Senior Notes due June 2031 551   564",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "6.40 % Senior Notes due November 2033",
+            "amount": "748 millions",
+            "rate": "6.40%",
+            "maturityDate": "2033-11-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "6.40 % Senior Notes due November 2033 748   756",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "5.00 % Senior Notes due December 2034",
+            "amount": "826 millions",
+            "rate": "5.00%",
+            "maturityDate": "2034-12-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "5.00 % Senior Notes due December 2034 826   840",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "5.00 % Senior Notes due June 2036",
+            "amount": "494 millions",
+            "rate": "5.00%",
+            "maturityDate": "2036-06-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "5.00 % Senior Notes due June 2036 494   —",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "6.95 % Senior Notes due July 2037",
+            "amount": "175 millions",
+            "rate": "6.95%",
+            "maturityDate": "2037-07-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "6.95 % Senior Notes due July 2037 175   175",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "5.75 % Senior Notes due January 2040",
+            "amount": "246 millions",
+            "rate": "5.75%",
+            "maturityDate": "2040-01-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "5.75 % Senior Notes due January 2040 246   246",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.70 % Senior Notes due March 2045",
+            "amount": "300 millions",
+            "rate": "4.70%",
+            "maturityDate": "2045-03-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "4.70 % Senior Notes due March 2045 300   300",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "Other",
+            "amount": "35 millions",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Other 35   21",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "adjustment",
+            "label": "Debt issuance costs",
+            "amount": "( 32 ) millions",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Debt issuance costs ( 32 ) ( 30 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": "Total long-term debt",
+            "amount": "5,642 millions",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Total long-term debt 5,642   5,671",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "adjustment",
+            "label": "Less: Current portion of long-term debt",
+            "amount": "( 10 ) millions",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Less: Current portion of long-term debt 10   504",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": "Total long-term debt, net of current portion",
+            "amount": "$ 5,632 millions",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Total long-term debt, net of current portion $ 5,632   $ 5,167",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [
+          {
+            "label": "Current portion of long-term debt",
+            "amount": "10 millions",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Current portion of long-term debt 10   504",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "label": "Long-term debt",
+            "amount": "5,632 millions",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Long-term debt 5,632   5,167",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "debtScheduleSourceFiling": {
+          "form": "10-Q",
+          "date": "2026-07-23",
+          "reportDate": "2026-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+        },
+        "debtSchedulePriorFiling": {
+          "form": "10-Q",
+          "date": "2026-04-22",
+          "reportDate": "2026-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000043/dgx-20260331.htm"
+        },
+        "rowsExtracted": 35,
+        "rowsVerified": 19,
+        "baseRowsExtracted": 17,
+        "columnReadFailure": false,
+        "scheduleCompleteness": {
+          "checked": true,
+          "subtotalsTranscribed": 2,
+          "labeledTotalCandidatesInSource": 5,
+          "missingLabeledTotals": [
+            "Total long-term debt 5,642",
+            "Total long-term debt, net of current portion $ 5,632",
+            "Total maturities of long-term debt 5,710",
+            "Total long-term debt 5,642",
+            "Total long-term debt, net of current portion $ 5,632"
+          ],
+          "trailingUnconsumedText": null,
+          "complete": false
+        },
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [
+          {
+            "instrument": "3.45 % senior notes",
+            "amount": "$ 500 million",
+            "eventDate": "2026-06-01",
+            "dateGranularity": "month",
+            "sourceLine": "On June 1, 2026, the net proceeds from the 2036 Senior Notes and cash on hand were used to repay in full at maturity the outstanding indebtedness under the Company's $ 500  million of 3.45 % senior notes.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "upcoming",
+        "proceedsUse": null,
+        "xbrlDebtTotal": {
+          "total": 5642000000,
+          "asOf": "2026-06-30",
+          "parts": [
+            {
+              "tag": "LongTermDebtCurrent",
+              "value": 10000000
+            },
+            {
+              "tag": "LongTermDebtNoncurrent",
+              "value": 5632000000
+            }
+          ],
+          "separateLeases": [],
+          "unavailableReason": null
+        },
+        "xbrlMaturityBuckets": {
+          "buckets": [
+            {
+              "label": "due within 12 months",
+              "tag": "LongTermDebtMaturitiesRepaymentsOfPrincipalInNextTwelveMonths",
+              "value": 409000000
+            },
+            {
+              "label": "13–24 months",
+              "tag": "LongTermDebtMaturitiesRepaymentsOfPrincipalInYearTwo",
+              "value": 6000000
+            },
+            {
+              "label": "25–36 months",
+              "tag": "LongTermDebtMaturitiesRepaymentsOfPrincipalInYearThree",
+              "value": 1103000000
+            },
+            {
+              "label": "37–48 months",
+              "tag": "LongTermDebtMaturitiesRepaymentsOfPrincipalInYearFour",
+              "value": 801000000
+            },
+            {
+              "label": "49–60 months",
+              "tag": "LongTermDebtMaturitiesRepaymentsOfPrincipalInYearFive",
+              "value": 551000000
+            },
+            {
+              "label": "thereafter",
+              "tag": "LongTermDebtMaturitiesRepaymentsOfPrincipalAfterYearFive",
+              "value": 2836000000
+            }
+          ],
+          "asOf": "2026-06-30"
+        }
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "new-debt-issuance",
+        "triggerName": "New debt issuance / notes pricing",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "On May 6, 2026, Quest Diagnostics completed a public offering of $500 million aggregate principal amount of 5.000% senior notes due June 2036. The notes were issued at an original issue discount of $6 million and the Company incurred $5 million of debt issuance costs. Net proceeds were used to repay the $500 million of 3.45% senior notes due June 2026.",
+        "mappedNeed": "Refi or add-on financing",
+        "needType": "credit",
+        "confidence": 0.98,
+        "citations": [
+          {
+            "form": "8-K",
+            "date": "2026-05-08",
+            "reportDate": "2026-05-06",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000110465926057938/tm2613096d2_8k.htm"
+          },
+          {
+            "form": "8-K",
+            "date": "2026-05-01",
+            "reportDate": "2026-04-27",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000110465926054141/tm2613096d1_8k.htm"
+          },
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "On May 6, 2026, Quest Diagnostics Incorporated (the \"Company\") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the \"Notes\").",
+        "verifiedQuoteNormalized": "terial Definitive Agreement On May 6, 2026, Quest Diagnostics Incorporated (the “Company”) issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the “Notes”). The Company will pay intere",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2026-05-06",
+        "dateGranularity": "day",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 1,
+        "rowsVerified": 1,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [
+          {
+            "instrument": "3.45% Senior Notes due June 2026",
+            "amount": "$500 million",
+            "status": "completed",
+            "sourceLine": "On June 1, 2026, the net proceeds from the 2036 Senior Notes and cash on hand were used to repay in full at maturity the outstanding indebtedness under the Company's $ 500  million of 3.45 % senior notes.",
+            "verified": true
+          }
+        ],
+        "issuedTranches": [
+          {
+            "instrument": "5.000% Senior Notes due 2036",
+            "amount": "$500,000,000",
+            "rate": "5.000%",
+            "maturityDate": "2036-06-30",
+            "dateGranularity": "day",
+            "seniority": "senior unsecured",
+            "sourceLine": "On May 6, 2026, Quest Diagnostics Incorporated (the \"Company\") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the \"Notes\").",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000110465926057938/tm2613096d2_8k.htm"
+          }
+        ],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$500 million",
+        "projectName": null,
+        "eventStatus": "completed",
+        "proceedsUse": "refinancing_only"
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "acquisition-announced",
+        "triggerName": "Acquisition announced",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "During August 2025, Quest Diagnostics and Corewell Health signed a definitive agreement to form a new entity to perform laboratory testing in Michigan via a new laboratory facility. The transaction was completed in January 2026. Quest obtained a controlling 51% interest in the entity and Corewell Health retained 49%. Total purchase consideration was $38 million in cash plus a $253 million non-controlling interest valuation.",
+        "mappedNeed": "Bridge financing, then permanent",
+        "needType": "credit",
+        "confidence": 0.92,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "form": "10-Q",
+            "date": "2026-04-22",
+            "reportDate": "2026-03-31",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000043/dgx-20260331.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "During August 2025, the Company and Corewell Health signed a definitive agreement to form a new entity which will perform laboratory testing in the state of Michigan via a new laboratory facility. The parties completed the transaction during January 2026.",
+        "verifiedQuoteNormalized": "During August 2025, the Company and Corewell Health signed a definitive agreement to form a new entity which will perform laboratory testing in the state of Michigan via a new laboratory facility. The parties completed the transaction during January 2026.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2026-01-01",
+        "dateGranularity": "month",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [
+          {
+            "description": "Formation of new laboratory testing entity in Michigan with Corewell Health",
+            "amount": "$38 million",
+            "eventDate": "2026-01-01",
+            "dateGranularity": "month",
+            "eventStatus": "completed",
+            "sourceLine": "The parties completed the transaction during January 2026. In connection with the transaction, Corewell Health contributed a laboratory business over which the Company obtained a controlling financial interest.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$38 million",
+        "projectName": "Michigan laboratory facility",
+        "eventStatus": "completed",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "capex-program",
+        "triggerName": "Capex program / new facility or construction",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Capital expenditures of $252 million for the six months ended June 30, 2026 and $225 million for the six months ended June 30, 2025. The Company is engaged in Project Nova, a multi-year project to modernize Order to Cash business processes and information technology infrastructure, expected to be completed in 2031 to 2032. Additionally, the Company is building a new laboratory facility in Michigan in partnership with Corewell Health, expected to be operational during 2027.",
+        "mappedNeed": "Term loan or capex facility",
+        "needType": "credit",
+        "confidence": 0.85,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "Capital expenditures ( 252 ) ( 225 )",
+        "verifiedQuoteNormalized": "Capital expenditures ( 252 ) ( 225 )",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [
+          {
+            "description": "Project Nova - multi-year modernization of Order to Cash business processes and IT infrastructure",
+            "amount": null,
+            "eventDate": "2031",
+            "dateGranularity": "year",
+            "eventStatus": "standing",
+            "sourceLine": "In February 2025, we committed to a multi-year project (\"Project Nova\") to modernize our \"Order to Cash\" business processes, which includes the related information technology infrastructure and underlying enabling technologies.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          },
+          {
+            "description": "New laboratory facility in Michigan operational",
+            "amount": null,
+            "eventDate": "2027",
+            "dateGranularity": "year",
+            "eventStatus": "upcoming",
+            "sourceLine": "Under the terms of the transaction, the Company and Corewell Health are continuing to serve providers and patients in Michigan from their existing patient service centers (which are operated by the newly formed entity) and their existing laboratories until a new laboratory is operational during 2027.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "noteRetirements": [],
+        "projectCompletionDate": "2027",
+        "projectCompletionGranularity": "year",
+        "cashAmount": "$252 million",
+        "projectName": "Capital expenditures",
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "revolver-near-capacity",
+        "triggerName": "Revolver near capacity + growth",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "As of June 30, 2026, there were no outstanding borrowings under either the $600 million Secured Receivables Credit Facility or the $750 million Senior Unsecured Revolving Credit Facility. Both facilities had full capacity available.",
+        "mappedNeed": "Revolver upsize",
+        "needType": "credit",
+        "confidence": 0.95,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "dividend-buyback",
+        "triggerName": "Dividend recap / buyback authorization",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "On February 10, 2026, Quest Diagnostics announced a 7.5% increase in its quarterly dividend from $0.80 per share to $0.86 per share, effective with the dividend payable on April 20, 2026. This represents the 15th dividend increase since the beginning of 2012. Additionally, the Board authorized an additional $1 billion share repurchase program.",
+        "mappedNeed": "Leverage capacity conversation",
+        "needType": "credit",
+        "confidence": 0.96,
+        "citations": [
+          {
+            "form": "8-K",
+            "date": "2026-02-10",
+            "reportDate": "2026-02-10",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000005/dgx-20260210.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "d the quarterly dividend from $0.80 to $0.86 per share. The 7.5% increase in the quarterly div",
+        "verifiedQuoteNormalized": "d the quarterly dividend from $0.80 to $0.86 per share. The 7.5% increase in the quarterly div",
+        "quoteMatchType": "co-occurrence",
+        "quoteHasFigure": true,
+        "eventDate": "2026-02-10",
+        "dateGranularity": "day",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [
+          {
+            "description": "Quarterly dividend increase from $0.80 to $0.86 per share",
+            "amount": "$0.86 per share",
+            "eventDate": "2026-02-10",
+            "dateGranularity": "day",
+            "eventStatus": "just_announced",
+            "sourceLine": "increased the quarterly common stock cash dividend by approximately 7.5%, from $0.80 per common share to $0.86 per common share.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000005/dgx-20260210.htm"
+          },
+          {
+            "description": "Authorization of additional $1 billion share repurchase program",
+            "amount": "$1 billion",
+            "eventDate": "2026-02-10",
+            "dateGranularity": "day",
+            "eventStatus": "just_announced",
+            "sourceLine": "the Company's Board of Directors authorized the Company to repurchase an additional $1 billion of the Company's common stock as part of the Company's common stock repurchase program",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000005/dgx-20260210.htm"
+          }
+        ],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "just_announced",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "large-cash-balance",
+        "triggerName": "Large cash balance building",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Cash and cash equivalents increased from $420 million at December 31, 2025 to $626 million at June 30, 2026, representing a $206 million increase or 49% growth in the first half of 2026.",
+        "mappedNeed": "Liquidity management, earning on idle cash",
+        "needType": "treasury",
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "Cash and cash equivalents $ 626   $ 420",
+        "verifiedQuoteNormalized": "Cash and cash equivalents $ 626   $ 420",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2026-06-30",
+        "dateGranularity": "day",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$626 million",
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "asset-sale",
+        "triggerName": "Asset sale / divestiture closing",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "No asset sales or divestitures are disclosed in the filings. The company acquired select clinical testing and dialysis-related water testing assets from Fresenius Medical Care's Spectra Laboratories in 2025, but this is an acquisition, not a sale.",
+        "mappedNeed": "Proceeds deposit + sweep",
+        "needType": "treasury",
+        "confidence": 0.92,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "international-expansion",
+        "triggerName": "International expansion / rising foreign revenue",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "The filings do not disclose foreign revenue as a separate segment or provide geographic revenue breakdown. While the company mentions serving customers globally and having operations in selected locations outside the United States, no specific foreign revenue figures or growth trends are provided.",
+        "mappedNeed": "FX hedging, cross-border cash management",
+        "needType": "treasury",
+        "confidence": 0.85,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "new-subsidiary",
+        "triggerName": "New subsidiary / entity formation",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "A new entity was formed in January 2026 as a joint venture between Quest Diagnostics (51% ownership) and Corewell Health (49% ownership) to perform laboratory testing in Michigan. The entity is consolidated in Quest's financial statements.",
+        "mappedNeed": "New operating accounts",
+        "needType": "treasury",
+        "confidence": 0.88,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "The parties completed the transaction during January 2026. In connection with the transaction, Corewell Health contributed a laboratory business over which the Company obtained a controlling financial interest.",
+        "verifiedQuoteNormalized": "The parties completed the transaction during January 2026. In connection with the transaction, Corewell Health contributed a laboratory business over which the Company obtained a controlling financial interest.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2026-01-01",
+        "dateGranularity": "month",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$38 million",
+        "projectName": "Michigan laboratory testing entity",
+        "eventStatus": "completed",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "ipo-secondary",
+        "triggerName": "IPO / secondary raise",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "No IPO or secondary equity offering is disclosed. The company is an established public company with no equity issuance activity reported in the filings.",
+        "mappedNeed": "Proceeds management, treasury build-out",
+        "needType": "treasury",
+        "confidence": 0.98,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "floating-rate-debt",
+        "triggerName": "Floating-rate debt + rate exposure",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Quest Diagnostics maintains fixed-to-variable interest rate swap agreements on $1,800 million of notional debt as of June 30, 2026. These swaps convert fixed-rate senior notes into variable-rate debt with rates ranging from SOFR minus 1.36% to SOFR plus 2.48%. The swapped instruments include the 5.00% Senior Notes due December 2034 ($850 million notional), 2.80% Senior Notes due June 2031 ($550 million notional), and 6.40% Senior Notes due November 2033 ($400 million notional).",
+        "mappedNeed": "Interest-rate hedging",
+        "needType": "credit",
+        "confidence": 0.88,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "Financing Rate (\"SOFR\") minus 1.36 % to SOFR plus 2.48 %. As of June 30, 202",
+        "verifiedQuoteNormalized": "Financing Rate (\"SOFR\") minus 1.36 % to SOFR plus 2.48 %. As of June 30, 202",
+        "quoteMatchType": "co-occurrence",
+        "quoteHasFigure": true,
+        "eventDate": "2026-06-30",
+        "dateGranularity": "day",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "commodity-exposure",
+        "triggerName": "Commodity / input-cost exposure",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "The 10-Q excerpts provided do not contain a detailed risk factors section or quantitative/qualitative market risk disclosures that would typically address commodity or input-cost exposure. The 10-K filing should contain this information.",
+        "mappedNeed": "Commodity hedging",
+        "needType": "credit",
+        "confidence": 0.8,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "fx-exposure",
+        "triggerName": "Large FX exposure disclosed",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "The 10-Q filings show foreign currency translation adjustments in other comprehensive income (loss) of $(35) million for the six months ended June 30, 2026 and $72 million for the six months ended June 30, 2025, indicating FX exposure. However, detailed quantitative/qualitative market risk disclosures (Item 3) are not fully excerpted. The 10-K should contain more detailed FX exposure information.",
+        "mappedNeed": "FX hedging program",
+        "needType": "treasury",
+        "confidence": 0.75,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "revolver": null,
+        "triggerId": "covenant-breach",
+        "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning is disclosed in the filings. The company maintains investment-grade credit ratings and has adequate liquidity with undrawn revolving credit facilities.",
+        "mappedNeed": "Restructuring or amendment support",
+        "needType": "distress",
+        "confidence": 0.98,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-23",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      }
+    ],
+    "verdict": "CALL",
+    "relationshipFlags": []
+  }
+}

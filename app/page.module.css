@@ -767,3 +767,22 @@
   border-left: 3px solid var(--warn-fg, #9E3F24);
   padding-left: 10px;
 }
+
+/* SESSION 21, STAGE 5 — the derived block: arithmetic over verified fields,
+   computed in code and rendered beneath the narrated body. Visually set apart
+   from it deliberately — a reader should be able to tell at a glance which
+   lines a model wrote and which lines are arithmetic. */
+.derivedBlock {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border, rgba(128, 128, 128, 0.35));
+}
+
+/* A line the guard rejected. It renders — never suppressed — and reads as the
+   report of a failure rather than as a fact. */
+.derivedWithheld {
+  color: var(--text-secondary);
+  font-style: italic;
+}

@@ -156,6 +156,13 @@ export interface CompanyPosition {
    */
   statedIntentions: { instrument: string; amount: string | null; date: string | null; sourceLine: string; citedUrl: string; postAnchor: boolean }[];
   /** The base filing's "adjustment" entries (discount/issuance costs, current portion, etc.) — for display; see portfolioTable.ts. Not summed here; Check 1 (computeWalkChecksum) does that from the raw TriggerResult directly. */
+  /**
+   * SESSION 21, STAGE 4 — rows the note's own subtotals never count. Empty
+   * across all ten at v28; carried on the position so the surface can state
+   * one the first time it appears, rather than the walk passing in silence.
+   * See rowsOutsideSubtotal() for the rule and why they stay rows.
+   */
+  rowsOutsideSubtotal: RowOutsideSubtotal[];
   adjustments: VerifiedSequenceEntry[];
   /** The LAST "subtotal" entry in the base filing's sequence — the natural "headline total" for display. Null if the sequence has no subtotals at all. */
   finalSubtotal: VerifiedSequenceEntry | null;
@@ -966,6 +973,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     rows,
     tier2,
     statedIntentions: intentions,
+    rowsOutsideSubtotal: rowsOutsideSubtotal(debtMaturity?.scheduleSequence),
     issuancesInsideAggregate,
     adjustments,
     finalSubtotal,
@@ -1350,6 +1358,81 @@ export function computeWalkChecksum(scheduleSequence: VerifiedSequenceEntry[] | 
 
   const pass = subtotalChecks.length > 0 && subtotalChecks.every((c) => c.tie);
   return { pass, subtotalChecks, rowCount, adjustmentCount };
+}
+
+/**
+ * SESSION 21, STAGE 4 — A ROW THE NOTE'S OWN SUBTOTAL NEVER COUNTS.
+ *
+ * Check 1 proves the rows that ARE inside a subtotal reconcile to it. It
+ * cannot say anything about a row that no subtotal ever closes over: that
+ * row contributes to a running sum nothing is ever compared against, so it
+ * passes silently. A tranche can sit on the ladder, be counted in captured
+ * face, and be checked by nothing.
+ *
+ * THE RULE, DECIDED ONCE AND BOOK-WIDE: such a row RENDERS AS A ROW, with
+ * its exclusion stated on the surface. It is not quietly moved to the prose
+ * field. Three reasons, and they are all about where the problem stays
+ * visible:
+ *
+ *   1. A row moved to prose leaves Check 1's walk entirely — the one check
+ *      that could ever detect this is the check the move disables.
+ *   2. Prose instruments are deduped against table rows, so a row-shaped
+ *      fact in the prose field is at risk of being silently DROPPED rather
+ *      than flagged. Suppression by relocation is still suppression.
+ *   3. The surface's job is to state the problem, not to relocate it. The
+ *      row is real debt; what is missing is a subtotal that vouches for it,
+ *      and that is what the line should say.
+ *
+ * MEASURED ACROSS ALL TEN AT v28: none. Every ladder that has one at all
+ * carries a section-null rollup subtotal that folds every open section, and
+ * all nine walks tie at gap 0 (Cigna has no ladder to walk). The Session 21
+ * brief named DaVita's $65 million revolving-line row as the instance; at
+ * v28 that row sits INSIDE its "Senior Secured Credit Facilities" section
+ * and inside the rollup that ties exactly at $10,847,516,000. The premise
+ * held at an earlier extraction version and does not hold now.
+ *
+ * So this ships as a GUARANTEE rather than a repair — a detector plus a
+ * rendered line, asserted empty across the book, that will state the problem
+ * out loud the first time a filer or a prompt version produces one.
+ *
+ * Scope note: only `row` entries are reported. An `adjustment` printed AFTER
+ * the final subtotal is the ordinary current-portion split (DaVita's "Less
+ * current portion", Encompass's, Quest's) — it is deliberately outside the
+ * total it modifies, and reporting it would flag the whole book for a
+ * convention every filer uses.
+ */
+export interface RowOutsideSubtotal {
+  label: string;
+  amount: string;
+  section: string | null;
+  /** Stated on the surface, never left for the reader to work out. */
+  why: string;
+}
+
+export function rowsOutsideSubtotal(scheduleSequence: VerifiedSequenceEntry[] | undefined): RowOutsideSubtotal[] {
+  const entries = normalizeScheduleSequence(scheduleSequence);
+  const out: RowOutsideSubtotal[] = [];
+
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i];
+    if (entry.kind !== "row") continue;
+    const later = entries.slice(i + 1).filter((e) => e.kind === "subtotal");
+    // A rollup (section: null) folds every still-open section into the top
+    // level before it checks, so it covers this row whatever its section is.
+    // A section-scoped subtotal covers it only when the sections match.
+    const covered = later.some((sub) => sub.section === null || sub.section === entry.section);
+    if (covered) continue;
+    out.push({
+      label: entry.label ?? "(unlabelled)",
+      amount: entry.amount,
+      section: entry.section ?? null,
+      why:
+        entry.section === null
+          ? "no subtotal follows this row in the note, so nothing in the filing's own arithmetic checks it — it is counted in the ladder and vouched for by nothing"
+          : `no subtotal closes the "${entry.section}" section after this row, and no rollup follows it, so nothing in the filing's own arithmetic checks it — it is counted in the ladder and vouched for by nothing`,
+    });
+  }
+  return out;
 }
 
 export interface BalanceSheetCheckResult {

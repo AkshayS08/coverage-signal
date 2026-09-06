@@ -21,3 +21,5 @@ export * from "./extractionReport";
 export * from "./money";
 export * from "./flaggedItems";
 export * from "./coverage";
+// derived.ts (Session 21, Stage 5): arithmetic over verified fields, no model call.
+export * from "./derived";
