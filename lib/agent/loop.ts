@@ -2,6 +2,9 @@ import { createHash } from "node:crypto";
 import { TRIGGERS, type TriggerDef } from "./triggers";
 import { selectBaselineFilings } from "./selectFilings";
 import { getRecentFilings, readFiling, searchNews } from "./tools";
+import { quoteAppearsIn } from "./verifyQuote";
+import { verifyFacilities, type VerifiedFacility, type FigureRejection } from "./verifyFacility";
+import { corpusOf } from "./corpus";
 import type { FilingEntry } from "../fetch";
 import {
   classifyAllTriggers,
@@ -19,7 +22,8 @@ import {
   type EventInstanceRow,
   type NoteRetirementRow,
   type ProseInstrumentRow,
-  type RevolverRow,
+  type SeniorityStatement,
+  type ProceedsUseRow,
   type ProceedsUse,
   type RedeemsClaim,
   normalizeRedeems,
@@ -307,9 +311,11 @@ export interface VerifiedRedeemsClaim extends RedeemsClaim {
   verified: boolean;
 }
 
-export interface VerifiedRevolver extends RevolverRow {
-  citedUrl: string;
-}
+/**
+ * Session 22, Stage 3 — VerifiedRevolver is gone. A verified facility now
+ * lives in verifyFacility.ts, where the per-figure guard that produces it
+ * lives, so the type and the check that earns it cannot drift apart.
+ */
 
 export interface VerifiedNoteRetirement extends NoteRetirementRow {
   citedUrl: string;
@@ -414,6 +420,8 @@ export interface TriggerResult {
    * "completed" AND verified ever retires a ladder row.
    */
   redeems: VerifiedRedeemsClaim[];
+  /** Session 22, Stage 3 — every stated use of the proceeds, one entry each. */
+  proceedsUses: ProceedsUseRow[];
   /**
    * SESSION 21, STAGE 2 — "debt-maturity" ONLY. Stated total debt from the
    * filer's own XBRL tags at the anchor's period end, or an explained
@@ -435,8 +443,12 @@ export interface TriggerResult {
   noteRetirements: VerifiedNoteRetirement[];
   /** Session 20, 3a — verified instruments from the note's narrative. Empty except on debt-maturity. */
   proseInstruments: VerifiedProseInstrument[];
-  /** Session 20, 3b — verified revolver figures, or null. */
-  revolver: VerifiedRevolver | null;
+  /** Session 22, Stage 3 — every verified facility, each figure checked against its own sentence. */
+  facilities: VerifiedFacility[];
+  /** Figures rejected by that check, kept so a surface can say WHY a line is absent. */
+  facilityRejections: FigureRejection[];
+  /** Session 22, Stage 3 — the note's own seniority sentence, verified, or null. */
+  seniorityStatement: SeniorityStatement | null;
   /** Session 19, item 2c — "capex-program" ONLY. The stated completion date of a named project, or null. Code derives the status from it; the model only copies it. */
   projectCompletionDate: string | null;
   projectCompletionGranularity: DateGranularity | null;
@@ -884,19 +896,57 @@ export async function runAgentLoop(
         `  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for ${label} — ${offAnchorProse.length} instrument(s) (${offAnchorProse.map((p) => p.name ?? p.category).join(", ")}) verified against ${[...new Set(offAnchorProse.map((p) => p.citedUrl))].join(", ")}, not the anchor ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date}. A balance is as of the filing that states it.`
       );
     }
-    const revolverVerified = v.revolver
-      ? verifyProseInstruments(
-          [{ category: "revolver", name: null, amount: null, amountBasis: null, asOfDate: v.revolver.asOfDate ?? null, dateGranularity: null, maturityDate: null, rate: null, sourceLine: v.revolver.sourceLine }],
-          v.citedUrls ?? [], textByUrl, log, label, noteSpanByUrl
-        )
-      : [];
-    const revolverOnAnchor = onAnchor(revolverVerified, anchorUrl).kept;
-    const revolver = v.revolver && revolverOnAnchor.length === 1 ? { ...v.revolver, citedUrl: revolverOnAnchor[0].citedUrl } : null;
-    if (v.revolver && !revolver) {
+    // SESSION 22, STAGE 3 — EVERY FIGURE AGAINST ITS OWN SENTENCE.
+    //
+    // This verified ONE sentence for the whole revolver object, so a figure
+    // was accepted because a DIFFERENT figure's sentence was found. Encompass
+    // is the measured cost: $824 million of "available" rode in on a sentence
+    // that says only "$200.0 million was drawn". A real number and a real
+    // quote, joined by nothing, which is the composite-fabrication class.
+    //
+    // The guard is now per figure and lives in verifyFacility.ts with the
+    // type it produces. A figure whose sentence does not state it is dropped
+    // and NAMED; the facility survives, because withholding a figure and
+    // erasing an instrument are different acts and only one of them is honest.
+    const facilityCheck = verifyFacilities({
+      facilities: v.facilities ?? [],
+      // THE FETCHED CORPUS, not `v.citedUrls`. The model's self-reported
+      // citation list is routinely empty — Centene's was — and checking
+      // against an empty list rejected eight figures, six of them verbatim
+      // in its own anchor 10-Q, deleting every facility it has.
+      textByUrl,
+    });
+    const facilities = facilityCheck.verified;
+    const facilityRejections = facilityCheck.rejections;
+    for (const r of facilityRejections) {
+      log(`  ⚠ FACILITY FIGURE REJECTED for ${label} — ${r.facility}.${r.field} = ${r.value}: ${r.reason}. Sentence given: "${r.sourceLine.replace(/\s+/g, " ").slice(0, 120)}"`);
+    }
+    for (const d of facilityCheck.droppedFacilities) {
+      log(`  ⚠ FACILITY DROPPED ENTIRELY for ${label} — "${d}": no figure survived verification, so nothing supports asserting this instrument exists`);
+    }
+
+    // The seniority sentence is held to the same standard as every other
+    // quote: it must appear in a filing this run actually fetched.
+    //
+    // RULE 37 — AND THE DENOMINATOR IS THE FETCHED CORPUS, not `v.citedUrls`.
+    // This was written against the model's self-reported citation list, which
+    // is the same defect that deleted Centene's entire facility set: a filer
+    // reporting no citations would have had a real, verbatim seniority
+    // sentence silently dropped, and with it the class of every row on its
+    // ladder. Measured across the book at v29, nothing is dropped today
+    // either way — the fix is latent, and latent is exactly when to make it,
+    // since the observable version of it cost a whole company's facilities.
+    const seniorityCorpus = corpusOf(textByUrl);
+    const seniorityHit = v.seniorityStatement ? seniorityCorpus.find(v.seniorityStatement.statement) : null;
+    const seniorityStatement = seniorityHit?.outcome === "present" ? v.seniorityStatement : null;
+    if (v.seniorityStatement && !seniorityStatement) {
+      // The two failures are different claims and are never collapsed: one
+      // says the sentence is in no filing we read, the other says we could
+      // not read the filings.
       log(
-        revolverVerified.length === 1
-          ? `  ⚠ OFF-ANCHOR REVOLVER DROPPED for ${label} — the revolver figures verify against ${revolverVerified[0].citedUrl}, not the anchor ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date}; drawn and available are as-of figures and stale ones read as current`
-          : `  ⚠ revolver figures for ${label} could not be verified inside the located note — dropped, not trusted`
+        seniorityHit?.outcome === "undetermined"
+          ? `  ⚠ SENIORITY STATEMENT NOT CHECKED for ${label} — ${seniorityHit.why}. This is NOT a finding about the filing; the class it claims is withheld because nothing could confirm it, which is a different statement from "the sentence is not there"`
+          : `  ⚠ SENIORITY STATEMENT DROPPED for ${label} — the sentence is in no fetched filing, so the class it claims rests on nothing`
       );
     }
     const instancesDropped = (v.eventInstances ?? []).length - eventInstances.length;
@@ -926,10 +976,30 @@ export async function runAgentLoop(
           `  ⚠ REDEMPTION STATUS NOT CORROBORATED for ${label} — "${claim.instrument}" ${check.demotedReason}. Treated as INTENDED; the tranche stays on the ladder. An intention is not a completion.`
         );
       }
-      const verified = !!claim.sourceLine && (v.citedUrls ?? []).some((url) => {
-        const text = textByUrl.get(url);
-        return !!text && createTextLocator(text).find(claim.sourceLine as string) !== null;
-      });
+      // RULE 37, SEVENTH OCCURRENCE — THE FETCHED CORPUS, NOT `v.citedUrls`.
+      //
+      // This asked whether the sentence appears in a filing the MODEL said it
+      // cited. Quest is the measured cost: its redemption sentence — "the net
+      // proceeds from the 2036 Senior Notes and cash on hand were used to
+      // repay in full at maturity the outstanding indebtedness under the
+      // 3.45% Senior Notes due June 2026" — is real, verbatim, in a filing
+      // this run fetched, and was marked UNVERIFIED because it was not in the
+      // model's own citation list. Quest's refinancing pattern then read "no
+      // verified, corroborated-completed redemption in this corpus" about a
+      // company whose filing states one in plain words.
+      //
+      // Widening the denominator can only turn "unverified" into "verified",
+      // and a verified claim can retire a tranche — so this is the direction
+      // that needs measuring rather than assuming, and it was measured across
+      // the book before being kept. The other two gates are untouched: the
+      // claim must still be corroborated COMPLETED, so nothing merely
+      // intended retires anything.
+      const redeemCorpus = corpusOf(textByUrl);
+      const hit = claim.sourceLine ? redeemCorpus.find(claim.sourceLine) : null;
+      const verified = hit?.outcome === "present";
+      if (claim.sourceLine && hit?.outcome === "undetermined") {
+        log(`  ⚠ REDEMPTION CLAIM NOT CHECKED for ${label} — "${claim.instrument}": ${hit.why}. Nothing is retired, and this is NOT a finding that the sentence is absent.`);
+      }
       if (!claim.sourceLine) {
         log(`  ⚠ REDEMPTION CLAIM WITHOUT EVIDENCE for ${label} — "${claim.instrument}" carries no sourceLine; nothing retired.`);
       } else if (!verified) {
@@ -1020,7 +1090,7 @@ export async function runAgentLoop(
       result,
       dateGuard,
       textByUrl,
-      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, revolver },
+      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, facilities, facilityRejections, seniorityStatement },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
       { rowsExtracted, rowsVerified, baseRowsExtracted: v.scheduleSequence.length },
@@ -1918,7 +1988,38 @@ function verifyBalanceSheetCaptions(
  * to narrow); a fact where narrowing would drop every citation keeps the
  * original set rather than end up uncited.
  */
+/**
+ * SESSION 22, STAGE 7 — RULE 37'S COROLLARY, IN THE CITATION LAYER.
+ *
+ * This NARROWS a list the model supplied. An empty list therefore stays
+ * empty — and Centene supplies an empty one for every trigger. Measured: five
+ * triggers fired, every one with `verifiedQuote: yes`, and ZERO citations. The
+ * pipeline had found each quote in a fetched filing, knew which filing, and
+ * cited nothing, because the citation came from the model's self-report while
+ * the verification came from the corpus.
+ *
+ * The cost was not cosmetic. It emptied Centene's filing set, which is a
+ * golden file's IDENTITY — a pin against no documents is a pin every future
+ * run matches trivially, so Centene could not be signed at all. It is the same
+ * self-report-as-denominator defect that deleted its facilities (Rule 37) and
+ * marked Quest's real redemption unverified.
+ *
+ * So where the model cites nothing and the quote verified, the citation is
+ * the document the quote was FOUND in. That is a fact this pipeline
+ * established rather than one it was told.
+ */
+function citationsFromCorpus(verifiedText: string | null, textByUrl: Map<string, string>): string[] {
+  if (!verifiedText) return [];
+  const found: string[] = [];
+  for (const [url, text] of textByUrl) {
+    if (text && createTextLocator(text).find(verifiedText) !== null) found.push(url);
+  }
+  return found;
+}
+
 function narrowCitationsToBackedFilings(verifiedText: string | null, citedUrls: string[], textByUrl: Map<string, string>): string[] {
+  // The model named no filing. Fall back to the corpus, which knows.
+  if (citedUrls.length === 0) return citationsFromCorpus(verifiedText, textByUrl);
   if (!verifiedText || citedUrls.length <= 1) return citedUrls;
   const factTokensList = extractFactTokens(verifiedText);
   if (factTokensList.length === 0) return citedUrls;
@@ -1942,7 +2043,9 @@ function finalize(
     eventInstances: VerifiedEventInstance[];
     noteRetirements: VerifiedNoteRetirement[];
     proseInstruments: VerifiedProseInstrument[];
-    revolver: VerifiedRevolver | null;
+    facilities: VerifiedFacility[];
+    facilityRejections: FigureRejection[];
+    seniorityStatement: SeniorityStatement | null;
     scheduleSequence: VerifiedSequenceEntry[];
     priorScheduleSequence: VerifiedSequenceEntry[];
     issuedTranches: VerifiedIssuedTranche[];
@@ -1961,7 +2064,9 @@ function finalize(
   );
   return {
     proseInstruments: trigger.id === "debt-maturity" ? debtFields.proseInstruments : [],
-    revolver: trigger.id === "debt-maturity" ? debtFields.revolver : null,
+    facilities: trigger.id === "debt-maturity" ? debtFields.facilities : [],
+    facilityRejections: trigger.id === "debt-maturity" ? debtFields.facilityRejections : [],
+    seniorityStatement: trigger.id === "debt-maturity" ? debtFields.seniorityStatement : null,
     triggerId: trigger.id,
     triggerName: trigger.name,
     fired: v.fired,
@@ -1992,6 +2097,7 @@ function finalize(
     columnReadFailure,
     scheduleCompleteness,
     redeems: normalizeRedeems(v.redeems).map((c, i) => ({ ...c, verified: (v.redeems as VerifiedRedeemsClaim[])[i]?.verified ?? false })),
+    proceedsUses: trigger.id === "new-debt-issuance" ? (v.proceedsUses ?? []) : [],
     issuedTranches: debtFields.issuedTranches,
     eventInstances: debtFields.eventInstances,
     noteRetirements: debtFields.noteRetirements,

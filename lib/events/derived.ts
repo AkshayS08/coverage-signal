@@ -49,8 +49,9 @@ import type { FlashCard } from "./buildEvents";
 import type { CompanyPosition, LadderRow } from "./position";
 import { parseMoneyAmount } from "./position";
 import type { TriggerResult } from "../agent";
-import { monthsBetween, isValidIsoDate } from "./eventTiming";
+import { monthsBetween, isValidIsoDate, monthsLabel } from "./eventTiming";
 import { extractFactTokens } from "../agent/factTokens";
+import { formatMoneyForDisplay, formatMoneyValue } from "./money";
 import { strictFactTokensMatch } from "./numberGuard";
 
 export type DerivedKind = "months-to-maturity" | "refi-pattern" | "next-tranche" | "liquidity";
@@ -142,7 +143,7 @@ function monthsToMaturity(row: LadderRow, asOf: Date): DerivedLine {
   }
 
   const months = wholeMonths(row.maturityDate, asOf);
-  const computed = `${Math.abs(months)} months`;
+  const computed = monthsLabel(Math.abs(months));
   // PAST OR FUTURE IS DECIDED BY THE DATES, NEVER BY THE ROUNDED MONTH COUNT.
   // monthsBetween rounds, so a tranche that matured three days ago returns
   // 0 — and a `months >= 0` test then reads it as upcoming. Measured: UHS's
@@ -205,6 +206,23 @@ function refiPattern(
   const claims = (newDebtIssuance?.redeems ?? []).filter((c) => c.verified && c.status === "completed");
 
   if (claims.length === 0) {
+    // SESSION 22, STAGE 5 — A RETIREMENT STATED IN A USE OF PROCEEDS IS STILL
+    // A RETIREMENT. Quest's is: "the net proceeds from the 2036 Senior Notes
+    // and cash on hand were used to repay in full AT MATURITY the outstanding
+    // indebtedness under the 3.45% Senior Notes due June 2026". That is a
+    // completed retirement, stated by the filer, and the pattern line said
+    // "no verified redemption in this corpus" because it only ever read the
+    // `redeems` field.
+    //
+    // Read ONLY for the at-maturity case, deliberately. A proceeds use is not
+    // a corroborated redemption claim and does not get to assert an early
+    // refinancing — the claim it supports here is the CONSERVATIVE one, that
+    // the tranche was repaid when due rather than called ahead of time.
+    const atMaturityUse = (newDebtIssuance?.proceedsUses ?? []).find((u) => AT_MATURITY_RE.test(u.sourceLine));
+    if (atMaturityUse) {
+      return { kind: "refi-pattern", label, inputs: [atMaturityUse.sourceLine], fieldInputs: [], computed: null,
+        text: `Pre-funded and repaid at maturity — the filing states these proceeds repaid the tranche at its maturity, not ahead of it. No early-refinancing pattern is computed, because none is stated.` };
+    }
     return { kind: "refi-pattern", label, inputs: [], fieldInputs: [], computed: null,
       text: `No verified, corroborated-completed redemption in this corpus, so no refinancing pattern is computed. An unverified or merely intended retirement is not a pattern.` };
   }
@@ -234,7 +252,7 @@ function refiPattern(
   }
 
   const ageMonths = Math.abs(wholeMonths(when, asOf));
-  const computed = `${ageMonths} months`;
+  const computed = monthsLabel(ageMonths);
 
   // The join: rate AND instrument, never a substring. A retired tranche the
   // note still carries (a PARTIAL redemption) is the case this finds.
@@ -247,13 +265,50 @@ function refiPattern(
 
   if (retired) inputs.push(retired.sourceLine);
 
-  const base = `Last refinanced ${computed} ago — an issuance dated ${when} whose proceeds retired ${claim.instrument}.`;
-  const tail =
-    early !== null
-      ? ` That issuance came ${early} months ahead of the retired tranche's stated ${retired!.maturityDate} maturity.`
+  // SESSION 22, STAGE 5 — READ THE KIND OF RETIREMENT, NOT JUST ITS DATE.
+  //
+  // "Refinanced N months ahead of maturity" is a claim about a company's
+  // behaviour: it went to market early, before it had to. A tranche repaid
+  // ON its maturity date is the opposite behaviour, and the filing says
+  // which in as many words. Quest is the measured case:
+  //
+  //   "the net proceeds from the 2036 Senior Notes and cash on hand were
+  //    used to repay IN FULL AT MATURITY the outstanding indebtedness under
+  //    the 3.45% Senior Notes due June 2026"
+  //
+  // The issuance did come months before the maturity — that is what
+  // pre-funding IS — so the arithmetic is not wrong; the WORD for it is.
+  // Calling that "refinanced eleven months ahead" describes an opportunistic
+  // early refinancing that did not happen, and an RM opening a call on it
+  // would be describing the company's treasury policy back to them
+  // incorrectly.
+  //
+  // A CLOSED GRAMMATICAL CLASS, which is why this is allowed to be a text
+  // test at all — the same standing as moneyScale's SCALE_WORDS and
+  // position.ts's PARTIAL_REDEMPTION_RE. It matches how the retirement is
+  // timed, never what instrument or company it is about.
+  const atMaturity = AT_MATURITY_RE.test(claim.sourceLine ?? "") || AT_MATURITY_RE.test(newDebtIssuance?.verifiedQuote ?? "");
+
+  const base = atMaturity
+    ? `Pre-funded and repaid at maturity — an issuance dated ${when} raised the money, and the filing states the tranche was repaid at its maturity, not called early.`
+    : `Last refinanced ${computed} ago — an issuance dated ${when} whose proceeds retired ${claim.instrument}.`;
+  const tail = atMaturity
+    ? ""
+    : early !== null
+      ? ` That issuance came ${monthsLabel(early)} ahead of the retired tranche's stated ${retired!.maturityDate} maturity.`
       : ` The retired tranche carries no structured maturity in this corpus, so how far ahead of maturity the refinancing came is not computed.`;
-  return { kind: "refi-pattern", label, inputs, fieldInputs, computed, text: base + tail };
+  // No month count is printed for an at-maturity repayment, because the
+  // count is the thing that would be misread.
+  return { kind: "refi-pattern", label, inputs, fieldInputs, computed: atMaturity ? null : computed, text: base + tail };
 }
+
+/**
+ * How a filing says a tranche was retired ON its maturity rather than before
+ * it. A CLOSED grammatical class — timing words only, no instrument or
+ * company vocabulary — so it can be read as grammar rather than as meaning.
+ */
+const AT_MATURITY_RE =
+  /\b(?:at|upon|on)\s+(?:its\s+|their\s+|the\s+)?(?:scheduled\s+|stated\s+)?maturit(?:y|ies)\b|\bwhen\s+due\b|\bat\s+its\s+stated\s+maturity\s+date\b/i;
 
 /**
  * Rate AND instrument, together. Same discipline as redemptionRetiresRow and
@@ -285,9 +340,14 @@ function nextTranche(row: LadderRow, position: CompanyPosition, asOf: Date): Der
   const label = "Next tranche up";
   const inputs = [row.sourceLine];
 
-  // The ladder is already sorted by maturity in assemblePosition. Capacity is
-  // excluded: undrawn commitment has no maturity conversation.
-  const ladder = position.rows.filter((r) => !r.isCapacity && r.maturityDate);
+  // The ladder is already sorted by maturity in assemblePosition.
+  //
+  // SESSION 22, STAGE 5 — capacity is excluded only where it has no stated
+  // maturity. An undrawn commitment has no maturity conversation about its
+  // BALANCE; a facility that itself expires on a stated date has one about
+  // the facility, and excluding it left Quest's own card saying "this tranche
+  // is not on the assembled ladder" about a row sitting on that ladder.
+  const ladder = position.rows.filter((r) => r.maturityDate);
   const idx = ladder.findIndex((r) => r.id === row.id);
   const next = idx >= 0 ? ladder[idx + 1] : undefined;
 
@@ -305,7 +365,7 @@ function nextTranche(row: LadderRow, position: CompanyPosition, asOf: Date): Der
     !statesOnlyAYear(row) && !statesOnlyAYear(next) && isValidIsoDate(row.maturityDate!) && isValidIsoDate(next.maturityDate!)
       ? Math.abs(monthsBetween(next.maturityDate!, new Date(row.maturityDate!)))
       : null;
-  const computed = gap === null ? null : `${gap} months`;
+  const computed = gap === null ? null : monthsLabel(gap);
   const tail =
     gap === null
       ? ` The gap is not computed: at least one of the two states only a year.`
@@ -342,47 +402,127 @@ function nextTranche(row: LadderRow, position: CompanyPosition, asOf: Date): Der
  * stated availability appears in no sentence it cites.
  */
 
-function liquidity(row: LadderRow, debtMaturity: TriggerResult | undefined): DerivedLine {
+/**
+ * SESSION 22, STAGE 5 — LIQUIDITY IS COMPUTED, NOT JUXTAPOSED.
+ *
+ * The line above placed the maturing amount beside one revolver's undrawn
+ * capacity and stopped, deliberately, because dividing the two implies
+ * coverage and a revolver is not how a term maturity gets refinanced. That
+ * reasoning still holds and is not what changes here.
+ *
+ * What changes is that the line was never a liquidity figure at all. It was
+ * ONE facility's headroom, chosen because the schema had one slot, and it
+ * silently declined to say anything for the four filers carrying several.
+ * Liquidity is cash plus what is undrawn across EVERY committed facility —
+ * one figure, summed, and the RM can compare it to the maturity themselves.
+ *
+ * BOTH HALVES MUST BE AS-OF DATED, AND THE DATES MUST AGREE. A cash balance
+ * at one date added to availability at another is a figure true at no date —
+ * the same mixed-clock error the anchor rules exist to prevent. Where the
+ * two disagree the line states both and refuses the sum rather than quietly
+ * presenting it.
+ *
+ * AND A DRAWN BALANCE IS NEVER PART OF IT. What is drawn is borrowed money,
+ * not liquidity; it appears here only as the reason the undrawn figure is
+ * what it is.
+ */
+interface LiquidityPart { amount: number; asOf: string | null; sourceLine: string; display: string }
+
+function undrawnCapacity(debtMaturity: TriggerResult | undefined): { parts: LiquidityPart[]; skipped: string[] } {
+  const parts: LiquidityPart[] = [];
+  const skipped: string[] = [];
+  for (const f of debtMaturity?.facilities ?? []) {
+    if (!f.available) {
+      // NEVER DERIVED FROM size MINUS drawn. That subtraction is exactly the
+      // computed-not-read figure the facility guard exists to reject, and a
+      // liquidity total built partly from arithmetic over unstated figures
+      // would be the composite-fabrication class with a sum in front of it.
+      skipped.push(`${f.name} (the filing states no available figure for it)`);
+      continue;
+    }
+    const v = parseMoneyAmount(f.available.value);
+    if (v === null) { skipped.push(`${f.name} (its stated availability is not a readable figure)`); continue; }
+    parts.push({ amount: v, asOf: f.asOfDate, sourceLine: f.available.sourceLine, display: f.available.value });
+  }
+  return { parts, skipped };
+}
+
+function liquidity(row: LadderRow, cashTrigger: TriggerResult | undefined, debtMaturity: TriggerResult | undefined): DerivedLine {
   const label = "Liquidity beside it";
-  const rev = debtMaturity?.revolver ?? null;
 
-  if (!rev) {
+  // CASH — from the filer's own cash disclosure, with the date it belongs to.
+  const cashValue = cashTrigger?.fired ? cashTrigger.cashAmount : null;
+  const cash = cashValue ? parseMoneyAmount(cashValue) : null;
+
+  const { parts, skipped } = undrawnCapacity(debtMaturity);
+  const skippedClause = skipped.length ? ` Not included: ${skipped.join("; ")}.` : "";
+
+  if (cash === null && parts.length === 0) {
     return { kind: "liquidity", label, inputs: [], fieldInputs: [], computed: null,
-      text: `The anchor filing states no revolving facility, so no liquidity figure sits beside this maturity.` };
+      text: `No liquidity figure is computed: the anchor filing states neither a cash balance nor undrawn capacity on any facility.${skippedClause}` };
   }
-  // ONLY the revolver's own sentence. Deliberately not `rev.available` as a
-  // value: a field checking itself proves nothing, and this is the check
-  // that caught one filer whose stated availability appears nowhere in the
-  // sentence it cites — the same figure its own revolver arithmetic already
-  // reports as not reconciling.
-  // The revolver's own sentence, and the ROW's own sentence for the maturing
-  // amount. `row.amount` is declared alongside it because it is verified
-  // against that same sourceLine by the amount guard upstream (the one that
-  // drops a figure "not printed on or beside its row") — the same standing
-  // as the issuance eventDate in the refinancing line: a fact another guard
-  // established, not a field validating itself. Without it a display form
-  // like "$ 1,500 million" could never match its filing's own bare cell
-  // "1,500" under the strict same-representation rule, and the line the user
-  // asked for could not render at all.
-  const inputs = [rev.sourceLine];
-  // Parsed only to establish that the stated availability is a readable
-  // figure at all — no arithmetic is done with it.
-  const available = rev.available ? parseMoneyAmount(rev.available) : null;
-  if (rev.available === null || available === null) {
-    return { kind: "liquidity", label, inputs, fieldInputs: [], computed: null,
-      text: `The anchor filing states a revolving facility${rev.facilitySize ? ` of ${rev.facilitySize}` : ""} but no available figure${rev.drawn ? `, with ${rev.drawn} drawn` : ""}, so no coverage is computed.` };
+  if (cash === null) {
+    const undrawn = parts.reduce((a, b) => a + b.amount, 0);
+    return { kind: "liquidity", label, inputs: parts.map((p) => p.sourceLine), fieldInputs: [], computed: null,
+      text: `${formatMoneyValue(undrawn)} of undrawn capacity across ${parts.length} committed ${parts.length === 1 ? "facility" : "facilities"}, but the filing states no cash balance, so no liquidity total is computed.${skippedClause}` };
+  }
+  if (parts.length === 0) {
+    return { kind: "liquidity", label, inputs: cashTrigger?.verifiedQuote ? [cashTrigger.verifiedQuote] : [],
+      fieldInputs: [{ value: cashValue!, verifiedBy: "the cash trigger's own quote guard, against the filing it cites" }], computed: null,
+      text: `${formatMoneyForDisplay(cashValue!)} of cash, and no facility states an undrawn figure, so no liquidity total is computed.${skippedClause}` };
   }
 
-  const drawnClause = rev.drawn ? `, with ${rev.drawn} drawn` : "";
-  const asOfClause = rev.asOfDate ?? "the anchor";
+  // BOTH HALVES AS-OF DATED, AND THE DATES MUST AGREE.
+  //
+  // Where the cash trigger carries no normalized eventDate — Centene's does
+  // not — the date is taken from the cash SENTENCE itself, and only if that
+  // sentence states the same date a facility does. Read from the filing's own
+  // words, never assumed from the facility's date: "the revolver figure is as
+  // of June 30 so the cash figure must be too" is precisely the mixed-clock
+  // assumption this check exists to catch.
+  const facilityDatesRaw = [...new Set(parts.map((p) => p.asOf).filter(Boolean) as string[])];
+  const cashAsOf =
+    cashTrigger?.eventDate ??
+    (facilityDatesRaw.find((d) => {
+      const q = cashTrigger?.verifiedQuote ?? "";
+      return extractFactTokens(q).some(
+        (t) => t.kind === "date" && t.dateValue && `${t.dateValue.year}-${String(t.dateValue.month ?? 0).padStart(2, "0")}-${String(t.dateValue.day ?? 0).padStart(2, "0")}` === d
+      );
+    }) ?? null);
+  const allDates = [...new Set([cashAsOf, ...facilityDatesRaw].filter(Boolean) as string[])];
+  const undrawn = parts.reduce((a, b) => a + b.amount, 0);
+  const inputs = [...(cashTrigger?.verifiedQuote ? [cashTrigger.verifiedQuote] : []), ...parts.map((p) => p.sourceLine)];
+
+  if (allDates.length > 1) {
+    // A SUM ACROSS TWO DATES IS TRUE AT NEITHER. Stated, never quietly added.
+    return { kind: "liquidity", label, inputs,
+      fieldInputs: [{ value: cashValue!, verifiedBy: "the cash trigger's own quote guard, against the filing it cites" }], computed: null,
+      text: `${formatMoneyForDisplay(cashValue!)} of cash and ${formatMoneyValue(undrawn)} of undrawn capacity are stated as of different dates (${allDates.join(", ")}), so they are not added — a liquidity figure summed across two dates is true at neither.${skippedClause}` };
+  }
+
+  const asOf = allDates[0] ?? "the anchor";
+  const total = cash + undrawn;
+  const drawnNote = (debtMaturity?.facilities ?? []).some((f) => f.drawn)
+    ? ` What is drawn under these facilities is borrowed money and is not counted here.`
+    : "";
   return {
     kind: "liquidity", label,
-    inputs: [...inputs, row.sourceLine],
-    fieldInputs: [{ value: row.amount, verifiedBy: "the amount guard, against this row's own sourceLine — the one that drops a figure not printed on or beside its row" }],
-    // Nothing is computed. See this section's header: the two figures are
-    // placed side by side and no ratio is drawn between them.
-    computed: null,
-    text: `${row.amount} maturing; ${rev.available} of undrawn revolver capacity as of ${asOfClause}${drawnClause}. Two separate disclosures, stated side by side — a revolver is liquidity, not how a term maturity is refinanced.`,
+    inputs,
+    // FIGURES VERIFIED BY ANOTHER GUARD, NOT BY THIS LINE. A display form
+    // ("$2.2B") legitimately differs from the filing's own printing ("$2.170
+    // billion"), and a token guard strict enough to catch a guessed scale
+    // must reject that difference — so the value is declared here with the
+    // guard that established it named, exactly as the maturing amount already
+    // was. Without this the whole line is withheld, which is what happened to
+    // Tenet and Centene the moment cash was added to it.
+    fieldInputs: [
+      { value: cashValue!, verifiedBy: "the cash trigger's own quote guard, against the filing it cites" },
+      { value: row.amount, verifiedBy: "the amount guard, against this row's own sourceLine — the one that drops a figure not printed on or beside its row" },
+    ],
+    // The ONE computed value: the liquidity total. Everything else in the
+    // text traces to a declared input sentence or a declared field.
+    computed: formatMoneyValue(total),
+    text: `${formatMoneyValue(total)} of liquidity as of ${asOf}: ${formatMoneyForDisplay(cashValue!)} of cash plus ${formatMoneyValue(undrawn)} undrawn across ${parts.length} committed ${parts.length === 1 ? "facility" : "facilities"}, against ${formatMoneyForDisplay(row.amount)} maturing. A revolver is liquidity, not how a term maturity is refinanced; the two are stated, not divided.${drawnNote}${skippedClause}`,
   };
 }
 
@@ -433,9 +573,16 @@ export function buildDerivedLines(params: {
   position: CompanyPosition;
   debtMaturity: TriggerResult | undefined;
   newDebtIssuance: TriggerResult | undefined;
+  /**
+   * SESSION 22, STAGE 5 — the filer's own cash disclosure, for the liquidity
+   * sum. Passed as a trigger like the other two rather than as the whole
+   * CompanyResult, so this function still cannot reach a field no caller
+   * chose to hand it.
+   */
+  cashBalance?: TriggerResult | undefined;
   asOf: Date;
 }): DerivedBlock {
-  const { card, position, debtMaturity, newDebtIssuance, asOf } = params;
+  const { card, position, debtMaturity, newDebtIssuance, cashBalance, asOf } = params;
   const candidates: DerivedLine[] = [];
 
   // The refinancing pattern is about the COMPANY, so it renders on any card.
@@ -448,7 +595,7 @@ export function buildDerivedLines(params: {
   if (row) {
     candidates.unshift(monthsToMaturity(row, asOf));
     candidates.push(nextTranche(row, position, asOf));
-    candidates.push(liquidity(row, debtMaturity));
+    candidates.push(liquidity(row, cashBalance, debtMaturity));
   }
 
   const lines: DerivedLine[] = [];

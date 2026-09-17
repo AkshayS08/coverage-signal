@@ -63,3 +63,47 @@ export function compactLabelWithTiming(triggerId: string, fallback: string, timi
   if (timing.isPendingLive) return `${label} (pending)`;
   return label;
 }
+
+/**
+ * THE CARD HEADER'S TIMING TAG, in one place (Session 22, Stage 1).
+ *
+ * It lived in app/page.tsx as `formatHeadlineDate` and reconstructed a date
+ * by adding a ROUNDED MONTH COUNT to the run date:
+ *
+ *     future.setMonth(future.getMonth() + Math.round(monthsToNearestFuture))
+ *
+ * That is wrong twice. It re-derives a date the pipeline already holds
+ * exactly, so rounding could move the printed month; and it never branched
+ * on dateGranularity, so a tranche whose filing prints only "due 2027" got
+ * December 31 — the code's own worst-case convention — read back as
+ * "matures ~Dec 2027". `computeWindowDate`'s contract forbids exactly that,
+ * and `compactLabelWithTiming` above has honoured it since stage 2 while
+ * the card header did not. Two surfaces answering one question, disagreeing.
+ *
+ * Now: a bare year says the year, a real date says the date it states, and
+ * nothing is reconstructed from a count.
+ */
+export function headlineTimingTag(
+  timing: TimingInfo,
+  citations: { form: string; date: string }[],
+  asOf: Date
+): string {
+  if (timing.dateGranularity === "year") {
+    const year = timing.windowDate?.slice(0, 4);
+    if (year) return `matures during ${year}`;
+  }
+  if (timing.windowDate && timing.monthsToNearestFuture !== null) {
+    const d = new Date(timing.windowDate);
+    if (!Number.isNaN(d.getTime())) {
+      return `matures ${d.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" })}`;
+    }
+  }
+  const mostRecent = [...citations].sort((a, b) => b.date.localeCompare(a.date))[0];
+  if (mostRecent) {
+    const d = new Date(mostRecent.date);
+    if (!Number.isNaN(d.getTime())) {
+      return `${mostRecent.form} filed ${d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}`;
+    }
+  }
+  return timing.isPendingLive ? "pending" : "";
+}

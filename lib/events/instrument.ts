@@ -18,7 +18,7 @@
  * which is Rule 7 applied one level up from the glyph table.
  */
 import { parseMoneyAmount } from "./position";
-import type { ProseInstrumentRow, RevolverRow, VerifiedSequenceEntry } from "../agent";
+import type { ProseInstrumentRow, FacilityRow, VerifiedSequenceEntry } from "../agent";
 
 export type DebtCategory = ProseInstrumentRow["category"];
 
@@ -165,10 +165,10 @@ export function dedupAgainstRows(
  */
 export function debtContribution(
   p: ProseInstrumentRow,
-  revolver: RevolverRow | null | undefined
+  revolver: FacilityRow | null | undefined
 ): { amount: number | null; capacity: boolean; why: string } {
   if (p.category === "revolver") {
-    const drawn = revolver?.drawn ? parseMoneyAmount(revolver.drawn) : null;
+    const drawn = revolver?.drawn ? parseMoneyAmount(revolver.drawn.value) : null;
     if (drawn === null) return { amount: null, capacity: true, why: "revolving facility, no drawn balance stated — capacity, not debt" };
     return { amount: drawn, capacity: drawn === 0, why: drawn === 0 ? "revolving facility, nothing drawn" : "revolving facility, drawn balance" };
   }

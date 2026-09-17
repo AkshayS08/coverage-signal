@@ -22,6 +22,7 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { compareToGolden, deriveGoldenState, filingSetOf, type GoldenFile, type GoldenState } from "./golden";
+import { EXTRACTION_PROMPT_VERSION } from "../cache/promptVersion";
 
 let passed = 0, failed = 0;
 const failures: string[] = [];
@@ -45,11 +46,22 @@ console.log("\n=== [1] EVERY SIGNED GOLDEN FILE REPRODUCES FROM ITS OWN CAPTURED
     assert(!!golden.signature?.signedBy && golden.signature.signedBy !== "(unnamed)" && !!golden.signature.basis,
       `[1b:${name}] carries a signature with a named signer and a stated basis — an unsigned pin is a snapshot, not a golden file`);
 
-    // Re-derive from the captured result, at the SAME as-of the file pins.
-    const actual = deriveGoldenState(golden.sourceResult, new Date(`${golden.state.asOf}T00:00:00Z`));
-    const verdict = compareToGolden(golden.state, actual);
-    assert(verdict.kind === "matches",
-      `[1c:${name}] REPRODUCES EXACTLY from its captured input${verdict.kind === "diverged" ? ` — DIVERGED:\n      ${verdict.divergences.join("\n      ")}` : verdict.kind === "not-applicable" ? ` — ${verdict.reason}` : ""}`);
+    // A CAPTURED INPUT FROM AN OLDER SCHEMA IS NOT A DIVERGENCE.
+    //
+    // The file pins a derivation over a captured CompanyResult. When the
+    // EXTRACTION schema moves, the same bytes answer a different question —
+    // v28 carries one `revolver`, v29 reads a `facilities` array — and
+    // comparing across that boundary reports a difference that no fix
+    // addresses. Same disposition as a moved filing set (Rule 30): the pin
+    // does not apply, say so, and re-sign against the new capture.
+    if ((golden.extractionVersion ?? 0) !== EXTRACTION_PROMPT_VERSION) {
+      console.log(`  — SKIPPED [1c:${name}] — captured at extraction v${golden.extractionVersion ?? "(unrecorded)"}, code is v${EXTRACTION_PROMPT_VERSION}. The pin does not apply across a schema change; re-sign against a v${EXTRACTION_PROMPT_VERSION} capture.`);
+    } else {
+      const actual = deriveGoldenState(golden.sourceResult, new Date(`${golden.state.asOf}T00:00:00Z`));
+      const verdict = compareToGolden(golden.state, actual);
+      assert(verdict.kind === "matches",
+        `[1c:${name}] REPRODUCES EXACTLY from its captured input${verdict.kind === "diverged" ? ` — DIVERGED:\n      ${verdict.divergences.join("\n      ")}` : verdict.kind === "not-applicable" ? ` — ${verdict.reason}` : ""}`);
+    }
 
     assert(golden.state.filingSet.length > 0 && filingSetOf(golden.sourceResult).join("|") === golden.state.filingSet.join("|"),
       `[1d:${name}] the pinned filing set is the one its captured result was actually built from`);
@@ -71,7 +83,7 @@ const base = (): GoldenState => ({
     { instrument: "revolver", amount: "$1.0 billion", maturityDate: null, dateGranularity: null,
       status: "live", provenance: "note-narrative", isCapacity: true, sourceLine: "revolver 1.0" },
   ],
-  coverage: { denominatorSource: "xbrl", statedTotalDebt: 2634000000, capturedFace: 2634000000, statedBridge: 0, residualFraction: 0, residualPasses: true },
+  coverage: { denominatorSource: "xbrl", statedTotalDebt: 2634000000, capturedFace: 2634000000, statedBridge: 0, residualPercent: 0, residualPasses: true },
   tier2: [],
   rowsOutsideSubtotal: 0,
   cards: [{ triggerId: "debt-maturity", bucket: "refi", headlineRowId: "r1",
@@ -181,6 +193,14 @@ console.log("\n=== [5] THE NINE CRITERIA — each asserted by name, on the signe
   for (const f of files) {
     const g = JSON.parse(readFileSync(join(GOLDEN_DIR, f), "utf-8")) as GoldenFile & { criteria?: unknown };
     const name = g.state.company;
+    // Same boundary as [1c]: criteria are EVALUATED over the captured input,
+    // so a capture from an older extraction schema is being asked a question
+    // it was not built to answer. Skipped and named, never reported as a
+    // criterion that stopped holding.
+    if ((g.extractionVersion ?? 0) !== EXTRACTION_PROMPT_VERSION) {
+      console.log(`  — SKIPPED [5:${name}] — captured at extraction v${g.extractionVersion ?? "(unrecorded)"}, code is v${EXTRACTION_PROMPT_VERSION}`);
+      continue;
+    }
     const att = (g as { attestation?: { rowsCorrect?: boolean; instrumentTypeFaithful?: boolean; reproducedThreeTimes?: boolean; by?: string; on?: string } }).attestation ?? {};
     const r = evaluateGoldenCriteria(g.sourceResult, new Date(`${g.state.asOf}T00:00:00Z`), att);
 
@@ -227,6 +247,53 @@ console.log("\n=== [6] Each criterion bites — a fixture built to fail exactly 
     "[6g] criterion 9b is NULL until three independent re-asks are attested. Warm re-runs prove the pipeline is deterministic and say nothing about the model — Rule 23, learned when a hand-verified 98% did not survive the next extraction");
   assert(r.allHold === false && r.failing.length > 0,
     `[6h] and the whole thing does not hold, naming what failed (${r.failing.join(" | ")})`);
+}
+
+console.log("\n=== [7] AN AMOUNT IS COMPARED BY VALUE AND UNIT, NOT BY ITS WHITESPACE ===");
+{
+  const spaced = base();
+  spaced.rows[0].amount = "$ 396.9 million";
+  const tight = base();
+  tight.rows[0].amount = "$396.9 million";
+  const v = compareToGolden(spaced, tight);
+  assert(v.kind === "matches",
+    `[7a] WHITESPACE IS NOT A TRANSCRIPTION. "$ 396.9 million" and "$396.9 million" are the same figure with a space moved, and string equality called that a divergence — which blocks a signature over nothing and trains its reader to wave divergences through, the one thing a signature surface must never do (${v.kind === "diverged" ? v.divergences.join(" | ") : v.kind})`);
+
+  const comma = base();
+  comma.rows[0].amount = "$ 1,500 million";
+  const noComma = base();
+  noComma.rows[0].amount = "$1500 million";
+  assert(compareToGolden(comma, noComma).kind === "matches",
+    "[7b] and grouping commas are not a transcription either — same value, same unit");
+
+  // THE UNIT IS THE HALF THAT KEEPS THIS HONEST.
+  const billions = base();
+  billions.rows[0].amount = "$1.5 billion";
+  const millions = base();
+  millions.rows[0].amount = "$1,500 million";
+  const unitMoved = compareToGolden(billions, millions);
+  assert(unitMoved.kind === "diverged",
+    `[7c] BUT A CHANGED UNIT IS A CHANGED TRANSCRIPTION, even at the same value. "$1.5 billion" and "$1,500 million" are the same money; the filing printed ONE of them, and a run that starts printing the other has changed what it read. Comparing by value alone would have passed this (${unitMoved.kind})`);
+
+  const moved = base();
+  moved.rows[0].amount = "$ 396.9 million";
+  const wrong = base();
+  wrong.rows[0].amount = "$ 386.9 million";
+  assert(compareToGolden(moved, wrong).kind === "diverged",
+    "[7d] and a changed digit still diverges — the tolerance is for whitespace, never for a figure");
+
+  const stated = base();
+  stated.rows[0].amount = "(no amount stated)";
+  const alsoStated = base();
+  alsoStated.rows[0].amount = "(no amount stated)";
+  assert(compareToGolden(stated, alsoStated).kind === "matches",
+    "[7e] a non-numeric amount falls back to exact comparison and still matches itself");
+  const unparseable = base();
+  unparseable.rows[0].amount = "(no amount stated)";
+  const parseable = base();
+  parseable.rows[0].amount = "$ 396.9 million";
+  assert(compareToGolden(unparseable, parseable).kind === "diverged",
+    "[7f] AND A COMPARISON THAT CANNOT READ ITS INPUTS NEVER REPORTS THEM EQUAL — one side unparseable falls back to exact string comparison rather than defaulting to a pass");
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

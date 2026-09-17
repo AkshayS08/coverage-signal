@@ -236,7 +236,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
           eventInstances: [],
           noteRetirements: [],
     proseInstruments: [],
-    revolver: null,
+    facilities: [], facilityRejections: [], seniorityStatement: null, proceedsUses: [],
           projectCompletionDate: null,
           projectCompletionGranularity: null,
           cashAmount: null,
@@ -500,6 +500,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     dateGranularity: "year",
     eventStatus: "upcoming",
     seniority: null,
+    trancheEvent: null,
     redeemsInfo: null,
     outstandingAmount: null,
     issueSizeInLabel: null,
@@ -519,6 +520,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     dateGranularity: null,
     eventStatus: "standing",
     seniority: null,
+    trancheEvent: null,
     redeemsInfo: null,
     outstandingAmount: null,
     issueSizeInLabel: null,
@@ -677,6 +679,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     dateGranularity: "day",
     eventStatus: "upcoming",
     seniority: null,
+    trancheEvent: null,
     redeemsInfo: null,
     outstandingAmount: null,
     issueSizeInLabel: null,
@@ -740,6 +743,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     dateGranularity: "day",
     eventStatus: "completed",
     seniority: null,
+    trancheEvent: null,
     redeemsInfo: "the 6.250% second lien notes due February 2027",
     outstandingAmount: null,
     issueSizeInLabel: null,
@@ -759,6 +763,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     dateGranularity: "month",
     eventStatus: "upcoming",
     seniority: "Senior secured first lien notes:",
+    trancheEvent: null,
     redeemsInfo: null,
     outstandingAmount: null,
     issueSizeInLabel: null,
@@ -840,6 +845,16 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
     dateGranularity: null,
     eventStatus: null,
     seniority: sentinelFor("seniority"),
+    // POPULATED, NOT NULL — and that distinction is the whole assertion.
+    //
+    // This probe read `trancheEvent: null` when the field was added, so the
+    // check below could not see it: a null field renders nothing, leaks
+    // nothing, and passes. Meanwhile the live guard corpus was built by
+    // reflecting over string and string-array fields only, so this
+    // OBJECT-valued field was invisible to it — and Centene's card was shown
+    // its own repurchase and then rejected for stating the figures in it.
+    // A coverage probe that leaves a field empty is not testing that field.
+    trancheEvent: { kind: "retirement-or-repurchase" as const, evidence: sentinelFor("trancheEventEvidence") },
     redeemsInfo: sentinelFor("redeemsInfo"),
     outstandingAmount: sentinelFor("outstandingAmount"),
     issueSizeInLabel: sentinelFor("issueSizeInLabel"),
@@ -854,7 +869,10 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
   const METADATA_EXEMPT = ["sourceFilingForm", "sourceFilingDate"];
   const leaked: string[] = [];
   for (const key of Object.keys(probe)) {
-    for (const candidate of [key, `${key}Form`, `${key}Date`]) {
+    // Nested-field sentinels are named `<key><Part>`; a field whose value is
+    // an object hides its strings from a bare `key` lookup, which is the
+    // shape that let trancheEvent through.
+    for (const candidate of [key, `${key}Form`, `${key}Date`, `${key}Evidence`]) {
       const sentinel = sentinelFor(candidate);
       if (!shown.includes(sentinel)) continue;
       if (METADATA_EXEMPT.includes(candidate)) continue;

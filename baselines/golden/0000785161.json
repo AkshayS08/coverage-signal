@@ -1,0 +1,1432 @@
+{
+  "extractionVersion": 29,
+  "signature": {
+    "signedBy": "Akshay Sahani",
+    "signedOn": "2026-09-09",
+    "basis": "First signature, Session 22 Stage 7, at PINNED_AS_OF 2026-09-09, extraction v29. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. CACHE_BUST x3 at v29: 7 of 7 rows carried a heading in every run, 4 classed in every run, row set / amounts / classes byte-identical across all three."
+  },
+  "attestation": {
+    "rowsCorrect": true,
+    "instrumentTypeFaithful": true,
+    "reproducedThreeTimes": true,
+    "by": "Akshay Sahani",
+    "on": "2026-09-09"
+  },
+  "criteria": [
+    {
+      "id": "1",
+      "name": "every row's amount, maturity and instrument correct against the filing",
+      "kind": "attested",
+      "pass": true,
+      "detail": "attested by Akshay Sahani on 2026-09-09 against 10-Q 2026-08-07",
+      "defends": "a ladder that ties to itself and to nothing in the world"
+    },
+    {
+      "id": "2",
+      "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+      "kind": "computed",
+      "pass": true,
+      "detail": "all 7 row(s) carry a printed unit; no narrative instruments, so no basis to state",
+      "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+    },
+    {
+      "id": "3",
+      "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+      "kind": "computed",
+      "pass": true,
+      "detail": "all 7 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+      "defends": "one position assembled from three filings and three dates"
+    },
+    {
+      "id": "4",
+      "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+      "kind": "computed",
+      "pass": true,
+      "detail": "(unlabelled): gap 0 TIES; Long-term debt, net of current portion: gap 0 TIES",
+      "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+    },
+    {
+      "id": "5",
+      "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+      "kind": "computed",
+      "pass": true,
+      "detail": "the filer's own XBRL tags, $2,634,000,000",
+      "defends": "a coverage percentage whose denominator nobody could name"
+    },
+    {
+      "id": "6",
+      "name": "coverage passes both tests — category-complete and residual under threshold",
+      "kind": "computed",
+      "pass": true,
+      "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+      "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+    },
+    {
+      "id": "7",
+      "name": "capacity separated and excluded from the debt sum",
+      "kind": "computed",
+      "pass": true,
+      "detail": "this filer states no undrawn capacity",
+      "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+    },
+    {
+      "id": "8a",
+      "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+      "kind": "computed",
+      "pass": true,
+      "detail": "7 per-instrument row(s)",
+      "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+    },
+    {
+      "id": "8b",
+      "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+      "kind": "computed",
+      "pass": true,
+      "detail": "4 of 7 row(s) carry a class; the remaining 3 state \"class not stated on this row\" explicitly (Advances under revolving credit facility; Other notes payable; Finance lease obligations). Sections printed: Credit Agreement; Bonds payable",
+      "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+    },
+    {
+      "id": "8c",
+      "name": "structure faithful in INSTRUMENT TYPE",
+      "kind": "attested",
+      "pass": true,
+      "detail": "attested by Akshay Sahani",
+      "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+    },
+    {
+      "id": "9a",
+      "name": "Tier 2 events status-corroborated and source-verified",
+      "kind": "computed",
+      "pass": true,
+      "detail": "no Tier 2 events",
+      "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+    },
+    {
+      "id": "9b",
+      "name": "the whole state reproduces on three independent re-asks",
+      "kind": "attested",
+      "pass": true,
+      "detail": "attested by Akshay Sahani — three CACHE_BUST re-asks at a fixed prompt version",
+      "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+    }
+  ],
+  "state": {
+    "company": "Encompass Health Corp",
+    "cik": "0000785161",
+    "anchor": {
+      "form": "10-Q",
+      "date": "2026-08-07",
+      "reportDate": "2026-06-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+    },
+    "filingSet": [
+      "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm",
+      "https://www.sec.gov/Archives/edgar/data/785161/000078516126000161/ehc-20260529.htm",
+      "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+      "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm"
+    ],
+    "asOf": "2026-09-09",
+    "rows": [
+      {
+        "instrument": "4.50 % Senior Notes due 2028",
+        "amount": "$396.9 million",
+        "maturityDate": "2028-02-01",
+        "dateGranularity": "day",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "4.50 % Senior Notes due 2028 396.9   792.0"
+      },
+      {
+        "instrument": "4.75 % Senior Notes due 2030",
+        "amount": "$788.4 million",
+        "maturityDate": "2030-02-01",
+        "dateGranularity": "day",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "4.75 % Senior Notes due 2030 788.4   787.0"
+      },
+      {
+        "instrument": "4.625 % Senior Notes due 2031",
+        "amount": "$394.1 million",
+        "maturityDate": "2031-04-01",
+        "dateGranularity": "day",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "4.625 % Senior Notes due 2031 394.1   393.6"
+      },
+      {
+        "instrument": "5.875 % Senior Notes due 2034",
+        "amount": "$491.0 million",
+        "maturityDate": "2034-06-01",
+        "dateGranularity": "day",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "5.875 % Senior Notes due 2034 491.0   —"
+      },
+      {
+        "instrument": "Advances under revolving credit facility",
+        "amount": "$200.0 million",
+        "maturityDate": "2031-03-09",
+        "dateGranularity": "day",
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "Advances under revolving credit facility $ 200.0   $ 130.0"
+      },
+      {
+        "instrument": "Other notes payable",
+        "amount": "$81.9 million",
+        "maturityDate": null,
+        "dateGranularity": null,
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "Other notes payable 81.9   93.6"
+      },
+      {
+        "instrument": "Finance lease obligations",
+        "amount": "$281.7 million",
+        "maturityDate": null,
+        "dateGranularity": null,
+        "status": "live",
+        "provenance": "note",
+        "isCapacity": false,
+        "sourceLine": "Finance lease obligations 281.7   294.6"
+      }
+    ],
+    "coverage": {
+      "denominatorSource": "xbrl",
+      "statedTotalDebt": 2634000000,
+      "capturedFace": 2634000000,
+      "statedBridge": 0,
+      "residualPercent": 0,
+      "residualPasses": true
+    },
+    "tier2": [],
+    "rowsOutsideSubtotal": 0,
+    "cards": [
+      {
+        "triggerId": "debt-maturity",
+        "bucket": "refi",
+        "headlineRowId": "4.50 % Senior Notes due 2028::4.50%::2028-02-01",
+        "derived": [
+          {
+            "kind": "months-to-maturity",
+            "text": "16 months out — matures 2028-02-01.",
+            "computed": "16 months",
+            "inputs": [
+              "4.50 % Senior Notes due 2028 396.9   792.0"
+            ],
+            "fieldInputs": []
+          },
+          {
+            "kind": "refi-pattern",
+            "text": "No verified, corroborated-completed redemption in this corpus, so no refinancing pattern is computed. An unverified or merely intended retirement is not a pattern.",
+            "computed": null,
+            "inputs": [],
+            "fieldInputs": []
+          },
+          {
+            "kind": "next-tranche",
+            "text": "4.75 % Senior Notes due 2030, maturing 2030-02-01. 24 months behind this one.",
+            "computed": "24 months",
+            "inputs": [
+              "4.50 % Senior Notes due 2028 396.9   792.0",
+              "4.75 % Senior Notes due 2030 788.4   787.0"
+            ],
+            "fieldInputs": []
+          },
+          {
+            "kind": "liquidity",
+            "text": "$746M of undrawn capacity across 1 committed facility, but the filing states no cash balance, so no liquidity total is computed.",
+            "computed": null,
+            "inputs": [
+              "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $746 million available to us under our revolving credit facility."
+            ],
+            "fieldInputs": []
+          }
+        ],
+        "withheld": []
+      }
+    ]
+  },
+  "sourceResult": {
+    "company": "Encompass Health Corp",
+    "cik": "0000785161",
+    "ticker": "EHC",
+    "results": [
+      {
+        "proseInstruments": [],
+        "facilities": [
+          {
+            "name": "Senior Secured Revolving Credit Facility",
+            "category": "revolver",
+            "facilitySize": {
+              "value": "$1 billion",
+              "sourceLine": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility."
+            },
+            "drawn": {
+              "value": "$200.0 million",
+              "sourceLine": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %."
+            },
+            "lettersOfCredit": null,
+            "available": {
+              "value": "$746 million",
+              "sourceLine": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $746 million available to us under our revolving credit facility."
+            },
+            "maturity": {
+              "value": "March 9, 2031",
+              "sourceLine": "the maturity date has been changed to March 9, 2031"
+            },
+            "asOfDate": "2026-06-30",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+            "figureSources": {
+              "facilitySize": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+              "drawn": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+              "available": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+              "maturity": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            }
+          }
+        ],
+        "facilityRejections": [],
+        "seniorityStatement": {
+          "statement": "The Senior Notes are senior, unsecured obligations of Encompass Health and rank equally with our other senior indebtedness, senior to any of our subordinated indebtedness, and effectively junior to our secured indebtedness to the extent of the value of the collateral securing such indebtedness.",
+          "appliesTo": "the Senior Notes"
+        },
+        "triggerId": "debt-maturity",
+        "triggerName": "Debt maturity approaching",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "4.50% Senior Notes due February 1, 2028 with $396.9 million outstanding as of June 30, 2026; 4.75% Senior Notes due February 1, 2030 with $788.4 million outstanding; 4.625% Senior Notes due April 1, 2031 with $394.1 million outstanding. The 2028 Notes mature within the 12-18 month window.",
+        "mappedNeed": "Refinancing",
+        "needType": "credit",
+        "confidence": 0.95,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "The 2028 Notes mature on February 1, 2028 and bear interest at a per annum rate of 4.50 %.",
+        "verifiedQuoteNormalized": "The 2028 Notes mature on February 1, 2028 and bear interest at a per annum rate of 4.50 %.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2028-02-01",
+        "dateGranularity": "day",
+        "scheduleSequence": [
+          {
+            "kind": "row",
+            "label": "Advances under revolving credit facility",
+            "amount": "$200.0 million",
+            "rate": "4.9%",
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Credit Agreement",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Advances under revolving credit facility $ 200.0   $ 130.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.50 % Senior Notes due 2028",
+            "amount": "$396.9 million",
+            "rate": "4.50%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2028-02-01",
+            "dateGranularity": "day",
+            "section": "Bonds payable",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "4.50 % Senior Notes due 2028 396.9   792.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.75 % Senior Notes due 2030",
+            "amount": "$788.4 million",
+            "rate": "4.75%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2030-02-01",
+            "dateGranularity": "day",
+            "section": "Bonds payable",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "4.75 % Senior Notes due 2030 788.4   787.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.625 % Senior Notes due 2031",
+            "amount": "$394.1 million",
+            "rate": "4.625%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2031-04-01",
+            "dateGranularity": "day",
+            "section": "Bonds payable",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "4.625 % Senior Notes due 2031 394.1   393.6",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "5.875 % Senior Notes due 2034",
+            "amount": "$491.0 million",
+            "rate": "5.875%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2034-06-01",
+            "dateGranularity": "day",
+            "section": "Bonds payable",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "5.875 % Senior Notes due 2034 491.0   —",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "Other notes payable",
+            "amount": "$81.9 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Bonds payable",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Other notes payable 81.9   93.6",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "row",
+            "label": "Finance lease obligations",
+            "amount": "$281.7 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Bonds payable",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Finance lease obligations 281.7   294.6",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": null,
+            "amount": "$2,634.0 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "2,634.0   2,490.8",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "adjustment",
+            "label": "Less: Current portion",
+            "amount": "($35.9 million)",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Less: Current portion ( 35.9 ) ( 43.6 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": "Long-term debt, net of current portion",
+            "amount": "$2,598.1 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Long-term debt, net of current portion $ 2,598.1   $ 2,447.2",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "priorScheduleSequence": [
+          {
+            "kind": "row",
+            "label": "Advances under revolving credit facility",
+            "amount": "$220.0 million",
+            "rate": "4.9%",
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Credit Agreement",
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "Advances under revolving credit facility $ 220.0   $ 130.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.50 % Senior Notes due 2028",
+            "amount": "$792.9 million",
+            "rate": "4.50%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2028-02-01",
+            "dateGranularity": "day",
+            "section": "Bonds payable",
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "4.50 % Senior Notes due 2028 792.9   792.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.75 % Senior Notes due 2030",
+            "amount": "$787.7 million",
+            "rate": "4.75%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2030-02-01",
+            "dateGranularity": "day",
+            "section": "Bonds payable",
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "4.75 % Senior Notes due 2030 787.7   787.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          },
+          {
+            "kind": "row",
+            "label": "4.625 % Senior Notes due 2031",
+            "amount": "$393.8 million",
+            "rate": "4.625%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2031-04-01",
+            "dateGranularity": "day",
+            "section": "Bonds payable",
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "4.625 % Senior Notes due 2031 393.8   393.6",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          },
+          {
+            "kind": "row",
+            "label": "Other notes payable",
+            "amount": "$91.2 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Bonds payable",
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "Other notes payable 91.2   93.6",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          },
+          {
+            "kind": "row",
+            "label": "Finance lease obligations",
+            "amount": "$288.2 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Bonds payable",
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "Finance lease obligations 288.2   294.6",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": null,
+            "amount": "$2,573.8 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "2,573.8   2,490.8",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          },
+          {
+            "kind": "adjustment",
+            "label": "Less: Current portion",
+            "amount": "($42.9 million)",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "Less: Current portion ( 42.9 ) ( 43.6 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": "Long-term debt, net of current portion",
+            "amount": "$2,530.9 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "March 31, 2026",
+            "sourceLine": "Long-term debt, net of current portion $ 2,530.9   $ 2,447.2",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+          }
+        ],
+        "balanceSheetDebtCaptions": [
+          {
+            "label": "Current portion of long-term debt",
+            "amount": "$35.9 million",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Current portion of long-term debt $ 35.9   $ 43.6",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "label": "Long-term debt, net of current portion",
+            "amount": "$2,598.1 million",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Long-term debt, net of current portion 2,598.1   2,447.2",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "debtScheduleSourceFiling": {
+          "form": "10-Q",
+          "date": "2026-08-07",
+          "reportDate": "2026-06-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+        },
+        "debtSchedulePriorFiling": {
+          "form": "10-Q",
+          "date": "2026-05-01",
+          "reportDate": "2026-03-31",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+        },
+        "rowsExtracted": 21,
+        "rowsVerified": 21,
+        "baseRowsExtracted": 10,
+        "columnReadFailure": false,
+        "scheduleCompleteness": {
+          "checked": true,
+          "subtotalsTranscribed": 2,
+          "labeledTotalCandidatesInSource": 1,
+          "missingLabeledTotals": [
+            "Total $ 2,663"
+          ],
+          "trailingUnconsumedText": null,
+          "complete": false
+        },
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [
+          {
+            "instrument": "4.50 % Senior Notes due 2028",
+            "amount": "$400 million",
+            "eventDate": "2026-05-29",
+            "dateGranularity": "day",
+            "sourceLine": "redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "upcoming",
+        "proceedsUse": null,
+        "xbrlDebtTotal": {
+          "total": 2634000000,
+          "asOf": "2026-06-30",
+          "parts": [
+            {
+              "tag": "LongTermDebtAndCapitalLeaseObligationsCurrent",
+              "value": 35900000
+            },
+            {
+              "tag": "LongTermDebtAndCapitalLeaseObligations",
+              "value": 2598100000
+            }
+          ],
+          "separateLeases": [
+            {
+              "tag": "FinanceLeaseLiability",
+              "value": 281700000
+            }
+          ],
+          "unavailableReason": null
+        },
+        "xbrlMaturityBuckets": {
+          "buckets": [],
+          "asOf": "2026-06-30"
+        }
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "new-debt-issuance",
+        "triggerName": "New debt issuance / notes pricing",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Encompass Health issued $500 million of 5.875% Senior Notes due June 1, 2034 in May 2026 at par, resulting in approximately $491 million in net proceeds. An additional $100 million tranche was issued on August 13, 2026 at 98.75% of par, resulting in approximately $96.9 million in net proceeds.",
+        "mappedNeed": "Refi or add-on financing",
+        "needType": "credit",
+        "confidence": 0.98,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "form": "8-K",
+            "date": "2026-06-01",
+            "reportDate": "2026-05-29",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000161/ehc-20260529.htm"
+          },
+          {
+            "form": "8-K",
+            "date": "2026-08-13",
+            "reportDate": "2026-08-13",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "In May 2026, we issued $ 500  million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par, which resulted in approximately $ 491  million in net proceeds from the private offering.",
+        "verifiedQuoteNormalized": "In May 2026, we issued $ 500  million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par, which resulted in approximately $ 491  million in net proceeds from the private offering.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2026-05-29",
+        "dateGranularity": "day",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 2,
+        "rowsVerified": 2,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [
+          {
+            "instrument": "4.50 % Senior Notes due 2028",
+            "amount": "$400 million",
+            "status": "intended",
+            "sourceLine": "redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")",
+            "verified": true
+          }
+        ],
+        "proceedsUses": [
+          {
+            "use": "redeem at par $400 million in aggregate principal amount of the $800 million in outstanding principal amount of our 4.50% Senior Notes due 2028",
+            "amount": "$400 million",
+            "sourceLine": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")"
+          },
+          {
+            "use": "repay $100 million of outstanding amounts under our revolving credit facility",
+            "amount": "$100 million",
+            "sourceLine": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100  million of outstanding amounts under our revolving credit facility"
+          },
+          {
+            "use": "pay certain related fees and expenses",
+            "amount": null,
+            "sourceLine": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100  million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses."
+          }
+        ],
+        "issuedTranches": [
+          {
+            "instrument": "5.875% Senior Notes due 2034",
+            "amount": "$500 million",
+            "rate": "5.875%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2034-06-01",
+            "dateGranularity": "day",
+            "sourceLine": "In May 2026, we issued $ 500  million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par, which resulted in approximately $ 491  million in net proceeds from the private offering.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "instrument": "5.875% Senior Notes due 2034 (Additional Notes)",
+            "amount": "$100 million",
+            "rate": "5.875%",
+            "seniority": "senior unsecured",
+            "maturityDate": "2034-06-01",
+            "dateGranularity": "day",
+            "sourceLine": "On August 13, 2026, Encompass Health Corporation (the \"Company\") completed the issuance and sale of $100 million in aggregate principal amount of its 5.875% Senior Notes due 2034 (the \"Additional Notes\")",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm"
+          }
+        ],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$491 million",
+        "projectName": null,
+        "eventStatus": "completed",
+        "proceedsUse": "refinancing_only"
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "acquisition-announced",
+        "triggerName": "Acquisition announced",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "No acquisition announced by Encompass Health in the filings provided. The company sold its 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to its joint venture partner for $17.9 million effective January 1, 2026, which is a divestiture, not an acquisition.",
+        "mappedNeed": "Bridge financing, then permanent",
+        "needType": "credit",
+        "confidence": 0.95,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "capex-program",
+        "triggerName": "Capex program / new facility or construction",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Encompass Health is pursuing ongoing capital expenditure programs for de novo hospital development, bed additions, and facility expansions. For 2026, the company expects to spend approximately $920 million to $995 million for capital expenditures, with approximately $225 million to $240 million considered nondiscretionary maintenance expenditures. As of December 31, 2025, projects under construction have an estimated additional cost to complete over the next two years of approximately $441 million.",
+        "mappedNeed": "Term loan or capex facility",
+        "needType": "credit",
+        "confidence": 0.92,
+        "citations": [
+          {
+            "form": "10-K",
+            "date": "2026-02-26",
+            "reportDate": "2025-12-31",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "During 2026, we expect to spend approximately $920 million to $995 million for capital expenditures using cash on hand and borrowings under our revolving credit facility.",
+        "verifiedQuoteNormalized": "During 2026, we expect to spend approximately $920 million to $995 million for capital expenditures using cash on hand and borrowings under our revolving credit facility.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$920 million to $995 million",
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "revolver-near-capacity",
+        "triggerName": "Revolver near capacity + growth",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "As of June 30, 2026, $200.0 million was drawn under the $1 billion revolving credit facility, representing approximately 20% utilization. Approximately $746 million was available for borrowing. The revolver is not near capacity.",
+        "mappedNeed": "Revolver upsize",
+        "needType": "credit",
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "dividend-buyback",
+        "triggerName": "Dividend recap / buyback authorization",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Encompass Health declared quarterly cash dividends of $0.19 per share in the second quarter of 2026 (increased from $0.17 per share in prior quarters). The company also repurchased 1.4 million shares of common stock for $145.2 million during the six months ended June 30, 2026, under an authorization to repurchase up to $500 million of common stock (with approximately $332 million remaining as of December 31, 2025).",
+        "mappedNeed": "Leverage capacity conversation",
+        "needType": "credit",
+        "confidence": 0.95,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          },
+          {
+            "form": "10-K",
+            "date": "2026-02-26",
+            "reportDate": "2025-12-31",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "In July 2025, our board of directors approved an increase in our quarterly dividend and declared a cash dividend of $0.19 per share paid in October 2025.",
+        "verifiedQuoteNormalized": "In July 2025, our board of directors approved an increase in our quarterly dividend and declared a cash dividend of $0.19 per share paid in October 2025.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "large-cash-balance",
+        "triggerName": "Large cash balance building",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "Cash and cash equivalents were $107.7 million as of June 30, 2026, compared to $72.2 million as of December 31, 2025, representing an increase of $35.5 million. However, this is not a large cash balance in absolute terms for a company of Encompass Health's size with $7.5 billion in total assets. The company also holds $25.8 million in restricted cash and $159.6 million in restricted marketable securities.",
+        "mappedNeed": "Liquidity management, earning on idle cash",
+        "needType": "treasury",
+        "confidence": 0.92,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "asset-sale",
+        "triggerName": "Asset sale / divestiture closing",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Encompass Health sold its 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to its existing joint venture partner, Barnes-Jewish Hospital, LLC, for $17.9 million effective January 1, 2026. The company recorded a $17.5 million pre-tax gain on this transaction.",
+        "mappedNeed": "Proceeds deposit + sweep",
+        "needType": "treasury",
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "On December 31, 2025, we entered into an agreement to sell our 50 % membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC (\"Gamma Knife\") to our existing joint venture partner, Barnes-Jewish Hospital, LLC, for $ 17.9  million effective January 1, 2026.",
+        "verifiedQuoteNormalized": "On December 31, 2025, we entered into an agreement to sell our 50 % membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC (\"Gamma Knife\") to our existing joint venture partner, Barnes-Jewish Hospital, LLC, for $ 17.9  million effective January 1, 2026.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2026-01-01",
+        "dateGranularity": "day",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [
+          {
+            "description": "sale of 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC",
+            "amount": "$17.9 million",
+            "eventDate": "2026-01-01",
+            "dateGranularity": "day",
+            "eventStatus": "completed",
+            "sourceLine": "On December 31, 2025, we entered into an agreement to sell our 50 % membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC (\"Gamma Knife\") to our existing joint venture partner, Barnes-Jewish Hospital, LLC, for $ 17.9  million effective January 1, 2026.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$17.9 million",
+        "projectName": "Gamma Knife Center at Barnes-Jewish Hospital, LLC",
+        "eventStatus": "completed",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "international-expansion",
+        "triggerName": "International expansion / rising foreign revenue",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "Encompass Health operates hospitals in 39 states and Puerto Rico. The filings do not disclose material foreign revenue or international expansion. The company's operations are primarily domestic within the United States.",
+        "mappedNeed": "FX hedging, cross-border cash management",
+        "needType": "treasury",
+        "confidence": 0.88,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "new-subsidiary",
+        "triggerName": "New subsidiary / entity formation",
+        "fired": false,
+        "dataAvailable": false,
+        "evidence": "No disclosure of new subsidiary formation in the provided filings. This type of information is typically not disclosed in public filings unless tied to a reported acquisition or material transaction.",
+        "mappedNeed": "New operating accounts",
+        "needType": "treasury",
+        "confidence": 0.7,
+        "citations": [],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "ipo-secondary",
+        "triggerName": "IPO / secondary raise",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "No IPO or secondary equity offering announced or completed. Encompass Health is an established public company trading on the New York Stock Exchange under symbol EHC.",
+        "mappedNeed": "Proceeds management, treasury build-out",
+        "needType": "treasury",
+        "confidence": 0.95,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "floating-rate-debt",
+        "triggerName": "Floating-rate debt + rate exposure",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Encompass Health has $200.0 million drawn under its revolving credit facility as of June 30, 2026, which bears interest at a floating rate of 4.9% (SOFR-based). The credit agreement provides for borrowings at SOFR plus an applicable margin. This represents floating-rate debt exposure, though the amount is modest relative to total debt of $2,634.0 million.",
+        "mappedNeed": "Interest-rate hedging",
+        "needType": "credit",
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+        "verifiedQuoteNormalized": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "commodity-exposure",
+        "triggerName": "Commodity / input-cost exposure",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "The filings do not disclose material exposure to commodity or input-cost volatility. While the company mentions labor cost trends and staffing challenges as risks, there is no specific disclosure of commodity price exposure or hedging activities related to commodities.",
+        "mappedNeed": "Commodity hedging",
+        "needType": "credit",
+        "confidence": 0.85,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "fx-exposure",
+        "triggerName": "Large FX exposure disclosed",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "No material foreign-currency exposure is disclosed. Encompass Health operates primarily in the United States (39 states and Puerto Rico) with no significant international operations that would create material FX exposure.",
+        "mappedNeed": "FX hedging program",
+        "needType": "treasury",
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "covenant-breach",
+        "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning is disclosed. The company states it was in compliance with all financial covenants as of June 30, 2026, with a maximum leverage ratio requirement of 4.50x and a minimum interest coverage ratio requirement of 3.0x.",
+        "mappedNeed": "Restructuring or amendment support",
+        "needType": "distress",
+        "confidence": 0.95,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      }
+    ],
+    "verdict": "CALL",
+    "relationshipFlags": []
+  }
+}

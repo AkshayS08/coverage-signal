@@ -22,7 +22,7 @@ const prose = (o: Partial<ProseInstrumentRow> & { category: ProseInstrumentRow["
 
 function dm(o: Partial<TriggerResult> = {}): TriggerResult {
   return { triggerId: "debt-maturity", scheduleSequence: [], balanceSheetDebtCaptions: [],
-    proseInstruments: [], revolver: null, ...o } as unknown as TriggerResult;
+    proseInstruments: [], facilities: [], facilityRejections: [], seniorityStatement: null, proceedsUses: [], ...o } as unknown as TriggerResult;
 }
 
 console.log("\n=== [1] REAL: UHS before prose instruments — correctly terrible ===");
@@ -72,7 +72,7 @@ console.log("\n=== [2] REAL: UHS at the anchor — THE ACCEPTANCE TEST, in the s
       prose({ category: "delayed-draw-term-loan", name: "delayed draw term loan A", amount: "$ 400 million", amountBasis: "commitment" }),
       prose({ category: "other", name: "delayed draw short term loan", amount: "$ 700 million", amountBasis: "commitment" }),
     ] as never,
-    revolver: { facilitySize: "$ 1.5 billion", drawn: "$ 225 million", lettersOfCredit: "$ 3 million", available: "$ 1.272 billion", delayedDrawCapacity: "$ 400 million", asOfDate: "2026-06-30", sourceLine: "s" } as never,
+    facilities: [{ name: "revolving credit facility", category: "revolver", facilitySize: { value: "$ 1.5 billion", sourceLine: "s" }, drawn: { value: "$ 225 million", sourceLine: "s" }, lettersOfCredit: { value: "$ 3 million", sourceLine: "s" }, available: { value: "$ 1.272 billion", sourceLine: "s" }, maturity: null, asOfDate: "2026-06-30" }] as never,
   }));
   assert(Math.abs(c.capturedFace - 4_741_000_000) < 1_000_000,
     `[2a] five notes ($3.0B) + term loan A ($1.448B) + drawn revolver ($225M) + Trust liabilities ($68M) = $4.741B (got ${(c.capturedFace / 1e9).toFixed(3)}B)`);
@@ -107,7 +107,7 @@ console.log("\n=== [2R] REAL: the acceptance test turns on the span reaching the
       prose({ category: "term-loan", name: "term loan A", amount: "$ 1.448 billion", amountBasis: "outstanding" }),
       prose({ category: "revolver", name: "revolver", amount: "$ 225 million", amountBasis: "outstanding" }),
     ] as never,
-    revolver: { facilitySize: "$ 1.5 billion", drawn: "$ 225 million", lettersOfCredit: "$ 3 million", available: "$ 1.272 billion", delayedDrawCapacity: null, asOfDate: null, sourceLine: "s" } as never,
+    facilities: [{ name: "revolving credit facility", category: "revolver", facilitySize: { value: "$ 1.5 billion", sourceLine: "s" }, drawn: { value: "$ 225 million", sourceLine: "s" }, lettersOfCredit: { value: "$ 3 million", sourceLine: "s" }, available: { value: "$ 1.272 billion", sourceLine: "s" }, maturity: null, asOfDate: null }] as never,
   }));
   assert(c.residualPasses === false && c.residualFraction !== null && c.residualFraction > 0.036,
     `[2R] WITHOUT the note's "$ 68 million ... included in debt" sentence the residual is ${((c.residualFraction ?? 0) * 100).toFixed(2)}% and coverage FAILS — that sentence sits 2,100 characters past where the old span ended, which is the whole reason the span had to become the note rather than the table`);
@@ -173,15 +173,15 @@ console.log("\n=== [7] Never suppress ===");
 
 console.log("\n=== [8] 3b — the revolver's free arithmetic ===");
 {
-  const ok = checkRevolverArithmetic({ facilitySize: "$1.5 billion", drawn: "$225 million",
-    lettersOfCredit: "$3 million", available: "$1.272 billion", delayedDrawCapacity: null, asOfDate: null, sourceLine: "s" } as never);
+  const ok = checkRevolverArithmetic({ facilitySize: { value: "$1.5 billion", sourceLine: "s" }, drawn: { value: "$225 million", sourceLine: "s" },
+    lettersOfCredit: { value: "$3 million", sourceLine: "s" }, available: { value: "$1.272 billion", sourceLine: "s" }, asOfDate: null } as never);
   assert(ok.checked && ok.ok, `[8a] REAL: UHS's 225 + 3 + 1,272 = 1,500 reconciles (${ok.note})`);
-  const bad = checkRevolverArithmetic({ facilitySize: "$1.5 billion", drawn: "$225 million",
-    lettersOfCredit: "$3 million", available: "$900 million", delayedDrawCapacity: null, asOfDate: null, sourceLine: "s" } as never);
+  const bad = checkRevolverArithmetic({ facilitySize: { value: "$1.5 billion", sourceLine: "s" }, drawn: { value: "$225 million", sourceLine: "s" },
+    lettersOfCredit: { value: "$3 million", sourceLine: "s" }, available: { value: "$900 million", sourceLine: "s" }, asOfDate: null } as never);
   assert(bad.checked && !bad.ok && bad.note.includes("DOES NOT RECONCILE"),
     "[8b] a mismatch renders as its OWN flag, never as a liquidity figure someone might act on");
-  const partial = checkRevolverArithmetic({ facilitySize: "$1.5 billion", drawn: null,
-    lettersOfCredit: null, available: null, delayedDrawCapacity: null, asOfDate: null, sourceLine: "s" } as never);
+  const partial = checkRevolverArithmetic({ facilitySize: { value: "$1.5 billion", sourceLine: "s" }, drawn: null,
+    lettersOfCredit: null, available: null, asOfDate: null } as never);
   assert(!partial.checked && partial.note.includes("not checkable"),
     "[8c] fewer than four figures is stated as not checkable — never derived, because deriving one makes the check circular");
 }
@@ -194,7 +194,7 @@ console.log("\n=== [9] REAL: the two facility sizes v22 counted as debt ===");
     balanceSheetDebtCaptions: [{ label: "Long-term debt", amount: "$3,769 million" }] as never,
     scheduleSequence: [row("notes", "$3,800 million"), row("Deferred debt issuance costs", "($31 million)", "adjustment")],
     proseInstruments: [prose({ category: "revolver", name: "Credit Facility", amount: "$ 1.25 billion", amountBasis: "commitment" })] as never,
-    revolver: { facilitySize: "$ 1.25 billion", drawn: null, lettersOfCredit: null, available: null, delayedDrawCapacity: "$ 800 million", asOfDate: "2026-06-30", sourceLine: "s" } as never,
+    facilities: [{ name: "revolving credit facility", category: "revolver", facilitySize: { value: "$ 1.25 billion", sourceLine: "s" }, drawn: null, lettersOfCredit: null, available: null, maturity: null, asOfDate: "2026-06-30" }] as never,
   }));
   assert(Math.abs(molina.capturedFace - 3_800_000_000) < 1_000_000,
     `[9a] Molina: the $1.25B facility contributes NOTHING, because nothing is drawn against it — captured stays $3.80B (got ${(molina.capturedFace / 1e9).toFixed(3)}B, was $5.05B and 134%)`);
@@ -207,7 +207,7 @@ console.log("\n=== [9] REAL: the two facility sizes v22 counted as debt ===");
     balanceSheetDebtCaptions: [{ label: "Long-term debt", amount: "$13,300 million" }] as never,
     scheduleSequence: [row("notes", "$13,385 million"), row("Unamortized issue costs and note discounts", "($85 million)", "adjustment")],
     proseInstruments: [prose({ category: "revolver", name: "senior secured revolving credit facility", amount: "$ 1.900 billion", amountBasis: "commitment" })] as never,
-    revolver: { facilitySize: "$ 1.900 billion", drawn: "$ 0 million", lettersOfCredit: "$ 105 million", available: "$ 1.900 billion", delayedDrawCapacity: null, asOfDate: "2026-06-30", sourceLine: "s" } as never,
+    facilities: [{ name: "revolving credit facility", category: "revolver", facilitySize: { value: "$ 1.900 billion", sourceLine: "s" }, drawn: { value: "$ 0 million", sourceLine: "s" }, lettersOfCredit: { value: "$ 105 million", sourceLine: "s" }, available: { value: "$ 1.900 billion", sourceLine: "s" }, maturity: null, asOfDate: "2026-06-30" }] as never,
   }));
   assert(Math.abs(tenet.capturedFace - 13_385_000_000) < 1_000_000,
     `[9c] Tenet: drawn is stated as $0, so the revolver contributes $0 — captured stays $13.385B (got ${(tenet.capturedFace / 1e9).toFixed(3)}B, was $15.285B and 115%)`);
@@ -230,7 +230,7 @@ console.log("\n=== [10] REAL: Cigna's commercial paper is NOT capacity ===");
       prose({ category: "other", name: "Commercial paper program", amount: "$ 1.0 billion", amountBasis: "outstanding" }),
       prose({ category: "revolver", name: "Revolving Credit Agreement", amount: null, amountBasis: "commitment" }),
     ] as never,
-    revolver: { facilitySize: "$ 6.5 billion", drawn: null, lettersOfCredit: null, available: "$ 6.5 billion", delayedDrawCapacity: null, asOfDate: "2026-06-30", sourceLine: "s" } as never,
+    facilities: [{ name: "revolving credit facility", category: "revolver", facilitySize: { value: "$ 6.5 billion", sourceLine: "s" }, drawn: null, lettersOfCredit: null, available: { value: "$ 6.5 billion", sourceLine: "s" }, maturity: null, asOfDate: "2026-06-30" }] as never,
   }));
   assert(c.capturedFace === 1_000_000_000,
     `[10a] the $1.0B outstanding commercial paper COUNTS (got ${(c.capturedFace / 1e9).toFixed(2)}B) — a drawn balance is debt whatever the facility is called`);

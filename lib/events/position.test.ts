@@ -112,7 +112,7 @@ function baseTriggerResult(over: Partial<TriggerResult> & { triggerId: string })
     eventInstances: [],
     noteRetirements: [],
     proseInstruments: [],
-    revolver: null,
+    facilities: [], facilityRejections: [], seniorityStatement: null, proceedsUses: [],
     projectCompletionDate: null,
     projectCompletionGranularity: null,
     cashAmount: null,

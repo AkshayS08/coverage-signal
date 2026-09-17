@@ -17,6 +17,7 @@
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
+import { PINNED_AS_OF } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
 import { buildEvents } from "../events/buildEvents";
 import { buildVerifiedFactBase } from "../events/factBase";
@@ -27,7 +28,7 @@ import { createHash } from "node:crypto";
 
 const ALL = ["DaVita","HCA Healthcare","Tenet Healthcare","Universal Health Services","Encompass Health",
   "Community Health Systems","Quest Diagnostics","Centene Corporation","Cigna Group","Molina Healthcare"];
-const ASOF = new Date("2026-09-06T00:00:00Z");
+const ASOF = PINNED_AS_OF;
 
 /** Measured on this project's own persisted cost log for a Sonnet card briefing. */
 const PER_CARD_LOW = 0.020;

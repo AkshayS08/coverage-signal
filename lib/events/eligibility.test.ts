@@ -1,3 +1,4 @@
+import { classifyInstrument } from "./instrumentClass";
 /**
  * Session 11 golden tests — card-eligibility gate correctness.
  *
@@ -87,6 +88,7 @@ function syntheticLadderRow(over: Partial<LadderRow> & { maturityDate: string; d
     instrument: "synthetic",
     rate: null,
     seniority: null,
+    classification: classifyInstrument({ headings: [], instrumentName: "synthetic" }),
     amount: "$1.0 billion",
     sourceLine: "synthetic",
     citedUrl: "https://example.com/synthetic",
@@ -302,7 +304,7 @@ console.log(`=== Session 11 golden tests (fixture generatedAt=${fixture.generate
     eventInstances: [],
     noteRetirements: [],
     proseInstruments: [],
-    revolver: null,
+    facilities: [], facilityRejections: [], seniorityStatement: null, proceedsUses: [],
     projectCompletionDate: null,
     projectCompletionGranularity: null,
     cashAmount: "$500 million", // Session 18 D2: a real completed issuance states its own amount — null here would (correctly) block the card for an unrelated reason and defeat this test's actual purpose

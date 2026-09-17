@@ -15,6 +15,7 @@
  *
  * Run: npx tsx lib/events/derived.test.ts
  */
+import { monthsBetween, isWithinMonths, monthsLabel } from "./eventTiming";
 import { buildDerivedLines, derivedLinePasses, type DerivedLine } from "./derived";
 import type { CompanyPosition, LadderRow } from "./position";
 import type { FlashCard } from "./buildEvents";
@@ -53,8 +54,15 @@ console.log("\n=== [1] MONTHS TO MATURITY — the pinned clock, and the year rul
     dateGranularity: "month", sourceLine: "4.60 % Senior Notes due December 2027 500 500" });
   const { lines } = buildDerivedLines({ card: card("a"), position: position([r]), debtMaturity: undefined, newDebtIssuance: undefined, asOf: ASOF });
   const m = find(lines, "months-to-maturity")!;
-  assert(m.computed === "15 months" && m.text.includes("15 months out"),
-    `[1a] a month-granularity maturity computes a month count against the PINNED as-of, not a fresh clock (got ${m.computed})`);
+  // 14, NOT 15, AND THE CHANGE IS THE POINT (Session 22, Stage 1). From
+  // 2026-09-04 to 2027-12-01 is fourteen whole calendar months and 27 days.
+  // The old arithmetic divided 453 elapsed days by an average month of 30.44
+  // and rounded to 15 — a number that was never wrong so much as never
+  // defined, since nothing stated whether it counted completed months or
+  // month boundaries. The convention is now named in the BRD and this is
+  // what it says: whole calendar months COMPLETED.
+  assert(m.computed === "14 months" && m.text.includes("14 months out"),
+    `[1a] a month-granularity maturity computes WHOLE CALENDAR MONTHS COMPLETED against the PINNED as-of, not a fresh clock and not days/30.44 (got ${m.computed})`);
   assert(!m.text.includes("2026"),
     `[1b] and does NOT print the run date — it is identical on every line and the surface states it once; printing it would put a token in every line that no filing states (${m.text})`);
 }
@@ -129,12 +137,40 @@ console.log("\n=== [3] NEXT TRANCHE UP — a sort of the company's own ladder ==
   const a = row({ id: "a", instrument: "4.25% due 2027", maturityDate: "2027-12-15", dateGranularity: "day", sourceLine: "4.25 % due 2027-12-15 1,067" });
   const b = row({ id: "b", instrument: "2.45% due 2028", maturityDate: "2028-07-15", dateGranularity: "day", sourceLine: "2.45 % due 2028-07-15 2,160" });
   const cap = row({ id: "c", instrument: "revolver", maturityDate: "2027-01-01", dateGranularity: "day", isCapacity: true, sourceLine: "revolver 2027-01-01" });
-  const { lines } = buildDerivedLines({ card: card("a"), position: position([a, cap, b]), debtMaturity: undefined, newDebtIssuance: undefined, asOf: ASOF });
+  // THE FIXTURE IS IN MATURITY ORDER, because nextTranche reads the ladder
+  // assemblePosition already sorted and does not re-sort it. The old fixture
+  // listed the revolver (2027-01-01) AFTER the 2027-12-15 tranche and got
+  // away with it only because capacity was filtered out before the ordering
+  // mattered — the moment a facility joined the ladder, the unsorted fixture
+  // started answering with whatever came next in the array.
+  const ladderOrder = [cap, a, b];
+  const { lines } = buildDerivedLines({ card: card("a"), position: position(ladderOrder), debtMaturity: undefined, newDebtIssuance: undefined, asOf: ASOF });
   const n = find(lines, "next-tranche")!;
+  // SESSION 22, STAGE 5 — THE RULE CHANGED, AND THIS ASSERTS THE NEW ONE.
+  //
+  // It read "capacity is skipped — undrawn commitment has no maturity
+  // conversation, whatever date sits beside it". That is true of a drawn
+  // BALANCE and false of the facility: a revolver coming due is a renewal
+  // negotiation with a date on it, which is among the strongest calls an RM
+  // can make. Quest is the measured case — its secured receivables facility
+  // matures November 2027, inside the window, and the old rule left its own
+  // card saying "this tranche is not on the assembled ladder" about a row
+  // sitting on that ladder.
+  //
+  // So a facility with a STATED MATURITY takes its place in the maturity
+  // order like any other instrument. The fixture's revolver matures
+  // 2027-01-01, BEFORE the 2027-12-15 tranche this card is about, so what
+  // follows that tranche is still the 2028 note — the ordering is what
+  // changed, not the answer here.
   assert(n.text.includes("2.45% due 2028") && n.computed === "7 months",
     `[3a] the next dated tranche, with the gap between the two maturities (${n.text})`);
-  assert(!n.text.includes("revolver"),
-    "[3b] CAPACITY IS SKIPPED — undrawn commitment has no maturity conversation, whatever date sits beside it");
+  const capFirst = buildDerivedLines({ card: card("c"), position: position(ladderOrder), debtMaturity: undefined, newDebtIssuance: undefined, asOf: ASOF });
+  assert(find(capFirst.lines, "next-tranche")!.text.includes("4.25% due 2027"),
+    "[3b] AND A FACILITY WITH A STATED MATURITY IS ON THE LADDER, not skipped — a card about the revolver can say what follows it");
+  const undated = row({ id: "u", instrument: "undrawn revolver", maturityDate: null, dateGranularity: null, isCapacity: true, sourceLine: "undrawn revolver" });
+  const noDate = buildDerivedLines({ card: card("a"), position: position([a, b, undated]), debtMaturity: undefined, newDebtIssuance: undefined, asOf: ASOF });
+  assert(!find(noDate.lines, "next-tranche")!.text.includes("undrawn revolver"),
+    "[3b2] capacity with NO stated maturity is still skipped — there is no date to order it by, and the exclusion was always really about that");
 }
 {
   const a = row({ id: "a", instrument: "5.125 % due 2027", maturityDate: "2027", dateGranularity: "year", sourceLine: "5.125 % due 2027 1,500" });
@@ -154,35 +190,62 @@ console.log("\n=== [3] NEXT TRANCHE UP — a sort of the company's own ladder ==
 console.log("\n=== [4] LIQUIDITY — the verified revolver fields, and only them ===");
 {
   const a = row({ id: "a", instrument: "5.125 % due 2027", amount: "$ 1,500 million", maturityDate: "2027", dateGranularity: "year", sourceLine: "5.125 % due 2027 1,500" });
-  const dm = { revolver: { facilitySize: "$ 1.900 billion", drawn: null, lettersOfCredit: "less than $ 1 million",
-    available: "$ 1.900 billion", asOfDate: "2026-06-30", delayedDrawCapacity: null,
-    sourceLine: "Our borrowing availability was $ 1.900 billion at June 30, 2026." } } as unknown as TriggerResult;
+  const dm = { facilities: [{ name: "revolving credit facility", category: "revolver", facilitySize: { value: "$ 1.900 billion", sourceLine: "Our borrowing availability was $ 1.900 billion at June 30, 2026." }, drawn: null,
+    lettersOfCredit: { value: "less than $ 1 million", sourceLine: "Letters of credit outstanding were less than $ 1 million." },
+    available: { value: "$ 1.900 billion", sourceLine: "Our borrowing availability was $ 1.900 billion at June 30, 2026." },
+    asOfDate: "2026-06-30", maturity: null }] } as unknown as TriggerResult;
   const { lines } = buildDerivedLines({ card: card("a"), position: position([a]), debtMaturity: dm, newDebtIssuance: undefined, asOf: ASOF });
   const l = find(lines, "liquidity")!;
-  assert(l.text.includes("$ 1,500 million maturing") && l.text.includes("$ 1.900 billion of undrawn revolver capacity as of 2026-06-30"),
-    `[4a] BOTH FIGURES, side by side, each with what it belongs to (${l.text})`);
+  // THE HOUSE FORMAT, INSIDE A GUARDED LINE (Session 22, Stage 1). The
+  // figures render as $1.5B / $1.9B rather than as the filing's own
+  // "$ 1,500 million" / "$ 1.900 billion", so the ladder and the block
+  // beside it read in one unit. This is safe only because the derived
+  // guard matches ACROSS SCALE where both sides carry a unit — measured
+  // before the change, not assumed: "$1.5B" matches "$ 1,500 millions"
+  // and would NOT have matched a bare "1,500" off a table row. The
+  // as-printed string is still what verification sheets and golden files
+  // carry; only the rendered line is normalised.
+  // SESSION 22, STAGE 5 — LIQUIDITY IS SUMMED, NOT JUXTAPOSED.
+  //
+  // The line was never a liquidity figure: it was ONE facility's headroom,
+  // chosen because the schema had one slot. With no cash figure in this
+  // fixture it states the undrawn total and says exactly why no total is
+  // computed — which is the never-suppress rule, not a silence.
+  assert(l.text.includes("$1.9B of undrawn capacity across 1 committed facility") && l.text.includes("no cash balance"),
+    `[4a] UNDRAWN CAPACITY IS SUMMED ACROSS EVERY FACILITY, and a missing cash figure is stated rather than assumed away (${l.text})`);
   assert(l.computed === null && !/\d+\s?%/.test(l.text) && !/cover/i.test(l.text),
-    `[4b] AND NO RATIO BETWEEN THEM. This first read "127% of this maturity", which implies coverage the tool does not judge and divides two things that are not substitutes — a revolver is liquidity, not how a term maturity is refinanced (${l.text})`);
-  assert(l.text.includes("not how a term maturity is refinanced"),
-    "[4c] and the line says so in its own text, so the juxtaposition is not read as an implied answer");
+    `[4b] AND STILL NO RATIO. This first read "127% of this maturity", which implies coverage the tool does not judge and divides two things that are not substitutes (${l.text})`);
+  const withCash = { fired: true, cashAmount: "$ 2.170 billion", eventDate: "2026-06-30", verifiedQuote: "Cash and cash equivalents were $ 2.170 billion as of June 30, 2026." } as unknown as TriggerResult;
+  const summed = find(buildDerivedLines({ card: card("a"), position: position([a]), debtMaturity: dm, newDebtIssuance: undefined, cashBalance: withCash, asOf: ASOF }).lines, "liquidity")!;
+  assert(summed.computed === "$4.1B" && summed.text.includes("$4.1B of liquidity as of 2026-06-30"),
+    `[4c] WITH BOTH HALVES IT IS ONE COMPUTED SUM, as-of dated: cash plus undrawn capacity (${summed.text})`);
+  const mixedClock = { fired: true, cashAmount: "$ 2.170 billion", eventDate: "2026-03-31", verifiedQuote: "Cash and cash equivalents were $ 2.170 billion as of March 31, 2026." } as unknown as TriggerResult;
+  const mixed = find(buildDerivedLines({ card: card("a"), position: position([a]), debtMaturity: dm, newDebtIssuance: undefined, cashBalance: mixedClock, asOf: ASOF }).lines, "liquidity")!;
+  assert(mixed.computed === null && mixed.text.includes("different dates"),
+    `[4c2] AND TWO DATES ARE NEVER ADDED. A liquidity figure summed across two as-of dates is true at neither, which is the mixed-clock error the anchor rules exist to prevent (${mixed.text})`);
 }
 {
   // The measured Encompass case: an availability figure that appears nowhere
   // in the sentence cited for it, and whose own revolver arithmetic does not
   // reconcile either.
+  const DRAWN = "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.";
   const a = row({ id: "a", instrument: "4.50%", amount: "$396.9 million", maturityDate: "2028-02-01", dateGranularity: "day", sourceLine: "4.50 % 2028-02-01 396.9" });
-  const dm = { revolver: { facilitySize: "$1 billion", drawn: "$200.0 million", lettersOfCredit: "$46.3 million",
-    available: "$824 million", asOfDate: "2026-06-30", delayedDrawCapacity: null,
-    sourceLine: "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %." } } as unknown as TriggerResult;
+  const dm = { facilities: [{ name: "revolving credit facility", category: "revolver", // ENCOMPASS AS SHIPPED: one sentence, and it states only the drawn figure.
+    // Post-Stage-3 the facility guard would have dropped the other three before
+    // they ever reached here; this fixture keeps them to prove the DERIVED
+    // guard refuses them too, so neither layer relies on the other to be safe.
+    facilitySize: { value: "$1 billion", sourceLine: DRAWN }, drawn: { value: "$200.0 million", sourceLine: DRAWN }, lettersOfCredit: { value: "$46.3 million", sourceLine: DRAWN },
+    available: { value: "$824 million", sourceLine: DRAWN }, asOfDate: "2026-06-30",
+    maturity: null }] } as unknown as TriggerResult;
   const { lines, withheld } = buildDerivedLines({ card: card("a"), position: position([a]), debtMaturity: dm, newDebtIssuance: undefined, asOf: ASOF });
-  assert(!find(lines, "liquidity") && withheld.some((w) => w.kind === "liquidity" && w.unverified.includes("$824 million")),
+  assert(!find(lines, "liquidity") && withheld.some((w) => w.kind === "liquidity" && w.unverified.includes("$824M")),
     `[4d] AN AVAILABILITY FIGURE ITS OWN CITED SENTENCE DOES NOT CONTAIN IS WITHHELD, and named. This is the real measured case, and the note's own revolver arithmetic independently reports it as not reconciling (${JSON.stringify(withheld)})`);
 }
 {
   const a = row({ id: "a", instrument: "x", maturityDate: "2027-12-15", dateGranularity: "day", sourceLine: "x 2027-12-15" });
-  const { lines } = buildDerivedLines({ card: card("a"), position: position([a]), debtMaturity: { revolver: null } as unknown as TriggerResult, newDebtIssuance: undefined, asOf: ASOF });
-  assert(find(lines, "liquidity")!.text.includes("states no revolving facility"),
-    "[4e] a filer with no revolver says so, rather than the line vanishing");
+  const { lines } = buildDerivedLines({ card: card("a"), position: position([a]), debtMaturity: { facilities: [] } as unknown as TriggerResult, newDebtIssuance: undefined, asOf: ASOF });
+  assert(find(lines, "liquidity")!.text.includes("neither a cash balance nor undrawn capacity"),
+    "[4e] a filer with neither half says so, rather than the line vanishing");
 }
 
 console.log("\n=== [5] THE GUARD — what may appear in a derived line ===");
@@ -227,6 +290,26 @@ console.log("\n=== [6] Scope — which lines a card gets, by what the line needs
   const { lines } = buildDerivedLines({ card: card(null), position: position([]), debtMaturity: undefined, newDebtIssuance: nd, asOf: ASOF });
   assert(lines.length === 1 && lines[0].kind === "refi-pattern",
     `[6a] a card with no headline ladder row gets the COMPANY-level line only. Scoped by what each line needs, never by which trigger the card happens to be (got ${lines.map((l) => l.kind).join(",")})`);
+}
+
+console.log(`\n${passed} passed, ${failed} failed.`);
+if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }
+
+console.log("\n=== [9] THE MONTH CONVENTION, PINNED AT ITS BOUNDARIES ===");
+{
+  const at = new Date("2026-09-04T00:00:00Z");
+  assert(monthsBetween("2027-09-04", at) === 12,
+    "[9a] the anniversary itself is a whole month count — twelve months to the day is 12, not 11");
+  assert(monthsBetween("2027-09-03", at) === 11,
+    "[9b] ONE DAY SHORT IS ONE MONTH SHORT. The count is months COMPLETED, so a day before the anniversary has not completed it — this is the half the old rounding got wrong in both directions");
+  assert(monthsBetween("2026-01-31", new Date("2025-12-31T00:00:00Z")) === 1,
+    "[9c] end-of-month clamps rather than overflowing — Dec 31 to Jan 31 is one month, not zero");
+  assert(monthsBetween("2026-08-04", at) === -1,
+    "[9d] a past date counts negative, so a caller can tell direction from the number instead of re-deriving it (Rule 28)");
+  assert(isWithinMonths("2028-03-04", at, 18) && !isWithinMonths("2028-03-05", at, 18),
+    "[9e] THE WINDOW IS A DATE COMPARISON. Eighteen calendar months after 2026-09-04 is 2028-03-04; the day after is outside. No count is consulted, so no rounding can carry a row across the boundary");
+  assert(monthsLabel(1) === "1 month" && monthsLabel(0) === "0 months" && monthsLabel(17) === "17 months",
+    "[9f] one month is singular — \"1 months ahead\" shipped on Quest's card");
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

@@ -1,0 +1,308 @@
+
+====================================================================================================
+DAVITA INC.
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        9 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        9 row(s) carry a printed unit; 1 state no amount HONESTLY (bilateral secured letter of credit facility — the filing states no size for this facility);
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 9 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        Total debt principal outstanding: gap 0 TIES; (unlabelled): gap 0 TIES
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $10,781,013,000
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 0.00% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        1 capacity row(s) held out of captured face and reported separately: bilateral secured letter of credit facility
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        9 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        all 9 row(s) carry a class (Senior Secured Credit Facilities; Senior Notes)
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        no Tier 2 events
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+  redemption for new debt issuance / notes pricing is stated as "intended" rather than completed — "5.250% senior notes due June 2026" stays on the ladder; an intent is not a retirement
+  redemption for new debt issuance / notes pricing is stated as "intended" rather than completed — "5.375% senior notes due September 2026" stays on the ladder; an intent is not a retirement
+  2 redemption claim(s) for new debt issuance / notes pricing, judged independently — 5.250% senior notes due June 2026: intended, verified; 5.375% senior notes due September 2026: intended, verified
+
+====================================================================================================
+HCA Healthcare, Inc.
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        4 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        all 4 row(s) carry a printed unit; no narrative instruments, so no basis to state
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 4 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        Total long-term debt: gap 0 TIES; Total debt: gap 0 TIES
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        MODEL-READ and labelled as such — this filer tags no usable XBRL total; the denominator is the balance-sheet captions as extracted, which is a weaker 
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 0.00% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        this filer states no undrawn capacity
+  [8a] FAIL        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        this note prints ONE AGGREGATE LINE for its notes, not a tranche ladder — the position cannot answer which tranche, at what rate
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        2 of 4 row(s) carry a class; the remaining 2 state "class not stated on this row" explicitly (Commercial paper; Other debt). Sections printed: Short-t
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        no Tier 2 events
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+  COLUMN BINDING for debt maturity approaching — 15 entries stated no period column; kept (a single-column table is real), not verifiable either way
+  COLUMN BINDING for debt maturity approaching (prior period) — 14 entries stated no period column; kept (a single-column table is real), not verifiable either way
+  redemption for new debt issuance / notes pricing is stated as "intended" rather than completed — "5.125% senior secured first lien notes due November 2027" stays on the ladder; an intent is not a retirement
+  redemption for new debt issuance / notes pricing is stated as "intended" rather than completed — "6.125% senior notes due October 2028" stays on the ladder; an intent is not a retirement
+  2 redemption claim(s) for new debt issuance / notes pricing, judged independently — 5.125% senior secured first lien notes due November 2027: intended, verified; 6.125% senior notes due October 2028: intended, verified
+
+====================================================================================================
+TENET HEALTHCARE CORP
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        11 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        all 12 row(s) carry a printed unit; all 1 narrative instrument(s) state a basis (commitment) — NOTE: the basis is carried on the extracted instrument 
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 11 note row(s) cite the anchor; 3 Tier 2 event(s) cite post-anchor documents
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        Total long-term debt: gap 0 TIES; Long-term debt, net of current portion: gap 0 TIES
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $13,248,000,000
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 0.00% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        1 capacity row(s) held out of captured face and reported separately: senior secured revolving credit facility
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        11 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        10 of 11 row(s) carry a class; the remaining 1 state "class not stated on this row" explicitly (Finance leases, mortgages and other notes). Sections p
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        3 event(s), each carrying its own verbatim source and cited filing; 2 net nothing and say why
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+
+====================================================================================================
+UNIVERSAL HEALTH SERVICES INC
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        8 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        all 8 row(s) carry a printed unit; all 8 narrative instrument(s) state a basis (outstanding) — NOTE: the basis is carried on the extracted instrument 
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 8 note row(s) cite the anchor; 3 Tier 2 event(s) cite post-anchor documents
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        this note prints NO subtotal, so the amended test applies. Captions sum to $0 (NONE EXTRACTED — a real gap, logged separately; it is not evidence the 
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $4,851,847,000
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 2.28% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        this filer states no undrawn capacity
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        8 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        5 of 8 row(s) carry a class; the remaining 3 state "class not stated on this row" explicitly (Tranche A term loan; Revolving credit facility; Financia
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        3 event(s), each carrying its own verbatim source and cited filing; 1 net nothing and say why
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+  redemption for new debt issuance / notes pricing is stated as "intended" rather than completed — "4.50 % Senior Notes due 2028" stays on the ladder; an intent is not a retirement
+
+====================================================================================================
+Encompass Health Corp
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        7 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        all 7 row(s) carry a printed unit; no narrative instruments, so no basis to state
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 7 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        (unlabelled): gap 0 TIES; Long-term debt, net of current portion: gap 0 TIES
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $2,634,000,000
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 0.00% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        this filer states no undrawn capacity
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        7 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        4 of 7 row(s) carry a class; the remaining 3 state "class not stated on this row" explicitly (Advances under revolving credit facility; Other notes pa
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        no Tier 2 events
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+commodity / input-cost exposure unclear, but nothing new to check — no signal found.
+
+====================================================================================================
+COMMUNITY HEALTH SYSTEMS INC
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        11 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        11 row(s) carry a printed unit; 1 state no amount HONESTLY (ABL Facility — committed facility, and the filing states no amount for it); all 1 narrativ
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 11 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        Total debt: gap 0 TIES; Total long-term debt: gap 0 TIES
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $9,578,000,000
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 0.00% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        1 capacity row(s) held out of captured face and reported separately: ABL Facility
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        11 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        9 of 11 row(s) carry a class; the remaining 2 state "class not stated on this row" explicitly (Finance lease and financing obligations; Other)
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        no Tier 2 events
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+
+====================================================================================================
+QUEST DIAGNOSTICS INC
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        14 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        all 16 row(s) carry a printed unit; no narrative instruments, so no basis to state
+  [3] FAIL        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        1 row(s) cite a filing other than the anchor: 3.50 % Senior Notes due March 2025
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        Total long-term debt: gap 0 TIES
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $5,642,000,000
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 0.00% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        2 capacity row(s) held out of captured face and reported separately: senior unsecured revolving credit facility; secured receivables credit facility
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        14 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        13 of 14 row(s) carry a class; the remaining 1 state "class not stated on this row" explicitly (Other)
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        no Tier 2 events
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+
+====================================================================================================
+CENTENE CORP
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        8 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] FAIL        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        1 row(s) MISSING an amount the filing has (Revolving Credit Facility — an amount WAS stated for it and did not survive verification ($ 4,000 million: 
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 8 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        Total debt: gap 0 TIES; Long-term debt: gap 0 TIES
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $16,105,000,000
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 0.00% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        1 capacity row(s) held out of captured face and reported separately: Revolving Credit Facility
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        8 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        7 of 8 row(s) carry a class; the remaining 1 state "class not stated on this row" explicitly (Term Loan Facility)
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        no Tier 2 events
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+  redemption for new debt issuance / notes pricing is stated as "intended" rather than completed — "Term Loan Facility" stays on the ladder; an intent is not a retirement
+
+====================================================================================================
+Cigna Group
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        5 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        5 row(s) carry a printed unit; 1 state no amount HONESTLY (Revolving Credit Agreement — committed facility, and the filing states no amount for it); a
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 5 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents
+  [4] FAIL        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        this note prints NO subtotal, so the amended test applies. Captions sum to $31,878,000,000 and TIE; the stated total is $31,878,000,000 from xbrl, the
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $31,878,000,000
+  [6] FAIL        coverage passes both tests — category-complete and residual under threshold
+        residual 96.86% (passes=false); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        1 capacity row(s) held out of captured face and reported separately: Revolving Credit Agreement
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        5 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        4 of 5 row(s) carry a class; the remaining 1 state "class not stated on this row" explicitly (Commercial Paper Program)
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        no Tier 2 events
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+
+====================================================================================================
+MOLINA HEALTHCARE, INC.
+====================================================================================================
+  [1] UNATTESTED  every row's amount, maturity and instrument correct against the filing
+        5 row(s) to check by hand against the anchor; the tool cannot verify this about itself
+  [2] PASS        every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way
+        5 row(s) carry a printed unit; 1 state no amount HONESTLY (Credit Facility — committed facility, and the filing states no amount for it); all 1 narrat
+  [3] PASS        every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2
+        all 5 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents
+  [4] PASS        the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead
+        Total: gap 0 TIES
+  [5] PASS        stated total triangulates to the filer's XBRL tag, or is labelled model-read
+        the filer's own XBRL tags, $3,769,000,000
+  [6] PASS        coverage passes both tests — category-complete and residual under threshold
+        residual 0.00% (passes=true); no category stated-but-not-captured
+  [7] PASS        capacity separated and excluded from the debt sum
+        1 capacity row(s) held out of captured face and reported separately: Credit Facility
+  [8a] PASS        structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line
+        5 per-instrument row(s)
+  [8b] PASS        structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none
+        all 5 row(s) carry a class (senior unsecured)
+  [8c] UNATTESTED  structure faithful in INSTRUMENT TYPE
+        no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it
+  [9a] PASS        Tier 2 events status-corroborated and source-verified
+        no Tier 2 events
+  [9b] UNATTESTED  the whole state reproduces on three independent re-asks
+        NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that
+
+====================================================================================================
+SIGNABILITY
+====================================================================================================
+  DAVITA INC.                    computed 9/9  filings  3
+  HCA Healthcare, Inc.           computed 8/9  filings  2  << FAILS: 8a
+  TENET HEALTHCARE CORP          computed 9/9  filings  3
+  UNIVERSAL HEALTH SERVICES INC  computed 9/9  filings  4
+  Encompass Health Corp          computed 9/9  filings  4
+  COMMUNITY HEALTH SYSTEMS INC   computed 9/9  filings  3
+  QUEST DIAGNOSTICS INC          computed 8/9  filings  4  << FAILS: 3
+  CENTENE CORP                   computed 8/9  filings  3  << FAILS: 2
+  Cigna Group                    computed 7/9  filings  4  << FAILS: 4, 6
+  MOLINA HEALTHCARE, INC.        computed 9/9  filings  3
+
+  Three of the nine are attested by hand and are NOT counted above:
+  rows correct against the filing, instrument type faithful, reproduced three times.

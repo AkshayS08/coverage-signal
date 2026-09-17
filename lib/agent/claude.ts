@@ -296,15 +296,76 @@ export interface ProseInstrumentRow {
   sourceLine: string;
 }
 
-/** Session 20, item 3b — the revolver's four figures, kept separate so drawn + LCs + available = size can be checked. See REVOLVER_SCHEMA. */
-export interface RevolverRow {
-  facilitySize: string | null;
-  drawn: string | null;
-  lettersOfCredit: string | null;
-  available: string | null;
-  delayedDrawCapacity: string | null;
-  asOfDate: string | null;
+/**
+ * SESSION 22, STAGE 3 — ONE FIGURE, ONE SENTENCE.
+ *
+ * Session 20's RevolverRow carried four figures and ONE sourceLine, and the
+ * verification checked that single sentence. Encompass is what that costs:
+ * size $1B, drawn $200.0M, LCs $46.3M, available $824M — summing to
+ * $1,070.3M against a $1B facility — with the one recorded sentence reading
+ * "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit
+ * facility", which states the drawn figure and NONE of the other three. The
+ * $824M was accepted because a different sentence verified.
+ *
+ * That is the composite-fabrication surface: a figure attributed to a
+ * document that does not state it. So every figure now carries the sentence
+ * that states IT, and each is verified against its own sentence
+ * independently. A figure whose sentence does not contain it is dropped and
+ * named; the FACILITY survives with that field null, because a withheld
+ * figure must never erase a verified instrument.
+ */
+/** A figure survives normalization only with BOTH halves: the value and the sentence stating it. Half a pair is not evidence. */
+function normalizeFigure(f: FacilityFigure | null | undefined): FacilityFigure | null {
+  return f && f.value && f.sourceLine ? { value: f.value, sourceLine: f.sourceLine } : null;
+}
+
+export interface FacilityFigure {
+  /** Verbatim, with its unit, exactly as the filing prints it. */
+  value: string;
+  /** The sentence stating THIS figure. Not the facility's sentence — this figure's. */
   sourceLine: string;
+}
+
+export interface FacilityRow {
+  /** The facility as the filing names it — "senior unsecured revolving credit facility". */
+  name: string;
+  category: "revolver" | "receivables-facility" | "term-loan" | "delayed-draw-term-loan" | "commercial-paper" | "other";
+  facilitySize: FacilityFigure | null;
+  drawn: FacilityFigure | null;
+  lettersOfCredit: FacilityFigure | null;
+  available: FacilityFigure | null;
+  /** Session 22 — a facility matures like a bond and cards like one. */
+  maturity: FacilityFigure | null;
+  /** The date the drawn/available figures are stated as of. */
+  asOfDate: string | null;
+}
+
+/**
+ * Session 22, Stage 3 — the note's own seniority sentence, and what it says
+ * it covers. `appliesTo` is COPIED from the sentence, never inferred: a
+ * sentence saying "each of these notes" scopes itself, and a reader has to
+ * be able to see the scope claim rather than trust ours.
+ */
+/**
+ * Session 22, Stage 3 — use of proceeds is MULTI-PART. Encompass's May 2026
+ * proceeds redeemed $400M of 2028 notes, repaid $100M of revolver, and paid
+ * fees; the single-value field captured one of the three. Same one-slot
+ * defect as `revolver`, and the same fix.
+ */
+export interface ProceedsUseRow {
+  /** What the proceeds were used for, in the filing's own words. */
+  use: string;
+  /** The amount applied to THIS use, verbatim with unit, or null when unstated. */
+  amount: string | null;
+  /** The sentence stating this use. */
+  sourceLine: string;
+}
+
+export interface SeniorityStatement {
+  /** The sentence, verbatim. */
+  statement: string;
+  /** What the sentence itself says it applies to, in its own words. */
+  appliesTo: string;
 }
 
 /** Session 19, item 2b — a retirement or repurchase the debt note states in its own prose. See NOTE_RETIREMENT_SCHEMA. */
@@ -418,6 +479,11 @@ export interface TriggerVerdict {
    */
   redeems: RedeemsClaim[];
   /**
+   * Session 22, Stage 3 — every use the issuance states for its proceeds,
+   * one entry each. "new-debt-issuance" only; empty elsewhere.
+   */
+  proceedsUses: ProceedsUseRow[];
+  /**
    * Session 18 — "new-debt-issuance" ONLY, empty array for every other
    * trigger. The row(s) for the tranche(s) THIS issuance just priced,
    * transcribed from the pricing 8-K itself (which states
@@ -441,8 +507,22 @@ export interface TriggerVerdict {
   noteRetirements: NoteRetirementRow[];
   /** Session 20, 3a — instruments stated in the note's narrative. Empty for every trigger except debt-maturity. */
   proseInstruments: ProseInstrumentRow[];
-  /** Session 20, 3b — the revolver's own figures. Null when the note states none. */
-  revolver: RevolverRow | null;
+  /**
+   * Session 22, Stage 3 — EVERY credit facility, not one. Replaces the
+   * single `revolver` slot, which could hold one facility for a company that
+   * has three: DaVita and UHS both carry three on the ladder against that
+   * one field. Empty when the corpus states none.
+   */
+  facilities: FacilityRow[];
+  /**
+   * Session 22, Stage 3 — a note-level sentence stating the seniority of the
+   * instruments it lists, for filers whose TABLE prints no class. Molina is
+   * the worked example: its table shows "4.375% Notes due June 15, 2028" with
+   * no class anywhere, while the note's prose says "Each of these notes are
+   * senior unsecured obligations ... and rank equally in right of payment".
+   * Null when the note states no such sentence.
+   */
+  seniorityStatement: SeniorityStatement | null;
   /**
    * Session 19, item 2c — "capex-program" ONLY, null elsewhere. The stated
    * completion date of a named project, which is what makes its status
@@ -623,19 +703,51 @@ const PROSE_INSTRUMENT_SCHEMA = {
  * and either way that renders as its own flag rather than as a liquidity
  * figure someone might act on.
  */
-const REVOLVER_SCHEMA = {
-  type: "object" as const,
+/** A figure and the sentence that states IT. See FacilityFigure. */
+const FACILITY_FIGURE_SCHEMA = {
+  type: ["object", "null"] as const,
   properties: {
-    facilitySize: { type: ["string", "null"] },
-    drawn: { type: ["string", "null"] },
-    lettersOfCredit: { type: ["string", "null"] },
-    available: { type: ["string", "null"] },
-    /** Capacity committed but not yet drawn — a delayed-draw term loan is not a revolver but belongs on the same liquidity line. */
-    delayedDrawCapacity: { type: ["string", "null"] },
-    asOfDate: { type: ["string", "null"] },
+    value: { type: "string" },
     sourceLine: { type: "string" },
   },
-  required: ["sourceLine"],
+  required: ["value", "sourceLine"],
+};
+
+const FACILITY_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    name: { type: "string" },
+    category: {
+      type: "string",
+      enum: ["revolver", "receivables-facility", "term-loan", "delayed-draw-term-loan", "commercial-paper", "other"],
+    },
+    facilitySize: FACILITY_FIGURE_SCHEMA,
+    drawn: FACILITY_FIGURE_SCHEMA,
+    lettersOfCredit: FACILITY_FIGURE_SCHEMA,
+    available: FACILITY_FIGURE_SCHEMA,
+    maturity: FACILITY_FIGURE_SCHEMA,
+    asOfDate: { type: ["string", "null"] },
+  },
+  required: ["name", "category"],
+};
+
+const SENIORITY_STATEMENT_SCHEMA = {
+  type: ["object", "null"] as const,
+  properties: {
+    statement: { type: "string" },
+    appliesTo: { type: "string" },
+  },
+  required: ["statement", "appliesTo"],
+};
+
+const PROCEEDS_USE_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    use: { type: "string" },
+    amount: { type: ["string", "null"] },
+    sourceLine: { type: "string" },
+  },
+  required: ["use", "sourceLine"],
 };
 
 const NOTE_RETIREMENT_SCHEMA = {
@@ -692,7 +804,9 @@ const VERDICT_ITEM_SCHEMA = {
     noteRetirements: { type: "array", items: NOTE_RETIREMENT_SCHEMA },
     // Session 20, 3a/3b — the prose half of the capital structure.
     proseInstruments: { type: "array", items: PROSE_INSTRUMENT_SCHEMA },
-    revolver: { type: ["object", "null"], properties: REVOLVER_SCHEMA.properties },
+    facilities: { type: "array", items: FACILITY_SCHEMA },
+    seniorityStatement: SENIORITY_STATEMENT_SCHEMA,
+    proceedsUses: { type: "array", items: PROCEEDS_USE_SCHEMA },
     projectCompletionDate: { type: ["string", "null"] },
     projectCompletionGranularity: { type: ["string", "null"], enum: ["year", "month", "day", null] },
   },
@@ -754,6 +868,9 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
     - status: "completed" when the filing describes the retirement as something that HAS HAPPENED ("we redeemed all $1.500 billion aggregate principal amount of...", "repaid in full at maturity"). "intended" when it describes a plan, an expectation, or a use of proceeds ("intends to use the net proceeds ... to finance ... the redemption of..."). The difference is the whole point of the field: an intent is not a retirement, and a tranche is not removed from a company's debt because somebody said they meant to pay it.
     - sourceLine: the sentence stating it, copied VERBATIM, character for character, to the EXACT SAME standard as "quote". This is verified in code against the cited filing, and a claim whose sourceLine cannot be found there is discarded.
   - AN INSTRUMENT NAMED IS NOT AN INSTRUMENT RETIRED. A pricing 8-K routinely lists a company's other outstanding notes to say what the new notes rank alongside — "secured equally and ratably with the Issuer's senior secured credit facility, the Issuer's 1.650% Senior Secured Notes due 2026 (the 'Existing 2026 Notes'), 4.625% Senior Secured Notes due 2029 ...". Every instrument in that sentence is OUTSTANDING; the sentence exists to say so. It is not a redemption of any of them. Return null rather than reading a list of existing obligations as a retirement.
+  - proceedsUses: EVERY use this filing states for the proceeds, one entry each — [] when it states none. An issuance routinely does several things at once: "the net proceeds will be used to redeem $400 million of the 4.50% Senior Notes due 2028, to repay $100 million of outstanding borrowings under the revolving credit facility, and to pay related fees and expenses" is THREE entries, not one. Do not choose the principal use; do not stop at the first.
+    - use: what the proceeds go to, in the filing's own words. amount: the amount applied to THIS use, verbatim with unit, or null when the filing splits no figure out for it. sourceLine: the sentence stating this use, verbatim, same standard as everywhere else.
+    - This is separate from redeems: a redemption is a use AND a retirement, and it belongs in both. A revolver repayment and a fee payment are uses and not retirements, and belong only here.
   - issuedTranches: the row(s) for the tranche(s) THIS issuance itself just priced (instrument/rate/seniority/amount/maturityDate/dateGranularity/sourceLine) — a pricing 8-K states these just as concretely as a periodic debt note does. One row per distinct tranche priced in this issuance. sourceLine here follows the exact same verbatim-copy rule as scheduleSequence's sourceLine above — copy the pricing 8-K's own text for that tranche, never a composed summary sentence.
 
 - cashAmount / projectName — EVERY trigger.
@@ -801,11 +918,22 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
   - AN AMOUNT AND ITS INSTRUMENT MUST COME FROM THE SAME SENTENCE. A sentence about a revolver's capacity sitting next to a sentence about a term loan's balance are two instruments, not one; do not combine them.
   - Do NOT duplicate rows that are already in the schedule sequence. If an instrument appears as a row in the table above, it does not belong here as well.
 
-- revolver — ONLY for the "debt-maturity" trigger. Null for every other trigger, and null when the located note states nothing about a revolving facility.
-  - A revolver's SIZE, what is DRAWN against it, letters of credit issued under it, and what remains AVAILABLE are four different numbers, and filings usually state them in one sentence: "we had $1.272 billion of available borrowing capacity pursuant to the terms of our $1.5 billion revolving credit facility (net of $225 million of outstanding borrowings and $3 million of letters of credit)".
-  - Copy each into its OWN field, verbatim with units — facilitySize, drawn, lettersOfCredit, available. Any the note does not state stays null. Do not compute a missing one from the others; code checks that drawn + lettersOfCredit + available equals facilitySize, and that check is only meaningful if all four were read rather than derived.
-  - delayedDrawCapacity: committed but undrawn term-loan capacity, when the note states it. This is capacity, not debt.
-  - asOfDate: the date those figures are stated as of. sourceLine: the verbatim sentence, same standard as above.
+- facilities — ONLY for the "debt-maturity" trigger. [] for every other trigger, and [] when the filing states no credit facility at all.
+  - EVERY credit facility this company states, one entry each — not just the revolver, and not just the ones with a balance. A company routinely has several: a revolving credit facility, a receivables or securitization facility, a term loan A and a term loan B, a delayed-draw commitment. Each is its own entry. Do not merge two facilities into one entry, and do not pick the largest.
+  - AN UNDRAWN FACILITY IS STILL A FACILITY. A revolver with nothing drawn has no balance and therefore no row in the debt table — it exists only in prose, and it is exactly the facility an RM most wants to know about. Its absence from the table is not evidence of its absence.
+  - LOOK BEYOND THE DEBT NOTE. Facilities are commonly described in the liquidity / capital-resources discussion, in a separate credit-agreement or letters-of-credit note, and in the debt note's own prose — often in all three, and often the only statement of an undrawn facility's size and availability is outside the debt note entirely. Read whichever regions of the text given above state them.
+  - name: the facility as the filing names it ("senior unsecured revolving credit facility", "secured receivables facility"). category: which kind, from the fixed list.
+  - THE FOUR FIGURES ARE FOUR DIFFERENT NUMBERS: facilitySize, drawn, lettersOfCredit, available. Filings often state them together — "we had $1.272 billion of available borrowing capacity pursuant to the terms of our $1.5 billion revolving credit facility (net of $225 million of outstanding borrowings and $3 million of letters of credit)" — and just as often state them in different sentences, in different sections, or not at all.
+  - EACH FIGURE CARRIES THE SENTENCE THAT STATES IT. Every figure is an object: { value, sourceLine }, where sourceLine is the sentence stating THAT figure, copied VERBATIM to the same standard as "quote". Not the facility's general sentence — that figure's own. If the size comes from the liquidity section and the drawn amount from the debt note, those are two different sourceLines, and each figure carries its own.
+  - This is checked in code: a figure whose sourceLine does not itself contain that figure is DISCARDED and the reason is recorded. A number that is real and a quote that is real, put together when the quote does not state the number, is a fabrication — and it is the specific failure this field's shape exists to prevent. Do not reuse one sentence across figures it does not state.
+  - Any figure the filing does not state stays null. NEVER compute a missing one from the others: code checks that drawn + lettersOfCredit + available equals facilitySize, and that check means nothing if a component was derived rather than read. A facility with one verified figure and three nulls is a correct answer.
+  - maturity: the facility's own stated maturity, as a { value, sourceLine } pair, when the filing states one. A term loan and a revolver mature like a bond does. Null when no maturity is stated anywhere.
+  - asOfDate: the date the drawn/available figures are stated as of.
+
+- seniorityStatement — ONLY for the "debt-maturity" trigger. Null for every other trigger.
+  - Some notes print no priority class on any table row, and then state the class for all of them in ONE sentence of prose: "Each of these notes are senior unsecured obligations of the Parent corporation, and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt."
+  - statement: that sentence, VERBATIM. appliesTo: what the sentence ITSELF says it covers, in its own words — "each of these notes", "the Senior Notes", "the Credit Agreement borrowings". Copy the scope from the sentence; do not decide the scope yourself and do not widen it to the whole note.
+  - Null unless the note states such a sentence. A note that prints its classes in section headings does not need one, and inventing one from the headings would be restating what is already recorded elsewhere.
 
 - projectCompletionDate / projectCompletionGranularity — ONLY for the "capex-program" trigger. Leave both null for every other trigger.
   - When the filing states when a named project is expected to be, or was, completed — "scheduled to be completed in December 2026", "opened during the second quarter of 2026" — copy that date here under the same copy-never-compute rules as every other date in this schema. A bare year stays a bare year; a quarter with no month stated is that quarter's own year unless the filing names a month.
@@ -912,7 +1040,9 @@ const SESSION18_OPTIONAL_FIELDS = [
   "eventInstances",
   "noteRetirements",
   "proseInstruments",
-  "revolver",
+  "facilities",
+  "seniorityStatement",
+  "proceedsUses",
   "projectCompletionDate",
   "projectCompletionGranularity",
 ] as const;
@@ -980,17 +1110,27 @@ export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
       maturityDate: p.maturityDate ?? null,
       rate: p.rate ?? null,
     })),
-    revolver: v.revolver
-      ? {
-          facilitySize: v.revolver.facilitySize ?? null,
-          drawn: v.revolver.drawn ?? null,
-          lettersOfCredit: v.revolver.lettersOfCredit ?? null,
-          available: v.revolver.available ?? null,
-          delayedDrawCapacity: v.revolver.delayedDrawCapacity ?? null,
-          asOfDate: v.revolver.asOfDate ?? null,
-          sourceLine: v.revolver.sourceLine,
-        }
-      : null,
+    facilities: (v.facilities ?? [])
+      // A facility with no name is not a facility we can talk about, and a
+      // nameless row is exactly what a hallucinated one looks like.
+      .filter((f: FacilityRow) => !!f && !!f.name)
+      .map((f: FacilityRow) => ({
+        name: f.name,
+        category: f.category ?? "other",
+        facilitySize: normalizeFigure(f.facilitySize),
+        drawn: normalizeFigure(f.drawn),
+        lettersOfCredit: normalizeFigure(f.lettersOfCredit),
+        available: normalizeFigure(f.available),
+        maturity: normalizeFigure(f.maturity),
+        asOfDate: f.asOfDate ?? null,
+      })),
+    seniorityStatement:
+      v.seniorityStatement && v.seniorityStatement.statement
+        ? { statement: v.seniorityStatement.statement, appliesTo: v.seniorityStatement.appliesTo ?? "" }
+        : null,
+    proceedsUses: (v.proceedsUses ?? [])
+      .filter((p: ProceedsUseRow) => !!p && !!p.use && !!p.sourceLine)
+      .map((p: ProceedsUseRow) => ({ use: p.use, amount: p.amount ?? null, sourceLine: p.sourceLine })),
     projectCompletionDate: v.projectCompletionDate ?? null,
     projectCompletionGranularity: v.projectCompletionGranularity ?? null,
   };

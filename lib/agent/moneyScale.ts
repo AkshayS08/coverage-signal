@@ -219,7 +219,26 @@ export function scaleWordFromDeclaration(declaration: string | null): string | n
  * correct $1B into $1 quadrillion. The two fixes in this file interact, and
  * this is where they are reconciled.
  */
-export function isSelfDescribingAmount(amount: string): boolean {
+export function isSelfDescribingAmount(amount: string | null | undefined): boolean {
+  // SESSION 22, STAGE 7 — A NULL AMOUNT IS NOT A CRASH.
+  //
+  // Found by a reproducibility re-ask: one fresh Tenet extraction returned a
+  // sequence entry with a null amount, and the whole run died here on
+  // `amount.replace`. The type said `string`, the schema says amount is
+  // required, and the model does not always agree — which is the entire
+  // reason every other field in this pipeline is defended at the boundary
+  // rather than trusted from its declaration.
+  //
+  // An amount that is not a string describes no scale of its own, which is
+  // exactly what `false` means here. The entry then falls through to the
+  // normal derivation path, where a missing sourceLine or an unlocatable one
+  // already returns it untouched. Nothing is invented and nothing is lost;
+  // the run survives to report what it found.
+  //
+  // It surfaced on the demo opener, on the third re-ask, after the same
+  // company had run clean dozens of times this session — which is the
+  // argument for x3 in one line.
+  if (typeof amount !== "string") return false;
   if (scaleWordFromDeclaration(amount)) return true;
   const tokens = extractFactTokens(amount.replace(/[()]/g, "")).filter((t) => t.kind === "money");
   return tokens.some((t) => t.bareNumber !== undefined && Math.abs(t.bareNumber) >= MAX_PLAUSIBLE_SCALED_TABLE_FIGURE);

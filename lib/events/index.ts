@@ -4,6 +4,7 @@ export * from "./dedup";
 export * from "./buildEvents";
 export * from "./eventBriefing";
 export * from "./labels";
+export * from "./instrumentClass";
 export * from "./factBase";
 export * from "./portfolioTable";
 // position.ts (Session 18): pure code, no model/SDK dependency — same

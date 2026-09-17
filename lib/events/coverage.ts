@@ -27,7 +27,7 @@ import { parseMoneyAmount, normalizeScheduleSequence } from "./position";
 import { dedupAgainstRows, debtContribution, sameNormalisedAmount, type DebtCategory } from "./instrument";
 export { dedupAgainstRows, debtContribution, sameNormalisedAmount } from "./instrument";
 export type { DebtCategory } from "./instrument";
-import type { TriggerResult, ProseInstrumentRow, RevolverRow, VerifiedSequenceEntry } from "../agent";
+import type { TriggerResult, ProseInstrumentRow, FacilityRow, VerifiedSequenceEntry } from "../agent";
 
 /**
  * THE THRESHOLD, MEASURED RATHER THAN ASSUMED (Session 20, Stage 3).
@@ -142,7 +142,33 @@ function isCurrentPortion(label: string | null | undefined): boolean {
  * did not exist at it, and the coverage surface states the two stages
  * separately for the same reason.
  */
-export function computeCoverage(debtMaturity: TriggerResult | undefined): CoverageResult {
+/**
+ * SESSION 22, STAGE 7 — CAPACITY HAS ONE SOURCE, AND IT IS THE LADDER.
+ *
+ * `capacity` below is built from `proseInstruments`, so a committed facility
+ * the debt note never tabulates was invisible to it. Stage 5 put those
+ * facilities ON the ladder as capacity rows, and the two surfaces then
+ * disagreed about the same instruments: DaVita's ladder showed one undrawn
+ * facility and Quest's showed two, while the rendered coverage line said
+ * "plus $0M of undrawn capacity NOT counted as debt" — a wrong number on
+ * screen, beside a ladder that contradicted it.
+ *
+ * So the position's capacity rows are passed IN rather than re-derived here.
+ * Re-deriving them from `facilities` with a second copy of the rule is the
+ * defect, not the fix: two surfaces deciding one thing is the same defect as
+ * two fields holding one instrument.
+ *
+ * This cannot move a residual. Capacity contributes nothing to captured face
+ * on either path — what changes is that the facility is REPORTED as capacity
+ * instead of counted as a category nobody accounted for.
+ */
+export function computeCoverage(
+  debtMaturity: TriggerResult | undefined,
+  /** The assembled ladder's own capacity rows. Omitted only by fixtures that build no position. */
+  ladderCapacity?: { category: string; label: string; amount: number | null; basisNote: string }[],
+  /** Facility categories the ladder carries, drawn or undrawn — see facilityCategoriesOnLadder. */
+  facilityCategoriesAccounted?: string[]
+): CoverageResult {
   const caps = debtMaturity?.balanceSheetDebtCaptions ?? [];
   const modelRead = caps.length > 0 ? caps.reduce((a, c) => a + (parseMoneyAmount(c.amount) ?? 0), 0) : null;
 
@@ -192,7 +218,7 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
   const debtBearing: ProseInstrumentRow[] = [];
   const contributionOf = new Map<ProseInstrumentRow, { amount: number | null; why: string }>();
   for (const p of debtMaturity?.proseInstruments ?? []) {
-    const c = debtContribution(p, debtMaturity?.revolver);
+    const c = debtContribution(p, revolverFacilityFor(p, debtMaturity?.facilities));
     if (c.capacity) {
       capacity.push({ category: p.category, label: p.name ?? p.category, amount: p.amount ? parseMoneyAmount(p.amount) : null, from: "prose", basisNote: c.why });
     } else {
@@ -233,16 +259,27 @@ export function computeCoverage(debtMaturity: TriggerResult | undefined): Covera
   const residualPasses = residualFraction === null ? null : residualFraction <= COVERAGE_RESIDUAL_LIMIT;
 
   const statedCategories = new Set<DebtCategory>((debtMaturity?.proseInstruments ?? []).map((p) => p.category));
-  if (debtMaturity?.revolver) statedCategories.add("revolver");
+  if ((debtMaturity?.facilities ?? []).some((f) => f.category === "revolver")) statedCategories.add("revolver");
   const capturedCategories = new Set<DebtCategory>(
     countable.filter((e) => e.category !== "table-row" && e.amount !== null).map((e) => e.category as DebtCategory)
   );
   // A facility whose only stated figure is a commitment is NOT "missing" —
   // it is accounted for, as capacity. Flagging it would report a gap that
   // does not exist; omitting it entirely would hide a real instrument.
+  // The ladder's own capacity rows join the report, deduped by label so a
+  // facility already found through its prose instrument is not listed twice.
+  const seenCapacity = new Set(capacity.map((e) => e.label.toLowerCase()));
+  for (const lc of ladderCapacity ?? []) {
+    if (seenCapacity.has(lc.label.toLowerCase())) continue;
+    seenCapacity.add(lc.label.toLowerCase());
+    capacity.push({ category: lc.category as DebtCategory, label: lc.label, amount: lc.amount, from: "prose", basisNote: lc.basisNote });
+  }
   const reportedAsCapacity = new Set<DebtCategory>(capacity.map((e) => e.category as DebtCategory));
+  // A facility the LADDER carries is accounted for, whatever vocabulary each
+  // surface uses for it — see facilityCategoriesOnLadder.
+  const onLadder = new Set<string>(facilityCategoriesAccounted ?? []);
   const categoriesMissing = [...statedCategories].filter(
-    (c) => c !== "delayed-draw-term-loan" && !capturedCategories.has(c) && !reportedAsCapacity.has(c)
+    (c) => c !== "delayed-draw-term-loan" && !capturedCategories.has(c) && !reportedAsCapacity.has(c) && !onLadder.has(c)
   );
 
   return {
@@ -327,10 +364,40 @@ function coverageLine(r: {
  * 3B — the free arithmetic check. drawn + LCs + available = facility size.
  * A mismatch is its own flag rather than a silently wrong liquidity figure.
  */
-export function checkRevolverArithmetic(rev: RevolverRow | null | undefined): { checked: boolean; ok: boolean; note: string } {
+/**
+ * Which facility a narrative instrument's figures belong to. With one
+ * revolver slot this was unambiguous by construction; with an array it has
+ * to be decided, and it is decided on IDENTITY — the facility whose name the
+ * instrument names — never on position in the list. Same rule as everywhere
+ * else in this codebase, and for the same reason: DaVita and UHS each carry
+ * three facilities, and "the first one" is not an answer.
+ */
+function revolverFacilityFor(
+  p: { name?: string | null; category?: string | null },
+  facilities: FacilityRow[] | undefined
+): FacilityRow | null {
+  const list = facilities ?? [];
+  if (list.length === 0) return null;
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "");
+  const want = norm(p.name ?? "");
+  if (want) {
+    const byName = list.find((f) => norm(f.name) === want) ?? list.find((f) => norm(f.name).includes(want) || want.includes(norm(f.name)));
+    if (byName) return byName;
+  }
+  // No name to match on: fall back to the single facility of this category,
+  // and to NOTHING when there are several — an ambiguous match is not a match.
+  const sameCategory = list.filter((f) => f.category === (p.category ?? "revolver"));
+  return sameCategory.length === 1 ? sameCategory[0] : null;
+}
+
+export function checkRevolverArithmetic(rev: FacilityRow | null | undefined): { checked: boolean; ok: boolean; note: string } {
   if (!rev) return { checked: false, ok: false, note: "" };
-  const size = rev.facilitySize ? parseMoneyAmount(rev.facilitySize) : null;
-  const parts = [rev.drawn, rev.lettersOfCredit, rev.available].map((s) => (s ? parseMoneyAmount(s) : null));
+  // SESSION 22 — each figure is now a { value, sourceLine } pair, and only a
+  // figure that survived verification against its OWN sentence is present at
+  // all. So this check runs on verified figures or on nothing, which is what
+  // makes a "reconciles" verdict mean something it did not mean before.
+  const size = rev.facilitySize ? parseMoneyAmount(rev.facilitySize.value) : null;
+  const parts = [rev.drawn, rev.lettersOfCredit, rev.available].map((f) => (f ? parseMoneyAmount(f.value) : null));
   if (size === null || parts.some((p) => p === null)) {
     return { checked: false, ok: false, note: "revolver arithmetic not checkable — the note states fewer than all four figures" };
   }

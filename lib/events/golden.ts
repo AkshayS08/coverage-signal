@@ -19,7 +19,7 @@
  * failure reads as a diff rather than as an alarm.
  */
 import type { CompanyResult } from "../agent";
-import { assemblePosition } from "./position";
+import { assemblePosition, parseMoneyAmount } from "./position";
 import { computeCoverage } from "./coverage";
 import { buildDerivedLines } from "./derived";
 import { buildEvents } from "./buildEvents";
@@ -65,7 +65,15 @@ export interface GoldenState {
     statedTotalDebt: number | null;
     capturedFace: number;
     statedBridge: number;
-    residualFraction: number | null;
+    /**
+     * PERCENT, and the name now says so. This was `residualFraction` while
+     * holding `cov.residualFraction * 100` — the same name as
+     * CoverageResult's field, carrying different units. Rule 21 exactly: one
+     * fact in two fields, and the two will eventually disagree. They did,
+     * within minutes of the re-signature packet being written, which applied
+     * the fraction convention and printed UHS's 2.28% residual as 228.00%.
+     */
+    residualPercent: number | null;
     residualPasses: boolean | null;
   };
   tier2: { kind: string; date: string | null; effect: number | null; nets: string | null; instrument: string }[];
@@ -74,6 +82,27 @@ export interface GoldenState {
 }
 
 export interface GoldenFile {
+  /**
+   * SESSION 22, STAGE 3 — THE EXTRACTION VERSION THE CAPTURED INPUT CAME FROM.
+   *
+   * A golden file's claim is "the same documents in, the same answer out".
+   * That claim is about the DERIVATION, and it silently assumes the captured
+   * input still has the shape the derivation reads. When the schema moves,
+   * it does not: v28 results carry a single `revolver` object and v29 code
+   * looks for a `facilities` array, so UHS's revolver read as capacity, its
+   * captured face fell $225M and its residual went 2.28% -> 6.92%. Nothing
+   * regressed. The pin was being compared against code that asks a different
+   * question of the same bytes.
+   *
+   * Rule 30 already settled the shape of this answer for a moved FILING SET
+   * — not-applicable, name what moved, re-sign against the new corpus. A
+   * moved SCHEMA is the same kind of event and gets the same treatment,
+   * rather than being reported as a divergence nobody can act on.
+   *
+   * Absent on files signed before this was recorded; those are treated as
+   * un-comparable against a newer version rather than assumed to match it.
+   */
+  extractionVersion?: number;
   /** Who signed, when, and on what evidence. A golden file with no signature is not one. */
   signature: { signedBy: string; signedOn: string; basis: string };
   /**
@@ -112,6 +141,11 @@ export function filingSetOf(result: CompanyResult): string[] {
  * always a change in the pipeline and never a difference between two
  * descriptions of it.
  */
+/** The residual, as a percent. Every signed file now carries residualPercent; the migration shim that also read the old residualFraction spelling was deleted the moment the three files were re-signed, because a compatibility shim that outlives its migration becomes the second field all over again. */
+export function residualPercentOf(state: { coverage: { residualPercent: number | null } }): number | null {
+  return state.coverage.residualPercent;
+}
+
 export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenState {
   const dm = result.results.find((t) => t.triggerId === "debt-maturity");
   const nd = result.results.find((t) => t.triggerId === "new-debt-issuance");
@@ -136,7 +170,7 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
       statedTotalDebt: cov.statedTotalDebt,
       capturedFace: cov.capturedFace,
       statedBridge: cov.statedBridge,
-      residualFraction: cov.residualFraction === null ? null : Number((cov.residualFraction * 100).toFixed(2)),
+      residualPercent: cov.residualFraction === null ? null : Number((cov.residualFraction * 100).toFixed(2)),
       residualPasses: cov.residualPasses,
     },
     tier2: pos.tier2.events.map((e) => ({ kind: e.kind, date: e.date, effect: e.effect, nets: e.nets, instrument: e.instrument })),
@@ -188,6 +222,43 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
     if (JSON.stringify(e) !== JSON.stringify(a)) d.push(`${field}: expected ${fmt(e)}, got ${fmt(a)}`);
   };
 
+  /**
+   * SESSION 22, STAGE 7 — AN AMOUNT IS COMPARED BY VALUE AND UNIT, NOT BY
+   * ITS WHITESPACE.
+   *
+   * A golden pins a transcription, and `"$ 1,500 million"` against
+   * `"$1,500 million"` is the same transcription with a space moved. String
+   * equality called that a divergence and blocked a signature over it, which
+   * trains a reader to wave divergences through — the one thing a signature
+   * surface must never do.
+   *
+   * BOTH HALVES MUST MATCH, and the unit is the half that keeps this honest.
+   * Comparing value alone would make `"$1.5 billion"` equal `"$1,500
+   * million"`: the same money, and NOT the same transcription. The filing
+   * printed one of them, and a run that starts printing the other has
+   * changed what it read even though the arithmetic is unmoved.
+   *
+   * Falls back to exact string comparison whenever either side does not parse
+   * — `"(no amount stated)"`, an em-dash zero, a capacity row's composed
+   * `"$X drawn under $Y"` — because a comparison that cannot read its inputs
+   * must not report them as equal.
+   */
+  const amountKey = (raw: unknown): string | null => {
+    if (typeof raw !== "string") return null;
+    const value = parseMoneyAmount(raw);
+    if (value === null) return null;
+    const unit = /\b(thousand|million|billion|trillion)s?\b/i.exec(raw);
+    return `${value}|${unit ? unit[1].toLowerCase() : "asPrinted"}`;
+  };
+  const cmpAmount = (field: string, e: unknown, a: unknown) => {
+    const ek = amountKey(e), ak = amountKey(a);
+    if (ek !== null && ak !== null) {
+      if (ek !== ak) d.push(`${field}: expected ${fmt(e)}, got ${fmt(a)}`);
+      return;
+    }
+    cmp(field, e, a);
+  };
+
   cmp("anchor.url", expected.anchor?.url ?? null, actual.anchor?.url ?? null);
   cmp("anchor.reportDate", expected.anchor?.reportDate ?? null, actual.anchor?.reportDate ?? null);
   cmp("asOf", expected.asOf, actual.asOf);
@@ -198,14 +269,17 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
   for (const e of expected.rows) {
     const a = byName.get(e.instrument);
     if (!a) { d.push(`rows["${e.instrument}"]: MISSING — the signed ladder carries it, this run does not`); continue; }
-    for (const k of ["amount", "maturityDate", "dateGranularity", "status", "provenance", "isCapacity", "sourceLine"] as const) {
+    cmpAmount(`rows["${e.instrument}"].amount`, e.amount, a.amount);
+    for (const k of ["maturityDate", "dateGranularity", "status", "provenance", "isCapacity", "sourceLine"] as const) {
       cmp(`rows["${e.instrument}"].${k}`, e[k], a[k]);
     }
   }
   const expNames = new Set(expected.rows.map((r) => r.instrument));
   for (const a of actual.rows) if (!expNames.has(a.instrument)) d.push(`rows["${a.instrument}"]: UNEXPECTED — this run carries it, the signed ladder does not`);
 
-  for (const k of ["denominatorSource", "statedTotalDebt", "capturedFace", "statedBridge", "residualFraction", "residualPasses"] as const) {
+  for (const k of ["denominatorSource", "statedTotalDebt", "capturedFace", "statedBridge", "residualPercent", "residualPasses"] as const) {
+    // These are already numbers or booleans, not printed strings — cmp is
+    // the right comparison and cmpAmount would fall straight back to it.
     cmp(`coverage.${k}`, expected.coverage[k], actual.coverage[k]);
   }
   cmp("rowsOutsideSubtotal", expected.rowsOutsideSubtotal, actual.rowsOutsideSubtotal);

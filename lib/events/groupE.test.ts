@@ -47,7 +47,7 @@ function trigger(over: Partial<TriggerResult> & { triggerId: string }): TriggerR
     citations: [{ form: "10-Q", date: "2026-07-29", reportDate: "", url: "https://example.com/base" }],
     eventInstances: [], noteRetirements: [],
     proseInstruments: [],
-    revolver: null, projectCompletionDate: null, projectCompletionGranularity: null,
+    facilities: [], facilityRejections: [], seniorityStatement: null, proceedsUses: [], projectCompletionDate: null, projectCompletionGranularity: null,
     quoteVerified: true, verifiedQuote: null, verifiedQuoteNormalized: null, quoteMatchType: null,
     quoteHasFigure: false, eventDate: null, dateGranularity: null, eventStatus: "upcoming",
     proceedsUse: null, scheduleSequence: [], priorScheduleSequence: [], balanceSheetDebtCaptions: [],

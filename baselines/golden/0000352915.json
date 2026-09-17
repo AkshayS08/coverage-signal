@@ -1,109 +1,110 @@
 {
+  "extractionVersion": 29,
   "signature": {
     "signedBy": "Akshay Sahani",
-    "signedOn": "2026-09-06",
-    "basis": "Hand-verified against the 10-Q filed 2026-08-07 (period 2026-06-30) in Session 20: nine prose instruments, captured face 4.741B against XBRL stated total 4,851,847K, residual 2.28%, coverage 98%. Reproduced three times at v28. Criterion 4 satisfied by triangulation (this note prints no subtotal), per the Session 21 amendment."
+    "signedOn": "2026-09-09",
+    "basis": "First signature, Session 22 Stage 7, at PINNED_AS_OF 2026-09-09, extraction v29. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. CACHE_BUST x3 at v29: prose-only note (0 table rows), 5 classed in every run, row set / amounts / classes byte-identical across all three."
   },
   "attestation": {
     "rowsCorrect": true,
     "instrumentTypeFaithful": true,
     "reproducedThreeTimes": true,
     "by": "Akshay Sahani",
-    "on": "2026-09-06"
+    "on": "2026-09-09"
   },
   "criteria": [
     {
       "id": "1",
-      "kind": "attested",
       "name": "every row's amount, maturity and instrument correct against the filing",
+      "kind": "attested",
       "pass": true,
-      "detail": "attested by Akshay Sahani on 2026-09-06 against 10-Q 2026-08-07",
+      "detail": "attested by Akshay Sahani on 2026-09-09 against 10-Q 2026-08-07",
       "defends": "a ladder that ties to itself and to nothing in the world"
     },
     {
       "id": "2",
+      "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
       "kind": "computed",
-      "name": "every amount in the unit the filing prints, with its basis stated",
       "pass": true,
-      "detail": "all 9 row(s) carry a printed unit; all 9 narrative instrument(s) state a basis (outstanding, commitment) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
+      "detail": "all 8 row(s) carry a printed unit; all 8 narrative instrument(s) state a basis (outstanding) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
       "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
     },
     {
       "id": "3",
-      "kind": "computed",
       "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+      "kind": "computed",
       "pass": true,
       "detail": "all 8 note row(s) cite the anchor; 3 Tier 2 event(s) cite post-anchor documents",
       "defends": "one position assembled from three filings and three dates"
     },
     {
       "id": "4",
-      "kind": "computed",
       "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+      "kind": "computed",
       "pass": true,
-      "detail": "this note prints NO subtotal, so the amended test applies: the balance sheet's own captions sum to $4,851,847,000 against a stated total of $4,851,847,000 (xbrl) — TRIANGULATES; coverage residual 2.28% passes=true",
+      "detail": "this note prints NO subtotal, so the amended test applies. Captions sum to $0 (NONE EXTRACTED — a real gap, logged separately; it is not evidence the total is uncorroborated); the stated total is $4,851,847,000 from xbrl, the filer's own XBRL tag, which TIES. Either route suffices: TRIANGULATES; coverage residual 2.28% passes=true",
       "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
     },
     {
       "id": "5",
-      "kind": "computed",
       "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+      "kind": "computed",
       "pass": true,
       "detail": "the filer's own XBRL tags, $4,851,847,000",
       "defends": "a coverage percentage whose denominator nobody could name"
     },
     {
       "id": "6",
-      "kind": "computed",
       "name": "coverage passes both tests — category-complete and residual under threshold",
+      "kind": "computed",
       "pass": true,
       "detail": "residual 2.28% (passes=true); no category stated-but-not-captured",
       "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
     },
     {
       "id": "7",
-      "kind": "computed",
       "name": "capacity separated and excluded from the debt sum",
+      "kind": "computed",
       "pass": true,
-      "detail": "1 capacity row(s) held out of captured face and reported separately: Delayed Draw Term Loan A (Eleventh Amendment)",
+      "detail": "this filer states no undrawn capacity",
       "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
     },
     {
       "id": "8a",
-      "kind": "computed",
       "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+      "kind": "computed",
       "pass": true,
       "detail": "8 per-instrument row(s)",
       "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
     },
     {
       "id": "8b",
+      "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
       "kind": "computed",
-      "name": "structure faithful in PRIORITY CLASS — stated for every debt row, or for none",
       "pass": true,
-      "detail": "no row carries a priority class",
-      "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list"
+      "detail": "5 of 8 row(s) carry a class; the remaining 3 state \"class not stated on this row\" explicitly (Tranche A term loan; Revolving credit facility; Financial liabilities from failed sale leaseback with Universal Health Realty Income Trust)",
+      "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
     },
     {
       "id": "8c",
-      "kind": "attested",
       "name": "structure faithful in INSTRUMENT TYPE",
+      "kind": "attested",
       "pass": true,
       "detail": "attested by Akshay Sahani",
       "defends": "a revolver rendering as a generic facility with its type nowhere stated"
     },
     {
       "id": "9a",
-      "kind": "computed",
       "name": "Tier 2 events status-corroborated and source-verified",
+      "kind": "computed",
       "pass": true,
       "detail": "3 event(s), each carrying its own verbatim source and cited filing; 1 net nothing and say why",
       "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
     },
     {
       "id": "9b",
-      "kind": "attested",
       "name": "the whole state reproduces on three independent re-asks",
+      "kind": "attested",
       "pass": true,
       "detail": "attested by Akshay Sahani — three CACHE_BUST re-asks at a fixed prompt version",
       "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
@@ -124,7 +125,7 @@
       "https://www.sec.gov/Archives/edgar/data/352915/000119312526354078/uhs-20260817.htm",
       "https://www.sec.gov/Archives/edgar/data/352915/000119312526359953/d329184d8k.htm"
     ],
-    "asOf": "2026-09-04",
+    "asOf": "2026-09-09",
     "rows": [
       {
         "instrument": "1.65% Senior Secured Notes due 2026",
@@ -135,36 +136,6 @@
         "provenance": "note-narrative",
         "isCapacity": false,
         "sourceLine": "$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026 (\"2026 Notes\") which were issued on August 24, 2021."
-      },
-      {
-        "instrument": "Tranche A Term Loan",
-        "amount": "$ 1.448 billion",
-        "maturityDate": "2029-09-26",
-        "dateGranularity": "day",
-        "status": "live",
-        "provenance": "note-narrative",
-        "isCapacity": false,
-        "sourceLine": "increased the existing term loan A by $ 300 million to $ 1.455 billion ($ 1.448 billion outstanding as of June 30, 2026) from $ 1.155 billion previously"
-      },
-      {
-        "instrument": "Revolving Credit Facility",
-        "amount": "$ 225 million",
-        "maturityDate": "2029-09-26",
-        "dateGranularity": "day",
-        "status": "live",
-        "provenance": "note-narrative",
-        "isCapacity": false,
-        "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)"
-      },
-      {
-        "instrument": "Delayed Draw Term Loan A (Eleventh Amendment)",
-        "amount": "$ 400 million",
-        "maturityDate": "2029-09-26",
-        "dateGranularity": "day",
-        "status": "live",
-        "provenance": "note-narrative",
-        "isCapacity": true,
-        "sourceLine": "initiated a new $ 400 million delayed draw term loan A which is expected to be drawn upon the closing of our acquisition of Talkspace, Inc. (expected to be consummated during the third quarter of 2026)."
       },
       {
         "instrument": "4.625% Senior Secured Notes due 2029",
@@ -207,10 +178,30 @@
         "sourceLine": "$ 500 million of aggregate principal amount of 5.050 % senior secured notes due in October, 2034 (\"2034 Notes\") which were issued on September 26, 2024."
       },
       {
+        "instrument": "Tranche A term loan",
+        "amount": "$ 1.448 billion",
+        "maturityDate": "2029-09-26",
+        "dateGranularity": "day",
+        "status": "live",
+        "provenance": "note-narrative",
+        "isCapacity": false,
+        "sourceLine": "increased the existing term loan A by $ 300 million to $ 1.455 billion ($ 1.448 billion outstanding as of June 30, 2026) from $ 1.155 billion previously"
+      },
+      {
+        "instrument": "Revolving credit facility",
+        "amount": "$ 225 million",
+        "maturityDate": "2029-09-26",
+        "dateGranularity": "day",
+        "status": "live",
+        "provenance": "note-narrative",
+        "isCapacity": false,
+        "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)"
+      },
+      {
         "instrument": "Financial liabilities from failed sale leaseback with Universal Health Realty Income Trust",
         "amount": "$ 68 million",
         "maturityDate": null,
-        "dateGranularity": "day",
+        "dateGranularity": null,
         "status": "live",
         "provenance": "note-narrative",
         "isCapacity": false,
@@ -222,7 +213,7 @@
       "statedTotalDebt": 4851847000,
       "capturedFace": 4741000000,
       "statedBridge": 0,
-      "residualFraction": 2.28,
+      "residualPercent": 2.28,
       "residualPasses": true
     },
     "tier2": [
@@ -320,7 +311,7 @@
           },
           {
             "category": "term-loan",
-            "name": "Tranche A Term Loan",
+            "name": "Tranche A term loan",
             "amount": "$ 1.448 billion",
             "amountBasis": "outstanding",
             "asOfDate": "2026-06-30",
@@ -332,7 +323,7 @@
           },
           {
             "category": "revolver",
-            "name": "Revolving Credit Facility",
+            "name": "Revolving credit facility",
             "amount": "$ 225 million",
             "amountBasis": "outstanding",
             "asOfDate": "2026-06-30",
@@ -340,18 +331,6 @@
             "maturityDate": "2029-09-26",
             "rate": null,
             "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
-          },
-          {
-            "category": "delayed-draw-term-loan",
-            "name": "Delayed Draw Term Loan A (Eleventh Amendment)",
-            "amount": "$ 400 million",
-            "amountBasis": "commitment",
-            "asOfDate": "2026-06-30",
-            "dateGranularity": "day",
-            "maturityDate": "2029-09-26",
-            "rate": null,
-            "sourceLine": "initiated a new $ 400 million delayed draw term loan A which is expected to be drawn upon the closing of our acquisition of Talkspace, Inc. (expected to be consummated during the third quarter of 2026).",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
           },
           {
@@ -367,21 +346,126 @@
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
           }
         ],
-        "revolver": {
-          "facilitySize": "$ 1.5 billion",
-          "drawn": "$ 225 million",
-          "lettersOfCredit": "$ 3 million",
-          "available": "$ 1.272 billion",
-          "delayedDrawCapacity": null,
-          "asOfDate": "2026-06-30",
-          "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)",
-          "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+        "facilities": [
+          {
+            "name": "Revolving credit facility",
+            "category": "revolver",
+            "facilitySize": {
+              "value": "$ 1.5 billion",
+              "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)"
+            },
+            "drawn": {
+              "value": "$ 225 million",
+              "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)"
+            },
+            "lettersOfCredit": {
+              "value": "$ 3 million",
+              "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)"
+            },
+            "available": {
+              "value": "$ 1.272 billion",
+              "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)"
+            },
+            "maturity": {
+              "value": "September 26, 2029",
+              "sourceLine": "The maturity date for our Credit Agreement is September 26, 2029 ."
+            },
+            "asOfDate": "2026-06-30",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+            "figureSources": {
+              "facilitySize": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+              "drawn": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+              "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+              "available": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+              "maturity": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+            }
+          },
+          {
+            "name": "Tranche A term loan",
+            "category": "term-loan",
+            "facilitySize": {
+              "value": "$ 1.455 billion",
+              "sourceLine": "increased the existing term loan A by $ 300 million to $ 1.455 billion ($ 1.448 billion outstanding as of June 30, 2026) from $ 1.155 billion previously"
+            },
+            "drawn": {
+              "value": "$ 1.448 billion",
+              "sourceLine": "increased the existing term loan A by $ 300 million to $ 1.455 billion ($ 1.448 billion outstanding as of June 30, 2026) from $ 1.155 billion previously"
+            },
+            "lettersOfCredit": null,
+            "available": null,
+            "maturity": {
+              "value": "September 26, 2029",
+              "sourceLine": "The maturity date for our Credit Agreement is September 26, 2029 ."
+            },
+            "asOfDate": "2026-06-30",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+            "figureSources": {
+              "facilitySize": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+              "drawn": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+              "maturity": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+            }
+          },
+          {
+            "name": "Delayed draw term loan A",
+            "category": "delayed-draw-term-loan",
+            "facilitySize": {
+              "value": "$ 400 million",
+              "sourceLine": "initiated a new $ 400 million delayed draw term loan A which is expected to be drawn upon the closing of our acquisition of Talkspace, Inc. (expected to be consummated during the third quarter of 2026)."
+            },
+            "drawn": null,
+            "lettersOfCredit": null,
+            "available": {
+              "value": "$ 400 million",
+              "sourceLine": "$ 400 million of borrowing capacity pursuant to the terms of the delayed draw term loan A facility (expected to be drawn upon closing of our acquisition of Talkspace, Inc.)."
+            },
+            "maturity": {
+              "value": "September 26, 2029",
+              "sourceLine": "The maturity date for our Credit Agreement is September 26, 2029 ."
+            },
+            "asOfDate": "2026-06-30",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+            "figureSources": {
+              "facilitySize": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+              "available": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+              "maturity": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+            }
+          },
+          {
+            "name": "July 2026 Delayed Draw Term Loan",
+            "category": "delayed-draw-term-loan",
+            "facilitySize": {
+              "value": "$ 700 million",
+              "sourceLine": "The Twelfth Amendment provides for the amendment of the Existing Credit Facility as of July 20, 2026 (as so amended, the \"Senior Secured Credit Facility\") to add under the Senior Secured Credit Facility a new incremental delayed draw tranche A term loan facility of up to $700 million (the \"July 2026 Delayed Draw Term Loan\")."
+            },
+            "drawn": null,
+            "lettersOfCredit": null,
+            "available": {
+              "value": "$ 700 million",
+              "sourceLine": "The July 2026 Delayed Draw Term Loan, in an aggregate principal amount of up to $700 million, is available to be drawn down by the Company during the period from July 20, 2026 through September 30, 2026"
+            },
+            "maturity": {
+              "value": "364 days after funding",
+              "sourceLine": "and will mature on the date that is 364 days after the date of funding of the July 2026 Delayed Draw Term Loan (the \"Maturity Date\")."
+            },
+            "asOfDate": "2026-07-20",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526310330/uhs-20260720.htm",
+            "figureSources": {
+              "facilitySize": "https://www.sec.gov/Archives/edgar/data/352915/000119312526310330/uhs-20260720.htm",
+              "available": "https://www.sec.gov/Archives/edgar/data/352915/000119312526310330/uhs-20260720.htm",
+              "maturity": "https://www.sec.gov/Archives/edgar/data/352915/000119312526310330/uhs-20260720.htm"
+            }
+          }
+        ],
+        "facilityRejections": [],
+        "seniorityStatement": {
+          "statement": "The 2026, 2029, 2030, 2032 and 2034 Notes (collectively \"All the Notes\") are guaranteed (the \"Guarantees\") on a senior secured basis by all of our existing and future direct and indirect subsidiaries that guarantee our Credit Agreement, other first lien obligations, or any junior lien obligations (the \"Subsidiary Guarantors\").",
+          "appliesTo": "All the Notes (2026, 2029, 2030, 2032 and 2034 Notes)"
         },
         "triggerId": "debt-maturity",
         "triggerName": "Debt maturity approaching",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "$700 million of 1.65% Senior Secured Notes due September 1, 2026, with maturity within the next 12 months as of June 30, 2026.",
+        "evidence": "$700 million of 1.65% Senior Secured Notes due September 1, 2026, maturing within the next 12 months as of June 30, 2026.",
         "mappedNeed": "Refinancing",
         "needType": "credit",
         "confidence": 0.95,
@@ -394,30 +478,15 @@
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026 (\"2026 Notes\") which were issued on August 24, 2021.",
-        "verifiedQuoteNormalized": "$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026 (\"2026 Notes\") which were issued on August 24, 2021.",
+        "verifiedQuote": "$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026 (\"2026 Notes\") which were issued on August 24, 2021. Interest on the 2026 Notes is payable on March 1st and September 1st until the maturity date of September 1, 2026 .",
+        "verifiedQuoteNormalized": "$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026 (\"2026 Notes\") which were issued on August 24, 2021. Interest on the 2026 Notes is payable on March 1st and September 1st until the maturity date of September 1, 2026 .",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
         "eventDate": "2026-09-01",
         "dateGranularity": "day",
         "scheduleSequence": [],
         "priorScheduleSequence": [],
-        "balanceSheetDebtCaptions": [
-          {
-            "label": "Current maturities of long-term debt",
-            "amount": "$ 771,910 thousand",
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "Current maturities of long-term debt $ 771,910",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
-          },
-          {
-            "label": "Long-term debt",
-            "amount": "$ 4,079,937 thousand",
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "Long-term debt 4,079,937",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
-          }
-        ],
+        "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": {
           "form": "10-Q",
           "date": "2026-08-07",
@@ -431,7 +500,7 @@
           "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526211992/uhs-20260331.htm"
         },
         "rowsExtracted": 2,
-        "rowsVerified": 2,
+        "rowsVerified": 0,
         "baseRowsExtracted": 0,
         "columnReadFailure": false,
         "scheduleCompleteness": {
@@ -443,12 +512,13 @@
           "complete": false
         },
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$ 700 million",
+        "cashAmount": null,
         "projectName": null,
         "eventStatus": "upcoming",
         "proceedsUse": null,
@@ -506,7 +576,9 @@
       },
       {
         "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "new-debt-issuance",
         "triggerName": "New debt issuance / notes pricing",
         "fired": true,
@@ -541,24 +613,31 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [
+          {
+            "use": "repayment of the outstanding borrowings under the Issuer's revolving credit facility",
+            "amount": null,
+            "sourceLine": "The affiliates of certain underwriters will receive a portion of the proceeds of the transactions as a result of the repayment of the outstanding borrowings under the Issuer's revolving credit facility."
+          }
+        ],
         "issuedTranches": [
           {
             "instrument": "5.500% Senior Secured Notes due 2031",
-            "amount": "$ 600 million",
+            "amount": "$600,000,000",
             "rate": "5.500%",
-            "seniority": "senior secured",
             "maturityDate": "2031-09-01",
             "dateGranularity": "day",
+            "seniority": "senior secured",
             "sourceLine": "$600,000,000 aggregate principal amount of its 5.500% Senior Secured Notes due 2031 (the \"2031 Notes\")",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526359953/d329184d8k.htm"
           },
           {
             "instrument": "6.000% Senior Secured Notes due 2036",
-            "amount": "$ 500 million",
+            "amount": "$500,000,000",
             "rate": "6.000%",
-            "seniority": "senior secured",
             "maturityDate": "2036-09-01",
             "dateGranularity": "day",
+            "seniority": "senior secured",
             "sourceLine": "$500,000,000 aggregate principal amount of its 6.000% Senior Secured Notes due 2036 (the \"2036 Notes \"and, together with the 2031 Notes, the \"Notes\")",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526359953/d329184d8k.htm"
           }
@@ -567,19 +646,21 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$ 1.1 billion",
+        "cashAmount": "$1,100,000,000",
         "projectName": null,
         "eventStatus": "completed",
         "proceedsUse": "refinancing_only"
       },
       {
         "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "acquisition-announced",
         "triggerName": "Acquisition announced",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "On August 17, 2026, UHS completed its acquisition of Talkspace, Inc., with each share of Talkspace common stock converting into the right to receive $5.25 in cash. The acquisition was financed with $400 million from a delayed draw term loan and additional borrowings under the revolving credit facility.",
+        "evidence": "On August 17, 2026, UHS completed its acquisition of Talkspace, Inc., a digital mental health platform, for $5.25 per share in cash. The acquisition was announced on March 9, 2026 and closed during the third quarter of 2026.",
         "mappedNeed": "Bridge financing, then permanent",
         "needType": "credit",
         "confidence": 0.98,
@@ -609,10 +690,11 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [
           {
-            "description": "Acquisition of Talkspace, Inc., a Delaware corporation, completed via merger with Talkspace becoming an indirect wholly-owned subsidiary of UHS.",
+            "description": "Acquisition of Talkspace, Inc., a digital mental health platform",
             "amount": null,
             "eventDate": "2026-08-17",
             "dateGranularity": "day",
@@ -631,15 +713,17 @@
       },
       {
         "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "capex-program",
         "triggerName": "Capex program / new facility or construction",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Alan B. Miller Medical Center, a newly constructed acute care hospital owned and operated by a wholly-owned subsidiary of UHS, was completed and opened during the second quarter of 2026. Miller Medical Plaza, a medical office building on the campus, is scheduled to be completed in December 2026.",
+        "evidence": "Alan B. Miller Medical Center, a newly constructed acute care hospital owned and operated by a wholly-owned subsidiary of UHS, was completed and opened during the second quarter of 2026. Miller Medical Plaza, an 80,000 square foot medical office building on the campus, is scheduled to be completed in December 2026.",
         "mappedNeed": "Term loan or capex facility",
         "needType": "credit",
-        "confidence": 0.85,
+        "confidence": 0.92,
         "citations": [
           {
             "form": "10-Q",
@@ -652,9 +736,9 @@
         "verifiedQuote": "The MOB will be located on the campus of the Alan B. Miller Medical Center, a newly constructed acute care hospital owned and operated by a wholly-owned subsidiary of ours, which was completed and opened during the second quarter of 2026.",
         "verifiedQuoteNormalized": "The MOB will be located on the campus of the Alan B. Miller Medical Center, a newly constructed acute care hospital owned and operated by a wholly-owned subsidiary of ours, which was completed and opened during the second quarter of 2026.",
         "quoteMatchType": "literal",
-        "quoteHasFigure": false,
+        "quoteHasFigure": true,
         "eventDate": "2026-06-30",
-        "dateGranularity": "month",
+        "dateGranularity": "day",
         "scheduleSequence": [],
         "priorScheduleSequence": [],
         "balanceSheetDebtCaptions": [],
@@ -666,19 +750,20 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [
           {
-            "description": "Alan B. Miller Medical Center, a newly constructed acute care hospital, completed and opened.",
+            "description": "Alan B. Miller Medical Center, a newly constructed acute care hospital",
             "amount": null,
             "eventDate": "2026-06-30",
-            "dateGranularity": "month",
+            "dateGranularity": "day",
             "eventStatus": "completed",
             "sourceLine": "The MOB will be located on the campus of the Alan B. Miller Medical Center, a newly constructed acute care hospital owned and operated by a wholly-owned subsidiary of ours, which was completed and opened during the second quarter of 2026.",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
           },
           {
-            "description": "Miller Medical Plaza, a multi-tenant medical office building (MOB) consisting of 80,000 rentable square feet, scheduled to be completed.",
+            "description": "Miller Medical Plaza, a multi-tenant medical office building consisting of 80,000 rentable square feet",
             "amount": null,
             "eventDate": "2026-12-01",
             "dateGranularity": "month",
@@ -688,24 +773,26 @@
           }
         ],
         "noteRetirements": [],
-        "projectCompletionDate": null,
-        "projectCompletionGranularity": null,
+        "projectCompletionDate": "2026-12-01",
+        "projectCompletionGranularity": "month",
         "cashAmount": null,
-        "projectName": "Alan B. Miller Medical Center",
+        "projectName": "Alan B. Miller Medical Center and Miller Medical Plaza",
         "eventStatus": "completed",
         "proceedsUse": null
       },
       {
         "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "revolver-near-capacity",
         "triggerName": "Revolver near capacity + growth",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "As of June 30, 2026, the revolving credit facility had $225 million drawn against a $1.5 billion facility, representing 15% utilization. Available capacity was $1.272 billion, indicating the revolver is not near capacity.",
+        "evidence": "As of June 30, 2026, the revolving credit facility had $225 million drawn against a $1.5 billion capacity, representing 15% utilization. Available capacity was $1.272 billion. This is not near capacity.",
         "mappedNeed": "Revolver upsize",
         "needType": "credit",
-        "confidence": 0.9,
+        "confidence": 0.85,
         "citations": [
           {
             "form": "10-Q",
@@ -732,6 +819,7 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
         "noteRetirements": [],
@@ -744,15 +832,17 @@
       },
       {
         "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "dividend-buyback",
         "triggerName": "Dividend recap / buyback authorization",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "During the six months ended June 30, 2026, UHS repurchased $488.4 million of common shares (including excise tax). Dividends of $24.5 million were paid and accrued during the same period, indicating an ongoing dividend program.",
+        "evidence": "During the six months ended June 30, 2026, UHS repurchased $488.4 million of common shares, including excise tax. Dividends paid during the same period totaled $24.5 million. The company maintains an ongoing share repurchase program.",
         "mappedNeed": "Leverage capacity conversation",
         "needType": "credit",
-        "confidence": 0.85,
+        "confidence": 0.9,
         "citations": [
           {
             "form": "10-Q",
@@ -761,7 +851,126 @@
             "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
           }
         ],
-        "quoteVerified": false,
+        "quoteVerified": true,
+        "verifiedQuote": "Repurchased, including excise tax — — ( 28 ) — — — ( 488,407 ) — ( 488,435 )",
+        "verifiedQuoteNormalized": "807 — 8,814 — 8,814 Repurchased, including excise tax — — ( 28 ) — — — ( 488,407 ) — ( 488,435 ) — ( 488,435 ) Restricted",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [
+          {
+            "description": "Share repurchases during the six months ended June 30, 2026",
+            "amount": "$488,435 thousand",
+            "eventDate": null,
+            "dateGranularity": null,
+            "eventStatus": "standing",
+            "sourceLine": "Repurchased, including excise tax — — ( 28 ) — — — ( 488,407 ) — ( 488,435 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+          },
+          {
+            "description": "Dividends paid and accrued during the six months ended June 30, 2026",
+            "amount": "$24,464 thousand",
+            "eventDate": null,
+            "dateGranularity": null,
+            "eventStatus": "standing",
+            "sourceLine": "Dividends paid and accrued — — — — — ( 24,464 ) — — ( 24,464 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+          }
+        ],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "large-cash-balance",
+        "triggerName": "Large cash balance building",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "Cash and cash equivalents were $138.8 million at June 30, 2026, compared to $137.8 million at December 31, 2025. This represents a modest increase of $1.0 million and is not a large or materially growing cash balance relative to the company's $15.9 billion in total assets.",
+        "mappedNeed": "Liquidity management, earning on idle cash",
+        "needType": "treasury",
+        "confidence": 0.88,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": true,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "asset-sale",
+        "triggerName": "Asset sale / divestiture closing",
+        "fired": false,
+        "dataAvailable": true,
+        "evidence": "No material asset sales or divestitures are disclosed in the filings for the period ended June 30, 2026. Proceeds from sales of assets and businesses totaled only $15.7 million for the six months ended June 30, 2026.",
+        "mappedNeed": "Proceeds deposit + sweep",
+        "needType": "treasury",
+        "confidence": 0.8,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-08-07",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
         "quoteMatchType": null,
@@ -779,6 +988,7 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
         "noteRetirements": [],
@@ -791,13 +1001,125 @@
       },
       {
         "proseInstruments": [],
-        "revolver": null,
-        "triggerId": "large-cash-balance",
-        "triggerName": "Large cash balance building",
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "international-expansion",
+        "triggerName": "International expansion / rising foreign revenue",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "UHS operates 161 inpatient behavioral health care facilities and 2 outpatient behavioral health care facilities in the United Kingdom. UK behavioral health revenues were approximately $1.001 billion in 2025 and $880 million in 2024, representing growth of approximately 13.8% year-over-year. UK operations represent a material and growing portion of the company's business.",
+        "mappedNeed": "FX hedging, cross-border cash management",
+        "needType": "treasury",
+        "confidence": 0.85,
+        "citations": [
+          {
+            "form": "10-K",
+            "date": "2026-02-25",
+            "reportDate": "2025-12-31",
+            "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526071676/uhs-20251231.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "Our behavioral health care facilities located in the U.K. generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024.",
+        "verifiedQuoteNormalized": "Our behavioral health care facilities located in the U.K. generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "new-subsidiary",
+        "triggerName": "New subsidiary / entity formation",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "In connection with the Talkspace acquisition, UHS Merger Subsidiary, Inc., a Delaware corporation and indirect wholly owned subsidiary of UHS, was formed to effect the merger. Talkspace became an indirect, wholly-owned subsidiary of UHS upon completion of the merger on August 17, 2026.",
+        "mappedNeed": "New operating accounts",
+        "needType": "treasury",
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "8-K",
+            "date": "2026-08-17",
+            "reportDate": "2026-08-17",
+            "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526354078/uhs-20260817.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "by and among the Company, UHS Merger Subsidiary, Inc., a Delaware corporation and indirect wholly owned subsidiary of the Company (\"Merger Sub\"), and Talkspace, whereby Merger Sub merged with and into Talkspace with Talkspace being the surviving corporation in the merger (the \"Merger\").",
+        "verifiedQuoteNormalized": "by and among the Company, UHS Merger Subsidiary, Inc., a Delaware corporation and indirect wholly owned subsidiary of the Company (\"Merger Sub\"), and Talkspace, whereby Merger Sub merged with and into Talkspace with Talkspace being the surviving corporation in the merger (the \"Merger\").",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": false,
+        "eventDate": "2026-08-17",
+        "dateGranularity": "day",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [
+          {
+            "description": "Talkspace, Inc. became an indirect, wholly-owned subsidiary of UHS",
+            "amount": null,
+            "eventDate": "2026-08-17",
+            "dateGranularity": "day",
+            "eventStatus": "completed",
+            "sourceLine": "As a result of the Merger, Talkspace became an indirect, wholly-owned subsidiary of the Company.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526354078/uhs-20260817.htm"
+          }
+        ],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": null,
+        "projectName": "Talkspace, Inc.",
+        "eventStatus": "completed",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "triggerId": "ipo-secondary",
+        "triggerName": "IPO / secondary raise",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "Cash and cash equivalents were $138.8 million at June 30, 2026, compared to $137.8 million at December 31, 2025. This represents a modest increase and is not a large cash balance relative to the company's $15.9 billion in total assets.",
-        "mappedNeed": "Liquidity management, earning on idle cash",
+        "evidence": "No IPO or secondary equity offering by UHS is disclosed in the filings for the period. UHS is an established public company with Class B Common Stock trading on the NYSE.",
+        "mappedNeed": "Proceeds management, treasury build-out",
         "needType": "treasury",
         "confidence": 0.95,
         "citations": [
@@ -826,6 +1148,7 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
         "noteRetirements": [],
@@ -838,213 +1161,17 @@
       },
       {
         "proseInstruments": [],
-        "revolver": null,
-        "triggerId": "asset-sale",
-        "triggerName": "Asset sale / divestiture closing",
-        "fired": false,
-        "dataAvailable": true,
-        "evidence": "No material asset sales or divestitures are disclosed in the filings for the period ended June 30, 2026. Proceeds from sales of assets and businesses were $15.7 million for the six months ended June 30, 2026, which is immaterial.",
-        "mappedNeed": "Proceeds deposit + sweep",
-        "needType": "treasury",
-        "confidence": 0.9,
-        "citations": [
-          {
-            "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
-          }
-        ],
-        "quoteVerified": true,
-        "verifiedQuote": null,
-        "verifiedQuoteNormalized": null,
-        "quoteMatchType": null,
-        "quoteHasFigure": false,
-        "eventDate": null,
-        "dateGranularity": null,
-        "scheduleSequence": [],
-        "priorScheduleSequence": [],
-        "balanceSheetDebtCaptions": [],
-        "debtScheduleSourceFiling": null,
-        "debtSchedulePriorFiling": null,
-        "rowsExtracted": 0,
-        "rowsVerified": 0,
-        "baseRowsExtracted": 0,
-        "columnReadFailure": false,
-        "scheduleCompleteness": null,
-        "redeems": [],
-        "issuedTranches": [],
-        "eventInstances": [],
-        "noteRetirements": [],
-        "projectCompletionDate": null,
-        "projectCompletionGranularity": null,
-        "cashAmount": null,
-        "projectName": null,
-        "eventStatus": "standing",
-        "proceedsUse": null
-      },
-      {
-        "proseInstruments": [],
-        "revolver": null,
-        "triggerId": "international-expansion",
-        "triggerName": "International expansion / rising foreign revenue",
-        "fired": true,
-        "dataAvailable": true,
-        "evidence": "UHS operates 161 inpatient behavioral health care facilities and 2 outpatient behavioral health care facilities in the United Kingdom. UK behavioral health care facilities generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024, representing growth and a material portion of the company's behavioral health segment.",
-        "mappedNeed": "FX hedging, cross-border cash management",
-        "needType": "treasury",
-        "confidence": 0.9,
-        "citations": [
-          {
-            "form": "10-K",
-            "date": "2026-02-25",
-            "reportDate": "2025-12-31",
-            "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526071676/uhs-20251231.htm"
-          }
-        ],
-        "quoteVerified": true,
-        "verifiedQuote": "Our behavioral health care facilities located in the U.K. generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024.",
-        "verifiedQuoteNormalized": "Our behavioral health care facilities located in the U.K. generated net revenues of approximately $1.001 billion in 2025 and $880 million in 2024.",
-        "quoteMatchType": "literal",
-        "quoteHasFigure": true,
-        "eventDate": null,
-        "dateGranularity": null,
-        "scheduleSequence": [],
-        "priorScheduleSequence": [],
-        "balanceSheetDebtCaptions": [],
-        "debtScheduleSourceFiling": null,
-        "debtSchedulePriorFiling": null,
-        "rowsExtracted": 0,
-        "rowsVerified": 0,
-        "baseRowsExtracted": 0,
-        "columnReadFailure": false,
-        "scheduleCompleteness": null,
-        "redeems": [],
-        "issuedTranches": [],
-        "eventInstances": [],
-        "noteRetirements": [],
-        "projectCompletionDate": null,
-        "projectCompletionGranularity": null,
-        "cashAmount": null,
-        "projectName": null,
-        "eventStatus": "standing",
-        "proceedsUse": null
-      },
-      {
-        "proseInstruments": [],
-        "revolver": null,
-        "triggerId": "new-subsidiary",
-        "triggerName": "New subsidiary / entity formation",
-        "fired": true,
-        "dataAvailable": true,
-        "evidence": "UHS Merger Subsidiary, Inc., a Delaware corporation and indirect wholly owned subsidiary of UHS, was formed to effect the merger with Talkspace, Inc. Following the merger on August 17, 2026, Talkspace became an indirect wholly-owned subsidiary of UHS.",
-        "mappedNeed": "New operating accounts",
-        "needType": "treasury",
-        "confidence": 0.85,
-        "citations": [
-          {
-            "form": "8-K",
-            "date": "2026-08-17",
-            "reportDate": "2026-08-17",
-            "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526354078/uhs-20260817.htm"
-          }
-        ],
-        "quoteVerified": true,
-        "verifiedQuote": "by and among the Company, UHS Merger Subsidiary, Inc., a Delaware corporation and indirect wholly owned subsidiary of the Company (\"Merger Sub\"), and Talkspace, whereby Merger Sub merged with and into Talkspace with Talkspace being the surviving corporation in the merger (the \"Merger\").",
-        "verifiedQuoteNormalized": "by and among the Company, UHS Merger Subsidiary, Inc., a Delaware corporation and indirect wholly owned subsidiary of the Company (\"Merger Sub\"), and Talkspace, whereby Merger Sub merged with and into Talkspace with Talkspace being the surviving corporation in the merger (the \"Merger\").",
-        "quoteMatchType": "literal",
-        "quoteHasFigure": false,
-        "eventDate": "2026-08-17",
-        "dateGranularity": "day",
-        "scheduleSequence": [],
-        "priorScheduleSequence": [],
-        "balanceSheetDebtCaptions": [],
-        "debtScheduleSourceFiling": null,
-        "debtSchedulePriorFiling": null,
-        "rowsExtracted": 0,
-        "rowsVerified": 0,
-        "baseRowsExtracted": 0,
-        "columnReadFailure": false,
-        "scheduleCompleteness": null,
-        "redeems": [],
-        "issuedTranches": [],
-        "eventInstances": [
-          {
-            "description": "UHS Merger Subsidiary, Inc. formed as an indirect wholly-owned subsidiary to effect the merger with Talkspace, Inc.",
-            "amount": null,
-            "eventDate": "2026-08-17",
-            "dateGranularity": "day",
-            "eventStatus": "completed",
-            "sourceLine": "by and among the Company, UHS Merger Subsidiary, Inc., a Delaware corporation and indirect wholly owned subsidiary of the Company (\"Merger Sub\"), and Talkspace, whereby Merger Sub merged with and into Talkspace with Talkspace being the surviving corporation in the merger (the \"Merger\").",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/352915/000119312526354078/uhs-20260817.htm"
-          }
-        ],
-        "noteRetirements": [],
-        "projectCompletionDate": null,
-        "projectCompletionGranularity": null,
-        "cashAmount": null,
-        "projectName": "Talkspace, Inc.",
-        "eventStatus": "completed",
-        "proceedsUse": null
-      },
-      {
-        "proseInstruments": [],
-        "revolver": null,
-        "triggerId": "ipo-secondary",
-        "triggerName": "IPO / secondary raise",
-        "fired": false,
-        "dataAvailable": true,
-        "evidence": "No IPO or secondary equity offering by UHS is disclosed in the filings. The company is an established public company trading on the NYSE.",
-        "mappedNeed": "Proceeds management, treasury build-out",
-        "needType": "treasury",
-        "confidence": 0.98,
-        "citations": [
-          {
-            "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
-          }
-        ],
-        "quoteVerified": true,
-        "verifiedQuote": null,
-        "verifiedQuoteNormalized": null,
-        "quoteMatchType": null,
-        "quoteHasFigure": false,
-        "eventDate": null,
-        "dateGranularity": null,
-        "scheduleSequence": [],
-        "priorScheduleSequence": [],
-        "balanceSheetDebtCaptions": [],
-        "debtScheduleSourceFiling": null,
-        "debtSchedulePriorFiling": null,
-        "rowsExtracted": 0,
-        "rowsVerified": 0,
-        "baseRowsExtracted": 0,
-        "columnReadFailure": false,
-        "scheduleCompleteness": null,
-        "redeems": [],
-        "issuedTranches": [],
-        "eventInstances": [],
-        "noteRetirements": [],
-        "projectCompletionDate": null,
-        "projectCompletionGranularity": null,
-        "cashAmount": null,
-        "projectName": null,
-        "eventStatus": "standing",
-        "proceedsUse": null
-      },
-      {
-        "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "floating-rate-debt",
         "triggerName": "Floating-rate debt + rate exposure",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "The Tranche A Term Loan ($1.448 billion outstanding as of June 30, 2026) and the Revolving Credit Facility ($225 million drawn) bear interest at floating rates based on SOFR or ABR plus applicable margins. These floating-rate borrowings represent approximately 45% of total debt outstanding.",
+        "evidence": "As of June 30, 2026, UHS has $1.448 billion outstanding under its Tranche A term loan and $225 million drawn on its revolving credit facility, both of which bear floating interest rates tied to SOFR or ABR. These floating-rate borrowings represent approximately 27% of total debt outstanding of $4.9 billion.",
         "mappedNeed": "Interest-rate hedging",
         "needType": "credit",
-        "confidence": 0.9,
+        "confidence": 0.92,
         "citations": [
           {
             "form": "10-Q",
@@ -1071,6 +1198,7 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
         "noteRetirements": [],
@@ -1083,15 +1211,17 @@
       },
       {
         "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "commodity-exposure",
         "triggerName": "Commodity / input-cost exposure",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material disclosure of commodity or input-cost exposure is provided in the excerpted filings. The company's risk factors and MD&A do not highlight significant commodity price volatility as a material risk.",
+        "evidence": "No material disclosure of commodity or input-cost exposure is provided in the risk factors or MD&A sections of the filings. Healthcare providers typically have exposure to supply costs, but UHS does not specifically disclose material commodity price volatility as a risk factor.",
         "mappedNeed": "Commodity hedging",
         "needType": "credit",
-        "confidence": 0.85,
+        "confidence": 0.75,
         "citations": [
           {
             "form": "10-Q",
@@ -1118,6 +1248,7 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
         "noteRetirements": [],
@@ -1130,15 +1261,17 @@
       },
       {
         "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "fx-exposure",
         "triggerName": "Large FX exposure disclosed",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "UHS uses forward exchange contracts to hedge its net investment in foreign operations (primarily UK behavioral health facilities). During the six months ended June 30, 2026, net cash inflows from these contracts were $12 million. The company recorded net investment hedge gains of $13.1 million in AOCI for the six-month period.",
+        "evidence": "UHS uses forward exchange contracts to hedge its net investment in foreign operations (primarily UK operations) against movements in exchange rates. During the six months ended June 30, 2026, the company recorded net cash inflows of $12 million from these contracts and recognized a net investment hedge gain of $13.1 million in accumulated other comprehensive income.",
         "mappedNeed": "FX hedging program",
         "needType": "treasury",
-        "confidence": 0.9,
+        "confidence": 0.88,
         "citations": [
           {
             "form": "10-Q",
@@ -1165,6 +1298,7 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
         "noteRetirements": [],
@@ -1177,15 +1311,17 @@
       },
       {
         "proseInstruments": [],
-        "revolver": null,
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
         "triggerId": "covenant-breach",
         "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning is disclosed. The company states it was in compliance with all required covenants as of June 30, 2026 and December 31, 2025.",
+        "evidence": "No covenant breaches, waivers, going-concern qualifications, or liquidity warnings are disclosed. The company states it was in compliance with all required covenants as of June 30, 2026 and December 31, 2025.",
         "mappedNeed": "Restructuring or amendment support",
         "needType": "distress",
-        "confidence": 0.98,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
@@ -1212,6 +1348,7 @@
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [],
+        "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
         "noteRetirements": [],

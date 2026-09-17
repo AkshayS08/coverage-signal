@@ -1,0 +1,4190 @@
+{
+  "generatedAt": "2026-09-17T17:52:35.149Z",
+  "asOf": "2026-09-09",
+  "extractionPromptVersion": 29,
+  "narrationPromptVersion": 10,
+  "companies": [
+    {
+      "company": "DAVITA INC.",
+      "cik": "0000927066",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-08-04",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/927066/000092706625000154/dva-20250820.htm",
+        "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+        "https://www.sec.gov/Archives/edgar/data/927066/000120677426000316/dva4647631-8k.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "Term Loan A-2",
+          "amount": "$1,975,000 thousand",
+          "maturityDate": "2030-11-24",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Secured Credit Facilities",
+          "facilityType": "Term Loan A · Senior Secured Credit Facilities",
+          "amountMillions": "$1,975M",
+          "priorityClassFrom": "section",
+          "instrumentType": "term-loan-a",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
+          "placement": "char 27,159 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,975,000 thousand",
+            "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,159 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-11-24",
+            "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,159 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Revolving line of credit",
+          "amount": "$65,000 thousand",
+          "maturityDate": "2030-11-24",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Secured Credit Facilities",
+          "facilityType": "Revolv · Senior Secured Credit Facilities",
+          "amountMillions": "$65M",
+          "priorityClassFrom": "section",
+          "instrumentType": "revolver",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
+          "placement": "char 27,317 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$65,000 thousand",
+            "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,317 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-11-24",
+            "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,317 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Term Loan B-2",
+          "amount": "$2,357,910 thousand",
+          "maturityDate": "2031-05-09",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Secured Credit Facilities",
+          "facilityType": "Term Loan B · Senior Secured Credit Facilities",
+          "amountMillions": "$2,358M",
+          "priorityClassFrom": "section",
+          "instrumentType": "term-loan-b",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
+          "placement": "char 27,243 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$2,357,910 thousand",
+            "sentence": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,243 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031-05-09",
+            "sentence": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,243 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.625% Senior Notes",
+          "amount": "$2,750,000 thousand",
+          "maturityDate": "2030-06-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Notes",
+          "facilityType": "Senior Notes",
+          "amountMillions": "$2,750M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750",
+          "placement": "char 27,408 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$2,750,000 thousand",
+            "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,408 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-06-01",
+            "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,408 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "3.75% Senior Notes",
+          "amount": "$1,500,000 thousand",
+          "maturityDate": "2031-02-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Notes",
+          "facilityType": "Senior Notes",
+          "amountMillions": "$1,500M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625",
+          "placement": "char 27,485 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,500,000 thousand",
+            "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,485 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031-02-15",
+            "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,485 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.875% Senior Notes",
+          "amount": "$1,000,000 thousand",
+          "maturityDate": "2032-09-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Notes",
+          "facilityType": "Senior Notes",
+          "amountMillions": "$1,000M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750",
+          "placement": "char 27,561 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,000,000 thousand",
+            "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,561 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2032-09-01",
+            "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,561 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.75% Senior Notes",
+          "amount": "$1,000,000 thousand",
+          "maturityDate": "2033-07-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Notes",
+          "facilityType": "Senior Notes",
+          "amountMillions": "$1,000M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750",
+          "placement": "char 27,638 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,000,000 thousand",
+            "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,638 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2033-07-15",
+            "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,638 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Acquisition obligations and other notes payable",
+          "amount": "$39,463 thousand",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Notes",
+          "facilityType": "Senior Notes",
+          "amountMillions": "$39M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463",
+          "placement": "char 27,714 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$39,463 thousand",
+            "sentence": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,714 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": null
+        },
+        {
+          "instrument": "Financing lease obligations",
+          "amount": "$160,143 thousand",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior Notes",
+          "facilityType": "Financing lease · Senior Notes",
+          "amountMillions": "$160M",
+          "priorityClassFrom": "section",
+          "instrumentType": "finance-lease",
+          "sourceDocument": "10-Q 2026-08-04",
+          "sourceLine": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+          "placement": "char 27,814 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$160,143 thousand",
+            "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+            "document": "10-Q 2026-08-04",
+            "placement": "char 27,814 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": null
+        },
+        {
+          "instrument": "bilateral secured letter of credit facility",
+          "amount": "(no amount stated)",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": true,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "credit facility",
+          "amountMillions": null,
+          "priorityClassFrom": null,
+          "instrumentType": "credit-facility",
+          "sourceDocument": "(none recorded on this row)",
+          "sourceLine": "",
+          "placement": "NOT FOUND in any of the 3 fetched document(s) — check this line before signing",
+          "honestAbsence": true,
+          "amountProvenance": null,
+          "maturityProvenance": null
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 9 rows cover $10.85B of $10.78B stated total debt (101%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — plus $0M of undrawn capacity NOT counted as debt (bilateral secured letter of credit facility: committed facility, undrawn — capacity, not debt)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "9 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "9 row(s) carry a printed unit; 1 state no amount HONESTLY (bilateral secured letter of credit facility — the filing states no size for this facility); no narrative instruments, so no basis to state",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 9 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "Total debt principal outstanding: gap 0 TIES; (unlabelled): gap 0 TIES",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $10,781,013,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "1 capacity row(s) held out of captured face and reported separately: bilateral secured letter of credit facility",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "9 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "all 9 row(s) carry a class (Senior Secured Credit Facilities; Senior Notes)",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "no Tier 2 events",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 9,
+      "computedTotal": 9,
+      "signable": true,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [],
+      "figuresScaleNormalized": []
+    },
+    {
+      "company": "HCA Healthcare, Inc.",
+      "cik": "0000860730",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-07-28",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/860730/000119312526197278/hca-20260427.htm",
+        "https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "Senior unsecured notes payable through 2095",
+          "amount": "$44,200 million",
+          "maturityDate": "2095",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior unsecured",
+          "facilityType": "notes · Senior unsecured",
+          "amountMillions": "$44,200M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "Senior unsecured notes payable through 2095  (effective interest rate of 5.1 %)",
+          "placement": "char 33,165 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$44,200 million",
+            "sentence": "Senior unsecured notes payable through 2095  (effective interest rate of 5.1 %)",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 33,165 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "2095",
+            "sentence": "Senior unsecured notes payable through 2095  (effective interest rate of 5.1 %)",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 33,165 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Senior unsecured credit facility",
+          "amount": "$1,010 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior unsecured",
+          "facilityType": "credit facility · Senior unsecured",
+          "amountMillions": "$1,010M",
+          "priorityClassFrom": "name",
+          "instrumentType": "credit-facility",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "Senior unsecured credit facility (effective interest rate of 4.8 %)",
+          "placement": "char 33,083 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,010 million",
+            "sentence": "Senior unsecured credit facility (effective interest rate of 4.8 %)",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 33,083 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": null
+        },
+        {
+          "instrument": "Commercial paper",
+          "amount": "$3,890 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Commercial paper",
+          "amountMillions": "$3,890M",
+          "priorityClassFrom": null,
+          "instrumentType": "commercial-paper",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "Commercial paper (average life of 38  days, weighted average rate of 4.3 %)",
+          "placement": "char 32,899 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$3,890 million",
+            "sentence": "Commercial paper (average life of 38  days, weighted average rate of 4.3 %)",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 32,899 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": null
+        },
+        {
+          "instrument": "Other debt",
+          "amount": "$1,069 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "type not stated",
+          "amountMillions": "$1,069M",
+          "priorityClassFrom": null,
+          "instrumentType": null,
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "Other debt (effective interest rate of 4.9 %)",
+          "placement": "char 33,019 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,069 million",
+            "sentence": "Other debt (effective interest rate of 4.9 %)",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 33,019 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": null
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 4 rows cover $50.17B of $49.72B stated total debt (101%), against Short-term borrowings and long-term debt due within one year + Long-term debt, less debt issuance costs and discounts of $ 451  and $ 436 (read from the anchor's balance sheet — this filer tags no debt total at that period end)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "4 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "all 4 row(s) carry a printed unit; no narrative instruments, so no basis to state",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 4 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "Total long-term debt: gap 0 TIES; Total debt: gap 0 TIES",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "MODEL-READ and labelled as such — this filer tags no usable XBRL total; the denominator is the balance-sheet captions as extracted, which is a weaker provenance than a tagged one",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "this filer states no undrawn capacity",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": false,
+          "detail": "this note prints ONE AGGREGATE LINE for its notes, not a tranche ladder — the position cannot answer which tranche, at what rate",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "2 of 4 row(s) carry a class; the remaining 2 state \"class not stated on this row\" explicitly (Commercial paper; Other debt). Sections printed: Short-term borrowings; Long-term debt",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "no Tier 2 events",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 8,
+      "computedTotal": 9,
+      "signable": false,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [
+        "Senior unsecured notes payable through 2095 — amount \"$44,200 million\" beside: \"Senior unsecured notes payable through 2095 (effective interest rate of 5.1 %)\"",
+        "Senior unsecured credit facility — amount \"$1,010 million\" beside: \"Senior unsecured credit facility (effective interest rate of 4.8 %)\"",
+        "Commercial paper — amount \"$3,890 million\" beside: \"Commercial paper (average life of 38 days, weighted average rate of 4.3 %)\"",
+        "Other debt — amount \"$1,069 million\" beside: \"Other debt (effective interest rate of 4.9 %)\""
+      ],
+      "figuresScaleNormalized": []
+    },
+    {
+      "company": "TENET HEALTHCARE CORP",
+      "cik": "0000070318",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-07-29",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/70318/000007031824000044/thc-20240805.htm",
+        "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
+        "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm",
+        "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "5.125 % due 2027",
+          "amount": "$1,500 million",
+          "maturityDate": "2027",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior secured first lien notes",
+          "facilityType": "Senior secured first lien notes",
+          "amountMillions": "$1,500M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "Senior secured first lien notes:     5.125 % due 2027 1,500",
+          "placement": "char 33,505 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,500 million",
+            "sentence": "Senior secured first lien notes:     5.125 % due 2027 1,500",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,505 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2027",
+            "sentence": "Senior secured first lien notes:     5.125 % due 2027 1,500",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,505 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.625 % due 2028",
+          "amount": "$600 million",
+          "maturityDate": "2028",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior secured first lien notes",
+          "facilityType": "Senior secured first lien notes",
+          "amountMillions": "$600M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "4.625 % due 2028 600",
+          "placement": "char 33,575 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$600 million",
+            "sentence": "4.625 % due 2028 600",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,575 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2028",
+            "sentence": "4.625 % due 2028 600",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,575 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.250 % due 2029",
+          "amount": "$1,400 million",
+          "maturityDate": "2029",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior secured first lien notes",
+          "facilityType": "Senior secured first lien notes",
+          "amountMillions": "$1,400M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "4.250 % due 2029 1,400",
+          "placement": "char 33,604 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,400 million",
+            "sentence": "4.250 % due 2029 1,400",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,604 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2029",
+            "sentence": "4.250 % due 2029 1,400",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,604 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.375 % due 2030",
+          "amount": "$1,450 million",
+          "maturityDate": "2030",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior secured first lien notes",
+          "facilityType": "Senior secured first lien notes",
+          "amountMillions": "$1,450M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "4.375 % due 2030 1,450",
+          "placement": "char 33,637 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,450 million",
+            "sentence": "4.375 % due 2030 1,450",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,637 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030",
+            "sentence": "4.375 % due 2030 1,450",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,637 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.125 % due 2030",
+          "amount": "$2,000 million",
+          "maturityDate": "2030",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior secured first lien notes",
+          "facilityType": "Senior secured first lien notes",
+          "amountMillions": "$2,000M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "6.125 % due 2030 2,000",
+          "placement": "char 33,670 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$2,000 million",
+            "sentence": "6.125 % due 2030 2,000",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,670 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030",
+            "sentence": "6.125 % due 2030 2,000",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,670 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.750 % due 2031",
+          "amount": "$1,350 million",
+          "maturityDate": "2031",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior secured first lien notes",
+          "facilityType": "Senior secured first lien notes",
+          "amountMillions": "$1,350M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "6.750 % due 2031 1,350",
+          "placement": "char 33,703 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,350 million",
+            "sentence": "6.750 % due 2031 1,350",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,703 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031",
+            "sentence": "6.750 % due 2031 1,350",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,703 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "5.500 % due 2032",
+          "amount": "$1,500 million",
+          "maturityDate": "2032",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior secured first lien notes",
+          "facilityType": "Senior secured first lien notes",
+          "amountMillions": "$1,500M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "5.500 % due 2032 1,500",
+          "placement": "char 33,736 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,500 million",
+            "sentence": "5.500 % due 2032 1,500",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,736 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2032",
+            "sentence": "5.500 % due 2032 1,500",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,736 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "senior secured revolving credit facility",
+          "amount": "$1,900 million",
+          "maturityDate": "2030-11-04",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": true,
+          "priorityClass": "senior secured",
+          "facilityType": "revolv · senior secured",
+          "amountMillions": "$1,900M",
+          "priorityClassFrom": "name",
+          "instrumentType": "revolver",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+          "placement": "char 34,482 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,900 million",
+            "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 34,482 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "November 4, 2030",
+            "sentence": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\")",
+            "document": "10-K 2026-02-17",
+            "placement": "char 409,311 of 10-K 2026-02-17",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.125 % due 2028",
+          "amount": "$1,750 million",
+          "maturityDate": "2028",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior unsecured notes",
+          "facilityType": "Senior unsecured notes",
+          "amountMillions": "$1,750M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "Senior unsecured notes:     6.125 % due 2028 $ 1,750",
+          "placement": "char 33,382 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,750 million",
+            "sentence": "Senior unsecured notes:     6.125 % due 2028 $ 1,750",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,382 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2028",
+            "sentence": "Senior unsecured notes:     6.125 % due 2028 $ 1,750",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,382 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.875 % due 2031",
+          "amount": "$362 million",
+          "maturityDate": "2031",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior unsecured notes",
+          "facilityType": "Senior unsecured notes",
+          "amountMillions": "$362M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "6.875 % due 2031 362",
+          "placement": "char 33,447 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$362 million",
+            "sentence": "6.875 % due 2031 362",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,447 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031",
+            "sentence": "6.875 % due 2031 362",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,447 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.000 % due 2033",
+          "amount": "$750 million",
+          "maturityDate": "2033",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior unsecured notes",
+          "facilityType": "Senior unsecured notes",
+          "amountMillions": "$750M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "6.000 % due 2033 750",
+          "placement": "char 33,476 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$750 million",
+            "sentence": "6.000 % due 2033 750",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,476 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2033",
+            "sentence": "6.000 % due 2033 750",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,476 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Finance leases, mortgages and other notes",
+          "amount": "$671 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Finance lease",
+          "amountMillions": "$671M",
+          "priorityClassFrom": null,
+          "instrumentType": "finance-lease",
+          "sourceDocument": "10-Q 2026-07-29",
+          "sourceLine": "Finance leases, mortgages and other notes 671",
+          "placement": "char 33,769 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$671 million",
+            "sentence": "Finance leases, mortgages and other notes 671",
+            "document": "10-Q 2026-07-29",
+            "placement": "char 33,769 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": null
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 11 rows cover $13.33B of $13.25B stated total debt (101%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — plus $1.90B of undrawn capacity NOT counted as debt (senior secured revolving credit facility: revolving facility, no drawn balance stated — capacity, not debt)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "11 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "all 12 row(s) carry a printed unit; all 1 narrative instrument(s) state a basis (commitment) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 11 note row(s) cite the anchor; 5 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "Total long-term debt: gap 0 TIES",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $13,248,000,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "1 capacity row(s) held out of captured face and reported separately: senior secured revolving credit facility",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "11 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "10 of 11 row(s) carry a class; the remaining 1 state \"class not stated on this row\" explicitly (Finance leases, mortgages and other notes)",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "5 event(s), each carrying its own verbatim source and cited filing; 3 net nothing and say why",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 9,
+      "computedTotal": 9,
+      "signable": true,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [],
+      "figuresScaleNormalized": [
+        "senior secured revolving credit facility — amount \"$1,900 million\" beside: \"We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolv\""
+      ]
+    },
+    {
+      "company": "UNIVERSAL HEALTH SERVICES INC",
+      "cik": "0000352915",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-08-07",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/352915/000119312526071676/uhs-20251231.htm",
+        "https://www.sec.gov/Archives/edgar/data/352915/000119312526340278/uhs-20260630.htm",
+        "https://www.sec.gov/Archives/edgar/data/352915/000119312526354078/uhs-20260817.htm",
+        "https://www.sec.gov/Archives/edgar/data/352915/000119312526359953/d329184d8k.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "1.65% Senior Secured Notes due 2026",
+          "amount": "$ 700 million",
+          "maturityDate": "2026-09-01",
+          "dateGranularity": "day",
+          "status": "matured",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "Senior Secured",
+          "facilityType": "Notes · Senior Secured",
+          "amountMillions": "$700M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026 (\"2026 Notes\") which were issued on August 24, 2021.",
+          "placement": "char 46,083 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 700 million",
+            "sentence": "$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026 (\"2026 Notes\") which were issued on August 24, 2021.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 46,083 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2026-09-01",
+            "sentence": "$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026 (\"2026 Notes\") which were issued on August 24, 2021.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 46,083 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.625% Senior Secured Notes due 2029",
+          "amount": "$ 500 million",
+          "maturityDate": "2029-10-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "Senior Secured",
+          "facilityType": "Notes · Senior Secured",
+          "amountMillions": "$500M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "$ 500 million of aggregate principal amount of 4.625 % senior secured notes due in October, 2029 (\"2029 Notes\") which were issued on September 26, 2024.",
+          "placement": "char 46,352 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 500 million",
+            "sentence": "$ 500 million of aggregate principal amount of 4.625 % senior secured notes due in October, 2029 (\"2029 Notes\") which were issued on September 26, 2024.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 46,352 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2029-10-15",
+            "sentence": "$ 500 million of aggregate principal amount of 4.625 % senior secured notes due in October, 2029 (\"2029 Notes\") which were issued on September 26, 2024.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 46,352 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "2.65% Senior Secured Notes due 2030",
+          "amount": "$ 800 million",
+          "maturityDate": "2030-10-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "Senior Secured",
+          "facilityType": "Notes · Senior Secured",
+          "amountMillions": "$800M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "$ 800 million of aggregate principal amount of 2.65 % senior secured notes due in October, 2030 (\"2030 Notes\") which were issued on September 21, 2020.",
+          "placement": "char 46,649 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 800 million",
+            "sentence": "$ 800 million of aggregate principal amount of 2.65 % senior secured notes due in October, 2030 (\"2030 Notes\") which were issued on September 21, 2020.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 46,649 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-10-15",
+            "sentence": "$ 800 million of aggregate principal amount of 2.65 % senior secured notes due in October, 2030 (\"2030 Notes\") which were issued on September 21, 2020.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 46,649 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "2.65% Senior Secured Notes due 2032",
+          "amount": "$ 500 million",
+          "maturityDate": "2032-01-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "Senior Secured",
+          "facilityType": "Notes · Senior Secured",
+          "amountMillions": "$500M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "$ 500 million of aggregate principal amount of 2.65 % senior secured notes due in January, 2032 (\"2032 Notes\") which were issued on August 24, 2021.",
+          "placement": "char 46,919 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 500 million",
+            "sentence": "$ 500 million of aggregate principal amount of 2.65 % senior secured notes due in January, 2032 (\"2032 Notes\") which were issued on August 24, 2021.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 46,919 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2032-01-15",
+            "sentence": "$ 500 million of aggregate principal amount of 2.65 % senior secured notes due in January, 2032 (\"2032 Notes\") which were issued on August 24, 2021.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 46,919 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "5.050% Senior Secured Notes due 2034",
+          "amount": "$ 500 million",
+          "maturityDate": "2034-10-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "Senior Secured",
+          "facilityType": "Notes · Senior Secured",
+          "amountMillions": "$500M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "$ 500 million of aggregate principal amount of 5.050 % senior secured notes due in October, 2034 (\"2034 Notes\") which were issued on September 26, 2024.",
+          "placement": "char 47,184 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 500 million",
+            "sentence": "$ 500 million of aggregate principal amount of 5.050 % senior secured notes due in October, 2034 (\"2034 Notes\") which were issued on September 26, 2024.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 47,184 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2034-10-15",
+            "sentence": "$ 500 million of aggregate principal amount of 5.050 % senior secured notes due in October, 2034 (\"2034 Notes\") which were issued on September 26, 2024.",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 47,184 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Tranche A term loan",
+          "amount": "$ 1.448 billion",
+          "maturityDate": "2029-09-26",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Tranche A term loan",
+          "amountMillions": "$1,448M",
+          "priorityClassFrom": null,
+          "instrumentType": "term-loan-a",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "increased the existing term loan A by $ 300 million to $ 1.455 billion ($ 1.448 billion outstanding as of June 30, 2026) from $ 1.155 billion previously",
+          "placement": "char 41,817 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 1.448 billion",
+            "sentence": "increased the existing term loan A by $ 300 million to $ 1.455 billion ($ 1.448 billion outstanding as of June 30, 2026) from $ 1.155 billion previously",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 41,817 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "September 26, 2029",
+            "sentence": "The maturity date for our Credit Agreement is September 26, 2029 .",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 42,185 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Revolving credit facility",
+          "amount": "$ 225 million",
+          "maturityDate": "2029-09-26",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Revolv",
+          "amountMillions": "$225M",
+          "priorityClassFrom": null,
+          "instrumentType": "revolver",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)",
+          "placement": "char 42,864 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 225 million",
+            "sentence": "we had $ 1.272 billion of available borrowing capacity pursuant to the terms of our $ 1.5 billion revolving credit facility (net of $ 225 million of outstanding borrowings and $ 3 million of letters of credit)",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 42,864 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "September 26, 2029",
+            "sentence": "The maturity date for our Credit Agreement is September 26, 2029 .",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 42,185 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Financial liabilities from failed sale leaseback with Universal Health Realty Income Trust",
+          "amount": "$ 68 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "type not stated",
+          "amountMillions": "$68M",
+          "priorityClassFrom": null,
+          "instrumentType": null,
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "our consolidated balance sheets at June 30, 2026 and December 31, 2025 reflect financial liabilities, which are included in debt, of approximately $ 68 million and $ 70 million, respectively",
+          "placement": "char 50,232 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 68 million",
+            "sentence": "our consolidated balance sheets at June 30, 2026 and December 31, 2025 reflect financial liabilities, which are included in debt, of approximately $ 68 million and $ 70 million, respectively",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 50,232 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": null
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 0 rows + 8 prose instruments cover $4.74B of $4.85B stated total debt (98%), against LongTermDebtCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "8 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "all 8 row(s) carry a printed unit; all 8 narrative instrument(s) state a basis (outstanding) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 8 note row(s) cite the anchor; 3 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "this note prints NO subtotal, so the amended test applies. Captions sum to $0 (NONE EXTRACTED — a real gap, logged separately; it is not evidence the total is uncorroborated); the stated total is $4,851,847,000 from xbrl, the filer's own XBRL tag, which TIES. Either route suffices: TRIANGULATES; coverage residual 2.28% passes=true",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $4,851,847,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 2.28% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "this filer states no undrawn capacity",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "8 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "5 of 8 row(s) carry a class; the remaining 3 state \"class not stated on this row\" explicitly (Tranche A term loan; Revolving credit facility; Financial liabilities from failed sale leaseback with Universal Health Realty Income Trust)",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "3 event(s), each carrying its own verbatim source and cited filing; 1 net nothing and say why",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 9,
+      "computedTotal": 9,
+      "signable": true,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [],
+      "figuresScaleNormalized": []
+    },
+    {
+      "company": "Encompass Health Corp",
+      "cik": "0000785161",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-08-07",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm",
+        "https://www.sec.gov/Archives/edgar/data/785161/000078516126000161/ehc-20260529.htm",
+        "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "4.50 % Senior Notes due 2028",
+          "amount": "$396.9 million",
+          "maturityDate": "2028-02-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$397M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "4.50 % Senior Notes due 2028 396.9   792.0",
+          "placement": "char 40,545 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$396.9 million",
+            "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,545 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2028-02-01",
+            "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,545 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.75 % Senior Notes due 2030",
+          "amount": "$788.4 million",
+          "maturityDate": "2030-02-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$788M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "4.75 % Senior Notes due 2030 788.4   787.0",
+          "placement": "char 40,590 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$788.4 million",
+            "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,590 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-02-01",
+            "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,590 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.625 % Senior Notes due 2031",
+          "amount": "$394.1 million",
+          "maturityDate": "2031-04-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$394M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "4.625 % Senior Notes due 2031 394.1   393.6",
+          "placement": "char 40,635 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$394.1 million",
+            "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,635 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031-04-01",
+            "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,635 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "5.875 % Senior Notes due 2034",
+          "amount": "$491.0 million",
+          "maturityDate": "2034-06-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$491M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "5.875 % Senior Notes due 2034 491.0   —",
+          "placement": "char 40,681 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$491.0 million",
+            "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,681 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2034-06-01",
+            "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,681 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Advances under revolving credit facility",
+          "amount": "$200.0 million",
+          "maturityDate": "2031-03-09",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "revolv",
+          "amountMillions": "$200M",
+          "priorityClassFrom": null,
+          "instrumentType": "revolver",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "Advances under revolving credit facility $ 200.0   $ 130.0",
+          "placement": "char 40,469 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$200.0 million",
+            "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,469 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "March 9, 2031",
+            "sentence": "the maturity date has been changed to March 9, 2031",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 42,092 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Other notes payable",
+          "amount": "$81.9 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "notes",
+          "amountMillions": "$82M",
+          "priorityClassFrom": null,
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "Other notes payable 81.9   93.6",
+          "placement": "char 40,723 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$81.9 million",
+            "sentence": "Other notes payable 81.9   93.6",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,723 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": null
+        },
+        {
+          "instrument": "Finance lease obligations",
+          "amount": "$281.7 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Finance lease",
+          "amountMillions": "$282M",
+          "priorityClassFrom": null,
+          "instrumentType": "finance-lease",
+          "sourceDocument": "10-Q 2026-08-07",
+          "sourceLine": "Finance lease obligations 281.7   294.6",
+          "placement": "char 40,757 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$281.7 million",
+            "sentence": "Finance lease obligations 281.7   294.6",
+            "document": "10-Q 2026-08-07",
+            "placement": "char 40,757 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": null
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 7 rows cover $2.63B of $2.63B stated total debt (100%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "7 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "all 7 row(s) carry a printed unit; no narrative instruments, so no basis to state",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 7 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "(unlabelled): gap 0 TIES; Long-term debt, net of current portion: gap 0 TIES",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $2,634,000,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "this filer states no undrawn capacity",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "7 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "4 of 7 row(s) carry a class; the remaining 3 state \"class not stated on this row\" explicitly (Advances under revolving credit facility; Other notes payable; Finance lease obligations). Sections printed: Credit Agreement; Bonds payable",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "no Tier 2 events",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 9,
+      "computedTotal": 9,
+      "signable": true,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [],
+      "figuresScaleNormalized": []
+    },
+    {
+      "company": "COMMUNITY HEALTH SYSTEMS INC",
+      "cik": "0001108109",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-07-23",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/1108109/000119312526138026/cyh-20260401.htm",
+        "https://www.sec.gov/Archives/edgar/data/1108109/000119312526251540/cyh-20260601.htm",
+        "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "6 ⅞% Junior-Priority Secured Notes due 2029",
+          "amount": "$ 1,244 million",
+          "maturityDate": "2029",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "junior-priority secured",
+          "facilityType": "Notes · junior-priority secured",
+          "amountMillions": "$1,244M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
+          "placement": "char 49,050 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 1,244 million",
+            "sentence": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 49,050 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2029",
+            "sentence": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 49,050 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6 ⅛% Junior-Priority Secured Notes due 2030",
+          "amount": "$ 1,227 million",
+          "maturityDate": "2030",
+          "dateGranularity": "year",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "junior-priority secured",
+          "facilityType": "Notes · junior-priority secured",
+          "amountMillions": "$1,227M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
+          "placement": "char 49,112 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 1,227 million",
+            "sentence": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 49,112 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030",
+            "sentence": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 49,112 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6 % Senior Secured Notes due 2029",
+          "amount": "$ 644 million",
+          "maturityDate": "2029-01-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior-priority secured",
+          "facilityType": "Notes · senior-priority secured",
+          "amountMillions": "$644M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "6 % Senior Secured Notes due 2029 644",
+          "placement": "char 48,741 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 644 million",
+            "sentence": "6 % Senior Secured Notes due 2029 644",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,741 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2029-01-15",
+            "sentence": "6 % Senior Secured Notes due 2029 644",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,741 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "5 ¼% Senior Secured Notes due 2030",
+          "amount": "$ 1,535 million",
+          "maturityDate": "2030-05-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior-priority secured",
+          "facilityType": "Notes · senior-priority secured",
+          "amountMillions": "$1,535M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
+          "placement": "char 48,789 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 1,535 million",
+            "sentence": "5 ¼% Senior Secured Notes due 2030 1,535",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,789 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-05-15",
+            "sentence": "5 ¼% Senior Secured Notes due 2030 1,535",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,789 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4 ¾% Senior Secured Notes due 2031",
+          "amount": "$ 689 million",
+          "maturityDate": "2031-02-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior-priority secured",
+          "facilityType": "Notes · senior-priority secured",
+          "amountMillions": "$689M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "4 ¾% Senior Secured Notes due 2031 689",
+          "placement": "char 48,842 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 689 million",
+            "sentence": "4 ¾% Senior Secured Notes due 2031 689",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,842 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031-02-15",
+            "sentence": "4 ¾% Senior Secured Notes due 2031 689",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,842 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "10 ⅞% Senior Secured Notes due 2032",
+          "amount": "$ 1,549 million",
+          "maturityDate": "2032-01-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior-priority secured",
+          "facilityType": "Notes · senior-priority secured",
+          "amountMillions": "$1,549M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549",
+          "placement": "char 48,893 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 1,549 million",
+            "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,893 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2032-01-15",
+            "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,893 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "10 ¾% Senior Secured Notes due 2033",
+          "amount": "$ 700 million",
+          "maturityDate": "2033-06-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior-priority secured",
+          "facilityType": "Notes · senior-priority secured",
+          "amountMillions": "$700M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
+          "placement": "char 48,947 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 700 million",
+            "sentence": "10 ¾% Senior Secured Notes due 2033 700",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,947 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2033-06-15",
+            "sentence": "10 ¾% Senior Secured Notes due 2033 700",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,947 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "9 ¾% Senior Secured Notes due 2034",
+          "amount": "$ 1,790 million",
+          "maturityDate": "2034-09-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior-priority secured",
+          "facilityType": "Notes · senior-priority secured",
+          "amountMillions": "$1,790M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
+          "placement": "char 48,997 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 1,790 million",
+            "sentence": "9 ¾% Senior Secured Notes due 2034 1,790",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,997 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2034-09-15",
+            "sentence": "9 ¾% Senior Secured Notes due 2034 1,790",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,997 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6 ⅞% Senior Notes due 2028",
+          "amount": "$ 42 million",
+          "maturityDate": "2028-04-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$42M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
+          "placement": "char 48,694 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 42 million",
+            "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,694 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "2028-04-01",
+            "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 48,694 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "ABL Facility",
+          "amount": "(no amount stated)",
+          "maturityDate": "2029-06-05",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": true,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "ABL",
+          "amountMillions": null,
+          "priorityClassFrom": null,
+          "instrumentType": "revolver",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\").",
+          "placement": "char 51,785 of the anchor",
+          "honestAbsence": true,
+          "amountProvenance": null,
+          "maturityProvenance": {
+            "value": "June 5, 2029",
+            "sentence": "Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029.",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 52,875 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Finance lease and financing obligations",
+          "amount": "$ 298 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Finance lease",
+          "amountMillions": "$298M",
+          "priorityClassFrom": null,
+          "instrumentType": "finance-lease",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "Finance lease and financing obligations 298",
+          "placement": "char 49,197 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 298 million",
+            "sentence": "Finance lease and financing obligations 298",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 49,197 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": null
+        },
+        {
+          "instrument": "Other",
+          "amount": "$ 52 million",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "type not stated",
+          "amountMillions": "$52M",
+          "priorityClassFrom": null,
+          "instrumentType": null,
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "Other 52",
+          "placement": "char 49,251 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 52 million",
+            "sentence": "Other 52",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 49,251 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": null
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 11 rows cover $9.77B of $9.58B stated total debt (102%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags) — plus $0M of undrawn capacity NOT counted as debt (ABL Facility: revolving facility, no drawn balance stated — capacity, not debt)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "11 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "11 row(s) carry a printed unit; 1 state no amount HONESTLY (ABL Facility — committed facility, and the filing states no amount for it); all 1 narrative instrument(s) state a basis (commitment) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 11 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "Total debt: gap 0 TIES; Total long-term debt: gap 0 TIES",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $9,578,000,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "1 capacity row(s) held out of captured face and reported separately: ABL Facility",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "11 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "9 of 11 row(s) carry a class; the remaining 2 state \"class not stated on this row\" explicitly (Finance lease and financing obligations; Other)",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "no Tier 2 events",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 9,
+      "computedTotal": 9,
+      "signable": true,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [],
+      "figuresScaleNormalized": [
+        "6 ⅞% Senior Notes due 2028 — amount \"$ 42 million\" beside: \"6 ⅞% Senior Notes due 2028 $ 42\"",
+        "Other — amount \"$ 52 million\" beside: \"Other 52\""
+      ]
+    },
+    {
+      "company": "QUEST DIAGNOSTICS INC",
+      "cik": "0001022079",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-07-23",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000005/dgx-20260210.htm",
+        "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm",
+        "https://www.sec.gov/Archives/edgar/data/1022079/000110465926054141/tm2613096d1_8k.htm",
+        "https://www.sec.gov/Archives/edgar/data/1022079/000110465926057938/tm2613096d2_8k.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "senior unsecured revolving credit facility",
+          "amount": "$ 750 million",
+          "maturityDate": "2030-04-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": true,
+          "priorityClass": "senior unsecured",
+          "facilityType": "revolv · senior unsecured",
+          "amountMillions": "$750M",
+          "priorityClassFrom": "name",
+          "instrumentType": "revolver",
+          "sourceDocument": "(none recorded on this row)",
+          "sourceLine": "During April 2025, the Company amended the agreement for its $ 750  million senior unsecured revolving credit facility (the \"Credit Facility\" or \"Senior Unsecured Revolving Credit Facility\") to extend the maturity to April 2030, while maintaining the same borrowing capacity under the facility of $ 750  million.",
+          "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 750 million",
+            "sentence": "During April 2025, the Company amended the agreement for its $ 750  million senior unsecured revolving credit facility (the \"Credit Facility\" or \"Senior Unsecured Revolving Credit Facility\") to extend the maturity to April 2030, while maintaining the same borrowing capacity under the facility of $ 750  million.",
+            "document": "(no document recorded)",
+            "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "April 2030",
+            "sentence": "During April 2025, the Company amended the agreement for its $ 750  million senior unsecured revolving credit facility (the \"Credit Facility\" or \"Senior Unsecured Revolving Credit Facility\") to extend the maturity to April 2030, while maintaining the same borrowing capacity under the facility of $ 750  million.",
+            "document": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000015/dgx-20251231.htm",
+            "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "3.50 % Senior Notes due March 2025",
+          "amount": "$ —",
+          "maturityDate": "2025-03-01",
+          "dateGranularity": "month",
+          "status": "unconfirmed",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$0M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000015/dgx-20251231.htm",
+          "sourceLine": "3.50 % Senior Notes due March 2025 $ —   $ 601",
+          "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ —",
+            "sentence": "3.50 % Senior Notes due March 2025 $ —   $ 601",
+            "document": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000015/dgx-20251231.htm",
+            "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+            "outsideAnchor": true,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "2025-03-01",
+            "sentence": "3.50 % Senior Notes due March 2025 $ —   $ 601",
+            "document": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000015/dgx-20251231.htm",
+            "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "3.45 % Senior Note due June 2026",
+          "amount": "$ —",
+          "maturityDate": "2026-06-01",
+          "dateGranularity": "month",
+          "status": "retired",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Note · Senior",
+          "amountMillions": "$0M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "3.45 % Senior Note due June 2026 $ —   $ 501",
+          "placement": "char 39,812 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ —",
+            "sentence": "3.45 % Senior Note due June 2026 $ —   $ 501",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,812 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "2026-06-01",
+            "sentence": "3.45 % Senior Note due June 2026 $ —   $ 501",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,812 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.60 % Senior Notes due December 2027",
+          "amount": "$ 400 millions",
+          "maturityDate": "2027-12-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$400M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "4.60 % Senior Notes due December 2027 400   400",
+          "placement": "char 39,859 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 400 millions",
+            "sentence": "4.60 % Senior Notes due December 2027 400   400",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,859 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2027-12-01",
+            "sentence": "4.60 % Senior Notes due December 2027 400   400",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,859 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.20 % Senior Notes due June 2029",
+          "amount": "$ 500 millions",
+          "maturityDate": "2029-06-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$500M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "4.20 % Senior Notes due June 2029 500   499",
+          "placement": "char 39,909 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 500 millions",
+            "sentence": "4.20 % Senior Notes due June 2029 500   499",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,909 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2029-06-01",
+            "sentence": "4.20 % Senior Notes due June 2029 500   499",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,909 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.625 % Senior Notes due December 2029",
+          "amount": "$ 600 millions",
+          "maturityDate": "2029-12-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$600M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "4.625 % Senior Notes due December 2029 600   600",
+          "placement": "char 39,955 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 600 millions",
+            "sentence": "4.625 % Senior Notes due December 2029 600   600",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,955 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2029-12-01",
+            "sentence": "4.625 % Senior Notes due December 2029 600   600",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,955 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "2.95 % Senior Notes due June 2030",
+          "amount": "$ 799 millions",
+          "maturityDate": "2030-06-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$799M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "2.95 % Senior Notes due June 2030 799   799",
+          "placement": "char 40,006 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 799 millions",
+            "sentence": "2.95 % Senior Notes due June 2030 799   799",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,006 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-06-01",
+            "sentence": "2.95 % Senior Notes due June 2030 799   799",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,006 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "2.80 % Senior Notes due June 2031",
+          "amount": "$ 551 millions",
+          "maturityDate": "2031-06-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$551M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "2.80 % Senior Notes due June 2031 551   564",
+          "placement": "char 40,052 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 551 millions",
+            "sentence": "2.80 % Senior Notes due June 2031 551   564",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,052 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031-06-01",
+            "sentence": "2.80 % Senior Notes due June 2031 551   564",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,052 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.40 % Senior Notes due November 2033",
+          "amount": "$ 748 millions",
+          "maturityDate": "2033-11-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$748M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "6.40 % Senior Notes due November 2033 748   756",
+          "placement": "char 40,098 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 748 millions",
+            "sentence": "6.40 % Senior Notes due November 2033 748   756",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,098 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2033-11-01",
+            "sentence": "6.40 % Senior Notes due November 2033 748   756",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,098 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "5.00 % Senior Notes due December 2034",
+          "amount": "$ 826 millions",
+          "maturityDate": "2034-12-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$826M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "5.00 % Senior Notes due December 2034 826   840",
+          "placement": "char 40,148 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 826 millions",
+            "sentence": "5.00 % Senior Notes due December 2034 826   840",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,148 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2034-12-01",
+            "sentence": "5.00 % Senior Notes due December 2034 826   840",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,148 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "5.00 % Senior Notes due June 2036",
+          "amount": "$ 494 millions",
+          "maturityDate": "2036-06-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$494M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "5.00 % Senior Notes due June 2036 494   —",
+          "placement": "char 40,198 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 494 millions",
+            "sentence": "5.00 % Senior Notes due June 2036 494   —",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,198 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2036-06-01",
+            "sentence": "5.00 % Senior Notes due June 2036 494   —",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,198 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.95 % Senior Notes due July 2037",
+          "amount": "$ 175 millions",
+          "maturityDate": "2037-07-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$175M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "6.95 % Senior Notes due July 2037 175   175",
+          "placement": "char 40,242 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 175 millions",
+            "sentence": "6.95 % Senior Notes due July 2037 175   175",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,242 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2037-07-01",
+            "sentence": "6.95 % Senior Notes due July 2037 175   175",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,242 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "5.75 % Senior Notes due January 2040",
+          "amount": "$ 246 millions",
+          "maturityDate": "2040-01-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$246M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "5.75 % Senior Notes due January 2040 246   246",
+          "placement": "char 40,288 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 246 millions",
+            "sentence": "5.75 % Senior Notes due January 2040 246   246",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,288 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2040-01-01",
+            "sentence": "5.75 % Senior Notes due January 2040 246   246",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,288 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.70 % Senior Notes due March 2045",
+          "amount": "$ 300 millions",
+          "maturityDate": "2045-03-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$300M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "4.70 % Senior Notes due March 2045 300   300",
+          "placement": "char 40,337 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 300 millions",
+            "sentence": "4.70 % Senior Notes due March 2045 300   300",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,337 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2045-03-01",
+            "sentence": "4.70 % Senior Notes due March 2045 300   300",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,337 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "secured receivables credit facility",
+          "amount": "$ 600 million",
+          "maturityDate": "2027-11-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": true,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "credit facility",
+          "amountMillions": "$600M",
+          "priorityClassFrom": null,
+          "instrumentType": "credit-facility",
+          "sourceDocument": "(none recorded on this row)",
+          "sourceLine": "The Company is party to a $ 600  million secured receivables credit facility (the \"Secured Receivables Credit Facility\"), which it amended during November 2025 in order to extend the maturity to November 2027.",
+          "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 600 million",
+            "sentence": "The Company is party to a $ 600  million secured receivables credit facility (the \"Secured Receivables Credit Facility\"), which it amended during November 2025 in order to extend the maturity to November 2027.",
+            "document": "(no document recorded)",
+            "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "November 2027",
+            "sentence": "The Company is party to a $ 600  million secured receivables credit facility (the \"Secured Receivables Credit Facility\"), which it amended during November 2025 in order to extend the maturity to November 2027.",
+            "document": "https://www.sec.gov/Archives/edgar/data/1022079/000102207926000015/dgx-20251231.htm",
+            "placement": "NOT FOUND in any of the 4 fetched document(s) — check this line before signing",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Other",
+          "amount": "$ 35 millions",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "type not stated",
+          "amountMillions": "$35M",
+          "priorityClassFrom": null,
+          "instrumentType": null,
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "Other 35   21",
+          "placement": "char 40,384 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 35 millions",
+            "sentence": "Other 35   21",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 40,384 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": false
+          },
+          "maturityProvenance": null
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 13 rows cover $5.67B of $5.64B stated total debt (101%), against LongTermDebtCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags) — plus $1.35B of undrawn capacity NOT counted as debt (senior unsecured revolving credit facility: committed facility, undrawn — maturity April 2030 stated for the facility itself; secured receivables credit facility: committed facility, undrawn — maturity November 2027 stated for the facility itself)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "14 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "all 16 row(s) carry a printed unit; no narrative instruments, so no basis to state",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": false,
+          "detail": "1 row(s) cite a filing other than the anchor: 3.50 % Senior Notes due March 2025",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "Total long-term debt: gap 0 TIES",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $5,642,000,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "2 capacity row(s) held out of captured face and reported separately: senior unsecured revolving credit facility; secured receivables credit facility",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "14 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "13 of 14 row(s) carry a class; the remaining 1 state \"class not stated on this row\" explicitly (Other)",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "no Tier 2 events",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 8,
+      "computedTotal": 9,
+      "signable": false,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [
+        "3.50 % Senior Notes due March 2025 — amount \"$ —\" beside: \"3.50 % Senior Notes due March 2025 $ — $ 601\"",
+        "3.45 % Senior Note due June 2026 — amount \"$ —\" beside: \"3.45 % Senior Note due June 2026 $ — $ 501\""
+      ],
+      "figuresScaleNormalized": [
+        "Other — amount \"$ 35 millions\" beside: \"Other 35 21\""
+      ]
+    },
+    {
+      "company": "CENTENE CORP",
+      "cik": "0001071739",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-07-28",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/1071739/000107173926000153/cnc-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/1071739/000107173926000098/cnc-20260331.htm",
+        "https://www.sec.gov/Archives/edgar/data/1071739/000107173926000153/cnc-20260630.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "$ 2,500 million 4.25 % Senior Notes due December 15, 2027",
+          "amount": "$1,067 million",
+          "maturityDate": "2027-12-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$1,067M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067   $ 2,211",
+          "placement": "char 52,938 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,067 million",
+            "sentence": "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067   $ 2,211",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 52,938 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2027-12-15",
+            "sentence": "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067   $ 2,211",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 52,938 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "$ 2,300 million 2.45 % Senior Notes due July 15, 2028",
+          "amount": "$2,160 million",
+          "maturityDate": "2028-07-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$2,160M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160   2,302",
+          "placement": "char 53,016 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$2,160 million",
+            "sentence": "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160   2,302",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,016 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2028-07-15",
+            "sentence": "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160   2,302",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,016 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "$ 3,500 million 4.625 % Senior Notes due December 15, 2029",
+          "amount": "$3,277 million",
+          "maturityDate": "2029-12-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$3,277M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "$ 3,500 million 4.625 % Senior Notes due December 15, 2029 3,277   3,277",
+          "placement": "char 53,086 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$3,277 million",
+            "sentence": "$ 3,500 million 4.625 % Senior Notes due December 15, 2029 3,277   3,277",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,086 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2029-12-15",
+            "sentence": "$ 3,500 million 4.625 % Senior Notes due December 15, 2029 3,277   3,277",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,086 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "$ 2,000 million 3.375 % Senior Notes due February 15, 2030",
+          "amount": "$2,000 million",
+          "maturityDate": "2030-02-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$2,000M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "$ 2,000 million 3.375 % Senior Notes due February 15, 2030 2,000   2,000",
+          "placement": "char 53,161 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$2,000 million",
+            "sentence": "$ 2,000 million 3.375 % Senior Notes due February 15, 2030 2,000   2,000",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,161 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-02-15",
+            "sentence": "$ 2,000 million 3.375 % Senior Notes due February 15, 2030 2,000   2,000",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,161 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "$ 2,200 million 3.00 % Senior Notes due October 15, 2030",
+          "amount": "$2,200 million",
+          "maturityDate": "2030-10-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$2,200M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "$ 2,200 million 3.00 % Senior Notes due October 15, 2030 2,200   2,200",
+          "placement": "char 53,236 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$2,200 million",
+            "sentence": "$ 2,200 million 3.00 % Senior Notes due October 15, 2030 2,200   2,200",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,236 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-10-15",
+            "sentence": "$ 2,200 million 3.00 % Senior Notes due October 15, 2030 2,200   2,200",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,236 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "$ 2,200 million 2.50 % Senior Notes due March 1, 2031",
+          "amount": "$2,200 million",
+          "maturityDate": "2031-03-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$2,200M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "$ 2,200 million 2.50 % Senior Notes due March 1, 2031 2,200   2,200",
+          "placement": "char 53,309 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$2,200 million",
+            "sentence": "$ 2,200 million 2.50 % Senior Notes due March 1, 2031 2,200   2,200",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,309 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031-03-01",
+            "sentence": "$ 2,200 million 2.50 % Senior Notes due March 1, 2031 2,200   2,200",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,309 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "$ 1,300 million 2.625 % Senior Notes due August 1, 2031",
+          "amount": "$1,300 million",
+          "maturityDate": "2031-08-01",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "Senior",
+          "facilityType": "Notes · Senior",
+          "amountMillions": "$1,300M",
+          "priorityClassFrom": "name",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "$ 1,300 million 2.625 % Senior Notes due August 1, 2031 1,300   1,300",
+          "placement": "char 53,379 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,300 million",
+            "sentence": "$ 1,300 million 2.625 % Senior Notes due August 1, 2031 1,300   1,300",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,379 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031-08-01",
+            "sentence": "$ 1,300 million 2.625 % Senior Notes due August 1, 2031 1,300   1,300",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,379 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Term Loan Facility",
+          "amount": "$1,975 million",
+          "maturityDate": "2030-03-05",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Term Loan",
+          "amountMillions": "$1,975M",
+          "priorityClassFrom": null,
+          "instrumentType": "term-loan",
+          "sourceDocument": "10-Q 2026-07-28",
+          "sourceLine": "Term Loan Facility 1,975   2,000",
+          "placement": "char 53,486 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,975 million",
+            "sentence": "Term Loan Facility 1,975   2,000",
+            "document": "10-Q 2026-07-28",
+            "placement": "char 53,486 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "March 5, 2030",
+            "sentence": "The maturity date for the New Credit Agreement is March 5, 2030.",
+            "document": "https://www.sec.gov/Archives/edgar/data/1071739/000107173926000049/cnc-20251231.htm",
+            "placement": "NOT FOUND in any of the 2 fetched document(s) — check this line before signing",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Revolving Credit Facility",
+          "amount": "(no amount stated)",
+          "maturityDate": "2030-03-05",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": true,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Revolv",
+          "amountMillions": null,
+          "priorityClassFrom": null,
+          "instrumentType": "revolver",
+          "sourceDocument": "(none recorded on this row)",
+          "sourceLine": "The maturity date for the New Credit Agreement is March 5, 2030.",
+          "placement": "NOT FOUND in any of the 2 fetched document(s) — check this line before signing",
+          "honestAbsence": false,
+          "amountProvenance": null,
+          "maturityProvenance": {
+            "value": "March 5, 2030",
+            "sentence": "The maturity date for the New Credit Agreement is March 5, 2030.",
+            "document": "https://www.sec.gov/Archives/edgar/data/1071739/000107173926000049/cnc-20251231.htm",
+            "placement": "NOT FOUND in any of the 2 fetched document(s) — check this line before signing",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 8 rows cover $16.18B of $16.11B stated total debt (100%), against LongTermDebtCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags) — plus $0M of undrawn capacity NOT counted as debt (Revolving Credit Facility: committed facility, undrawn — maturity March 5, 2030 stated for the facility itself)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "8 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": false,
+          "detail": "1 row(s) MISSING an amount the filing has (Revolving Credit Facility — an amount WAS stated for it and did not survive verification ($4,000 million: sentence appears in no fetched filing)); no narrative instruments, so no basis to state",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 8 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "Total debt: gap 0 TIES; Long-term debt: gap 0 TIES",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $16,105,000,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "1 capacity row(s) held out of captured face and reported separately: Revolving Credit Facility",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "8 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "7 of 8 row(s) carry a class; the remaining 1 state \"class not stated on this row\" explicitly (Term Loan Facility)",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "no Tier 2 events",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 8,
+      "computedTotal": 9,
+      "signable": false,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [],
+      "figuresScaleNormalized": []
+    },
+    {
+      "company": "Cigna Group",
+      "cik": "0001739940",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-07-30",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000043/ci-20260331.htm",
+        "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "4.500% Senior Notes due 2030",
+          "amount": "$1,000 million",
+          "maturityDate": "2030-09-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "pricing-8-K",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$1,000M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "8-K 2025-09-04",
+          "sourceLine": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+          "placement": "char 3,977 of 8-K 2025-09-04",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,000 million",
+            "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+            "document": "8-K 2025-09-04",
+            "placement": "char 3,977 of 8-K 2025-09-04",
+            "outsideAnchor": true,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "2030-09-15",
+            "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+            "document": "8-K 2025-09-04",
+            "placement": "char 3,977 of 8-K 2025-09-04",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "4.875% Senior Notes due 2032",
+          "amount": "$1,250 million",
+          "maturityDate": "2032-09-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "pricing-8-K",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$1,250M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "8-K 2025-09-04",
+          "sourceLine": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032.",
+          "placement": "char 4,187 of 8-K 2025-09-04",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,250 million",
+            "sentence": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032.",
+            "document": "8-K 2025-09-04",
+            "placement": "char 4,187 of 8-K 2025-09-04",
+            "outsideAnchor": true,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "2032-09-15",
+            "sentence": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032.",
+            "document": "8-K 2025-09-04",
+            "placement": "char 4,187 of 8-K 2025-09-04",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "5.250% Senior Notes due 2036",
+          "amount": "$1,500 million",
+          "maturityDate": "2036-01-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "pricing-8-K",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$1,500M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "8-K 2025-09-04",
+          "sourceLine": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036.",
+          "placement": "char 4,397 of 8-K 2025-09-04",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1,500 million",
+            "sentence": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036.",
+            "document": "8-K 2025-09-04",
+            "placement": "char 4,397 of 8-K 2025-09-04",
+            "outsideAnchor": true,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "2036-01-15",
+            "sentence": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036.",
+            "document": "8-K 2025-09-04",
+            "placement": "char 4,397 of 8-K 2025-09-04",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.000% Senior Notes due 2056",
+          "amount": "$750 million",
+          "maturityDate": "2056-01-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "pricing-8-K",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$750M",
+          "priorityClassFrom": "section",
+          "instrumentType": "senior-note",
+          "sourceDocument": "8-K 2025-09-04",
+          "sourceLine": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056.",
+          "placement": "char 4,603 of 8-K 2025-09-04",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$750 million",
+            "sentence": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056.",
+            "document": "8-K 2025-09-04",
+            "placement": "char 4,603 of 8-K 2025-09-04",
+            "outsideAnchor": true,
+            "statesFigure": false
+          },
+          "maturityProvenance": {
+            "value": "2056-01-15",
+            "sentence": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056.",
+            "document": "8-K 2025-09-04",
+            "placement": "char 4,603 of 8-K 2025-09-04",
+            "outsideAnchor": true,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Revolving Credit Agreement",
+          "amount": "(no amount stated)",
+          "maturityDate": "2030-04-01",
+          "dateGranularity": "month",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": true,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Revolv",
+          "amountMillions": null,
+          "priorityClassFrom": null,
+          "instrumentType": "revolver",
+          "sourceDocument": "10-Q 2026-07-30",
+          "sourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+          "placement": "char 28,680 of the anchor",
+          "honestAbsence": true,
+          "amountProvenance": null,
+          "maturityProvenance": {
+            "value": "April 2030",
+            "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+            "document": "10-Q 2026-07-30",
+            "placement": "char 28,680 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Commercial Paper Program",
+          "amount": "$1.0 billion",
+          "maturityDate": null,
+          "dateGranularity": null,
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": false,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Commercial Paper",
+          "amountMillions": "$1,000M",
+          "priorityClassFrom": null,
+          "instrumentType": "commercial-paper",
+          "sourceDocument": "10-Q 2026-07-30",
+          "sourceLine": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+          "placement": "char 29,669 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$1.0 billion",
+            "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+            "document": "10-Q 2026-07-30",
+            "placement": "char 29,669 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": null
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 0 rows + 1 prose instrument cover $1.00B of $31.88B stated total debt (3%), against DebtCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — 96.9% unexplained, above the 2.5% line — plus $0M of undrawn capacity NOT counted as debt (Revolving Credit Agreement: revolving facility, no drawn balance stated — capacity, not debt)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "5 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "5 row(s) carry a printed unit; 1 state no amount HONESTLY (Revolving Credit Agreement — committed facility, and the filing states no amount for it); all 2 narrative instrument(s) state a basis (commitment, outstanding) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 5 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": false,
+          "detail": "this note prints NO subtotal, so the amended test applies. Captions sum to $31,878,000,000 and TIE; the stated total is $31,878,000,000 from xbrl, the filer's own XBRL tag, which TIES. Either route suffices: TRIANGULATES; coverage residual 96.86% passes=false",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $31,878,000,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": false,
+          "detail": "residual 96.86% (passes=false); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "1 capacity row(s) held out of captured face and reported separately: Revolving Credit Agreement",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "5 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "4 of 5 row(s) carry a class; the remaining 1 state \"class not stated on this row\" explicitly (Commercial Paper Program)",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "no Tier 2 events",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 7,
+      "computedTotal": 9,
+      "signable": false,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [
+        "4.500% Senior Notes due 2030 — amount \"$1,000 million\" beside: \"The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on Mar\"",
+        "4.875% Senior Notes due 2032 — amount \"$1,250 million\" beside: \"The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on Mar\"",
+        "5.250% Senior Notes due 2036 — amount \"$1,500 million\" beside: \"The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on Jan\"",
+        "6.000% Senior Notes due 2056 — amount \"$750 million\" beside: \"The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on Jan\""
+      ],
+      "figuresScaleNormalized": []
+    },
+    {
+      "company": "MOLINA HEALTHCARE, INC.",
+      "cik": "0001179929",
+      "anchor": {
+        "form": "10-Q",
+        "date": "2026-07-23",
+        "reportDate": "2026-06-30",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+      },
+      "filingSet": [
+        "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm",
+        "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "https://www.sec.gov/Archives/edgar/data/1179929/000143774925035866/moh20251120_8k.htm"
+      ],
+      "asOf": "2026-09-09",
+      "rows": [
+        {
+          "instrument": "4.375 % Notes due June 15, 2028",
+          "amount": "$ 800 million",
+          "maturityDate": "2028-06-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$800M",
+          "priorityClassFrom": "note-statement",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+          "placement": "char 37,808 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 800 million",
+            "sentence": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,808 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2028-06-15",
+            "sentence": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,808 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "3.875 % Notes due November 15, 2030",
+          "amount": "$ 650 million",
+          "maturityDate": "2030-11-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$650M",
+          "priorityClassFrom": "note-statement",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+          "placement": "char 37,856 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 650 million",
+            "sentence": "3.875 % Notes due November 15, 2030 650   650",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,856 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2030-11-15",
+            "sentence": "3.875 % Notes due November 15, 2030 650   650",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,856 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.500 % Notes due February 15, 2031",
+          "amount": "$ 850 million",
+          "maturityDate": "2031-02-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$850M",
+          "priorityClassFrom": "note-statement",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+          "placement": "char 37,904 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 850 million",
+            "sentence": "6.500 % Notes due February 15, 2031 850   850",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,904 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2031-02-15",
+            "sentence": "6.500 % Notes due February 15, 2031 850   850",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,904 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "3.875 % Notes due May 15, 2032",
+          "amount": "$ 750 million",
+          "maturityDate": "2032-05-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$750M",
+          "priorityClassFrom": "note-statement",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+          "placement": "char 37,952 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 750 million",
+            "sentence": "3.875 % Notes due May 15, 2032 750   750",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,952 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2032-05-15",
+            "sentence": "3.875 % Notes due May 15, 2032 750   750",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,952 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "6.250 % Notes due January 15, 2033",
+          "amount": "$ 750 million",
+          "maturityDate": "2033-01-15",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note",
+          "isCapacity": false,
+          "priorityClass": "senior unsecured",
+          "facilityType": "Notes · senior unsecured",
+          "amountMillions": "$750M",
+          "priorityClassFrom": "note-statement",
+          "instrumentType": "senior-note",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+          "placement": "char 37,995 of the anchor",
+          "honestAbsence": false,
+          "amountProvenance": {
+            "value": "$ 750 million",
+            "sentence": "6.250 % Notes due January 15, 2033 750   750",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,995 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          },
+          "maturityProvenance": {
+            "value": "2033-01-15",
+            "sentence": "6.250 % Notes due January 15, 2033 750   750",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 37,995 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        },
+        {
+          "instrument": "Credit Facility",
+          "amount": "(no amount stated)",
+          "maturityDate": "2030-11-20",
+          "dateGranularity": "day",
+          "status": "live",
+          "provenance": "note-narrative",
+          "isCapacity": true,
+          "priorityClass": "class not stated on this row",
+          "facilityType": "Credit Facility",
+          "amountMillions": null,
+          "priorityClassFrom": null,
+          "instrumentType": "credit-facility",
+          "sourceDocument": "10-Q 2026-07-23",
+          "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+          "placement": "char 39,015 of the anchor",
+          "honestAbsence": true,
+          "amountProvenance": null,
+          "maturityProvenance": {
+            "value": "November 20, 2030",
+            "sentence": "The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.",
+            "document": "10-Q 2026-07-23",
+            "placement": "char 39,701 of the anchor",
+            "outsideAnchor": false,
+            "statesFigure": true
+          }
+        }
+      ],
+      "coverageLine": "TIER 1 (the anchor position): 5 rows cover $3.80B of $3.77B stated total debt (101%), against LongTermDebtNoncurrent (the filer's own XBRL tags) — plus $0M of undrawn capacity NOT counted as debt (Credit Facility: revolving facility, no drawn balance stated — capacity, not debt)",
+      "criteria": [
+        {
+          "id": "1",
+          "kind": "attested",
+          "name": "every row's amount, maturity and instrument correct against the filing",
+          "pass": null,
+          "detail": "5 row(s) to check by hand against the anchor; the tool cannot verify this about itself",
+          "defends": "a ladder that ties to itself and to nothing in the world"
+        },
+        {
+          "id": "2",
+          "kind": "computed",
+          "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
+          "pass": true,
+          "detail": "5 row(s) carry a printed unit; 1 state no amount HONESTLY (Credit Facility — committed facility, and the filing states no amount for it); all 1 narrative instrument(s) state a basis (commitment) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
+          "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
+        },
+        {
+          "id": "3",
+          "kind": "computed",
+          "name": "every row cited to the anchor filing, or to a post-anchor 8-K for Tier 2",
+          "pass": true,
+          "detail": "all 5 note row(s) cite the anchor; 0 Tier 2 event(s) cite post-anchor documents",
+          "defends": "one position assembled from three filings and three dates"
+        },
+        {
+          "id": "4",
+          "kind": "computed",
+          "name": "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
+          "pass": true,
+          "detail": "Total: gap 0 TIES",
+          "defends": "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable"
+        },
+        {
+          "id": "5",
+          "kind": "computed",
+          "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
+          "pass": true,
+          "detail": "the filer's own XBRL tags, $3,769,000,000",
+          "defends": "a coverage percentage whose denominator nobody could name"
+        },
+        {
+          "id": "6",
+          "kind": "computed",
+          "name": "coverage passes both tests — category-complete and residual under threshold",
+          "pass": true,
+          "detail": "residual 0.00% (passes=true); no category stated-but-not-captured",
+          "defends": "a $1.1B ladder rendered against $4.85B of stated debt with both other checks silent"
+        },
+        {
+          "id": "7",
+          "kind": "computed",
+          "name": "capacity separated and excluded from the debt sum",
+          "pass": true,
+          "detail": "1 capacity row(s) held out of captured face and reported separately: Credit Facility",
+          "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
+        },
+        {
+          "id": "8a",
+          "kind": "computed",
+          "name": "structure faithful in TRANCHES — the note's rows are per-instrument, not one aggregate line",
+          "pass": true,
+          "detail": "5 per-instrument row(s)",
+          "defends": "an aggregate disclosure pinned as though it were a tranche ladder"
+        },
+        {
+          "id": "8b",
+          "kind": "computed",
+          "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+          "pass": true,
+          "detail": "all 5 row(s) carry a class (senior unsecured)",
+          "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
+        },
+        {
+          "id": "8c",
+          "kind": "attested",
+          "name": "structure faithful in INSTRUMENT TYPE",
+          "pass": null,
+          "detail": "no instrument-type field exists on a row; type survives only inside the instrument's own name, unnormalized. A signer confirms the names carry it",
+          "defends": "a revolver rendering as a generic facility with its type nowhere stated"
+        },
+        {
+          "id": "9a",
+          "kind": "computed",
+          "name": "Tier 2 events status-corroborated and source-verified",
+          "pass": true,
+          "detail": "no Tier 2 events",
+          "defends": "a tranche retired on an instrument's name appearing in a ranking clause, and an intention read as a completion"
+        },
+        {
+          "id": "9b",
+          "kind": "attested",
+          "name": "the whole state reproduces on three independent re-asks",
+          "pass": null,
+          "detail": "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed",
+          "defends": "a hand-verified 98% that did not survive the next extraction (Rule 23)"
+        }
+      ],
+      "computedPass": 9,
+      "computedTotal": 9,
+      "signable": true,
+      "missingFromSheet": [],
+      "figuresNotStatedBySentence": [],
+      "figuresScaleNormalized": []
+    }
+  ]
+}

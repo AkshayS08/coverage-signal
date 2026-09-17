@@ -161,6 +161,22 @@ export function factOwnText(f: VerifiedFact): string {
       for (const item of value) if (typeof item === "string") parts.push(item);
     }
   }
+  // SESSION 22, v10 — A NESTED FIELD IS STILL A FIELD THE MODEL IS SHOWN.
+  //
+  // The reflection above walks string and string-array fields, so its coverage
+  // silently depends on a field's TYPE: an object-valued field is skipped
+  // without a word. `trancheEvent` is one, and the effect was that the model
+  // was handed Centene's repurchase in its context and then forbidden from
+  // stating the figures in it — "stated a number not found in any given fact
+  // ($ 118 million, $ 1,147 million)" — about a sentence printed in its own
+  // debt note.
+  //
+  // Named explicitly rather than by walking nested objects generically,
+  // because a generic walk would sweep in `sourceFiling.url` and every
+  // citation's url and date, quietly widening what a card may assert. Rule 6:
+  // a field the model is SHOWN must be a field the guards can see, and the
+  // converse — a field the guards cannot see must never reach the prompt.
+  if (f.trancheEvent?.evidence) parts.push(f.trancheEvent.evidence);
   return parts.join(" ");
 }
 

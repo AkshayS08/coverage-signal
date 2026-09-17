@@ -31,7 +31,7 @@ function brief(s: GoldenState): string {
     `rows ${s.rows.length}`,
     `captured $${(s.coverage.capturedFace / 1e9).toFixed(3)}B`,
     `stated $${((s.coverage.statedTotalDebt ?? 0) / 1e9).toFixed(3)}B`,
-    `resid ${s.coverage.residualFraction ?? "—"}%`,
+    `resid ${s.coverage.residualPercent ?? "—"}%`,
     `src ${s.coverage.denominatorSource}`,
     `tier2 ${s.tier2.length}`,
   ].join("  ");

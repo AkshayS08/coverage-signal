@@ -562,7 +562,32 @@
  * absence. Molina prints one grouped figure, keeps both fields, and keeps
  * its passing Check 1.
  */
-export const EXTRACTION_PROMPT_VERSION = 28;
+/**
+ * v29 (Session 22, Stage 3) — THE FACILITY LAYER.
+ *
+ * Four changes, one coherent shape, all of which move what the model is
+ * asked and therefore all of which must invalidate every cached answer:
+ *
+ *   SPAN     the liquidity / capital-resources section is now a second
+ *            marked region. An undrawn facility has no balance, so no row,
+ *            so it was never in the debt note: Quest's $750M revolver and
+ *            its receivables facility are stated only there, which is why
+ *            its card read "the anchor filing states no revolving facility"
+ *            while the filing stated two. Located on 10 of 10 before wiring.
+ *   ARRAY     (one slot) became  (many). DaVita and
+ *            UHS each carry three facilities against that one field.
+ *   PER-FIGURE SOURCE  every facility figure carries the sentence stating
+ *            IT, and is verified against that sentence. v28 verified one
+ *            sentence for four figures, which is how Encompass's $824M of
+ *            availability rode in on a sentence that says only "$200.0
+ *            million was drawn".
+ *   PROSE CLASS   reads the note-level sentence that
+ *            states a class the table does not — Molina's five note rows.
+ *
+ * Plus  as an array: Encompass's May proceeds did three
+ * things and one slot captured one of them.
+ */
+export const EXTRACTION_PROMPT_VERSION = 29;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.
@@ -652,8 +677,35 @@ export const EXTRACTION_PROMPT_VERSION = 28;
  * change; the Group E narration overrun ($0.65 against a $0.07 estimate,
  * five runs, because a failed briefing is never cached) was this same
  * lesson billed the expensive way.
+ *
+ * v10 (Session 22, Stage 5, item 4) — A BALANCE IS NEVER THE WHY-NOW.
+ *
+ * A cash balance, a drawn revolver, or any other position figure describes
+ * the company's CONDITION, not something that happened to the instrument the
+ * card is about — and a condition has no date, so it cannot make this week
+ * the moment. Centene is the measured case: its December 2027 card reached
+ * for "cash and cash equivalents grew to $24.2 billion", which for an insurer
+ * is largely regulatory float. Every RM reading it knows that, and a card
+ * built on it reads as a tool that does not understand the balance sheet it
+ * is quoting. That is the wrong reason to call, printed with the confidence
+ * of the right one.
+ *
+ * THE PROMPT IS THE SMALLER HALF OF THIS FIX, and that is worth recording
+ * because it nearly was not diagnosed that way. The model was not preferring
+ * a balance over the tranche's own repurchase — it had never been shown the
+ * repurchase. Two code-level causes, both fixed at $0 first: every ladder-row
+ * fact set `redeemsInfo: null` and carried no event field at all, and
+ * `rowMatchesRedemptionText` refused any row whose coupon the note's prose did
+ * not repeat, which is how Centene's own "$118 million and $1,147 million ...
+ * of its par value Senior Notes due 2027" failed to attach to the tranche it
+ * names. Cash was simply the only other thing on the page.
+ *
+ * So this bump buys exactly two things the code cannot: that a balance loses
+ * to an event when BOTH are present, and that a card whose tranche has no
+ * event says so rather than reaching for one. Sized and declared in
+ * files/session_22_stage5_whynow_declaration.md before spending.
  */
-export const NARRATION_PROMPT_VERSION = 9;
+export const NARRATION_PROMPT_VERSION = 10;
 
 /**
  * Session 17 Item 0: this project's session prompts have referred to this

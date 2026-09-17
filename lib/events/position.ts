@@ -1,9 +1,11 @@
-import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry, VerifiedNoteRetirement, ProseInstrumentRow, RevolverRow } from "../agent";
+import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry, VerifiedNoteRetirement, ProseInstrumentRow, FacilityRow } from "../agent";
 import { dedupAgainstRows, debtContribution } from "./instrument";
 import { buildTier2, isPostAnchorSource, type Tier2 } from "./tier2";
+import { classifyInstrument, priorityRank, type Classification, type NoteSeniorityStatement, type InstrumentType } from "./instrumentClass";
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
 import { extractFactTokens, factTokensMatch, type FactToken } from "../agent/factTokens";
 import { isStatedZeroAmount } from "../agent/moneyScale";
+import { resolveFacilityMaturity, type FacilityMaturity } from "./facilityMaturity";
 
 /**
  * Session 18 Part B — the deterministic position layer. Until now no
@@ -35,7 +37,19 @@ interface DebtRowLike {
 export interface LadderRow {
   instrument: string;
   rate: string | null;
+  /**
+   * The note's own section heading, verbatim, or null. Kept exactly as it
+   * was: `classification` below is DERIVED from this and from `instrument`,
+   * and the derivation never replaces its own inputs (Rule 32 — the section
+   * string is for arithmetic, the class string is for display).
+   */
   seniority: string | null;
+  /**
+   * SESSION 22, STAGE 2 — priority class and instrument type, normalized in
+   * code from two already-verified strings: this row's section heading and
+   * its own instrument name. No model call, no new extracted field.
+   */
+  classification: Classification;
   amount: string;
   maturityDate: string | null;
   dateGranularity: DateGranularity | null;
@@ -116,10 +130,33 @@ export interface LadderRow {
   provenance: "note" | "pricing-8-K" | "note-narrative";
   /**
    * Committed but undrawn. Renders on the ladder — headroom is a fact an RM
-   * wants — and never cards, because there is no maturity conversation to
-   * have about money nobody has borrowed.
+   * wants — and never cards ON ITS DRAWN BALANCE, because there is no
+   * maturity conversation to have about money nobody has borrowed. Its own
+   * MATURITY is a different conversation and does card: see Stage 5's
+   * revolver semantics and evaluateRowEligibility.
    */
   isCapacity?: boolean;
+  /**
+   * SESSION 22, STAGE 5 — this row's maturity came from the FACILITY's own
+   * stated maturity, not from the debt note's table. Both are the filer's
+   * words about the same instrument; they are not equally close to it, and
+   * the surface says which one it read.
+   */
+  maturityFromFacility?: { statedAs: string; facility: string; sourceLine: string };
+  /**
+   * SESSION 22, STAGE 7 — a maturity the extraction claimed whose own cited
+   * sentence does not state it. The row carries NO maturity and says why;
+   * the claim is recorded rather than dropped, because a withheld figure
+   * keeps its instrument and a signer should see what was claimed.
+   */
+  maturityWithheld?: { claimed: string; why: string };
+  /**
+   * Set when the matching facility states a maturity that is NOT a date —
+   * "five years", "364 days after funding". The row still has no maturity
+   * and still never cards; this is why, so the render states a real
+   * disclosure rather than an absence the filer does not have.
+   */
+  facilityMaturityNote?: string;
 }
 
 export interface CompanyPosition {
@@ -324,12 +361,28 @@ export function movementKindOf(nowValue: number, priorValue: number): MovementKi
   return Math.abs(nowValue - priorValue) / Math.abs(priorValue) >= MATERIAL_MOVEMENT_FRACTION ? "material" : "immaterial";
 }
 
-function ladderRowFromSequenceEntry(entry: VerifiedSequenceEntry, status: LadderRow["status"]): LadderRow {
+function ladderRowFromSequenceEntry(
+  entry: VerifiedSequenceEntry,
+  status: LadderRow["status"],
+  noteStatement: NoteSeniorityStatement | null
+): LadderRow {
   const instrument = entry.label ?? "(unlabeled)";
   return {
     instrument,
     rate: entry.rate,
     seniority: entry.seniority,
+    // ONE CONCEPT, ONE INPUT (Session 22, Stage 4). `section` and `seniority`
+    // are both "the note's own section heading", and v29 put Tenet's class in
+    // the first, CHS's in the second, and Encompass's location in one with its
+    // class in the other. Reading either alone loses a company; reading both
+    // as one ordered list loses none, because a heading that names no class
+    // costs nothing.
+    classification: classifyInstrument({
+      headings: [entry.section, entry.seniority],
+      instrumentName: instrument,
+      maturityDate: entry.maturityDate,
+      noteStatement,
+    }),
     amount: entry.amount,
     maturityDate: entry.maturityDate,
     dateGranularity: entry.dateGranularity,
@@ -349,13 +402,187 @@ function ladderRowFromSequenceEntry(entry: VerifiedSequenceEntry, status: Ladder
  * the coverage figure is built from — so a ladder line and the total above
  * it cannot disagree about a revolver's drawn balance again.
  */
+/** See the call site: identity, never position. */
+export function matchFacility(
+  p: { name?: string | null; category?: string | null },
+  facilities: FacilityRow[] | undefined,
+  /**
+   * `byNameOnly` disables the category fallback below. A caller that already
+   * knows its row is a revolver may lean on category; a caller asking the
+   * question of EVERY ladder row must not, or one revolver becomes the match
+   * for every unmatched instrument the company has.
+   */
+  opts?: { byNameOnly?: boolean }
+): FacilityRow | null {
+  const list = facilities ?? [];
+  if (list.length === 0) return null;
+  const norm = (x: string) => x.toLowerCase().replace(/[^a-z0-9]+/g, "");
+  const want = norm(p.name ?? "");
+  if (want) {
+    const byName = list.find((f) => norm(f.name) === want)
+      ?? list.find((f) => norm(f.name).includes(want) || want.includes(norm(f.name)));
+    if (byName) return byName;
+    // SUBSTRING MATCHING IS TOO BRITTLE FOR THE NAMES FILERS ACTUALLY USE
+    // (Session 22, Stage 5). Encompass calls the same instrument "Senior
+    // Secured Revolving Credit Facility" in its liquidity discussion and
+    // "Advances under revolving credit facility" on its ladder. Neither
+    // string contains the other, so the facility read as having no row at
+    // all and its March 9, 2031 maturity reached nothing.
+    //
+    // The shared instrument words are what identify it: both say "revolving
+    // credit facility". Matched on the significant words they have in
+    // common, and ONLY where exactly one facility shares them — an
+    // ambiguous match is not a match (Rule 19), which is what stops a filer
+    // with two revolvers from having one picked arbitrarily.
+    const words = (x: string) =>
+      new Set(
+        x.toLowerCase().replace(/[^a-z\s]+/g, " ").split(/\s+/)
+          .filter((w) => w.length > 2 && !FACILITY_STOPWORDS.has(w))
+      );
+    const wantWords = words(p.name ?? "");
+    if (wantWords.size > 0) {
+      const scored = list
+        .map((f) => ({ f, shared: [...words(f.name)].filter((w) => wantWords.has(w)).length }))
+        .filter((s) => s.shared >= 2)
+        .sort((a, b) => b.shared - a.shared);
+      if (scored.length === 1 || (scored.length > 1 && scored[0].shared > scored[1].shared)) return scored[0].f;
+    }
+  }
+  if (opts?.byNameOnly) return null;
+  const same = list.filter((f) => f.category === (p.category ?? "revolver"));
+  return same.length === 1 ? same[0] : null;
+}
+
+/**
+ * SESSION 22, STAGE 5 — A TERM LOAN AND A REVOLVER MATURE LIKE A BOND DOES.
+ *
+ * One pass over EVERY row, whatever it was built from. Measured before this
+ * existed: 18 facilities, 16 stating a maturity, 5 whose ladder row carried
+ * one. Centene's term loan is the named case — its facility states March 5,
+ * 2030 and its ladder row stated nothing — and it is a SCHEDULE row, which is
+ * why applying this only where prose rows are built reached almost none of
+ * them.
+ *
+ * Three rules, each a refusal:
+ *
+ *   ONLY WHERE THE ROW STATES NONE. A maturity the debt note itself prints is
+ *   never overwritten by the liquidity section's — the note is the position.
+ *   ONLY A RESOLVED DATE. "five years" (HCA) and "364 days after funding"
+ *   (UHS) are real stated maturities that are not dates. They stay
+ *   unresolved and the row keeps no maturity, because inventing one is the
+ *   only alternative.
+ *   ONLY AN UNAMBIGUOUS MATCH. matchFacility returns null where several
+ *   facilities could be the row, and a null match applies nothing.
+ *
+ * The row records WHERE the date came from, because a maturity read from the
+ * liquidity discussion and one printed in the debt note's own table are not
+ * equally close to the instrument, and the surface says which.
+ */
+/**
+ * The instrument types that ARE facilities. A structural gate, not a
+ * vocabulary one: it asks what kind of instrument the row is, using the
+ * classification already derived from the filer's own words.
+ *
+ * THIS EXISTS BECAUSE ITS ABSENCE WAS CAUGHT WRITING WRONG MATURITIES ONTO
+ * REAL INSTRUMENTS. matchFacility's last resort is a CATEGORY fallback —
+ * "if exactly one facility has this category, it is the match" — which is
+ * right for the prose-instrument caller, whose row is already known to be a
+ * revolver, and catastrophic for a caller asking the question of every row on
+ * the ladder. With it, any company holding one revolver matched ALL of its
+ * unmatched rows: DaVita's "Acquisition obligations and other notes payable"
+ * took the revolver's November 24, 2030, and CHS's "Finance lease and
+ * financing obligations" took June 5, 2029. Real instruments, given
+ * maturities from a different instrument entirely.
+ */
+const FACILITY_INSTRUMENT_TYPES = new Set<InstrumentType>([
+  "revolver", "term-loan", "term-loan-a", "term-loan-b", "delayed-draw", "credit-facility", "commercial-paper",
+]);
+
+function applyFacilityMaturities(rows: LadderRow[], facilities: FacilityRow[] | undefined): LadderRow[] {
+  const list = facilities ?? [];
+  if (list.length === 0) return rows;
+  return rows.map((row) => {
+    if (row.maturityDate) return row;
+    // A bond row is never a facility, whatever words its name shares with
+    // one. "Senior unsecured credit facility" and "Senior unsecured notes
+    // payable through 2095" share two significant words and are not the
+    // same instrument.
+    const t = row.classification.instrumentType;
+    if (t === null || !FACILITY_INSTRUMENT_TYPES.has(t)) return row;
+    const f = matchFacility({ name: row.instrument, category: null }, list, { byNameOnly: true });
+    if (!f) return row;
+    const m = resolveFacilityMaturity(f.maturity?.value);
+    if (m.outcome !== "dated") {
+      // Stated and not a date. Recorded so the surface can say so rather
+      // than render an absence the filer does not have.
+      return m.outcome === "relative" ? { ...row, facilityMaturityNote: m.why } : row;
+    }
+    return {
+      ...row,
+      maturityDate: m.date,
+      dateGranularity: m.granularity,
+      maturityFromFacility: { statedAs: m.statedAs, facility: f.name, sourceLine: f.maturity?.sourceLine ?? "" },
+    };
+  });
+}
+
+/**
+ * A committed facility the debt note never tabulates still belongs on the
+ * ladder. Capacity rows: they render, they carry their own maturity, and they
+ * contribute nothing to any total.
+ */
+function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerResult | undefined): LadderRow[] {
+  const facilities = debtMaturity?.facilities ?? [];
+  if (facilities.length === 0) return [];
+  const claimed = new Set(existing.map((r) => r.maturityFromFacility?.facility).filter(Boolean) as string[]);
+  const out: LadderRow[] = [];
+  for (const f of facilities) {
+    if (claimed.has(f.name)) continue;
+    // Already on the ladder under its own name (with or without a maturity)?
+    if (existing.some((r) => matchFacility({ name: r.instrument, category: null }, [f], { byNameOnly: true }))) continue;
+    const m = resolveFacilityMaturity(f.maturity?.value);
+    const classification = classifyInstrument({ headings: [], instrumentName: f.name });
+    const row: LadderRow = {
+      instrument: f.name,
+      rate: null,
+      seniority: null,
+      classification,
+      // NEVER a drawn balance dressed as debt. The facility's committed size
+      // is capacity; what is drawn under it, where the filing states any, is
+      // already on the ladder as its own row.
+      amount: f.facilitySize?.value ?? "(no amount stated)",
+      maturityDate: m.outcome === "dated" ? m.date : null,
+      dateGranularity: m.outcome === "dated" ? m.granularity : null,
+      sourceLine: f.maturity?.sourceLine ?? f.facilitySize?.sourceLine ?? "",
+      citedUrl: "",
+      id: ladderRowId({ instrument: f.name, rate: null, maturityDate: m.outcome === "dated" ? m.date : null, dateGranularity: null }),
+      status: "live",
+      provenance: "note-narrative",
+      isCapacity: true,
+    };
+    if (m.outcome === "dated") row.maturityFromFacility = { statedAs: m.statedAs, facility: f.name, sourceLine: f.maturity?.sourceLine ?? "" };
+    if (m.outcome === "relative") row.facilityMaturityNote = m.why;
+    out.push(row);
+  }
+  return out;
+}
+
+/**
+ * Words that appear in nearly every facility name and so identify nothing.
+ * A small CLOSED set, the same shape as the other closed lists in this
+ * codebase — not company or instrument vocabulary.
+ */
+const FACILITY_STOPWORDS = new Set(["the", "and", "under", "our", "its", "advances", "borrowings"]);
+
 function ladderRowFromProseInstrument(
   p: ProseInstrumentRow & { citedUrl?: string },
-  revolver: RevolverRow | null | undefined,
-  status: LadderRow["status"]
+  revolver: FacilityRow | null | undefined,
+  status: LadderRow["status"],
+  noteStatement: NoteSeniorityStatement | null
 ): LadderRow {
   const c = debtContribution(p, revolver);
   const instrument = p.name ?? p.category;
+  const maturityIsSourced = sentenceStatesMaturity(p.maturityDate, p.dateGranularity, p.sourceLine);
   // A revolver's line leads with what is DRAWN, naming the facility it is
   // drawn under rather than in place of it.
   const stated = p.amount ? parseMoneyAmount(p.amount) : null;
@@ -366,16 +593,40 @@ function ladderRowFromProseInstrument(
   return {
     instrument,
     rate: p.rate,
+    // A narrative instrument has no section heading to sit under, so its
+    // class can only come from its own name — which is exactly where UHS,
+    // Quest and Centene state it — or, failing that, from the note's own
+    // group seniority sentence, which is prose about prose and belongs to
+    // the same note.
     seniority: null,
+    classification: classifyInstrument({
+      headings: [],
+      instrumentName: instrument,
+      maturityDate: p.maturityDate,
+      noteStatement,
+    }),
     amount,
-    maturityDate: p.maturityDate,
-    dateGranularity: p.dateGranularity,
+    // Facility maturities are applied in ONE post-pass over every row (see
+    // applyFacilityMaturities) rather than here, because a facility's ladder
+    // row is as often a schedule row as a prose one — Centene's "Term Loan
+    // Facility" is a schedule row — and doing it in both places would be two
+    // mechanisms for one idea.
+    //
+    // A DATE ITS OWN SENTENCE DOES NOT STATE IS WITHHELD, not rendered. The
+    // post-pass above may still supply one from the facility's own maturity
+    // sentence, which IS sourced; if it cannot, the row says the maturity is
+    // not stated rather than showing a date nothing on the page supports.
+    maturityDate: maturityIsSourced ? p.maturityDate : null,
+    dateGranularity: maturityIsSourced ? p.dateGranularity : null,
     sourceLine: p.sourceLine,
     citedUrl: p.citedUrl ?? "",
     id: ladderRowId({ instrument, rate: p.rate, maturityDate: p.maturityDate, dateGranularity: p.dateGranularity }),
     status,
     provenance: "note-narrative",
     isCapacity: c.capacity,
+    ...(p.maturityDate && !maturityIsSourced
+      ? { maturityWithheld: { claimed: p.maturityDate, why: "this instrument's own cited sentence does not state this date" } }
+      : {}),
   };
 }
 
@@ -384,8 +635,24 @@ function formatPlainMoney(n: number): string {
   return n >= 1e9 ? `$${(n / 1e9).toFixed(3).replace(/\.?0+$/, "")} billion` : `$${Math.round(n / 1e6)} million`;
 }
 
+/**
+ * DELIBERATELY NOT GIVEN THE NOTE'S SENIORITY SENTENCE. That sentence is the
+ * debt note speaking about the instruments the note carries; a tranche priced
+ * by an 8-K the note does not yet carry is not one of them, and "each of
+ * these notes" cannot reach forward to an instrument that did not exist when
+ * the sentence was written. An 8-K states its own tranche's class in its own
+ * words or the row carries none.
+ */
 function ladderRowFromIssuedTranche(row: VerifiedIssuedTranche, status: LadderRow["status"]): LadderRow {
-  return { ...row, id: ladderRowId(row), status, provenance: "pricing-8-K" };
+  return {
+    ...row,
+    classification: classifyInstrument({
+      headings: [row.seniority],
+      instrumentName: row.instrument,
+      maturityDate: row.maturityDate,
+    }),
+    id: ladderRowId(row), status, provenance: "pricing-8-K",
+  };
 }
 
 /**
@@ -416,6 +683,31 @@ function debtRowDateToken(row: DebtRowLike): FactToken | null {
   };
 }
 
+/**
+ * SESSION 22, STAGE 7 — DOES THIS SENTENCE STATE THIS MATURITY?
+ *
+ * Rule 35 for prose instruments. The facility guard got a per-figure rule at
+ * v29 — every figure checked against the sentence that states IT — and prose
+ * instruments never did. `ProseInstrumentRow` carries `maturityDate` and
+ * `sourceLine` as separate fields, and the model fills the date from one
+ * sentence while citing another, so the ladder renders a maturity whose cited
+ * sentence does not contain it.
+ *
+ * Measured across the six signable names: FIVE rows. Molina's Credit Facility
+ * shows November 20, 2030 beside a sentence that introduces the Credit
+ * Agreement and states no date at all. The date is real; nothing on the page
+ * can confirm it.
+ *
+ * Reuses the date-token comparison the redemption matcher already uses —
+ * partial precision and all — rather than a second date parser.
+ */
+function sentenceStatesMaturity(maturityDate: string | null, granularity: DateGranularity | null, sentence: string): boolean {
+  if (!maturityDate) return false;
+  const want = debtRowDateToken({ rate: null, maturityDate, dateGranularity: granularity });
+  if (!want) return false;
+  return extractFactTokens(sentence).some((t) => t.kind === "date" && factTokensMatch(want, t));
+}
+
 /** A row's own rate as a FactToken, or null when the filing stated none. */
 function debtRowRateToken(row: DebtRowLike): FactToken | null {
   if (!row.rate) return null;
@@ -435,14 +727,35 @@ function debtRowRateToken(row: DebtRowLike): FactToken | null {
  * real case this session, and every real worked example describes exactly
  * one retired tranche per issuance.
  */
-function rowMatchesRedemptionText(row: DebtRowLike, redeemsText: string): boolean {
+function rowMatchesRedemptionText(row: DebtRowLike, redeemsText: string, opts?: { rateOptionalWhenAbsent?: boolean }): boolean {
   const descTokens = extractFactTokens(redeemsText);
   const maturityToken = debtRowDateToken(row);
   if (!maturityToken) return false; // can't confirm a match without a comparable maturity — never guess
   if (!descTokens.some((dt) => dt.kind === "date" && factTokensMatch(maturityToken, dt))) return false;
   const rateToken = debtRowRateToken(row);
-  if (rateToken && !descTokens.some((dt) => dt.kind === "percent" && factTokensMatch(rateToken, dt))) return false;
-  return true;
+  if (!rateToken) return true;
+  const ratesInText = descTokens.filter((dt) => dt.kind === "percent");
+  if (ratesInText.some((dt) => factTokensMatch(rateToken, dt))) return true;
+  // ABSENCE OF CORROBORATION IS NOT CONTRADICTION (Session 22, Stage 5).
+  //
+  // This refused whenever the row carried a rate the text did not repeat,
+  // which conflates two different situations. A text naming a DIFFERENT rate
+  // contradicts this row and must never match. A text naming NO rate at all
+  // simply identifies its tranche another way, and refusing it loses a real,
+  // verified, filer-stated fact.
+  //
+  // Centene is the measured cost: its debt note says "During the three and
+  // six months ended June 30, 2026, the Company repurchased $118 million and
+  // $1,147 million, respectively, of its par value Senior Notes due 2027" —
+  // no coupon anywhere in the sentence — so the repurchase of the exact
+  // tranche its December 2027 card is about was dropped, and the card had
+  // nothing to say about why now except a cash balance.
+  //
+  // Allowed ONLY where the caller can enforce uniqueness separately (see
+  // applyNoteRetirements), because maturity alone is a weaker key and a
+  // weaker key needs the ambiguity check the rate was providing.
+  if (ratesInText.length > 0) return false;
+  return opts?.rateOptionalWhenAbsent === true;
 }
 
 /**
@@ -607,12 +920,31 @@ function maturitySortKey(row: DebtRowLike): number {
  */
 function applyNoteRetirements(rows: LadderRow[], retirements: VerifiedNoteRetirement[]): LadderRow[] {
   if (retirements.length === 0) return rows;
+
+  // UNIQUENESS IS CHECKED FROM THE RETIREMENT'S SIDE, NOT THE ROW'S.
+  //
+  // Matching on maturity alone (where the prose states no coupon) is a weaker
+  // key than maturity-plus-rate, and a weaker key needs the ambiguity check
+  // the rate was providing. Asked row-by-row, each row answers "does this
+  // retirement describe me?" and two rows can both say yes without either
+  // knowing. Asked retirement-by-retirement, "which rows does this describe?"
+  // has a countable answer — and anything but exactly one attaches nothing.
+  const rateOptionalTargets = new Map<VerifiedNoteRetirement, string>();
+  for (const r of retirements) {
+    const text = `${r.instrument} ${r.sourceLine}`;
+    if (rows.some((row) => rowMatchesRedemptionText(row, text))) continue; // already matches strictly
+    const loose = rows.filter((row) => rowMatchesRedemptionText(row, text, { rateOptionalWhenAbsent: true }));
+    if (loose.length === 1) rateOptionalTargets.set(r, loose[0].id);
+  }
+
   return rows.map((row) => {
     // Match on the retirement's own text against the row, using the SAME
     // identity rule redemptions use — never on amount, which is expected to
     // differ here (the prose states what was retired, the row states what
     // remains).
-    const matches = retirements.filter((r) => rowMatchesRedemptionText(row, `${r.instrument} ${r.sourceLine}`));
+    const matches = retirements.filter(
+      (r) => rowMatchesRedemptionText(row, `${r.instrument} ${r.sourceLine}`) || rateOptionalTargets.get(r) === row.id
+    );
     // AMBIGUOUS: not exactly one. Attach nothing, change nothing.
     if (matches.length !== 1) return row;
     const retirement = matches[0];
@@ -624,6 +956,55 @@ function applyNoteRetirements(rows: LadderRow[], retirements: VerifiedNoteRetire
     // PARTIAL: live, at the note's own post-repurchase figure, with the cause.
     return { ...row, retiredBy: undefined, retiredByNote: explains };
   });
+}
+
+/**
+ * SESSION 22, STAGE 7 — THE LADDER'S CAPACITY, IN THE SHAPE COVERAGE READS.
+ *
+ * ONE description of what is capacity, exported so the coverage line and the
+ * ladder cannot drift apart again. A caller that re-derives this list is
+ * reintroducing the defect it was written to close.
+ */
+export function ladderCapacityFor(position: CompanyPosition): { category: string; label: string; amount: number | null; basisNote: string }[] {
+  return position.rows
+    .filter((r) => r.isCapacity)
+    .map((r) => ({
+      category: r.classification.instrumentType === "revolver" ? "revolver" : (r.classification.instrumentType ?? "other"),
+      label: r.instrument,
+      amount: parseMoneyAmount(r.amount),
+      basisNote: r.maturityFromFacility
+        ? `committed facility, undrawn — maturity ${r.maturityFromFacility.statedAs} stated for the facility itself`
+        : "committed facility, undrawn — capacity, not debt",
+    }));
+}
+
+/**
+ * SESSION 22, STAGE 7 — WHICH STATED FACILITIES THE LADDER ACCOUNTS FOR.
+ *
+ * A facility is accounted for when the ladder carries it — as a drawn balance
+ * (a debt row) or as committed headroom (a capacity row). Either way it is
+ * not "stated but not captured", and reporting it as missing is a gap that
+ * does not exist.
+ *
+ * DaVita is the measured case: its revolver is on the ladder as "Revolving
+ * line of credit", a real note table row with a drawn balance, counted in
+ * captured face. Coverage still reported `revolver` missing, because a table
+ * row's category is "table-row" while `statedCategories` reads the facility's
+ * own category. Two vocabularies for one instrument, and the ladder is the
+ * one that knows.
+ */
+export function facilityCategoriesOnLadder(
+  position: CompanyPosition,
+  facilities: FacilityRow[] | undefined
+): string[] {
+  const list = facilities ?? [];
+  if (list.length === 0) return [];
+  const accounted = new Set<string>();
+  for (const row of position.rows) {
+    const f = matchFacility({ name: row.instrument, category: null }, list, { byNameOnly: true });
+    if (f) accounted.add(f.category);
+  }
+  return [...accounted];
 }
 
 export function assemblePosition(result: CompanyResult, now: Date = new Date()): CompanyPosition {
@@ -638,7 +1019,12 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // field exactly like an empty/null one.
   const baseSequence = normalizeScheduleSequence(debtMaturity?.scheduleSequence);
   const baseRowEntries = baseSequence.filter((e) => e.kind === "row");
-  let rows: LadderRow[] = baseRowEntries.map((entry) => ladderRowFromSequenceEntry(entry, "live"));
+  // SESSION 22, STAGE 3 (finish) — the note's group seniority sentence, read
+  // by every row the note itself carries. Scoped inside classifyInstrument by
+  // the sentence's own `appliesTo` words; it fills a silence and never
+  // overwrites a class the row already states.
+  const noteStatement: NoteSeniorityStatement | null = debtMaturity?.seniorityStatement ?? null;
+  let rows: LadderRow[] = baseRowEntries.map((entry) => ladderRowFromSequenceEntry(entry, "live", noteStatement));
 
   // SESSION 21, ITEM 1A — the note's narrative half joins the position.
   //
@@ -648,7 +1034,17 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // $500 million with different maturities stay three (Rule 19).
   const proseKept = dedupAgainstRows(debtMaturity?.proseInstruments ?? [], baseRowEntries).kept;
   rows = rows.concat(
-    proseKept.map((p) => ladderRowFromProseInstrument(p as ProseInstrumentRow & { citedUrl?: string }, debtMaturity?.revolver, "live"))
+    proseKept.map((p) => ladderRowFromProseInstrument(
+      p as ProseInstrumentRow & { citedUrl?: string },
+      // IDENTITY, NOT POSITION (Session 22, Stage 3). One revolver slot became
+      // an array, so this must say WHICH facility a narrative instrument's
+      // figures belong to. Matched on the facility's own name; where several
+      // could match and none matches by name, none is chosen, because an
+      // ambiguous match is not a match (Rule 19).
+      matchFacility(p as { name?: string | null; category?: string | null }, debtMaturity?.facilities),
+      "live",
+      noteStatement
+    ))
   );
 
   // SESSION 21, ITEM 1D — ONLY A VERIFIED, COMPLETED RETIREMENT RETIRES.
@@ -865,11 +1261,11 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     if (!rowIdentifiesOneTranche(priorEntry)) continue;
     if (rows.some((r) => rowsRepresentSameTranche(r, priorEntry))) continue; // still on the current ladder (live or already retired above) — nothing to add
     if (redeemsText && retiredByEvidence && redemptionRetiresRow(priorEntry, redeemsText)) {
-      rows.push(ladderRowFromSequenceEntry({ ...priorEntry, citedUrl: priorEntry.citedUrl }, "retired"));
+      rows.push(ladderRowFromSequenceEntry({ ...priorEntry, citedUrl: priorEntry.citedUrl }, "retired", noteStatement));
       rows[rows.length - 1].retiredBy = retiredByEvidence;
       continue;
     }
-    rows.push(ladderRowFromSequenceEntry(priorEntry, "unconfirmed"));
+    rows.push(ladderRowFromSequenceEntry(priorEntry, "unconfirmed", noteStatement));
   }
 
   // C1 — a tranche the filing itself reports at nil is REPAID, and says so.
@@ -909,7 +1305,51 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // with them.
   rows = applyNoteRetirements(rows, debtMaturity?.noteRetirements ?? []);
 
-  rows.sort((a, b) => maturitySortKey(a) - maturitySortKey(b));
+  // SESSION 22, STAGE 5 — facility maturities, applied to every row that
+  // states none, before anything sorts or gates on a maturity.
+  rows = applyFacilityMaturities(rows, debtMaturity?.facilities);
+
+  // AND A FACILITY WITH NO ROW AT ALL STILL BELONGS ON THE LADDER.
+  //
+  // Three of the book's eighteen facilities appear nowhere in their filer's
+  // debt note — Quest's revolver and its secured receivables facility,
+  // Centene's revolver — because an undrawn facility has no balance to
+  // tabulate. They are still committed obligations with stated maturities,
+  // and one of them, Quest's receivables facility at November 2027, is
+  // INSIDE the refinancing window: the single strongest conversation on that
+  // name, invisible because the note had no line to put it on.
+  //
+  // Added as CAPACITY rows, which contribute nothing to the coverage
+  // arithmetic (debtContribution returns zero for capacity, and coverage
+  // reads the trigger's own sequence rather than these rows), so putting a
+  // facility on the ladder cannot move a checksum or a residual.
+  rows = rows.concat(facilityOnlyRows(rows, debtMaturity));
+
+  // SESSION 22, STAGE 2 — THE SENIORITY STACK IS THE PRIMARY ORDER.
+  //
+  // The ladder sorted by maturity alone, which is the right order for "what
+  // is due next" and the wrong one for a note that PRINTS ITS ROWS IN
+  // SECTIONS. Tenet's note separates senior unsecured from senior secured
+  // first lien and the ladder flattened both into one date-ordered list, so
+  // the structure the filer chose to disclose was visible in the source and
+  // gone from the render.
+  //
+  // Class first, then the existing maturity order UNCHANGED inside each
+  // class. Rows whose class is not stated sort last as one group rather than
+  // being scattered through the classed ones, because a run of "class not
+  // stated on this row" reads as a section of its own and a single such row
+  // between two classed ones reads as a mistake.
+  //
+  // Measured before it was wired, across all ten: six ladders re-order, and
+  // the three single-class filers — Quest, Centene, Molina — do not move at
+  // all, which is the no-regression test the stage asked for. A filer whose
+  // rows share one class cannot be re-ordered by class, and that is a
+  // property of the sort rather than a coincidence of the data.
+  rows.sort((a, b) => {
+    const byClass = priorityRank(a.classification.priorityClass) - priorityRank(b.classification.priorityClass);
+    if (byClass !== 0) return byClass;
+    return maturitySortKey(a) - maturitySortKey(b);
+  });
 
   const adjustments = baseSequence.filter((e) => e.kind === "adjustment");
   const subtotalEntries = baseSequence.filter((e) => e.kind === "subtotal");
@@ -1024,7 +1464,20 @@ const CHECKSUM_TOLERANCE_FRACTION_OF_SMALLEST_ROW = 0.5;
  * for their presence, to still detect the negative) fixes both at once,
  * regardless of exactly where within the string they fall.
  */
-export function parseMoneyAmount(raw: string): number | null {
+export function parseMoneyAmount(raw: string | null | undefined): number | null {
+  // SESSION 22, STAGE 7 — GUARDED AT THE ONE FUNCTION, not at its callers.
+  //
+  // A fresh Tenet extraction returned a schedule entry with a null amount and
+  // crashed the run twice: once in isSelfDescribingAmount, then here. This is
+  // the single deciding function for reading money in this codebase, so the
+  // guard belongs here — a null checked at thirty call sites is thirty places
+  // to forget it, and the twenty-ninth is the one that ships.
+  //
+  // `null` already means "no readable figure" to every caller, and every
+  // caller already handles it: the walk skips it, the ladder renders the raw
+  // string, coverage leaves it out of captured face. An absent amount was
+  // always a supported state; only the crash was new.
+  if (typeof raw !== "string") return null;
   const trimmed = raw.trim();
   // C1 — a dash alone is the accounting convention for nil, and nil is zero.
   // It must PARSE, not fail: a zero row contributes zero to the walk, which is

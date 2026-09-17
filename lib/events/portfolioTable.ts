@@ -732,7 +732,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       tailSummary: null,
       walkLines: [],
       coverage: computeCoverage(debtMaturity),
-      revolverCheck: checkRevolverArithmetic(debtMaturity?.revolver),
+      revolverCheck: checkRevolverArithmetic((debtMaturity?.facilities ?? []).find((f) => f.category === "revolver") ?? null),
       issuancesInsideAggregate: [],
       sourceCitation: null,
       isAggregateDisclosure: false,
@@ -965,7 +965,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
     rowsOutsideSubtotal: position.rowsOutsideSubtotal,
     priorIntentions: position.statedIntentions.filter((i) => !i.postAnchor).map((i) => ({ instrument: i.instrument, amount: i.amount, date: i.date, sourceLine: i.sourceLine })),
     maturityFloor: (floor?.buckets ?? []).map((x) => ({ label: x.label, value: x.value })),
-    maturityFloorAsOf: floor && floor.buckets.length > 0 ? floor.asOf : null, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(debtMaturity.revolver), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
+    maturityFloorAsOf: floor && floor.buckets.length > 0 ? floor.asOf : null, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(((debtMaturity.facilities ?? []).find((f) => f.category === "revolver") ?? null)), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
 
 /**

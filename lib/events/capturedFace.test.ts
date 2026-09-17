@@ -38,7 +38,20 @@ const dmOf = (c: string) => book.find((b) => b.company === c)?.result.results.fi
 
 /** company, captured face, stated total debt — measured at v23 (commit f09bca7), before the unit rule. */
 const PINS: [string, number, number][] = [
-  ["DaVita", 10_847_581_000, 10_781_013_000],
+  // SESSION 22, STAGE 7 — RE-PINNED FROM 10,847,581,000 (v28) TO THE v29 VALUE.
+  //
+  // This failed for most of Session 22 under a message describing a different
+  // defect — "a table stated in thousands still reads as thousands" — which
+  // was the assertion's ORIGINAL purpose and had stopped being what was
+  // wrong. It printed both sides rounded to three decimals, so expected and
+  // got read as identical and the real delta was invisible.
+  //
+  // Measured: -$65,000 on $10.8 billion, stated total unchanged. Not a units
+  // bug — a v28 pin gone stale at v29 (Rule 36: a pin pins the schema its
+  // derivation reads). DaVita's ladder was hand-verified against its filings
+  // this session, correct to the dollar, and is now signed as a golden at
+  // v29; this pin follows the signature.
+  ["DaVita", 10_847_516_000, 10_781_013_000],
   ["HCA Healthcare", 50_169_000_000, 49_718_000_000],
   ["Tenet Healthcare", 13_333_000_000, 13_248_000_000],
   ["Encompass Health", 2_634_000_000, 2_634_000_000],
@@ -53,8 +66,11 @@ for (const [company, face, stated] of PINS) {
   const c = computeCoverage(dmOf(company));
   assert(
     c.capturedFace === face && c.statedTotalDebt === stated,
-    `${company}: captured face $${(face / 1e9).toFixed(3)}B against stated $${(stated / 1e9).toFixed(3)}B ` +
-      `(got $${(c.capturedFace / 1e9).toFixed(3)}B / $${((c.statedTotalDebt ?? 0) / 1e9).toFixed(3)}B) — a table stated in thousands still reads as thousands`
+    `${company}: captured face expected ${face.toLocaleString("en-US")} got ${c.capturedFace.toLocaleString("en-US")} ` +
+      `(delta ${(c.capturedFace - face).toLocaleString("en-US")}); stated total expected ${stated.toLocaleString("en-US")} ` +
+      `got ${(c.statedTotalDebt ?? 0).toLocaleString("en-US")} (delta ${((c.statedTotalDebt ?? 0) - stated).toLocaleString("en-US")}) ` +
+      `— EXACT figures and their deltas. Rounding both sides to three decimals hid a real $65,000 drift for a whole session; ` +
+      `a failure message that cannot show the difference it is reporting teaches its reader to skip it`
   );
 }
 

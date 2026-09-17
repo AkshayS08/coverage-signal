@@ -17,6 +17,7 @@
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
+import { PINNED_AS_OF } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
 import { captureBookSnapshot } from "./bookSnapshot";
 import { getFilingText } from "../fetch";
@@ -28,7 +29,7 @@ import { assemblePosition } from "../events/position";
 import { buildDerivedLines } from "../events/derived";
 import { createTextLocator } from "../agent/verifyQuote";
 
-const ASOF = new Date("2026-09-07T00:00:00Z");
+const ASOF = PINNED_AS_OF;
 const BOOK = ["Tenet Healthcare", "Encompass Health", "Quest Diagnostics", "Centene Corporation"];
 const one = (s: string, n = 300) => s.replace(/\s+/g, " ").trim().slice(0, n);
 const wrap = (s: string, w = 92, pad = "  ") => {

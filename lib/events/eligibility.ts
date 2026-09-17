@@ -1,6 +1,6 @@
 import type { DateGranularity, EventStatus } from "../agent/claude";
 import type { TriggerResult } from "../agent";
-import { computeTiming, computeWindowDate, daysBetween } from "./eventTiming";
+import { computeTiming, computeWindowDate, daysBetween, isWithinMonths } from "./eventTiming";
 import { isFreshEvent, parseQoQIncreasePercent, type TimingInfo } from "./textHeuristics";
 import type { LadderRow } from "./position";
 
@@ -11,7 +11,7 @@ export interface EligibilityResult {
   timing: TimingInfo;
 }
 
-const REFI_WINDOW_MONTHS = 18;
+export const REFI_WINDOW_MONTHS = 18;
 const CASH_JUMP_THRESHOLD_PCT = 30;
 /** A completed issuance only cards if it's this recent — see the proceeds test below. Single named tunable, per spec. */
 export const PROCEEDS_RECENCY_DAYS = 90;
@@ -282,15 +282,35 @@ export function evaluateEligibility(trigger: TriggerResult, now: Date = new Date
 export function evaluateRowEligibility(row: LadderRow, now: Date = new Date()): EligibilityResult {
   const timing = computeTiming("upcoming", row.maturityDate, row.dateGranularity, now);
 
-  // SESSION 21, ITEM 1A — CAPACITY NEVER CARDS.
+  // SESSION 21, ITEM 1A — CAPACITY NEVER CARDS ON WHAT IS DRAWN UNDER IT.
   //
-  // A committed but undrawn facility renders on the ladder, because
-  // headroom is a fact an RM wants beside a maturity. It is not a
-  // refinancing conversation: there is nothing to refinance until it is
-  // drawn. Decided on the flag the position set from debtContribution, so
-  // the ladder, the coverage figure and this gate all read one decision.
-  if (row.isCapacity) {
-    return { cardEligible: false, reason: "committed but undrawn — capacity, not a maturity to refinance", timing };
+  // A committed but undrawn facility renders on the ladder, because headroom
+  // is a fact an RM wants beside a maturity. A DRAWN BALANCE IS OPERATIONAL
+  // and is never a refinancing signal: a revolver is borrowed and repaid in
+  // the ordinary course, and calling a draw a refinancing conversation
+  // mistakes working capital for a maturity.
+  //
+  // SESSION 22, STAGE 5 — BUT THE FACILITY'S OWN MATURITY IS A DIFFERENT
+  // CONVERSATION, and this rule was swallowing it.
+  //
+  // A revolver or term loan coming due is a renewal negotiation with a date
+  // on it, and it is among the strongest calls an RM can make — the facility
+  // itself expires, drawn or not. Quest is the measured case: its secured
+  // receivables credit facility matures November 2027, fourteen months out
+  // and inside the window, and carded nowhere at all because "capacity never
+  // cards" was written about the balance and applied to the instrument.
+  //
+  // So capacity is held back only where there is no in-window maturity to
+  // talk about. What it must never do is card BECAUSE something is drawn —
+  // and it cannot, because nothing below this point reads a drawn balance.
+  if (row.isCapacity && !(row.maturityDate && timing.windowDate && isWithinMonths(timing.windowDate, now, REFI_WINDOW_MONTHS))) {
+    return {
+      cardEligible: false,
+      reason: row.maturityDate
+        ? "committed facility, maturity 18+ months out — a drawn balance is operational, never a refinancing signal"
+        : "committed but undrawn, and the filing states no maturity for the facility — capacity, not a maturity to refinance",
+      timing,
+    };
   }
 
   if (row.status === "retired") {
@@ -343,7 +363,16 @@ export function evaluateRowEligibility(row: LadderRow, now: Date = new Date()): 
     }
     return { cardEligible: false, reason: "approaching maturity, but the filing states no date for it — held to table", timing };
   }
-  if (timing.monthsToNearestFuture > REFI_WINDOW_MONTHS) {
+  // THE WINDOW IS A COMPARISON OF DATES, NEVER OF COUNTS (Session 22,
+  // Stage 1). This read `monthsToNearestFuture > REFI_WINDOW_MONTHS`, so a
+  // rounded count decided the boundary and the rounding could carry a row
+  // across it in either direction. Measured on the live book: CHS's 6 7/8%
+  // notes due 2028-04-01 count as 18 whole months from the pinned as-of and
+  // are NOT within 18 months of it — 2026-09-07 plus eighteen calendar
+  // months is 2028-03-07, and the notes mature 25 days after that. Under a
+  // count test they would have started carding; under the date test they
+  // correctly do not.
+  if (!timing.windowDate || !isWithinMonths(timing.windowDate, now, REFI_WINDOW_MONTHS)) {
     return { cardEligible: false, reason: "maturity 18+ months out", timing };
   }
   if (timing.dateGranularity === "year") {

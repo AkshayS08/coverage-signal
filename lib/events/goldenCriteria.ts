@@ -21,9 +21,10 @@
  * confidence is worse than none.
  */
 import type { CompanyResult, TriggerResult } from "../agent";
-import { assemblePosition, computeWalkChecksum, normalizeScheduleSequence, scheduleIsAggregateDisclosure } from "./position";
+import { assemblePosition, computeWalkChecksum, normalizeScheduleSequence, scheduleIsAggregateDisclosure, ladderCapacityFor, facilityCategoriesOnLadder, matchFacility } from "./position";
 import { computeCoverage } from "./coverage";
 import { parseMoneyAmount } from "./position";
+import { classifyInstrument, priorityClassLabel } from "./instrumentClass";
 
 export type CriterionKind = "computed" | "attested";
 
@@ -63,7 +64,7 @@ export interface Attestation {
 export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: Attestation = {}): CriteriaResult {
   const dm = result.results.find((t: TriggerResult) => t.triggerId === "debt-maturity");
   const pos = assemblePosition(result, asOf);
-  const cov = computeCoverage(dm);
+  const cov = computeCoverage(dm, ladderCapacityFor(pos), facilityCategoriesOnLadder(pos, dm?.facilities));
   const seq = normalizeScheduleSequence(dm?.scheduleSequence);
   const walk = computeWalkChecksum(dm?.scheduleSequence);
   const anchor = dm?.debtScheduleSourceFiling ?? null;
@@ -82,7 +83,33 @@ export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: A
   });
 
   // ---- (2) unit and basis -------------------------------------------------
-  const noUnit = pos.rows.filter((r) => !/thousand|million|billion|\$/i.test(r.amount));
+  // SESSION 22, STAGE 7 — "NO AMOUNT STATED" IS A FINDING, NOT AUTOMATICALLY
+  // A FAILURE. Each no-unit row is classified rather than counted.
+  //
+  // The criterion defends against a bare table cell read at a guessed scale.
+  // A row carrying NO FIGURE AT ALL is not that: there is nothing to misread.
+  // But it is only honest if the filing really states none — and the two
+  // cases are distinguishable from data the guard already produced. A
+  // facility whose size was CLAIMED and then rejected by the per-figure guard
+  // is a real miss: the filing stated something and the tool does not carry
+  // it. A facility whose size was never claimed states none.
+  //
+  // Same principle as 8b: do not punish honesty, and do not let a silent
+  // absence pass as one.
+  const rejections = dm?.facilityRejections ?? [];
+  const noUnitRows = pos.rows.filter((r) => !/thousand|million|billion|\$/i.test(r.amount));
+  const classifyNoUnit = (r: (typeof pos.rows)[number]) => {
+    const f = matchFacility({ name: r.instrument, category: null }, dm?.facilities, { byNameOnly: true });
+    const rejected = f ? rejections.filter((x) => x.facility === f.name && x.field === "facilitySize") : [];
+    if (rejected.length > 0) {
+      return { honest: false, why: `an amount WAS stated for it and did not survive verification (${rejected[0].value}: ${rejected[0].reason})` };
+    }
+    if (f && !f.facilitySize) return { honest: true, why: "the filing states no size for this facility" };
+    if (r.isCapacity) return { honest: true, why: "committed facility, and the filing states no amount for it" };
+    return { honest: false, why: "a debt row carrying no figure and no stated absence" };
+  };
+  const noUnitClassified = noUnitRows.map((r) => ({ row: r, ...classifyNoUnit(r) }));
+  const noUnit = noUnitClassified.filter((x) => !x.honest);
   // BASIS LIVES ON THE PROSE INSTRUMENT, NOT ON THE ROW. `amountBasis` is
   // read by debtContribution to decide debt-versus-capacity and is then
   // DROPPED when the instrument becomes a LadderRow — so the row a golden
@@ -94,9 +121,13 @@ export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: A
   const proseNoBasis = prose.filter((p) => !p.amountBasis);
   const basisOnRow = false; // no LadderRow field exists — see the comment above
   c.push({
-    id: "2", kind: "computed", name: "every amount in the unit the filing prints, with its basis stated",
+    id: "2", kind: "computed", name: "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
     pass: noUnit.length === 0 && proseNoBasis.length === 0,
-    detail: (noUnit.length === 0 ? `all ${pos.rows.length} row(s) carry a printed unit` : `${noUnit.length} row(s) with NO printed unit (${noUnit.map((r) => r.instrument).join("; ")})`)
+    detail: (noUnitClassified.length === 0
+      ? `all ${pos.rows.length} row(s) carry a printed unit`
+      : noUnit.length === 0
+        ? `${pos.rows.length - noUnitClassified.length} row(s) carry a printed unit; ${noUnitClassified.length} state no amount HONESTLY (${noUnitClassified.map((x) => `${x.row.instrument} — ${x.why}`).join("; ")})`
+        : `${noUnit.length} row(s) MISSING an amount the filing has (${noUnit.map((x) => `${x.row.instrument} — ${x.why}`).join("; ")})`)
       + "; " +
       (prose.length === 0
         ? "no narrative instruments, so no basis to state"
@@ -137,15 +168,32 @@ export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: A
   // against its own XBRL total is the worked example.
   const subtotals = seq.filter((e) => e.kind === "subtotal");
   const captionSum = (dm?.balanceSheetDebtCaptions ?? []).reduce((a, x) => a + (parseMoneyAmount(x.amount) ?? 0), 0);
-  const triangulates =
+  // SESSION 22, STAGE 7 — EITHER PATH TIES, NOT BOTH.
+  //
+  // Triangulation is two independent statements by the filer agreeing. It had
+  // exactly one route — the balance sheet's own captions against the stated
+  // total — so a filer whose CAPTIONS are missing failed a criterion about
+  // whether its TOTAL is corroborated. UHS is the case: its
+  // balanceSheetDebtCaptions are empty at v29 (they were populated at v28),
+  // and criterion 4 failed while the residual it is really about ties at
+  // 2.28% against the filer's own XBRL tag, gate-confirmed.
+  //
+  // The XBRL tag is the filer's own statement of its debt and does not move
+  // when our prompt does; it is a corroborating source in its own right. So
+  // the criterion holds if EITHER route ties. The caption emptiness is a real
+  // extraction gap and is logged as one — it is not evidence that the total
+  // is uncorroborated.
+  const capTriangulates =
     cov.statedTotalDebt !== null && captionSum > 0 &&
     Math.abs(captionSum - cov.statedTotalDebt) <= Math.abs(cov.statedTotalDebt) * 0.01;
+  const xbrlTriangulates = cov.denominatorSource === "xbrl" && cov.statedTotalDebt !== null;
+  const triangulates = capTriangulates || xbrlTriangulates;
   c.push({
     id: "4", kind: "computed", name: "the note's subtotals tie where it prints any; where it prints none, the stated total triangulates instead",
     pass: subtotals.length > 0 ? walk.pass : triangulates && cov.residualPasses === true,
     detail: subtotals.length > 0
       ? walk.subtotalChecks.map((s) => `${s.label ?? "(unlabelled)"}: gap ${s.gap.toLocaleString("en-US")}${s.tie ? " TIES" : " DOES NOT TIE"}`).join("; ")
-      : `this note prints NO subtotal, so the amended test applies: the balance sheet's own captions sum to $${captionSum.toLocaleString("en-US")} against a stated total of ${cov.statedTotalDebt === null ? "—" : "$" + cov.statedTotalDebt.toLocaleString("en-US")} (${cov.denominatorSource}) — ${triangulates ? "TRIANGULATES" : "DOES NOT TRIANGULATE"}; coverage residual ${cov.residualFraction === null ? "—" : (cov.residualFraction * 100).toFixed(2) + "%"} passes=${cov.residualPasses}`,
+      : `this note prints NO subtotal, so the amended test applies. Captions sum to $${captionSum.toLocaleString("en-US")}${capTriangulates ? " and TIE" : captionSum === 0 ? " (NONE EXTRACTED — a real gap, logged separately; it is not evidence the total is uncorroborated)" : " and DO NOT tie"}; the stated total is ${cov.statedTotalDebt === null ? "—" : "$" + cov.statedTotalDebt.toLocaleString("en-US")} from ${cov.denominatorSource}${xbrlTriangulates ? ", the filer's own XBRL tag, which TIES" : ""}. Either route suffices: ${triangulates ? "TRIANGULATES" : "DOES NOT TRIANGULATE"}; coverage residual ${cov.residualFraction === null ? "—" : (cov.residualFraction * 100).toFixed(2) + "%"} passes=${cov.residualPasses}`,
     defends: "a transcription missing a row that nothing in the filing's own arithmetic would catch — and, as amended, a criterion that would have declared every prose-only note unpinnable",
   });
 
@@ -198,18 +246,44 @@ export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: A
   // must state one for EVERY debt row, or the ladder shows a class on some
   // lines and silence on others, which reads as "unsecured" rather than "not
   // stated".
-  const withClass = debtRows.filter((r) => !!r.seniority);
-  const classPartial = withClass.length > 0 && withClass.length < debtRows.length;
+  // SESSION 22, STAGE 7 — READ THE MERGED FIELD, AND TIGHTEN THE MEANING.
+  //
+  // This read `r.seniority`. Stage 4 merged the concept into `classification`
+  // — fed by the section heading, the instrument's own name, and the note's
+  // prose — because the model distributes one class across two schema fields
+  // per company (Rule 39). So this reported "no row carries a priority class"
+  // about Tenet's ladder while that ladder rendered ELEVEN of twelve with
+  // one, and passed vacuously on a name it was written to protect.
+  //
+  // AND THE TEST ITSELF WAS THE WRONG TEST. "All or none" fails a ladder
+  // whose filing genuinely classes some rows and not others — which is most
+  // real notes. What this criterion exists to prevent is SILENCE READING AS
+  // UNSECURED, and that is now defended directly: a row with no stated class
+  // renders "class not stated on this row" in as many words.
+  //
+  // So faithful means: every row either carries its class or explicitly
+  // states it has none. A partial count with honest unclassed rows is
+  // faithful; a silent default is not. The failure that remains — and the
+  // one worth catching — is a row whose SOURCES state a class that the
+  // ladder dropped.
+  const withClass = debtRows.filter((r) => r.classification.priorityClass !== null);
+  const unclassed = debtRows.filter((r) => r.classification.priorityClass === null);
+  const dropped = unclassed.filter(
+    (r) => classifyInstrument({ headings: [r.seniority], instrumentName: r.instrument }).priorityClass !== null
+  );
+  const everyUnclassedSaysSo = unclassed.every((r) => priorityClassLabel(r.classification) === "class not stated on this row");
   const sectionsPrinted = [...new Set(seq.map((e) => e.section).filter(Boolean))];
   c.push({
-    id: "8b", kind: "computed", name: "structure faithful in PRIORITY CLASS — stated for every debt row, or for none",
-    pass: !classPartial,
-    detail: withClass.length === 0
-      ? `no row carries a priority class${sectionsPrinted.length ? `, though the note prints section headings (${sectionsPrinted.join("; ")}) that are used only for subtotal matching` : ""}`
-      : classPartial
-        ? `PARTIAL — ${withClass.length} of ${debtRows.length} row(s) carry a class (${[...new Set(withClass.map((r) => r.seniority))].join("; ")}); the rest render with none, which reads as an absence of seniority rather than an absence of disclosure`
-        : `all ${debtRows.length} row(s) carry a class`,
-    defends: "a note that prints senior secured and senior unsecured as separate sections, flattened into one list",
+    id: "8b", kind: "computed", name: "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
+    pass: dropped.length === 0 && everyUnclassedSaysSo,
+    detail: dropped.length > 0
+      ? `DROPPED — ${dropped.length} row(s) whose own sources state a class the ladder does not carry (${dropped.map((r) => r.instrument).join("; ")})`
+      : !everyUnclassedSaysSo
+        ? `${unclassed.length} unclassed row(s) render no explicit statement — silence here reads as "unsecured"`
+        : unclassed.length === 0
+          ? `all ${debtRows.length} row(s) carry a class (${[...new Set(withClass.map((r) => priorityClassLabel(r.classification)))].join("; ")})`
+          : `${withClass.length} of ${debtRows.length} row(s) carry a class; the remaining ${unclassed.length} state "class not stated on this row" explicitly (${unclassed.map((r) => r.instrument).join("; ")})${sectionsPrinted.length ? `. Sections printed: ${sectionsPrinted.join("; ")}` : ""}`,
+    defends: "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured",
   });
 
   c.push({

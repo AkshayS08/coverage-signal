@@ -16,7 +16,8 @@
  * Deterministic and free: no model call, one warm run per company.
  */
 import type { CompanyResult, TriggerResult } from "../agent";
-import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, normalizeScheduleSequence } from "../events/position";
+import { assemblePosition, computeWalkChecksum, computeBalanceSheetCheck, normalizeScheduleSequence, ladderCapacityFor, facilityCategoriesOnLadder } from "../events/position";
+import { priorityClassLabel } from "../events/instrumentClass";
 import { computeCoverage, checkRevolverArithmetic } from "../events/coverage";
 import { buildDerivedLines, type DerivedBlock } from "../events/derived";
 import type { FlashCard } from "../events/buildEvents";
@@ -39,7 +40,7 @@ export interface Placement {
   note: string;
 }
 
-function placer(corpus: { url: string; text: string; label: string }[], anchorUrl: string | null) {
+export function placer(corpus: { url: string; text: string; label: string }[], anchorUrl: string | null) {
   const locators = corpus.map((d) => ({ ...d, loc: createTextLocator(d.text) }));
   return (sourceLine: string): Placement => {
     if (locators.length === 0) return { offset: null, note: "no filing text available — cannot place" };
@@ -71,11 +72,14 @@ export function renderVerificationSheet(inp: SheetInputs): string[] {
   const dm = result.results.find((t) => t.triggerId === "debt-maturity");
   const nd = result.results.find((t) => t.triggerId === "new-debt-issuance");
   const pos = assemblePosition(result, asOf);
-  const cov = computeCoverage(dm);
+  const cov = computeCoverage(dm, ladderCapacityFor(pos), facilityCategoriesOnLadder(pos, dm?.facilities));
   const seq = normalizeScheduleSequence(dm?.scheduleSequence);
   const walk = computeWalkChecksum(dm?.scheduleSequence);
   const anchorCheck = dm ? computeBalanceSheetCheck(dm.balanceSheetDebtCaptions, dm.scheduleSequence) : null;
   const place = placer(corpus, dm?.debtScheduleSourceFiling?.url ?? null);
+  const docLabel = new Map<string, string>();
+  for (const t of result.results) for (const c of t.citations) if (c.url) docLabel.set(c.url, `${c.form} ${c.date}`);
+  for (const d of corpus) if (!docLabel.has(d.url)) docLabel.set(d.url, d.label);
   const L: string[] = [];
   const anchor = dm?.debtScheduleSourceFiling ?? null;
 
@@ -97,6 +101,12 @@ export function renderVerificationSheet(inp: SheetInputs): string[] {
     const p = place(r.sourceLine);
     L.push(`  [${r.status}${r.isCapacity ? "/CAPACITY" : ""}] ${r.instrument}`);
     L.push(`      amount ${r.amount}   maturity ${r.maturityDate ?? "(none stated)"} (${r.dateGranularity ?? "-"})   from ${r.provenance}`);
+    // SESSION 22, STAGE 7 — CLASS AND SOURCE DOCUMENT ON THE SHEET ITSELF.
+    // Both are rendered on the ladder an RM reads and were absent from the
+    // sheet a signer reads, so the two surfaces described the same row
+    // differently. A signature surface must show what the product shows.
+    L.push(`      class ${priorityClassLabel(r.classification)}${r.classification.priorityClassFrom ? ` (from ${r.classification.priorityClassFrom})` : ""}   type ${r.classification.instrumentType ?? "not stated"}`);
+    L.push(`      source document ${r.citedUrl ? (docLabel.get(r.citedUrl) ?? r.citedUrl) : "(none recorded on this row)"}`);
     L.push(`      "${one(r.sourceLine)}"`);
     L.push(`      ${p.note}`);
   }
@@ -144,7 +154,7 @@ export function renderVerificationSheet(inp: SheetInputs): string[] {
   L.push(`      residual ${cov.residual === null ? "—" : cov.residual.toLocaleString("en-US")} = ${cov.residualFraction === null ? "—" : (cov.residualFraction * 100).toFixed(2) + "%"}, passes=${cov.residualPasses}`);
   for (const c of cov.capacity) L.push(`      capacity NOT counted as debt: ${c.label} ${c.amount === null ? "(no amount stated)" : "$" + c.amount.toLocaleString("en-US")} — ${c.basisNote}`);
   for (const m of cov.categoriesMissing ?? []) L.push(`      ⚠ STATED BUT NOT CAPTURED: ${m}`);
-  const revCheck = checkRevolverArithmetic(dm?.revolver);
+  const revCheck = checkRevolverArithmetic((dm?.facilities ?? []).find((f) => f.category === "revolver") ?? null);
   if (revCheck.note) L.push(`  REVOLVER: ${revCheck.note}`);
   L.push(`  COVERAGE LINE AS RENDERED: ${cov.line}`);
 
@@ -205,6 +215,7 @@ export function derivedFor(result: CompanyResult, cards: FlashCard[], asOf: Date
       position: pos,
       debtMaturity: result.results.find((t: TriggerResult) => t.triggerId === "debt-maturity"),
       newDebtIssuance: result.results.find((t: TriggerResult) => t.triggerId === "new-debt-issuance"),
+      cashBalance: result.results.find((t: TriggerResult) => t.triggerId === "large-cash-balance"),
       asOf,
     });
   }

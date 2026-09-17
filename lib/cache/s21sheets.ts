@@ -134,7 +134,7 @@ REFUSED — ${result.company} does not satisfy all nine criteria; no golden file
       }
     }
     const st = deriveGoldenState(result, ASOF);
-    summary.push(`  ${result.company.padEnd(30)} rows ${String(st.rows.length).padStart(2)}  coverage ${st.coverage.statedTotalDebt ? Math.round(st.coverage.capturedFace / st.coverage.statedTotalDebt * 100) + "%" : "—"}  resid ${st.coverage.residualFraction ?? "—"}%  tier2 ${st.tier2.length}  cards ${st.cards.length}  filings ${st.filingSet.length}`);
+    summary.push(`  ${result.company.padEnd(30)} rows ${String(st.rows.length).padStart(2)}  coverage ${st.coverage.statedTotalDebt ? Math.round(st.coverage.capturedFace / st.coverage.statedTotalDebt * 100) + "%" : "—"}  resid ${st.coverage.residualPercent ?? "—"}%  tier2 ${st.tier2.length}  cards ${st.cards.length}  filings ${st.filingSet.length}`);
   }
 
   console.log("");

@@ -10,12 +10,64 @@ import type { TimingInfo } from "./textHeuristics";
  * this module only ever does "is this date in the future, and by how much."
  */
 
-const AVG_DAYS_PER_MONTH = 30.44;
+/**
+ * SESSION 22, STAGE 1 — THE MONTH-COUNT CONVENTION, NAMED.
+ *
+ * Every month count in this build is WHOLE CALENDAR MONTHS COMPLETED: from
+ * date A to date B, how many times one calendar month can be added to A
+ * without passing B, clamping to the last day where the target month is
+ * shorter. Negative when B precedes A.
+ *
+ * This replaces dividing elapsed days by an average month length and
+ * rounding, which was wrong in two directions at once. It rounded, so a
+ * tranche maturing three days ago read as "0 months out" with no sign to
+ * tell a reader it had already gone (Rule 28's second worked example). And
+ * it was an approximation nobody had named, so Encompass's 2026-05-29
+ * issuance against a 2028-02-01 maturity printed "20 months" where
+ * month-boundary counting says 21 — with nothing stating which the surface
+ * meant. Under this convention it is 20, and 20 is what "20 months and 3
+ * days have to pass" means.
+ *
+ * AND A COUNT NEVER DECIDES A WINDOW. `isWithinMonths` compares two dates,
+ * so no rounding can carry a row across the 18-month boundary in either
+ * direction. The count is for reading; the comparison is for deciding.
+ */
 
-/** Whole months from `now` to `dateIso` — negative when `dateIso` is in the past. */
+/** A + n calendar months, clamped to the last day when the target month is shorter. */
+function addMonths(base: Date, n: number): Date {
+  const d = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), 1));
+  d.setUTCMonth(d.getUTCMonth() + n);
+  const lastDay = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+  d.setUTCDate(Math.min(base.getUTCDate(), lastDay));
+  d.setUTCHours(base.getUTCHours(), base.getUTCMinutes(), base.getUTCSeconds(), base.getUTCMilliseconds());
+  return d;
+}
+
+/** Whole calendar months from `now` to `dateIso` — negative when `dateIso` is in the past. See the convention above. */
 export function monthsBetween(dateIso: string, now: Date): number {
-  const d = new Date(dateIso);
-  return Math.round((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * AVG_DAYS_PER_MONTH));
+  const target = new Date(dateIso);
+  if (Number.isNaN(target.getTime())) return 0;
+  const forward = target.getTime() >= now.getTime();
+  const [from, to] = forward ? [now, target] : [target, now];
+  let n = (to.getUTCFullYear() - from.getUTCFullYear()) * 12 + (to.getUTCMonth() - from.getUTCMonth());
+  // One calendar month too far when the day-of-month has not yet come round.
+  if (n > 0 && addMonths(from, n).getTime() > to.getTime()) n--;
+  return forward ? n : -n;
+}
+
+/**
+ * Does `dateIso` fall on or before `months` calendar months after `now`?
+ * The window gate — a comparison of two dates, never a comparison of counts.
+ */
+export function isWithinMonths(dateIso: string, now: Date, months: number): boolean {
+  const target = new Date(dateIso);
+  if (Number.isNaN(target.getTime())) return false;
+  return target.getTime() <= addMonths(now, months).getTime();
+}
+
+/** "17 months" / "1 month" / "0 months". The count is the unit's own plural rule, nothing more. */
+export function monthsLabel(n: number): string {
+  return `${n} ${Math.abs(n) === 1 ? "month" : "months"}`;
 }
 
 /** Whole days from `now` to `dateIso` — negative when `dateIso` is in the past. */

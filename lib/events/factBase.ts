@@ -252,6 +252,26 @@ export interface VerifiedFact {
   eventStatus: TriggerResult["eventStatus"];
   /** Session 18 F2 — debt-maturity row facts ONLY. Verbatim from the debt note's own section header (position.ts's LadderRow.seniority), or null when the filing states none. Surfaced as its own field because a ladder row's `sourceLine` (the table row itself) frequently doesn't repeat the section header the seniority came from. Null for every other fact. */
   seniority: string | null;
+  /**
+   * SESSION 22, STAGE 5 — AN EVENT ON THIS TRANCHE, which is the only thing
+   * that can honestly answer "why now" about it.
+   *
+   * A why-now built on a balance is the wrong reason to call: a cash balance
+   * grew because an insurer holds regulatory float, and a drawn revolver moved
+   * because working capital moved. Neither is about the instrument the card is
+   * about. What IS about it — a repurchase, a partial redemption, a pricing —
+   * is already extracted, already verified against the filing, and was being
+   * thrown away here: every ladder-row fact set `redeemsInfo: null`.
+   *
+   * Centene is the measured case. Its debt note states it repurchased $118
+   * million in the quarter and $1,147 million over six months of the exact
+   * tranche its December 2027 card is about, and its card reached for a $24.2
+   * billion cash balance instead — the read a banker sees through.
+   *
+   * Null where the filing states no event for this tranche, and then the card
+   * says so rather than reaching for a balance to fill the sentence.
+   */
+  trancheEvent: { kind: "retirement-or-repurchase" | "priced"; evidence: string } | null;
   /** Session 18 E1 — new-debt-issuance facts ONLY, when the issuance's own `redeems` field is populated. Verbatim description of what this issuance retired, copied from the field — not an inference, and not evidence that the retired tranche is THIS card's own headline. Null for every other fact, and null when new-debt-issuance fired with nothing redeemed. */
   redeemsInfo: string | null;
   /**
@@ -333,6 +353,7 @@ export function buildVerifiedFactBase(result: CompanyResult, now: Date = new Dat
       // unverified claim here put an untrue sentence on a card: UHS's cited
       // 8-K names its 2026 notes as still outstanding, and the card would
       // have said they were redeemed.
+      trancheEvent: null,
       redeemsInfo:
         t.triggerId === "new-debt-issuance"
           ? (t.redeems ?? [])
@@ -416,6 +437,16 @@ function buildDebtMaturityFacts(result: CompanyResult, now: Date = new Date()): 
         // in this pipeline is already labeled.
         eventStatus: row.maturityDate ? "upcoming" : "standing",
         seniority: row.seniority,
+        // The note's own prose about THIS tranche wins over an 8-K's, because
+        // it is the note speaking about its own rows. A pricing date is the
+        // fallback: real, dated, and about this instrument.
+        trancheEvent: row.retiredByNote
+          ? { kind: "retirement-or-repurchase" as const, evidence: row.retiredByNote.evidence }
+          : row.retiredBy
+            ? { kind: "retirement-or-repurchase" as const, evidence: row.retiredBy.evidence }
+            : row.issuedOn
+              ? { kind: "priced" as const, evidence: `This tranche was priced on ${row.issuedOn.date}.` }
+              : null,
         redeemsInfo: null,
         outstandingAmount: formatMoneyForDisplay(row.amount),
         issueSizeInLabel: issueSizeFromLabel(row.instrument, row.amount),

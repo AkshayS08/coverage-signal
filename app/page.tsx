@@ -5,6 +5,8 @@ import styles from "./page.module.css";
 import {
   buildEvents,
   compactLabelWithTiming,
+  headlineTimingTag,
+  priorityClassLabel,
   buildCompanyTableBlock,
   buildBookEmptyStateLine,
   TABLE_BUCKET_ORDER,
@@ -55,23 +57,6 @@ const BUCKET_CLASS: Record<Bucket, string> = {
   refi: "bucketRefi",
   hedging: "bucketHedging",
 };
-
-/** Plain, explicit date for a card's header — "matures ~Apr 2027" or "8-K filed Jul 21, 2026". Always includes the year. */
-function formatHeadlineDate(timing: FlashCard["timing"], citations: FlashCard["citations"], asOf: Date): string {
-  if (timing.monthsToNearestFuture !== null) {
-    const future = new Date(asOf);
-    future.setMonth(future.getMonth() + Math.round(timing.monthsToNearestFuture));
-    return `matures ~${future.toLocaleDateString(undefined, { month: "short", year: "numeric" })}`;
-  }
-  const mostRecent = [...citations].sort((a, b) => b.date.localeCompare(a.date))[0];
-  if (mostRecent) {
-    const d = new Date(mostRecent.date);
-    if (!Number.isNaN(d.getTime())) {
-      return `${mostRecent.form} filed ${d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}`;
-    }
-  }
-  return timing.isPendingLive ? "pending" : "";
-}
 
 // Short label + timing for the compact "Also active" line — e.g. "refi
 // window ~9mo · new floating-rate issuance" — shared with the portfolio
@@ -149,6 +134,8 @@ export default function Home() {
         position: assemblePosition(result, asOf),
         debtMaturity: result.results.find((t) => t.triggerId === "debt-maturity"),
         newDebtIssuance: result.results.find((t) => t.triggerId === "new-debt-issuance"),
+        // Stage 5: liquidity is cash + undrawn capacity, one computed sum.
+        cashBalance: result.results.find((t) => t.triggerId === "large-cash-balance"),
         asOf,
       });
     }
@@ -329,7 +316,7 @@ export default function Home() {
             )}
           </span>
           {renderCompanyName(card.company)}
-          <span className={styles.timingTag}>{formatHeadlineDate(card.timing, card.citations, asOfDate ?? new Date())}</span>
+          <span className={styles.timingTag}>{headlineTimingTag(card.timing, card.citations, asOfDate ?? new Date())}</span>
         </div>
         {!briefing ? (
           <p className={styles.draftingLine}>Drafting...</p>
@@ -479,7 +466,29 @@ export default function Home() {
   // id (headlineRowId), not the trigger id — a company can have several
   // debt-maturity cards, one per qualifying tranche.
   function renderRefiLadderLine(line: RefiLadderLine, i: number) {
-    const seniorityPrefix = line.row.seniority ? `${line.row.seniority} ` : "";
+    // SESSION 22, STAGE 2 — CLASS AND TYPE, ON EVERY ROW.
+    //
+    // This printed `line.row.seniority` verbatim, which meant the class
+    // appeared on the 33 rows whose note happens to print section headings
+    // and on none of the other 52 — so a Quest row reading "4.60% Senior
+    // Notes due December 2027" showed no class while the words "Senior
+    // Notes" sat in its own name. The classifier reads both sources and the
+    // label states which. Where nothing on the row states a class it says
+    // so, rather than rendering a silence that reads as "unsecured".
+    const cls = line.row.classification;
+    const seniorityPrefix = cls.priorityClass ? `${priorityClassLabel(cls)} ` : "";
+    // SESSION 22, STAGE 3 (finish) — WHERE THE CLASS CAME FROM, WHEN IT DID
+    // NOT COME FROM THE ROW. A class read from the note's group seniority
+    // sentence is a real, verified class, and it is not printed against this
+    // tranche anywhere in the filing — an RM checking the table would not
+    // find it. Saying so is the same discipline as the null label it
+    // replaces: the row states what was actually read, and where.
+    const classNote = cls.priorityClass
+      ? cls.priorityClassFrom === "note-statement"
+        ? "  · class from the note's own prose, stated for these notes as a group, not on this row"
+        : ""
+      : "  · class not stated on this row";
+    const typeNote = cls.instrumentType ? `  · ${cls.instrumentType.replace(/-/g, " ")}` : "";
     // Most filers name the tranche BY its rate ("4.625 % Senior Notes"), so
     // printing the rate field as well showed it twice. Decided in
     // portfolioTable.ts, which can compare the two under the verifier's own
@@ -503,7 +512,7 @@ export default function Home() {
         : line.row.provenance === "note-narrative"
           ? (line.row.isCapacity ? " [stated in the note’s narrative — committed but undrawn, capacity not debt]" : " [stated in the note’s narrative, not in a table]")
           : "";
-    const text = `${formatMoneyForDisplay(line.row.amount)} ${rateText}${seniorityPrefix}${line.instrumentName}${issuedAt} — ${line.timingPhrase}${movement}${sourceMark}`;
+    const text = `${formatMoneyForDisplay(line.row.amount)} ${rateText}${seniorityPrefix}${line.instrumentName}${issuedAt}${typeNote}${classNote} — ${line.timingPhrase}${movement}${sourceMark}`;
     return (
       <li key={i} className={styles.tableLine}>
         <span className={styles.tableLineBullet}>·</span>
@@ -546,7 +555,7 @@ export default function Home() {
                 <li key={`outside-${i}`} className={styles.tableLine}>
                   <span className={styles.tableLineBullet}>·</span>
                   <span className={styles.tableLineText}>
-                    {r.label} — {r.amount}
+                    {r.label} — {formatMoneyForDisplay(r.amount)}
                     {r.section ? ` (section: ${r.section})` : ""} — {r.why}
                   </span>
                 </li>
@@ -594,7 +603,7 @@ export default function Home() {
               <li key={`intent-${n}`} className={styles.tableLine}>
                 <span className={styles.tableLineBullet}>·</span>
                 <span className={styles.tableLineText}>
-                  stated intention to repay {i.amount ?? "an unstated amount"} of {i.instrument}, from a filing dated {i.date ?? "(undated)"} — BEFORE this
+                  stated intention to repay {i.amount ? formatMoneyForDisplay(i.amount) : "an unstated amount"} of {i.instrument}, from a filing dated {i.date ?? "(undated)"} — BEFORE this
                   anchor, so whatever became of it is already inside the balance sheet above; it is not an event since the anchor
                   <br />
                   <em>&ldquo;{i.sourceLine}&rdquo;</em>

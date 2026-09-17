@@ -1,3 +1,4 @@
+import { locateLiquiditySection, LIQUIDITY_OPEN, LIQUIDITY_CLOSE } from "./liquiditySection";
 /**
  * NOTE LOCATION — ONE MODULE, ONE JOB: filing text in, located and marked
  * note out.
@@ -1097,6 +1098,36 @@ export interface FilingExtractionResult {
  * for SOME of a company's filings, not a per-filing failure. The caller is
  * responsible for the company-level check (assertCompanyHasLocatableDebtNote).
  */
+/**
+ * SESSION 22, STAGE 3 — THE SECOND REGION.
+ *
+ * An undrawn facility has no balance, so no row, so it is never in the debt
+ * note: it lives in the liquidity discussion and nowhere else. Quest's
+ * $750M revolver and its receivables facility are stated only there, which
+ * is why its card read "the anchor filing states no revolving facility"
+ * while the filing stated two. Measured across the book before wiring: the
+ * section locates on 10 of 10, and Quest's own sentence — "$1.3 billion of
+ * borrowing capacity available under our existing credit facilities,
+ * including $518 million available under our secured receivables credit
+ * facility and $750 million available under our senior unsecured revolving
+ * credit facility" — is inside it.
+ *
+ * Appended AFTER the debt note's region and marked in its own words, so the
+ * two regions are never confused for one another and neither is presented
+ * as the other. Text outside both stays ordinary filing text (Rule 24's
+ * corollary): nothing is removed from the corpus, only named.
+ */
+function appendLiquidityRegion(text: string, fullText: string): string {
+  const liq = locateLiquiditySection(fullText);
+  if (liq.status !== "found") return text;
+  // Already visible in whatever we are about to send? Then naming it again
+  // would put the same words in twice, and a model reading one occurrence as
+  // corroboration of the other is a failure this codebase has already had.
+  const excerpt = fullText.slice(liq.start, liq.end);
+  if (text.includes(excerpt)) return text;
+  return `${text}\n\n${LIQUIDITY_OPEN(liq.start)}\n\n${excerpt}\n\n${LIQUIDITY_CLOSE}`;
+}
+
 export function buildExtractionText(params: {
   form: string;
   url: string;
@@ -1110,12 +1141,12 @@ export function buildExtractionText(params: {
   xbrlStatedTotal?: number | null;
 }): FilingExtractionResult {
   const { form, fullText } = params;
-  if (fullText.length <= LEAD_CHARS) return { text: fullText, debtNoteStatus: "under_cap" };
+  if (fullText.length <= LEAD_CHARS) return { text: appendLiquidityRegion(fullText, fullText), debtNoteStatus: "under_cap" };
   if (form !== "10-Q" && form !== "10-K") return { text: fullText.slice(0, LEAD_CHARS), debtNoteStatus: "not_applicable" };
 
   const location = locateDebtNoteSection(fullText);
   const lead = fullText.slice(0, LEAD_CHARS);
-  if (location.status === "not_found") return { text: lead, debtNoteStatus: "not_found" };
+  if (location.status === "not_found") return { text: appendLiquidityRegion(lead, fullText), debtNoteStatus: "not_found" };
 
   // Excerpt may overlap or sit inside the lead window (a smaller/simpler
   // filing's note might already be within LEAD_CHARS) — splice only the
@@ -1211,11 +1242,11 @@ export function buildExtractionText(params: {
       fullText.slice(location.start, location.end) +
       `\n\n${CLOSE}\n\n` +
       fullText.slice(location.end, Math.max(LEAD_CHARS, location.end));
-    return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan, debtNoteTabular: spanIsTabular(fullText, location.start, noteEnd).tabular };
+    return { text: appendLiquidityRegion(text, fullText), debtNoteStatus: "found", matchCount: location.matchCount, noteSpan, debtNoteTabular: spanIsTabular(fullText, location.start, noteEnd).tabular };
   }
   const excerpt = fullText.slice(location.start, location.end);
   const text = `${lead}\n\n[... document continues; excerpt below resumes at character offset ${location.start} of the full filing ...]\n\n${OPEN}\n\n${excerpt}\n\n${CLOSE}`;
-  return { text, debtNoteStatus: "found", matchCount: location.matchCount, noteSpan, debtNoteTabular: spanIsTabular(fullText, location.start, noteEnd).tabular };
+  return { text: appendLiquidityRegion(text, fullText), debtNoteStatus: "found", matchCount: location.matchCount, noteSpan, debtNoteTabular: spanIsTabular(fullText, location.start, noteEnd).tabular };
 }
 
 /**
