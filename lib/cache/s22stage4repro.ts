@@ -19,12 +19,20 @@ import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
 import { PINNED_AS_OF } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
-import { normalizeScheduleSequence, assemblePosition } from "../events/position";
+import { normalizeScheduleSequence, assemblePosition, rowIdentityKey, parseMoneyAmount } from "../events/position";
 import { priorityClassLabel } from "../events/instrumentClass";
 import { currentCompanySpend } from "../agent/costMeter";
 import { buildVerifiedFactBase } from "../events/factBase";
 import { buildEvents } from "../events/buildEvents";
 import { draftEventBriefing } from "../events/sonnetEventBriefing";
+
+/** Value and unit, the same comparison compareToGolden uses — never whitespace. */
+function amountKey(raw: string): string {
+  const v = parseMoneyAmount(raw);
+  if (v === null) return raw.replace(/\s+/g, " ").trim();
+  const unit = /(thousand|million|billion|trillion)s?/i.exec(raw);
+  return `${v}|${unit ? unit[1].toLowerCase() : "asPrinted"}`;
+}
 
 const COMPANY = process.argv[2] ?? "Tenet Healthcare";
 const RUNS = Number(process.argv[3] ?? 3);
@@ -35,6 +43,8 @@ interface Snap {
   distinctHeadings: string[];
   classed: number;
   ladder: string[];
+  /** The instrument names, compared separately: drift here is a rename, not a position change. */
+  labels: string[];
   /**
    * SESSION 22, v10 — THE CARD BODY, NOT ONLY THE POSITION.
    *
@@ -88,7 +98,21 @@ interface Snap {
       classed: pos.rows.filter((r) => r.classification.priorityClass !== null).length,
       // Identity and amount, so a heading returning while the ladder moves
       // underneath it cannot read as a clean result.
-      ladder: pos.rows.map((r) => `${r.instrument} | ${r.amount} | ${priorityClassLabel(r.classification)}`),
+      // THE POSITION, AS THE GOLDEN NOW DEFINES IT (Session 22): identity from
+      // the facts the filing states, the amount compared by VALUE and unit
+      // rather than by its whitespace, and the class. The label is captured
+      // separately — it is a transcription worth seeing drift in, and it is
+      // not what decides whether two runs hold the same position.
+      ladder: pos.rows
+        // THE NORMALIZED CLASS, not its verbatim. `priorityClassLabel` returns
+        // the filer's own words, which the model transcribes with whatever
+        // capitalisation it used that run — "senior secured" against "Senior
+        // secured" is one class written two ways, and it drives the same rank
+        // and the same sort position. The verbatim still renders (Rule 32) and
+        // still gets compared, in `labels`, where a transcription belongs.
+        .map((r) => `${rowIdentityKey(r)} | ${amountKey(r.amount)} | ${r.classification.priorityClass ?? "none"}`)
+        .sort(),
+      labels: pos.rows.map((r) => `${r.instrument} :: ${priorityClassLabel(r.classification)}`).sort(),
       cards: cardBodies,
       cost,
     });
@@ -139,6 +163,12 @@ interface Snap {
 
   const ladders = snaps.map((s) => s.ladder.join("\n"));
   const ladderStable = ladders.every((l) => l === ladders[0]);
+  const labelSets = snaps.map((x) => x.labels.join(" || "));
+  const labelsStable = labelSets.every((l) => l === labelSets[0]);
+  if (ladderStable && !labelsStable) {
+    console.log("  LABEL DRIFT     : the same rows under different names across runs — a rename, not a position change");
+    for (let i = 0; i < snaps.length; i++) console.log(`      run ${i + 1}: ${snaps[i].labels.join(" / ")}`);
+  }
   console.log(`  LADDER STABILITY: ${ladderStable ? "identical across all runs — row set, amounts and classes all reproduce" : "MOVED between runs — see below; this is worse than the heading"}`);
   if (!ladderStable) {
     for (let i = 0; i < snaps.length; i++) {

@@ -148,7 +148,10 @@ function fact(over: Partial<VerifiedFact> & { linkedTriggerId: string }): Verifi
   const refi = flashCardCandidates.filter((c) => c.bucket === "refi");
 
   assert(refi.length === 1, `[E5-1] three cardable tranches on one ladder produce ONE refi card, not three (got ${refi.length})`);
-  assert(refi[0].headlineRowId?.startsWith("3.400 % Notes due March 2027") === true, `[E5-2] ...headlined by the NEAREST tranche (got ${refi[0].headlineRowId})`);
+  // SESSION 22 — the id is built from the facts the filing states about the
+  // instrument, not from its label (rowIdentityKey), so this asserts the
+  // nearest tranche by its RATE AND MATURITY rather than by its name.
+  assert(refi[0].headlineRowId?.startsWith("3.400%::2027-03-01") === true, `[E5-2] ...headlined by the NEAREST tranche (got ${refi[0].headlineRowId})`);
   assert(refi[0].alsoMaturingRowIds.length === 2, `[E5-3] ...with the other two carried on the same card for KEY POINTS (got ${refi[0].alsoMaturingRowIds.length})`);
 
   const urls = new Set(refi[0].citations.map((c) => c.url));

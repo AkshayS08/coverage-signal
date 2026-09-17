@@ -26,7 +26,7 @@
       "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
       "kind": "computed",
       "pass": true,
-      "detail": "9 row(s) carry a printed unit; 1 state no amount HONESTLY (bilateral secured letter of credit facility — the filing states no size for this facility); no narrative instruments, so no basis to state",
+      "detail": "all 9 row(s) carry a printed unit; no narrative instruments, so no basis to state",
       "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
     },
     {
@@ -66,7 +66,7 @@
       "name": "capacity separated and excluded from the debt sum",
       "kind": "computed",
       "pass": true,
-      "detail": "1 capacity row(s) held out of captured face and reported separately: bilateral secured letter of credit facility",
+      "detail": "this filer states no undrawn capacity",
       "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
     },
     {
@@ -215,16 +215,6 @@
         "provenance": "note",
         "isCapacity": false,
         "sourceLine": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %"
-      },
-      {
-        "instrument": "bilateral secured letter of credit facility",
-        "amount": "(no amount stated)",
-        "maturityDate": null,
-        "dateGranularity": null,
-        "status": "live",
-        "provenance": "note-narrative",
-        "isCapacity": true,
-        "sourceLine": ""
       }
     ],
     "coverage": {

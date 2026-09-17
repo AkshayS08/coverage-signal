@@ -38,6 +38,8 @@ const REPRODUCED: Record<string, string> = {
   "Community Health Systems": "CACHE_BUST x3 at v29 on 2026-09-17: 12 rows and 9 classed in every run, row set / amounts / classes byte-identical across all three.",
   "Universal Health Services": "CACHE_BUST x3 at v29: prose-only note (0 table rows), 5 classed in every run, row set / amounts / classes byte-identical across all three.",
   "Encompass Health": "CACHE_BUST x3 at v29: 7 of 7 rows carried a heading in every run, 4 classed in every run, row set / amounts / classes byte-identical across all three.",
+  "Tenet Healthcare": "CACHE_BUST x3 at v29 after the letter-of-credit rule: 12 rows in every run, 11 classed in every run, row set / amounts / classes identical across all three. Before that rule a $200 million letter-of-credit facility appeared as a 13th row in one run of three; an LC is not borrowed money and now has no ladder destination, so it cannot be routed onto one.",
+  "Molina Healthcare": "CACHE_BUST x3 at v29 after row identity moved off the label: 6 rows in every run, 5 classed in every run, row set / amounts / classes identical across all three. The facility is named \"revolving credit facility\" in one run and \"Credit Facility\" in two — the filing uses both — and identity now keys on the facts the filing states about the instrument, so the rename is reported as a rename rather than as a row removed and a row added.",
 };
 
 const SIGNED = process.argv.slice(2);

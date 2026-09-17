@@ -30,6 +30,7 @@ import type { CompanyResult, TriggerResult } from "../agent";
 import { buildCompanyTableBlock, TABLE_BUCKET_ORDER } from "./portfolioTable";
 import { buildVerifiedFactBase } from "./factBase";
 import type { FlashCard } from "./buildEvents";
+import { rowIdentityKey } from "./position";
 
 interface Fixture {
   generatedAt: string;
@@ -202,7 +203,11 @@ function syntheticSubtotal(label: string | null, amount: string) {
   // expected id for row A the same way position.ts does, so the synthetic
   // card points at exactly one row without needing to run assemblePosition
   // here just to discover it.
-  const rowAId = `${rowA.label}::${rowA.rate}::${rowA.maturityDate}`;
+  // SESSION 22 — built with the SAME function position.ts uses, rather than a
+  // hand-assembled copy of its format. The previous literal drifted the moment
+  // row identity stopped keying on the label, and a test that reconstructs an
+  // identity by hand is testing its own copy of the rule.
+  const rowAId = rowIdentityKey({ rate: rowA.rate, maturityDate: rowA.maturityDate, amount: rowA.amount });
   const syntheticCard = { headlineTrigger: controlled, headlineRowId: rowAId } as FlashCard;
   const table = buildCompanyTableBlock(companyControlled, [syntheticCard]);
   const lineA = table.refiLadder.nearestLines.find((l) => l.row.instrument === "A");

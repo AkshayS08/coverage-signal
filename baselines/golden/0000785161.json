@@ -212,7 +212,7 @@
       {
         "triggerId": "debt-maturity",
         "bucket": "refi",
-        "headlineRowId": "4.50 % Senior Notes due 2028::4.50%::2028-02-01",
+        "headlineRowId": "4.50%::2028-02-01::396900000",
         "derived": [
           {
             "kind": "months-to-maturity",

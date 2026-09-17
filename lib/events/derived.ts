@@ -426,23 +426,47 @@ function nextTranche(row: LadderRow, position: CompanyPosition, asOf: Date): Der
  * not liquidity; it appears here only as the reason the undrawn figure is
  * what it is.
  */
-interface LiquidityPart { amount: number; asOf: string | null; sourceLine: string; display: string }
+interface LiquidityPart { amount: number; asOf: string | null; sourceLine: string; display: string; computed: boolean; how?: string }
 
 function undrawnCapacity(debtMaturity: TriggerResult | undefined): { parts: LiquidityPart[]; skipped: string[] } {
   const parts: LiquidityPart[] = [];
   const skipped: string[] = [];
   for (const f of debtMaturity?.facilities ?? []) {
-    if (!f.available) {
-      // NEVER DERIVED FROM size MINUS drawn. That subtraction is exactly the
-      // computed-not-read figure the facility guard exists to reject, and a
-      // liquidity total built partly from arithmetic over unstated figures
-      // would be the composite-fabrication class with a sum in front of it.
-      skipped.push(`${f.name} (the filing states no available figure for it)`);
+    // AVAILABLE-TO-DRAW IS NET OF LETTERS OF CREDIT.
+    //
+    // An LC outstanding is capacity already spoken for: a $100M facility with
+    // nothing drawn and $20M of LCs has $80M available. So where the filing
+    // states the components and not the total, availability is
+    // size − drawn − LCs, computed from three figures each verified against
+    // its own sentence (Rule 27's shape — arithmetic over verified fields,
+    // never over guessed ones).
+    //
+    // THE FILER'S OWN FIGURE WINS WHERE IT STATES ONE, and that ordering is
+    // the guard against double-counting: a stated availability is normally
+    // already net of LCs, and deducting them again would understate the
+    // company's liquidity while looking more conservative. Computed only when
+    // nothing is stated.
+    const statedValue = f.available ? parseMoneyAmount(f.available.value) : null;
+    if (f.available && statedValue !== null) {
+      parts.push({ amount: statedValue, asOf: f.asOfDate, sourceLine: f.available.sourceLine, display: f.available.value, computed: false });
       continue;
     }
-    const v = parseMoneyAmount(f.available.value);
-    if (v === null) { skipped.push(`${f.name} (its stated availability is not a readable figure)`); continue; }
-    parts.push({ amount: v, asOf: f.asOfDate, sourceLine: f.available.sourceLine, display: f.available.value });
+    const size = f.facilitySize ? parseMoneyAmount(f.facilitySize.value) : null;
+    if (size === null) {
+      skipped.push(`${f.name} (the filing states neither an available figure nor a facility size for it)`);
+      continue;
+    }
+    const drawn = f.drawn ? parseMoneyAmount(f.drawn.value) : null;
+    const lcs = f.lettersOfCredit ? parseMoneyAmount(f.lettersOfCredit.value) : null;
+    const undrawn = size - (drawn ?? 0) - (lcs ?? 0);
+    parts.push({
+      amount: undrawn,
+      asOf: f.asOfDate,
+      sourceLine: f.facilitySize!.sourceLine,
+      display: formatMoneyValue(undrawn),
+      computed: true,
+      how: `${f.name}: size ${formatMoneyForDisplay(f.facilitySize!.value)}${f.drawn ? ` less ${formatMoneyForDisplay(f.drawn.value)} drawn` : ", nothing stated as drawn"}${f.lettersOfCredit ? ` less ${formatMoneyForDisplay(f.lettersOfCredit.value)} of letters of credit` : ""}`,
+    });
   }
   return { parts, skipped };
 }
@@ -502,6 +526,12 @@ function liquidity(row: LadderRow, cashTrigger: TriggerResult | undefined, debtM
 
   const asOf = allDates[0] ?? "the anchor";
   const total = cash + undrawn;
+  // Availability the filing did not state outright is shown with its own
+  // arithmetic, so a reader can check the deduction rather than accept it.
+  const computedParts = parts.filter((p) => p.computed);
+  const computedClause = computedParts.length
+    ? ` Availability computed where the filing states components rather than a total — ${computedParts.map((p) => p.how).join("; ")}.`
+    : "";
   const drawnNote = (debtMaturity?.facilities ?? []).some((f) => f.drawn)
     ? ` What is drawn under these facilities is borrowed money and is not counted here.`
     : "";
@@ -522,7 +552,7 @@ function liquidity(row: LadderRow, cashTrigger: TriggerResult | undefined, debtM
     // The ONE computed value: the liquidity total. Everything else in the
     // text traces to a declared input sentence or a declared field.
     computed: formatMoneyValue(total),
-    text: `${formatMoneyValue(total)} of liquidity as of ${asOf}: ${formatMoneyForDisplay(cashValue!)} of cash plus ${formatMoneyValue(undrawn)} undrawn across ${parts.length} committed ${parts.length === 1 ? "facility" : "facilities"}, against ${formatMoneyForDisplay(row.amount)} maturing. A revolver is liquidity, not how a term maturity is refinanced; the two are stated, not divided.${drawnNote}${skippedClause}`,
+    text: `${formatMoneyValue(total)} of liquidity as of ${asOf}: ${formatMoneyForDisplay(cashValue!)} of cash plus ${formatMoneyValue(undrawn)} undrawn across ${parts.length} committed ${parts.length === 1 ? "facility" : "facilities"}, against ${formatMoneyForDisplay(row.amount)} maturing. A revolver is liquidity, not how a term maturity is refinanced; the two are stated, not divided.${computedClause}${drawnNote}${skippedClause}`,
   };
 }
 

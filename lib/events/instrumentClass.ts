@@ -83,6 +83,12 @@ export const INSTRUMENT_TYPES = [
   "commercial-paper",
   "finance-lease",
   "credit-facility",
+  /**
+   * SESSION 22 — a letter-of-credit facility is its own kind, and it exists
+   * as a type so that it can have NO LADDER DESTINATION. An LC is not
+   * borrowed money; see facilityOnlyRows in position.ts.
+   */
+  "letter-of-credit",
   "other",
 ] as const;
 export type InstrumentType = (typeof INSTRUMENT_TYPES)[number];
@@ -206,6 +212,10 @@ const TYPE_PATTERNS: [RegExp, InstrumentType][] = [
   // carries it as capacity — but the name never says "revolving", so the
   // stated words are kept and the type is the one the structure requires.
   [/\bABL\b/i, "revolver"],
+  // AFTER revolver and ABL, deliberately: a revolving facility WITH a letter
+  // of credit subfacility is a revolver, and its name often says both. Only a
+  // facility whose own kind is issuing letters of credit lands here.
+  [/\bletters?\s+of\s+credit\b|\bLC\s+facility\b/i, "letter-of-credit"],
   [/\bcommercial paper\b/i, "commercial-paper"],
   [/\b(finance|financing|capital)\s+lease/i, "finance-lease"],
   [/\bnotes?\b/i, "senior-note"],

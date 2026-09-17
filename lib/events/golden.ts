@@ -19,7 +19,7 @@
  * failure reads as a diff rather than as an alarm.
  */
 import type { CompanyResult } from "../agent";
-import { assemblePosition, parseMoneyAmount } from "./position";
+import { assemblePosition, parseMoneyAmount, rowIdentityKey, rowIdentityKeyWithoutSize } from "./position";
 import { computeCoverage } from "./coverage";
 import { buildDerivedLines } from "./derived";
 import { buildEvents } from "./buildEvents";
@@ -263,19 +263,54 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
   cmp("anchor.reportDate", expected.anchor?.reportDate ?? null, actual.anchor?.reportDate ?? null);
   cmp("asOf", expected.asOf, actual.asOf);
 
-  // The ladder, row by row and named by instrument — never "the ladder changed".
+  // The ladder, row by row — never "the ladder changed".
+  //
+  // SESSION 22 — ROWS ARE MATCHED ON WHAT THE FILING STATES, NOT ON THE LABEL.
+  //
+  // This keyed on `instrument`, so a filer whose synonyms the model alternates
+  // between produced a MISSING and an UNEXPECTED for one unmoved row. Molina's
+  // revolver is "revolving credit facility" in one re-ask and "Credit
+  // Facility" in two, with the same $1.25 billion, the same 2030-11-20
+  // maturity and the same class in all three. A golden must not fail over
+  // which of the filing's own two names a run happened to print.
+  //
+  // The label is still COMPARED — it is a transcription and a change in it is
+  // worth seeing — but as a field of a matched row, reported as a rename,
+  // rather than as the thing that decides whether the row is the same row.
+  const keyOf = (r: GoldenRow) => rowIdentityKey({ rate: null, maturityDate: r.maturityDate, amount: r.amount });
+  const loose = (r: GoldenRow) => rowIdentityKeyWithoutSize({ rate: null, maturityDate: r.maturityDate });
   cmp("rows.count", expected.rows.length, actual.rows.length);
-  const byName = new Map(actual.rows.map((r) => [r.instrument, r]));
+  const byKey = new Map(actual.rows.map((r) => [keyOf(r), r]));
+  const matched = new Set<GoldenRow>();
   for (const e of expected.rows) {
-    const a = byName.get(e.instrument);
+    let a = byKey.get(keyOf(e));
+    // SECOND PASS — THE SAME TRANCHE WITH A MOVED BALANCE.
+    //
+    // Size is in the key so that two facilities sharing a maturity stay
+    // separate. The cost is that a repurchase changes the key, and a golden
+    // must report that as "this row's amount changed" rather than as one row
+    // leaving and another arriving. So an unmatched expected row is matched on
+    // rate and maturity alone — and ONLY when exactly one unclaimed row on
+    // each side holds that looser key, because an ambiguous match is not a
+    // match (Rule 19) and merging two real instruments is the failure this
+    // whole key was rewritten to avoid.
+    if (!a) {
+      const eLoose = loose(e);
+      const candidates = actual.rows.filter((r) => loose(r) === eLoose && !matched.has(r));
+      const rivals = expected.rows.filter((x) => loose(x) === eLoose);
+      if (candidates.length === 1 && rivals.length === 1) a = candidates[0];
+    }
     if (!a) { d.push(`rows["${e.instrument}"]: MISSING — the signed ladder carries it, this run does not`); continue; }
+    matched.add(a);
+    if (a.instrument !== e.instrument) {
+      d.push(`rows["${e.instrument}"].instrument: RENAMED to ${fmt(a.instrument)} — same amount, maturity and status, so the same instrument under another of the filing's own names`);
+    }
     cmpAmount(`rows["${e.instrument}"].amount`, e.amount, a.amount);
     for (const k of ["maturityDate", "dateGranularity", "status", "provenance", "isCapacity", "sourceLine"] as const) {
       cmp(`rows["${e.instrument}"].${k}`, e[k], a[k]);
     }
   }
-  const expNames = new Set(expected.rows.map((r) => r.instrument));
-  for (const a of actual.rows) if (!expNames.has(a.instrument)) d.push(`rows["${a.instrument}"]: UNEXPECTED — this run carries it, the signed ladder does not`);
+  for (const a of actual.rows) if (!matched.has(a)) d.push(`rows["${a.instrument}"]: UNEXPECTED — this run carries it, the signed ladder does not`);
 
   for (const k of ["denominatorSource", "statedTotalDebt", "capturedFace", "statedBridge", "residualPercent", "residualPasses"] as const) {
     // These are already numbers or booleans, not printed strings — cmp is

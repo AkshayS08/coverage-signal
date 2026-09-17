@@ -275,8 +275,73 @@ export function walkGapFractionOf(walk: WalkChecksumResult): number | null {
   return Math.max(...failing.map((c) => Math.abs(c.gap))) / statedTotal;
 }
 
-function ladderRowId(row: DebtRowLike & { instrument: string }): string {
-  return `${row.instrument}::${row.rate ?? "?"}::${row.maturityDate ?? "no-maturity-stated"}`;
+/**
+ * SESSION 22 — ROW IDENTITY IS BUILT FROM WHAT THE FILING STATES ABOUT THE
+ * INSTRUMENT, NEVER FROM THE LABEL A RUN HAPPENED TO PICK.
+ *
+ * Molina's revolver is "revolving credit facility" in one CACHE_BUST re-ask
+ * and "Credit Facility" in two. The filing uses both; the model picks either.
+ * Keyed on the label, one instrument became two identities, and a golden
+ * pinned on one run reported a row removed and a row added on the next —
+ * while its amount, its maturity and its class were identical in all three.
+ *
+ * "Revolver, $1.25B, matures 2030-11-20" is one row whatever it is called.
+ *
+ * THE TYPE IS DELIBERATELY NOT IN THE KEY, and that is worth stating because
+ * it was the obvious candidate. `instrumentType` is DERIVED FROM THE NAME —
+ * "revolving credit facility" reads as `revolver`, "Credit Facility" as
+ * `credit-facility` — so it inherits exactly the instability it would be
+ * there to cure. A key is only as stable as its least stable input.
+ *
+ * NO HOUSE VOCABULARY AND NO NAME NORMALIZATION. Mapping the filer's synonyms
+ * onto a canonical label is the vocabulary guard this codebase does not do;
+ * it would make the tool's own naming authoritative over the filing's. The
+ * label still renders exactly as the filing states it — it simply stops being
+ * what says whether two rows are the same row.
+ */
+export function rowIdentityKey(row: { rate: string | null; maturityDate: string | null; amount?: string }): string {
+  // RATE AND MATURITY FIRST, AND THE AMOUNT ONLY AS A LAST RESORT.
+  //
+  // The amount is a MEASURED VALUE, not an identifier: the same tranche
+  // carries a different balance every quarter, and that movement is the fact
+  // an RM reads. Keying identity on it makes a repurchase look like one row
+  // leaving and another arriving, which is precisely what a golden exists to
+  // report in words — "rows[X].amount: expected A, got B" — and cannot if the
+  // row is no longer recognised as the same row.
+  //
+  // So the key is what the filing states ABOUT the instrument and does not
+  // restate each period. Where a row states neither rate nor maturity — a
+  // finance-lease line, an "Other" catch-all — there is nothing else to tell
+  // two such rows apart, and the amount joins the key as the only remaining
+  // discriminator. That is a last resort and is marked as one.
+  // RATE, MATURITY AND SIZE — all three, and the reason is a near miss.
+  //
+  // Keyed on rate and maturity alone, UHS's "Tranche A term loan" and its
+  // "Revolving credit facility" collide: both state no rate and both mature
+  // 2029-09-26. Two entirely different instruments matched as one, and the
+  // golden reported a rename and a $1.448B-to-$225M "amount change". A key too
+  // weak to tell real instruments apart is worse than the label it replaced.
+  //
+  // Size is what separates them, so size is in the key — with the consequence
+  // handled where it belongs rather than by weakening the key: a tranche whose
+  // BALANCE moved between periods no longer matches exactly, and
+  // compareToGolden falls back to a rate-and-maturity match, accepting it only
+  // when exactly one row on each side is left holding it. Ambiguity is not a
+  // match (Rule 19), and a movement reported as "this row's amount changed"
+  // is the whole point of pinning it.
+  const rate = row.rate ?? "no-rate";
+  const maturity = row.maturityDate ?? "no-maturity-stated";
+  const amount = row.amount ? parseMoneyAmount(row.amount) : null;
+  return `${rate}::${maturity}::${amount === null ? (row.amount ?? "no-amount") : String(amount)}`;
+}
+
+/** The key without size — for the second pass only; see compareToGolden. */
+export function rowIdentityKeyWithoutSize(row: { rate: string | null; maturityDate: string | null }): string {
+  return `${row.rate ?? "no-rate"}::${row.maturityDate ?? "no-maturity-stated"}`;
+}
+
+function ladderRowId(row: DebtRowLike & { instrument: string; amount?: string }): string {
+  return rowIdentityKey(row);
 }
 
 /**
@@ -388,7 +453,11 @@ function ladderRowFromSequenceEntry(
     dateGranularity: entry.dateGranularity,
     sourceLine: entry.sourceLine,
     citedUrl: entry.citedUrl,
-    id: ladderRowId({ instrument, rate: entry.rate, maturityDate: entry.maturityDate, dateGranularity: entry.dateGranularity }),
+    // The SIZE is part of identity (see rowIdentityKey) — omitting it here
+    // would key every row of a filer whose rows state no rate on maturity
+    // alone, which is the collision that merged UHS's term loan with its
+    // revolver.
+    id: ladderRowId({ instrument, rate: entry.rate, maturityDate: entry.maturityDate, dateGranularity: entry.dateGranularity, amount: entry.amount }),
     status,
     provenance: "note",
   };
@@ -538,6 +607,22 @@ function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerResult | u
   const out: LadderRow[] = [];
   for (const f of facilities) {
     if (claimed.has(f.name)) continue;
+    // A LETTER OF CREDIT IS NOT BORROWED MONEY, SO IT HAS NO LADDER ROW.
+    //
+    // An LC is a contingent undertaking: nothing is owed unless it is drawn,
+    // and its only effect on the position is that LCs outstanding reduce what
+    // remains available under the facility they sit against. That belongs on
+    // the liquidity line, which now deducts them, and nowhere else.
+    //
+    // REMOVING THE DESTINATION IS THE FIX, not instructing against it. Tenet's
+    // $200 million letter-of-credit facility became a ladder row in one
+    // CACHE_BUST re-ask of three and not the other two — the fact is real and
+    // in the filing either way, and which structure it landed in was the
+    // model's choice that run. A row that may or may not exist depending on
+    // which call answered is not an identity, and no prompt wording makes it
+    // one. With no ladder destination there is nothing to route it into.
+    // Same move as schema-as-fact (Rule 39), one instrument type over.
+    if (classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType === "letter-of-credit") continue;
     // Already on the ladder under its own name (with or without a maturity)?
     if (existing.some((r) => matchFacility({ name: r.instrument, category: null }, [f], { byNameOnly: true }))) continue;
     const m = resolveFacilityMaturity(f.maturity?.value);
@@ -555,7 +640,7 @@ function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerResult | u
       dateGranularity: m.outcome === "dated" ? m.granularity : null,
       sourceLine: f.maturity?.sourceLine ?? f.facilitySize?.sourceLine ?? "",
       citedUrl: "",
-      id: ladderRowId({ instrument: f.name, rate: null, maturityDate: m.outcome === "dated" ? m.date : null, dateGranularity: null }),
+      id: ladderRowId({ instrument: f.name, rate: null, maturityDate: m.outcome === "dated" ? m.date : null, dateGranularity: null, amount: f.facilitySize?.value ?? "(no amount stated)" }),
       status: "live",
       provenance: "note-narrative",
       isCapacity: true,
@@ -620,7 +705,7 @@ function ladderRowFromProseInstrument(
     dateGranularity: maturityIsSourced ? p.dateGranularity : null,
     sourceLine: p.sourceLine,
     citedUrl: p.citedUrl ?? "",
-    id: ladderRowId({ instrument, rate: p.rate, maturityDate: p.maturityDate, dateGranularity: p.dateGranularity }),
+    id: ladderRowId({ instrument, rate: p.rate, maturityDate: p.maturityDate, dateGranularity: p.dateGranularity, amount }),
     status,
     provenance: "note-narrative",
     isCapacity: c.capacity,
@@ -651,7 +736,7 @@ function ladderRowFromIssuedTranche(row: VerifiedIssuedTranche, status: LadderRo
       instrumentName: row.instrument,
       maturityDate: row.maturityDate,
     }),
-    id: ladderRowId(row), status, provenance: "pricing-8-K",
+    id: ladderRowId({ ...row, amount: row.amount }), status, provenance: "pricing-8-K",
   };
 }
 
