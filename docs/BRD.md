@@ -1575,3 +1575,13 @@ persistence after narration (Rule 43), the shared measured-vs-unreachable
 helper (Rule 37), and `PRIORITY_CLASSES` ordering junior-priority above
 senior-secured — the last is required before the 40-name run, because junior
 debt rendered as more senior is visibly, backwards wrong.
+
+Added by the post-session docs pass: **a staleness check for every generated
+artifact (Rule 50)**. `sessions/22/signature_review.html` was committed showing
+DaVita at 10 ladder rows against a packet, and a golden, of 9 — Rule 48 removed
+the letter-of-credit row after the page was rendered and nothing re-rendered
+it, so a surface asserting "generated from the pinned data" was out of sync
+with that data. The page is regenerated; the guard is not built. It belongs
+with this session's other rule-scalability work: a `signature:check` in the
+shape `docs:rules:check` already has — re-derive, compare, fail loudly — and a
+decision about which of the book's derived files need one.

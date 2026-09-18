@@ -2,7 +2,7 @@
  * GENERATE docs/rules.md FROM THE BUILD LOG'S OWN HEADINGS. $0, no model calls.
  *
  * The rules index is the audit's reading list, and a hand-maintained list of
- * forty-nine rules is a list that disagrees with the log by the third edit.
+ * fifty rules is a list that disagrees with the log by the third edit.
  * So it is not hand-maintained: every line here is read out of
  * `docs/build_log.md`, and re-running this is how the index stays true.
  *
@@ -21,7 +21,7 @@ const OUT_PATH = join(process.cwd(), "docs", "rules.md");
 
 /** The highest rule number the log is expected to define. A rule added without */
 /** its heading fails the completeness check below rather than vanishing. */
-const HIGHEST_RULE = 49;
+const HIGHEST_RULE = 50;
 
 interface RuleHeading {
   /** The rule's number. Refinements share the number of the rule they refine. */

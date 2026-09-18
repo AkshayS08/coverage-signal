@@ -3756,3 +3756,73 @@ change would have held a signature over a capital letter.
 
 **A gate that measures the old definition of the thing it gates reports the fix
 as a failure.**
+
+---
+
+# The docs cleanup — $0, no logic change
+
+Documentation and file location only. The one finding worth a rule came out of
+it sideways, which is the usual way.
+
+## Rule 50 — a generated artifact is regenerated whenever its source changes, or it is stale by definition
+
+`sessions/22/signature_review.html` renders the six signable sheets from
+`sessions/22/sign_packet.json`, and says so on its own face: *"generated from
+the pinned data, not hand-authored."* It was rendered at 17:52. Rule 48 landed
+after that, removed DaVita's letter-of-credit facility from the ladder, and the
+packet was rebuilt at 19:30 with nine rows. The page was never re-rendered.
+
+```
+page as committed at bda24f5   DaVita  10 rows
+sign_packet.json               DaVita   9 rows
+golden 0000927066.json         DaVita   9 rows
+```
+
+**The surface used to sign a position disagreed with the position it was
+signing, by exactly the row the session's own new rule removed.** Nothing was
+wrong with the golden, the packet, or the rule. What was wrong is that a
+derived file does not update itself, and nothing made anyone re-derive it.
+
+The claim on its face is what makes this a rule rather than an inconvenience. A
+page that said "rendered 17:52, source may have moved since" would merely have
+been old. This one asserted currency it did not have — which is Rule 46's
+defect at the file level rather than the figure level: a real page, a real
+source, and no relationship between them at the moment a reader trusts it.
+
+**The general form.** Anything derived carries a dependency on what it was
+derived from, and a dependency nothing checks is a dependency that will be
+violated. The fix is never "remember to regenerate" — that is an instruction,
+and instructions do not constrain (Rule 22, and Rule 39's whole shape). It is a
+check that fails loudly, of the kind `docs:rules:check` already is: re-derive,
+compare, exit non-zero on any difference. `docs/rules.md` cannot silently drift
+from the build log's headings because something re-reads the log and refuses.
+The signature page had no such guard.
+
+Worth noting which discipline caught it and which did not. The suites did not:
+they test the generator, and the generator was correct — it had simply not been
+run. `git status` did not: the file was committed, unmodified, and clean. It
+surfaced only because the reorg changed the path the page names as its source,
+which forced a re-render, which changed a row. **A stale derived file is
+invisible to every check that looks at the file rather than at the derivation.**
+
+**Audit item, logged and deliberately not built.** A `signature:check` in the
+same shape as `docs:rules:check`: re-render the page from the packet, compare to
+the committed page, fail on any difference. Built in the audit session with the
+other rule-scalability work rather than now — the fix here was one stale file,
+and the guard belongs with the pass that decides how many such guards the book
+needs and where they run.
+
+**The generated-file inventory this should cover**, as of this commit:
+
+| artifact | derived from | guard |
+|---|---|---|
+| `docs/rules.md` | `docs/build_log.md` headings | `npm run docs:rules:check` |
+| `sessions/22/signature_review.html` | `sessions/22/sign_packet.json` | **none — audit item** |
+| `sessions/22/sign_packet.json` | the golden writer's own calls | none; re-derived per run |
+| `baselines/golden/*.json` | a signed run at a pinned version | criteria + `compareToGolden` |
+
+The goldens are the counter-example that proves the rule is about guards and
+not about freshness: a golden is *supposed* to be pinned to an older state, and
+what makes that safe is that something compares it to the present and reports
+the difference by name (Rules 30 and 31). A pin with a comparator is a
+baseline. A pin without one is just a stale file.
