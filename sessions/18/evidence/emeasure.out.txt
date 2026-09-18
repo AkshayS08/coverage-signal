@@ -1,0 +1,95 @@
+====================================================================================================
+GROUP E — CARDS, VERDICTS, AND THE RENDERED LINES
+====================================================================================================
+
+company                      | cards | verdict      | E2 via        | E3 aggregate | E9 xrefs | E13 movements
+DaVita                       | 0->0  | pass-partial | single-subtotal | false        | 0        | 1
+HCA Healthcare               | 0->0  | pass-partial | single-subtotal | true         | 1        | 0
+Tenet Healthcare             | 1->1  | pass         | single-subtotal | false        | 0        | 3
+Universal Health Services    | 0->0  | no-schedule  | -             | false        | 0        | 0
+Encompass Health             | 0->0  | pass         | single-subtotal | false        | 1        | 2
+Community Health Systems     | 0->0  | fail         | single-subtotal | false        | 1        | 0
+Quest Diagnostics            | 1->1  | pass-partial | single-subtotal | false        | 1        | 3
+Centene Corporation          | 1->1  | pass-partial | single-subtotal | false        | 1        | 3
+Cigna Group                  | 3->1 * | pass         | section-sum   | false        | 0        | 0
+Molina Healthcare            | 0->0  | pass         | single-subtotal | false        | 0        | 0
+
+====================================================================================================
+E5 / E6 — REFI CARDS AND THEIR CITATIONS
+====================================================================================================
+
+  Tenet Healthcare
+    CARD refi | debt-maturity | headlineRow=5.125 % due 2027::5.125%::2027
+      cites: 10-Q 2026-07-29
+      E6 citation gaps: none
+
+  Quest Diagnostics
+    CARD refi | debt-maturity | headlineRow=4.60 % Senior Notes due December 2027::4.60%::2027-12-01
+      cites: 10-Q 2026-07-23
+      E6 citation gaps: none
+
+  Centene Corporation
+    CARD refi | debt-maturity | headlineRow=$ 2,500 million 4.25 % Senior Notes due December 15, 2027::4.25%::2027-12-15
+      cites: 10-Q 2026-07-28
+      E6 citation gaps: none
+
+  Cigna Group
+    CARD refi | debt-maturity | headlineRow=$ 1,500 million, 3.400 % Notes due March 2027::3.400%::2027-03-01
+      also on this card (E5 KEY POINTS): 2 more tranche(s) — $ 259 million, 7.875 % Debentures due May 2027::7.875%::2027-05-01 | $ 600 million, 3.050 % Notes due October 2027::3.050%::2027-10-01
+      cites: 10-K 2026-02-26
+      E6 citation gaps: none
+
+====================================================================================================
+E11 — BUCKET CORRECTIONS (diagnosis: renderer-fixable or taxonomy-level?)
+====================================================================================================
+  DaVita [New debt / financing need] acquisition-announced
+      "On February 2, 2026, the Company signed a definitive agreement to acquire a noncontrolling minority interest in an entity."
+      E11.1 acquisition consideration under New debt
+  DaVita [New debt / financing need] capex-program
+      "period spend — For the six months ended June 30, 2026, the Company made additions of property and equipment totaling $271,836 thousand."
+      E11.4 capex-program with no projectName, bucket=new_debt, cashAmount=$ 271,836 thousands
+  DaVita [FX / rate hedging] floating-rate-debt
+      "Term Loan A-2 ($1,975,000 thousand) and Term Loan B-2 ($2,357,910 thousand) both bear interest at SOFR plus margins."
+      E11.3 hedging line from trigger "floating-rate-debt" — bucket is per-trigger (taxonomy), check exposure kind
+  HCA Healthcare [New debt / financing need] capex-program
+      "period spend — Capital expenditures for property and equipment totaled $2,350 million for the six months ended June 30, 2026 and $1,119 million for Q1 2026."
+      E11.4 capex-program with no projectName, bucket=new_debt, cashAmount=$ 2,350 million
+  HCA Healthcare [FX / rate hedging] floating-rate-debt (xref->refi)
+      "Commercial paper program with $3,890 million outstanding at June 30, 2026 (weighted average rate of 4.3%) represents floating-rate debt."
+      E11.3 hedging line from trigger "floating-rate-debt" — bucket is per-trigger (taxonomy), check exposure kind
+  Universal Health Services [FX / rate hedging] international-expansion
+      "Behavioral health care facilities located in the U.K. generated net revenues of approximately $1.001 billion in 2025."
+      E11.3 hedging line from trigger "international-expansion" — bucket is per-trigger (taxonomy), check exposure kind
+  Universal Health Services [FX / rate hedging] floating-rate-debt
+      "As of June 30, 2026, the company had $373 million drawn on the revolving credit facility and $1.455 billion on the Tranche A term loan, both of which are floati"
+      E11.3 hedging line from trigger "floating-rate-debt" — bucket is per-trigger (taxonomy), check exposure kind
+  Universal Health Services [FX / rate hedging] fx-exposure
+      "The company has material foreign-currency exposure through its U.K. behavioral health operations, which generated $1.001 billion in revenues in 2025."
+      E11.3 hedging line from trigger "fx-exposure" — bucket is per-trigger (taxonomy), check exposure kind
+  Encompass Health [New debt / financing need] capex-program
+      "period spend — Capital expenditures for property, equipment, and intangible assets were $382.7 million for the six months ended June 30, 2026."
+      E11.4 capex-program with no projectName, bucket=new_debt, cashAmount=$ 382.7 million
+  Encompass Health [FX / rate hedging] floating-rate-debt (xref->refi)
+      "The company has $200 million drawn on its revolving credit facility as of June 30, 2026, which bears interest at 4.9% (floating rate tied to Term SOFR)."
+      E11.3 hedging line from trigger "floating-rate-debt" — bucket is per-trigger (taxonomy), check exposure kind
+  Community Health Systems [New debt / financing need] capex-program
+      "period spend — Capital expenditures of $152 million for purchases of property and equipment during the six months ended June 30, 2026, reflecting ongoing facili"
+      E11.4 capex-program with no projectName, bucket=new_debt, cashAmount=$ 152 million
+  Community Health Systems [FX / rate hedging] floating-rate-debt (xref->new_debt)
+      "ABL Facility of $708 million drawn as of June 30, 2026, which is a floating-rate revolving credit facility, exposing the company to interest rate risk."
+      E11.3 hedging line from trigger "floating-rate-debt" — bucket is per-trigger (taxonomy), check exposure kind
+  Quest Diagnostics [New debt / financing need] acquisition-announced
+      "Total purchase consideration was $38 million cash plus $253 million non-controlling interest valuation."
+      E11.1 acquisition consideration under New debt
+  Quest Diagnostics [New debt / financing need] capex-program
+      "period spend — Company disclosed capital expenditures of $252 million for the six months ended June 30, 2026."
+      E11.4 capex-program with no projectName, bucket=new_debt, cashAmount=$ 252 million
+  Quest Diagnostics [FX / rate hedging] floating-rate-debt
+      "Company maintains fixed-to-variable interest rate swaps on $1,800 million notional amount of debt, converting fixed-rate senior notes into variable-rate debt ti"
+      E11.3 hedging line from trigger "floating-rate-debt" — bucket is per-trigger (taxonomy), check exposure kind
+  Centene Corporation [FX / rate hedging] floating-rate-debt (xref->refi)
+      "Term Loan Facility of $1,975 million outstanding as of June 30, 2026."
+      E11.3 hedging line from trigger "floating-rate-debt" — bucket is per-trigger (taxonomy), check exposure kind
+  Molina Healthcare [FX / rate hedging] commodity-exposure
+      "The company discloses material exposure to pharmacy costs, including specialty drugs and formulary changes that allow higher-priced non-generic drugs."
+      E11.3 hedging line from trigger "commodity-exposure" — bucket is per-trigger (taxonomy), check exposure kind

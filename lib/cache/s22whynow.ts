@@ -2,7 +2,7 @@
  * SESSION 22, STAGE 5, ITEM 4 — THE v10 WHY-NOW RUN. PAID.
  *
  * Cost and result shape declared first, in
- * files/session_22_stage5_whynow_declaration.md, including the addendum that
+ * sessions/22/stage5_whynow_declaration.md, including the addendum that
  * corrects the item's own premise.
  *
  * Prints every card's why-now with the tranche event the model was shown, so

@@ -1,0 +1,53 @@
+B MEASUREMENT — located span per filing, and whether the company's own
+verified ladder rows fall inside it. Rows come from the v16 cache and were
+verified against FULL filing text, so they are independent ground truth.
+
+=== DaVita — base filing 10-Q 2026-08-04, 13 verified entries
+  10-Q 2026-08-04  <= BASE: via=heading span=[26757,30166] len=3409 | table? rows=10 statedTotal=false ok=true | heading="6. Long-term debt" | verified entries located in this filing: 13, of which INSIDE span: 13 | extractionLen=40000 status=found
+  10-Q 2026-05-05: via=heading span=[22209,24207] len=1998 | table? rows=9 statedTotal=false ok=true | heading="6. Long-term debt" | verified entries located in this filing: 0, of which INSIDE span: 0 | extractionLen=40000 status=found
+  10-K 2026-02-11: via=heading span=[432247,435507] len=3260 | table? rows=11 statedTotal=false ok=true | heading="12. Long-term debt" | verified entries located in this filing: 0, of which INSIDE span: 0 | extractionLen=43403 status=found
+
+=== HCA Healthcare — base filing 10-Q 2026-07-28, 8 verified entries
+  10-Q 2026-07-28  <= BASE: via=heading span=[32472,34562] len=2090 | table? rows=5 statedTotal=true ok=true | heading="3) Debt" | verified entries located in this filing: 8, of which INSIDE span: 8 | extractionLen=40000 status=found
+  10-Q 2026-04-29: via=heading span=[29284,30606] len=1322 | table? rows=0 statedTotal=true ok=true | heading="3) Debt" | verified entries located in this filing: 5, of which INSIDE span: 5 | extractionLen=40000 status=found
+  10-K 2026-02-10: via=heading span=[483105,486649] len=3544 | table? rows=11 statedTotal=true ok=true | heading="3) Debt" | verified entries located in this filing: 4, of which INSIDE span: 3 | extractionLen=43687 status=found
+
+=== Tenet Healthcare — base filing 10-Q 2026-07-29, 13 verified entries
+  10-Q 2026-07-29  <= BASE: via=heading span=[33013,34307] len=1294 | table? rows=10 statedTotal=true ok=true | heading="NOTE 5. LONG-TERM DEBT" | verified entries located in this filing: 13, of which INSIDE span: 13 | extractionLen=40000 status=found
+  10-Q 2026-04-30: via=heading span=[32208,33503] len=1295 | table? rows=10 statedTotal=true ok=true | heading="NOTE 5. LONG-TERM DEBT" | verified entries located in this filing: 10, of which INSIDE span: 10 | extractionLen=40000 status=found
+  10-K 2026-02-17: via=heading span=[401651,405057] len=3406 | table? rows=16 statedTotal=true ok=true | heading="NOTE 8. LONG-TERM DEBT" | verified entries located in this filing: 10, of which INSIDE span: 10 | extractionLen=43549 status=found
+
+=== Universal Health Services — base filing 10-K 2026-02-25, 10 verified entries
+  10-Q 2026-08-07: via=density span=[279162,282193] len=3031 | table? rows=9 statedTotal=false ok=true | heading=none | verified entries located in this filing: 2, of which INSIDE span: 2 | extractionLen=43174 status=found
+  10-Q 2026-05-07: via=density span=[247207,249220] len=2013 | table? rows=7 statedTotal=false ok=true | heading=none | verified entries located in this filing: 2, of which INSIDE span: 2 | extractionLen=42156 status=found
+  10-K 2026-02-25  <= BASE: via=heading span=[522707,524383] len=1676 | table? rows=5 statedTotal=false ok=true | heading="4) LONG-TERM DEBT" | verified entries located in this filing: 10, of which INSIDE span: 9 | extractionLen=41819 status=found
+
+=== Encompass Health — base filing 10-Q 2026-08-07, 10 verified entries
+  10-Q 2026-08-07  <= BASE: via=heading span=[40129,41110] len=981 | table? rows=4 statedTotal=false ok=true | heading="4. Long-term Debt" | verified entries located in this filing: 10, of which INSIDE span: 9 | extractionLen=41123 status=found
+  10-Q 2026-05-01: via=heading span=[35693,36633] len=940 | table? rows=3 statedTotal=false ok=true | heading="4. Long-term Debt" | verified entries located in this filing: 0, of which INSIDE span: 0 | extractionLen=40000 status=found
+  10-K 2026-02-26: via=heading span=[465055,466031] len=976 | table? rows=4 statedTotal=false ok=true | heading="8. Long-term Debt" | verified entries located in this filing: 0, of which INSIDE span: 0 | extractionLen=41119 status=found
+
+=== Community Health Systems — base filing 10-Q 2026-07-23, 9 verified entries
+  10-Q 2026-07-23  <= BASE: via=heading span=[48294,51157] len=2863 | table? rows=13 statedTotal=true ok=true | heading="6. LONG-TERM DEBT" | verified entries located in this filing: 7, of which INSIDE span: 6 | extractionLen=43005 status=found
+  10-Q 2026-04-22: via=heading span=[46523,48291] len=1768 | table? rows=9 statedTotal=true ok=true | heading="6. LONG-TERM DEBT" | verified entries located in this filing: 0, of which INSIDE span: 0 | extractionLen=41910 status=found
+  10-K 2026-02-19: via=heading span=[492678,498498] len=5820 | table? rows=27 statedTotal=true ok=true | heading="6. LONG-TERM DEBT" | verified entries located in this filing: 0, of which INSIDE span: 0 | extractionLen=45963 status=found
+
+=== Quest Diagnostics — base filing 10-Q 2026-07-23, 16 verified entries
+  10-Q 2026-07-23  <= BASE: via=heading span=[39415,42534] len=3119 | table? rows=13 statedTotal=true ok=true | heading="7. DEBT" | verified entries located in this filing: 16, of which INSIDE span: 16 | extractionLen=42676 status=found
+  10-Q 2026-04-22: via=density span=[37265,38449] len=1184 | table? rows=4 statedTotal=false ok=true | heading=none | verified entries located in this filing: 0, of which INSIDE span: 0 | extractionLen=40000 status=found
+  10-K 2026-02-26: via=heading span=[414933,416327] len=1394 | table? rows=12 statedTotal=true ok=true | heading="13. DEBT" | verified entries located in this filing: 6, of which INSIDE span: 6 | extractionLen=41537 status=found
+
+=== Centene Corporation — base filing 10-Q 2026-07-28, 12 verified entries
+  10-Q 2026-07-28  <= BASE: via=heading span=[52644,53972] len=1328 | table? rows=7 statedTotal=true ok=true | heading="8. Debt" | verified entries located in this filing: 12, of which INSIDE span: 11 | extractionLen=41470 status=found
+  10-Q 2026-04-28: via=heading span=[48606,49935] len=1329 | table? rows=7 statedTotal=true ok=true | heading="8. Debt" | verified entries located in this filing: 5, of which INSIDE span: 5 | extractionLen=41471 status=found
+  10-K 2026-02-17: via=heading span=[405862,407240] len=1378 | table? rows=7 statedTotal=true ok=true | heading="10. Debt" | verified entries located in this filing: 0, of which INSIDE span: 0 | extractionLen=41521 status=found
+
+=== Cigna Group — base filing 10-K 2026-02-26, 32 verified entries
+  10-Q 2026-07-30: NOT FOUND (len 147094)
+  10-Q 2026-04-30: NOT FOUND (len 132041)
+  10-K 2026-02-26  <= BASE: via=heading span=[318174,322264] len=4090 | table? rows=37 statedTotal=true ok=true | heading="Note 7 – Debt" | verified entries located in this filing: 32, of which INSIDE span: 32 | extractionLen=44233 status=found
+
+=== Molina Healthcare — base filing 10-Q 2026-07-23, 7 verified entries
+  10-Q 2026-07-23  <= BASE: via=heading span=[37461,38402] len=941 | table? rows=5 statedTotal=false ok=true | heading="7. Debt" | verified entries located in this filing: 7, of which INSIDE span: 6 | extractionLen=40000 status=found
+  10-Q 2026-04-23: via=heading span=[36406,37348] len=942 | table? rows=5 statedTotal=false ok=true | heading="7. Debt" | verified entries located in this filing: 5, of which INSIDE span: 5 | extractionLen=40000 status=found
+  10-K 2026-02-10: via=heading span=[320112,323055] len=2943 | table? rows=12 statedTotal=false ok=true | heading="11. Debt" | verified entries located in this filing: 5, of which INSIDE span: 5 | extractionLen=43086 status=found

@@ -2,7 +2,7 @@
  * SESSION 22, STAGE 7 — THE SIGNATURE PACKET, RENDERED. $0.
  *
  * A FORMATTER, NOT A RE-DESCRIPTION. This reads
- * files/session_22_sign_packet.json and injects it into the page verbatim;
+ * sessions/22/sign_packet.json and injects it into the page verbatim;
  * every figure the reader sees is a field of that packet, and the packet is
  * built from the same calls the golden writer makes. Nothing here retypes a
  * number, and there is no path by which the page can show a figure the
@@ -27,8 +27,8 @@ interface PacketDoc {
   companies: PacketCompany[];
 }
 
-const PACKET_PATH = "files/session_22_sign_packet.json";
-const OUT_PATH = "files/session_22_signature_review.html";
+const PACKET_PATH = "sessions/22/sign_packet.json";
+const OUT_PATH = "sessions/22/signature_review.html";
 
 const doc: PacketDoc = JSON.parse(readFileSync(PACKET_PATH, "utf8"));
 const wanted = process.argv.slice(2);
@@ -312,7 +312,7 @@ const html = `<title>Ladder Signature Review</title>
 
   document.getElementById("prov").innerHTML =
     "<strong>Generated from the pinned data, not hand-authored.</strong> Amounts display in $millions with the filing’s own printed figure beneath — the golden pins the printed one. This page is a formatter over " +
-    "<code>files/session_22_sign_packet.json</code>, which is built from the same calls the golden writer makes — " +
+    "<code>sessions/22/sign_packet.json</code>, which is built from the same calls the golden writer makes — " +
     "<code>deriveGoldenState</code> for the pinned rows, <code>evaluateGoldenCriteria</code> for the checklist, and the " +
     "verification sheet's own locator for every character offset. Nothing on this page is retyped, and every figure shown " +
     "was checked to appear in the rendered text sheet before the packet was written.";

@@ -2,7 +2,7 @@
  * Session 18 — per-company API spend, measured from the API's own `usage`
  * blocks rather than estimated.
  *
- * Why this exists: files/coverage_signal_metrics_cost_limits.md §2 has
+ * Why this exists: docs/metrics_cost_limits.md §2 has
  * PLANNING estimates ("~$0.30–0.60 per 12-name run") with its own "treat as
  * estimates" caveat, and nothing anywhere measured the real figure. Before
  * this file, `usage` was read exactly once in the whole codebase — inside an

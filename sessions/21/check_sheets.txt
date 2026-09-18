@@ -1,0 +1,824 @@
+DaVita → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-08-04 → found (10 matches) [tabular]
+  debt-note locator: 10-Q 2026-05-05 → found (9 matches) [tabular]
+  debt-note locator: 10-K 2026-02-11 → found (11 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-08-04 (period 2026-06-30), note locator says found; prior: 10-Q 2026-05-05
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint 5a46f9bb)
+checking debt maturity approaching... FIRED — 4.625% Senior Notes due June 1, 2030 with $2,750,000 thousand principal outstanding as of June 30,...
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total debt principal outstanding 10,847,516"; unaccounted labeled total: "Total notional coverage $ 3,500,000"
+checking new debt issuance / notes pricing... FIRED — On June 8, 2026, DaVita entered into the Ninth Amendment to its Credit Agreement providing for an...
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... FIRED — For the six months ended June 30, 2026, the Company made additions of property and equipment of...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — On August 20, 2025, the Board of Directors increased the authorization under the Company's existing...
+checking large cash balance building... no signal found
+checking asset sale / divestiture closing... no signal found
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no public signal (internal data only)
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — As of June 30, 2026, the Company has $2,357,910 thousand of Term Loan B-2 bearing interest at SOFR...
+commodity / input-cost exposure unclear, but nothing new to check — no signal found.
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtAndCapitalLeaseObligationsCurrent=117,177,000 + LongTermDebtAndCapitalLeaseObligations=10,663,836,000 — the denominator comes from the filer's own tags
+  XBRL maturity buckets at 2026-06-30: due within 12 months 114,026,000; 13–24 months 160,808,000; 25–36 months 144,566,000; 37–48 months 4,554,268,000; 49–60 months 3,764,157,000; thereafter 2,047,408,000
+  proceedsUse input: 123,862 → 54,116 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+HCA Healthcare → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-28 → found (5 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-29 → found (0 matches) [tabular]
+  debt-note locator: 10-K 2026-02-10 → found (11 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-28 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-29
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint 03e53b74)
+checking debt maturity approaching... FIRED — Senior unsecured notes with maturities in 2026 and 2027. As of June 30, 2026, $6.264 billion of...
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Senior unsecured credit facilities: $ — million" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ OFF-ANCHOR REVOLVER DROPPED for debt maturity approaching — the revolver figures verify against https://www.sec.gov/Archives/edgar/data/860730/000119312526044769/hca-20251231.htm, not the anchor 10-Q 2026-07-28; drawn and available are as-of figures and stale ones read as current
+  ⚠ 1 debt-schedule entry for debt maturity approaching failed sourceLine verification or had an indeterminate amount scale — dropped, not trusted; the checksum will surface the gap
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — trailing unconsumed source text: "6,264"
+checking new debt issuance / notes pricing... FIRED — HCA issued $3.0 billion aggregate principal amount of senior notes in April 2026, comprised of $1.0...
+  ⚠ REDEMPTION STATUS NOT CORROBORATED for new debt issuance / notes pricing — "5.250% senior notes due June 2026" claimed completed, but its own sourceLine states an intention ("notice of its election"). Treated as INTENDED; the tranche stays on the ladder. An intention is not a completion.
+  ⚠ REDEMPTION CLAIM UNVERIFIED for new debt issuance / notes pricing — "5.250% senior notes due June 2026" is claimed completed, but its stated sourceLine is not in any cited filing. A claim that removes debt from the ladder must be found in the filing; nothing retired.
+  ⚠ REDEMPTION STATUS NOT CORROBORATED for new debt issuance / notes pricing — "5.375% senior notes due September 2026" claimed completed, but its own sourceLine states an intention ("notice of its election"). Treated as INTENDED; the tranche stays on the ladder. An intention is not a completion.
+  ⚠ REDEMPTION CLAIM UNVERIFIED for new debt issuance / notes pricing — "5.375% senior notes due September 2026" is claimed completed, but its stated sourceLine is not in any cited filing. A claim that removes debt from the ladder must be found in the filing; nothing retired.
+  2 redemption claim(s) for new debt issuance / notes pricing, judged independently — 5.250% senior notes due June 2026: intended, UNVERIFIED; 5.375% senior notes due September 2026: intended, UNVERIFIED
+checking acquisition announced... FIRED — HCA acquired nonhospital health care entities for $386 million during the six months ended June 30,...
+checking capex program / new facility or construction... FIRED — HCA reported capital expenditures of $2.350 billion for the six months ended June 30, 2026,...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — HCA's Board declared a quarterly cash dividend of $0.78 per share, payable September 30, 2026. The...
+checking large cash balance building... no signal found
+checking asset sale / divestiture closing... FIRED — HCA received proceeds of $21 million and recognized pretax gains of $9 million related to sales of...
+checking international expansion / rising foreign revenue... FIRED — International revenue (managed care and insurers) represented 2.5% of total revenues for the six...
+checking new subsidiary / entity formation... no public signal (internal data only)
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — HCA has floating-rate debt exposure through its senior unsecured credit facility, which bears...
+checking commodity / input-cost exposure... no signal found
+checking large fx exposure disclosed... FIRED — HCA operates seven hospitals in England and has foreign currency translation adjustments....
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  ⚠ NO XBRL DEBT TOTAL at 2026-06-30 — this filer reports no debt tag at 2026-06-30 — its company-facts data does not reach the anchor's period end. The denominator falls back to the balance-sheet captions as read, labelled as such on the surface.
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+  proceedsUse input: 106,409 → 53,282 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): partly_unapplied
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Acquisition announced — Bridge financing, then permanent
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ International expansion / rising foreign revenue — FX hedging, cross-border cash management
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+→ Large FX exposure disclosed — FX hedging program
+  cost: $0.0000 — 0 API calls (fully cached)
+Tenet Healthcare → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-29 → found (10 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-30 → found (10 matches) [tabular]
+  debt-note locator: 10-K 2026-02-17 → found (16 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-29 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-30
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint c33ba580)
+checking debt maturity approaching... FIRED — Senior secured first lien notes of $1.5 billion due November 2027 mature within 12-18 months from...
+  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for debt maturity approaching — 1 instrument(s) (letter of credit facility) verified against https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm, not the anchor 10-Q 2026-07-29. A balance is as of the filing that states it.
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total long-term debt 13,248"
+checking new debt issuance / notes pricing... FIRED — Tenet issued $1.5 billion of 5.500% senior secured first lien notes due 2032 and $750 million of...
+  2 redemption claim(s) for new debt issuance / notes pricing, judged independently — 6.250% senior secured second lien notes due February 2027: completed, verified; 6.125% senior notes due October 2028: completed, verified
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... FIRED — Florida Coast Medical Center, a newly constructed 54-bed acute care hospital in Port St. Lucie,...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — Tenet repurchased $1.360 billion of common stock during the six months ended June 30, 2026, and...
+checking large cash balance building... FIRED — Cash and cash equivalents of $2.170 billion at June 30, 2026, compared to $2.883 billion at...
+checking asset sale / divestiture closing... FIRED — Tenet completed the sale of six California hospitals (Fountain Valley Regional Hospital, Lakewood...
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no signal found
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Tenet's senior secured revolving credit facility of $1.9 billion accrues interest at SOFR or base...
+commodity / input-cost exposure unclear, but nothing new to check — no signal found.
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtAndCapitalLeaseObligationsCurrent=160,000,000 + LongTermDebtAndCapitalLeaseObligations=13,088,000,000 — the denominator comes from the filer's own tags
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+  proceedsUse input: 515,588 → 25,522 chars across 4 region(s)
+  proceedsUse input: 149,578 → 36,219 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+Quest Diagnostics → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-23 → found (13 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-22 → found (4 matches) [tabular]
+  debt-note locator: 10-K 2026-02-26 → found (12 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-23 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-22
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint ec9ebec9)
+checking debt maturity approaching... FIRED — 4.60% Senior Notes due December 2027 with $400 million outstanding as of June 30, 2026; 4.20%...
+  SCALE DERIVED FROM FILING for debt maturity approaching — 16 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  SCALE DERIVED FROM FILING for debt maturity approaching (balance sheet) — 2 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "3.45 % Senior Notes due June 2026: 503" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.60 % Senior Notes due December 2027: 400" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.20 % Senior Notes due June 2029: 500" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.625 % Senior Notes due December 2029: 600" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "2.95 % Senior Notes due June 2030: 799" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "2.80 % Senior Notes due June 2031: 564" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "6.40 % Senior Notes due November 2033: 756" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "5.00 % Senior Notes due December 2034: 840" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "6.95 % Senior Notes due July 2037: 175" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "5.75 % Senior Notes due January 2040: 246" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.70 % Senior Notes due March 2045: 300" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Other: 21" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Debt issuance costs: ( 30 )" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Total long-term debt: 5,671" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Less: Current portion of long-term debt: ( 504 )" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Total long-term debt, net of current portion: $ 5,167" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for debt maturity approaching — 2 instrument(s) (Secured Receivables Credit Facility, Senior Unsecured Revolving Credit Facility) verified against https://www.sec.gov/Archives/edgar/data/1022079/000102207926000015/dgx-20251231.htm, not the anchor 10-Q 2026-07-23. A balance is as of the filing that states it.
+  ⚠ 16 debt-schedule entries for debt maturity approaching failed sourceLine verification or had an indeterminate amount scale — dropped, not trusted; the checksum will surface the gap
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total long-term debt 5,642"; unaccounted labeled total: "Total long-term debt, net of current portion $ 5,632"; unaccounted labeled total: "Total maturities of long-term debt 5,710"; unaccounted labeled total: "Total long-term debt 5,642"; unaccounted labeled total: "Total long-term debt, net of current portion $ 5,632"
+checking new debt issuance / notes pricing... FIRED — On May 6, 2026, Quest Diagnostics completed a public offering of $500 million aggregate principal...
+checking acquisition announced... FIRED — During August 2025, Quest Diagnostics and Corewell Health signed a definitive agreement to form a...
+  ⚠ EVENT DATE FLAGGED FOR REVIEW for Quest Diagnostics — acquisition announced: "2026-01-01" (granularity month) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected
+checking capex program / new facility or construction... FIRED — Capital expenditures of $252 million for the six months ended June 30, 2026 and $225 million for...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — On February 10, 2026, Quest Diagnostics announced a 7.5% increase in its quarterly dividend from...
+checking large cash balance building... FIRED — Cash and cash equivalents increased from $420 million at December 31, 2025 to $626 million at June...
+checking asset sale / divestiture closing... no signal found
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... FIRED — A new entity was formed in January 2026 as a joint venture between Quest Diagnostics (51%...
+  ⚠ EVENT DATE FLAGGED FOR REVIEW for Quest Diagnostics — new subsidiary / entity formation: "2026-01-01" (granularity month) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected
+  ⚠ 1 event instance(s) for new subsidiary / entity formation failed sourceLine verification — dropped, not trusted
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Quest Diagnostics maintains fixed-to-variable interest rate swap agreements on $1,800 million of...
+commodity / input-cost exposure unclear, but nothing new to check — no signal found.
+large fx exposure disclosed unclear, but nothing new to check — no signal found.
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtCurrent=10,000,000 + LongTermDebtNoncurrent=5,632,000,000 — the denominator comes from the filer's own tags
+  XBRL maturity buckets at 2026-06-30: due within 12 months 409,000,000; 13–24 months 6,000,000; 25–36 months 1,103,000,000; 37–48 months 801,000,000; 49–60 months 551,000,000; thereafter 2,836,000,000
+  proceedsUse input: 123,655 → 37,359 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Acquisition announced — Bridge financing, then permanent
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ New subsidiary / entity formation — New operating accounts
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+Centene Corporation → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-28 → found (7 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-28 → found (7 matches) [tabular]
+  debt-note locator: 10-K 2026-02-17 → found (7 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-28 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-28
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint e9478cdd)
+checking debt maturity approaching... FIRED — Senior Notes due December 15, 2027 with $1,067 million outstanding as of June 30, 2026, down from...
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Term Loan Facility" claimed maturity 2030-03-05, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Term Loan Facility" claimed maturity 2030-03-05, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total senior notes 14,204"
+checking new debt issuance / notes pricing... no signal found
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... no signal found
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... no signal found
+checking large cash balance building... FIRED — Cash and cash equivalents of $24,151 million as of June 30, 2026, up from $17,888 million at...
+checking asset sale / divestiture closing... FIRED — Definitive agreement signed in December 2025 to sell remaining Magellan Health businesses. As of...
+  ⚠ QUOTE HAS NO FIGURE for asset sale / divestiture closing — verified, but the model reported no single sentence carried the fact's material figure; verifiedQuote is a figure-less fallback
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no public signal (internal data only)
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Term Loan Facility of $1,975 million outstanding as of June 30, 2026, bearing interest at a...
+checking commodity / input-cost exposure... no signal found
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtCurrent=75,000,000 + LongTermDebtNoncurrent=16,030,000,000 — the denominator comes from the filer's own tags
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+Molina Healthcare → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-23 → found (5 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-23 → found (5 matches) [tabular]
+  debt-note locator: 10-K 2026-02-10 → found (12 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-23 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-23
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint 1710014c)
+checking debt maturity approaching... FIRED — 4.375% Notes due June 15, 2028 ($800 million), 3.875% Notes due November 15, 2030 ($650 million),...
+  SCALE DERIVED FROM FILING for debt maturity approaching — 7 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  SCALE DERIVED FROM FILING for debt maturity approaching (prior period) — 7 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  SCALE DERIVED FROM FILING for debt maturity approaching (balance sheet) — 1 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 1 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total $ 3,769"
+checking new debt issuance / notes pricing... FIRED — On November 20, 2025, Molina completed a private offering of $850 million aggregate principal...
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... no signal found
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... no signal found
+checking large cash balance building... FIRED — Cash and cash equivalents of $4,985 million as of June 30, 2026, compared to $4,248 million as of...
+checking asset sale / divestiture closing... no signal found
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no signal found
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... no signal found
+checking commodity / input-cost exposure... no signal found
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtNoncurrent=3,769,000,000 — the denominator comes from the filer's own tags; leases tagged SEPARATELY and not added: FinanceLeaseLiabilityNoncurrent
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+  proceedsUse input: 382,706 → 30,077 chars across 4 region(s)
+  proceedsUse input: 110,269 → 55,585 chars across 3 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): partly_unapplied
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Large cash balance building — Liquidity management, earning on idle cash
+  cost: $0.0000 — 0 API calls (fully cached)
+
+########################################################################################################
+#  DAVITA INC.   (CIK 0000927066)
+#  ANCHOR: 10-Q filed 2026-08-04, period 2026-06-30
+#  https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm
+#  filing set: 5 document(s)
+########################################################################################################
+
+1. LADDER — 9 row(s) counted as debt
+--------------------------------------------------------------------------------------------------------
+  4.625% Senior Notes
+      amount   $2,750,000 thousand   =   $2,750,000,000
+      matures  2030-06-01 (day)   status live   source note
+      says     "4.625% Senior Notes 2,750,000 2,750,000 6/1/2030 4.625 %"
+      at       char 27,408
+  Term Loan A-2
+      amount   $1,975,000 thousand   =   $1,975,000,000
+      matures  2030-11-24 (day)   status live   source note
+      says     "Term Loan A-2 (2) $ 1,975,000 $ 2,000,000 11/24/2030 SOFR + 1.50% $ 1,970,063"
+      at       char 27,159
+  Revolving line of credit
+      amount   $65,000 thousand   =   $65,000,000
+      matures  2030-11-24 (day)   status live   source note
+      says     "Revolving line of credit (2) 65,000 — 11/24/2030 SOFR + 1.50% $ 65,000"
+      at       char 27,317
+  3.75% Senior Notes
+      amount   $1,500,000 thousand   =   $1,500,000,000
+      matures  2031-02-15 (day)   status live   source note
+      says     "3.75% Senior Notes 1,500,000 1,500,000 2/15/2031 3.75 %"
+      at       char 27,485
+  Term Loan B-2
+      amount   $2,357,910 thousand   =   $2,357,910,000
+      matures  2031-05-09 (day)   status live   source note
+      says     "Term Loan B-2 2,357,910 1,868,559 5/9/2031 SOFR + 1.75% $ 2,352,015"
+      at       char 27,243
+  6.875% Senior Notes
+      amount   $1,000,000 thousand   =   $1,000,000,000
+      matures  2032-09-01 (day)   status live   source note
+      says     "6.875% Senior Notes 1,000,000 1,000,000 9/1/2032 6.875 %"
+      at       char 27,561
+  6.75% Senior Notes
+      amount   $1,000,000 thousand   =   $1,000,000,000
+      matures  2033-07-15 (day)   status live   source note
+      says     "6.75% Senior Notes 1,000,000 1,000,000 7/15/2033 6.75 %"
+      at       char 27,638
+  Acquisition obligations and other notes payable
+      amount   $39,463 thousand   =   $39,463,000
+      matures  (none stated)   status live   source note
+      says     "Acquisition obligations and other notes payable (3) 39,463 40,904 2026-2038 4.67 %"
+      at       char 27,714
+  Financing lease obligations
+      amount   $160,143 thousand   =   $160,143,000
+      matures  (none stated)   status live   source note
+      says     "Financing lease obligations (4) 160,143 185,120 2027-2039 4.30 %"
+      at       char 27,814
+--------------------------------------------------------------------------------------------------------
+  SUM OF ROWS COUNTED AS DEBT:  $10,847,516,000
+
+2. THE NOTE'S OWN PRINTED SUBTOTALS — 2
+--------------------------------------------------------------------------------------------------------
+  (unlabelled)
+      note states  $10,847,516 thousand   =   $10,847,516,000
+      our rows sum $10,847,516,000   gap $0   TIES
+      says         "Total debt principal outstanding 10,847,516 10,344,583"
+  (unlabelled)
+      note states  $10,781,013 thousand   =   $10,781,013,000
+      our rows sum $10,781,013,000   gap $0   TIES
+      says         "10,781,013 10,273,189"
+  [adjustment] Discount, premium and deferred financing costs: ($66,503) thousand   =   $-66,503,000
+      says         "Discount, premium and deferred financing costs ( 66,503 ) ( 71,394 )"
+  [adjustment] Less current portion: ($117,177) thousand   =   $-117,177,000
+      says         "Less current portion ( 117,177 ) ( 109,201 )"
+  CHECK 1 (do the rows walk into the printed subtotals): PASS
+
+3. STATED TOTAL DEBT — the denominator
+--------------------------------------------------------------------------------------------------------
+  SOURCE: the filer's own XBRL tags
+  STATED TOTAL DEBT:  $10,781,013,000
+
+  The anchor's own balance-sheet debt captions (2):
+      Current portion of long-term debt:  $117,177 thousand   =   $117,177,000   [column: June 30, 2026]
+          says  "Current portion of long-term debt 117,177 109,201"
+          at    char 7,606
+      Long-term debt:  $10,663,836 thousand   =   $10,663,836,000   [column: June 30, 2026]
+          says  "Long-term debt 10,663,836 10,163,988"
+          at    char 7,849
+      CAPTIONS SUM TO:  $10,781,013,000
+
+4. COVERAGE
+--------------------------------------------------------------------------------------------------------
+  captured face (rows above)            $10,847,516,000
+  the note's own bridge lines           $-66,503,000   (discount / issuance costs, subtracted before judging)
+  stated total debt                     $10,781,013,000
+  unexplained remainder                 $0   = 0.00%   (under the 2.5% line)
+  captured / stated                     101%
+  FLAG — stated but not captured        revolver
+
+  AS RENDERED: TIER 1 (the anchor position): 9 rows cover $10.85B of $10.78B stated total debt (101%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — STATED BUT NOT CAPTURED: revolver
+
+########################################################################################################
+#  HCA Healthcare, Inc.   (CIK 0000860730)
+#  ANCHOR: 10-Q filed 2026-07-28, period 2026-06-30
+#  https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm
+#  filing set: 5 document(s)
+########################################################################################################
+
+1. LADDER — 4 row(s) counted as debt
+--------------------------------------------------------------------------------------------------------
+  Senior unsecured notes payable through 2095
+      amount   $ 44,200 million   =   $44,200,000,000
+      matures  2095 (year)   status live   source note
+      says     "Senior unsecured notes payable through 2095 (effective interest rate of 5.1 %)"
+      at       char 33,165
+  Commercial paper
+      amount   $ 3,890 million   =   $3,890,000,000
+      matures  (none stated)   status live   source note
+      says     "Commercial paper (average life of 38 days, weighted average rate of 4.3 %)"
+      at       char 32,899
+  Other debt
+      amount   $ 1,069 million   =   $1,069,000,000
+      matures  (none stated)   status live   source note
+      says     "Other debt (effective interest rate of 4.9 %)"
+      at       char 33,019
+  Senior unsecured credit facility
+      amount   $ 1,010 million   =   $1,010,000,000
+      matures  (none stated)   status live   source note
+      says     "Senior unsecured credit facility (effective interest rate of 4.8 %)"
+      at       char 33,083
+--------------------------------------------------------------------------------------------------------
+  SUM OF ROWS COUNTED AS DEBT:  $50,169,000,000
+
+2. THE NOTE'S OWN PRINTED SUBTOTALS — 2
+--------------------------------------------------------------------------------------------------------
+  Total long-term debt   [section: Long-term debt]
+      note states  $ 45,828 million   =   $45,828,000,000
+      our rows sum $45,828,000,000   gap $0   TIES
+      says         "Total long-term debt (average life of 11.7 years, rates averaging 5.1 %)"
+  Total debt
+      note states  $ 49,718 million   =   $49,718,000,000
+      our rows sum $49,718,000,000   gap $0   TIES
+      says         "Total debt"
+  [adjustment] Debt issuance costs and discounts: ( 451 ) million   =   $-451,000,000
+      says         "Debt issuance costs and discounts"
+  [adjustment] Less amounts due within one year: ( 6,264 ) million   =   $-6,264,000,000
+      says         "Less amounts due within one year"
+  CHECK 1 (do the rows walk into the printed subtotals): PASS
+
+3. STATED TOTAL DEBT — the denominator
+--------------------------------------------------------------------------------------------------------
+  SOURCE: the balance-sheet captions as read (this filer tags no usable XBRL total)
+  STATED TOTAL DEBT:  $49,718,000,000
+
+  The anchor's own balance-sheet debt captions (2):
+      Short-term borrowings and long-term debt due within one year:  $ 6,264 million   =   $6,264,000,000   [column: June 30, 2026]
+          says  "Short-term borrowings and long-term debt due within one year"
+          at    char 7,719
+      Long-term debt, less debt issuance costs and discounts of $ 451  and $ 436:  $ 43,454 million   =   $43,454,000,000   [column: June 30, 2026]
+          says  "Long-term debt, less debt issuance costs and discounts of $ 451 and $ 436"
+          at    char 7,816
+      CAPTIONS SUM TO:  $49,718,000,000
+
+4. COVERAGE
+--------------------------------------------------------------------------------------------------------
+  captured face (rows above)            $50,169,000,000
+  the note's own bridge lines           $-451,000,000   (discount / issuance costs, subtracted before judging)
+  stated total debt                     $49,718,000,000
+  unexplained remainder                 $0   = 0.00%   (under the 2.5% line)
+  captured / stated                     101%
+
+  AS RENDERED: TIER 1 (the anchor position): 4 rows cover $50.17B of $49.72B stated total debt (101%), against Short-term borrowings and long-term debt due within one year + Long-term debt, less debt issuance costs and discounts of $ 451  and $ 436 (read from the anchor's balance sheet — this filer tags no debt total at that period end)
+
+########################################################################################################
+#  TENET HEALTHCARE CORP   (CIK 0000070318)
+#  ANCHOR: 10-Q filed 2026-07-29, period 2026-06-30
+#  https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm
+#  filing set: 6 document(s)
+########################################################################################################
+
+1. LADDER — 11 row(s) counted as debt, plus 1 counted as capacity
+--------------------------------------------------------------------------------------------------------
+  5.125 % due 2027
+      amount   $ 1,500   million   =   $1,500,000,000
+      matures  2027 (year)   status live   source note
+      says     "5.125 % due 2027 1,500 1,500"
+      at       char 33,542
+  6.125 % due 2028
+      amount   $ 1,750   million   =   $1,750,000,000
+      matures  2028 (year)   status live   source note
+      says     "6.125 % due 2028 $ 1,750 $ 1,750"
+      at       char 33,410
+  4.625 % due 2028
+      amount   $ 600   million   =   $600,000,000
+      matures  2028 (year)   status live   source note
+      says     "4.625 % due 2028 600 600"
+      at       char 33,575
+  4.250 % due 2029
+      amount   $ 1,400   million   =   $1,400,000,000
+      matures  2029 (year)   status live   source note
+      says     "4.250 % due 2029 1,400 1,400"
+      at       char 33,604
+  4.375 % due 2030
+      amount   $ 1,450   million   =   $1,450,000,000
+      matures  2030 (year)   status live   source note
+      says     "4.375 % due 2030 1,450 1,450"
+      at       char 33,637
+  6.125 % due 2030
+      amount   $ 2,000   million   =   $2,000,000,000
+      matures  2030 (year)   status live   source note
+      says     "6.125 % due 2030 2,000 2,000"
+      at       char 33,670
+  6.875 % due 2031
+      amount   $ 362   million   =   $362,000,000
+      matures  2031 (year)   status live   source note
+      says     "6.875 % due 2031 362 362"
+      at       char 33,447
+  6.750 % due 2031
+      amount   $ 1,350   million   =   $1,350,000,000
+      matures  2031 (year)   status live   source note
+      says     "6.750 % due 2031 1,350 1,350"
+      at       char 33,703
+  5.500 % due 2032
+      amount   $ 1,500   million   =   $1,500,000,000
+      matures  2032 (year)   status live   source note
+      says     "5.500 % due 2032 1,500 1,500"
+      at       char 33,736
+  6.000 % due 2033
+      amount   $ 750   million   =   $750,000,000
+      matures  2033 (year)   status live   source note
+      says     "6.000 % due 2033 750 750"
+      at       char 33,476
+  Finance leases, mortgages and other notes
+      amount   $ 671   million   =   $671,000,000
+      matures  (none stated)   status live   source note
+      says     "Finance leases, mortgages and other notes 671 603"
+      at       char 33,769
+  senior secured revolving credit facility
+      amount   $ 1.900   billion   =   $1,900,000,000   [CAPACITY — not summed as debt]
+      matures  (none stated) (day)   status live   source note-narrative
+      says     "We have a senior secured revolving credit facility (the "Credit Agreement") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200 million subfacility for standby letters"
+      at       char 34,482
+--------------------------------------------------------------------------------------------------------
+  SUM OF ROWS COUNTED AS DEBT:  $13,333,000,000
+
+2. THE NOTE'S OWN PRINTED SUBTOTALS — 2
+--------------------------------------------------------------------------------------------------------
+  Total long-term debt
+      note states  $ 13,248   million   =   $13,248,000,000
+      our rows sum $13,248,000,000   gap $0   TIES
+      says         "Total long-term debt 13,248 13,171"
+  Long-term debt, net of current portion
+      note states  $ 13,088   million   =   $13,088,000,000
+      our rows sum $13,088,000,000   gap $0   TIES
+      says         "Long-term debt, net of current portion $ 13,088 $ 13,092"
+  [adjustment] Unamortized issue costs and note discounts: ( $ 85 ) million   =   $-85,000,000
+      says         "Unamortized issue costs and note discounts ( 85 ) ( 94 )"
+  [adjustment] Less: Current portion: ( $ 160 ) million   =   $-160,000,000
+      says         "Less: Current portion 160 79"
+  CHECK 1 (do the rows walk into the printed subtotals): PASS
+
+3. STATED TOTAL DEBT — the denominator
+--------------------------------------------------------------------------------------------------------
+  SOURCE: the filer's own XBRL tags
+  STATED TOTAL DEBT:  $13,248,000,000
+
+  The anchor's own balance-sheet debt captions (2):
+      Current portion of long-term debt:  $ 160   million   =   $160,000,000   [column: June 30, 2026]
+          says  "Current portion of long-term debt $ 160 $ 79"
+          at    char 3,968
+      Long-term debt, net of current portion:  $ 13,088   million   =   $13,088,000,000   [column: June 30, 2026]
+          says  "Long-term debt, net of current portion 13,088 13,092"
+          at    char 4,301
+      CAPTIONS SUM TO:  $13,248,000,000
+
+4. COVERAGE
+--------------------------------------------------------------------------------------------------------
+  captured face (rows above)            $13,333,000,000
+  the note's own bridge lines           $-85,000,000   (discount / issuance costs, subtracted before judging)
+  stated total debt                     $13,248,000,000
+  unexplained remainder                 $0   = 0.00%   (under the 2.5% line)
+  captured / stated                     101%
+  capacity, NOT counted as debt         senior secured revolving credit facility: $1,900,000,000 — revolving facility, no drawn balance stated — capacity, not debt
+
+  AS RENDERED: TIER 1 (the anchor position): 11 rows cover $13.33B of $13.25B stated total debt (101%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — plus $1.90B of undrawn capacity NOT counted as debt (senior secured revolving credit facility: revolving facility, no drawn balance stated — capacity, not debt)
+
+########################################################################################################
+#  QUEST DIAGNOSTICS INC   (CIK 0001022079)
+#  ANCHOR: 10-Q filed 2026-07-23, period 2026-06-30
+#  https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm
+#  filing set: 5 document(s)
+########################################################################################################
+
+1. LADDER — 13 row(s) counted as debt
+--------------------------------------------------------------------------------------------------------
+  3.45 % Senior Note due June 2026
+      amount   $ —   =   $0
+      matures  2026-06-01 (month)   status retired   source note
+      says     "3.45 % Senior Note due June 2026 $ — $ 501"
+      at       char 39,812
+  4.60 % Senior Notes due December 2027
+      amount   400 millions   =   $400,000,000
+      matures  2027-12-01 (month)   status live   source note
+      says     "4.60 % Senior Notes due December 2027 400 400"
+      at       char 39,859
+  4.20 % Senior Notes due June 2029
+      amount   500 millions   =   $500,000,000
+      matures  2029-06-01 (month)   status live   source note
+      says     "4.20 % Senior Notes due June 2029 500 499"
+      at       char 39,909
+  4.625 % Senior Notes due December 2029
+      amount   600 millions   =   $600,000,000
+      matures  2029-12-01 (month)   status live   source note
+      says     "4.625 % Senior Notes due December 2029 600 600"
+      at       char 39,955
+  2.95 % Senior Notes due June 2030
+      amount   799 millions   =   $799,000,000
+      matures  2030-06-01 (month)   status live   source note
+      says     "2.95 % Senior Notes due June 2030 799 799"
+      at       char 40,006
+  2.80 % Senior Notes due June 2031
+      amount   551 millions   =   $551,000,000
+      matures  2031-06-01 (month)   status live   source note
+      says     "2.80 % Senior Notes due June 2031 551 564"
+      at       char 40,052
+  6.40 % Senior Notes due November 2033
+      amount   748 millions   =   $748,000,000
+      matures  2033-11-01 (month)   status live   source note
+      says     "6.40 % Senior Notes due November 2033 748 756"
+      at       char 40,098
+  5.00 % Senior Notes due December 2034
+      amount   826 millions   =   $826,000,000
+      matures  2034-12-01 (month)   status live   source note
+      says     "5.00 % Senior Notes due December 2034 826 840"
+      at       char 40,148
+  5.00 % Senior Notes due June 2036
+      amount   494 millions   =   $494,000,000
+      matures  2036-06-01 (month)   status live   source note
+      says     "5.00 % Senior Notes due June 2036 494 —"
+      at       char 40,198
+  6.95 % Senior Notes due July 2037
+      amount   175 millions   =   $175,000,000
+      matures  2037-07-01 (month)   status live   source note
+      says     "6.95 % Senior Notes due July 2037 175 175"
+      at       char 40,242
+  5.75 % Senior Notes due January 2040
+      amount   246 millions   =   $246,000,000
+      matures  2040-01-01 (month)   status live   source note
+      says     "5.75 % Senior Notes due January 2040 246 246"
+      at       char 40,288
+  4.70 % Senior Notes due March 2045
+      amount   300 millions   =   $300,000,000
+      matures  2045-03-01 (month)   status live   source note
+      says     "4.70 % Senior Notes due March 2045 300 300"
+      at       char 40,337
+  Other
+      amount   35 millions   =   $35,000,000
+      matures  (none stated)   status live   source note
+      says     "Other 35 21"
+      at       char 40,384
+--------------------------------------------------------------------------------------------------------
+  SUM OF ROWS COUNTED AS DEBT:  $5,674,000,000
+
+2. THE NOTE'S OWN PRINTED SUBTOTALS — 2
+--------------------------------------------------------------------------------------------------------
+  Total long-term debt
+      note states  5,642 millions   =   $5,642,000,000
+      our rows sum $5,642,000,000   gap $0   TIES
+      says         "Total long-term debt 5,642 5,671"
+  Total long-term debt, net of current portion
+      note states  $ 5,632 millions   =   $5,632,000,000
+      our rows sum $5,632,000,000   gap $0   TIES
+      says         "Total long-term debt, net of current portion $ 5,632 $ 5,167"
+  [adjustment] Debt issuance costs: ( 32 ) millions   =   $-32,000,000
+      says         "Debt issuance costs ( 32 ) ( 30 )"
+  [adjustment] Less: Current portion of long-term debt: ( 10 ) millions   =   $-10,000,000
+      says         "Less: Current portion of long-term debt 10 504"
+  CHECK 1 (do the rows walk into the printed subtotals): PASS
+
+3. STATED TOTAL DEBT — the denominator
+--------------------------------------------------------------------------------------------------------
+  SOURCE: the filer's own XBRL tags
+  STATED TOTAL DEBT:  $5,642,000,000
+
+  The anchor's own balance-sheet debt captions (2):
+      Current portion of long-term debt:  10 millions   =   $10,000,000   [column: June 30, 2026]
+          says  "Current portion of long-term debt 10 504"
+          at    char 6,987
+      Long-term debt:  5,632 millions   =   $5,632,000,000   [column: June 30, 2026]
+          says  "Long-term debt 5,632 5,167"
+          at    char 7,143
+      CAPTIONS SUM TO:  $5,642,000,000
+
+4. COVERAGE
+--------------------------------------------------------------------------------------------------------
+  captured face (rows above)            $5,674,000,000
+  the note's own bridge lines           $-32,000,000   (discount / issuance costs, subtracted before judging)
+  stated total debt                     $5,642,000,000
+  unexplained remainder                 $0   = 0.00%   (under the 2.5% line)
+  captured / stated                     101%
+
+  AS RENDERED: TIER 1 (the anchor position): 13 rows cover $5.67B of $5.64B stated total debt (101%), against LongTermDebtCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags)
+
+########################################################################################################
+#  CENTENE CORP   (CIK 0001071739)
+#  ANCHOR: 10-Q filed 2026-07-28, period 2026-06-30
+#  https://www.sec.gov/Archives/edgar/data/1071739/000107173926000153/cnc-20260630.htm
+#  filing set: 2 document(s)
+########################################################################################################
+
+1. LADDER — 8 row(s) counted as debt
+--------------------------------------------------------------------------------------------------------
+  $ 2,500 million 4.25 % Senior Notes due December 15, 2027
+      amount   $1,067 million   =   $1,067,000,000
+      matures  2027-12-15 (day)   status live   source note
+      says     "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+      at       char 52,938
+  $ 2,300 million 2.45 % Senior Notes due July 15, 2028
+      amount   $2,160 million   =   $2,160,000,000
+      matures  2028-07-15 (day)   status live   source note
+      says     "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160"
+      at       char 53,016
+  $ 3,500 million 4.625 % Senior Notes due December 15, 2029
+      amount   $3,277 million   =   $3,277,000,000
+      matures  2029-12-15 (day)   status live   source note
+      says     "$ 3,500 million 4.625 % Senior Notes due December 15, 2029 3,277"
+      at       char 53,086
+  $ 2,000 million 3.375 % Senior Notes due February 15, 2030
+      amount   $2,000 million   =   $2,000,000,000
+      matures  2030-02-15 (day)   status live   source note
+      says     "$ 2,000 million 3.375 % Senior Notes due February 15, 2030 2,000"
+      at       char 53,161
+  $ 2,200 million 3.00 % Senior Notes due October 15, 2030
+      amount   $2,200 million   =   $2,200,000,000
+      matures  2030-10-15 (day)   status live   source note
+      says     "$ 2,200 million 3.00 % Senior Notes due October 15, 2030 2,200"
+      at       char 53,236
+  $ 2,200 million 2.50 % Senior Notes due March 1, 2031
+      amount   $2,200 million   =   $2,200,000,000
+      matures  2031-03-01 (day)   status live   source note
+      says     "$ 2,200 million 2.50 % Senior Notes due March 1, 2031 2,200"
+      at       char 53,309
+  $ 1,300 million 2.625 % Senior Notes due August 1, 2031
+      amount   $1,300 million   =   $1,300,000,000
+      matures  2031-08-01 (day)   status live   source note
+      says     "$ 1,300 million 2.625 % Senior Notes due August 1, 2031 1,300"
+      at       char 53,379
+  Term Loan Facility
+      amount   $1,975 million   =   $1,975,000,000
+      matures  (none stated)   status live   source note
+      says     "Term Loan Facility 1,975"
+      at       char 53,486
+--------------------------------------------------------------------------------------------------------
+  SUM OF ROWS COUNTED AS DEBT:  $16,179,000,000
+
+2. THE NOTE'S OWN PRINTED SUBTOTALS — 2
+--------------------------------------------------------------------------------------------------------
+  Total debt
+      note states  $16,105 million   =   $16,105,000,000
+      our rows sum $16,105,000,000   gap $0   TIES
+      says         "Total debt 16,105"
+  Long-term debt
+      note states  $16,030 million   =   $16,030,000,000
+      our rows sum $16,030,000,000   gap $0   TIES
+      says         "Long-term debt $ 16,030"
+  [adjustment] Debt issuance costs: ($74 million)   =   $-74,000,000
+      says         "Debt issuance costs ( 74 )"
+  [adjustment] Less: current portion: ($75 million)   =   $-75,000,000
+      says         "Less: current portion ( 75 )"
+  CHECK 1 (do the rows walk into the printed subtotals): PASS
+
+3. STATED TOTAL DEBT — the denominator
+--------------------------------------------------------------------------------------------------------
+  SOURCE: the filer's own XBRL tags
+  STATED TOTAL DEBT:  $16,105,000,000
+
+  The anchor's own balance-sheet debt captions (2):
+      Current portion of long-term debt:  $75 million   =   $75,000,000   [column: June 30, 2026]
+          says  "Current portion of long-term debt 75"
+          at    char 18,822
+      Long-term debt:  $16,030 million   =   $16,030,000,000   [column: June 30, 2026]
+          says  "Long-term debt 16,030"
+          at    char 18,910
+      CAPTIONS SUM TO:  $16,105,000,000
+
+4. COVERAGE
+--------------------------------------------------------------------------------------------------------
+  captured face (rows above)            $16,179,000,000
+  the note's own bridge lines           $-74,000,000   (discount / issuance costs, subtracted before judging)
+  stated total debt                     $16,105,000,000
+  unexplained remainder                 $0   = 0.00%   (under the 2.5% line)
+  captured / stated                     100%
+
+  AS RENDERED: TIER 1 (the anchor position): 8 rows cover $16.18B of $16.11B stated total debt (100%), against LongTermDebtCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags)
+
+########################################################################################################
+#  MOLINA HEALTHCARE, INC.   (CIK 0001179929)
+#  ANCHOR: 10-Q filed 2026-07-23, period 2026-06-30
+#  https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm
+#  filing set: 4 document(s)
+########################################################################################################
+
+1. LADDER — 5 row(s) counted as debt, plus 1 counted as capacity
+--------------------------------------------------------------------------------------------------------
+  4.375 % Notes due June 15, 2028
+      amount   $ 800 millions   =   $800,000,000
+      matures  2028-06-15 (day)   status live   source note
+      says     "4.375 % Notes due June 15, 2028 $ 800 $ 800"
+      at       char 37,808
+  3.875 % Notes due November 15, 2030
+      amount   $ 650 millions   =   $650,000,000
+      matures  2030-11-15 (day)   status live   source note
+      says     "3.875 % Notes due November 15, 2030 650 650"
+      at       char 37,856
+  Credit Facility
+      amount   $ 1.25  billion   =   $1,250,000,000   [CAPACITY — not summed as debt]
+      matures  2030-11-20 (day)   status live   source note-narrative
+      says     "We are party to a Credit Agreement (the "Credit Agreement") which includes a revolving credit facility ("Credit Facility") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-fa"
+      at       char 39,015
+  6.500 % Notes due February 15, 2031
+      amount   $ 850 millions   =   $850,000,000
+      matures  2031-02-15 (day)   status live   source note
+      says     "6.500 % Notes due February 15, 2031 850 850"
+      at       char 37,904
+  3.875 % Notes due May 15, 2032
+      amount   $ 750 millions   =   $750,000,000
+      matures  2032-05-15 (day)   status live   source note
+      says     "3.875 % Notes due May 15, 2032 750 750"
+      at       char 37,952
+  6.250 % Notes due January 15, 2033
+      amount   $ 750 millions   =   $750,000,000
+      matures  2033-01-15 (day)   status live   source note
+      says     "6.250 % Notes due January 15, 2033 750 750"
+      at       char 37,995
+--------------------------------------------------------------------------------------------------------
+  SUM OF ROWS COUNTED AS DEBT:  $3,800,000,000
+
+2. THE NOTE'S OWN PRINTED SUBTOTALS — 1
+--------------------------------------------------------------------------------------------------------
+  Total
+      note states  $ 3,769 millions   =   $3,769,000,000
+      our rows sum $3,769,000,000   gap $0   TIES
+      says         "Total $ 3,769 $ 3,766"
+  [adjustment] Deferred debt issuance costs: ( 31 ) millions   =   $-31,000,000
+      says         "Deferred debt issuance costs ( 31 ) ( 34 )"
+  CHECK 1 (do the rows walk into the printed subtotals): PASS
+
+3. STATED TOTAL DEBT — the denominator
+--------------------------------------------------------------------------------------------------------
+  SOURCE: the filer's own XBRL tags
+  STATED TOTAL DEBT:  $3,769,000,000
+
+  The anchor's own balance-sheet debt captions (1):
+      Long-term debt:  $ 3,769 millions   =   $3,769,000,000   [column: June 30, 2026]
+          says  "Long-term debt 3,769 3,766"
+          at    char 5,995
+      CAPTIONS SUM TO:  $3,769,000,000
+
+4. COVERAGE
+--------------------------------------------------------------------------------------------------------
+  captured face (rows above)            $3,800,000,000
+  the note's own bridge lines           $-31,000,000   (discount / issuance costs, subtracted before judging)
+  stated total debt                     $3,769,000,000
+  unexplained remainder                 $0   = 0.00%   (under the 2.5% line)
+  captured / stated                     101%
+  capacity, NOT counted as debt         Credit Facility: $1,250,000,000 — revolving facility, no drawn balance stated — capacity, not debt
+
+  AS RENDERED: TIER 1 (the anchor position): 5 rows cover $3.80B of $3.77B stated total debt (101%), against LongTermDebtNoncurrent (the filer's own XBRL tags) — plus $1.25B of undrawn capacity NOT counted as debt (Credit Facility: revolving facility, no drawn balance stated — capacity, not debt)
+
+========================================================================================================
+CORPUS UNCHANGED since the sheets were generated on 2026-09-04 — every filing set is the same size it was.
+No golden file has been written.

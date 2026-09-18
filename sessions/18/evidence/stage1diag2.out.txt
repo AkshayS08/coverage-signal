@@ -1,0 +1,37 @@
+ARRAY-BY-ARRAY ROW ACCOUNTING (which array each drop came from)
+company                      | base seq | prior seq | issued | captions |  extracted -> verified
+DaVita                       |       13 |        11 |      0 |        2 |         29 -> 26
+HCA Healthcare               |        8 |         7 |      3 |        2 |         20 -> 20
+Tenet Healthcare             |       13 |        13 |      2 |        2 |         30 -> 30
+Universal Health Services    |       10 |         0 |      2 |        2 |         14 -> 14
+Encompass Health             |       10 |         9 |      2 |        2 |         23 -> 23
+Community Health Systems     |        8 |         6 |      0 |        2 |         31 -> 16
+Quest Diagnostics            |       16 |        15 |      1 |        2 |         36 -> 34
+Centene Corporation          |       12 |        12 |      0 |        2 |         26 -> 26
+Cigna Group                  |       32 |         0 |      4 |        2 |         44 -> 38
+Molina Healthcare            |        7 |         0 |      1 |        1 |         16 -> 9
+
+CIGNA CHECK 2 DETAIL
+  captions (2) sum $31.463B; nearest gap $592.0M
+    caption "Short-term debt" = "$ 592 million" -> $592.0M
+    caption "Long-term debt" = "$ 30,871 million" -> $30.871B
+    subtotal "Total short-term debt" sect="Short-term debt" = "$ 592 millions" -> $592.0M
+    subtotal "Total long-term debt" sect="Long-term debt" = "$ 30,871 millions" -> $30.871B
+    walk: TIE  "Total short-term debt" claimed $592.0M computed $592.0M
+    walk: TIE  "Total long-term debt" claimed $30.871B computed $30.871B
+
+UHS BASE SEQUENCE AS RESOLVED (10-K), and its periodColumn values
+    row        col="December 31, 2025" label="Notes and Mortgages payable (including obligations under finance leases of $ 91,121  in 2025 and $ 92,530  in 2024) and term loans with varying maturities through 2099 ; weighted average interest rates of 4.0 % in 2025 and 3.8 % in 2024" amount="$200,810 thousand"
+    row        col="December 31, 2025" label="Tranche A term loan" amount="$1,162,500 thousand"
+    row        col="December 31, 2025" label="Revolving credit facility" amount="$408,400 thousand"
+    row        col="December 31, 2025" label="2.65 % Senior Secured Notes due 2030" amount="$798,935 thousand"
+    row        col="December 31, 2025" label="1.65 % Senior Secured Notes due 2026" amount="$699,887 thousand"
+    row        col="December 31, 2025" label="2.65 % Senior Secured Notes due 2032" amount="$499,266 thousand"
+    row        col="December 31, 2025" label="4.625 % Senior Secured Notes due 2029" amount="$499,839 thousand"
+    row        col="December 31, 2025" label="5.050 % Senior Secured Notes due 2034" amount="$498,624 thousand"
+    subtotal   col="December 31, 2025" label="Total debt before unamortized financing costs" amount="$4,768,261 thousand"
+    adjustment col="December 31, 2025" label="Less-Unamortized financing costs" amount="($15,710) thousand"
+
+DAVITA BASE vs PRIOR SEQUENCE LABELS
+  base (13): Term Loan A-2 | Term Loan B-2 | Revolving line of credit | 4.625% Senior Notes | 3.75% Senior Notes | 6.875% Senior Notes | 6.75% Senior Notes | Acquisition obligations and other notes payable | Financing lease obligations | subtotal | Discount, premium and deferred financing costs | subtotal | Less current portion
+  prior (11): Term Loan B-2 | 4.625% Senior Notes | 3.75% Senior Notes | 6.875% Senior Notes | 6.75% Senior Notes | Acquisition obligations and other notes payable | Financing lease obligations | subtotal | Discount, premium and deferred financing costs | subtotal | Less current portion

@@ -1,0 +1,848 @@
+# VERIFICATION SHEETS — every run above is trace; everything below is the sheets.
+####################################################################################################
+
+====================================================================================================
+VERIFICATION SHEET — DAVITA INC.   (CIK 0000927066)
+====================================================================================================
+ANCHOR      10-Q filed 2026-08-04, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  5 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/927066/000092706625000154/dva-20250820.htm
+              https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm
+              https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm
+              https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm
+              https://www.sec.gov/Archives/edgar/data/927066/000120677426000316/dva4647631-8k.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (9 row(s)) ---
+  [live] 4.625% Senior Notes
+      amount $2,750,000 thousand   maturity 2030-06-01 (day)   from note
+      "4.625% Senior Notes 2,750,000 2,750,000 6/1/2030 4.625 %"
+      char 27,408 of the anchor
+  [live] Term Loan A-2
+      amount $1,975,000 thousand   maturity 2030-11-24 (day)   from note
+      "Term Loan A-2 (2) $ 1,975,000 $ 2,000,000 11/24/2030 SOFR + 1.50% $ 1,970,063"
+      char 27,159 of the anchor
+  [live] Revolving line of credit
+      amount $65,000 thousand   maturity 2030-11-24 (day)   from note
+      "Revolving line of credit (2) 65,000 — 11/24/2030 SOFR + 1.50% $ 65,000"
+      char 27,317 of the anchor
+  [live] 3.75% Senior Notes
+      amount $1,500,000 thousand   maturity 2031-02-15 (day)   from note
+      "3.75% Senior Notes 1,500,000 1,500,000 2/15/2031 3.75 %"
+      char 27,485 of the anchor
+  [live] Term Loan B-2
+      amount $2,357,910 thousand   maturity 2031-05-09 (day)   from note
+      "Term Loan B-2 2,357,910 1,868,559 5/9/2031 SOFR + 1.75% $ 2,352,015"
+      char 27,243 of the anchor
+  [live] 6.875% Senior Notes
+      amount $1,000,000 thousand   maturity 2032-09-01 (day)   from note
+      "6.875% Senior Notes 1,000,000 1,000,000 9/1/2032 6.875 %"
+      char 27,561 of the anchor
+  [live] 6.75% Senior Notes
+      amount $1,000,000 thousand   maturity 2033-07-15 (day)   from note
+      "6.75% Senior Notes 1,000,000 1,000,000 7/15/2033 6.75 %"
+      char 27,638 of the anchor
+  [live] Acquisition obligations and other notes payable
+      amount $39,463 thousand   maturity (none stated) (-)   from note
+      "Acquisition obligations and other notes payable (3) 39,463 40,904 2026-2038 4.67 %"
+      char 27,714 of the anchor
+  [live] Financing lease obligations
+      amount $160,143 thousand   maturity (none stated) (-)   from note
+      "Financing lease obligations (4) 160,143 185,120 2027-2039 4.30 %"
+      char 27,814 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (1) ---
+  Revolving line of credit — $65,000 thousand [basis: outstanding]
+      "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities."
+      char 33,760 of the anchor
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: XBRL
+  stated total debt:  $10,781,013,000
+  the anchor balance sheet's own debt captions (2), which are the model-read alternative:
+      Current portion of long-term debt: $117,177 thousand   [period column: June 30, 2026]
+        "Current portion of long-term debt 117,177 109,201"
+        char 7,606 of the anchor
+      Long-term debt: $10,663,836 thousand   [period column: June 30, 2026]
+        "Long-term debt 10,663,836 10,163,988"
+        char 7,849 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): PASS — 9 row(s), 2 adjustment(s)
+      tie  (unlabelled): claims 10,847,516,000, computed 10,847,516,000, gap 0
+      tie  (unlabelled): claims 10,781,013,000, computed 10,781,013,000, gap 0
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): PASS — 2 caption(s) summing 10,781,013,000, nearest gap 0
+  CHECK 3 (coverage): captured $10,847,516,000 + bridge -66,503,000 against stated $10,781,013,000
+      residual 0 = 0.00%, passes=true
+      ⚠ STATED BUT NOT CAPTURED: revolver
+  REVOLVER: revolver arithmetic not checkable — the note states fewer than all four figures
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 9 rows cover $10.85B of $10.78B stated total debt (101%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — STATED BUT NOT CAPTURED: revolver
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (0) ---
+  (no card-eligible event for this company at this as-of date)
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+VERIFICATION SHEET — HCA Healthcare, Inc.   (CIK 0000860730)
+====================================================================================================
+ANCHOR      10-Q filed 2026-07-28, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  5 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/860730/000119312526044769/hca-20251231.htm
+              https://www.sec.gov/Archives/edgar/data/860730/000119312526191444/hca-20260331.htm
+              https://www.sec.gov/Archives/edgar/data/860730/000119312526197278/hca-20260427.htm
+              https://www.sec.gov/Archives/edgar/data/860730/000119312526315151/hca-20260724.htm
+              https://www.sec.gov/Archives/edgar/data/860730/000119312526321077/hca-20260630.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (4 row(s)) ---
+  [live] Senior unsecured notes payable through 2095
+      amount $ 44,200 million   maturity 2095 (year)   from note
+      "Senior unsecured notes payable through 2095 (effective interest rate of 5.1 %)"
+      char 33,165 of the anchor
+  [live] Commercial paper
+      amount $ 3,890 million   maturity (none stated) (-)   from note
+      "Commercial paper (average life of 38 days, weighted average rate of 4.3 %)"
+      char 32,899 of the anchor
+  [live] Other debt
+      amount $ 1,069 million   maturity (none stated) (-)   from note
+      "Other debt (effective interest rate of 4.9 %)"
+      char 33,019 of the anchor
+  [live] Senior unsecured credit facility
+      amount $ 1,010 million   maturity (none stated) (-)   from note
+      "Senior unsecured credit facility (effective interest rate of 4.8 %)"
+      char 33,083 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (0) ---
+  (none — this filer's note states its instruments in a table)
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: MODEL-READ
+  stated total debt:  $49,718,000,000
+  the anchor balance sheet's own debt captions (2), which are the model-read alternative:
+      Short-term borrowings and long-term debt due within one year: $ 6,264 million   [period column: June 30, 2026]
+        "Short-term borrowings and long-term debt due within one year"
+        char 7,719 of the anchor
+      Long-term debt, less debt issuance costs and discounts of $ 451  and $ 436: $ 43,454 million   [period column: June 30, 2026]
+        "Long-term debt, less debt issuance costs and discounts of $ 451 and $ 436"
+        char 7,816 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): PASS — 4 row(s), 2 adjustment(s)
+      tie  Total long-term debt [Long-term debt]: claims 45,828,000,000, computed 45,828,000,000, gap 0
+      tie  Total debt: claims 49,718,000,000, computed 49,718,000,000, gap 0
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): PASS — 2 caption(s) summing 49,718,000,000, matched "Total debt" via single-subtotal, nearest gap 0
+  CHECK 3 (coverage): captured $50,169,000,000 + bridge -451,000,000 against stated $49,718,000,000
+      residual 0 = 0.00%, passes=true
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 4 rows cover $50.17B of $49.72B stated total debt (101%), against Short-term borrowings and long-term debt due within one year + Long-term debt, less debt issuance costs and discounts of $ 451  and $ 436 (read from the anchor's balance sheet — this filer tags no debt total at that period end)
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (0) ---
+  (no card-eligible event for this company at this as-of date)
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+VERIFICATION SHEET — TENET HEALTHCARE CORP   (CIK 0000070318)
+====================================================================================================
+ANCHOR      10-Q filed 2026-07-29, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  6 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/70318/000007031824000022/thc-20240401.htm
+              https://www.sec.gov/Archives/edgar/data/70318/000007031824000044/thc-20240805.htm
+              https://www.sec.gov/Archives/edgar/data/70318/000007031826000003/thc-20260127.htm
+              https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm
+              https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm
+              https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (12 row(s)) ---
+  [live] 5.125 % due 2027
+      amount $ 1,500   million   maturity 2027 (year)   from note
+      "5.125 % due 2027 1,500 1,500"
+      char 33,542 of the anchor
+  [live] 6.125 % due 2028
+      amount $ 1,750   million   maturity 2028 (year)   from note
+      "6.125 % due 2028 $ 1,750 $ 1,750"
+      char 33,410 of the anchor
+  [live] 4.625 % due 2028
+      amount $ 600   million   maturity 2028 (year)   from note
+      "4.625 % due 2028 600 600"
+      char 33,575 of the anchor
+  [live] 4.250 % due 2029
+      amount $ 1,400   million   maturity 2029 (year)   from note
+      "4.250 % due 2029 1,400 1,400"
+      char 33,604 of the anchor
+  [live] 4.375 % due 2030
+      amount $ 1,450   million   maturity 2030 (year)   from note
+      "4.375 % due 2030 1,450 1,450"
+      char 33,637 of the anchor
+  [live] 6.125 % due 2030
+      amount $ 2,000   million   maturity 2030 (year)   from note
+      "6.125 % due 2030 2,000 2,000"
+      char 33,670 of the anchor
+  [live] 6.875 % due 2031
+      amount $ 362   million   maturity 2031 (year)   from note
+      "6.875 % due 2031 362 362"
+      char 33,447 of the anchor
+  [live] 6.750 % due 2031
+      amount $ 1,350   million   maturity 2031 (year)   from note
+      "6.750 % due 2031 1,350 1,350"
+      char 33,703 of the anchor
+  [live] 5.500 % due 2032
+      amount $ 1,500   million   maturity 2032 (year)   from note
+      "5.500 % due 2032 1,500 1,500"
+      char 33,736 of the anchor
+  [live] 6.000 % due 2033
+      amount $ 750   million   maturity 2033 (year)   from note
+      "6.000 % due 2033 750 750"
+      char 33,476 of the anchor
+  [live] Finance leases, mortgages and other notes
+      amount $ 671   million   maturity (none stated) (-)   from note
+      "Finance leases, mortgages and other notes 671 603"
+      char 33,769 of the anchor
+  [live/CAPACITY] senior secured revolving credit facility
+      amount $ 1.900   billion   maturity (none stated) (day)   from note-narrative
+      "We have a senior secured revolving credit facility (the "Credit Agreement") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200 million subfacility"
+      char 34,482 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (1) ---
+  senior secured revolving credit facility — $ 1.900   billion [basis: commitment]
+      "We have a senior secured revolving credit facility (the "Credit Agreement") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200 million subfacility"
+      char 34,482 of the anchor
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: XBRL
+  stated total debt:  $13,248,000,000
+  the anchor balance sheet's own debt captions (2), which are the model-read alternative:
+      Current portion of long-term debt: $ 160   million   [period column: June 30, 2026]
+        "Current portion of long-term debt $ 160 $ 79"
+        char 3,968 of the anchor
+      Long-term debt, net of current portion: $ 13,088   million   [period column: June 30, 2026]
+        "Long-term debt, net of current portion 13,088 13,092"
+        char 4,301 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): PASS — 11 row(s), 2 adjustment(s)
+      tie  Total long-term debt: claims 13,248,000,000, computed 13,248,000,000, gap 0
+      tie  Long-term debt, net of current portion: claims 13,088,000,000, computed 13,088,000,000, gap 0
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): PASS — 2 caption(s) summing 13,248,000,000, matched "Total long-term debt" via single-subtotal, nearest gap 0
+  CHECK 3 (coverage): captured $13,333,000,000 + bridge -85,000,000 against stated $13,248,000,000
+      residual 0 = 0.00%, passes=true
+      capacity NOT counted as debt: senior secured revolving credit facility $1,900,000,000 — revolving facility, no drawn balance stated — capacity, not debt
+  REVOLVER: revolver arithmetic not checkable — the note states fewer than all four figures
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 11 rows cover $13.33B of $13.25B stated total debt (101%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — plus $1.90B of undrawn capacity NOT counted as debt (senior secured revolving credit facility: revolving facility, no drawn balance stated — capacity, not debt)
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (1) ---
+  CARD: Debt maturity approaching [refi]  row=5.125 % due 2027::5.125%::2027
+        qualified because: matures during 2027 — the whole year falls inside the 18-month window, so no month is needed
+    Months to maturity: Matures during 2027. The filing states only the year, so no month count is computed — which month it falls in is precision the filing does not disclose.
+        computed: nothing — this line states figures side by side and draws no conclusion
+        ran over (source text): "5.125 % due 2027 1,500 1,500"   char 33,542 of the anchor
+    Refinancing pattern: Last refinanced 10 months ago — an issuance dated 2025-11-18 whose proceeds retired 6.250% senior secured second lien notes due February 2027. The retired tranche carries no structured maturity in this corpus, so how far ahead of maturity the refinancing came is not computed.
+        computed: 10 months
+        ran over (source text): "We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to"   char 403,930 of 10-K 2026-02-17
+        ran over (source text): "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured"   char 403,308 of 10-K 2026-02-17
+        ran over (verified field): 2025-11-18   — established by the event-date guard, against the filing text — the same guard that rejected one filer's claimed 2028-04-01 and normalized another's fabricated 2025-01-01
+    Next tranche up: 6.125 % due 2028, maturing 2028. The gap is not computed: at least one of the two states only a year.
+        computed: nothing — this line states figures side by side and draws no conclusion
+        ran over (source text): "5.125 % due 2027 1,500 1,500"   char 33,542 of the anchor
+        ran over (source text): "6.125 % due 2028 $ 1,750 $ 1,750"   char 33,410 of the anchor
+    Liquidity beside it: $ 1,500   million maturing; $ 1.900   billion of undrawn revolver capacity as of 2026-06-30. Two separate disclosures, stated side by side — a revolver is liquidity, not how a term maturity is refinanced.
+        computed: nothing — this line states figures side by side and draws no conclusion
+        ran over (source text): "Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible accounts rece"   char 34,715 of the anchor
+        ran over (source text): "5.125 % due 2027 1,500 1,500"   char 33,542 of the anchor
+        ran over (verified field): $ 1,500   million   — established by the amount guard, against this row's own sourceLine — the one that drops a figure not printed on or beside its row
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+VERIFICATION SHEET — Encompass Health Corp   (CIK 0000785161)
+====================================================================================================
+ANCHOR      10-Q filed 2026-08-07, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  4 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm
+              https://www.sec.gov/Archives/edgar/data/785161/000078516126000161/ehc-20260529.htm
+              https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm
+              https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (7 row(s)) ---
+  [live] 4.50 % Senior Notes due 2028
+      amount $396.9 million   maturity 2028-02-01 (day)   from note
+      "4.50 % Senior Notes due 2028 396.9 792.0"
+      char 40,545 of the anchor
+  [live] 4.75 % Senior Notes due 2030
+      amount $788.4 million   maturity 2030-02-01 (day)   from note
+      "4.75 % Senior Notes due 2030 788.4 787.0"
+      char 40,590 of the anchor
+  [live] 4.625 % Senior Notes due 2031
+      amount $394.1 million   maturity 2031-04-01 (day)   from note
+      "4.625 % Senior Notes due 2031 394.1 393.6"
+      char 40,635 of the anchor
+  [live] 5.875 % Senior Notes due 2034
+      amount $491.0 million   maturity 2034-06-01 (day)   from note
+      "5.875 % Senior Notes due 2034 491.0 —"
+      char 40,681 of the anchor
+  [live] Advances under revolving credit facility
+      amount $200.0 million   maturity (none stated) (-)   from note
+      "Advances under revolving credit facility $ 200.0 $ 130.0"
+      char 40,469 of the anchor
+  [live] Other notes payable
+      amount $81.9 million   maturity (none stated) (-)   from note
+      "Other notes payable 81.9 93.6"
+      char 40,723 of the anchor
+  [live] Finance lease obligations
+      amount $281.7 million   maturity (none stated) (-)   from note
+      "Finance lease obligations 281.7 294.6"
+      char 40,757 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (0) ---
+  (none — this filer's note states its instruments in a table)
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: XBRL
+  stated total debt:  $2,634,000,000
+  the anchor balance sheet's own debt captions (2), which are the model-read alternative:
+      Current portion of long-term debt: $35.9 million   [period column: June 30, 2026]
+        "Current portion of long-term debt $ 35.9 $ 43.6"
+        char 19,093 of the anchor
+      Long-term debt, net of current portion: $2,598.1 million   [period column: June 30, 2026]
+        "Long-term debt, net of current portion 2,598.1 2,447.2"
+        char 19,333 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): PASS — 7 row(s), 1 adjustment(s)
+      tie  (unlabelled): claims 2,634,000,000, computed 2,634,000,000, gap 0
+      tie  Long-term debt, net of current portion: claims 2,598,100,000, computed 2,598,100,000, gap 0
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): PASS — 2 caption(s) summing 2,634,000,000, nearest gap 0
+  CHECK 3 (coverage): captured $2,634,000,000 + bridge 0 against stated $2,634,000,000
+      residual 0 = 0.00%, passes=true
+      ⚠ STATED BUT NOT CAPTURED: revolver
+  REVOLVER: REVOLVER DOES NOT RECONCILE — drawn + LCs + available is 1070M against a stated facility of 1000M; read the filing before quoting availability
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 7 rows cover $2.63B of $2.63B stated total debt (100%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — STATED BUT NOT CAPTURED: revolver
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (1) ---
+  CARD: Debt maturity approaching [refi]  row=4.50 % Senior Notes due 2028::4.50%::2028-02-01
+        qualified because: maturity ~17mo out
+    Months to maturity: 17 months out — matures 2028-02-01.
+        computed: 17 months
+        ran over (source text): "4.50 % Senior Notes due 2028 396.9 792.0"   char 40,545 of the anchor
+    Refinancing pattern: Last refinanced 3 months ago — an issuance dated 2026-05-29 whose proceeds retired 4.50 % Senior Notes due 2028. That issuance came 20 months ahead of the retired tranche's stated 2028-02-01 maturity.
+        computed: 3 months
+        ran over (source text): "we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from"   char 43,597 of the anchor
+        ran over (source text): "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net "   char 43,584 of the anchor
+        ran over (source text): "4.50 % Senior Notes due 2028 396.9 792.0"   char 40,545 of the anchor
+        ran over (verified field): 2026-05-29   — established by the event-date guard, against the filing text — the same guard that rejected one filer's claimed 2028-04-01 and normalized another's fabricated 2025-01-01
+    Next tranche up: 4.75 % Senior Notes due 2030, maturing 2030-02-01. 24 months behind this one.
+        computed: 24 months
+        ran over (source text): "4.50 % Senior Notes due 2028 396.9 792.0"   char 40,545 of the anchor
+        ran over (source text): "4.75 % Senior Notes due 2030 788.4 787.0"   char 40,590 of the anchor
+    liquidity: WITHHELD — $824 million appears in no source sentence behind this line.
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+VERIFICATION SHEET — COMMUNITY HEALTH SYSTEMS INC   (CIK 0001108109)
+====================================================================================================
+ANCHOR      10-Q filed 2026-07-23, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  4 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/1108109/000119312526059509/cyh-20251231.htm
+              https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm
+              https://www.sec.gov/Archives/edgar/data/1108109/000119312526251540/cyh-20260601.htm
+              https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (12 row(s)) ---
+  [live] 6 ⅞% Senior Notes due 2028
+      amount $ 42 million   maturity 2028-04-01 (day)   from note
+      "6 ⅞% Senior Notes due 2028 $ 42"
+      char 48,694 of the anchor
+  [live] 6 % Senior Secured Notes due 2029
+      amount $ 644 million   maturity 2029-01-15 (day)   from note
+      "6 % Senior Secured Notes due 2029 644"
+      char 48,741 of the anchor
+  [live/CAPACITY] ABL Facility
+      amount (no amount stated)   maturity 2029-06-05 (day)   from note-narrative
+      "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to"
+      char 51,785 of the anchor
+  [live] 6 ⅞% Junior-Priority Secured Notes due 2029
+      amount $ 1,244 million   maturity 2029 (year)   from note
+      "6 ⅞% Junior-Priority Secured Notes due 2029 1,244"
+      char 49,050 of the anchor
+  [live] 5 ¼% Senior Secured Notes due 2030
+      amount $ 1,535 million   maturity 2030-05-15 (day)   from note
+      "5 ¼% Senior Secured Notes due 2030 1,535"
+      char 48,789 of the anchor
+  [live] 6 ⅛% Junior-Priority Secured Notes due 2030
+      amount $ 1,227 million   maturity 2030 (year)   from note
+      "6 ⅛% Junior-Priority Secured Notes due 2030 1,227"
+      char 49,112 of the anchor
+  [live] 4 ¾% Senior Secured Notes due 2031
+      amount $ 689 million   maturity 2031-02-15 (day)   from note
+      "4 ¾% Senior Secured Notes due 2031 689"
+      char 48,842 of the anchor
+  [live] 10 ⅞% Senior Secured Notes due 2032
+      amount $ 1,549 million   maturity 2032-01-15 (day)   from note
+      "10 ⅞% Senior Secured Notes due 2032 1,549"
+      char 48,893 of the anchor
+  [live] 10 ¾% Senior Secured Notes due 2033
+      amount $ 700 million   maturity 2033-06-15 (day)   from note
+      "10 ¾% Senior Secured Notes due 2033 700"
+      char 48,947 of the anchor
+  [live] 9 ¾% Senior Secured Notes due 2034
+      amount $ 1,790 million   maturity 2034 (year)   from note
+      "9 ¾% Senior Secured Notes due 2034 1,790"
+      char 48,997 of the anchor
+  [live] Finance lease and financing obligations
+      amount $ 298 million   maturity (none stated) (-)   from note
+      "Finance lease and financing obligations 298"
+      char 49,197 of the anchor
+  [live] Other
+      amount $ 52 million   maturity (none stated) (-)   from note
+      "Other 52"
+      char 49,251 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (1) ---
+  ABL Facility — (no amount stated) [basis: commitment]
+      "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to"
+      char 51,785 of the anchor
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: XBRL
+  stated total debt:  $9,578,000,000
+  the anchor balance sheet's own debt captions (2), which are the model-read alternative:
+      Current maturities of long-term debt: $ 26 million   [period column: June 30, 2026]
+        "Current maturities of long-term debt $ 26"
+        char 7,480 of the anchor
+      Long-term debt: $ 9,552 million   [period column: June 30, 2026]
+        "Long-term debt 9,552"
+        char 7,806 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): PASS — 11 row(s), 2 adjustment(s)
+      tie  Total debt: claims 9,578,000,000, computed 9,578,000,000, gap 0
+      tie  Total long-term debt: claims 9,552,000,000, computed 9,552,000,000, gap 0
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): PASS — 2 caption(s) summing 9,578,000,000, matched "Total debt" via single-subtotal, nearest gap 0
+  CHECK 3 (coverage): captured $9,770,000,000 + bridge -192,000,000 against stated $9,578,000,000
+      residual 0 = 0.00%, passes=true
+      capacity NOT counted as debt: ABL Facility (no amount stated) — revolving facility, nothing drawn
+  REVOLVER: REVOLVER DOES NOT RECONCILE — drawn + LCs + available is 783M against a stated facility of 1000M; read the filing before quoting availability
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 11 rows cover $9.77B of $9.58B stated total debt (102%), against LongTermDebtAndCapitalLeaseObligationsCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags) — plus $0M of undrawn capacity NOT counted as debt (ABL Facility: revolving facility, nothing drawn)
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (0) ---
+  (no card-eligible event for this company at this as-of date)
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+VERIFICATION SHEET — QUEST DIAGNOSTICS INC   (CIK 0001022079)
+====================================================================================================
+ANCHOR      10-Q filed 2026-07-23, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  5 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/1022079/000102207926000005/dgx-20260210.htm
+              https://www.sec.gov/Archives/edgar/data/1022079/000102207926000043/dgx-20260331.htm
+              https://www.sec.gov/Archives/edgar/data/1022079/000102207926000070/dgx-20260630.htm
+              https://www.sec.gov/Archives/edgar/data/1022079/000110465926054141/tm2613096d1_8k.htm
+              https://www.sec.gov/Archives/edgar/data/1022079/000110465926057938/tm2613096d2_8k.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (13 row(s)) ---
+  [retired] 3.45 % Senior Note due June 2026
+      amount $ —   maturity 2026-06-01 (month)   from note
+      "3.45 % Senior Note due June 2026 $ — $ 501"
+      char 39,812 of the anchor
+  [live] 4.60 % Senior Notes due December 2027
+      amount 400 millions   maturity 2027-12-01 (month)   from note
+      "4.60 % Senior Notes due December 2027 400 400"
+      char 39,859 of the anchor
+  [live] 4.20 % Senior Notes due June 2029
+      amount 500 millions   maturity 2029-06-01 (month)   from note
+      "4.20 % Senior Notes due June 2029 500 499"
+      char 39,909 of the anchor
+  [live] 4.625 % Senior Notes due December 2029
+      amount 600 millions   maturity 2029-12-01 (month)   from note
+      "4.625 % Senior Notes due December 2029 600 600"
+      char 39,955 of the anchor
+  [live] 2.95 % Senior Notes due June 2030
+      amount 799 millions   maturity 2030-06-01 (month)   from note
+      "2.95 % Senior Notes due June 2030 799 799"
+      char 40,006 of the anchor
+  [live] 2.80 % Senior Notes due June 2031
+      amount 551 millions   maturity 2031-06-01 (month)   from note
+      "2.80 % Senior Notes due June 2031 551 564"
+      char 40,052 of the anchor
+  [live] 6.40 % Senior Notes due November 2033
+      amount 748 millions   maturity 2033-11-01 (month)   from note
+      "6.40 % Senior Notes due November 2033 748 756"
+      char 40,098 of the anchor
+  [live] 5.00 % Senior Notes due December 2034
+      amount 826 millions   maturity 2034-12-01 (month)   from note
+      "5.00 % Senior Notes due December 2034 826 840"
+      char 40,148 of the anchor
+  [live] 5.00 % Senior Notes due June 2036
+      amount 494 millions   maturity 2036-06-01 (month)   from note
+      "5.00 % Senior Notes due June 2036 494 —"
+      char 40,198 of the anchor
+  [live] 6.95 % Senior Notes due July 2037
+      amount 175 millions   maturity 2037-07-01 (month)   from note
+      "6.95 % Senior Notes due July 2037 175 175"
+      char 40,242 of the anchor
+  [live] 5.75 % Senior Notes due January 2040
+      amount 246 millions   maturity 2040-01-01 (month)   from note
+      "5.75 % Senior Notes due January 2040 246 246"
+      char 40,288 of the anchor
+  [live] 4.70 % Senior Notes due March 2045
+      amount 300 millions   maturity 2045-03-01 (month)   from note
+      "4.70 % Senior Notes due March 2045 300 300"
+      char 40,337 of the anchor
+  [live] Other
+      amount 35 millions   maturity (none stated) (-)   from note
+      "Other 35 21"
+      char 40,384 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (0) ---
+  (none — this filer's note states its instruments in a table)
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: XBRL
+  stated total debt:  $5,642,000,000
+  the anchor balance sheet's own debt captions (2), which are the model-read alternative:
+      Current portion of long-term debt: 10 millions   [period column: June 30, 2026]
+        "Current portion of long-term debt 10 504"
+        char 6,987 of the anchor
+      Long-term debt: 5,632 millions   [period column: June 30, 2026]
+        "Long-term debt 5,632 5,167"
+        char 7,143 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): PASS — 13 row(s), 2 adjustment(s)
+      tie  Total long-term debt: claims 5,642,000,000, computed 5,642,000,000, gap 0
+      tie  Total long-term debt, net of current portion: claims 5,632,000,000, computed 5,632,000,000, gap 0
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): PASS — 2 caption(s) summing 5,642,000,000, matched "Total long-term debt" via single-subtotal, nearest gap 0
+  CHECK 3 (coverage): captured $5,674,000,000 + bridge -32,000,000 against stated $5,642,000,000
+      residual 0 = 0.00%, passes=true
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 13 rows cover $5.67B of $5.64B stated total debt (101%), against LongTermDebtCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags)
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (1) ---
+  CARD: Debt maturity approaching [refi]  row=4.60 % Senior Notes due December 2027::4.60%::2027-12-01
+        qualified because: maturity ~15mo out
+    Months to maturity: 15 months out — matures 2027-12-01.
+        computed: 15 months
+        ran over (source text): "4.60 % Senior Notes due December 2027 400 400"   char 39,859 of the anchor
+    Refinancing pattern: Last refinanced 4 months ago — an issuance dated 2026-05-06 whose proceeds retired 3.45% Senior Notes due June 2026. That issuance came 1 months ahead of the retired tranche's stated 2026-06-01 maturity.
+        computed: 4 months
+        ran over (source text): "On June 1, 2026, the net proceeds from the 2036 Senior Notes and cash on hand were used to repay in full at maturity the outstanding indebtedness unde"   char 41,331 of the anchor
+        ran over (source text): "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "No"   char 2,062 of 8-K 2026-05-08
+        ran over (source text): "3.45 % Senior Note due June 2026 $ — $ 501"   char 39,812 of the anchor
+        ran over (verified field): 2026-05-06   — established by the event-date guard, against the filing text — the same guard that rejected one filer's claimed 2028-04-01 and normalized another's fabricated 2025-01-01
+    Next tranche up: 4.20 % Senior Notes due June 2029, maturing 2029-06-01. 18 months behind this one.
+        computed: 18 months
+        ran over (source text): "4.60 % Senior Notes due December 2027 400 400"   char 39,859 of the anchor
+        ran over (source text): "4.20 % Senior Notes due June 2029 500 499"   char 39,909 of the anchor
+    Liquidity beside it: The anchor filing states no revolving facility, so no liquidity figure sits beside this maturity.
+        computed: nothing — this line states figures side by side and draws no conclusion
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+VERIFICATION SHEET — CENTENE CORP   (CIK 0001071739)
+====================================================================================================
+ANCHOR      10-Q filed 2026-07-28, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/1071739/000107173926000153/cnc-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  2 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/1071739/000107173926000098/cnc-20260331.htm
+              https://www.sec.gov/Archives/edgar/data/1071739/000107173926000153/cnc-20260630.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (8 row(s)) ---
+  [live] $ 2,500 million 4.25 % Senior Notes due December 15, 2027
+      amount $1,067 million   maturity 2027-12-15 (day)   from note
+      "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+      char 52,938 of the anchor
+  [live] $ 2,300 million 2.45 % Senior Notes due July 15, 2028
+      amount $2,160 million   maturity 2028-07-15 (day)   from note
+      "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160"
+      char 53,016 of the anchor
+  [live] $ 3,500 million 4.625 % Senior Notes due December 15, 2029
+      amount $3,277 million   maturity 2029-12-15 (day)   from note
+      "$ 3,500 million 4.625 % Senior Notes due December 15, 2029 3,277"
+      char 53,086 of the anchor
+  [live] $ 2,000 million 3.375 % Senior Notes due February 15, 2030
+      amount $2,000 million   maturity 2030-02-15 (day)   from note
+      "$ 2,000 million 3.375 % Senior Notes due February 15, 2030 2,000"
+      char 53,161 of the anchor
+  [live] $ 2,200 million 3.00 % Senior Notes due October 15, 2030
+      amount $2,200 million   maturity 2030-10-15 (day)   from note
+      "$ 2,200 million 3.00 % Senior Notes due October 15, 2030 2,200"
+      char 53,236 of the anchor
+  [live] $ 2,200 million 2.50 % Senior Notes due March 1, 2031
+      amount $2,200 million   maturity 2031-03-01 (day)   from note
+      "$ 2,200 million 2.50 % Senior Notes due March 1, 2031 2,200"
+      char 53,309 of the anchor
+  [live] $ 1,300 million 2.625 % Senior Notes due August 1, 2031
+      amount $1,300 million   maturity 2031-08-01 (day)   from note
+      "$ 1,300 million 2.625 % Senior Notes due August 1, 2031 1,300"
+      char 53,379 of the anchor
+  [live] Term Loan Facility
+      amount $1,975 million   maturity (none stated) (-)   from note
+      "Term Loan Facility 1,975"
+      char 53,486 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (0) ---
+  (none — this filer's note states its instruments in a table)
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: XBRL
+  stated total debt:  $16,105,000,000
+  the anchor balance sheet's own debt captions (2), which are the model-read alternative:
+      Current portion of long-term debt: $75 million   [period column: June 30, 2026]
+        "Current portion of long-term debt 75"
+        char 18,822 of the anchor
+      Long-term debt: $16,030 million   [period column: June 30, 2026]
+        "Long-term debt 16,030"
+        char 18,910 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): PASS — 8 row(s), 2 adjustment(s)
+      tie  Total debt: claims 16,105,000,000, computed 16,105,000,000, gap 0
+      tie  Long-term debt: claims 16,030,000,000, computed 16,030,000,000, gap 0
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): PASS — 2 caption(s) summing 16,105,000,000, matched "Total debt" via single-subtotal, nearest gap 0
+  CHECK 3 (coverage): captured $16,179,000,000 + bridge -74,000,000 against stated $16,105,000,000
+      residual 0 = 0.00%, passes=true
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 8 rows cover $16.18B of $16.11B stated total debt (100%), against LongTermDebtCurrent + LongTermDebtNoncurrent (the filer's own XBRL tags)
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (1) ---
+  CARD: Debt maturity approaching [refi]  row=$ 2,500 million 4.25 % Senior Notes due December 15, 2027::4.25%::2027-12-15
+        qualified because: maturity ~15mo out
+    Months to maturity: 15 months out — matures 2027-12-15.
+        computed: 15 months
+        ran over (source text): "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"   char 52,938 of the anchor
+    Refinancing pattern: No verified, corroborated-completed redemption in this corpus, so no refinancing pattern is computed. An unverified or merely intended retirement is not a pattern.
+        computed: nothing — this line states figures side by side and draws no conclusion
+    Next tranche up: $ 2,300 million 2.45 % Senior Notes due July 15, 2028, maturing 2028-07-15. 7 months behind this one.
+        computed: 7 months
+        ran over (source text): "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"   char 52,938 of the anchor
+        ran over (source text): "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160"   char 53,016 of the anchor
+    Liquidity beside it: The anchor filing states no revolving facility, so no liquidity figure sits beside this maturity.
+        computed: nothing — this line states figures side by side and draws no conclusion
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+VERIFICATION SHEET — Cigna Group   (CIK 0001739940)
+====================================================================================================
+ANCHOR      10-Q filed 2026-07-30, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  3 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm
+              https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm
+              https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (6 row(s)) ---
+  [live/CAPACITY] Revolving Credit Agreement
+      amount (no amount stated)   maturity 2030-04-01 (month)   from note-narrative
+      "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year peri"
+      char 28,680 of the anchor
+  [live] 4.500% Senior Notes due 2030
+      amount $ 1,000 million   maturity 2030-09-15 (day)   from pricing-8-K
+      "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 1"
+      char 3,977 of 8-K 2025-09-04
+  [live] 4.875% Senior Notes due 2032
+      amount $ 1,250 million   maturity 2032-09-15 (day)   from pricing-8-K
+      "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 1"
+      char 4,187 of 8-K 2025-09-04
+  [live] 5.250% Senior Notes due 2036
+      amount $ 1,500 million   maturity 2036-01-15 (day)   from pricing-8-K
+      "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, "
+      char 4,397 of 8-K 2025-09-04
+  [live] 6.000% Senior Notes due 2056
+      amount $ 750 million   maturity 2056-01-15 (day)   from pricing-8-K
+      "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, "
+      char 4,603 of 8-K 2025-09-04
+  [live] Commercial paper program
+      amount $ 1.0 billion   maturity (none stated) (day)   from note-narrative
+      "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %."
+      char 29,669 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (2) ---
+  Revolving Credit Agreement — (no amount stated) [basis: -]
+      "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year peri"
+      char 28,680 of the anchor
+  Commercial paper program — $ 1.0 billion [basis: outstanding]
+      "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %."
+      char 29,669 of the anchor
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: XBRL
+  stated total debt:  $31,878,000,000
+  the anchor balance sheet's own debt captions (2), which are the model-read alternative:
+      Short-term debt: $ 2,792 millions   [period column: June 30, 2026]
+        "Short-term debt 2,792"
+        char 7,073 of the anchor
+      Long-term debt: $ 29,086 millions   [period column: June 30, 2026]
+        "Long-term debt 29,086"
+        char 7,308 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): NOT RUN — no subtotal to walk — 0 row(s), 0 adjustment(s)
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): FAIL — 2 caption(s) summing 31,878,000,000
+  CHECK 3 (coverage): captured $1,000,000,000 + bridge 0 against stated $31,878,000,000
+      residual 30,878,000,000 = 96.86%, passes=false
+      capacity NOT counted as debt: Revolving Credit Agreement (no amount stated) — revolving facility, no drawn balance stated — capacity, not debt
+  REVOLVER: revolver arithmetic not checkable — the note states fewer than all four figures
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 0 rows + 1 prose instrument cover $1.00B of $31.88B stated total debt (3%), against DebtCurrent + LongTermDebtAndCapitalLeaseObligations (the filer's own XBRL tags) — 96.9% unexplained, above the 2.5% line — plus $0M of undrawn capacity NOT counted as debt (Revolving Credit Agreement: revolving facility, no drawn balance stated — capacity, not debt)
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (0) ---
+  (no card-eligible event for this company at this as-of date)
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+VERIFICATION SHEET — MOLINA HEALTHCARE, INC.   (CIK 0001179929)
+====================================================================================================
+ANCHOR      10-Q filed 2026-07-23, period of report 2026-06-30
+            https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm
+AS-OF       2026-09-04 (pinned; every month count below is measured against this date)
+FILING SET  4 document(s) cited across all triggers:
+              https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm
+              https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm
+              https://www.sec.gov/Archives/edgar/data/1179929/000143774925035866/moh20251120_8k.htm
+              https://www.sec.gov/Archives/edgar/data/1179929/000143774926003384/moh20260206_8k.htm
+
+--- 1. LADDER, as the anchor's own debt note states it (6 row(s)) ---
+  [live] 4.375 % Notes due June 15, 2028
+      amount $ 800 millions   maturity 2028-06-15 (day)   from note
+      "4.375 % Notes due June 15, 2028 $ 800 $ 800"
+      char 37,808 of the anchor
+  [live] 3.875 % Notes due November 15, 2030
+      amount $ 650 millions   maturity 2030-11-15 (day)   from note
+      "3.875 % Notes due November 15, 2030 650 650"
+      char 37,856 of the anchor
+  [live/CAPACITY] Credit Facility
+      amount $ 1.25  billion   maturity 2030-11-20 (day)   from note-narrative
+      "We are party to a Credit Agreement (the "Credit Agreement") which includes a revolving credit facility ("Credit Facility") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million let"
+      char 39,015 of the anchor
+  [live] 6.500 % Notes due February 15, 2031
+      amount $ 850 millions   maturity 2031-02-15 (day)   from note
+      "6.500 % Notes due February 15, 2031 850 850"
+      char 37,904 of the anchor
+  [live] 3.875 % Notes due May 15, 2032
+      amount $ 750 millions   maturity 2032-05-15 (day)   from note
+      "3.875 % Notes due May 15, 2032 750 750"
+      char 37,952 of the anchor
+  [live] 6.250 % Notes due January 15, 2033
+      amount $ 750 millions   maturity 2033-01-15 (day)   from note
+      "6.250 % Notes due January 15, 2033 750 750"
+      char 37,995 of the anchor
+
+--- 2. PROSE INSTRUMENTS, as the note's narrative states them (1) ---
+  Credit Facility — $ 1.25  billion [basis: commitment]
+      "We are party to a Credit Agreement (the "Credit Agreement") which includes a revolving credit facility ("Credit Facility") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million let"
+      char 39,015 of the anchor
+
+--- 3. STATED TOTAL DEBT — the denominator, and where it came from ---
+  DENOMINATOR SOURCE: XBRL
+  stated total debt:  $3,769,000,000
+  the anchor balance sheet's own debt captions (1), which are the model-read alternative:
+      Long-term debt: $ 3,769 millions   [period column: June 30, 2026]
+        "Long-term debt 3,769 3,766"
+        char 5,995 of the anchor
+
+--- 4. CHECKS ---
+  CHECK 1 (internal walk): PASS — 5 row(s), 1 adjustment(s)
+      tie  Total: claims 3,769,000,000, computed 3,769,000,000, gap 0
+  rows outside any subtotal: 0
+  CHECK 2 (balance-sheet anchor): PASS — 1 caption(s) summing 3,769,000,000, matched "Total" via single-subtotal, nearest gap 0
+  CHECK 3 (coverage): captured $3,800,000,000 + bridge -31,000,000 against stated $3,769,000,000
+      residual 0 = 0.00%, passes=true
+      capacity NOT counted as debt: Credit Facility $1,250,000,000 — revolving facility, no drawn balance stated — capacity, not debt
+  REVOLVER: revolver arithmetic not checkable — the note states fewer than all four figures
+  COVERAGE LINE AS RENDERED: TIER 1 (the anchor position): 5 rows cover $3.80B of $3.77B stated total debt (101%), against LongTermDebtNoncurrent (the filer's own XBRL tags) — plus $1.25B of undrawn capacity NOT counted as debt (Credit Facility: revolving facility, no drawn balance stated — capacity, not debt)
+
+--- 5. TIER 2 — events since the anchor (0) ---
+  (none — no post-anchor 8-K in this corpus states an event against this position)
+
+--- 6. CARDS AND DERIVED LINES (0) ---
+  (no card-eligible event for this company at this as-of date)
+
+--- 7. SIGNATURE ---
+  Signing this sheet pins the state above as a golden file. A later run whose
+  filing set matches this one must reproduce it; any divergence fails by name.
+  Unsigned means unpinned — nothing is written until a signature says so.
+
+====================================================================================================
+9 SHEET(S) PRESENTED FOR SIGNATURE. No golden file has been written.
+====================================================================================================
+  DAVITA INC.                    rows  9  coverage 101%  resid 0%  tier2 0  cards 0  filings 5
+  HCA Healthcare, Inc.           rows  4  coverage 101%  resid 0%  tier2 0  cards 0  filings 5
+  TENET HEALTHCARE CORP          rows 12  coverage 101%  resid 0%  tier2 0  cards 1  filings 6
+  Encompass Health Corp          rows  7  coverage 100%  resid 0%  tier2 0  cards 1  filings 4
+  COMMUNITY HEALTH SYSTEMS INC   rows 12  coverage 102%  resid 0%  tier2 0  cards 0  filings 4
+  QUEST DIAGNOSTICS INC          rows 13  coverage 101%  resid 0%  tier2 0  cards 1  filings 5
+  CENTENE CORP                   rows  8  coverage 100%  resid 0%  tier2 0  cards 1  filings 2
+  Cigna Group                    rows  6  coverage 3%  resid 96.86%  tier2 0  cards 0  filings 3
+  MOLINA HEALTHCARE, INC.        rows  6  coverage 101%  resid 0%  tier2 0  cards 0  filings 4
+
+LIQUIDITY RULE (Stage 5, revised): 0 card(s) stating a ratio or coverage phrasing.

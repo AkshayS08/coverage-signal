@@ -1,0 +1,265 @@
+##################### BOOK A #####################
+
+===== DaVita =====
+DAVITA INC. — PASS (PARTIAL TRANSCRIPTION) (10-Q 2026-08-04)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 9 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $10.78B, $0 from nearest subtotal
+  completeness:              INCOMPLETE — 2 subtotal(s) transcribed, 1 labeled total(s) in source
+  rows (base ladder):        13 verified of 13 transcribed
+  rows (all arrays):         26 verified of 29 extracted — 3 further dropped outside the base ladder, seen by neither check
+  cost:                      not measured
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total debt principal outstanding 10,847,516"
+  → DROPS (prior period / issued tranches / balance-sheet captions): 3 dropped. These do NOT enter Check 1 or Check 2 and do not make this ladder incomplete — the prior-period sequence exists only to detect a tranche that vanished between filings.
+  no action this week
+  REFI: 9 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "an unlabeled total") ✓
+  REFI source: 10-Q 2026-08-04
+    live            $2.8B  4.625% Senior Notes — 45mo out — unchanged from $2.8B (10-Q 2026-05-05)
+    live            $2.0B  Term Loan A-2 — 51mo out
+    live             $65M  Revolving line of credit — 51mo out
+    TAIL 8 more tranches, 2031 to 2033
+    ADJ ($66.5M) — Discount, premium and deferred financing costs
+    ADJ ($117.2M) — Less current portion
+    New debt / financing need: On June 8, 2026, DaVita entered into the Ninth Amendment to its Credit Agreement providing for an incremental borrowing of $500 million under its Term Loan B-2 facility. — completed
+    New debt / financing need: On February 2, 2026, the Company signed a definitive agreement to acquire a noncontrolling minority interest in an entity. — announced
+    New debt / financing need: period spend — For the six months ended June 30, 2026, the Company made additions of property and equipment totaling $271,836 thousand. — ongoing
+    New debt / financing need: As of June 30, 2026, the Company had $1,435,000 thousand available and $65,000 thousand drawn on its $1,500,000 thousand revolving line of credit, representing 4.3% utilization. — ongoing
+    New debt / financing need: On August 20, 2025, the Board of Directors increased the authorization under the Company's existing share repurchase program by $2,000,000 thousand in additional repurchasing authority. — ongoing
+    FX / rate hedging: Term Loan A-2 ($1,975,000 thousand) and Term Loan B-2 ($2,357,910 thousand) both bear interest at SOFR plus margins. — ongoing
+  CARDS (0):
+  ladder rows: 11
+
+===== HCA Healthcare =====
+HCA Healthcare, Inc. — PASS (PARTIAL TRANSCRIPTION) (10-Q 2026-07-28)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 4 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $49.72B, $0 from nearest subtotal
+  completeness:              INCOMPLETE — 2 subtotal(s) transcribed, 0 labeled total(s) in source
+  rows (base ladder):        8 verified of 8 transcribed
+  rows (all arrays):         13 verified of 20 extracted — 7 further dropped outside the base ladder, seen by neither check
+  cost:                      not measured
+  → COMPLETENESS: source section has trailing untranscribed numeric content — "6,264"
+  → DROPS (prior period / issued tranches / balance-sheet captions): 7 dropped. These do NOT enter Check 1 or Check 2 and do not make this ladder incomplete — the prior-period sequence exists only to detect a tranche that vanished between filings.
+  no action this week
+  REFI: aggregate disclosure — 4 lines reported as category totals, no individual tranche maturities stated in this filing (internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "Total debt") ✓)
+  REFI source: 10-Q 2026-07-28
+    live            $1.0B  4.700% Senior Notes due 2031 — 57mo out
+    live            $750M  5.000% Senior Notes due 2033 — 81mo out
+    live            $1.3B  5.300% Senior Notes due 2036 — 117mo out
+    TAIL 4 more tranches, 2095
+    ADJ ($451M) — Debt issuance costs and discounts
+    ADJ ($6.3B) — Less amounts due within one year
+    New debt / financing need: HCA Inc. completed public offering of $3.0 billion aggregate principal amount of senior notes in April 2026: $1.0 billion of 4.700% notes due May 2031, $750 million of 5.000% notes due May 2033, and $1.25 billion of 5.300% notes due May 2036. — completed
+    New debt / financing need: period spend — Capital expenditures for property and equipment totaled $2,350 million for the six months ended June 30, 2026 and $1,119 million for Q1 2026. — ongoing
+    New debt / financing need: Quarterly cash dividend of $0.78 per share declared and paid. — ongoing
+    FX / rate hedging: Commercial paper program with $3,890 million outstanding at June 30, 2026 (weighted average rate of 4.3%) represents floating-rate debt. — ongoing — also relevant here; shown under Refi (debt maturity)
+  CARDS (0):
+  ladder rows: 7
+
+===== Tenet Healthcare =====
+TENET HEALTHCARE CORP — PASS (10-Q 2026-07-29)
+  check 1 (internal walk):   tie — 1 subtotal(s) over 11 row(s) + 1 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $13.25B, $0 from nearest subtotal
+  completeness:              complete — 1 subtotal(s), nothing left unconsumed
+  rows (base ladder):        13 verified of 13 transcribed
+  rows (all arrays):         30 verified of 30 extracted
+  cost:                      not measured
+  1 card this week
+  REFI: 11 tranches — internal walk ties — 1 subtotal reconcile ✓; balance-sheet anchor ties (matches "Total long-term debt") ✓
+  REFI source: 10-Q 2026-07-29
+    live            $1.5B  5.125 % due 2027 — matures 2027 — unchanged from $1.5B (10-Q 2026-04-30)  [CARD]
+    live            $1.8B  6.125 % due 2028 — matures 2028 — unchanged from $1.8B (10-Q 2026-04-30)
+    live            $600M  4.625 % due 2028 — matures 2028 — unchanged from $600M (10-Q 2026-04-30)
+    TAIL 9 more tranches, 2029 to 2033
+    ADJ ($85M) — Unamortized issue costs and note discounts
+    New debt / financing need: Tenet issued $1.5 billion of 5.500% senior secured first lien notes due November 2032 and $750 million of 6.000% senior notes due November 2033 on November 18, 2025. — completed
+    New debt / financing need: Tenet disclosed capital expenditures of $348 million for the six months ended June 30, 2026 — ongoing
+    New debt / financing need: Tenet repurchased $1.36 billion of common stock during the six months ended June 30, 2026 — ongoing
+    Treasury / deposits: Cash and cash equivalents were $2.17 billion at June 30, 2026, compared to $2.883 billion at December 31, 2025. — ongoing
+  CARDS (1):
+    refi | debt-maturity | row=5.125 % due 2027::5.125%::2027 | also=0 | cites 10-Q 2026-07-29
+  ladder rows: 12
+
+===== Universal Health Services =====
+UNIVERSAL HEALTH SERVICES INC — NO SCHEDULE (10-Q 2026-08-07)
+  check 1 (internal walk):   DOES NOT TIE — 0 subtotal(s) over 0 row(s) + 0 adjustment(s)
+  check 2 (balance sheet):   DOES NOT TIE — 2 caption(s) summing $4.85B, no comparison possible
+  completeness:              not checked (no locatable source section)
+  rows (base ladder):        0 verified of 10 transcribed — 10 DROPPED
+  rows (all arrays):         4 verified of 24 extracted — 10 further dropped outside the base ladder, seen by neither check
+  cost:                      not measured
+  → a debt note was located in 10-Q 2026-08-07 but no entry survived transcription/verification
+  → DROPS (base ladder): 10 of 10 transcribed entries were dropped — these are the only drops either check can see
+  → DROPS (prior period / issued tranches / balance-sheet captions): 10 dropped. These do NOT enter Check 1 or Check 2 and do not make this ladder incomplete — the prior-period sequence exists only to detect a tranche that vanished between filings.
+  no action this week
+  REFI: NOTE FOUND BUT READ WRONG — the debt note in 10-Q 2026-08-07 was located and transcribed, but every row carried a period column other than that filing's own period of report, so none could be trusted. This is a misread, not an absent disclosure; an older filing's ladder is deliberately NOT substituted. Read the filing.
+  REFI source: 10-Q 2026-08-07
+    live            $600M  5.500% Senior Secured Notes due 2031 — 60mo out
+    live            $500M  6.000% Senior Secured Notes due 2036 — 120mo out
+    New debt / financing need: On August 20, 2026, Universal Health Services, Inc. completed the public offering of $600,000,000 aggregate principal amount of 5.500% Senior Secured Notes due 2031 and $500,000,000 aggregate principal amount of 6.000% Senior Secured Notes due 2036 — completed
+    New debt / financing need: Each share of Talkspace common stock converted into the right to receive $5.25 in cash. — completed
+    New debt / financing need: Miller Medical Plaza, a multi-tenant medical office building consisting of 80,000 rentable square feet, is scheduled to be completed in December 2026 on the campus of Alan B. Miller Medical Center. — ongoing
+    New debt / financing need: As of June 30, 2026, the revolving credit facility had approximately $373 million of borrowings outstanding against a total capacity of $1.5 billion (increased from $1.3 billion in April 2026). — ongoing
+    New debt / financing need: During the six months ended June 30, 2026, the company repurchased common shares for $488,435 thousand including excise tax. — ongoing
+    FX / rate hedging: Behavioral health care facilities located in the U.K. generated net revenues of approximately $1.001 billion in 2025. — ongoing
+    FX / rate hedging: As of June 30, 2026, the company had $373 million drawn on the revolving credit facility and $1.455 billion on the Tranche A term loan, both of which are floating-rate instruments tied to SOFR or ABR. — ongoing
+    FX / rate hedging: The company has material foreign-currency exposure through its U.K. behavioral health operations, which generated $1.001 billion in revenues in 2025. — ongoing
+  CARDS (0):
+  ladder rows: 2
+
+===== Encompass Health =====
+Encompass Health Corp — PASS (10-Q 2026-08-07)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 7 row(s) + 1 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $2.63B, $0 from nearest subtotal
+  completeness:              complete — 2 subtotal(s), nothing left unconsumed
+  rows (base ladder):        10 verified of 10 transcribed
+  rows (all arrays):         23 verified of 23 extracted
+  cost:                      not measured
+  no action this week
+  REFI: 7 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "an unlabeled total") ✓
+  REFI source: 10-Q 2026-08-07
+    live          $788.4M  4.75 % Senior Notes due 2030 — matures 2030 — up $700,000 from $787.7M (10-Q 2026-05-01)
+    live          $394.1M  4.625 % Senior Notes due 2031 — matures 2031 — up $300,000 from $393.8M (10-Q 2026-05-01)
+    live            $491M  5.875 % Senior Notes due 2034 — matures 2034
+    TAIL 6 more tranches
+    ADJ ($35.9M) — Less: Current portion
+    New debt / financing need: Company completed issuance of $500 million 5.875% Senior Notes due 2034 on May 29, 2026, and an additional $100 million of the same notes on August 13, 2026. — completed
+    New debt / financing need: period spend — Capital expenditures for property, equipment, and intangible assets were $382.7 million for the six months ended June 30, 2026. — ongoing
+    New debt / financing need: Company declared dividends of $0.38 per share for the six months ended June 30, 2026 ($38.2 million total). — ongoing
+    Treasury / deposits: Cash and cash equivalents increased from $72.2 million at December 31, 2025 to $107.7 million at June 30, 2026, representing a $35.5 million increase. — ongoing
+    Treasury / deposits: On December 31, 2025, the company entered into an agreement to sell its 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to its existing joint venture partner, Barnes-Jewish Hospital, LLC, for $17.9 million effective January 1, 2026. — completed
+    FX / rate hedging: The company has $200 million drawn on its revolving credit facility as of June 30, 2026, which bears interest at 4.9% (floating rate tied to Term SOFR). — ongoing — also relevant here; shown under Refi (debt maturity)
+  CARDS (0):
+  ladder rows: 10
+##################### BOOK B #####################
+
+===== Community Health Systems =====
+COMMUNITY HEALTH SYSTEMS INC — FAIL (10-Q 2026-07-23)
+  check 1 (internal walk):   DOES NOT TIE — 2 subtotal(s) over 2 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $9.58B, $0 from nearest subtotal
+  completeness:              not checked (no locatable source section)
+  rows (base ladder):        6 verified of 15 transcribed — 9 DROPPED
+  rows (all arrays):         8 verified of 31 extracted — 14 further dropped outside the base ladder, seen by neither check
+  cost:                      not measured
+  → CHECK 1: top-level rollup subtotal "Total debt" claims $9.58B but its rows sum to $2.05B — $7.53B unaccounted
+  → CHECK 1: top-level rollup subtotal "Total long-term debt" claims $9.55B but its rows sum to $2.02B — $7.53B unaccounted
+  → DROPS (base ladder): 9 of 15 transcribed entries were dropped — these are the only drops either check can see
+  → DROPS (prior period / issued tranches / balance-sheet captions): 14 dropped. These do NOT enter Check 1 or Check 2 and do not make this ladder incomplete — the prior-period sequence exists only to detect a tranche that vanished between filings.
+  no action this week
+  REFI: TRANSCRIPTION NOT VERIFIED — the note states Total long-term debt of $ 9,552 million, but the rows below sum 79% short of it. The rows are shown as extracted and are NOT this company's position; read the filing. (internal walk does not tie — "Total debt" off by $7,532,000,000; "Total long-term debt" off by $7,532,000,000; balance-sheet anchor ties (matches "Total debt") ✓)
+  REFI source: 10-Q 2026-07-23
+    live            $689M  4.750% Senior Secured Notes due 2031 — matures 2031
+    live            $1.5B  10.875% Senior Secured Notes due 2032 — matures 2032
+    ADJ ($192M) — Less: Unamortized deferred debt issuance costs
+    ADJ ($26M) — Less: Current maturities
+    New debt / financing need: period spend — Capital expenditures of $152 million for purchases of property and equipment during the six months ended June 30, 2026, reflecting ongoing facility and infrastructure investments. — ongoing
+    New debt / financing need: ABL Facility drawn balance of $708 million as of June 30, 2026, with proceeds from ABL Facility of $708 million during the six months ended June 30, 2026, indicating active utilization of the revolving credit facility. — ongoing
+    Treasury / deposits: Completed divestiture of four hospitals in Arkansas to Freeman Health System for $110 million on June 1, 2026, and completed divestiture of Crestwood Medical Center in Huntsville, Alabama to Huntsville Hospital Health System for $459 million on April 1, 2026. — completed
+    FX / rate hedging: ABL Facility of $708 million drawn as of June 30, 2026, which is a floating-rate revolving credit facility, exposing the company to interest rate risk. — ongoing — also relevant here; shown under New debt / financing need
+  CARDS (0):
+  ladder rows: 2
+
+===== Quest Diagnostics =====
+QUEST DIAGNOSTICS INC — PASS (PARTIAL TRANSCRIPTION) (10-Q 2026-07-23)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 13 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $5.64B, $0 from nearest subtotal
+  completeness:              INCOMPLETE — 2 subtotal(s) transcribed, 5 labeled total(s) in source
+  rows (base ladder):        17 verified of 17 transcribed
+  rows (all arrays):         36 verified of 36 extracted
+  cost:                      not measured
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total long-term debt 5,642"
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total long-term debt, net of current portion $ 5,632"
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total maturities of long-term debt 5,710"
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total long-term debt 5,642"
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total long-term debt, net of current portion $ 5,632"
+  1 card this week
+  REFI: 13 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "Total long-term debt") ✓
+  REFI source: 10-Q 2026-07-23
+    live            $400M  4.60 % Senior Notes due December 2027 — 15mo out — unchanged from $400M (10-Q 2026-04-22)  [CARD]
+    live            $500M  4.20 % Senior Notes due June 2029 — 33mo out — up $1M from $499M (10-Q 2026-04-22)
+    live            $600M  4.625 % Senior Notes due December 2029 — 39mo out — unchanged from $600M (10-Q 2026-04-22)
+    TAIL 10 more tranches, 2030 to 2045
+    ADJ ($32M) — Debt issuance costs
+    ADJ ($10M) — Less: Current portion of long-term debt
+    New debt / financing need: Company completed issuance of $500 million aggregate principal amount of 5.000% senior notes due June 2036 on May 6, 2026. — completed
+    New debt / financing need: Total purchase consideration was $38 million cash plus $253 million non-controlling interest valuation. — completed
+    New debt / financing need: period spend — Company disclosed capital expenditures of $252 million for the six months ended June 30, 2026. — ongoing
+    New debt / financing need: Company announced on February 10, 2026 that Board authorized additional $1 billion share repurchase program and increased quarterly dividend from $0.80 to $0.86 per share (7.5% increase), effective with dividend payable April 20, 2026. — completed
+    Treasury / deposits: Cash and cash equivalents increased from $420 million at December 31, 2025 to $626 million at June 30, 2026, representing a $206 million increase in the first half of 2026. — ongoing
+    Treasury / deposits: Company and Corewell Health formed a new entity in January 2026 to perform laboratory testing in Michigan. — completed — also relevant here; shown under New debt / financing need
+    FX / rate hedging: Company maintains fixed-to-variable interest rate swaps on $1,800 million notional amount of debt, converting fixed-rate senior notes into variable-rate debt tied to SOFR. — ongoing
+  CARDS (1):
+    refi | debt-maturity | row=4.60 % Senior Notes due December 2027::4.60%::2027-12-01 | also=0 | cites 10-Q 2026-07-23
+  ladder rows: 14
+
+===== Centene Corporation =====
+CENTENE CORP — PASS (PARTIAL TRANSCRIPTION) (10-Q 2026-07-28)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 8 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $16.11B, $0 from nearest subtotal
+  completeness:              INCOMPLETE — 2 subtotal(s) transcribed, 2 labeled total(s) in source
+  rows (base ladder):        12 verified of 12 transcribed
+  rows (all arrays):         26 verified of 26 extracted
+  cost:                      not measured
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total senior notes 14,204"
+  1 card this week
+  REFI: 8 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "Total debt") ✓
+  REFI source: 10-Q 2026-07-28
+    live            $1.1B  $ 2,500 million 4.25 % Senior Notes due December 15, 2027 — 16mo out — down $118M from $1.2B (10-Q 2026-04-28)  [CARD]
+    live            $2.2B  $ 2,300 million 2.45 % Senior Notes due July 15, 2028 — 23mo out — down $141M from $2.3B (10-Q 2026-04-28)
+    live            $3.3B  $ 3,500 million 4.625 % Senior Notes due December 15, 2029 — 40mo out — unchanged from $3.3B (10-Q 2026-04-28)
+    TAIL 6 more tranches, 2030 to 2031
+    ADJ ($74M) — Debt issuance costs
+    ADJ ($75M) — Less: current portion
+    Treasury / deposits: Cash and cash equivalents of $24,151 million as of June 30, 2026, up from $17,888 million as of December 31, 2025, representing a significant increase of $6,263 million in the first half of 2026. — ongoing
+    Treasury / deposits: As of June 30, 2026, assets and liabilities held for sale totaled $293 million. — announced
+    FX / rate hedging: Term Loan Facility of $1,975 million outstanding as of June 30, 2026. — ongoing — also relevant here; shown under Refi (debt maturity)
+  CARDS (1):
+    refi | debt-maturity | row=$ 2,500 million 4.25 % Senior Notes due December 15, 2027::4.25%::2027-12-15 | also=0 | cites 10-Q 2026-07-28
+  ladder rows: 9
+
+===== Cigna Group =====
+Cigna Group — PASS (10-K 2026-02-26)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 36 row(s) + 0 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $31.46B, $0 from nearest subtotal
+  completeness:              not checked (no locatable source section)
+  rows (base ladder):        38 verified of 38 transcribed
+  rows (all arrays):         44 verified of 44 extracted
+  cost:                      not measured
+  1 card this week
+  REFI: 36 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "sum of Short-term debt + Long-term debt") ✓
+  REFI source: 10-K 2026-02-26
+    live            $1.5B  $ 1,500 million, 3.400 % Notes due March 2027 — 6mo out  [CARD]
+    live            $260M  $ 259 million, 7.875 % Debentures due May 2027 — 8mo out
+    live            $599M  $ 600 million, 3.050 % Notes due October 2027 — 13mo out
+    TAIL 33 more tranches, 2025 to 2056
+    New debt / financing need: On September 4, 2025, Cigna completed an offering of $4.5 billion in aggregate principal amount of senior notes across four tranches: $1.0 billion 4.500% Notes due 2030, $1.25 billion 4.875% Notes due 2032, $1.5 billion 5.250% Notes due 2036, and $750 million 6.000% Notes due 2056. — completed
+    New debt / financing need: On July 22, 2026, the Board declared a third quarter cash dividend of $1.56 per share. — ongoing
+    Treasury / deposits: Cash and cash equivalents were $6,298 million as of June 30, 2026 — ongoing
+    Treasury / deposits: Evernorth EnGuide Pharmacy was established in 2025 as a new entity to focus on the growing population of customers prescribed GLP-1 medications requiring clinical support. — completed 1yr 1mo ago
+    Treasury / deposits: On March 19, 2025, Cigna completed the sale of its Medicare Advantage, Medicare Individual Stand-Alone Prescription Drug Plans, Medicare and Other Supplemental Benefits, and CareAllies businesses to Health Care Services Corporation (HCSC). — completed 1yr 5mo ago
+  CARDS (1):
+    refi | debt-maturity | row=$ 1,500 million, 3.400 % Notes due March 2027::3.400%::2027-03-01 | also=2 | cites 10-K 2026-02-26
+  ladder rows: 36
+
+===== Molina Healthcare =====
+MOLINA HEALTHCARE, INC. — PASS (10-Q 2026-07-23)
+  check 1 (internal walk):   tie — 1 subtotal(s) over 5 row(s) + 1 adjustment(s)
+  check 2 (balance sheet):   tie — 1 caption(s) summing $3.77B, $0 from nearest subtotal
+  completeness:              complete — 1 subtotal(s), nothing left unconsumed
+  rows (base ladder):        7 verified of 7 transcribed
+  rows (all arrays):         9 verified of 16 extracted — 7 further dropped outside the base ladder, seen by neither check
+  cost:                      not measured
+  → DROPS (prior period / issued tranches / balance-sheet captions): 7 dropped. These do NOT enter Check 1 or Check 2 and do not make this ladder incomplete — the prior-period sequence exists only to detect a tranche that vanished between filings.
+  no action this week
+  REFI: 5 tranches — internal walk ties — 1 subtotal reconcile ✓; balance-sheet anchor ties (matches "Total") ✓
+  REFI source: 10-Q 2026-07-23
+    live            $800M  4.375 % Notes due June 15, 2028 — 22mo out
+    live            $650M  3.875 % Notes due November 15, 2030 — 51mo out
+    live            $850M  6.500 % Notes due February 15, 2031 — 54mo out
+    TAIL 2 more tranches, 2032 to 2033
+    ADJ ($31M) — Deferred debt issuance costs
+    New debt / financing need: On November 20, 2025, Molina completed a private offering of $850 million aggregate principal amount of 6.500% senior notes due February 15, 2031. — completed
+    New debt / financing need: In 2025, the company completed share repurchases totaling $1 billion under stock purchase programs authorized by the board. — ongoing
+    Treasury / deposits: Cash and cash equivalents increased from $4.248 billion at December 31, 2025 to $4.985 billion at June 30, 2026, representing a $737 million increase in the first half of 2026. — ongoing
+    Treasury / deposits: This represents a divestiture/exit of a business line, with an impairment charge of $93 million recorded. — completed
+    FX / rate hedging: The company discloses material exposure to pharmacy costs, including specialty drugs and formulary changes that allow higher-priced non-generic drugs. — ongoing
+  CARDS (0):
+  ladder rows: 5

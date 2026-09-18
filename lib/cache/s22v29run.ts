@@ -1,7 +1,7 @@
 /**
  * SESSION 22, STAGE 3 — THE v29 RUN. PAID.
  *
- * Cost shape declared before the run in files/session_22_v29_declaration.md,
+ * Cost shape declared before the run in sessions/22/v29_declaration.md,
  * along with the result shape it is checked against. Per-company cost is
  * persisted by runAgentLoop itself (Rule 20); this reports the total and the
  * shape, so Rule 13 can be checked rather than remembered.

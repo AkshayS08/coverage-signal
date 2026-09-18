@@ -1,0 +1,60 @@
+Community Health Systems 10-Q 2026-07-23: len=183593 status=found matches=5 extractionLen=42034
+    real table heading at 48497, first JP-2029 mention at 49055
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? YES
+    decimal coupons in doc: 12; fraction coupons: 16
+Community Health Systems 10-Q 2026-04-22: len=172849 status=not_found matches=- extractionLen=40000
+    real table heading at 46726, first JP-2029 mention at 47279
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? YES
+    decimal coupons in doc: 2; fraction coupons: 16
+Community Health Systems 10-K 2026-02-19: len=638486 status=found matches=36 extractionLen=53446
+    real table heading at 492881, first JP-2029 mention at 493505
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? YES
+    decimal coupons in doc: 84; fraction coupons: 161
+Cigna Group 10-Q 2026-07-30: len=147094 status=not_found matches=- extractionLen=40000
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 4; fraction coupons: 0
+Cigna Group 10-Q 2026-04-30: len=132041 status=not_found matches=- extractionLen=40000
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 3; fraction coupons: 0
+Cigna Group 10-K 2026-02-26: len=518211 status=found matches=37 extractionLen=44231
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 50; fraction coupons: 0
+Molina Healthcare 10-Q 2026-07-23: len=110269 status=found matches=5 extractionLen=40000
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 10; fraction coupons: 0
+Molina Healthcare 10-Q 2026-04-23: len=101830 status=found matches=5 extractionLen=40000
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 10; fraction coupons: 0
+Molina Healthcare 10-K 2026-02-10: len=382706 status=found matches=12 extractionLen=43177
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 33; fraction coupons: 0
+Tenet Healthcare 10-Q 2026-07-29: len=149578 status=found matches=10 extractionLen=40000
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 13; fraction coupons: 0
+Tenet Healthcare 10-Q 2026-04-30: len=134862 status=found matches=10 extractionLen=40000
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 13; fraction coupons: 0
+Tenet Healthcare 10-K 2026-02-17: len=515588 status=found matches=16 extractionLen=43517
+    real table heading at -1, first JP-2029 mention at -1
+    does the extraction text CONTAIN the real table's first row ("6 ⅞% Senior Notes due 2028")? NO
+    does the FULL text contain it? NO
+    decimal coupons in doc: 53; fraction coupons: 0

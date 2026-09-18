@@ -1,7 +1,7 @@
 /**
  * SESSION 22, STAGE 4 — THE DEMO GATE'S REPRODUCIBILITY RUN. PAID.
  *
- * Cost and result shape declared first, in files/session_22_stage4_declaration.md.
+ * Cost and result shape declared first, in sessions/22/stage4_declaration.md.
  *
  * CACHE_BUST forces the model to be re-asked at the SAME prompt version on
  * the SAME filings, which is the only way to separate "v29 does not fill this

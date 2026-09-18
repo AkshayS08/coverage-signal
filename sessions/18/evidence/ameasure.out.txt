@@ -1,0 +1,62 @@
+====================================================================================================
+GROUP A — DROPS AND LADDER ROWS, BEFORE (item 1 only) vs AFTER (A1+A2+B)
+====================================================================================================
+
+company                      | dropped before -> after | ladder rows before -> after | verdict      | A3 rows-not-verified
+DaVita                       |              3 ->     3 |                 11 ->    11 | pass-partial | no (—)
+HCA Healthcare               |              0 ->     7 |                  9 ->     7 | pass-partial | no (—)
+Tenet Healthcare             |              0 ->     0 |                 14 ->    14 | pass         | no (—)
+Universal Health Services    |              0 ->     0 |                 10 ->    10 | pass-partial | no (—)
+Encompass Health             |              0 ->     0 |                 12 ->    12 | pass         | no (—)
+Community Health Systems     |             13 ->    23 |                  4 ->     2 | fail         | YES (walk off 79%)
+Quest Diagnostics            |              2 ->     2 |                 14 ->    14 | pass-partial | no (—)
+Centene Corporation          |              0 ->     0 |                  9 ->     9 | pass-partial | no (—)
+Cigna Group                  |              6 ->     6 |                 34 ->    34 | fail         | no (—)
+Molina Healthcare            |              7 ->     7 |                  6 ->     6 | pass         | no (—)
+BOOK                         |             31 ->    48
+
+====================================================================================================
+THE THREE FABRICATED CHS ROWS — are they still on the ladder?
+====================================================================================================
+  ABL Facility
+    claimed $ 708 million; real value — (zero) in the debt note; 708 is a cash-flow line
+    STILL ON LADDER? NO — dropped
+  6.875% Junior-Priority Secured Notes due 2029
+    claimed $ 350 million; real value 1,244
+    STILL ON LADDER? NO — dropped
+  6.125% Junior-Priority Secured Notes due 2030
+    claimed $ 400 million; real value 1,227
+    STILL ON LADDER? NO — dropped
+
+  CHS ladder now:
+    live        4.750% Senior Secured Notes due 2031 = $ 689 million
+    live        10.875% Senior Secured Notes due 2032 = $ 1,549 million
+
+====================================================================================================
+A2 — ENTRIES STILL PASSING ON CO-OCCURRENCE, BOOK-WIDE
+====================================================================================================
+  literal: 211   co-occurrence: 10   (of 221 verified entries re-checked)
+    DaVita prior 4.625% Senior Notes — "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,640,000" = $ 2,750,000 thousands
+    DaVita prior 3.75% Senior Notes — "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,372,500" = $ 1,500,000 thousands
+    DaVita prior 6.875% Senior Notes — "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,020,000" = $ 1,000,000 thousands
+    DaVita prior 6.75% Senior Notes — "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,015,000" = $ 1,000,000 thousands
+    HCA Healthcare issued 4.700% Senior Notes due 2031 — "$ 1.000 billion aggregate principal amount of 4.700 % senior notes due 2031" = $ 1,000 million
+    HCA Healthcare issued 5.000% Senior Notes due 2033 — "$ 750 million aggregate principal amount of 5.000 % senior notes due 2033" = $ 750 million
+    HCA Healthcare issued 5.300% Senior Notes due 2036 — "$ 1.250 billion aggregate principal amount of 5.300 % senior notes due 2036" = $ 1,250 million
+    Tenet Healthcare issued 5.500% senior secured first lien notes due 2032 — "Tenet issued $1,500,000,000 in aggregate principal amount of 5.500% senior secured first l" = $ 1,500 million
+    Quest Diagnostics issued 5.000% Senior Notes due June 2036 — "On May 6, 2026, Quest Diagnostics Incorporated (the \"Company\") issued $500,000,000 aggrega" = $ 500 million
+    Cigna Group caption Long-term debt — "Long-term debt 29,086   30,871" = $ 30,871 million
+
+====================================================================================================
+CARD COUNTS (A3 blocks refi cards on an unverified ladder)
+====================================================================================================
+  DaVita                       0 card(s), 0 refi
+  HCA Healthcare               0 card(s), 0 refi
+  Tenet Healthcare             0 card(s), 0 refi
+  Universal Health Services    0 card(s), 0 refi
+  Encompass Health             0 card(s), 0 refi
+  Community Health Systems     0 card(s), 0 refi
+  Quest Diagnostics            1 card(s), 1 refi
+  Centene Corporation          1 card(s), 1 refi
+  Cigna Group                  3 card(s), 3 refi
+  Molina Healthcare            0 card(s), 0 refi

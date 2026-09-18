@@ -1,0 +1,509 @@
+====================================================================================================
+1.1  DROP RATE — every dropped entry, its cause, and the text that failed
+====================================================================================================
+
+--- DaVita — 3 of 29 dropped  [verdict pass-partial]
+    base filing: 10-Q 2026-08-04
+    check1 TIE (2 subtotal(s), 9 rows, 2 adj)  |  check2 TIE (gap $0)
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Term Loan A-2: $ 1,987,500" has no determinable unit; dropped, not trusted for arithmetic
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Revolving line of credit: $ 375,000" has no determinable unit; dropped, not trusted for arithmetic
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for new debt issuance / notes pricing — "Term Loan B-2 Incremental Tranche: $ 500,000" has no determinable unit; dropped, not trusted for arithmetic
+
+--- HCA Healthcare — 0 of 20 dropped  [verdict pass-partial]
+    base filing: 10-Q 2026-07-28
+    check1 TIE (2 subtotal(s), 4 rows, 2 adj)  |  check2 TIE (gap $0)
+    (no drops)
+
+--- Tenet Healthcare — 0 of 30 dropped  [verdict pass]
+    base filing: 10-Q 2026-07-29
+    check1 TIE (1 subtotal(s), 11 rows, 1 adj)  |  check2 TIE (gap $0)
+    (no drops)
+
+--- Universal Health Services — 0 of 14 dropped  [verdict pass-partial]
+    base filing: 10-K 2026-02-25
+    check1 TIE (1 subtotal(s), 8 rows, 1 adj)  |  check2 TIE (gap $-15.7M)
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Notes and Mortgages payable (including obligations under finance leases of $ 91,121  in 2025 and $ 92,530  in 2024) and term loans with varying maturities through 2099 ; weighted average interest rates of 4.0 % in 2025 and 3.8 % in 2024" reports amount "$200,810 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Tranche A term loan" reports amount "$1,162,500 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Revolving credit facility" reports amount "$408,400 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "2.65 % Senior Secured Notes due 2030" reports amount "$798,935 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "1.65 % Senior Secured Notes due 2026" reports amount "$699,887 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "2.65 % Senior Secured Notes due 2032" reports amount "$499,266 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "4.625 % Senior Secured Notes due 2029" reports amount "$499,839 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "5.050 % Senior Secured Notes due 2034" reports amount "$498,624 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Total debt before unamortized financing costs" reports amount "$4,768,261 thousand" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Less-Unamortized financing costs" reports amount "($15,710 thousand)" from column "December 31, 2025", but this filing's period of report is 2026-06-30; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "Notes and Mortgages payable (including obligations under finance leases of $ 91,121  in 2025 and $ 92,530  in 2024) and term loans with varying maturities through 2099 ; weighted average interest rates of 4.0 % in 2025 and 3.8 % in 2024" reports amount "$206,046 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "Tranche A term loan" reports amount "$1,192,500 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "Revolving credit facility" reports amount "$130,000 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "2.65 % Senior Secured Notes due 2030" reports amount "$798,709 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "1.65 % Senior Secured Notes due 2026" reports amount "$699,712 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "2.65 % Senior Secured Notes due 2032" reports amount "$499,136 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "4.625 % Senior Secured Notes due 2029" reports amount "$499,796 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "5.050 % Senior Secured Notes due 2034" reports amount "$498,467 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "Total debt before unamortized financing costs" reports amount "$4,524,366 thousand" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "Less-Unamortized financing costs" reports amount "($19,825 thousand)" from column "December 31, 2024", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Notes and Mortgages payable (including obligations under finance leases)" reports amount "$200,810 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Tranche A term loan" reports amount "$1,162,500 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Revolving credit facility" reports amount "$408,400 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "2.65 % Senior Secured Notes due 2030" reports amount "$798,935 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "1.65 % Senior Secured Notes due 2026" reports amount "$699,887 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "2.65 % Senior Secured Notes due 2032" reports amount "$499,266 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "4.625 % Senior Secured Notes due 2029" reports amount "$499,839 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "5.050 % Senior Secured Notes due 2034" reports amount "$498,624 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Total debt before unamortized financing costs" reports amount "$4,768,261 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching — "Less-Unamortized financing costs" reports amount "($15,710) thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (balance sheet) — "Current maturities of long-term debt" reports amount "$748,158 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (balance sheet) — "Long-term debt" reports amount "$4,004,393 thousands" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    !! 32 MORE log lines than dropped entries — parser over-counted, investigate
+
+--- Encompass Health — 0 of 23 dropped  [verdict pass]
+    base filing: 10-Q 2026-08-07
+    check1 TIE (2 subtotal(s), 7 rows, 1 adj)  |  check2 TIE (gap $0)
+    (no drops)
+
+--- Community Health Systems — 15 of 31 dropped  [verdict fail]
+    base filing: 10-Q 2026-07-23
+    check1 NO TIE (2 subtotal(s), 4 rows, 2 adj)  |  check2 TIE (gap $0)
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 8.000% Senior Secured Notes due 2027): "8.000% Senior Secured Notes due 2027 1,000"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 5.625% Senior Secured Notes due 2027): "5.625% Senior Secured Notes due 2027 500"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 6.875% Senior Unsecured Notes due 2028): "6.875% Senior Unsecured Notes due 2028 400"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 6.000% Senior Secured Notes due 2029): "6.000% Senior Secured Notes due 2029 600"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 5.250% Senior Secured Notes due 2030): "5.250% Senior Secured Notes due 2030 2,200"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 4.750% Senior Secured Notes due 2031): "4.750% Senior Secured Notes due 2031 689"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, Other debt obligations): "Other 298"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 8.000% Senior Secured Notes due 2027): "8.000% Senior Secured Notes due 2027 1,000"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 5.625% Senior Secured Notes due 2027): "5.625% Senior Secured Notes due 2027 500"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 6.875% Senior Unsecured Notes due 2028): "6.875% Senior Unsecured Notes due 2028 400"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 6.000% Senior Secured Notes due 2029): "6.000% Senior Secured Notes due 2029 600"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 5.250% Senior Secured Notes due 2030): "5.250% Senior Secured Notes due 2030 2,200"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 4.750% Senior Secured Notes due 2031): "4.750% Senior Secured Notes due 2031 1,057"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 10.875% Senior Secured Notes due 2032): "10.875% Senior Secured Notes due 2032 1,780"
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, Other debt obligations): "Other 345"
+
+--- Quest Diagnostics — 2 of 36 dropped  [verdict pass-partial]
+    base filing: 10-Q 2026-07-23
+    check1 TIE (2 subtotal(s), 12 rows, 2 adj)  |  check2 TIE (gap $0)
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "3.45 % Senior Note due June 2026: $ —" has no determinable unit; dropped, not trusted for arithmetic
+    [sourceline-unverified]
+      [DIAG] unverified sourceLine (debt maturity approaching, 3.45 % Senior Note due June 2026): "3.45 % Senior Note due June 2026 501"
+
+--- Centene Corporation — 0 of 26 dropped  [verdict pass-partial]
+    base filing: 10-Q 2026-07-28
+    check1 TIE (2 subtotal(s), 8 rows, 2 adj)  |  check2 TIE (gap $0)
+    (no drops)
+
+--- Cigna Group — 6 of 44 dropped  [verdict fail]
+    base filing: 10-K 2026-02-26
+    check1 TIE (2 subtotal(s), 30 rows, 0 adj)  |  check2 NO TIE (gap $592.0M)
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Commercial paper: $ —" has no determinable unit; dropped, not trusted for arithmetic
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "$ 900 million, 3.250 % Notes due April 2025: $ —" has no determinable unit; dropped, not trusted for arithmetic
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "$ 1,216 million, 4.125 % Notes due November 2025: $ —" has no determinable unit; dropped, not trusted for arithmetic
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "$ 1,284 million, 4.500 % Notes due February 2026: $ —" has no determinable unit; dropped, not trusted for arithmetic
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "$ 700 million, 5.685 % Notes due March 2026: $ —" has no determinable unit; dropped, not trusted for arithmetic
+    [amount-scale-indeterminate]
+      AMOUNT SCALE INDETERMINATE for debt maturity approaching — "$ 550 million, 1.250 % Notes due March 2026: $ —" has no determinable unit; dropped, not trusted for arithmetic
+
+--- Molina Healthcare — 7 of 16 dropped  [verdict pass]
+    base filing: 10-Q 2026-07-23
+    check1 TIE (1 subtotal(s), 5 rows, 1 adj)  |  check2 TIE (gap $0)
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "4.375 % Notes due June 15, 2028" reports amount "$ 800" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "3.875 % Notes due November 15, 2030" reports amount "$ 650" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "6.500 % Notes due February 15, 2031" reports amount "$ 850" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "3.875 % Notes due May 15, 2032" reports amount "$ 750" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "6.250 % Notes due January 15, 2033" reports amount "$ 750" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "Deferred debt issuance costs" reports amount "( 34 )" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+    [wrong-period-column]
+      WRONG-COLUMN ENTRY DROPPED for debt maturity approaching (prior period) — "Total" reports amount "$ 3,766" from column "December 31, 2025", but this filing's period of report is 2026-03-31; a prior-column amount walks cleanly against a prior-column subtotal, so it is dropped rather than trusted
+
+--- BOOK-WIDE, grouped by cause ---
+   39  wrong-period-column  — Universal Health Services, Molina Healthcare
+   16  sourceline-unverified  — Community Health Systems, Quest Diagnostics
+   10  amount-scale-indeterminate  — DaVita, Quest Diagnostics, Cigna Group
+   65  TOTAL
+
+====================================================================================================
+1.2  HOW A SUBTOTAL RECONCILED AGAINST A PARTIAL ROW SET
+====================================================================================================
+
+--- DaVita: verdict pass-partial WITH 3 dropped
+    surviving sequence (13 entries):
+      row        sect="Senior Secured Credit Facilities" label="Term Loan A-2" amount="$ 1,975,000 thousands" -> $1.975B
+      row        sect="Senior Secured Credit Facilities" label="Term Loan B-2" amount="$ 2,357,910 thousands" -> $2.358B
+      row        sect="Senior Secured Credit Facilities" label="Revolving line of credit" amount="$ 65,000 thousands" -> $65.0M
+      row        sect="Senior Notes" label="4.625% Senior Notes" amount="$ 2,750,000 thousands" -> $2.750B
+      row        sect="Senior Notes" label="3.75% Senior Notes" amount="$ 1,500,000 thousands" -> $1.500B
+      row        sect="Senior Notes" label="6.875% Senior Notes" amount="$ 1,000,000 thousands" -> $1.000B
+      row        sect="Senior Notes" label="6.75% Senior Notes" amount="$ 1,000,000 thousands" -> $1.000B
+      row        sect=null label="Acquisition obligations and other notes payable" amount="$ 39,463 thousands" -> $39.5M
+      row        sect=null label="Financing lease obligations" amount="$ 160,143 thousands" -> $160.1M
+      subtotal   sect=null label=null amount="$ 10,847,516 thousands" -> $10.848B
+      adjustment sect=null label="Discount, premium and deferred financing costs" amount="( 66,503 ) thousands" -> $-66.5M
+      subtotal   sect=null label=null amount="$ 10,781,013 thousands" -> $10.781B
+      adjustment sect=null label="Less current portion" amount="( 117,177 ) thousands" -> $-117.2M
+    CHECK 1 subtotal checks:
+      TIE   section=null label=null claimed=$10.848B computed=$10.848B gap=$0
+      TIE   section=null label=null claimed=$10.781B computed=$10.781B gap=$0
+    CHECK 2: 2 caption(s) = $10.781B; matched null at $10.781B; nearest gap $0
+    balance-sheet captions:
+      "Current portion of long-term debt" = "$ 117,177 thousands" -> $117.2M
+      "Long-term debt" = "$ 10,663,836 thousands" -> $10.664B
+    completeness: checked=true complete=false subtotalsTranscribed=2 missing=["Total debt principal outstanding 10,847,516"]
+
+--- Quest Diagnostics: verdict pass-partial WITH 2 dropped
+    surviving sequence (16 entries):
+      row        sect=null label="4.60 % Senior Notes due December 2027" amount="$ 400 millions" -> $400.0M
+      row        sect=null label="4.20 % Senior Notes due June 2029" amount="$ 500 millions" -> $500.0M
+      row        sect=null label="4.625 % Senior Notes due December 2029" amount="$ 600 millions" -> $600.0M
+      row        sect=null label="2.95 % Senior Notes due June 2030" amount="$ 799 millions" -> $799.0M
+      row        sect=null label="2.80 % Senior Notes due June 2031" amount="$ 551 millions" -> $551.0M
+      row        sect=null label="6.40 % Senior Notes due November 2033" amount="$ 748 millions" -> $748.0M
+      row        sect=null label="5.00 % Senior Notes due December 2034" amount="$ 826 millions" -> $826.0M
+      row        sect=null label="5.00 % Senior Notes due June 2036" amount="$ 494 millions" -> $494.0M
+      row        sect=null label="6.95 % Senior Notes due July 2037" amount="$ 175 millions" -> $175.0M
+      row        sect=null label="5.75 % Senior Notes due January 2040" amount="$ 246 millions" -> $246.0M
+      row        sect=null label="4.70 % Senior Notes due March 2045" amount="$ 300 millions" -> $300.0M
+      row        sect=null label="Other" amount="$ 35 millions" -> $35.0M
+      adjustment sect=null label="Debt issuance costs" amount="( 32 ) millions" -> $-32.0M
+      subtotal   sect=null label="Total long-term debt" amount="$ 5,642 millions" -> $5.642B
+      adjustment sect=null label="Less: Current portion of long-term debt" amount="( 10 ) millions" -> $-10.0M
+      subtotal   sect=null label="Total long-term debt, net of current portion" amount="$ 5,632 millions" -> $5.632B
+    CHECK 1 subtotal checks:
+      TIE   section=null label="Total long-term debt" claimed=$5.642B computed=$5.642B gap=$0
+      TIE   section=null label="Total long-term debt, net of current portion" claimed=$5.632B computed=$5.632B gap=$0
+    CHECK 2: 2 caption(s) = $5.642B; matched "Total long-term debt" at $5.642B; nearest gap $0
+    balance-sheet captions:
+      "Current portion of long-term debt" = "$ 10 millions" -> $10.0M
+      "Long-term debt" = "$ 5,632 millions" -> $5.632B
+    completeness: checked=true complete=false subtotalsTranscribed=2 missing=["Total long-term debt 5,642","Total long-term debt, net of current portion $ 5,632"]
+
+--- Molina Healthcare: verdict pass WITH 7 dropped
+    surviving sequence (7 entries):
+      row        sect=null label="4.375 % Notes due June 15, 2028" amount="$ 800 millions" -> $800.0M
+      row        sect=null label="3.875 % Notes due November 15, 2030" amount="$ 650 millions" -> $650.0M
+      row        sect=null label="6.500 % Notes due February 15, 2031" amount="$ 850 millions" -> $850.0M
+      row        sect=null label="3.875 % Notes due May 15, 2032" amount="$ 750 millions" -> $750.0M
+      row        sect=null label="6.250 % Notes due January 15, 2033" amount="$ 750 millions" -> $750.0M
+      adjustment sect=null label="Deferred debt issuance costs" amount="( 31 ) millions" -> $-31.0M
+      subtotal   sect=null label="Total" amount="$ 3,769 millions" -> $3.769B
+    CHECK 1 subtotal checks:
+      TIE   section=null label="Total" claimed=$3.769B computed=$3.769B gap=$0
+    CHECK 2: 1 caption(s) = $3.769B; matched "Total" at $3.769B; nearest gap $0
+    balance-sheet captions:
+      "Long-term debt" = "$ 3,769 millions" -> $3.769B
+    completeness: checked=true complete=true subtotalsTranscribed=1 missing=[]
+
+====================================================================================================
+1.3  POST-BASE-FILING 8-K ACTIVITY, AND ROWS WHOSE MATURITY HAS PASSED
+====================================================================================================
+
+--- DaVita
+    base filing: 10-Q 2026-08-04
+    new-debt-issuance FIRED; citations: 8-K 2026-06-08
+      newest cited filing 2026-06-08 is not after the base filing
+      redeems: null
+      issuedTranches: 0
+      APPLIED TO LADDER? retired rows=0, rows added from issuance=0
+    rows past maturity still live: 0
+
+--- HCA Healthcare
+    base filing: 10-Q 2026-07-28
+    new-debt-issuance FIRED; citations: 8-K 2026-04-30, 8-K 2026-04-27
+      newest cited filing 2026-04-30 is not after the base filing
+      redeems: "all $ 1.500 billion aggregate principal amount of 5.250 % senior notes due 2026 and all $ 1.000 billion aggregate principal amount of 5.375 % senior notes due 2026"
+      issuedTranches: 3 -> 4.700% Senior Notes due 2031 $ 1,000 million due 2031-05-15 | 5.000% Senior Notes due 2033 $ 750 million due 2033-05-15 | 5.300% Senior Notes due 2036 $ 1,250 million due 2036-05-15
+      APPLIED TO LADDER? retired rows=0, rows added from issuance=3
+    rows past maturity still live: 0
+
+--- Tenet Healthcare
+    base filing: 10-Q 2026-07-29
+    new-debt-issuance FIRED; citations: 8-K 2025-11-18, 8-K 2025-11-03
+      newest cited filing 2025-11-18 is not after the base filing
+      redeems: "all $1.5 billion outstanding of its 6.250% senior secured second lien notes due February 2027 and the partial redemption of $0.75 billion outstanding of its 6.125% senior notes due October 2028"
+      issuedTranches: 2 -> 5.500% senior secured first lien notes due 2032 $ 1,500 million due 2032 | 6.000% senior notes due 2033 $ 750 million due 2033
+      APPLIED TO LADDER? retired rows=0, rows added from issuance=2
+    rows past maturity still live: 0
+
+--- Universal Health Services
+    base filing: 10-K 2026-02-25
+    new-debt-issuance FIRED; citations: 8-K 2026-08-21
+      newest cited filing 2026-08-21 is AFTER the base filing
+      redeems: null
+      issuedTranches: 2 -> 5.500% Senior Secured Notes due 2031 $600,000,000 due 2031-09-01 | 6.000% Senior Secured Notes due 2036 $500,000,000 due 2036-09-01
+      APPLIED TO LADDER? retired rows=0, rows added from issuance=2
+    rows past maturity still live: 0
+
+--- Encompass Health
+    base filing: 10-Q 2026-08-07
+    new-debt-issuance FIRED; citations: 8-K 2026-06-01, 8-K 2026-08-13
+      newest cited filing 2026-08-13 is AFTER the base filing
+      redeems: "4.500% senior notes due 2028"
+      issuedTranches: 2 -> 5.875% Senior Notes due 2034 $ 500 million due 2034 | 5.875% Senior Notes due 2034 $ 100 million due 2034
+      APPLIED TO LADDER? retired rows=1, rows added from issuance=2
+    rows past maturity still live: 0
+
+--- Community Health Systems
+    base filing: 10-Q 2026-07-23
+    new-debt-issuance did not fire
+    rows past maturity still live: 0
+
+--- Quest Diagnostics
+    base filing: 10-Q 2026-07-23
+    new-debt-issuance FIRED; citations: 10-Q 2026-07-23, 8-K 2026-05-08
+      newest cited filing 2026-07-23 is not after the base filing
+      redeems: "3.45% Senior Notes due June 2026"
+      issuedTranches: 1 -> 5.000% Senior Notes due June 2036 $ 500 million due 2036-06-30
+      APPLIED TO LADDER? retired rows=0, rows added from issuance=1
+    rows past maturity still live: 0
+
+--- Centene Corporation
+    base filing: 10-Q 2026-07-28
+    new-debt-issuance did not fire
+    rows past maturity still live: 0
+
+--- Cigna Group
+    base filing: 10-K 2026-02-26
+    new-debt-issuance FIRED; citations: 8-K 2025-09-04
+      newest cited filing 2025-09-04 is not after the base filing
+      redeems: null
+      issuedTranches: 4 -> 4.500% Senior Notes due 2030 $1,000 million due 2030-09-15 | 4.875% Senior Notes due 2032 $1,250 million due 2032-09-15 | 5.250% Senior Notes due 2036 $1,500 million due 2036-01-15 | 6.000% Senior Notes due 2056 $750 million due 2056-01-15
+      APPLIED TO LADDER? retired rows=0, rows added from issuance=4
+    ROWS PAST MATURITY, STILL RENDERED live: 1
+      2026-03-01 (month)  $ 550 million, 1.250 % Notes due March 2026  $ 549 millions
+
+--- Molina Healthcare
+    base filing: 10-Q 2026-07-23
+    new-debt-issuance FIRED; citations: 8-K 2025-11-20
+      newest cited filing 2025-11-20 is not after the base filing
+      redeems: "$740 million in existing term loan debt"
+      issuedTranches: 1 -> 6.500% Senior Notes due 2031 $850 million due 2031-02-15
+      APPLIED TO LADDER? retired rows=0, rows added from issuance=1
+    rows past maturity still live: 0
+
+====================================================================================================
+1.4  YEAR-ONLY ROWS — DOES THE MONTH APPEAR ANYWHERE IN THE CORPUS?
+====================================================================================================
+
+--- DaVita: 11 ladder rows — 0 year-only, 7 month/day, 4 no date at all
+
+--- HCA Healthcare: 9 ladder rows — 1 year-only, 3 month/day, 5 no date at all
+    year-only: "Senior unsecured notes payable through 2095" rate="5.1 %" amount="$ 44,200 million" -> 2095
+      sourceLine: "Senior unsecured notes payable through 2095  (effective interest rate of 5.1 %)"
+      month in its own sourceLine? no
+      "Month 2095" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+
+--- Tenet Healthcare: 14 ladder rows — 12 year-only, 0 month/day, 2 no date at all
+    year-only: "5.125 % due 2027" rate="5.125%" amount="$ 1,500 million" -> 2027
+      sourceLine: "5.125 % due 2027 1,500"
+      month in its own sourceLine? no
+      "Month 2027" anywhere in corpus? yes
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "6.125 % due 2028" rate="6.125%" amount="$ 1,750 million" -> 2028
+      sourceLine: "6.125 % due 2028 $ 1,750"
+      month in its own sourceLine? no
+      "Month 2028" anywhere in corpus? yes
+      attributable to this tranche (rate within 400 chars)? YES
+        10-K 2026-02-17: "…then $2.500 billion aggregate principal amount outstanding of our 6.125% senior notes due October 2028 (the “October 2028 Senior Unsecured Notes”) in…"
+    year-only: "4.625 % due 2028" rate="4.625%" amount="$ 600 million" -> 2028
+      sourceLine: "4.625 % due 2028 600"
+      month in its own sourceLine? no
+      "Month 2028" anywhere in corpus? yes
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "4.250 % due 2029" rate="4.250%" amount="$ 1,400 million" -> 2029
+      sourceLine: "4.250 % due 2029 1,400"
+      month in its own sourceLine? no
+      "Month 2029" anywhere in corpus? yes
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "4.375 % due 2030" rate="4.375%" amount="$ 1,450 million" -> 2030
+      sourceLine: "4.375 % due 2030 1,450"
+      month in its own sourceLine? no
+      "Month 2030" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "6.125 % due 2030" rate="6.125%" amount="$ 2,000 million" -> 2030
+      sourceLine: "6.125 % due 2030 2,000"
+      month in its own sourceLine? no
+      "Month 2030" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "6.875 % due 2031" rate="6.875%" amount="$ 362 million" -> 2031
+      sourceLine: "6.875 % due 2031 362"
+      month in its own sourceLine? no
+      "Month 2031" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "6.750 % due 2031" rate="6.750%" amount="$ 1,350 million" -> 2031
+      sourceLine: "6.750 % due 2031 1,350"
+      month in its own sourceLine? no
+      "Month 2031" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "5.500 % due 2032" rate="5.500%" amount="$ 1,500 million" -> 2032
+      sourceLine: "5.500 % due 2032 1,500"
+      month in its own sourceLine? no
+      "Month 2032" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "5.500% senior secured first lien notes due 2032" rate="5.500%" amount="$ 1,500 million" -> 2032
+      sourceLine: "Tenet issued $1,500,000,000 in aggregate principal amount of 5.500% senior secured first lien notes due 2032"
+      month in its own sourceLine? no
+      "Month 2032" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "6.000 % due 2033" rate="6.000%" amount="$ 750 million" -> 2033
+      sourceLine: "6.000 % due 2033 750"
+      month in its own sourceLine? no
+      "Month 2033" anywhere in corpus? yes
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "6.000% senior notes due 2033" rate="6.000%" amount="$ 750 million" -> 2033
+      sourceLine: "$750,000,000 in aggregate principal amount of 6.000% senior notes due 2033"
+      month in its own sourceLine? no
+      "Month 2033" anywhere in corpus? yes
+      attributable to this tranche (rate within 400 chars)? no
+
+--- Universal Health Services: 10 ladder rows — 6 year-only, 2 month/day, 2 no date at all
+    year-only: "1.65 % Senior Secured Notes due 2026" rate="1.65%" amount="$699,887 thousand" -> 2026
+      sourceLine: "1.65 % Senior Secured Notes due 2026 , net of unamortized discount of $ 113  in 2025 and $ 288  in 2024"
+      month in its own sourceLine? no
+      "Month 2026" anywhere in corpus? yes
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "4.625 % Senior Secured Notes due 2029" rate="4.625%" amount="$499,839 thousand" -> 2029
+      sourceLine: "4.625 % Senior Secured Notes due 2029 , net of unamortized discount of $ 161  in 2025 and net of unamortized discount of $ 204  in 2024"
+      month in its own sourceLine? no
+      "Month 2029" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "2.65 % Senior Secured Notes due 2030" rate="2.65%" amount="$798,935 thousand" -> 2030
+      sourceLine: "2.65 % Senior Secured Notes due 2030 , net of unamortized discount of $ 1,065  in 2025 and $ 1,291  in 2024"
+      month in its own sourceLine? no
+      "Month 2030" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "2.65 % Senior Secured Notes due 2032" rate="2.65%" amount="$499,266 thousand" -> 2032
+      sourceLine: "2.65 % Senior Secured Notes due 2032 , net of unamortized discount of $ 734  in 2025 and $ 864  in 2024"
+      month in its own sourceLine? no
+      "Month 2032" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "5.050 % Senior Secured Notes due 2034" rate="5.050%" amount="$498,624 thousand" -> 2034
+      sourceLine: "5.050 % Senior Secured Notes due 2034 , net of unamortized discount of $ 1,376  in 2025 and net of unamortized discount of $ 1,533  in 2024"
+      month in its own sourceLine? no
+      "Month 2034" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "Notes and Mortgages payable (including obligations under finance leases of $ 91,121  in 2025 and $ 92,530  in 2024) and term loans with varying maturities through 2099 ; weighted average interest rates of 4.0 % in 2025 and 3.8 % in 2024" rate="4.0%" amount="$200,810 thousand" -> 2099
+      sourceLine: "Notes and Mortgages payable (including obligations under finance leases of $ 91,121  in 2025 and $ 92,530  in 2024) and term loans with varying maturities throu"
+      month in its own sourceLine? no
+      "Month 2099" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+
+--- Encompass Health: 12 ladder rows — 6 year-only, 0 month/day, 6 no date at all
+    year-only: "4.50 % Senior Notes due 2028" rate="4.50%" amount="$ 396.9 million" -> 2028
+      sourceLine: "4.50 % Senior Notes due 2028 396.9   792.0"
+      month in its own sourceLine? no
+      "Month 2028" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "4.75 % Senior Notes due 2030" rate="4.75%" amount="$ 788.4 million" -> 2030
+      sourceLine: "4.75 % Senior Notes due 2030 788.4   787.0"
+      month in its own sourceLine? no
+      "Month 2030" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "4.625 % Senior Notes due 2031" rate="4.625%" amount="$ 394.1 million" -> 2031
+      sourceLine: "4.625 % Senior Notes due 2031 394.1   393.6"
+      month in its own sourceLine? no
+      "Month 2031" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "5.875 % Senior Notes due 2034" rate="5.875%" amount="$ 491.0 million" -> 2034
+      sourceLine: "5.875 % Senior Notes due 2034 491.0   —"
+      month in its own sourceLine? no
+      "Month 2034" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "5.875% Senior Notes due 2034" rate="5.875%" amount="$ 500 million" -> 2034
+      sourceLine: "On May 29, 2026, Encompass Health Corporation (the \"Company\") completed the issuance and sale of $500 million in aggregate principal amount of its 5.875% Senior"
+      month in its own sourceLine? no
+      "Month 2034" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "5.875% Senior Notes due 2034" rate="5.875%" amount="$ 100 million" -> 2034
+      sourceLine: "On August 13, 2026, Encompass Health Corporation (the \"Company\") completed the issuance and sale of $100 million in aggregate principal amount of its 5.875% Sen"
+      month in its own sourceLine? no
+      "Month 2034" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+
+--- Community Health Systems: 4 ladder rows — 3 year-only, 0 month/day, 1 no date at all
+    year-only: "6.875% Junior-Priority Secured Notes due 2029" rate="6.875%" amount="$ 350 million" -> 2029
+      sourceLine: "6.875% Junior-Priority Secured Notes due 2029 350"
+      month in its own sourceLine? no
+      "Month 2029" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "6.125% Junior-Priority Secured Notes due 2030" rate="6.125%" amount="$ 400 million" -> 2030
+      sourceLine: "6.125% Junior-Priority Secured Notes due 2030 400"
+      month in its own sourceLine? no
+      "Month 2030" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+    year-only: "10.875% Senior Secured Notes due 2032" rate="10.875%" amount="$ 1,549 million" -> 2032
+      sourceLine: "10.875% Senior Secured Notes due 2032 1,549"
+      month in its own sourceLine? no
+      "Month 2032" anywhere in corpus? NO — never printed
+      attributable to this tranche (rate within 400 chars)? no
+
+--- Quest Diagnostics: 14 ladder rows — 0 year-only, 12 month/day, 2 no date at all
+
+--- Centene Corporation: 9 ladder rows — 0 year-only, 7 month/day, 2 no date at all
+
+--- Cigna Group: 34 ladder rows — 0 year-only, 32 month/day, 2 no date at all
+
+--- Molina Healthcare: 6 ladder rows — 0 year-only, 6 month/day, 0 no date at all
+
+  BOOK-WIDE: 28 year-only ladder rows; 0 carry a month in their own sourceLine; 1 have an attributable month somewhere in the corpus.

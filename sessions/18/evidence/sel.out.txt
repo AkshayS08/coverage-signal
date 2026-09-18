@@ -1,0 +1,72 @@
+=== DaVita
+   debt-note locator: 10-Q 2026-08-04 → found (10 matches)
+   debt-note locator: 10-Q 2026-05-05 → found (9 matches)
+   debt-note locator: 10-K 2026-02-11 → found (11 matches)
+   debt-schedule base filing selected: 10-Q 2026-08-04; prior: 10-Q 2026-05-05
+   RESOLVED base=10-Q 2026-08-04 prior=10-Q 2026-05-05
+
+=== HCA Healthcare
+   debt-note locator: 10-Q 2026-07-28 → found (5 matches)
+   debt-note locator: 10-Q 2026-04-29 → found (0 matches)
+   debt-note locator: 10-K 2026-02-10 → found (11 matches)
+   debt-schedule base filing selected: 10-Q 2026-07-28; prior: 10-Q 2026-04-29
+   RESOLVED base=10-Q 2026-07-28 prior=10-Q 2026-04-29
+
+=== Tenet Healthcare
+   debt-note locator: 10-Q 2026-07-29 → found (10 matches)
+   debt-note locator: 10-Q 2026-04-30 → found (10 matches)
+   debt-note locator: 10-K 2026-02-17 → found (16 matches)
+   debt-schedule base filing selected: 10-Q 2026-07-29; prior: 10-Q 2026-04-30
+   RESOLVED base=10-Q 2026-07-29 prior=10-Q 2026-04-30
+
+=== Universal Health Services
+   debt-note locator: 10-Q 2026-08-07 → found (9 matches)
+   debt-note locator: 10-Q 2026-05-07 → found (7 matches)
+   debt-note locator: 10-K 2026-02-25 → found (5 matches)
+   debt-schedule base filing selected: 10-Q 2026-08-07; prior: 10-Q 2026-05-07
+   debt-schedule SEARCH ORDER: 10-Q 2026-08-07 yielded no verified schedule entries — falling back to 10-Q 2026-05-07 (an abbreviated note is normal, not a failure)
+   debt-schedule SEARCH ORDER: 10-Q 2026-05-07 yielded no verified schedule entries — falling back to 10-K 2026-02-25 (an abbreviated note is normal, not a failure)
+   debt-schedule base filing RESOLVED to 10-K 2026-02-25 — 9 verified entr(y/ies)
+   RESOLVED base=10-K 2026-02-25 prior=none
+
+=== Encompass Health
+   debt-note locator: 10-Q 2026-08-07 → found (4 matches)
+   debt-note locator: 10-Q 2026-05-01 → found (3 matches)
+   debt-note locator: 10-K 2026-02-26 → found (4 matches)
+   debt-schedule base filing selected: 10-Q 2026-08-07; prior: 10-Q 2026-05-01
+   RESOLVED base=10-Q 2026-08-07 prior=10-Q 2026-05-01
+
+=== Community Health Systems
+   debt-note locator: 10-Q 2026-07-23 → found (13 matches)
+   debt-note locator: 10-Q 2026-04-22 → found (9 matches)
+   debt-note locator: 10-K 2026-02-19 → found (27 matches)
+   debt-schedule base filing selected: 10-Q 2026-07-23; prior: 10-Q 2026-04-22
+   RESOLVED base=10-Q 2026-07-23 prior=10-Q 2026-04-22
+
+=== Quest Diagnostics
+   debt-note locator: 10-Q 2026-07-23 → found (13 matches)
+   debt-note locator: 10-Q 2026-04-22 → found (4 matches)
+   debt-note locator: 10-K 2026-02-26 → found (12 matches)
+   debt-schedule base filing selected: 10-Q 2026-07-23; prior: 10-Q 2026-04-22
+   RESOLVED base=10-Q 2026-07-23 prior=10-Q 2026-04-22
+
+=== Centene Corporation
+   debt-note locator: 10-Q 2026-07-28 → found (7 matches)
+   debt-note locator: 10-Q 2026-04-28 → found (7 matches)
+   debt-note locator: 10-K 2026-02-17 → found (7 matches)
+   debt-schedule base filing selected: 10-Q 2026-07-28; prior: 10-Q 2026-04-28
+   RESOLVED base=10-Q 2026-07-28 prior=10-Q 2026-04-28
+
+=== Cigna Group
+   debt-note locator: 10-Q 2026-07-30 → not_found
+   debt-note locator: 10-Q 2026-04-30 → not_found
+   debt-note locator: 10-K 2026-02-26 → found (37 matches)
+   debt-schedule base filing selected: 10-K 2026-02-26; no prior filing available
+   RESOLVED base=10-K 2026-02-26 prior=none
+
+=== Molina Healthcare
+   debt-note locator: 10-Q 2026-07-23 → found (5 matches)
+   debt-note locator: 10-Q 2026-04-23 → found (5 matches)
+   debt-note locator: 10-K 2026-02-10 → found (12 matches)
+   debt-schedule base filing selected: 10-Q 2026-07-23; prior: 10-Q 2026-04-23
+   RESOLVED base=10-Q 2026-07-23 prior=10-Q 2026-04-23

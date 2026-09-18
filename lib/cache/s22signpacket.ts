@@ -326,9 +326,9 @@ if (process.argv[1] && process.argv[1].includes("s22signpacket")) {
       narrationPromptVersion: NARRATION_PROMPT_VERSION,
       companies: packet,
     };
-    writeFileSync("files/session_22_sign_packet.json", JSON.stringify(doc, null, 2), "utf8");
+    writeFileSync("sessions/22/sign_packet.json", JSON.stringify(doc, null, 2), "utf8");
     const failed = packet.filter((p) => p.missingFromSheet.length > 0);
-    console.log(`\n  wrote files/session_22_sign_packet.json — ${packet.length} company/companies`);
+    console.log(`\n  wrote sessions/22/sign_packet.json — ${packet.length} company/companies`);
     console.log(`  SHEET-CHECK: ${failed.length === 0 ? "every packet figure appears in the rendered sheet" : `${failed.length} company/companies FAILED`}`);
     console.log(`  SIGNABLE: ${packet.filter((p) => p.signable).map((p) => p.company).join(", ") || "(none)"}`);
   })();

@@ -1,0 +1,23 @@
+SURVIVING BASE SEQUENCE (verified):
+  row        col="June 30, 2026" "ABL Facility" = "$ 708 million"  src="Proceeds from ABL Facility 708"
+  row        col="June 30, 2026" "6.875% Junior-Priority Secured Notes due 2029" = "$ 350 million"  src="6.875% Junior-Priority Secured Notes due 2029 350"
+  row        col="June 30, 2026" "6.125% Junior-Priority Secured Notes due 2030" = "$ 400 million"  src="6.125% Junior-Priority Secured Notes due 2030 400"
+  row        col="June 30, 2026" "4.750% Senior Secured Notes due 2031" = "$ 689 million"  src="4.750% Senior Secured Notes due 2031 689"
+  row        col="June 30, 2026" "10.875% Senior Secured Notes due 2032" = "$ 1,549 million"  src="10.875% Senior Secured Notes due 2032 1,549"
+  adjustment col="June 30, 2026" "Less: Unamortized deferred debt issuance costs" = "$ (192) million"  src="Less: Unamortized deferred debt issuance costs ( 192 )"
+  subtotal   col="June 30, 2026" "Total debt" = "$ 9,578 million"  src="Total debt 9,578"
+  adjustment col="June 30, 2026" "Less: Current maturities" = "$ (26) million"  src="Less: Current maturities ( 26 )"
+  subtotal   col="June 30, 2026" "Total long-term debt" = "$ 9,552 million"  src="Total long-term debt $ 9,552"
+
+SURVIVING PRIOR SEQUENCE (verified):
+  row        col="December 31, 2025" "6.875% Junior-Priority Secured Notes due 2029" = "$ 350 million"
+  row        col="December 31, 2025" "6.125% Junior-Priority Secured Notes due 2030" = "$ 400 million"
+  row        col="December 31, 2025" "10.875% Senior Secured Notes due 2032" = "$ 1,780 million"
+  adjustment col="December 31, 2025" "Less: Unamortized deferred debt issuance costs" = "$ (217) million"
+  subtotal   col="December 31, 2025" "Total debt" = "$ 10,396 million"
+  adjustment col="December 31, 2025" "Less: Current maturities" = "$ (16) million"
+  subtotal   col="December 31, 2025" "Total long-term debt" = "$ 10,380 million"
+
+BALANCE SHEET CAPTIONS:
+  "Current maturities of long-term debt" = "$ 26 million"
+  "Long-term debt" = "$ 9,552 million"

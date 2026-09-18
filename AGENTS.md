@@ -9,23 +9,37 @@ Coverage Signal — a weekly call sheet for a commercial banking RM. Reads SEC
 filings, checks 15 triggers across 4 buckets, returns cards for events worth a
 call plus a portfolio table of verified facts. Deployed on Vercel.
 
-## Files (../files/)
+## Docs (docs/) and session artifacts (sessions/NN/)
+
+The docs live in this repo and are committed with the code they describe. They
+were outside version control until the reorg; anything in the build log that
+names a `files/` path or a `coverage_signal_*.md` filename predates it.
 
 Read before any session:
-- coverage_signal_BRD.md — the architecture. Current as of v1.1. Start here.
-- the session prompt being worked.
+- docs/BRD.md — the architecture. Current as of v1.7. Start here.
+- docs/rules.md — the rules index, 1 to 49, each linking to its log entry.
+  Generated from the log's headings by `lib/cache/rulesIndex.ts`; never edited
+  by hand. `npx tsx lib/cache/rulesIndex.ts --check` fails if it has drifted.
+- sessions/NN/prompt.md — the session being worked.
 
 Read on demand:
-- coverage_signal_build_log.md — session history and the four standing rules.
-  Sessions 10-13 explain why the rules exist. Read before proposing a fix that
+- docs/build_log.md — session history and every rule's own entry. Sessions
+  10-13 explain why the rules exist. Read before proposing a fix that
   resembles one already tried.
-- coverage_signal_trigger_taxonomy.md — trigger definitions. Do not edit.
-- coverage_signal_card_eligibility_spec.md — the gate contract.
-- coverage_signal_metrics_cost_limits.md, coverage_signal_build_map.md.
+- docs/trigger_taxonomy.md — trigger definitions. Do not edit.
+- docs/card_eligibility_spec.md — the gate contract.
+- docs/metrics_cost_limits.md, docs/build_map.md.
+- sessions/NN/ — that session's prompts, reviews, declarations and captured
+  output. Archived as written: they record what was decided at the time and
+  are not brought up to date.
 
 Rules:
-- Never edit anything in files/ unless asked.
+- Never edit anything in sessions/ unless asked. A past session's artifacts are
+  a record, not a draft.
 - The BRD wins where documents disagree.
+- Adding a rule means adding its `### Rule N — <statement>` heading to the log
+  and re-running the index generator. The generator refuses to write an index
+  with a gap in it.
 - coverage_signal_v3_architecture.md was deleted. References to it in the build
   log are history, not instructions.
 

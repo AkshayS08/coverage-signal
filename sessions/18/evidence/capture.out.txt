@@ -1,0 +1,269 @@
+##################### BOOK A #####################
+
+===== DaVita =====
+DAVITA INC. — PASS (PARTIAL TRANSCRIPTION) (10-Q 2026-08-04)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 9 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $10.78B, $0 from nearest subtotal
+  completeness:              INCOMPLETE — 2 subtotal(s) transcribed, 1 labeled total(s) in source
+  rows:                      26 verified of 29 extracted — 3 DROPPED
+  cost:                      not measured
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total debt principal outstanding 10,847,516"
+  → DROPS: 3 of 29 extracted entries were dropped — failed sourceLine verification, wrong period column, or indeterminate amount scale
+  headerLine: no action this week
+  refi.completeness: 9 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "an unlabeled total") ✓
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-Q 2026-08-04
+    ROW live | 4.625% Senior Notes | $ 2,750,000 thousands | 45mo out | card=false
+    ROW live | Term Loan A-2 | $ 1,975,000 thousands | 51mo out | card=false
+    ROW live | Revolving line of credit | $ 65,000 thousands | 51mo out | card=false
+    TAIL 8 more tranches, 2031 to 2033
+    ADJ Discount, premium and deferred financing costs | ( 66,503 ) thousands
+    ADJ Less current portion | ( 117,177 ) thousands
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    HEDGING undefined
+  cards: 0
+  ladder rows total: 11
+
+===== HCA Healthcare =====
+HCA Healthcare, Inc. — PASS (PARTIAL TRANSCRIPTION) (10-Q 2026-07-28)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 4 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $49.72B, $0 from nearest subtotal
+  completeness:              INCOMPLETE — 2 subtotal(s) transcribed, 0 labeled total(s) in source
+  rows:                      13 verified of 20 extracted — 7 DROPPED
+  cost:                      not measured
+  → COMPLETENESS: source section has trailing untranscribed numeric content — "6,264"
+  → DROPS: 7 of 20 extracted entries were dropped — failed sourceLine verification, wrong period column, or indeterminate amount scale
+  headerLine: no action this week
+  refi.completeness: aggregate disclosure — 4 lines reported as category totals, no individual tranche maturities stated in this filing (internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "Total debt") ✓)
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-Q 2026-07-28
+    ROW live | 4.700% Senior Notes due 2031 | $ 1,000 million | 57mo out | card=false
+    ROW live | 5.000% Senior Notes due 2033 | $ 750 million | 81mo out | card=false
+    ROW live | 5.300% Senior Notes due 2036 | $ 1,250 million | 117mo out | card=false
+    TAIL 4 more tranches, 2095
+    ADJ Debt issuance costs and discounts | ( 451 ) million
+    ADJ Less amounts due within one year | ( 6,264 ) million
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    HEDGING undefined
+  cards: 0
+  ladder rows total: 7
+
+===== Tenet Healthcare =====
+TENET HEALTHCARE CORP — PASS (10-Q 2026-07-29)
+  check 1 (internal walk):   tie — 1 subtotal(s) over 11 row(s) + 1 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $13.25B, $0 from nearest subtotal
+  completeness:              complete — 1 subtotal(s), nothing left unconsumed
+  rows:                      30 verified of 30 extracted
+  cost:                      not measured
+  headerLine: no action this week
+  refi.completeness: aggregate disclosure — 11 lines reported as category totals, no individual tranche maturities stated in this filing (internal walk ties — 1 subtotal reconcile ✓; balance-sheet anchor ties (matches "Total long-term debt") ✓)
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-Q 2026-07-29
+    ROW live | 5.125 % due 2027 | $ 1,500 million | matures 2027 | card=false
+    ROW live | 6.125 % due 2028 | $ 1,750 million | matures 2028 | card=false
+    ROW live | 4.625 % due 2028 | $ 600 million | matures 2028 | card=false
+    TAIL 11 more tranches, 2029 to 2033
+    ADJ Unamortized issue costs and note discounts | ( 85 ) million
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    TREASURY undefined
+  cards: 0
+  ladder rows total: 14
+
+===== Universal Health Services =====
+UNIVERSAL HEALTH SERVICES INC — PASS (PARTIAL TRANSCRIPTION) (10-K 2026-02-25)
+  check 1 (internal walk):   tie — 1 subtotal(s) over 8 row(s) + 1 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $4.75B, $-15.71M from nearest subtotal
+  completeness:              INCOMPLETE — 1 subtotal(s) transcribed, 0 labeled total(s) in source
+  rows:                      14 verified of 14 extracted
+  cost:                      not measured
+  → COMPLETENESS: source section has trailing untranscribed numeric content — "( 15,710"
+  headerLine: no action this week
+  refi.completeness: aggregate disclosure — 8 lines reported as category totals, no individual tranche maturities stated in this filing (internal walk ties — 1 subtotal reconcile ✓; balance-sheet anchor ties (matches "Total debt before unamortized financing costs") ✓)
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-K 2026-02-25
+    ROW live | 1.65 % Senior Secured Notes due 2026 | $699,887 thousand | matures 2026 | card=false
+    ROW live | 4.625 % Senior Secured Notes due 2029 | $499,839 thousand | matures 2029 | card=false
+    ROW live | 2.65 % Senior Secured Notes due 2030 | $798,935 thousand | matures 2030 | card=false
+    TAIL 7 more tranches, 2031 to 2099
+    ADJ Less-Unamortized financing costs | ($15,710) thousand
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    HEDGING undefined
+    HEDGING undefined
+    HEDGING undefined
+  cards: 0
+  ladder rows total: 10
+
+===== Encompass Health =====
+Encompass Health Corp — PASS (10-Q 2026-08-07)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 7 row(s) + 1 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $2.63B, $0 from nearest subtotal
+  completeness:              complete — 2 subtotal(s), nothing left unconsumed
+  rows:                      23 verified of 23 extracted
+  cost:                      not measured
+  headerLine: no action this week
+  refi.completeness: aggregate disclosure — 7 lines reported as category totals, no individual tranche maturities stated in this filing (internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "an unlabeled total") ✓)
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-Q 2026-08-07
+    ROW live | 4.75 % Senior Notes due 2030 | $ 788.4 million | matures 2030 | card=false
+    ROW live | 4.625 % Senior Notes due 2031 | $ 394.1 million | matures 2031 | card=false
+    ROW live | 5.875 % Senior Notes due 2034 | $ 491.0 million | matures 2034 | card=false
+    TAIL 8 more tranches, 2034
+    ADJ Less: Current portion | ( 35.9 ) million
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    TREASURY undefined
+    TREASURY undefined
+    HEDGING undefined
+  cards: 0
+  ladder rows total: 12
+##################### BOOK B #####################
+
+===== Community Health Systems =====
+COMMUNITY HEALTH SYSTEMS INC — FAIL (10-Q 2026-07-23)
+  check 1 (internal walk):   DOES NOT TIE — 2 subtotal(s) over 2 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $9.58B, $0 from nearest subtotal
+  completeness:              not checked (no locatable source section)
+  rows:                      8 verified of 31 extracted — 23 DROPPED
+  cost:                      not measured
+  → CHECK 1: top-level rollup subtotal "Total debt" claims $9.58B but its rows sum to $2.05B — $7.53B unaccounted
+  → CHECK 1: top-level rollup subtotal "Total long-term debt" claims $9.55B but its rows sum to $2.02B — $7.53B unaccounted
+  → DROPS: 23 of 31 extracted entries were dropped — failed sourceLine verification, wrong period column, or indeterminate amount scale
+  headerLine: no action this week
+  refi.completeness: TRANSCRIPTION NOT VERIFIED — the note states Total long-term debt of $ 9,552 million, but the rows below sum 79% short of it. The rows are shown as extracted and are NOT this company's position; read the filing. (internal walk does not tie — "Total debt" off by $7,532,000,000; "Total long-term debt" off by $7,532,000,000; balance-sheet anchor ties (matches "Total debt") ✓)
+  refi.rowsNotVerifiedAsTranscribed: true (gap 79%)
+  refi.source: 10-Q 2026-07-23
+    ROW live | 4.750% Senior Secured Notes due 2031 | $ 689 million | matures 2031 | card=false
+    ROW live | 10.875% Senior Secured Notes due 2032 | $ 1,549 million | matures 2032 | card=false
+    ADJ Less: Unamortized deferred debt issuance costs | $ (192) million
+    ADJ Less: Current maturities | $ (26) million
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    TREASURY undefined
+    HEDGING undefined
+  cards: 0
+  ladder rows total: 2
+
+===== Quest Diagnostics =====
+QUEST DIAGNOSTICS INC — PASS (PARTIAL TRANSCRIPTION) (10-Q 2026-07-23)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 12 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $5.64B, $0 from nearest subtotal
+  completeness:              INCOMPLETE — 2 subtotal(s) transcribed, 5 labeled total(s) in source
+  rows:                      34 verified of 36 extracted — 2 DROPPED
+  cost:                      not measured
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total long-term debt 5,642"
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total long-term debt, net of current portion $ 5,632"
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total maturities of long-term debt 5,710"
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total long-term debt 5,642"
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total long-term debt, net of current portion $ 5,632"
+  → DROPS: 2 of 36 extracted entries were dropped — failed sourceLine verification, wrong period column, or indeterminate amount scale
+  headerLine: 1 card this week
+  refi.completeness: 12 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "Total long-term debt") ✓
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-Q 2026-07-23
+    ROW live | 4.60 % Senior Notes due December 2027 | $ 400 millions | 15mo out | card=true
+    ROW live | 4.20 % Senior Notes due June 2029 | $ 500 millions | 33mo out | card=false
+    ROW live | 4.625 % Senior Notes due December 2029 | $ 600 millions | 39mo out | card=false
+    TAIL 11 more tranches, 2030 to 2045
+    ADJ Debt issuance costs | ( 32 ) millions
+    ADJ Less: Current portion of long-term debt | ( 10 ) millions
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    TREASURY undefined
+    TREASURY undefined
+    HEDGING undefined
+  cards: 1
+    CARD refi | debt-maturity | row=4.60 % Senior Notes due December 2027::4.60%::2027-12-01 | cites 10-Q 2026-07-23
+  ladder rows total: 14
+
+===== Centene Corporation =====
+CENTENE CORP — PASS (PARTIAL TRANSCRIPTION) (10-Q 2026-07-28)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 8 row(s) + 2 adjustment(s)
+  check 2 (balance sheet):   tie — 2 caption(s) summing $16.11B, $0 from nearest subtotal
+  completeness:              INCOMPLETE — 2 subtotal(s) transcribed, 2 labeled total(s) in source
+  rows:                      26 verified of 26 extracted
+  cost:                      not measured
+  → COMPLETENESS: source section contains an untranscribed labeled total — "Total senior notes 14,204"
+  headerLine: 1 card this week
+  refi.completeness: 8 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor ties (matches "Total debt") ✓
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-Q 2026-07-28
+    ROW live | $ 2,500 million 4.25 % Senior Notes due December 15, 2027 | $ 1,067 million | 16mo out | card=true
+    ROW live | $ 2,300 million 2.45 % Senior Notes due July 15, 2028 | $ 2,160 million | 23mo out | card=false
+    ROW live | $ 3,500 million 4.625 % Senior Notes due December 15, 2029 | $ 3,277 million | 40mo out | card=false
+    TAIL 6 more tranches, 2030 to 2031
+    ADJ Debt issuance costs | ( $ 74 million)
+    ADJ Less: current portion | ( $ 75 million)
+    TREASURY undefined
+    TREASURY undefined
+    HEDGING undefined
+  cards: 1
+    CARD refi | debt-maturity | row=$ 2,500 million 4.25 % Senior Notes due December 15, 2027::4.25%::2027-12-15 | cites 10-Q 2026-07-28
+  ladder rows total: 9
+
+===== Cigna Group =====
+Cigna Group — FAIL (10-K 2026-02-26)
+  check 1 (internal walk):   tie — 2 subtotal(s) over 30 row(s) + 0 adjustment(s)
+  check 2 (balance sheet):   DOES NOT TIE — 2 caption(s) summing $31.46B, $592.00M from nearest subtotal
+  completeness:              not checked (no locatable source section)
+  rows:                      38 verified of 44 extracted — 6 DROPPED
+  cost:                      not measured
+  → CHECK 2: balance-sheet captions sum to $31.46B, nearest subtotal is $592.00M away
+  → DROPS: 6 of 44 extracted entries were dropped — failed sourceLine verification, wrong period column, or indeterminate amount scale
+  headerLine: 3 cards this week
+  refi.completeness: 30 tranches — internal walk ties — 2 subtotals reconcile ✓; balance-sheet anchor does not tie — $592,000,000 unaccounted vs. nearest subtotal
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-K 2026-02-26
+    ROW live | $ 550 million, 1.250 % Notes due March 2026 | $ 549 millions | date not verifiable | card=false
+    ROW live | $ 1,500 million, 3.400 % Notes due March 2027 | $ 1,481 millions | 6mo out | card=true
+    ROW live | $ 259 million, 7.875 % Debentures due May 2027 | $ 260 millions | 8mo out | card=true
+    TAIL 31 more tranches, 2027 to 2056
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    TREASURY undefined
+    TREASURY undefined
+    TREASURY undefined
+  cards: 3
+    CARD refi | debt-maturity | row=$ 1,500 million, 3.400 % Notes due March 2027::3.400%::2027-03-01 | cites 10-K 2026-02-26
+    CARD refi | debt-maturity | row=$ 259 million, 7.875 % Debentures due May 2027::7.875%::2027-05-01 | cites 10-K 2026-02-26
+    CARD refi | debt-maturity | row=$ 600 million, 3.050 % Notes due October 2027::3.050%::2027-10-01 | cites 10-K 2026-02-26
+  ladder rows total: 34
+
+===== Molina Healthcare =====
+MOLINA HEALTHCARE, INC. — PASS (10-Q 2026-07-23)
+  check 1 (internal walk):   tie — 1 subtotal(s) over 5 row(s) + 1 adjustment(s)
+  check 2 (balance sheet):   tie — 1 caption(s) summing $3.77B, $0 from nearest subtotal
+  completeness:              complete — 1 subtotal(s), nothing left unconsumed
+  rows:                      9 verified of 16 extracted — 7 DROPPED
+  cost:                      not measured
+  → DROPS: 7 of 16 extracted entries were dropped — failed sourceLine verification, wrong period column, or indeterminate amount scale
+  headerLine: no action this week
+  refi.completeness: 5 tranches — internal walk ties — 1 subtotal reconcile ✓; balance-sheet anchor ties (matches "Total") ✓
+  refi.rowsNotVerifiedAsTranscribed: false (gap —)
+  refi.source: 10-Q 2026-07-23
+    ROW live | 4.375 % Notes due June 15, 2028 | $ 800 millions | 22mo out | card=false
+    ROW live | 3.875 % Notes due November 15, 2030 | $ 650 millions | 51mo out | card=false
+    ROW live | 6.500 % Notes due February 15, 2031 | $ 850 millions | 54mo out | card=false
+    TAIL 3 more tranches, 2031 to 2033
+    ADJ Deferred debt issuance costs | ( 31 ) millions
+    NEW_DEBT undefined
+    NEW_DEBT undefined
+    TREASURY undefined
+    TREASURY undefined
+    HEDGING undefined
+  cards: 0
+  ladder rows total: 6

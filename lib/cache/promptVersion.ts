@@ -703,7 +703,7 @@ export const EXTRACTION_PROMPT_VERSION = 29;
  * So this bump buys exactly two things the code cannot: that a balance loses
  * to an event when BOTH are present, and that a card whose tranche has no
  * event says so rather than reaching for one. Sized and declared in
- * files/session_22_stage5_whynow_declaration.md before spending.
+ * sessions/22/stage5_whynow_declaration.md before spending.
  */
 export const NARRATION_PROMPT_VERSION = 10;
 

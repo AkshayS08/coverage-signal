@@ -1,0 +1,151 @@
+================================================================================================
+ITEM 1 — DROP COUNT AFTER THE FRACTION-GLYPH EQUIVALENCE
+================================================================================================
+
+company                      | extracted | verified | dropped BEFORE | dropped AFTER | delta
+DaVita                       |        29 |       26 |              3 |             3 |   —
+HCA Healthcare               |        20 |       20 |              0 |             0 |   —
+Tenet Healthcare             |        30 |       30 |              0 |             0 |   —
+Universal Health Services    |        14 |       14 |              0 |             0 |   —
+Encompass Health             |        23 |       23 |              0 |             0 |   —
+Community Health Systems     |        31 |       18 |             15 |            13 | -2
+Quest Diagnostics            |        36 |       34 |              2 |             2 |   —
+Centene Corporation          |        26 |       26 |              0 |             0 |   —
+Cigna Group                  |        44 |       38 |              6 |             6 |   —
+Molina Healthcare            |        16 |        9 |              7 |             7 |   —
+BOOK                         |           |          |             33 |            31 | -2
+
+VERDICTS AFTER
+  DaVita                       pass-partial  check1=TIE   check2=TIE rows=9
+  HCA Healthcare               pass-partial  check1=TIE   check2=TIE rows=4
+  Tenet Healthcare             pass          check1=TIE   check2=TIE rows=11
+  Universal Health Services    pass-partial  check1=TIE   check2=TIE rows=8
+  Encompass Health             pass          check1=TIE   check2=TIE rows=7
+  Community Health Systems     fail          check1=NOTIE check2=TIE rows=5
+  Quest Diagnostics            pass-partial  check1=TIE   check2=TIE rows=12
+  Centene Corporation          pass-partial  check1=TIE   check2=TIE rows=8
+  Cigna Group                  fail          check1=TIE   check2=NOTIE rows=30
+  Molina Healthcare            pass          check1=TIE   check2=TIE rows=5
+
+================================================================================================
+RESIDUAL — CLAIMED ROWS THAT STILL VERIFY AGAINST NO FILING
+================================================================================================
+
+--- DaVita: 3 dropped — 0 unverified sourceLine, 3 indeterminate scale, 0 wrong column
+    (no unverified-sourceLine drops remain)
+
+--- Community Health Systems: 13 dropped — 13 unverified sourceLine, 0 indeterminate scale, 0 wrong column
+
+    CLAIMED ROW: debt maturity approaching, 8.000% Senior Secured Notes due 2027
+      sourceLine: "8.000% Senior Secured Notes due 2027 1,000"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "8.000% Senior Secured Notes due 2027 (incorporated by reference to Exhibit 4.1 to Community Health Systems, Inc.’s Current Report on Form 8-K filed November 19, 2019 (No. 001-15925)) 4.3 Form of 8.000% Senior Secured"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 5.625% Senior Secured Notes due 2027
+      sourceLine: "5.625% Senior Secured Notes due 2027 500"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "5.625% Senior Secured Notes due 2027, or approximately 99% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on July 28, 2025, and wa"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 6.875% Senior Unsecured Notes due 2028
+      sourceLine: "6.875% Senior Unsecured Notes due 2028 400"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "6.875% Senior Unsecured Notes due 2028 (incorporated by reference to Exhibit 4.2 to Community Health Systems, Inc.’s Current Report on Form 8-K filed November 19, 2019 (No. 001-15925)) 4.8 Form of 6.875% Senior Unsec"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 6.000% Senior Secured Notes due 2029
+      sourceLine: "6.000% Senior Secured Notes due 2029 600"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "6.000 % of the principal amount of the 6% Senior Secured Notes due 2029 redeemed, plus accrued and unpaid interest, if any. At any time and from time to time on or after January 15, 2024, CHS may redeem the 6% Senior Sec"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 5.250% Senior Secured Notes due 2030
+      sourceLine: "5.250% Senior Secured Notes due 2030 2,200"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "5.250 % of the principal amount of the 5¼% Senior Secured Notes due 2030 redeemed, plus accrued and unpaid interest, if any. In addition, any time prior to May 15, 2025, but not more than once during each 12 month period"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, Other debt obligations
+      sourceLine: "Other 298"
+      verifies anywhere in corpus? NO
+      instrument caption (rate + due-year) NOT FOUND in any fetched filing — no row exists to have columns
+
+    CLAIMED ROW: debt maturity approaching, 8.000% Senior Secured Notes due 2027
+      sourceLine: "8.000% Senior Secured Notes due 2027 1,000"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "8.000% Senior Secured Notes due 2027 (incorporated by reference to Exhibit 4.1 to Community Health Systems, Inc.’s Current Report on Form 8-K filed November 19, 2019 (No. 001-15925)) 4.3 Form of 8.000% Senior Secured"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 5.625% Senior Secured Notes due 2027
+      sourceLine: "5.625% Senior Secured Notes due 2027 500"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "5.625% Senior Secured Notes due 2027, or approximately 99% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on July 28, 2025, and wa"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 6.875% Senior Unsecured Notes due 2028
+      sourceLine: "6.875% Senior Unsecured Notes due 2028 400"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "6.875% Senior Unsecured Notes due 2028 (incorporated by reference to Exhibit 4.2 to Community Health Systems, Inc.’s Current Report on Form 8-K filed November 19, 2019 (No. 001-15925)) 4.8 Form of 6.875% Senior Unsec"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 6.000% Senior Secured Notes due 2029
+      sourceLine: "6.000% Senior Secured Notes due 2029 600"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "6.000 % of the principal amount of the 6% Senior Secured Notes due 2029 redeemed, plus accrued and unpaid interest, if any. At any time and from time to time on or after January 15, 2024, CHS may redeem the 6% Senior Sec"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 5.250% Senior Secured Notes due 2030
+      sourceLine: "5.250% Senior Secured Notes due 2030 2,200"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-K 2026-02-19, printed row:
+        "5.250 % of the principal amount of the 5¼% Senior Secured Notes due 2030 redeemed, plus accrued and unpaid interest, if any. In addition, any time prior to May 15, 2025, but not more than once during each 12 month period"
+        figures printed on that row: (none)
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, 4.750% Senior Secured Notes due 2031
+      sourceLine: "4.750% Senior Secured Notes due 2031 1,057"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-Q 2026-07-23, printed row:
+        "4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or a"
+        figures printed on that row: 231,000,000
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+    CLAIMED ROW: debt maturity approaching, Other debt obligations
+      sourceLine: "Other 345"
+      verifies anywhere in corpus? NO
+      instrument caption (rate + due-year) NOT FOUND in any fetched filing — no row exists to have columns
+
+--- Quest Diagnostics: 2 dropped — 1 unverified sourceLine, 1 indeterminate scale, 0 wrong column
+
+    CLAIMED ROW: debt maturity approaching, 3.45 % Senior Note due June 2026
+      sourceLine: "3.45 % Senior Note due June 2026 501"
+      verifies anywhere in corpus? NO
+      instrument FOUND in 10-Q 2026-07-23, printed row:
+        "3.45 % Senior Note due June 2026 $ — $ 501 4.60 % Senior Notes due December 2027 400 400 4.20 % Senior Notes due June 2029 500 499 4.625 % Senior Notes due December 2029 600 600 2.95 % Senior Notes due Ju"
+        figures printed on that row: 501
+        claimed amount (none) present in ANY printed column? NO — absent from both columns
+
+--- Cigna Group: 6 dropped — 0 unverified sourceLine, 6 indeterminate scale, 0 wrong column
+    (no unverified-sourceLine drops remain)
+
+--- Molina Healthcare: 7 dropped — 0 unverified sourceLine, 0 indeterminate scale, 7 wrong column
+    (no unverified-sourceLine drops remain)

@@ -1,0 +1,61 @@
+
+########## Community Health Systems ##########
+  TABLE TESTED — 10-Q 2026-07-23 (847 chars):
+    "LONG-TERM DEBT Long-term debt, net of unamortized debt issuance costs and discounts or premiums, as applicable, consists of the following (in millions): June 30, December 31, 2026 2025 6 ⅞% Senior Notes due 2028 $ 42 $ 42 6 % Senior Secured Notes due 2029 644 644 5 ¼% Senior Secured Notes due 2030 1,535 1,535 4 ¾% Senior Secured Notes due 2031 689 1,058 10 ⅞% Senior Secured Notes due 2032 1,549 2,003 10 ¾% Senior Secured Notes due 2033 700 700 9 ¾% Senior Secured Notes due 2034 1,790 1,790 6 ⅞% Junior-Priority Secured Notes due 2029 1,244 1,244 6 ⅛% Junior-Priority Secured Notes due 2030 1,227 1,227 ABL Facility — — Finance lease and financing obligations 298 345 Other 52 25 Less: Unamortized deferred debt issuance costs ( 192 ) ( 217 ) Total debt 9,578 10,396 Less: Current maturities ( 26 ) ( 16 ) Total long-term debt $ 9,552 $ 10,380"
+  TABLE TESTED — 10-Q 2026-04-22 (848 chars):
+    "LONG-TERM DEBT Long-term debt, net of unamortized debt issuance costs and discounts or premiums, as applicable, consists of the following (in millions): March 31, December 31, 2026 2025 6 ⅞% Senior Notes due 2028 42 42 6 % Senior Secured Notes due 2029 644 644 5 ¼% Senior Secured Notes due 2030 1,535 1,535 4 ¾% Senior Secured Notes due 2031 1,058 1,058 10 ⅞% Senior Secured Notes due 2032 1,780 2,003 10 ¾% Senior Secured Notes due 2033 700 700 9 ¾% Senior Secured Notes due 2034 1,790 1,790 6 ⅞% Junior-Priority Secured Notes due 2029 1,244 1,244 6 ⅛% Junior-Priority Secured Notes due 2030 1,227 1,227 ABL Facility — — Finance lease and financing obligations 299 345 Other 42 25 Less: Unamortized deferred debt issuance costs ( 205 ) ( 217 ) Total debt 10,156 10,396 Less: Current maturities ( 29 ) ( 16 ) Total long-term debt $ 10,127 $ 10,380"
+  TABLE TESTED — 10-K 2026-02-19 (910 chars):
+    "LONG-TERM DEBT Long-term debt, net of unamortized debt issuance costs and discounts or premiums, consists of the following (in millions): December 31, 2025 2024 8 % Senior Secured Notes due 2027 $ — $ 700 5⅝% Senior Secured Notes due 2027 — 1,757 6⅞ % Senior Notes due 2028 42 626 6 % Senior Secured Notes due 2029 644 644 5¼ % Senior Secured Notes due 2030 1,535 1,535 4¾ % Senior Secured Notes due 2031 1,058 1,058 10⅞ % Senior Secured Notes due 2032 2,003 2,225 10¾ % Senior Secured Notes due 2033 700 — 9¾ % Senior Secured Notes due 2034 1,790 — 6⅞ % Junior-Priority Secured Notes due 2029 1,244 1,244 6⅛ % Junior-Priority Secured Notes due 2030 1,227 1,227 ABL Facility — 341 Finance lease and financing obligations 345 343 Other 25 24 Less: Unamortized deferred debt issuance costs ( 217 ) ( 272 ) Total debt 10,396 11,452 Less: Current maturities ( 16 ) ( 20 ) Total long-term debt $ 10,380 $ 11,432 6⅞%"
+
+  RAW CLAIMED ROW: "8.000% Senior Secured Notes due 2027 1,000"
+    1,000 in 10-Q 2026-07-23 table, either column: ABSENT
+    1,000 in 10-Q 2026-04-22 table, either column: ABSENT
+    1,000 in 10-K 2026-02-19 table, either column: ABSENT
+    => ABSENT FROM BOTH COLUMNS OF EVERY DEBT TABLE IN THE CORPUS
+
+  RAW CLAIMED ROW: "5.625% Senior Secured Notes due 2027 500"
+    500 in 10-Q 2026-07-23 table, either column: ABSENT
+    500 in 10-Q 2026-04-22 table, either column: ABSENT
+    500 in 10-K 2026-02-19 table, either column: ABSENT
+    => ABSENT FROM BOTH COLUMNS OF EVERY DEBT TABLE IN THE CORPUS
+
+  RAW CLAIMED ROW: "6.875% Senior Unsecured Notes due 2028 400"
+    400 in 10-Q 2026-07-23 table, either column: ABSENT
+    400 in 10-Q 2026-04-22 table, either column: ABSENT
+    400 in 10-K 2026-02-19 table, either column: ABSENT
+    => ABSENT FROM BOTH COLUMNS OF EVERY DEBT TABLE IN THE CORPUS
+
+  RAW CLAIMED ROW: "6.000% Senior Secured Notes due 2029 600"
+    600 in 10-Q 2026-07-23 table, either column: ABSENT
+    600 in 10-Q 2026-04-22 table, either column: ABSENT
+    600 in 10-K 2026-02-19 table, either column: ABSENT
+    => ABSENT FROM BOTH COLUMNS OF EVERY DEBT TABLE IN THE CORPUS
+
+  RAW CLAIMED ROW: "5.250% Senior Secured Notes due 2030 2,200"
+    2,200 in 10-Q 2026-07-23 table, either column: ABSENT
+    2,200 in 10-Q 2026-04-22 table, either column: ABSENT
+    2,200 in 10-K 2026-02-19 table, either column: ABSENT
+    => ABSENT FROM BOTH COLUMNS OF EVERY DEBT TABLE IN THE CORPUS
+
+  RAW CLAIMED ROW: "Other 298"
+    298 in 10-Q 2026-07-23 table, either column: PRESENT
+    298 in 10-Q 2026-04-22 table, either column: ABSENT
+    298 in 10-K 2026-02-19 table, either column: ABSENT
+    => PRESENT SOMEWHERE — row identity must be checked separately
+
+  RAW CLAIMED ROW: "4.750% Senior Secured Notes due 2031 1,057"
+    1,057 in 10-Q 2026-07-23 table, either column: ABSENT
+    1,057 in 10-Q 2026-04-22 table, either column: ABSENT
+    1,057 in 10-K 2026-02-19 table, either column: ABSENT
+    => ABSENT FROM BOTH COLUMNS OF EVERY DEBT TABLE IN THE CORPUS
+
+  RAW CLAIMED ROW: "Other 345"
+    345 in 10-Q 2026-07-23 table, either column: PRESENT
+    345 in 10-Q 2026-04-22 table, either column: PRESENT
+    345 in 10-K 2026-02-19 table, either column: PRESENT
+    => PRESENT SOMEWHERE — row identity must be checked separately
+
+########## Quest Diagnostics ##########
+
+  RAW CLAIMED ROW: "3.45 % Senior Note due June 2026 501"
+    => ABSENT FROM BOTH COLUMNS OF EVERY DEBT TABLE IN THE CORPUS

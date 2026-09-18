@@ -1,0 +1,52 @@
+OLD (v16 commit 8844da0) vs NEW extraction text — the bytes the model actually receives.
+A span change is only visible to the model when the note sits BEYOND the 40,000-char lead
+window; inside it, buildExtractionText returns the lead alone and the span is irrelevant.
+
+company                       filing            oldLen   newLen  TEXT   old span            new span            base?
+DaVita                        10-Q 2026-08-04   40000   40000  SAME   [26811,30152]       [26757,30166]       <= BASE
+DaVita                        10-Q 2026-05-05   40000   40000  SAME   [22269,24190]       [22209,24207]       
+DaVita                        10-K 2026-02-11   43338   43403  DIFF   [432288,435483]     [432247,435507]     
+HCA Healthcare                10-Q 2026-07-28   40000   40000  SAME   [33278,34496]       [32472,34562]       <= BASE
+HCA Healthcare                10-Q 2026-04-29   40000   40000  SAME   not_found           [29284,30606]       
+HCA Healthcare                10-K 2026-02-10   41301   43687  DIFF   [379053,380211]     [483105,486649]     
+Tenet Healthcare              10-Q 2026-07-29   40000   40000  SAME   [32959,34115]       [33013,34307]       <= BASE
+Tenet Healthcare              10-Q 2026-04-30   40000   40000  SAME   [32155,33311]       [32208,33503]       
+Tenet Healthcare              10-K 2026-02-17   43517   43549  DIFF   [401591,404965]     [401651,405057]     
+Universal Health Services     10-Q 2026-08-07   43174   43174  SAME   [279162,282193]     [279162,282193]     <= BASE
+Universal Health Services     10-Q 2026-05-07   42156   42156  SAME   [247207,249220]     [247207,249220]     
+Universal Health Services     10-K 2026-02-25   41406   41819  DIFF   [523036,524299]     [522707,524383]     
+Encompass Health              10-Q 2026-08-07   41078   41123  DIFF   [40145,41081]       [40129,41110]       <= BASE
+Encompass Health              10-Q 2026-05-01   40000   40000  SAME   [35714,36604]       [35693,36633]       
+Encompass Health              10-K 2026-02-26   41073   41119  DIFF   [465072,466002]     [465055,466031]     
+Community Health Systems      10-Q 2026-07-23   42034   43005  DIFF   [49227,51119]       [48294,51157]       <= BASE
+Community Health Systems      10-Q 2026-04-22   40000   41910  DIFF   not_found           [46523,48291]       
+Community Health Systems      10-K 2026-02-19   53446   45963  DIFF   [605343,618646]     [492678,498498]     
+Quest Diagnostics             10-Q 2026-07-23   41317   42676  DIFF   [39325,41175]       [39415,42534]       <= BASE
+Quest Diagnostics             10-Q 2026-04-22   40000   40000  SAME   [37265,38449]       [37265,38449]       
+Quest Diagnostics             10-K 2026-02-26   41507   41537  DIFF   [414823,416187]     [414933,416327]     
+Centene Corporation           10-Q 2026-07-28   41385   41470  DIFF   [52513,53756]       [52644,53972]       <= BASE
+Centene Corporation           10-Q 2026-04-28   41385   41471  DIFF   [48476,49719]       [48606,49935]       
+Centene Corporation           10-K 2026-02-17   41392   41521  DIFF   [405736,406985]     [405862,407240]     
+Cigna Group                   10-Q 2026-07-30   40000   40000  SAME   not_found           not_found           
+Cigna Group                   10-Q 2026-04-30   40000   40000  SAME   not_found           not_found           
+Cigna Group                   10-K 2026-02-26   44231   44233  DIFF   [318130,322218]     [318174,322264]     <= BASE
+Molina Healthcare             10-Q 2026-07-23   40000   40000  SAME   [28306,29350]       [37461,38402]       <= BASE
+Molina Healthcare             10-Q 2026-04-23   40000   40000  SAME   [27224,28268]       [36406,37348]       
+Molina Healthcare             10-K 2026-02-10   43177   43086  DIFF   [319999,323033]     [320112,323055]     
+
+BASE FILINGS WHOSE MODEL INPUT CHANGED: 5 of 10
+
+RE-EXTRACTION INPUT SIZE (what a v17 bump would re-send)
+company                       docs   corpus chars   ~input tokens
+DaVita                           9         167401           41851
+HCA Healthcare                   9         154018           38505
+Tenet Healthcare                 9         163411           40853
+Universal Health Services        9         179546           44887
+Encompass Health                 9         183888           45972
+Community Health Systems         9         158929           39733
+Quest Diagnostics                9         151671           37918
+Centene Corporation              9         183819           45955
+Cigna Group                      9         185758           46440
+Molina Healthcare                9         159872           39968
+
+BOOK corpus: 1688313 chars, ~422079 input tokens (one pass, 10 companies)

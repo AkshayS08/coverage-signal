@@ -1,0 +1,804 @@
+Tenet Healthcare → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-29 → found (10 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-30 → found (10 matches) [tabular]
+  debt-note locator: 10-K 2026-02-17 → found (16 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-29 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-30
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint c33ba580)
+checking debt maturity approaching... FIRED — Senior secured first lien notes of $1.5 billion due November 2027 mature within 12-18 months from...
+  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for debt maturity approaching — 1 instrument(s) (letter of credit facility) verified against https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm, not the anchor 10-Q 2026-07-29. A balance is as of the filing that states it.
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total long-term debt 13,248"
+checking new debt issuance / notes pricing... FIRED — Tenet issued $1.5 billion of 5.500% senior secured first lien notes due 2032 and $750 million of...
+  2 redemption claim(s) for new debt issuance / notes pricing, judged independently — 6.250% senior secured second lien notes due February 2027: completed, verified; 6.125% senior notes due October 2028: completed, verified
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... FIRED — Florida Coast Medical Center, a newly constructed 54-bed acute care hospital in Port St. Lucie,...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — Tenet repurchased $1.360 billion of common stock during the six months ended June 30, 2026, and...
+checking large cash balance building... FIRED — Cash and cash equivalents of $2.170 billion at June 30, 2026, compared to $2.883 billion at...
+checking asset sale / divestiture closing... FIRED — Tenet completed the sale of six California hospitals (Fountain Valley Regional Hospital, Lakewood...
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no signal found
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Tenet's senior secured revolving credit facility of $1.9 billion accrues interest at SOFR or base...
+commodity / input-cost exposure unclear, but nothing new to check — no signal found.
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtAndCapitalLeaseObligationsCurrent=160,000,000 + LongTermDebtAndCapitalLeaseObligations=13,088,000,000 — the denominator comes from the filer's own tags
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+  proceedsUse input: 515,588 → 25,522 chars across 4 region(s)
+  proceedsUse input: 149,578 → 36,219 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+Encompass Health → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-08-07 → found (4 matches) [tabular]
+  debt-note locator: 10-Q 2026-05-01 → found (3 matches) [tabular]
+  debt-note locator: 10-K 2026-02-26 → found (4 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-08-07 (period 2026-06-30), note locator says found; prior: 10-Q 2026-05-01
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint 1dbb3df7)
+checking debt maturity approaching... FIRED — 4.50% Senior Notes due 2028 with $396.9 million outstanding as of June 30, 2026, maturing February...
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Advances under revolving credit facility" claimed maturity 2031-03-09, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Advances under revolving credit facility" claimed maturity 2031-03-09, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total $ 2,663"
+checking new debt issuance / notes pricing... FIRED — Company issued $500 million of 5.875% Senior Notes due 2034 on May 29, 2026, and an additional $100...
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... FIRED — Company is actively pursuing capacity expansions through development of new inpatient...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — Company declared dividends of $0.19 per share in Q2 2026 and $0.38 per share for the six months...
+checking large cash balance building... FIRED — Cash and cash equivalents increased from $72.2 million at December 31, 2025 to $107.7 million at...
+checking asset sale / divestiture closing... FIRED — Company sold its 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to...
+  ⚠ EVENT DATE FLAGGED FOR REVIEW for Encompass Health — asset sale / divestiture closing: "2026-01-01" (granularity day) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no public signal (internal data only)
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Revolving credit facility of $200.0 million drawn as of June 30, 2026 bears interest at SOFR-based...
+checking commodity / input-cost exposure... no signal found
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtAndCapitalLeaseObligationsCurrent=35,900,000 + LongTermDebtAndCapitalLeaseObligations=2,598,100,000 — the denominator comes from the filer's own tags; leases tagged SEPARATELY and not added: FinanceLeaseLiability
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+  proceedsUse input: 122,461 → 44,535 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+Quest Diagnostics → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-23 → found (13 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-22 → found (4 matches) [tabular]
+  debt-note locator: 10-K 2026-02-26 → found (12 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-23 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-22
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint ec9ebec9)
+checking debt maturity approaching... FIRED — 4.60% Senior Notes due December 2027 with $400 million outstanding as of June 30, 2026; 4.20%...
+  SCALE DERIVED FROM FILING for debt maturity approaching — 16 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  SCALE DERIVED FROM FILING for debt maturity approaching (balance sheet) — 2 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "3.45 % Senior Notes due June 2026: 503" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.60 % Senior Notes due December 2027: 400" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.20 % Senior Notes due June 2029: 500" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.625 % Senior Notes due December 2029: 600" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "2.95 % Senior Notes due June 2030: 799" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "2.80 % Senior Notes due June 2031: 564" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "6.40 % Senior Notes due November 2033: 756" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "5.00 % Senior Notes due December 2034: 840" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "6.95 % Senior Notes due July 2037: 175" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "5.75 % Senior Notes due January 2040: 246" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.70 % Senior Notes due March 2045: 300" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Other: 21" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Debt issuance costs: ( 30 )" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Total long-term debt: 5,671" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Less: Current portion of long-term debt: ( 504 )" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Total long-term debt, net of current portion: $ 5,167" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for debt maturity approaching — 2 instrument(s) (Secured Receivables Credit Facility, Senior Unsecured Revolving Credit Facility) verified against https://www.sec.gov/Archives/edgar/data/1022079/000102207926000015/dgx-20251231.htm, not the anchor 10-Q 2026-07-23. A balance is as of the filing that states it.
+  ⚠ 16 debt-schedule entries for debt maturity approaching failed sourceLine verification or had an indeterminate amount scale — dropped, not trusted; the checksum will surface the gap
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total long-term debt 5,642"; unaccounted labeled total: "Total long-term debt, net of current portion $ 5,632"; unaccounted labeled total: "Total maturities of long-term debt 5,710"; unaccounted labeled total: "Total long-term debt 5,642"; unaccounted labeled total: "Total long-term debt, net of current portion $ 5,632"
+checking new debt issuance / notes pricing... FIRED — On May 6, 2026, Quest Diagnostics completed a public offering of $500 million aggregate principal...
+checking acquisition announced... FIRED — During August 2025, Quest Diagnostics and Corewell Health signed a definitive agreement to form a...
+  ⚠ EVENT DATE FLAGGED FOR REVIEW for Quest Diagnostics — acquisition announced: "2026-01-01" (granularity month) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected
+checking capex program / new facility or construction... FIRED — Capital expenditures of $252 million for the six months ended June 30, 2026 and $225 million for...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — On February 10, 2026, Quest Diagnostics announced a 7.5% increase in its quarterly dividend from...
+checking large cash balance building... FIRED — Cash and cash equivalents increased from $420 million at December 31, 2025 to $626 million at June...
+checking asset sale / divestiture closing... no signal found
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... FIRED — A new entity was formed in January 2026 as a joint venture between Quest Diagnostics (51%...
+  ⚠ EVENT DATE FLAGGED FOR REVIEW for Quest Diagnostics — new subsidiary / entity formation: "2026-01-01" (granularity month) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected
+  ⚠ 1 event instance(s) for new subsidiary / entity formation failed sourceLine verification — dropped, not trusted
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Quest Diagnostics maintains fixed-to-variable interest rate swap agreements on $1,800 million of...
+commodity / input-cost exposure unclear, but nothing new to check — no signal found.
+large fx exposure disclosed unclear, but nothing new to check — no signal found.
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtCurrent=10,000,000 + LongTermDebtNoncurrent=5,632,000,000 — the denominator comes from the filer's own tags
+  XBRL maturity buckets at 2026-06-30: due within 12 months 409,000,000; 13–24 months 6,000,000; 25–36 months 1,103,000,000; 37–48 months 801,000,000; 49–60 months 551,000,000; thereafter 2,836,000,000
+  proceedsUse input: 123,655 → 37,359 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Acquisition announced — Bridge financing, then permanent
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ New subsidiary / entity formation — New operating accounts
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+Centene Corporation → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-28 → found (7 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-28 → found (7 matches) [tabular]
+  debt-note locator: 10-K 2026-02-17 → found (7 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-28 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-28
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint e9478cdd)
+checking debt maturity approaching... FIRED — Senior Notes due December 15, 2027 with $1,067 million outstanding as of June 30, 2026, down from...
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Term Loan Facility" claimed maturity 2030-03-05, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Term Loan Facility" claimed maturity 2030-03-05, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total senior notes 14,204"
+checking new debt issuance / notes pricing... no signal found
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... no signal found
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... no signal found
+checking large cash balance building... FIRED — Cash and cash equivalents of $24,151 million as of June 30, 2026, up from $17,888 million at...
+checking asset sale / divestiture closing... FIRED — Definitive agreement signed in December 2025 to sell remaining Magellan Health businesses. As of...
+  ⚠ QUOTE HAS NO FIGURE for asset sale / divestiture closing — verified, but the model reported no single sentence carried the fact's material figure; verifiedQuote is a figure-less fallback
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no public signal (internal data only)
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Term Loan Facility of $1,975 million outstanding as of June 30, 2026, bearing interest at a...
+checking commodity / input-cost exposure... no signal found
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtCurrent=75,000,000 + LongTermDebtNoncurrent=16,030,000,000 — the denominator comes from the filer's own tags
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+
+All four read from the snapshot path — answer cache 7/7 (100%) hit, wording cache 4/4 (100%) hit
+
+Tenet Healthcare → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-29 → found (10 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-30 → found (10 matches) [tabular]
+  debt-note locator: 10-K 2026-02-17 → found (16 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-29 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-30
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint c33ba580)
+checking debt maturity approaching... FIRED — Senior secured first lien notes of $1.5 billion due November 2027 mature within 12-18 months from...
+  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for debt maturity approaching — 1 instrument(s) (letter of credit facility) verified against https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm, not the anchor 10-Q 2026-07-29. A balance is as of the filing that states it.
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total long-term debt 13,248"
+checking new debt issuance / notes pricing... FIRED — Tenet issued $1.5 billion of 5.500% senior secured first lien notes due 2032 and $750 million of...
+  2 redemption claim(s) for new debt issuance / notes pricing, judged independently — 6.250% senior secured second lien notes due February 2027: completed, verified; 6.125% senior notes due October 2028: completed, verified
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... FIRED — Florida Coast Medical Center, a newly constructed 54-bed acute care hospital in Port St. Lucie,...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — Tenet repurchased $1.360 billion of common stock during the six months ended June 30, 2026, and...
+checking large cash balance building... FIRED — Cash and cash equivalents of $2.170 billion at June 30, 2026, compared to $2.883 billion at...
+checking asset sale / divestiture closing... FIRED — Tenet completed the sale of six California hospitals (Fountain Valley Regional Hospital, Lakewood...
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no signal found
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Tenet's senior secured revolving credit facility of $1.9 billion accrues interest at SOFR or base...
+commodity / input-cost exposure unclear, but nothing new to check — no signal found.
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtAndCapitalLeaseObligationsCurrent=160,000,000 + LongTermDebtAndCapitalLeaseObligations=13,088,000,000 — the denominator comes from the filer's own tags
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+  proceedsUse input: 515,588 → 25,522 chars across 4 region(s)
+  proceedsUse input: 149,578 → 36,219 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+
+┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  TENET HEALTHCARE CORP                                                                         │
+│  Debt maturity approaching  ·  matures during 2027 — the whole year falls inside the 18-month window, so no month is needed│
+└────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  CALL ABOUT
+    Refinance the $1.5 billion 5.125% senior secured first lien notes due 2027.
+      · $1.5 billion
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542  (+2 other verified facts state this same figure)
+      · 5.125%
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542
+      · 2027
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542  (+1 other verified fact state this same figure)
+
+  WHY NOW
+    Tenet just issued $1.5 billion of 5.500% senior secured first lien notes due 2032 and $750
+    million of 6.000% senior notes due 2033 in November 2025 to redeem its 2027 and 2028 second
+    lien and senior notes, and the 5.125% first lien notes due 2027 remain outstanding on the
+    same ladder.
+      · $1.5 billion
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542  (+2 other verified facts state this same figure)
+      · 5.500%
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · 2032
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · $750 million
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · 6.000%
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · 2033
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · November 2025
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+4 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · 2027
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542  (+1 other verified fact state this same figure)
+      · 2028
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · 5.125%
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542
+      · 2027
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542  (+1 other verified fact state this same figure)
+
+  KEY POINT 1
+    $1.5 billion of 5.125% senior secured first lien notes are due in 2027.
+      · $1.5 billion
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542  (+2 other verified facts state this same figure)
+      · 5.125%
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542
+      · 2027
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542  (+1 other verified fact state this same figure)
+
+  KEY POINT 2
+    Tenet issued $1.5 billion of 5.500% senior secured first lien notes due 2032 in November
+    2025.
+      · $1.5 billion
+          "5.125 % due 2027 1,500 1,500"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 33,542  (+2 other verified facts state this same figure)
+      · 5.500%
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · 2032
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · November 2025
+          "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 403,308  (+4 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+
+  KEY POINT 3
+    Cash and cash equivalents stood at $2.170 billion as of June 30, 2026.
+      · $2.170 billion
+          "Cash and cash equivalents $ 2,170 $ 2,883"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 3,247
+      · June 30, 2026
+          "Repurchases of common stock ( 1,360 ) ( 1,095 )"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 10,190  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+
+  KEY POINT 4
+    The $1.9 billion senior secured revolving credit facility had no drawn borrowings at June
+    30, 2026.
+      · $1.9 billion
+          "Outstanding revolving loans under the 2025 Credit Agreement accrue interest at either (1) a base rate plus an applicable margin ranging from 0.25 % to 0.50 % per annum or (2) the Term Secured Overnigh"
+          10-K filed 2026-02-17 · 10-K 2026-02-17, char 408,473  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · June 30, 2026
+          "Repurchases of common stock ( 1,360 ) ( 1,095 )"
+          10-Q filed 2026-07-29 · 10-Q 2026-07-29, char 10,190  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+
+  DERIVED  (arithmetic on verified facts, as of 2026-09-07)
+    · Months to maturity: Matures during 2027. The filing states only the year, so no month count is computed — which month it falls in is precision the filing does not disclose.
+         ← "5.125 % due 2027 1,500 1,500"   10-Q 2026-07-29, char 33,542
+    · Refinancing pattern: Last refinanced 10 months ago — an issuance dated 2025-11-18 whose proceeds retired 6.250% senior secured second lien notes due February 2027. The retired tranche carries no structured maturity in this corpus, so how far ahead of maturity the refinancing came is not computed.
+         ← "We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to finance the redemption of all $ 1.500 billion aggregate principal amo"   10-K 2026-02-17, char 403,930
+         ← "We issued $ 1.500 billion aggregate principal amount of our 5.500 % senior secured first lien notes due on November 15, 2032 (the "2032 Senior Secured First Lien Notes"). We will pay interest on the 2032 Senior Secured F"   10-K 2026-02-17, char 403,308
+         ← 2025-11-18  (verified field — the event-date guard, against the filing text)
+    · Next tranche up: 6.125 % due 2028, maturing 2028. The gap is not computed: at least one of the two states only a year.
+         ← "5.125 % due 2027 1,500 1,500"   10-Q 2026-07-29, char 33,542
+         ← "6.125 % due 2028 $ 1,750 $ 1,750"   10-Q 2026-07-29, char 33,410
+    · Liquidity beside it: $ 1,500   million maturing; $ 1.900   billion of undrawn revolver capacity as of 2026-06-30. Two separate disclosures, stated side by side — a revolver is liquidity, not how a term maturity is refinanced.
+         ← "Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible accounts receivable, eligible inventory and Medicaid supplemental payments, was $ 1"   10-Q 2026-07-29, char 34,715
+         ← "5.125 % due 2027 1,500 1,500"   10-Q 2026-07-29, char 33,542
+         ← $ 1,500   million  (verified field — the amount guard, against this row's own sourceLine)
+Encompass Health → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-08-07 → found (4 matches) [tabular]
+  debt-note locator: 10-Q 2026-05-01 → found (3 matches) [tabular]
+  debt-note locator: 10-K 2026-02-26 → found (4 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-08-07 (period 2026-06-30), note locator says found; prior: 10-Q 2026-05-01
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint 1dbb3df7)
+checking debt maturity approaching... FIRED — 4.50% Senior Notes due 2028 with $396.9 million outstanding as of June 30, 2026, maturing February...
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Advances under revolving credit facility" claimed maturity 2031-03-09, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Advances under revolving credit facility" claimed maturity 2031-03-09, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total $ 2,663"
+checking new debt issuance / notes pricing... FIRED — Company issued $500 million of 5.875% Senior Notes due 2034 on May 29, 2026, and an additional $100...
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... FIRED — Company is actively pursuing capacity expansions through development of new inpatient...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — Company declared dividends of $0.19 per share in Q2 2026 and $0.38 per share for the six months...
+checking large cash balance building... FIRED — Cash and cash equivalents increased from $72.2 million at December 31, 2025 to $107.7 million at...
+checking asset sale / divestiture closing... FIRED — Company sold its 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to...
+  ⚠ EVENT DATE FLAGGED FOR REVIEW for Encompass Health — asset sale / divestiture closing: "2026-01-01" (granularity day) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no public signal (internal data only)
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Revolving credit facility of $200.0 million drawn as of June 30, 2026 bears interest at SOFR-based...
+checking commodity / input-cost exposure... no signal found
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtAndCapitalLeaseObligationsCurrent=35,900,000 + LongTermDebtAndCapitalLeaseObligations=2,598,100,000 — the denominator comes from the filer's own tags; leases tagged SEPARATELY and not added: FinanceLeaseLiability
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+  proceedsUse input: 122,461 → 44,535 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+
+┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Encompass Health Corp                                                                         │
+│  Debt maturity approaching  ·  maturity ~17mo out                                              │
+└────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  CALL ABOUT
+    Refinance the remaining $396.9 million of 4.50% senior unsecured notes due 2028.
+      · $396.9 million
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+2 other verified facts state this same figure)
+      · 4.50%
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+1 other verified fact state this same figure)
+      · 2028
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+1 other verified fact state this same figure)
+
+  WHY NOW
+    Encompass already redeemed $400 million of these 2028 notes using proceeds from the $500
+    million and $100 million 5.875% notes due 2034 issued in May and August 2026, leaving $396.9
+    million of the original tranche outstanding.
+      · $400 million
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+2 other verified facts state this same figure)
+      · 2028
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+1 other verified fact state this same figure)
+      · $500 million
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · $100 million
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584
+      · 5.875%
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · 2034
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · August 2026
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · $396.9 million
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+2 other verified facts state this same figure)
+
+  KEY POINT 1
+    $396.9 million of 4.50% senior unsecured notes due 2028 remain outstanding.
+      · $396.9 million
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+2 other verified facts state this same figure)
+      · 4.50%
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+1 other verified fact state this same figure)
+      · 2028
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+1 other verified fact state this same figure)
+
+  KEY POINT 2
+    Company issued $500 million of 5.875% senior notes due 2034 on May 29, 2026, and an
+    additional $100 million of the same notes on August 13, 2026.
+      · $500 million
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · 5.875%
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · 2034
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · May 29, 2026
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · $100 million
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584
+      · August 13, 2026
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+
+  KEY POINT 3
+    $400 million of the 4.50% notes due 2028 were redeemed using proceeds from the new issuance.
+      · $400 million
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+2 other verified facts state this same figure)
+      · 4.50%
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+1 other verified fact state this same figure)
+      · 2028
+          "4.50 % Senior Notes due 2028 396.9 792.0"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 40,545  (+1 other verified fact state this same figure)
+
+  KEY POINT 4
+    Cash and cash equivalents were $107.7 million as of June 30, 2026.
+      · $107.7 million
+          "Cash and cash equivalents $ 107.7 $ 72.2"
+          10-Q filed 2026-08-07 · 10-Q 2026-08-07, char 18,600
+      · June 30, 2026
+          "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."
+          8-K filed 2026-08-13 · 10-Q 2026-08-07, char 43,584  (+5 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+
+  DERIVED  (arithmetic on verified facts, as of 2026-09-07)
+    · Months to maturity: 17 months out — matures 2028-02-01.
+         ← "4.50 % Senior Notes due 2028 396.9 792.0"   10-Q 2026-08-07, char 40,545
+    · Refinancing pattern: Last refinanced 3 months ago — an issuance dated 2026-05-29 whose proceeds retired 4.50 % Senior Notes due 2028. That issuance came 20 months ahead of the retired tranche's stated 2028-02-01 maturity.
+         ← "we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering. The 2034 Notes mature on June 1, 2034 and inter"   10-Q 2026-08-07, char 43,597
+         ← "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the "2034 Notes") at par, which resulted in approximately $ 491 million in net proceeds from the private offering."   10-Q 2026-08-07, char 43,584
+         ← "4.50 % Senior Notes due 2028 396.9 792.0"   10-Q 2026-08-07, char 40,545
+         ← 2026-05-29  (verified field — the event-date guard, against the filing text)
+    · Next tranche up: 4.75 % Senior Notes due 2030, maturing 2030-02-01. 24 months behind this one.
+         ← "4.50 % Senior Notes due 2028 396.9 792.0"   10-Q 2026-08-07, char 40,545
+         ← "4.75 % Senior Notes due 2030 788.4 787.0"   10-Q 2026-08-07, char 40,590
+    · liquidity: WITHHELD — $824 million appears in no source sentence behind this line
+Quest Diagnostics → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-23 → found (13 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-22 → found (4 matches) [tabular]
+  debt-note locator: 10-K 2026-02-26 → found (12 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-23 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-22
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint ec9ebec9)
+checking debt maturity approaching... FIRED — 4.60% Senior Notes due December 2027 with $400 million outstanding as of June 30, 2026; 4.20%...
+  SCALE DERIVED FROM FILING for debt maturity approaching — 16 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  SCALE DERIVED FROM FILING for debt maturity approaching (balance sheet) — 2 amount(s) had no unit of their own; resolved from the filing's own governing declaration (not the model)
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "3.45 % Senior Notes due June 2026: 503" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.60 % Senior Notes due December 2027: 400" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.20 % Senior Notes due June 2029: 500" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.625 % Senior Notes due December 2029: 600" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "2.95 % Senior Notes due June 2030: 799" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "2.80 % Senior Notes due June 2031: 564" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "6.40 % Senior Notes due November 2033: 756" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "5.00 % Senior Notes due December 2034: 840" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "6.95 % Senior Notes due July 2037: 175" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "5.75 % Senior Notes due January 2040: 246" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "4.70 % Senior Notes due March 2045: 300" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Other: 21" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Debt issuance costs: ( 30 )" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Total long-term debt: 5,671" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Less: Current portion of long-term debt: ( 504 )" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ AMOUNT SCALE INDETERMINATE for debt maturity approaching — "Total long-term debt, net of current portion: $ 5,167" has no determinable unit; dropped, not trusted for arithmetic
+  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for debt maturity approaching — 2 instrument(s) (Secured Receivables Credit Facility, Senior Unsecured Revolving Credit Facility) verified against https://www.sec.gov/Archives/edgar/data/1022079/000102207926000015/dgx-20251231.htm, not the anchor 10-Q 2026-07-23. A balance is as of the filing that states it.
+  ⚠ 16 debt-schedule entries for debt maturity approaching failed sourceLine verification or had an indeterminate amount scale — dropped, not trusted; the checksum will surface the gap
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total long-term debt 5,642"; unaccounted labeled total: "Total long-term debt, net of current portion $ 5,632"; unaccounted labeled total: "Total maturities of long-term debt 5,710"; unaccounted labeled total: "Total long-term debt 5,642"; unaccounted labeled total: "Total long-term debt, net of current portion $ 5,632"
+checking new debt issuance / notes pricing... FIRED — On May 6, 2026, Quest Diagnostics completed a public offering of $500 million aggregate principal...
+checking acquisition announced... FIRED — During August 2025, Quest Diagnostics and Corewell Health signed a definitive agreement to form a...
+  ⚠ EVENT DATE FLAGGED FOR REVIEW for Quest Diagnostics — acquisition announced: "2026-01-01" (granularity month) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected
+checking capex program / new facility or construction... FIRED — Capital expenditures of $252 million for the six months ended June 30, 2026 and $225 million for...
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... FIRED — On February 10, 2026, Quest Diagnostics announced a 7.5% increase in its quarterly dividend from...
+checking large cash balance building... FIRED — Cash and cash equivalents increased from $420 million at December 31, 2025 to $626 million at June...
+checking asset sale / divestiture closing... no signal found
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... FIRED — A new entity was formed in January 2026 as a joint venture between Quest Diagnostics (51%...
+  ⚠ EVENT DATE FLAGGED FOR REVIEW for Quest Diagnostics — new subsidiary / entity formation: "2026-01-01" (granularity month) lands exactly on 12-31 or 01-01 — a pattern models sometimes fabricate; not auto-corrected
+  ⚠ 1 event instance(s) for new subsidiary / entity formation failed sourceLine verification — dropped, not trusted
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Quest Diagnostics maintains fixed-to-variable interest rate swap agreements on $1,800 million of...
+commodity / input-cost exposure unclear, but nothing new to check — no signal found.
+large fx exposure disclosed unclear, but nothing new to check — no signal found.
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtCurrent=10,000,000 + LongTermDebtNoncurrent=5,632,000,000 — the denominator comes from the filer's own tags
+  XBRL maturity buckets at 2026-06-30: due within 12 months 409,000,000; 13–24 months 6,000,000; 25–36 months 1,103,000,000; 37–48 months 801,000,000; 49–60 months 551,000,000; thereafter 2,836,000,000
+  proceedsUse input: 123,655 → 37,359 chars across 4 region(s)
+  answer cache HIT (proceedsUse)
+  proceeds-use classified (Sonnet): refinancing_only
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ New debt issuance / notes pricing — Refi or add-on financing
+→ Acquisition announced — Bridge financing, then permanent
+→ Capex program / new facility or construction — Term loan or capex facility
+→ Dividend recap / buyback authorization — Leverage capacity conversation
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ New subsidiary / entity formation — New operating accounts
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+
+┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  QUEST DIAGNOSTICS INC                                                                         │
+│  Debt maturity approaching  ·  maturity ~15mo out                                              │
+└────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  CALL ABOUT
+    Refinance the $400 million 4.60% Senior Notes due December 2027.
+      · $400 million
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859  (+1 other verified fact state this same figure)
+      · 4.60%
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859
+      · December 2027
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859  (+1 other verified fact state this same figure)
+
+  WHY NOW
+    Quest just issued $500 million of 5.000% notes due June 2036 in May 2026 to repay its $500
+    million 3.45% notes due June 2026, and the next maturity on the ladder is the $400 million
+    4.60% notes due December 2027.
+      · $500 million
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · 5.000%
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+3 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · June 2036
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · May 2026
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+5 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · $500 million
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · 3.45%
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062
+      · June 2026
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+6 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · $400 million
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859  (+1 other verified fact state this same figure)
+      · 4.60%
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859
+      · December 2027
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859  (+1 other verified fact state this same figure)
+
+  KEY POINT 1
+    $400 million of 4.60% Senior Notes are outstanding, due December 2027.
+      · $400 million
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859  (+1 other verified fact state this same figure)
+      · 4.60%
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859
+      · December 2027
+          "4.60 % Senior Notes due December 2027 400 400"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,859  (+1 other verified fact state this same figure)
+
+  KEY POINT 2
+    Quest issued $500 million of 5.000% senior notes due June 2036 on May 6, 2026.
+      · $500 million
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · 5.000%
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+3 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · June 2036
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+      · May 6, 2026
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+5 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+
+  KEY POINT 3
+    Cash and cash equivalents grew to $626 million as of June 30, 2026, up from $420 million at
+    year-end 2025.
+      · $626 million
+          "Cash and cash equivalents $ 626 $ 420"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 6,287
+      · June 30, 2026
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+6 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · $420 million
+          "Cash and cash equivalents $ 626 $ 420"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 6,287
+      · 2025
+          "During August 2025, the Company and Corewell Health signed a definitive agreement to form a new entity which will perform laboratory testing in the state of Michigan via a new laboratory facility. The"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 25,604  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+
+  KEY POINT 4
+    The next longer-dated maturity is $500 million of 4.20% Senior Notes due June 2029.
+      · $500 million
+          "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."
+          10-Q filed 2026-07-23 · 8-K 2026-05-08, char 2,062  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · 4.20%
+          "4.20 % Senior Notes due June 2029 500 499"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,909
+      · June 2029
+          "4.20 % Senior Notes due June 2029 500 499"
+          10-Q filed 2026-07-23 · 10-Q 2026-07-23, char 39,909  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+
+  DERIVED  (arithmetic on verified facts, as of 2026-09-07)
+    · Months to maturity: 15 months out — matures 2027-12-01.
+         ← "4.60 % Senior Notes due December 2027 400 400"   10-Q 2026-07-23, char 39,859
+    · Refinancing pattern: Last refinanced 4 months ago — an issuance dated 2026-05-06 whose proceeds retired 3.45% Senior Notes due June 2026. That issuance came 1 months ahead of the retired tranche's stated 2026-06-01 maturity.
+         ← "On June 1, 2026, the net proceeds from the 2036 Senior Notes and cash on hand were used to repay in full at maturity the outstanding indebtedness under the Company's $ 500 million of 3.45 % senior notes."   10-Q 2026-07-23, char 41,331
+         ← "On May 6, 2026, Quest Diagnostics Incorporated (the "Company") issued $500,000,000 aggregate principal amount of 5.000% senior notes due 2036 (the "Notes")."   8-K 2026-05-08, char 2,062
+         ← "3.45 % Senior Note due June 2026 $ — $ 501"   10-Q 2026-07-23, char 39,812
+         ← 2026-05-06  (verified field — the event-date guard, against the filing text)
+    · Next tranche up: 4.20 % Senior Notes due June 2029, maturing 2029-06-01. 18 months behind this one.
+         ← "4.60 % Senior Notes due December 2027 400 400"   10-Q 2026-07-23, char 39,859
+         ← "4.20 % Senior Notes due June 2029 500 499"   10-Q 2026-07-23, char 39,909
+    · Liquidity beside it: The anchor filing states no revolving facility, so no liquidity figure sits beside this maturity.
+Centene Corporation → reading recent filings (2 10-Qs, 10-K, 6 8-Ks)...
+  debt-note locator: 10-Q 2026-07-28 → found (7 matches) [tabular]
+  debt-note locator: 10-Q 2026-04-28 → found (7 matches) [tabular]
+  debt-note locator: 10-K 2026-02-17 → found (7 matches) [tabular]
+  debt-schedule ANCHOR (most recent 10-Q/10-K, never an older one): 10-Q 2026-07-28 (period 2026-06-30), note locator says found; prior: 10-Q 2026-04-28
+checking all 15 triggers...
+  answer cache HIT (base classification, fingerprint e9478cdd)
+checking debt maturity approaching... FIRED — Senior Notes due December 15, 2027 with $1,067 million outstanding as of June 30, 2026, down from...
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Term Loan Facility" claimed maturity 2030-03-05, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ MATURITY DATE NOT IN SOURCE LINE for debt maturity approaching — "Term Loan Facility" claimed maturity 2030-03-05, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept
+  ⚠ SCHEDULE COMPLETENESS: debt maturity approaching transcribed 2 subtotal(s), but the source section appears to contain more — unaccounted labeled total: "Total senior notes 14,204"
+checking new debt issuance / notes pricing... no signal found
+checking acquisition announced... no signal found
+checking capex program / new facility or construction... no signal found
+checking revolver near capacity + growth... no signal found
+checking dividend recap / buyback authorization... no signal found
+checking large cash balance building... FIRED — Cash and cash equivalents of $24,151 million as of June 30, 2026, up from $17,888 million at...
+checking asset sale / divestiture closing... FIRED — Definitive agreement signed in December 2025 to sell remaining Magellan Health businesses. As of...
+  ⚠ QUOTE HAS NO FIGURE for asset sale / divestiture closing — verified, but the model reported no single sentence carried the fact's material figure; verifiedQuote is a figure-less fallback
+checking international expansion / rising foreign revenue... no signal found
+checking new subsidiary / entity formation... no public signal (internal data only)
+checking ipo / secondary raise... no signal found
+checking floating-rate debt + rate exposure... FIRED — Term Loan Facility of $1,975 million outstanding as of June 30, 2026, bearing interest at a...
+checking commodity / input-cost exposure... no signal found
+checking large fx exposure disclosed... no signal found
+checking covenant breach / waiver, or going-concern / liquidity warning... no signal found
+  XBRL stated total debt at 2026-06-30: LongTermDebtCurrent=75,000,000 + LongTermDebtNoncurrent=16,030,000,000 — the denominator comes from the filer's own tags
+  no XBRL maturity buckets at 2026-06-30 — the ladder stands alone; no floor is fabricated
+verdict: CALL
+→ Debt maturity approaching — Refinancing
+→ Large cash balance building — Liquidity management, earning on idle cash
+→ Asset sale / divestiture closing — Proceeds deposit + sweep
+→ Floating-rate debt + rate exposure — Interest-rate hedging
+  cost: $0.0000 — 0 API calls (fully cached)
+
+┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  CENTENE CORP                                                                                  │
+│  Debt maturity approaching  ·  maturity ~15mo out                                              │
+└────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  CALL ABOUT
+    Refinance the $1.1 billion outstanding on the 4.25% Senior Notes due December 15, 2027.
+      · $1.1 billion
+          "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 52,938
+      · 4.25%
+          "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 52,938
+      · December 15, 2027
+          "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 52,938
+
+  WHY NOW
+    The December 2027 notes come due about 15 months out, and Centene's cash balance has grown
+    to $24.15 billion as of June 30, 2026, up from $17.89 billion at year-end 2025.
+      · December 2027
+          "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 52,938
+      · $24.15 billion
+          "Cash and cash equivalents $ 24,151 $ 17,888"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 18,070
+      · June 30, 2026
+          "Cash and cash equivalents $ 24,151 $ 17,888"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 18,070  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · $17.89 billion
+          "Cash and cash equivalents $ 24,151 $ 17,888"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 18,070
+      · 2025
+          "Cash and cash equivalents $ 24,151 $ 17,888"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 18,070  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+
+  KEY POINT 1
+    $1.1 billion outstanding on the 4.25% Senior Notes due December 15, 2027, against an
+    original issue size of $2.5 billion.
+      · $1.1 billion
+          "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 52,938
+      · 4.25%
+          "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 52,938
+      · December 15, 2027
+          "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 52,938
+      · $2.5 billion
+          "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 52,938
+
+  KEY POINT 2
+    Cash and cash equivalents totaled $24.15 billion as of June 30, 2026, up from $17.89 billion
+    at December 31, 2025.
+      · $24.15 billion
+          "Cash and cash equivalents $ 24,151 $ 17,888"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 18,070
+      · June 30, 2026
+          "Cash and cash equivalents $ 24,151 $ 17,888"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 18,070  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · $17.89 billion
+          "Cash and cash equivalents $ 24,151 $ 17,888"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 18,070
+      · December 31, 2025
+          "Cash and cash equivalents $ 24,151 $ 17,888"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 18,070  (+1 other verified fact state this same figure — NOT resolvable to this card's own tranche)
+
+  KEY POINT 3
+    $2.2 billion outstanding on the 2.45% Senior Notes due July 15, 2028, against an original
+    issue size of $2.3 billion.
+      · $2.2 billion
+          "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 53,016  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+      · 2.45%
+          "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 53,016
+      · July 15, 2028
+          "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 53,016
+      · $2.3 billion
+          "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160"
+          10-Q filed 2026-07-28 · 10-Q 2026-07-28, char 53,016
+
+  KEY POINT 4
+    $1,975 million outstanding on the Term Loan Facility, which bears a floating interest rate.
+      · $1,975 million
+          "Borrowings under the New Credit Agreement will bear interest at a fluctuating rate per annum equal to a benchmark rate applicable to the currency composing such borrowing plus an applicable margin."
+          10-Q filed 2026-07-28 · NOT LOCATED — check before relying on this line  (+2 other verified facts state this same figure — NOT resolvable to this card's own tranche)
+
+  DERIVED  (arithmetic on verified facts, as of 2026-09-07)
+    · Months to maturity: 15 months out — matures 2027-12-15.
+         ← "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"   10-Q 2026-07-28, char 52,938
+    · Refinancing pattern: No verified, corroborated-completed redemption in this corpus, so no refinancing pattern is computed. An unverified or merely intended retirement is not a pattern.
+    · Next tranche up: $ 2,300 million 2.45 % Senior Notes due July 15, 2028, maturing 2028-07-15. 7 months behind this one.
+         ← "$ 2,500 million 4.25 % Senior Notes due December 15, 2027 $ 1,067"   10-Q 2026-07-28, char 52,938
+         ← "$ 2,300 million 2.45 % Senior Notes due July 15, 2028 2,160"   10-Q 2026-07-28, char 53,016
+    · Liquidity beside it: The anchor filing states no revolving facility, so no liquidity figure sits beside this maturity.

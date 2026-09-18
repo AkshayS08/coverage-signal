@@ -1,0 +1,148 @@
+========================================================================================================
+C+D — DROPS, LADDER ROWS AND CARDS, vs the post-Group-B baseline
+========================================================================================================
+
+company                      | dropped | rows | cards | verdict      | status mix
+DaVita                       | 3->3    | 11->11   | 0->0   | pass-partial | live:9 unconfirmed:2
+HCA Healthcare               | 7->7    | 7->7     | 0->0   | pass-partial | live:7
+Tenet Healthcare             | 0->0    | 14->14   | 0->1 * | pass         | live:13 unconfirmed:1
+Universal Health Services    | 0->20 * | 10->2 *  | 0->0   | no-schedule  | live:2
+Encompass Health             | 0->0    | 12->12   | 0->0   | pass         | live:8 unconfirmed:3 retired:1
+Community Health Systems     | 23->23  | 2->2     | 0->0   | fail         | live:2
+Quest Diagnostics            | 2->0 *  | 14->15 * | 1->1   | pass-partial | live:13 unconfirmed:1 retired:1
+Centene Corporation          | 0->0    | 9->9     | 1->1   | pass-partial | live:8 unconfirmed:1
+Cigna Group                  | 6->0 *  | 34->40 * | 3->3   | fail         | live:33 repaid:6 matured:1
+Molina Healthcare            | 7->7    | 6->6     | 0->0   | pass         | live:6
+
+========================================================================================================
+C1 — STATED-ZERO ROWS NOW RENDER AS REPAID
+========================================================================================================
+  Cigna Group: 6 repaid
+    $ 900 million, 3.250 % Notes due April 2025 = $ —
+    $ 1,216 million, 4.125 % Notes due November 2025 = $ —
+    $ 1,284 million, 4.500 % Notes due February 2026 = $ —
+    $ 700 million, 5.685 % Notes due March 2026 = $ —
+    $ 550 million, 1.250 % Notes due March 2026 = $ —
+    Commercial paper = $ —
+
+========================================================================================================
+C2 / C3 — WRONG-COLUMN READ ASSERTIONS AND THE FALLBACK
+========================================================================================================
+  DaVita: base=10-Q 2026-08-04, 13 verified entries
+  HCA Healthcare: base=10-Q 2026-07-28, 8 verified entries
+      WRONG COLUMN READ for debt maturity approaching (prior period) — all 7 transcribed entries state a period column that is not this filing's own period of report (2026-03-31). The note was located and transcribed; the wrong column of it was read. This is a READ FAILURE, not an absent schedule.
+  Tenet Healthcare: base=10-Q 2026-07-29, 13 verified entries
+  Universal Health Services: base=10-Q 2026-08-07, 0 verified entries
+      WRONG COLUMN READ for debt maturity approaching — all 10 transcribed entries state a period column that is not this filing's own period of report (2026-06-30). The note was located and transcribed; the wrong column of it was read. This is a READ FAILURE, not an absent schedule.
+      WRONG COLUMN READ for debt maturity approaching (prior period) — all 10 transcribed entries state a period column that is not this filing's own period of report (2026-03-31). The note was located and transcribed; the wrong column of it was read. This is a READ FAILURE, not an absent schedule.
+      DEBT SCHEDULE READ FAILURE for debt maturity approaching — the base filing's debt note was located and transcribed, but every entry stated a period column other than that filing's own period of report. This is a misread, not an absent schedule, so the search-order fallback does NOT run: an older filing's ladder would render clean while being months stale.
+  Encompass Health: base=10-Q 2026-08-07, 10 verified entries
+  Community Health Systems: base=10-Q 2026-07-23, 6 verified entries
+      WRONG COLUMN READ for debt maturity approaching (prior period) — all 14 transcribed entries state a period column that is not this filing's own period of report (2026-03-31). The note was located and transcribed; the wrong column of it was read. This is a READ FAILURE, not an absent schedule.
+  Quest Diagnostics: base=10-Q 2026-07-23, 17 verified entries
+  Centene Corporation: base=10-Q 2026-07-28, 12 verified entries
+  Cigna Group: base=10-K 2026-02-26, 38 verified entries
+  Molina Healthcare: base=10-Q 2026-07-23, 7 verified entries
+      WRONG COLUMN READ for debt maturity approaching (prior period) — all 7 transcribed entries state a period column that is not this filing's own period of report (2026-03-31). The note was located and transcribed; the wrong column of it was read. This is a READ FAILURE, not an absent schedule.
+
+========================================================================================================
+D1 / D2 — BARE-YEAR ROWS, MONTH RECOVERY, AND WHICH NOW CARD
+========================================================================================================
+  HCA Healthcare: 1 year-only remaining, 0 month(s) recovered, 0 ambiguous
+  Tenet Healthcare: 12 year-only remaining, 0 month(s) recovered, 0 ambiguous
+      D1 CARDS ON THE YEAR ALONE: 5.125 % due 2027 (2027) — matures during 2027 — the whole year falls inside the 18-month window, so no month is needed
+  Encompass Health: 6 year-only remaining, 0 month(s) recovered, 0 ambiguous
+  Community Health Systems: 2 year-only remaining, 0 month(s) recovered, 0 ambiguous
+  Quest Diagnostics: 0 year-only remaining, 23 month(s) recovered, 0 ambiguous
+      MATURITY MONTH RECOVERED for debt maturity approaching — "3.45 % Senior Note due June 2026" was bare year 2026, but its own verified sourceLine prints "June 2026"; sharpened to 2026-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "4.60 % Senior Notes due December 2027" was bare year 2027, but its own verified sourceLine prints "December 2027"; sharpened to 2027-12-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "4.20 % Senior Notes due June 2029" was bare year 2029, but its own verified sourceLine prints "June 2029"; sharpened to 2029-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "4.625 % Senior Notes due December 2029" was bare year 2029, but its own verified sourceLine prints "December 2029"; sharpened to 2029-12-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "2.95 % Senior Notes due June 2030" was bare year 2030, but its own verified sourceLine prints "June 2030"; sharpened to 2030-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "2.80 % Senior Notes due June 2031" was bare year 2031, but its own verified sourceLine prints "June 2031"; sharpened to 2031-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "6.40 % Senior Notes due November 2033" was bare year 2033, but its own verified sourceLine prints "November 2033"; sharpened to 2033-11-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "5.00 % Senior Notes due December 2034" was bare year 2034, but its own verified sourceLine prints "December 2034"; sharpened to 2034-12-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "5.00 % Senior Notes due June 2036" was bare year 2036, but its own verified sourceLine prints "June 2036"; sharpened to 2036-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "6.95 % Senior Notes due July 2037" was bare year 2037, but its own verified sourceLine prints "July 2037"; sharpened to 2037-07-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "5.75 % Senior Notes due January 2040" was bare year 2040, but its own verified sourceLine prints "January 2040"; sharpened to 2040-01-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "4.70 % Senior Notes due March 2045" was bare year 2045, but its own verified sourceLine prints "March 2045"; sharpened to 2045-03-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "3.45 % Senior Note due June 2026" was bare year 2026, but its own verified sourceLine prints "June 2026"; sharpened to 2026-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "4.60 % Senior Notes due December 2027" was bare year 2027, but its own verified sourceLine prints "December 2027"; sharpened to 2027-12-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "4.20 % Senior Notes due June 2029" was bare year 2029, but its own verified sourceLine prints "June 2029"; sharpened to 2029-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "4.625 % Senior Notes due December 2029" was bare year 2029, but its own verified sourceLine prints "December 2029"; sharpened to 2029-12-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "2.95 % Senior Notes due June 2030" was bare year 2030, but its own verified sourceLine prints "June 2030"; sharpened to 2030-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "2.80 % Senior Notes due June 2031" was bare year 2031, but its own verified sourceLine prints "June 2031"; sharpened to 2031-06-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "6.40 % Senior Notes due November 2033" was bare year 2033, but its own verified sourceLine prints "November 2033"; sharpened to 2033-11-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "5.00 % Senior Notes due December 2034" was bare year 2034, but its own verified sourceLine prints "December 2034"; sharpened to 2034-12-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "6.95 % Senior Notes due July 2037" was bare year 2037, but its own verified sourceLine prints "July 2037"; sharpened to 2037-07-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "5.75 % Senior Notes due January 2040" was bare year 2040, but its own verified sourceLine prints "January 2040"; sharpened to 2040-01-01
+      MATURITY MONTH RECOVERED for debt maturity approaching — "4.70 % Senior Notes due March 2045" was bare year 2045, but its own verified sourceLine prints "March 2045"; sharpened to 2045-03-01
+  BOOK: 21 year-only rows remain; 23 months recovered; 0 held back as ambiguous; 1 now card on the year alone.
+
+========================================================================================================
+D3 — MATURED ROWS, AND WHETHER ANYTHING IN THE CORPUS REFINANCED THEM
+========================================================================================================
+  Cigna Group: 1 matured
+    $ 550 million, 1.250 % Notes due March 2026 = $ 549 millions, matured 2026-03-01
+      explained by an issuance in the corpus? NO — nothing in these filings states how it was repaid
+      cardable? false
+
+========================================================================================================
+D4 — DOES ANY 8-K NAME A TRANCHE ON THE CURRENT LADDER, AND WHAT HAPPENS TO IT? (diagnosis)
+========================================================================================================
+
+  DaVita: 6 8-K(s) in corpus, ladder 11 rows
+    extraction's redeems field: null
+
+  HCA Healthcare: 6 8-K(s) in corpus, ladder 7 rows
+    extraction's redeems field: "all $ 1.500 billion aggregate principal amount of 5.250 % senior notes due 2026 and all $ 1.000 billion aggreg"
+    rows the ladder matches to it: 0
+    8-K 2026-04-30 names ladder tranche(s): 4.700% Senior Notes due 2031 [live] | 5.000% Senior Notes due 2033 [live] | 5.300% Senior Notes due 2036 [live]
+
+  Tenet Healthcare: 6 8-K(s) in corpus, ladder 14 rows
+    extraction's redeems field: "all $1.5 billion outstanding of its 6.250% senior secured second lien notes due February 2027 and the partial "
+    rows the ladder matches to it: 0
+    8-K 2026-02-02 names ladder tranche(s): 6.875 % due 2031 [live]
+    8-K 2025-11-18 names ladder tranche(s): 6.125 % due 2028 [live] | 6.875 % due 2031 [live] | 5.500 % due 2032 [live] | 5.500% senior secured first lien notes due 2032 [live] | 6.000 % due 2033 [live] | 6.000% senior notes due 2033 [live]
+    8-K 2025-11-05 names ladder tranche(s): 6.875 % due 2031 [live]
+    8-K 2025-11-03 names ladder tranche(s): 6.125 % due 2028 [live] | 6.875 % due 2031 [live] | 5.500 % due 2032 [live] | 5.500% senior secured first lien notes due 2032 [live] | 6.000 % due 2033 [live] | 6.000% senior notes due 2033 [live]
+    8-K 2024-08-05 names ladder tranche(s): 6.875 % due 2031 [live]
+    8-K 2024-04-01 names ladder tranche(s): 6.875 % due 2031 [live]
+
+  Universal Health Services: 6 8-K(s) in corpus, ladder 2 rows
+    extraction's redeems field: null
+    8-K 2026-08-21 names ladder tranche(s): 5.500% Senior Secured Notes due 2031 [live] | 6.000% Senior Secured Notes due 2036 [live]
+    8-K 2026-08-13 names ladder tranche(s): 5.500% Senior Secured Notes due 2031 [live] | 6.000% Senior Secured Notes due 2036 [live]
+
+  Encompass Health: 6 8-K(s) in corpus, ladder 12 rows
+    extraction's redeems field: "4.500% senior notes due 2028"
+    rows the ladder matches to it: 1 -> 4.50 % Senior Notes due 2028 [retired]
+    8-K 2026-08-13 names ladder tranche(s): 5.875 % Senior Notes due 2034 [live] | 5.875% Senior Notes due 2034 [live] | 5.875% Senior Notes due 2034 [live]
+    8-K 2026-06-01 names ladder tranche(s): 4.625 % Senior Notes due 2031 [live] | 5.875 % Senior Notes due 2034 [live] | 5.875% Senior Notes due 2034 [live] | 5.875% Senior Notes due 2034 [live]
+    8-K 2026-05-15 names ladder tranche(s): 5.875 % Senior Notes due 2034 [live] | 5.875% Senior Notes due 2034 [live] | 5.875% Senior Notes due 2034 [live]
+
+  Community Health Systems: 6 8-K(s) in corpus, ladder 2 rows
+    extraction's redeems field: null
+    8-K 2026-05-06 names ladder tranche(s): 4.750% Senior Secured Notes due 2031 [live] | 10.875% Senior Secured Notes due 2032 [live]
+    8-K 2026-04-23 names ladder tranche(s): 4.750% Senior Secured Notes due 2031 [live] | 10.875% Senior Secured Notes due 2032 [live]
+
+  Quest Diagnostics: 6 8-K(s) in corpus, ladder 15 rows
+    extraction's redeems field: "3.45% Senior Notes due June 2026"
+    rows the ladder matches to it: 1 -> 3.45 % Senior Note due June 2026 [retired]
+    8-K 2026-05-08 names ladder tranche(s): 5.000% Senior Notes due June 2036 [live]
+    8-K 2026-05-01 names ladder tranche(s): 3.45 % Senior Note due June 2026 [retired] | 5.000% Senior Notes due June 2036 [live]
+
+  Centene Corporation: 6 8-K(s) in corpus, ladder 9 rows
+    extraction's redeems field: null
+    8-K 2026-07-29 names ladder tranche(s): $ 2,500 million 4.25 % Senior Notes due December 15, 2027 [live]
+    8-K 2026-03-10 names ladder tranche(s): $ 2,500 million 4.25 % Senior Notes due December 15, 2027 [live]
+
+  Cigna Group: 6 8-K(s) in corpus, ladder 40 rows
+    extraction's redeems field: null
+    8-K 2025-09-04 names ladder tranche(s): $ 1,284 million, 4.500 % Notes due February 2026 [repaid] | $ 1,000 million, 4.500 % Notes due September 2030 [live] | 4.500% Senior Notes due 2030 [live] | $ 1,250 million, 4.875 % Notes due September 2032 [live] | 4.875% Senior Notes due 2032 [live] | $ 1,500 million, 5.250 % Notes due January 2036 [live] | 5.250% Senior Notes due 2036 [live] | $ 750 million, 6.000 % Notes due January 2056 [live] | 6.000% Senior Notes due 2056 [live]
+
+  Molina Healthcare: 6 8-K(s) in corpus, ladder 6 rows
+    extraction's redeems field: "$740 million in existing term loan debt"
+    rows the ladder matches to it: 0
+    8-K 2025-11-20 names ladder tranche(s): 6.500 % Notes due February 15, 2031 [live] | 6.500% Senior Notes due 2031 [live]
+    8-K 2025-11-18 names ladder tranche(s): 6.500 % Notes due February 15, 2031 [live] | 6.500% Senior Notes due 2031 [live]
