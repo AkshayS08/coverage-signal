@@ -23,7 +23,7 @@
  * Run: npx tsx lib/fetch/proseNoteRouting.test.ts
  */
 import { locateDebtNoteSection, narrowToDebtDisclosure, spanIsTabular } from "./noteLocation";
-import { verdictSchemaFor } from "../agent/claude";
+import { verdictSchemaFor, anchorNoteShapeOf } from "../agent/claude";
 
 let passed = 0, failed = 0;
 const failures: string[] = [];
@@ -88,14 +88,51 @@ console.log("\n=== [2] Measured on the narrowed note, this filer is prose-only =
 
 console.log("\n=== [3] The schema WITHHOLDS the field it cannot have ===");
 {
-  const prose = verdictSchemaFor(false).properties as Record<string, unknown>;
-  const table = verdictSchemaFor(true).properties as Record<string, unknown>;
+  const prose = verdictSchemaFor("prose-only").properties as Record<string, unknown>;
+  const table = verdictSchemaFor("tabular").properties as Record<string, unknown>;
+  const absent = verdictSchemaFor("not-located").properties as Record<string, unknown>;
   assert(!("scheduleSequence" in prose) && !("priorScheduleSequence" in prose),
     "[3a] a prose-only note is not OFFERED scheduleSequence — removed from the schema, not discouraged in prose. An instruction is a request; a schema is a fact");
   assert("proseInstruments" in prose && "balanceSheetDebtCaptions" in prose,
     "[3b] and everything it CAN fill is still there — the instruments and the balance-sheet captions");
   assert("scheduleSequence" in table && "proseInstruments" in table,
     "[3c] a tabular note keeps BOTH fields and the existing per-source rule routes within it — this change is scoped to the filer that cannot have a table");
+
+  // SESSION 23, RULE 51 — THE THIRD SHAPE.
+  //
+  // Measured on Cigna: the anchor 10-Q locates NO debt note, the field was
+  // offered anyway (undefined read as "tabular"), and the model filled it
+  // with three rows of the 10-K's table carrying the ANCHOR's period column
+  // and the ANCHOR's citations. The prompt already said "never substitute
+  // another filing's" — and an instruction the model can decline is not a
+  // constraint.
+  assert(!("scheduleSequence" in absent) && !("priorScheduleSequence" in absent),
+    "[3d] an anchor with NO located note is not offered scheduleSequence either — there is no field to fill from another filing, and none to stamp with the anchor's period");
+  assert(!("scheduleTableUnit" in absent) && !("priorScheduleTableUnit" in absent),
+    "[3e] and the table's unit declarations go with it — a unit for a table that was never transcribed is a field describing nothing");
+  assert("proseInstruments" in absent && "facilities" in absent,
+    "[3f] but what the ANCHOR ITSELF states in sentences is still wanted — withholding the table is not suppressing the filing (Rule 3)");
+}
+
+console.log(`\n=== [4] Rule 51 — undefined is not a no ===`);
+{
+  // THE BUG, AS A TEST. The old call site asked `tabular !== false`, and
+  // `tabular` is undefined whenever the locator found no note — so the
+  // absence of an answer was read as a yes.
+  assert(anchorNoteShapeOf({ status: "not_found" }) === "not-located",
+    "[4a] a status of not_found is not-located, whatever `tabular` says — this is the Cigna case, and the old test read it as tabular");
+  assert(anchorNoteShapeOf({ status: "not_found", tabular: true }) === "not-located",
+    "[4b] and a stale `tabular: true` beside not_found does NOT reinstate the field — status decides first, because a tabular verdict about a note nobody located describes nothing");
+  assert(anchorNoteShapeOf(undefined) === "not-located",
+    "[4c] no anchor at all (a corpus with no 10-Q or 10-K) is also not-located");
+  assert(anchorNoteShapeOf({ status: "found", tabular: false }) === "prose-only",
+    "[4d] located and not a table is prose-only — v28's case, unchanged");
+  assert(anchorNoteShapeOf({ status: "found", tabular: true }) === "tabular",
+    "[4e] located and a table is tabular — the ordinary case, unchanged");
+  assert(anchorNoteShapeOf({ status: "found" }) === "tabular",
+    "[4f] located with no tabular verdict recorded stays tabular — the field is offered when a note EXISTS and nothing has said it is prose, which is the pre-Session-21 default and is deliberately not widened here");
+  assert(anchorNoteShapeOf({ status: "under_cap" }) === "not-located",
+    "[4g] and every non-found status withholds, not just not_found — under_cap located nothing either");
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

@@ -1,4 +1,4 @@
-# The rules, 1 to 50
+# The rules, 1 to 51
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -60,6 +60,7 @@ example that found it, never the thing the rule is about.
 | 48 | a letter of credit is not borrowed money, so it has no ladder row | [log](build_log.md#rule-48--a-letter-of-credit-is-not-borrowed-money-so-it-has-no-ladder-row) |
 | 49 | row identity keys on what the filing states about the instrument, never on the label a run chose | [log](build_log.md#rule-49--row-identity-keys-on-what-the-filing-states-about-the-instrument-never-on-the-label-a-run-chose) |
 | 50 | a generated artifact is regenerated whenever its source changes, or it is stale by definition | [log](build_log.md#rule-50--a-generated-artifact-is-regenerated-whenever-its-source-changes-or-it-is-stale-by-definition) |
+| 51 | where the anchor has no note, the schema has no field to fill from another filing | [log](build_log.md#rule-51--where-the-anchor-has-no-note-the-schema-has-no-field-to-fill-from-another-filing) |
 
 ## Refinements and later occurrences
 

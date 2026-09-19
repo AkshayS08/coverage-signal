@@ -2,13 +2,13 @@
  * GENERATE docs/rules.md FROM THE BUILD LOG'S OWN HEADINGS. $0, no model calls.
  *
  * The rules index is the audit's reading list, and a hand-maintained list of
- * fifty rules is a list that disagrees with the log by the third edit.
+ * fifty-odd rules is a list that disagrees with the log by the third edit.
  * So it is not hand-maintained: every line here is read out of
  * `docs/build_log.md`, and re-running this is how the index stays true.
  *
  * It DERIVES rather than describes — the same discipline the rules themselves
  * are about. If a rule's heading changes, the index changes with it; if a rule
- * has no heading, this refuses rather than quietly indexing 48 of 49.
+ * has no heading, this refuses rather than quietly indexing all but one.
  *
  * Run: npx tsx lib/cache/rulesIndex.ts          (writes docs/rules.md)
  *      npx tsx lib/cache/rulesIndex.ts --check  (fails if the file is stale)
@@ -21,7 +21,7 @@ const OUT_PATH = join(process.cwd(), "docs", "rules.md");
 
 /** The highest rule number the log is expected to define. A rule added without */
 /** its heading fails the completeness check below rather than vanishing. */
-const HIGHEST_RULE = 50;
+const HIGHEST_RULE = 51;
 
 interface RuleHeading {
   /** The rule's number. Refinements share the number of the rule they refine. */

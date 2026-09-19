@@ -3826,3 +3826,131 @@ not about freshness: a golden is *supposed* to be pinned to an older state, and
 what makes that safe is that something compares it to the present and reports
 the difference by name (Rules 30 and 31). A pin with a comparator is a
 baseline. A pin without one is just a stale file.
+
+---
+
+# Session 23, Stage 1 — the premise did not reproduce
+
+Stage 1 was scoped to fix large-note transcription: "on a note of 30+ rows the
+model returns a handful and stops." Measured first, per the prompt's own
+instruction not to design against a guess. It does not happen.
+
+## What Cigna's three rows actually are
+
+The three rows v29 returned are real rows, correctly transcribed, from the
+**wrong filing**. Their sourceLines appear nowhere in the anchor 10-Q's full
+text and appear verbatim in the 10-K filed five months earlier — while
+carrying `periodColumn: "June 30, 2026"`, the anchor's period, and citing the
+two 10-Qs rather than the 10-K they came from.
+
+Truncation was ruled out structurally rather than by inference:
+`assertNotTruncated` throws on a `max_tokens` stop **before** anything reaches
+the cache, so a truncated response can never be the cached response; the
+ceiling is 20,000 tokens and the answer is three rows. Summarising was ruled
+out by shape: no subtotals, no rollups, no stated total, three verbatim
+two-column tranche rows. What the model was doing is answering the trigger —
+its own evidence string says "approaching maturity within the next 12-18
+months", and the three rows are the three 2027 maturities.
+
+## The model transcribes this note completely, and has for thirteen versions
+
+The answer cache is permanent, so the question had already been asked and
+answered. Every cached base answer Cigna has ever had, by prompt version:
+
+```
+v11 v12 v13 v15 v16 v17 v18 v19 v20 v21 v22 v23    38 schedule entries
+v24  33      v25   6      v26  33      v27  33
+v28  31 (current corpus)          v29   3 (current corpus)
+```
+
+**Thirty-eight entries for a 37-coupon-row note, reproducibly, across thirteen
+prompt versions.** There is no large-note transcription problem. The v25 dip
+to 6 and back to 33 at v26 is the extraction variance CACHE_BUST exists to
+measure, not a capability boundary.
+
+And the 31-entry v28 answer sits on the SAME fingerprint as v29 — same
+filings, same anchor — so the two are directly comparable:
+
+```
+v28   31 entries   24 traced to the 10-K, 7 unmatched, ALL claiming periodColumn "June 30, 2026"
+v29    3 entries    3 traced to the 10-K,             ALL claiming periodColumn "June 30, 2026"
+```
+
+Every version has been filling this field off-anchor. v29 took three rows
+instead of thirty-one. That is a change in how much it took, not in what it
+could read.
+
+## Rule 51 — where the anchor has no note, the schema has no field to fill from another filing
+
+`verdictSchemaFor(tabular: boolean)` was a two-state answer to a three-state
+question. A located note that prints no table, and **no located note at all**,
+are different facts, and only one of them was being asked about. `tabular` is
+`undefined` when the locator finds nothing; the call site tested
+`anchorNoteTabular !== false`; and **undefined is not false**. So "we never
+found a note" was read as "yes, it is a table", and the schedule field was
+offered for a note that does not exist.
+
+The prompt already forbade the consequence, in as many words —
+*"never substitute another filing's"* — and has been declined for thirteen
+versions. **An instruction the model can decline is not a constraint.**
+
+So the field is removed rather than argued against. With no `scheduleSequence`
+in the schema there is nothing to fill from another filing, and nothing to
+stamp with the anchor's period column or the anchor's citations. The two
+defects close together because they were the same defect: a field that should
+not have existed for this company.
+
+**Third instance of the same move**, and it is now the house answer to model
+routing instability:
+
+| instance | the destination removed |
+|---|---|
+| v28, Rule 22 | `scheduleSequence` withheld where the located note prints no table |
+| Rule 48 | the ladder row an LC facility could become |
+| Rule 51 | `scheduleSequence` withheld where no note was located at all |
+
+Each began as an instruction the model followed on some runs and not others.
+None was fixed by rewording.
+
+**One deciding function**, `anchorNoteShapeOf`, exported and tested, because
+reading `status` and `tabular` separately at the call site is exactly how the
+third case went unnoticed. Undefined is not a no; it is the absence of an
+answer, and the absence of an answer is its own state — Rule 10 one layer up.
+
+**Book-wide effect, measured before it ships: one company of ten changes.**
+
+```
+Cigna     10-Q 2026-07-30   not_found / tabular=undefined   offered -> WITHHELD
+the other nine             found / tabular=true             offered -> offered
+```
+
+Cigna's rendered output does not change: `offAnchorReadFailure` already
+discarded those rows and rendered the empty anchor with its reason, which is
+why the book was never wrong on screen. **The guard was holding the line, not
+the extraction** — and a guard that has been silently catching the same thing
+for thirteen versions is a defect that was never reported, only absorbed.
+
+Code-only. No re-ask of its own: the nine unchanged companies are asked
+byte-identically, and Cigna's new schema reaches the model on the next cold
+pass, which is Stage 2's.
+
+## What Stage 1 cost, and what it bought
+
+$0. No model calls; every measurement is a cached blob read. The bump Stage 1
+was scoped to buy was not declared, because the evidence says it is not the
+fix — pricing a re-extraction against a premise that did not reproduce is the
+failure Rule 13 exists to prevent, one level up from cost.
+
+**And the proposed structural lever does not survive measurement either.** The
+plan was to derive the note's row count from the located span and require the
+model to match it. `couponRows` is a regex-match proxy, not a row count, and
+its ratio to real rows is filer-specific:
+
+```
+DaVita    25 coupon matches -> 13 schedule entries -> 9 verified ladder rows (signed, all nine criteria)
+CHS 10-K 123 coupon matches in a span capped at 25,000 chars
+```
+
+Requiring 25 rows of DaVita would reject an extraction that is correct and
+signed. Rule 41 in its own terms: a count cannot tell you which rows are
+missing, and it cannot tell you they are not.

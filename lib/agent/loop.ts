@@ -11,6 +11,7 @@ import {
   classifyOneTrigger,
   normalizeEventDate,
   withFieldDefaults,
+  anchorNoteShapeOf,
   type BalanceSheetDebtCaption,
   type CorpusDoc,
   type DateGranularity,
@@ -642,6 +643,7 @@ export async function runAgentLoop(
   // status is still logged — it is diagnostic, and it is no longer allowed
   // to choose which quarter the reader is looking at.
   const anchorCandidates = [...debtNoteStatusByFiling].sort((a, b) => b.filingDate.localeCompare(a.filingDate));
+
   const debtScheduleGuidance: DebtScheduleFilingGuidance = {
     base: anchorCandidates[0] ? { form: anchorCandidates[0].form, date: anchorCandidates[0].filingDate, reportDate: anchorCandidates[0].reportDate, url: anchorCandidates[0].url } : null,
     prior: anchorCandidates[1] ? { form: anchorCandidates[1].form, date: anchorCandidates[1].filingDate, reportDate: anchorCandidates[1].reportDate, url: anchorCandidates[1].url } : null,
@@ -687,10 +689,13 @@ export async function runAgentLoop(
         catalog,
         corpus,
         debtScheduleGuidance,
-        // Rule 22: when the anchor's debt disclosure is not a table, the
-        // schedule field is withheld from the schema entirely rather than
-        // argued against in the prompt.
-        anchorNoteTabular: anchorCandidates[0]?.tabular,
+        // Rules 22 and 51: the schedule field is offered only when the
+        // anchor actually HAS a table to transcribe. Withheld from the
+        // schema entirely rather than argued against in the prompt — a
+        // located-but-prose note and a note that was never located are
+        // different facts, and `anchorNoteShape` is the one field that
+        // decides, so neither can fall through to the other's branch.
+        anchorNoteShape: anchorNoteShapeOf(anchorCandidates[0]),
       })
   );
   log(`  answer cache ${baseHit ? "HIT" : "MISS"} (base classification, fingerprint ${fingerprint.slice(0, 8)})`);

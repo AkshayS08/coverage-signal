@@ -1168,8 +1168,8 @@ export async function classifyAllTriggers(params: {
   catalog: FilingCatalogEntry[];
   corpus: CorpusDoc[];
   debtScheduleGuidance: DebtScheduleFilingGuidance;
-  /** Rule 22: false withholds the schedule field from the schema entirely. */
-  anchorNoteTabular?: boolean;
+  /** Rules 22 and 51: anything but "tabular" withholds the schedule field from the schema entirely. */
+  anchorNoteShape?: AnchorNoteShape;
 }): Promise<TriggerVerdict[]> {
   try {
     return await attemptClassifyAllTriggers(params);
@@ -1194,9 +1194,56 @@ export async function classifyAllTriggers(params: {
  *
  * The tabular case is untouched: both fields are offered and the existing
  * per-source rule routes within the note.
+ *
+ * SESSION 23, RULE 51 — AND THE THIRD SHAPE: NO ANCHOR NOTE AT ALL.
+ *
+ * `tabular` was a two-state answer to a three-state question. A located note
+ * that prints no table and NO LOCATED NOTE AT ALL are different facts, and
+ * only one of them was being asked about — so the third fell through to the
+ * tabular branch and the schedule field was offered for a note that does not
+ * exist. Measured on Cigna: the anchor 10-Q locates no debt note, the field
+ * was offered anyway, and the model filled it with three rows of the 10-K's
+ * table — stamped with the ANCHOR's period column ("June 30, 2026") and the
+ * ANCHOR's citations, neither of which is where those rows came from.
+ *
+ * The prompt already forbade exactly this, in as many words: "never
+ * substitute another filing's." It is the third time this session's lineage
+ * has met the same thing (v28's prose-only withholding, Rule 48's removed
+ * ladder destination, this) and the answer is the same one: an instruction
+ * the model can decline is not a constraint, so remove the destination.
  */
-export function verdictSchemaFor(tabular: boolean): typeof VERDICT_ITEM_SCHEMA {
-  if (tabular) return VERDICT_ITEM_SCHEMA;
+export type AnchorNoteShape =
+  /** A note was located and it prints grouped figures — a table to transcribe. */
+  | "tabular"
+  /** A note was located and it states its instruments in sentences (Rule 22, v28). */
+  | "prose-only"
+  /** No debt note could be located in the anchor at all (Rule 51). */
+  | "not-located";
+
+/**
+ * THE ONE FUNCTION THAT DECIDES WHICH SHAPE THE ANCHOR IS.
+ *
+ * `status` and `tabular` are two facts about the anchor's note, and the
+ * schema needs one answer out of them. Reading them separately at the call
+ * site is precisely how the third case went unnoticed for two sessions:
+ * `tabular` is UNDEFINED when no note was located, the old call site tested
+ * `anchorNoteTabular !== false`, and undefined is not false — so "we never
+ * found a note" was read as "yes, it is a table" and the schedule field was
+ * offered for a note that does not exist.
+ *
+ * Undefined is not a no. It is the absence of an answer, and the absence of
+ * an answer is its own state (Rule 10, one layer up: a negative result from
+ * a test an item was never eligible for is not a finding).
+ */
+export function anchorNoteShapeOf(
+  anchor: { status: string; tabular?: boolean } | undefined
+): AnchorNoteShape {
+  if (!anchor || anchor.status !== "found") return "not-located";
+  return anchor.tabular === false ? "prose-only" : "tabular";
+}
+
+export function verdictSchemaFor(shape: AnchorNoteShape): typeof VERDICT_ITEM_SCHEMA {
+  if (shape === "tabular") return VERDICT_ITEM_SCHEMA;
   const properties = { ...VERDICT_ITEM_SCHEMA.properties } as Record<string, unknown>;
   delete properties.scheduleSequence;
   delete properties.priorScheduleSequence;
@@ -1211,11 +1258,17 @@ async function attemptClassifyAllTriggers(params: {
   catalog: FilingCatalogEntry[];
   corpus: CorpusDoc[];
   debtScheduleGuidance: DebtScheduleFilingGuidance;
-  /** False when the anchor's debt disclosure prints no grouped figure — the schedule field is then not offered at all. */
-  anchorNoteTabular?: boolean;
+  /**
+   * The anchor note's shape. The schedule field is offered ONLY for
+   * "tabular"; the other two withhold it (Rule 22 for prose, Rule 51 for a
+   * note that was never located). Defaults to "tabular" when the caller does
+   * not say, which keeps the pre-Session-21 behaviour for any call site that
+   * has no locator result to offer.
+   */
+  anchorNoteShape?: AnchorNoteShape;
 }): Promise<TriggerVerdict[]> {
   const { companyName, triggers, catalog, corpus, debtScheduleGuidance } = params;
-  const tabular = params.anchorNoteTabular !== false;
+  const shape: AnchorNoteShape = params.anchorNoteShape ?? "tabular";
 
   const userContent = [
     `Company: ${companyName}`,
@@ -1224,9 +1277,11 @@ async function attemptClassifyAllTriggers(params: {
     formatTriggers(triggers),
     ``,
     formatDebtScheduleGuidance(debtScheduleGuidance),
-    tabular
+    shape === "tabular"
       ? ``
-      : `## This filer's debt note is NOT a table\n\nThe located debt note prints no comma-grouped figure anywhere in its debt disclosure: it states its instruments in sentences and bullets, in words ("$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026"). There is no schedule to transcribe and the scheduleSequence field has been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nEvery instrument this note states is a proseInstruments entry, one per instrument, with its amount copied in the unit the note prints it in. That is the complete and correct answer for a filer of this shape, not a degraded one.`,
+      : shape === "prose-only"
+        ? `## This filer's debt note is NOT a table\n\nThe located debt note prints no comma-grouped figure anywhere in its debt disclosure: it states its instruments in sentences and bullets, in words ("$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026"). There is no schedule to transcribe and the scheduleSequence field has been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nEvery instrument this note states is a proseInstruments entry, one per instrument, with its amount copied in the unit the note prints it in. That is the complete and correct answer for a filer of this shape, not a degraded one.`
+        : `## No debt note could be located in the anchor filing\n\nThe anchor is the most recent 10-Q or 10-K, and it is the only filing whose debt note may state this company's position. The locator found no debt note in it. The scheduleSequence field has therefore been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nAn older filing's debt table is NOT a substitute. Its rows state a position as of ITS period, not the anchor's, and transcribing them here would report a stale position as a current one. If another filing in the catalog carries a debt table, that is expected and is not what this field is for.\n\nWhat IS wanted: any instrument the ANCHOR itself states, in sentences, as a proseInstruments entry, and any facility the anchor describes, in facilities. If the anchor states none, returning none is the complete and correct answer for this company.`,
     ``,
     `## Full filing catalog (available for digging; not all are excerpted below)`,
     formatCatalog(catalog),
@@ -1271,7 +1326,7 @@ async function attemptClassifyAllTriggers(params: {
         input_schema: {
           type: "object",
           properties: {
-            results: { type: "array", items: verdictSchemaFor(tabular) },
+            results: { type: "array", items: verdictSchemaFor(shape) },
           },
           required: ["results"],
         },
