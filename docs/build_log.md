@@ -4113,3 +4113,66 @@ session prompt names as defensible in its own terms.
 [repaid] row from the note's own table beside the `$1.0 billion` capacity row
 — two rows for one instrument. It predates this pass (13 rows before and
 after) and is not caused by Rule 53. Logged for the product read.
+
+## The refresh roster, set before anything spends
+
+Four names, and they are not on it for one reason.
+
+| name | why | what the refresh answers |
+|---|---|---|
+| Tenet | corpus moved | re-sign against the new filing set (Rule 30) |
+| CHS | corpus moved | re-sign; the duplicate-ABL row is a RENDER case, not fixed here |
+| Molina | field drop | does `drawn` drop twice, or was v30 variance |
+| Encompass | corpus moved | re-sign. Its field watch was struck — below |
+
+**Molina is the only real field watch, and it is a clean one.** Its corpus is
+unchanged, so the refresh is a second trial of the same question against the
+same documents. The anchor 10-Q states the field twice —
+
+> "As of June 30, 2026, no amount was outstanding under the Credit Agreement."
+
+— on the anchor's own as-of date, in absence language Rule 53 accepts, in the
+same section (*Credit Agreement Borrowing Capacity*) the model did draw
+`available` from. It had the sentence and did not return the field. Null again
+is a prompt fix; filled from the anchor is variance and buys nothing.
+
+**Encompass's watch was struck before spending, on evidence.** The session
+carried an expectation of `lettersOfCredit: $0`. The filings do not say that.
+The entire corpus contains exactly two letter-of-credit sentences, both in the
+8-K of 2026-03-10:
+
+> "As of March 9, 2026, the Company had drawn $250.0 million on the revolving
+> credit facility ... and $53.6 million on the new letter of credit
+> subfacility."
+
+Not zero, and not the anchor's date. The anchor 10-Q of 2026-08-07 does not
+mention letters of credit at all. So **null is the correct answer**, and it is
+Rule 51's shape one field over: where the anchor does not state it, the row
+does not carry it. A refresh could only return null again (right) or reach into
+the 8-K for $53.6M and stamp it with the anchor's period — the off-anchor
+substitution this whole session has been removing. Neither is worth the call.
+
+Worth seeing, and deliberately not acted on: **the identity closes on the
+stale number.** 1,000 − 200 drawn − 53.6 LC = 746.4 against a stated available
+of $746 million. The LC balance is almost certainly unchanged. The filing
+still does not say so, and inferring a rendered figure from the arithmetic is
+the thing this system does not do.
+
+**Rule-shaped, not minted.** Twice now a pass has been priced against a
+premise nobody checked was in the text — Stage 1's transcription premise, and
+this watch. The candidate: *before pricing a re-ask at a missing field, confirm
+the filings state it; otherwise the null is the answer, not the defect.* Left
+as a candidate rather than logged as a rule, because it is the user's call
+whether two instances make a rule.
+
+**The two render cases for the Stage 5 product read**, both correct and both
+confusing to an outsider:
+
+1. **CHS shows two rows for one instrument** — `ABL Facility $0 million
+   [repaid]` from the note's own table beside `ABL Facility $1.0 billion
+   capacity`. Pre-existing, 13 rows before and after this pass.
+2. **UHS's $700M July 2026 Delayed Draw Term Loan carries no date** — its
+   stated maturity is "364 days after funding", a real term that is not a date
+   and can never card on one.
+
+Design around them; do not suppress either.
