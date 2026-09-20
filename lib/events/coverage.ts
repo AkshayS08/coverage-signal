@@ -28,6 +28,7 @@ import { dedupAgainstRows, debtContribution, sameNormalisedAmount, type DebtCate
 export { dedupAgainstRows, debtContribution, sameNormalisedAmount } from "./instrument";
 export type { DebtCategory } from "./instrument";
 import type { TriggerResult, ProseInstrumentRow, FacilityRow, VerifiedSequenceEntry } from "../agent";
+import { borrowingBaseOf } from "../agent/borrowingBase";
 
 /**
  * THE THRESHOLD, MEASURED RATHER THAN ASSUMED (Session 20, Stage 3).
@@ -390,8 +391,41 @@ function revolverFacilityFor(
   return sameCategory.length === 1 ? sameCategory[0] : null;
 }
 
-export function checkRevolverArithmetic(rev: FacilityRow | null | undefined): { checked: boolean; ok: boolean; note: string } {
-  if (!rev) return { checked: false, ok: false, note: "" };
+/**
+ * SESSION 23, B4 — THE IDENTITY IS NOT ALWAYS AN IDENTITY.
+ *
+ * `drawn + LCs + available = facility size` holds only where nothing but
+ * those three things limits availability. For an asset-based facility it
+ * does not, and the filer says so: CHS's ABL is "subject to borrowing base
+ * capacity", and states ~$751M available against a $1.0B facility with
+ * nothing drawn and $32M of letters of credit. The identity predicts $968M.
+ * Neither figure is wrong — the borrowing base is simply smaller than the
+ * commitment, which is what an ABL IS.
+ *
+ * Flagging that as a failure to reconcile accuses the filer of arithmetic
+ * they never claimed. So where the filing states what availability depends
+ * on, THE STATED AVAILABILITY IS AUTHORITATIVE and size − drawn − LCs
+ * becomes a CEILING, reported as one. The trigger is the filer's own
+ * sentence being present, never a company list and never a phrase list in
+ * this file (Rule 1).
+ *
+ * And where they disagree with NO stated cause, both figures render with the
+ * gap flagged — not the stated one silently preferred. A disagreement nobody
+ * explained is precisely what an RM must not have smoothed over for them
+ * (Rule 3), and the flag names which figure is which rather than implying
+ * the filer erred.
+ */
+export type RevolverArithmeticKind = "not-checkable" | "reconciles" | "borrowing-base-limited" | "unexplained-gap";
+
+export function checkRevolverArithmetic(rev: FacilityRow | null | undefined): {
+  checked: boolean;
+  ok: boolean;
+  note: string;
+  kind: RevolverArithmeticKind;
+  /** Where availability is limited by a stated basis: what that basis implies, in millions. */
+  impliedBaseMillions?: number;
+} {
+  if (!rev) return { checked: false, ok: false, note: "", kind: "not-checkable" };
   // SESSION 22 — each figure is now a { value, sourceLine } pair, and only a
   // figure that survived verification against its OWN sentence is present at
   // all. So this check runs on verified figures or on nothing, which is what
@@ -399,15 +433,45 @@ export function checkRevolverArithmetic(rev: FacilityRow | null | undefined): { 
   const size = rev.facilitySize ? parseMoneyAmount(rev.facilitySize.value) : null;
   const parts = [rev.drawn, rev.lettersOfCredit, rev.available].map((f) => (f ? parseMoneyAmount(f.value) : null));
   if (size === null || parts.some((p) => p === null)) {
-    return { checked: false, ok: false, note: "revolver arithmetic not checkable — the note states fewer than all four figures" };
+    return { checked: false, ok: false, note: "revolver arithmetic not checkable — the note states fewer than all four figures", kind: "not-checkable" };
   }
   const sum = parts.reduce((a: number, p) => a + (p ?? 0), 0);
   const ok = Math.abs(sum - size) <= Math.abs(size) * 0.01;
+  if (ok) {
+    return { checked: true, ok: true, note: "revolver reconciles — drawn + LCs + available = facility size", kind: "reconciles" };
+  }
+
+  const m = (n: number) => `${(n / 1e6).toFixed(0)}M`;
+  // SESSION 23, B4 WIDENED — either the ABL label or the filer's stated
+  // language. See borrowingBase.ts for why one signal was not enough.
+  const basis = borrowingBaseOf(rev);
+  if (basis) {
+    // The ceiling the commitment would allow, and the base the filer's own
+    // availability implies. Both render; neither is called an error.
+    const drawn = parts[0] ?? 0;
+    const lcs = parts[1] ?? 0;
+    const available = parts[2] ?? 0;
+    const ceiling = size - drawn - lcs;
+    const impliedBase = available + drawn + lcs;
+    return {
+      checked: true,
+      ok: true,
+      kind: "borrowing-base-limited",
+      impliedBaseMillions: impliedBase / 1e6,
+      note:
+        `availability is limited by ${basis.limitedBy}, as the filing states — stated available ${m(available)} against a ${m(size)} commitment ` +
+        `(size less ${m(drawn)} drawn less ${m(lcs)} of letters of credit would allow ${m(ceiling)}, which is a CEILING, not the expected value). ` +
+        `The stated availability implies a base of about ${m(impliedBase)}. This is the facility working as disclosed, not a discrepancy.`,
+    };
+  }
+
   return {
     checked: true,
-    ok,
-    note: ok
-      ? `revolver reconciles — drawn + LCs + available = facility size`
-      : `REVOLVER DOES NOT RECONCILE — drawn + LCs + available is ${(sum / 1e6).toFixed(0)}M against a stated facility of ${(size / 1e6).toFixed(0)}M; read the filing before quoting availability`,
+    ok: false,
+    kind: "unexplained-gap",
+    note:
+      `REVOLVER FIGURES DISAGREE AND THE FILING STATES NO CAUSE — the filing states ${m(parts[2] ?? 0)} available; ` +
+      `size less drawn less letters of credit gives ${m(size - (parts[0] ?? 0) - (parts[1] ?? 0))}. ` +
+      `Both are shown because no borrowing base or other limit is stated to account for the difference; read the filing before quoting availability.`,
   };
 }

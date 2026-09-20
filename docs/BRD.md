@@ -1066,8 +1066,39 @@ Session 21. Ordered by what a wrong answer costs a reader.
    identity, none skipped; the result must tie to the anchor's balance sheet
    or render as prior-period-only with the gap flagged. Every row labelled
    "as of [base period], per [base filing], rolled forward through [periods]".
-   **Cigna is the worked example** and its $31,352 − 550 + 1,000 ≈ 31,768 tie
-   is the acceptance test.
+   **Cigna is the worked example.** Its tie was RESTATED in Session 23 after
+   hand verification, and the restatement is the point: the filer states its
+   debt in two frames that differ by a constant ~$110M at both dates — the
+   balance-sheet frame (Dec 31,463 -> Jun 31,878) and the fair-value
+   disclosure (Dec 31,352 -> Jun 31,768), whose difference is a scope
+   exclusion. **The roll runs entirely in the balance-sheet frame**; the
+   fair-value table may render beside it as a witness with its scope gap
+   named, never as the tie target. The earlier `31,352 - 550 + 1,000 ≈
+   31,768` line compared across frames and would have left a $76M gap nobody
+   could attribute.
+
+   The acceptance test, in one frame:
+
+   - **Base tie, first and required:** the 10-K's own subtotals against the
+     10-K's own balance sheet — `30,871 long-term + 592 short-term = 31,463`.
+     An identity, not an approximation. Base tie failure means NO roll;
+     Cigna renders prior-period-only with the gap stated.
+   - **Deltas:** −550 (1.250% notes matured March 2026 and repaid) and
+     +~1,000 (commercial paper outstanding at June 30, stated as
+     "approximately $1.0 billion" at 3.92%).
+   - **Roll tie:** `31,463 − 550 + ~1,000 = 31,913` against the anchor's
+     31,878 — **residual ~$35M**, inside a ±$50M band that exists only
+     because the filer said "approximately", and which renders as *within
+     the filer's stated approximation*.
+   - **The ~1,792 long-term-to-current reclass is frame-internal** and nets
+     to zero in the total. It is not a delta.
+   - **Load-bearing assumption:** commercial paper at the base date is zero,
+     sourced to the 10-K twice (the MD&A sentence, and the note table's
+     em-dash in the Dec-2025 column against $880 in the prior year). It is an
+     assumption and not a settled fact — the delta is the whole closing
+     balance rather than an increment, so a non-zero base is wrong by exactly
+     that much. **If the base tie misses, check commercial-paper composition
+     at the base date first**, before the tranche rows.
 
    **CORRECTED (Session 22, Stage 0): HCA is not on this list.** As written
    in v1.6 this item said "HCA joins this list". Measured against the

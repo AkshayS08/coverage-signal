@@ -24,6 +24,7 @@ import {
   type NoteRetirementRow,
   type ProseInstrumentRow,
   type SeniorityStatement,
+  type NoteCrossReference,
   type ProceedsUseRow,
   type ProceedsUse,
   type RedeemsClaim,
@@ -450,6 +451,16 @@ export interface TriggerResult {
   facilityRejections: FigureRejection[];
   /** Session 22, Stage 3 — the note's own seniority sentence, verified, or null. */
   seniorityStatement: SeniorityStatement | null;
+  /**
+   * SESSION 23, STAGE 2 — the roll-forward trio, carried through to the
+   * result so the position layer can reach it. Coupled at withFieldDefaults
+   * (see coupleReferencedFields): the referenced arrays are empty unless a
+   * cross-reference is present AND the anchor states no ladder of its own,
+   * so a reader here never has to re-derive that.
+   */
+  noteCrossReference: NoteCrossReference | null;
+  referencedScheduleSequence: ScheduleSequenceEntry[];
+  referencedBalanceSheetDebtCaptions: BalanceSheetDebtCaption[];
   /** Session 19, item 2c — "capex-program" ONLY. The stated completion date of a named project, or null. Code derives the status from it; the model only copies it. */
   projectCompletionDate: string | null;
   projectCompletionGranularity: DateGranularity | null;
@@ -1130,6 +1141,13 @@ export async function runAgentLoop(
             needsDig: false,
             digHint: null,
             citedUrls: [],
+            // Session 23: the roll-forward trio, defaulted on the synthesized
+            // "couldn't be classified" verdict like every other field it has
+            // to carry. A verdict standing in for a failure states nothing,
+            // and stating nothing is three empties, not three absences.
+            noteCrossReference: null,
+            referencedScheduleSequence: [],
+            referencedBalanceSheetDebtCaptions: [],
           }),
           label
         )
@@ -2072,6 +2090,12 @@ function finalize(
     facilities: trigger.id === "debt-maturity" ? debtFields.facilities : [],
     facilityRejections: trigger.id === "debt-maturity" ? debtFields.facilityRejections : [],
     seniorityStatement: trigger.id === "debt-maturity" ? debtFields.seniorityStatement : null,
+    // SESSION 23 — debt-maturity only, like every other debt field. Empty
+    // elsewhere rather than absent: a reader must never have to ask which
+    // trigger it is looking at to know whether a field means anything.
+    noteCrossReference: trigger.id === "debt-maturity" ? (v.noteCrossReference ?? null) : null,
+    referencedScheduleSequence: trigger.id === "debt-maturity" ? (v.referencedScheduleSequence ?? []) : [],
+    referencedBalanceSheetDebtCaptions: trigger.id === "debt-maturity" ? (v.referencedBalanceSheetDebtCaptions ?? []) : [],
     triggerId: trigger.id,
     triggerName: trigger.name,
     fired: v.fired,

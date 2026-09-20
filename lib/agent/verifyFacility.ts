@@ -53,6 +53,7 @@
 import type { FacilityRow, FacilityFigure } from "./claude";
 import { discriminatingDigitGroups, normalizeForMatch } from "./verifyQuote";
 import { corpusOf, type Corpus } from "./corpus";
+import { isZeroValue, zeroSupportFor } from "./statedZero";
 
 export interface VerifiedFacility extends FacilityRow {
   /** The filing whose text states this facility's name-bearing sentence. */
@@ -74,7 +75,16 @@ export interface FigureRejection {
     | "sentence appears in no fetched filing"
     /** The corpus could not answer. NEVER a claim about the filing — see corpus.ts. */
     | "could not be checked — the corpus was not loaded"
-    | "sentence does not state this figure";
+    | "sentence does not state this figure"
+    /**
+     * SESSION 23, B3 — the two ways a claimed ZERO fails, kept apart because
+     * they need different fixes. A sentence stating a real quantity means the
+     * model mis-read a figure it had; a sentence asserting nothing about the
+     * field means it attached the wrong sentence. Collapsing them into
+     * "does not state this figure" is how B3's own defect stayed invisible.
+     */
+    | "claimed zero, but the sentence states a quantity for this figure"
+    | "claimed zero, but the sentence asserts nothing about this figure";
   sourceLine: string;
 }
 
@@ -135,6 +145,31 @@ function verifyFigure(
     };
   }
   const foundIn = hit.url;
+  // SESSION 23, B3 — ZERO IS STATED IN WORDS, SO IT IS CHECKED IN WORDS.
+  //
+  // sentenceStatesFigure asks whether the sentence carries the value's
+  // digits, which is right for every figure except the one filings write as
+  // "no cash borrowings". Routed to its own rule rather than loosened for
+  // everything: widening the digit check would let any figure through any
+  // sentence, which is the guard this file exists to be.
+  if (isZeroValue(fig.value)) {
+    const support = zeroSupportFor(fig.sourceLine, field);
+    if (support.kind === "asserts-absence") return { kept: fig, foundIn, rejection: null };
+    return {
+      kept: null,
+      foundIn: null,
+      rejection: {
+        facility: facilityName,
+        field,
+        value: fig.value,
+        reason:
+          support.kind === "states-a-quantity"
+            ? "claimed zero, but the sentence states a quantity for this figure"
+            : "claimed zero, but the sentence asserts nothing about this figure",
+        sourceLine: fig.sourceLine,
+      },
+    };
+  }
   if (!sentenceStatesFigure(fig.value, fig.sourceLine)) {
     return {
       kept: null, foundIn: null,

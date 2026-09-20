@@ -600,7 +600,7 @@ function applyFacilityMaturities(rows: LadderRow[], facilities: FacilityRow[] | 
  * ladder. Capacity rows: they render, they carry their own maturity, and they
  * contribute nothing to any total.
  */
-function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerResult | undefined): LadderRow[] {
+export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerResult | undefined): LadderRow[] {
   const facilities = debtMaturity?.facilities ?? [];
   if (facilities.length === 0) return [];
   const claimed = new Set(existing.map((r) => r.maturityFromFacility?.facility).filter(Boolean) as string[]);
@@ -623,8 +623,34 @@ function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerResult | u
     // one. With no ladder destination there is nothing to route it into.
     // Same move as schema-as-fact (Rule 39), one instrument type over.
     if (classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType === "letter-of-credit") continue;
-    // Already on the ladder under its own name (with or without a maturity)?
-    if (existing.some((r) => matchFacility({ name: r.instrument, category: null }, [f], { byNameOnly: true }))) continue;
+    // ALREADY ON THE LADDER UNDER ITS OWN NAME?
+    //
+    // SESSION 23 — THE CANDIDATE SET IS EVERY FACILITY, NEVER JUST THIS ONE.
+    //
+    // This asked `matchFacility(row, [f])` — a ONE-ELEMENT list. matchFacility
+    // falls back to significant-word overlap and guards that fallback with
+    // "only where exactly one facility shares them; an ambiguous match is not
+    // a match" (Rule 19). Handed a single candidate, "exactly one" is true by
+    // construction, so the guard could not fire at this call site no matter
+    // what it was asked. A guard that is structurally unable to do its job is
+    // the Rule 42 / Rule 43 shape at a call site rather than in a corpus.
+    //
+    // It cost UHS a real facility. Its two delayed-draw loans share the words
+    // {delayed, draw, term, loan}:
+    //
+    //   Delayed draw term loan A facility  $400M  matures 2029-09-26
+    //   July 2026 Delayed Draw Term Loan   $700M  matures 364 days after funding
+    //
+    // The $400M row matched the $700M facility on word overlap, marked it
+    // already-present, and the $700M facility never reached the ladder at all.
+    // Two instruments, one row, and the missing one is the larger.
+    //
+    // Resolved against the FULL list, the row matches the facility it names
+    // and no other, so each facility is claimed only by its own row. And where
+    // two genuinely cannot be told apart, matchFacility now returns null for
+    // both — neither is claimed, both render, and an ambiguous match stays not
+    // a match in the safe direction.
+    if (existing.some((r) => matchFacility({ name: r.instrument, category: null }, facilities, { byNameOnly: true }) === f)) continue;
     const m = resolveFacilityMaturity(f.maturity?.value);
     const classification = classifyInstrument({ headings: [], instrumentName: f.name });
     const row: LadderRow = {

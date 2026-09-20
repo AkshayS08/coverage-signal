@@ -236,7 +236,7 @@ console.log(`=== Session 12/15 golden tests (narration integrity) ===\n`);
           eventInstances: [],
           noteRetirements: [],
     proseInstruments: [],
-    facilities: [], facilityRejections: [], seniorityStatement: null, proceedsUses: [],
+    facilities: [], facilityRejections: [], seniorityStatement: null, noteCrossReference: null, referencedScheduleSequence: [], referencedBalanceSheetDebtCaptions: [], proceedsUses: [],
           projectCompletionDate: null,
           projectCompletionGranularity: null,
           cashAmount: null,

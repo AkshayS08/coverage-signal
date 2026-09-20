@@ -46,6 +46,7 @@ console.log("\n=== [1] ENCOMPASS AS SHIPPED — four figures, one sentence about
     lettersOfCredit: fig("$46.3 million", DRAWN_SENTENCE),
     available: fig("$824 million", DRAWN_SENTENCE),
     maturity: null, asOfDate: "2026-06-30",
+    availabilityBasis: null,
   };
   const r = verifyFacilities({ facilities: [f], textByUrl });
 
@@ -72,6 +73,7 @@ console.log("\n=== [2] THE SAME FACILITY, EACH FIGURE WITH ITS OWN SENTENCE ==="
     available: null,
     maturity: fig("June 2028", SIZE_SENTENCE),
     asOfDate: "2026-06-30",
+    availabilityBasis: null,
   };
   const r = verifyFacilities({ facilities: [f], textByUrl });
   assert(r.verified.length === 1 && r.verified[0].facilitySize?.value === "$1 billion" && r.verified[0].drawn?.value === "$200.0 million",
@@ -85,6 +87,7 @@ console.log("\n=== [3] A SENTENCE NO FILING CONTAINS ===");
     name: "receivables facility", category: "receivables-facility",
     facilitySize: fig("$600 million", "The Company maintains a $ 600 million secured receivables facility."),
     drawn: null, lettersOfCredit: null, available: null, maturity: null, asOfDate: null,
+    availabilityBasis: null,
   };
   const r = verifyFacilities({ facilities: [f], textByUrl });
   assert(r.verified.length === 0 && r.droppedFacilities.includes("receivables facility"),
@@ -100,6 +103,7 @@ console.log("\n=== [4] THE ARITHMETIC IS REPORTED, NEVER REPAIRED ===");
     facilitySize: fig("$1.5 billion", "x"), drawn: fig("$225 million", "x"),
     lettersOfCredit: fig("$3 million", "x"), available: fig("$1.272 billion", "x"),
     maturity: null, asOfDate: null,
+    availabilityBasis: null,
   };
   const a = facilityArithmetic(tie, parse);
   assert(a.checkable && a.ties === true,
@@ -133,6 +137,7 @@ console.log("\n=== [5] NOTHING IS EVER STITCHED IN ===");
     // the filing, and no amount of arithmetic convenience may admit it.
     available: fig("$800 million", "Available capacity was $ 800 million."),
     maturity: null, asOfDate: null,
+    availabilityBasis: null,
   };
   const r = verifyFacilities({ facilities: [f], textByUrl });
   assert(r.verified[0].available === null,

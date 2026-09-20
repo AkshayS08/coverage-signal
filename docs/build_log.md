@@ -3954,3 +3954,162 @@ CHS 10-K 123 coupon matches in a span capped at 25,000 chars
 Requiring 25 rows of DaVita would reject an extraction that is correct and
 signed. Rule 41 in its own terms: a count cannot tell you which rows are
 missing, and it cannot tell you they are not.
+
+---
+
+# Session 23, the v30 cold pass — what it cost and what it found
+
+$1.8090, against a declared $1.58–$2.25 for extraction plus proceedsUse. The
+reconciliation gate held: preflight said 10 of 10 would re-extract, and all ten
+billed non-zero, which is the only evidence that ten calls actually happened
+(a cache hit bills $0.0000).
+
+**Rule 51 works.** Cigna's `scheduleSequence` came back empty at the blob
+level — the first time in fourteen prompt versions that field has not been
+filled from another filing's table.
+
+Three defects found, each a rule below. Two of them are guards that read as
+present and could not do their job, which is now this log's most common
+finding by some distance.
+
+## Rule 52 — a guard that is handed one candidate cannot find an ambiguity
+
+`facilityOnlyRows` asks, for each facility, whether it is already on the
+ladder under its own name:
+
+```
+if (existing.some((r) => matchFacility({ name: r.instrument }, [f], { byNameOnly: true }))) continue;
+```
+
+`matchFacility` falls back to significant-word overlap, and that fallback is
+guarded — in its own comment — by *"ONLY where exactly one facility shares
+them; an ambiguous match is not a match (Rule 19)"*. Handed the one-element
+list `[f]`, **"exactly one" is true by construction.** The guard could not fire
+at this call site no matter what it was asked. It was not weak; it was
+unreachable.
+
+UHS paid for it. Its two delayed-draw facilities share {delayed, draw, term,
+loan}:
+
+```
+Delayed draw term loan A facility   $400M   matures 2029-09-26   (Eleventh Amendment, Talkspace closing)
+July 2026 Delayed Draw Term Loan    $700M   matures 364 days after funding (Twelfth Amendment)
+```
+
+The $400M row matched the $700M facility on word overlap, marked it
+already-present, and **the larger facility never reached the ladder at all.**
+The model had returned both, correctly separated, each with its own name,
+amount, maturity and verbatim sentence. The extraction was right and the
+assembly threw one away.
+
+The fix is the candidate set, not the matcher: resolve the row against EVERY
+facility and keep it only where the winner is this one. Then a row claims the
+facility it names and no other, and two that genuinely cannot be told apart
+match nothing — neither is claimed, both render, and ambiguity fails in the
+safe direction.
+
+**The general form.** A test for "is this ambiguous?" is a test about a
+POPULATION. Evaluate it against a population of one and it always answers no,
+in exactly the confident tone it would use if it had checked. Same family as
+Rule 42 (a corpus that covers only the types it walks) and Rule 43 (a meter
+read before the calls it covers) — a check whose inputs make its answer
+predetermined, reported as a finding.
+
+*A guard's reach is bounded by what it is shown, not by what it says it does.*
+
+## Rule 53 — a stated zero is a stated figure; null means the filing is silent
+
+`sentenceStatesFigure` asks whether a figure's digits appear in its own
+sentence. Correct for every figure but one: filings almost never print "$0" in
+prose. They write "we had no cash borrowings", "no amount was outstanding",
+"there was no outstanding balance", or an em-dash in the column.
+
+So a correctly-read zero was extracted and then thrown away by the check meant
+to protect it, and the field fell back to null — which means *this filing does
+not say*. The filing said. It said zero.
+
+**Absence is asserted with a closed grammatical class**, which is what makes
+this a rule and not a phrase list. Negative determiners and quantifiers are
+finite in English and do not grow with the next filer's house style: "nothing
+was drawn" and "without any outstanding borrowings" resolve without appearing
+anywhere in the code.
+
+**And absence is SCOPED**, which is what stops it becoming a blanket accept.
+Tenet's own sentence is the case that proves it matters:
+
+> "On that date, we had **no cash borrowings** and **less than $1 million** of
+> standby letters of credit outstanding under the Credit Agreement."
+
+The model claimed $0 for both fields off this one sentence. Drawn is right.
+Letters of credit are NOT zero — they are under a million — and a "the
+sentence contains 'no'" test waves that through. The sentence is split into
+clauses; a clause of this field's own that asserts absence and carries no
+quantity is the zero, and a clause carrying a quantity states that instead.
+Rule 38's shape, one field over.
+
+Measured: DaVita's revolver went from three figures and a gap to
+`1,500,000 − 65,000 − 0 = 1,435,000`, reconciling.
+
+**The seam, stated rather than hidden.** Deciding which clause belongs to
+`drawn` rather than `lettersOfCredit` needs a map from our field names to the
+nouns filings use — nothing structural bridges "drawn" and "borrowings".
+`FIELD_NOUNS` is that map: small, naming quantities rather than filers, and
+the one place in the module a new phrasing could need an addition. A rule with
+a known seam is honest; one pretending it has none breaks quietly.
+
+## Rule 54 — where a fact is announced two ways, detect it on either; one signal alone misses the other's cases
+
+B4 keyed on one signal: the filer's qualifying sentence, carried in
+`availabilityBasis`. It missed on the company it was written for.
+
+CHS's ABL came back with `availabilityBasis: null` — while the size sentence
+the model itself returned reads *"a revolving asset-based loan facility in the
+maximum aggregate principal amount of $1.0 billion, SUBJECT TO BORROWING BASE
+CAPACITY"*. The words were in the text it handed back; it did not put them in
+the optional field. **A rule depending on one optional field being populated
+has a single point of failure, and that was it.**
+
+So the trigger is a disjunction, either sufficient alone:
+
+| signal | why it is sufficient | the case that needs it |
+|---|---|---|
+| the ABL / asset-based label | an ABL always has a borrowing base — that is what the instrument IS | CHS, whose field was null |
+| the filer's stated language | a NON-ABL revolver can carry one too | Tenet: "specified percentages of eligible accounts receivable, eligible inventory and Medicaid supplemental payments" |
+
+Keying on either alone misses the other: the field-only trigger missed CHS,
+and a label-only trigger would miss Tenet.
+
+**It then found a third case nobody predicted.** HCA's facility is senior
+UNSECURED and not an ABL, and its availability sentence reads *"$3.086 billion
+available … AFTER GIVING EFFECT TO all issued and outstanding letters of
+credit and our intention to maintain a minimum available borrowing capacity
+equal to the aggregate amount outstanding under the commercial paper
+program"*. Its stated availability is already net of two things. The identity
+was never going to hold, and the widened rule stops a false flag against a
+filer whose disclosure is complete. A rule earning a case it was not written
+for is the test of whether it is a rule.
+
+**The negative contrast holds.** UHS's revolver is not asset-based, states no
+such language, and its identity ties exactly: 1,500 − 225 drawn − 3 LC =
+1,272 available. Widening the trigger did not widen it onto an ordinary
+revolver.
+
+## Carried, not built
+
+**v31 candidate — the not-located block contradicts itself.** Cigna's
+`referencedScheduleSequence` came back empty. Diagnosed: not a retrieval gap.
+The 10-K's note is in the prompt — 6,991 characters, 37 coupon rows, whole
+span verified present by its own first and last sixty characters. The prompt
+tells the model an older filing's table is NOT the current position and then,
+lower down, asks for that table. It obeyed the prohibition. **The fix is to
+separate the two claims, not to strengthen the request; write and review it
+cold rather than buying it on a same-session diagnosis.** Priority below
+re-verifying this pass's own changes.
+
+Cigna therefore stands honestly empty and the book is nine of ten, which the
+session prompt names as defensible in its own terms.
+
+**Observed and left alone:** CHS renders an `ABL Facility $0 million`
+[repaid] row from the note's own table beside the `$1.0 billion` capacity row
+— two rows for one instrument. It predates this pass (13 rows before and
+after) and is not caused by Rule 53. Logged for the product read.

@@ -586,8 +586,40 @@
  *
  * Plus  as an array: Encompass's May proceeds did three
  * things and one slot captured one of them.
+ *
+ * v30 (Session 23) — THREE CHANGES, ONE RE-EXTRACTION. Declared together
+ * because they are one cold pass, not because they are one idea.
+ *
+ *   RULE 51, THE SCHEMA'S THIRD SHAPE. `scheduleSequence` is withheld where
+ *            the anchor's note was never LOCATED, not only where it was
+ *            located and prints no table. Measured: for thirteen prompt
+ *            versions Cigna's field was filled from the 10-K — 31 rows at
+ *            v28, 3 at v29 — each stamped with the anchor's period column
+ *            and the anchor's citations, against a prompt that said "never
+ *            substitute another filing's". An instruction the model can
+ *            decline is not a constraint.
+ *
+ *   THE ROLL-FORWARD'S OWN FIELDS. `noteCrossReference`,
+ *            `referencedScheduleSequence` and
+ *            `referencedBalanceSheetDebtCaptions`, offered ONLY to an
+ *            anchor with no located note. This is not Rule 51 reopened: the
+ *            field is NAMED for whose table it is, it exists only where the
+ *            anchor's own words direct a reader there, and nothing renders
+ *            it as a position until the roll has tied and been labelled
+ *            with its base date and base filing. A table saying "the 10-K's,
+ *            as of the 10-K's date" is a different claim from one saying
+ *            "the company's position now".
+ *
+ *   FACILITIES, B3 AND B4. A stated zero is a stated figure — "no amount was
+ *            outstanding" and an em-dash in the period column are $0, not
+ *            null, and null goes back to meaning "this filing does not say".
+ *            And `availabilityBasis` carries the filer's own sentence where
+ *            availability depends on something other than the commitment, so
+ *            CHS's ABL stops being flagged for arithmetic it never claimed:
+ *            $751M stated against a $1.0B facility is a borrowing base
+ *            smaller than the commitment, which is what an ABL IS.
  */
-export const EXTRACTION_PROMPT_VERSION = 29;
+export const EXTRACTION_PROMPT_VERSION = 30;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

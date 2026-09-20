@@ -338,6 +338,39 @@ export interface FacilityRow {
   maturity: FacilityFigure | null;
   /** The date the drawn/available figures are stated as of. */
   asOfDate: string | null;
+  /**
+   * SESSION 23, B4 — WHAT THE FILER SAYS AVAILABILITY DEPENDS ON.
+   *
+   * `size − drawn − LCs` is an identity only where nothing else limits the
+   * facility. CHS's ABL is "subject to borrowing base capacity": its stated
+   * availability is ~$751M against a $1.0B facility with nothing drawn and
+   * $32M of LCs, so the identity would predict $968M and the filer says
+   * $751M. Neither figure is wrong — the borrowing base is simply smaller
+   * than the commitment, which is what an ABL IS.
+   *
+   * So the filer's own qualifying sentence is READ rather than guessed at,
+   * and code decides what to do with its presence. The model reports what
+   * the sentence says; no vocabulary list lives in code (Rule 1), and the
+   * trigger is this field being non-null rather than any company's name.
+   */
+  availabilityBasis: AvailabilityBasis | null;
+}
+
+/**
+ * The filer's own statement of what limits or nets a facility's availability.
+ * Present only when the filing says so; absent is not "unlimited", it is
+ * "the filing states no qualifier" (Rule 10).
+ */
+export interface AvailabilityBasis {
+  /** The sentence, VERBATIM — the one that states the qualification. */
+  statement: string;
+  /**
+   * What that sentence says availability is limited by or already net of, in
+   * the FILING'S own words — "borrowing base", "letters of credit
+   * outstanding", "the borrowing base then in effect". Copied, never
+   * normalised into a house vocabulary (Rule 49's discipline, one field over).
+   */
+  limitedBy: string;
 }
 
 /**
@@ -366,6 +399,36 @@ export interface SeniorityStatement {
   statement: string;
   /** What the sentence itself says it applies to, in its own words. */
   appliesTo: string;
+}
+
+/**
+ * SESSION 23, STAGE 2 — THE ANCHOR'S OWN SENTENCE SENDING THE READER AWAY.
+ *
+ * A filer-directed roll-forward fires on a CONJUNCTION: the anchor's debt
+ * note carries no ladder AND the anchor itself points, in its own words, at
+ * a specific note in a specific filing for the detail. Never on absence
+ * alone, and never on boilerplate.
+ *
+ * The three nullable parts are what separate the two. Cigna's sentence names
+ * a subject ("our short-term and long-term debt"), a note ("Note 7") and a
+ * filing ("the Company's 2025 Form 10-K"). HCA's six pointers name none of
+ * the three — "refer to the consolidated financial statements and footnotes
+ * thereto included in our annual report on Form 10-K" covers every note in
+ * the document and directs nobody anywhere in particular.
+ *
+ * So the test is structural — does the sentence NAME what it points at —
+ * rather than a list of forbidden phrasings (Rule 1). The model reports what
+ * the sentence names; code decides whether that is a direction or a gesture.
+ */
+export interface NoteCrossReference {
+  /** The anchor's own sentence, VERBATIM. Verified against the anchor's text. */
+  statement: string;
+  /** The specific note it names, in the filing's words — "Note 7". Null when it names none. */
+  referencedNote: string | null;
+  /** The filing it names, in the filing's words — "the Company's 2025 Form 10-K". Null when it names none. */
+  referencedFiling: string | null;
+  /** What it says is there, in the filing's words — "our short-term and long-term debt". Null when it names no subject. */
+  referencedSubject: string | null;
 }
 
 /** Session 19, item 2b — a retirement or repurchase the debt note states in its own prose. See NOTE_RETIREMENT_SCHEMA. */
@@ -514,6 +577,36 @@ export interface TriggerVerdict {
    * one field. Empty when the corpus states none.
    */
   facilities: FacilityRow[];
+  /**
+   * SESSION 23, STAGE 2 — offered ONLY when the anchor's debt note could not
+   * be located, alongside `referencedScheduleSequence`. Null everywhere else.
+   */
+  noteCrossReference: NoteCrossReference | null;
+  /**
+   * SESSION 23, STAGE 2 — THE ROLL-FORWARD BASE, AND WHY THIS IS NOT RULE 51
+   * REOPENED.
+   *
+   * Rule 51 removed `scheduleSequence` where the anchor has no note, because
+   * rows from another filing were arriving in the field that means "the
+   * anchor's position", stamped with the anchor's period. This field is the
+   * opposite shape: it is NAMED for what it is, it is offered only where the
+   * anchor's own words direct the reader to that other filing, and nothing
+   * downstream renders it as a position until the roll has tied and been
+   * labelled with its base date and base filing.
+   *
+   * A table that says "this is the 10-K's, as of the 10-K's date" is a
+   * different claim from a table that says "this is the company's position
+   * now". The first was never available before; the second is what the model
+   * kept making, and no longer can.
+   */
+  referencedScheduleSequence: ScheduleSequenceEntry[];
+  /**
+   * The REFERENCED filing's own balance-sheet debt captions — the base tie's
+   * target. Without them the base ladder can only be checked against itself,
+   * which is Check 1 with no Check 2, and a stale note ties to itself
+   * perfectly.
+   */
+  referencedBalanceSheetDebtCaptions: BalanceSheetDebtCaption[];
   /**
    * Session 22, Stage 3 — a note-level sentence stating the seniority of the
    * instruments it lists, for filers whose TABLE prints no class. Molina is
@@ -713,6 +806,20 @@ const FACILITY_FIGURE_SCHEMA = {
   required: ["value", "sourceLine"],
 };
 
+/**
+ * SESSION 23, B4 — the filer's own qualifier on availability. See
+ * `AvailabilityBasis`. Null is "the filing states no qualifier", never
+ * "there is none".
+ */
+const AVAILABILITY_BASIS_SCHEMA = {
+  type: ["object", "null"] as const,
+  properties: {
+    statement: { type: "string" },
+    limitedBy: { type: "string" },
+  },
+  required: ["statement", "limitedBy"],
+};
+
 const FACILITY_SCHEMA = {
   type: "object" as const,
   properties: {
@@ -727,8 +834,25 @@ const FACILITY_SCHEMA = {
     available: FACILITY_FIGURE_SCHEMA,
     maturity: FACILITY_FIGURE_SCHEMA,
     asOfDate: { type: ["string", "null"] },
+    availabilityBasis: AVAILABILITY_BASIS_SCHEMA,
   },
   required: ["name", "category"],
+};
+
+/**
+ * SESSION 23, STAGE 2 — see `NoteCrossReference`. The three nullable parts
+ * are what separate a direction from a gesture, and they are nullable
+ * precisely so the model can report "it names none" rather than inventing one.
+ */
+const NOTE_CROSS_REFERENCE_SCHEMA = {
+  type: ["object", "null"] as const,
+  properties: {
+    statement: { type: "string" },
+    referencedNote: { type: ["string", "null"] },
+    referencedFiling: { type: ["string", "null"] },
+    referencedSubject: { type: ["string", "null"] },
+  },
+  required: ["statement"],
 };
 
 const SENIORITY_STATEMENT_SCHEMA = {
@@ -805,6 +929,9 @@ const VERDICT_ITEM_SCHEMA = {
     // Session 20, 3a/3b — the prose half of the capital structure.
     proseInstruments: { type: "array", items: PROSE_INSTRUMENT_SCHEMA },
     facilities: { type: "array", items: FACILITY_SCHEMA },
+    noteCrossReference: NOTE_CROSS_REFERENCE_SCHEMA,
+    referencedScheduleSequence: { type: "array", items: SCHEDULE_SEQUENCE_ENTRY_SCHEMA },
+    referencedBalanceSheetDebtCaptions: { type: "array", items: BALANCE_SHEET_CAPTION_SCHEMA },
     seniorityStatement: SENIORITY_STATEMENT_SCHEMA,
     proceedsUses: { type: "array", items: PROCEEDS_USE_SCHEMA },
     projectCompletionDate: { type: ["string", "null"] },
@@ -927,6 +1054,8 @@ const INSTRUCTIONS = `You are triaging a public company's SEC filings for a comm
   - EACH FIGURE CARRIES THE SENTENCE THAT STATES IT. Every figure is an object: { value, sourceLine }, where sourceLine is the sentence stating THAT figure, copied VERBATIM to the same standard as "quote". Not the facility's general sentence — that figure's own. If the size comes from the liquidity section and the drawn amount from the debt note, those are two different sourceLines, and each figure carries its own.
   - This is checked in code: a figure whose sourceLine does not itself contain that figure is DISCARDED and the reason is recorded. A number that is real and a quote that is real, put together when the quote does not state the number, is a fabrication — and it is the specific failure this field's shape exists to prevent. Do not reuse one sentence across figures it does not state.
   - Any figure the filing does not state stays null. NEVER compute a missing one from the others: code checks that drawn + lettersOfCredit + available equals facilitySize, and that check means nothing if a component was derived rather than read. A facility with one verified figure and three nulls is a correct answer.
+  - A STATED ZERO IS A STATED FIGURE, NOT A MISSING ONE. "There were no outstanding borrowings under the revolving credit facility", "no amount was outstanding", "there was no outstanding balance under the Credit Agreement", and a table printing an em-dash in that period's column, all state that the figure IS ZERO. Capture them as a figure whose value is "$0" with that sentence as its sourceLine — the same as any other figure. Null means "this filing does not say"; it does not mean zero, and zero does not mean null. A revolver with nothing drawn is the single most common shape in this book and it is a fact the filing states, not an absence.
+  - availabilityBasis: some facilities' availability is limited by something other than the commitment, and the filing says so — "subject to borrowing base capacity", "availability is determined by the borrowing base then in effect", or availability stated "after taking into consideration" outstanding letters of credit. When the filing states such a qualification, copy its sentence VERBATIM into statement, and into limitedBy copy, in the FILING'S own words, what it says availability is limited by or already net of ("borrowing base", "letters of credit outstanding"). Null when the filing states no such qualification — which is the ordinary case. Do not infer one because the numbers do not add up; that is the code's job to report, not yours to explain.
   - maturity: the facility's own stated maturity, as a { value, sourceLine } pair, when the filing states one. A term loan and a revolver mature like a bond does. Null when no maturity is stated anywhere.
   - asOfDate: the date the drawn/available figures are stated as of.
 
@@ -1069,11 +1198,29 @@ function normalizeSequenceEntry(entry: ScheduleSequenceEntry & { label?: string 
 }
 
 export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
-  return {
+  // The coupling runs LAST, over the defaulted shape, so it sees the same
+  // arrays every reader will. See coupleReferencedFields.
+  return coupleReferencedFields({
     ...v,
     scheduleSequence: (v.scheduleSequence ?? []).map(normalizeSequenceEntry),
     priorScheduleSequence: (v.priorScheduleSequence ?? []).map(normalizeSequenceEntry),
     balanceSheetDebtCaptions: (v.balanceSheetDebtCaptions ?? []).map((c) => ({ ...c, periodColumn: c.periodColumn ?? null })),
+    // SESSION 23 — absent for every company but a roll-forward candidate,
+    // and absent for THOSE too on every cached answer written before v30.
+    // Defaulted here like every other field added mid-life: a cache hit
+    // returns whatever was stored, and the readers must not have to know
+    // which version wrote it.
+    noteCrossReference:
+      v.noteCrossReference && v.noteCrossReference.statement
+        ? {
+            statement: v.noteCrossReference.statement,
+            referencedNote: v.noteCrossReference.referencedNote ?? null,
+            referencedFiling: v.noteCrossReference.referencedFiling ?? null,
+            referencedSubject: v.noteCrossReference.referencedSubject ?? null,
+          }
+        : null,
+    referencedScheduleSequence: (v.referencedScheduleSequence ?? []).map(normalizeSequenceEntry),
+    referencedBalanceSheetDebtCaptions: (v.referencedBalanceSheetDebtCaptions ?? []).map((c) => ({ ...c, periodColumn: c.periodColumn ?? null })),
     scheduleTableUnit: v.scheduleTableUnit ?? null,
     priorScheduleTableUnit: v.priorScheduleTableUnit ?? null,
     balanceSheetTableUnit: v.balanceSheetTableUnit ?? null,
@@ -1123,6 +1270,13 @@ export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
         available: normalizeFigure(f.available),
         maturity: normalizeFigure(f.maturity),
         asOfDate: f.asOfDate ?? null,
+        // Both halves or neither: a qualifier with no sentence behind it is
+        // the tool's own words, and this field exists precisely so that the
+        // filer's are what decide (Rule 46's shape at the field level).
+        availabilityBasis:
+          f.availabilityBasis && f.availabilityBasis.statement && f.availabilityBasis.limitedBy
+            ? { statement: f.availabilityBasis.statement, limitedBy: f.availabilityBasis.limitedBy }
+            : null,
       })),
     seniorityStatement:
       v.seniorityStatement && v.seniorityStatement.statement
@@ -1133,7 +1287,7 @@ export function withFieldDefaults(v: TriggerVerdictInput): TriggerVerdict {
       .map((p: ProceedsUseRow) => ({ use: p.use, amount: p.amount ?? null, sourceLine: p.sourceLine })),
     projectCompletionDate: v.projectCompletionDate ?? null,
     projectCompletionGranularity: v.projectCompletionGranularity ?? null,
-  };
+  });
 }
 
 /**
@@ -1235,6 +1389,48 @@ export type AnchorNoteShape =
  * an answer is its own state (Rule 10, one layer up: a negative result from
  * a test an item was never eligible for is not a finding).
  */
+/**
+ * SESSION 23 — THE REFERENCED TABLE IS COUPLED TO THE SENTENCE THAT ASKED
+ * FOR IT, STRUCTURALLY, NOT BY THE CALLER REMEMBERING TO CHECK.
+ *
+ * `referencedScheduleSequence` is a field that can hold another filing's
+ * table, which is the shape Rule 51 had just closed. The argument that it is
+ * safe rested on three things being true — and two of them were true only
+ * because no code happened to do otherwise, which is exactly the standing
+ * this session found Rule 51's own case in: reasoned, correct, and unenforced
+ * until it wasn't.
+ *
+ * So the coupling is made unreachable rather than merely unused:
+ *
+ *   - a referenced table with NO cross-reference behind it is DROPPED. The
+ *     sentence is what makes the other filing's table relevant; without it
+ *     this is just another filing's table.
+ *   - a referenced table arriving beside a NON-EMPTY scheduleSequence is
+ *     DROPPED. The anchor states its own position; there is nothing to roll.
+ *
+ * Dropped, not flagged, because there is no legitimate reading of either
+ * state — and a field that cannot hold the bad value needs no guard
+ * downstream remembering to ask.
+ */
+export function coupleReferencedFields<
+  T extends {
+    noteCrossReference: NoteCrossReference | null;
+    referencedScheduleSequence: ScheduleSequenceEntry[];
+    referencedBalanceSheetDebtCaptions: BalanceSheetDebtCaption[];
+    scheduleSequence?: ScheduleSequenceEntry[];
+  },
+>(v: T): T {
+  const anchorStatesItsOwn = (v.scheduleSequence ?? []).length > 0;
+  const hasSentence = v.noteCrossReference !== null;
+  if (hasSentence && !anchorStatesItsOwn) return v;
+  return {
+    ...v,
+    noteCrossReference: anchorStatesItsOwn ? null : v.noteCrossReference,
+    referencedScheduleSequence: [],
+    referencedBalanceSheetDebtCaptions: [],
+  };
+}
+
 export function anchorNoteShapeOf(
   anchor: { status: string; tabular?: boolean } | undefined
 ): AnchorNoteShape {
@@ -1243,8 +1439,19 @@ export function anchorNoteShapeOf(
 }
 
 export function verdictSchemaFor(shape: AnchorNoteShape): typeof VERDICT_ITEM_SCHEMA {
-  if (shape === "tabular") return VERDICT_ITEM_SCHEMA;
   const properties = { ...VERDICT_ITEM_SCHEMA.properties } as Record<string, unknown>;
+  // SESSION 23 — THE ROLL-FORWARD FIELDS EXIST ONLY WHERE A ROLL COULD FIRE.
+  //
+  // They are offered for exactly one shape: an anchor whose note was never
+  // located. Offering them to a filer that HAS a ladder would hand the model
+  // a second place to put a table, which is the defect this session opened
+  // with, in a new field (Rule 39 — two fields for one idea).
+  if (shape !== "not-located") {
+    delete properties.noteCrossReference;
+    delete properties.referencedScheduleSequence;
+    delete properties.referencedBalanceSheetDebtCaptions;
+  }
+  if (shape === "tabular") return { ...VERDICT_ITEM_SCHEMA, properties } as typeof VERDICT_ITEM_SCHEMA;
   delete properties.scheduleSequence;
   delete properties.priorScheduleSequence;
   delete properties.scheduleTableUnit;
@@ -1281,7 +1488,7 @@ async function attemptClassifyAllTriggers(params: {
       ? ``
       : shape === "prose-only"
         ? `## This filer's debt note is NOT a table\n\nThe located debt note prints no comma-grouped figure anywhere in its debt disclosure: it states its instruments in sentences and bullets, in words ("$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026"). There is no schedule to transcribe and the scheduleSequence field has been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nEvery instrument this note states is a proseInstruments entry, one per instrument, with its amount copied in the unit the note prints it in. That is the complete and correct answer for a filer of this shape, not a degraded one.`
-        : `## No debt note could be located in the anchor filing\n\nThe anchor is the most recent 10-Q or 10-K, and it is the only filing whose debt note may state this company's position. The locator found no debt note in it. The scheduleSequence field has therefore been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nAn older filing's debt table is NOT a substitute. Its rows state a position as of ITS period, not the anchor's, and transcribing them here would report a stale position as a current one. If another filing in the catalog carries a debt table, that is expected and is not what this field is for.\n\nWhat IS wanted: any instrument the ANCHOR itself states, in sentences, as a proseInstruments entry, and any facility the anchor describes, in facilities. If the anchor states none, returning none is the complete and correct answer for this company.`,
+        : `## No debt note could be located in the anchor filing\n\nThe anchor is the most recent 10-Q or 10-K, and it is the only filing whose debt note may state this company's CURRENT position. The locator found no debt note in it. The scheduleSequence field has therefore been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nAn older filing's debt table is NOT this company's current position. Its rows state a position as of ITS period, and reporting them as the anchor's would report a stale position as a current one.\n\nBut the anchor may DIRECT you to that older filing in its own words, and if it does, that is a fact worth capturing — under its own name, as the older filing's table, not as the anchor's. Three fields exist for exactly that:\n\n- noteCrossReference: the anchor's OWN sentence sending a reader elsewhere for debt detail, copied verbatim. Then, each only if the sentence itself names it: referencedSubject (what it says is there — "our short-term and long-term debt"), referencedNote ("Note 7"), referencedFiling ("the Company's 2025 Form 10-K"). Where the sentence names none of these — "refer to the consolidated financial statements and footnotes thereto included in our annual report" points at an entire document and at no note in particular — leave them null. That is the honest answer and it is how a general pointer is told apart from a direction. Null the whole field when the anchor states no such sentence at all.\n- referencedScheduleSequence: the debt table from the filing that sentence names, transcribed under exactly the same rules as any schedule — printed order, every row, subtotals as subtotals, each entry's own verbatim sourceLine, and each entry's periodColumn being THAT FILING'S period, never the anchor's.\n- referencedBalanceSheetDebtCaptions: that same referenced filing's balance-sheet debt captions, so its table can be checked against its own balance sheet.\n\nIf the anchor states no cross-reference, leave all three empty — do not transcribe another filing's table just because one exists in the catalog.\n\nAnd regardless: any instrument the ANCHOR itself states in sentences is a proseInstruments entry, and any facility the anchor describes belongs in facilities. If the anchor states none, returning none is the complete and correct answer.`,
     ``,
     `## Full filing catalog (available for digging; not all are excerpted below)`,
     formatCatalog(catalog),

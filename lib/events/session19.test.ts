@@ -48,7 +48,7 @@ function baseTrigger(over: Partial<TriggerResult> & { triggerId: string }): Trig
     eventInstances: [],
     noteRetirements: [],
     proseInstruments: [],
-    facilities: [], facilityRejections: [], seniorityStatement: null, proceedsUses: [],
+    facilities: [], facilityRejections: [], seniorityStatement: null, noteCrossReference: null, referencedScheduleSequence: [], referencedBalanceSheetDebtCaptions: [], proceedsUses: [],
     projectCompletionDate: null,
     projectCompletionGranularity: null,
     cashAmount: null,

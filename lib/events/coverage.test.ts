@@ -178,8 +178,32 @@ console.log("\n=== [8] 3b — the revolver's free arithmetic ===");
   assert(ok.checked && ok.ok, `[8a] REAL: UHS's 225 + 3 + 1,272 = 1,500 reconciles (${ok.note})`);
   const bad = checkRevolverArithmetic({ facilitySize: { value: "$1.5 billion", sourceLine: "s" }, drawn: { value: "$225 million", sourceLine: "s" },
     lettersOfCredit: { value: "$3 million", sourceLine: "s" }, available: { value: "$900 million", sourceLine: "s" }, asOfDate: null } as never);
-  assert(bad.checked && !bad.ok && bad.note.includes("DOES NOT RECONCILE"),
-    "[8b] a mismatch renders as its OWN flag, never as a liquidity figure someone might act on");
+  assert(bad.checked && !bad.ok && bad.kind === "unexplained-gap" && /STATES NO CAUSE/.test(bad.note),
+    "[8b] a mismatch WITH NO STATED CAUSE renders as its own flag, never as a liquidity figure someone might act on");
+  assert(bad.note.includes("Both are shown"),
+    "[8b2] and it shows BOTH figures rather than silently preferring the stated one — a disagreement nobody explained is exactly what must not be smoothed (Rule 3)");
+
+  // SESSION 23, B4 — CHS's ABL, the case that made the old flag wrong.
+  // $1.0B facility, nothing drawn, $32M of LCs, ~$751M stated available.
+  // The identity predicts $968M and the filer says $751M, because the
+  // borrowing base is smaller than the commitment. That is what an ABL IS.
+  const abl = checkRevolverArithmetic({
+    name: "ABL Facility",
+    facilitySize: { value: "$1.0 billion", sourceLine: "s" },
+    drawn: { value: "$0", sourceLine: "s" },
+    lettersOfCredit: { value: "$32 million", sourceLine: "s" },
+    available: { value: "$751 million", sourceLine: "s" },
+    asOfDate: null,
+    availabilityBasis: { statement: "subject to borrowing base capacity", limitedBy: "borrowing base" },
+  } as never);
+  assert(abl.checked && abl.ok && abl.kind === "borrowing-base-limited",
+    "[8d] a facility the filer says is limited by a borrowing base does NOT fail arithmetic — flagging it accuses the filer of arithmetic they never claimed");
+  assert(/CEILING, not the expected value/.test(abl.note),
+    "[8e] and size − drawn − LCs is reported as a CEILING, so nobody quotes $968M as available");
+  assert(Math.round(abl.impliedBaseMillions ?? 0) === 783,
+    `[8f] the stated availability implies a base of ~$783M, which is the number an RM actually wants (got ${abl.impliedBaseMillions})`);
+  assert(/borrowing base/.test(abl.note) && !/DISAGREE/.test(abl.note),
+    "[8g] the line names the filer's own limiting words and raises no flag against them");
   const partial = checkRevolverArithmetic({ facilitySize: { value: "$1.5 billion", sourceLine: "s" }, drawn: null,
     lettersOfCredit: null, available: null, asOfDate: null } as never);
   assert(!partial.checked && partial.note.includes("not checkable"),
