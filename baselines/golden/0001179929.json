@@ -1,9 +1,9 @@
 {
-  "extractionVersion": 29,
+  "extractionVersion": 30,
   "signature": {
     "signedBy": "Akshay Sahani",
     "signedOn": "2026-09-09",
-    "basis": "First signature, Session 22 Stage 7, at PINNED_AS_OF 2026-09-09, extraction v29. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. CACHE_BUST x3 at v29 after row identity moved off the label: 6 rows in every run, 5 classed in every run, row set / amounts / classes identical across all three. The facility is named \"revolving credit facility\" in one run and \"Credit Facility\" in two — the filing uses both — and identity now keys on the facts the filing states about the instrument, so the rename is reported as a rename rather than as a row removed and a row added."
+    "basis": "RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v30. Re-baselined in Session 23 for two reasons, neither a correction of the previous reading. (1) THE CORPUS MOVED — the 10-K (moh-20251231.htm) is no longer in the cited set, so the v29 pin describes a corpus that is not the current one and cannot be compared against it (Rule 30). (2) THE EXTRACTION MOVED — `drawn` is now $0, stated by the anchor (\"As of June 30, 2026, no amount was outstanding under the Credit Agreement\") and recovered by Rule 53 once its noun matcher admitted the copula; and `lettersOfCredit` is now null, correctly: the v29 value of $100 million was the letter of credit SUB-FACILITY's limit, not letters of credit outstanding, which is Rule 48's category error. The filing states no LC balance for Molina, so null is the honest answer. Ruled by the signer on 2026-09-21 against the sentences themselves. Five ladder sourceLines also collapsed from two period columns to one — cosmetic provenance, amounts and dates unchanged. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. CACHE_BUST x3 at v30 on 2026-09-21 (lib/cache/s23molinarepro.ts, $0.6257): 6 rows in every run; every row identical across all three on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical (statedTotalDebt, capturedFace, statedBridge, denominator). TESTED RATHER THAN ASSUMED because v30 had already given two different answers for `drawn` earlier in the session — null on the cold pass, $0 on the refresh. Across these three it held at $0 every time, with every other facility figure identical too, so the value the re-baseline pins is one that reproduces. Facility figures are NOT covered by 9b and were measured separately for exactly that reason."
   },
   "attestation": {
     "rowsCorrect": true,
@@ -120,7 +120,6 @@
       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
     },
     "filingSet": [
-      "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm",
       "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
       "https://www.sec.gov/Archives/edgar/data/1179929/000143774925035866/moh20251120_8k.htm"
     ],
@@ -134,7 +133,7 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800"
+        "sourceLine": "4.375 % Notes due June 15, 2028 $ 800"
       },
       {
         "instrument": "3.875 % Notes due November 15, 2030",
@@ -144,7 +143,7 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "3.875 % Notes due November 15, 2030 650   650"
+        "sourceLine": "3.875 % Notes due November 15, 2030 650"
       },
       {
         "instrument": "6.500 % Notes due February 15, 2031",
@@ -154,7 +153,7 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.500 % Notes due February 15, 2031 850   850"
+        "sourceLine": "6.500 % Notes due February 15, 2031 850"
       },
       {
         "instrument": "3.875 % Notes due May 15, 2032",
@@ -164,7 +163,7 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "3.875 % Notes due May 15, 2032 750   750"
+        "sourceLine": "3.875 % Notes due May 15, 2032 750"
       },
       {
         "instrument": "6.250 % Notes due January 15, 2033",
@@ -174,7 +173,7 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.250 % Notes due January 15, 2033 750   750"
+        "sourceLine": "6.250 % Notes due January 15, 2033 750"
       },
       {
         "instrument": "Credit Facility",
@@ -227,11 +226,11 @@
               "value": "$ 1.25 billion",
               "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million."
             },
-            "drawn": null,
-            "lettersOfCredit": {
-              "value": "$ 100 million",
-              "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million."
+            "drawn": {
+              "value": "$0",
+              "sourceLine": "As of June 30, 2026, no amount was outstanding under the Credit Agreement."
             },
+            "lettersOfCredit": null,
             "available": {
               "value": "$ 1.25 billion",
               "sourceLine": "As of June 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility."
@@ -241,10 +240,11 @@
               "sourceLine": "The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030."
             },
             "asOfDate": "2026-06-30",
+            "availabilityBasis": null,
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
             "figureSources": {
               "facilitySize": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-              "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+              "drawn": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
               "available": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
               "maturity": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
             }
@@ -255,11 +255,14 @@
           "statement": "Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
           "appliesTo": "Each of these notes"
         },
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "debt-maturity",
         "triggerName": "Debt maturity approaching",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "4.375% Notes due June 15, 2028 ($800 million), 3.875% Notes due November 15, 2030 ($650 million), 6.500% Notes due February 15, 2031 ($850 million), 3.875% Notes due May 15, 2032 ($750 million), and 6.250% Notes due January 15, 2033 ($750 million). The 2028 notes mature within the next 12-18 months from the June 30, 2026 reporting date.",
+        "evidence": "4.375% Notes due June 15, 2028 ($800 million), 3.875% Notes due November 15, 2030 ($650 million), 6.500% Notes due February 15, 2031 ($850 million), 3.875% Notes due May 15, 2032 ($750 million), and 6.250% Notes due January 15, 2033 ($750 million). The 4.375% Notes due 2028 mature within approximately 18 months from the June 30, 2026 reporting date.",
         "mappedNeed": "Refinancing",
         "needType": "credit",
         "confidence": 0.95,
@@ -286,10 +289,10 @@
             "rate": "4.375%",
             "maturityDate": "2028-06-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+            "sourceLine": "4.375 % Notes due June 15, 2028 $ 800",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -299,10 +302,10 @@
             "rate": "3.875%",
             "maturityDate": "2030-11-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+            "sourceLine": "3.875 % Notes due November 15, 2030 650",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -312,10 +315,10 @@
             "rate": "6.500%",
             "maturityDate": "2031-02-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+            "sourceLine": "6.500 % Notes due February 15, 2031 850",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -325,10 +328,10 @@
             "rate": "3.875%",
             "maturityDate": "2032-05-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+            "sourceLine": "3.875 % Notes due May 15, 2032 750",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -338,10 +341,10 @@
             "rate": "6.250%",
             "maturityDate": "2033-01-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+            "sourceLine": "6.250 % Notes due January 15, 2033 750",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -350,7 +353,7 @@
             "amount": "( 31 ) million",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Deferred debt issuance costs ( 31 ) ( 34 )",
+            "sourceLine": "Deferred debt issuance costs ( 31 )",
             "rate": null,
             "seniority": null,
             "maturityDate": null,
@@ -363,7 +366,7 @@
             "amount": "$ 3,769 million",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Total $ 3,769   $ 3,766",
+            "sourceLine": "Total $ 3,769",
             "rate": null,
             "seniority": null,
             "maturityDate": null,
@@ -379,10 +382,10 @@
             "rate": "4.375%",
             "maturityDate": "2028-06-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+            "sourceLine": "4.375 % Notes due June 15, 2028 $ 800",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -392,10 +395,10 @@
             "rate": "3.875%",
             "maturityDate": "2030-11-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+            "sourceLine": "3.875 % Notes due November 15, 2030 650",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -405,10 +408,10 @@
             "rate": "6.500%",
             "maturityDate": "2031-02-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+            "sourceLine": "6.500 % Notes due February 15, 2031 850",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -418,10 +421,10 @@
             "rate": "3.875%",
             "maturityDate": "2032-05-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+            "sourceLine": "3.875 % Notes due May 15, 2032 750",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -431,10 +434,10 @@
             "rate": "6.250%",
             "maturityDate": "2033-01-15",
             "dateGranularity": "day",
-            "seniority": null,
+            "seniority": "senior unsecured",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+            "sourceLine": "6.250 % Notes due January 15, 2033 750",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           },
           {
@@ -443,7 +446,7 @@
             "amount": "( 33 ) million",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "Deferred debt issuance costs ( 33 ) ( 34 )",
+            "sourceLine": "Deferred debt issuance costs ( 33 )",
             "rate": null,
             "seniority": null,
             "maturityDate": null,
@@ -456,7 +459,7 @@
             "amount": "$ 3,767 million",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "Total $ 3,767   $ 3,766",
+            "sourceLine": "Total $ 3,767",
             "rate": null,
             "seniority": null,
             "maturityDate": null,
@@ -469,7 +472,7 @@
             "label": "Long-term debt",
             "amount": "$ 3,769 million",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Long-term debt 3,769   3,766",
+            "sourceLine": "Long-term debt 3,769",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
           }
         ],
@@ -493,11 +496,9 @@
           "checked": true,
           "subtotalsTranscribed": 1,
           "labeledTotalCandidatesInSource": 1,
-          "missingLabeledTotals": [
-            "Total $ 3,769"
-          ],
+          "missingLabeledTotals": [],
           "trailingUnconsumedText": null,
-          "complete": false
+          "complete": true
         },
         "redeems": [],
         "proceedsUses": [],
@@ -537,21 +538,18 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "new-debt-issuance",
         "triggerName": "New debt issuance / notes pricing",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "On November 20, 2025, Molina completed a private offering of $850 million aggregate principal amount of 6.500% Senior Notes due February 15, 2031. Net proceeds were used to repay $740 million in term loan debt and for general corporate purposes.",
+        "evidence": "On November 20, 2025, Molina completed a private offering of $850 million aggregate principal amount of 6.500% senior notes due February 15, 2031. Net proceeds were used to repay $740 million in term loan debt and for general corporate purposes.",
         "mappedNeed": "Refi or add-on financing",
         "needType": "credit",
         "confidence": 0.98,
         "citations": [
-          {
-            "form": "10-K",
-            "date": "2026-02-10",
-            "reportDate": "2025-12-31",
-            "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm"
-          },
           {
             "form": "8-K",
             "date": "2025-11-20",
@@ -560,9 +558,9 @@
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "On November 20, 2025, we completed the private offering of $ 850 million aggregate principal amount of senior notes (the \" 6.500 % Notes due 2031\"), which are due February 15, 2031, unless earlier redeemed.",
-        "verifiedQuoteNormalized": "On November 20, 2025, we completed the private offering of $ 850 million aggregate principal amount of senior notes (the \" 6.500 % Notes due 2031\"), which are due February 15, 2031, unless earlier redeemed.",
-        "quoteMatchType": "literal",
+        "verifiedQuote": "erial Definitive Agreement. 6.500% Senior Notes due 2031 On November 20, 2025 (the “Settlement Date”), Molina Healthcare, Inc., a Delaware corporation (the “Company”), completed the private offering of $850.0 million aggregate principal amount of",
+        "verifiedQuoteNormalized": "erial Definitive Agreement. 6.500% Senior Notes due 2031 On November 20, 2025 (the “Settlement Date”), Molina Healthcare, Inc., a Delaware corporation (the “Company”), completed the private offering of $850.0 million aggregate principal amount of",
+        "quoteMatchType": "co-occurrence",
         "quoteHasFigure": true,
         "eventDate": "2025-11-20",
         "dateGranularity": "day",
@@ -606,7 +604,7 @@
             "dateGranularity": "day",
             "seniority": "senior unsecured",
             "sourceLine": "On November 20, 2025 (the \"Settlement Date\"), Molina Healthcare, Inc., a Delaware corporation (the \"Company\"), completed the private offering of $850.0 million aggregate principal amount of the Company's 6.500% Senior Notes due 2031 (the \"Notes\") pursuant to an indenture, dated as of the Settlement Date, by and between the Company and U.S. Bank Trust Company, National Association, as trustee, attached as Exhibit 4.1 to this Current Report on Form 8-K (the \"Indenture\").",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000143774925035866/moh20251120_8k.htm"
           }
         ],
         "eventInstances": [],
@@ -623,6 +621,9 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "acquisition-announced",
         "triggerName": "Acquisition announced",
         "fired": false,
@@ -666,11 +667,14 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "capex-program",
         "triggerName": "Capex program / new facility or construction",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material capex program or new facility construction is disclosed. The company reports purchases of property, equipment and capitalized software of $57 million for the six months ended June 30, 2026, which represents routine maintenance capex, not a named major project.",
+        "evidence": "No material capex program or new facility construction is disclosed. The filings mention purchases of property, equipment and capitalized software of $57 million for the six months ended June 30, 2026, but this represents routine maintenance capex, not a named major facility or construction program.",
         "mappedNeed": "Term loan or capex facility",
         "needType": "credit",
         "confidence": 0.9,
@@ -716,14 +720,17 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "revolver-near-capacity",
         "triggerName": "Revolver near capacity + growth",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "As of June 30, 2026, no amounts were outstanding under the Credit Agreement. The company had available borrowing capacity of $1.25 billion under the $1.25 billion revolving credit facility, meaning the revolver is not drawn and is not near capacity.",
+        "evidence": "As of June 30, 2026, no amount was outstanding under the Credit Agreement. The revolving credit facility of $1.25 billion is fully available with zero drawn balance, indicating the revolver is not near capacity.",
         "mappedNeed": "Revolver upsize",
         "needType": "credit",
-        "confidence": 0.95,
+        "confidence": 0.98,
         "citations": [
           {
             "form": "10-Q",
@@ -766,14 +773,17 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "dividend-buyback",
         "triggerName": "Dividend recap / buyback authorization",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "In April 2025, the board authorized the purchase of up to $1 billion of common stock through December 31, 2026. As of July 17, 2026, $500 million remained available under this program, indicating $500 million has been repurchased year-to-date.",
+        "evidence": "In April 2025, the board authorized the purchase of up to $1 billion of common stock through December 31, 2026. As of July 17, 2026, $500 million remained available under this program, indicating $500 million has been repurchased to date.",
         "mappedNeed": "Leverage capacity conversation",
         "needType": "credit",
-        "confidence": 0.92,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
@@ -816,7 +826,7 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": null,
+        "cashAmount": "$ 1 billion",
         "projectName": null,
         "eventStatus": "standing",
         "proceedsUse": null
@@ -826,14 +836,17 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "large-cash-balance",
         "triggerName": "Large cash balance building",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Cash and cash equivalents of $4,985 million as of June 30, 2026, compared to $4,248 million as of December 31, 2025, representing an increase of $737 million or 17% quarter-over-quarter. This is a substantial cash balance for the company.",
+        "evidence": "Cash and cash equivalents of $4,985 million as of June 30, 2026, compared to $4,248 million as of December 31, 2025, representing an increase of $737 million or 17% quarter-over-quarter growth in cash balance.",
         "mappedNeed": "Liquidity management, earning on idle cash",
         "needType": "treasury",
-        "confidence": 0.95,
+        "confidence": 0.98,
         "citations": [
           {
             "form": "10-Q",
@@ -876,11 +889,14 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "asset-sale",
         "triggerName": "Asset sale / divestiture closing",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No asset sale or divestiture is disclosed in the current period. The company exited the MAPD product line for 2027 (announced in February 2026), but this is a product exit, not an asset sale. No business unit or asset sale is reported.",
+        "evidence": "No asset sale or divestiture is disclosed in the current period filings. The company exited the MAPD product line (Medicare Advantage Prescription Drug) effective 2027, but this is a product exit, not an asset sale. Virginia Medicaid contracts terminated effective June 30, 2025, but this was a contract non-renewal, not a sale.",
         "mappedNeed": "Proceeds deposit + sweep",
         "needType": "treasury",
         "confidence": 0.95,
@@ -919,14 +935,17 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "international-expansion",
         "triggerName": "International expansion / rising foreign revenue",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No international expansion or foreign revenue growth is disclosed. Molina Healthcare operates exclusively in the United States under Medicaid, Medicare, and Marketplace programs. No geographic segment reporting shows foreign revenue.",
+        "evidence": "Molina Healthcare operates exclusively in the United States under Medicaid, Medicare, and Marketplace programs. No international operations or foreign revenue is disclosed in any of the filings provided.",
         "mappedNeed": "FX hedging, cross-border cash management",
         "needType": "treasury",
-        "confidence": 0.95,
+        "confidence": 0.98,
         "citations": [
           {
             "form": "10-Q",
@@ -969,11 +988,14 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "new-subsidiary",
         "triggerName": "New subsidiary / entity formation",
         "fired": false,
         "dataAvailable": false,
-        "evidence": "New subsidiary formation is typically not disclosed in public filings unless tied to a reported acquisition. No new subsidiary formation is disclosed in the current filings.",
+        "evidence": "No new subsidiary formation is disclosed in the public filings. New subsidiary formation is typically an internal matter not disclosed unless tied to a reported acquisition or material transaction.",
         "mappedNeed": "New operating accounts",
         "needType": "treasury",
         "confidence": 0.85,
@@ -1012,11 +1034,14 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "ipo-secondary",
         "triggerName": "IPO / secondary raise",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No IPO or secondary equity offering is disclosed. Molina Healthcare is an established public company trading on the NYSE under ticker MOH. No equity offering is announced or completed in the current period.",
+        "evidence": "No IPO or secondary equity offering is disclosed. Molina Healthcare is an established public company trading on the NYSE under ticker MOH. No equity offering is mentioned in the filings.",
         "mappedNeed": "Proceeds management, treasury build-out",
         "needType": "treasury",
         "confidence": 0.98,
@@ -1055,14 +1080,17 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "floating-rate-debt",
         "triggerName": "Floating-rate debt + rate exposure",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "All outstanding debt is fixed-rate senior notes. The 4.375% Notes due 2028, 3.875% Notes due 2030, 6.500% Notes due 2031, 3.875% Notes due 2032, and 6.250% Notes due 2033 are all fixed-rate instruments. No floating-rate debt is outstanding.",
+        "evidence": "All outstanding debt consists of fixed-rate senior notes: 4.375% due 2028, 3.875% due 2030, 6.500% due 2031, 3.875% due 2032, and 6.250% due 2033. The revolving credit facility is undrawn. No floating-rate debt is outstanding.",
         "mappedNeed": "Interest-rate hedging",
         "needType": "credit",
-        "confidence": 0.95,
+        "confidence": 0.98,
         "citations": [
           {
             "form": "10-Q",
@@ -1105,11 +1133,14 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "commodity-exposure",
         "triggerName": "Commodity / input-cost exposure",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material commodity or input-cost exposure is disclosed in the risk factors or MD&A. As a managed healthcare company, Molina's primary cost drivers are medical care costs and pharmacy costs, which are not commodity-based exposures in the traditional sense.",
+        "evidence": "No material commodity or input-cost exposure is disclosed in the risk factors or MD&A sections of the filings provided. The company's primary cost drivers are medical care costs, pharmacy costs, and provider payments, which are not commodity-based.",
         "mappedNeed": "Commodity hedging",
         "needType": "credit",
         "confidence": 0.9,
@@ -1148,11 +1179,14 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "fx-exposure",
         "triggerName": "Large FX exposure disclosed",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material foreign-currency exposure is disclosed. Molina Healthcare operates exclusively in the United States and has no significant international operations or foreign-currency-denominated assets or liabilities.",
+        "evidence": "No material foreign-currency exposure is disclosed. Molina Healthcare operates exclusively in the United States and has no international operations or foreign currency transactions.",
         "mappedNeed": "FX hedging program",
         "needType": "treasury",
         "confidence": 0.98,
@@ -1198,6 +1232,9 @@
         "facilities": [],
         "facilityRejections": [],
         "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "covenant-breach",
         "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
         "fired": false,
@@ -1205,7 +1242,7 @@
         "evidence": "As of June 30, 2026, the company was in compliance with all non-financial and financial covenants under the Credit Agreement. No covenant breach, waiver, going-concern qualification, or liquidity warning is disclosed.",
         "mappedNeed": "Restructuring or amendment support",
         "needType": "distress",
-        "confidence": 0.95,
+        "confidence": 0.98,
         "citations": [
           {
             "form": "10-Q",
