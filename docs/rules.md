@@ -75,3 +75,4 @@ do not renumber; they qualify the rule above.
 |---|---|---|---|
 | 13 | refined | a declared shape must be one the mechanism can produce (Session 20, Stage 2) | [log](build_log.md#rule-13-refined--a-declared-shape-must-be-one-the-mechanism-can-produce-session-20-stage-2) |
 | 37 | seventh occurrence | the redemption guard | [log](build_log.md#rule-37-seventh-occurrence--the-redemption-guard) |
+| 53 | refined | a copula between a noun and its predicate does not change which field a clause is about | [log](build_log.md#rule-53-refined--a-copula-between-a-noun-and-its-predicate-does-not-change-which-field-a-clause-is-about) |

@@ -4310,3 +4310,91 @@ suites are excluded **by name with a stated reason**, printed on every run,
 because an exclusion nobody can see is how the list went wrong to begin with.
 
 **47 of 47 suites, 1,072 assertions.**
+
+## Rule 53, refined — a copula between a noun and its predicate does not change which field a clause is about
+
+Rule 53 rests on a closed grammatical class: absence is asserted with negative
+determiners, which are finite in English and do not grow with the next filer's
+house style. **The same argument applies one word over, and the first version
+did not make it.**
+
+`drawn`'s field noun was matched as `amounts?\s+outstanding` — the two words
+ADJACENT. English puts them adjacent about half the time and splits them with
+a copula the other half, and the split form is the one filers reach for when
+the amount is nothing:
+
+| the same fact, four ways | before | after |
+|---|---|---|
+| "no amount **was** outstanding" | rejected | kept |
+| "no amounts **were** outstanding" | rejected | kept |
+| "there was no **outstanding amount**" | kept | kept |
+| "no **borrowings outstanding**" | kept | kept |
+
+Scored on word order, which is not a distinction the filing is making.
+
+So the matcher admits `was / were / is / are / remains / remained / be / been`
+between the noun and "outstanding". **Copulas are a closed class** — the same
+property that makes negative determiners safe to enumerate makes these safe,
+and for the same reason: they are grammar, not vocabulary. This does not
+loosen the rule's scoping and does not touch the seam `FIELD_NOUNS` was
+documented as. It restores a form the rule already intended to cover.
+
+**The negative is asserted with it, not assumed.** Molina's own maturity
+sentence carries the identical noun pair:
+
+> "The Credit Agreement has a term of five years, and all amounts outstanding
+> will be due and payable on November 20, 2030."
+
+That clause must not read as a stated zero for `drawn`, and it does not — it
+carries no absence marker, so the widened noun match never reaches a verdict.
+A widening that admits a form is only safe if the clause test still refuses
+the wrong clause, and that refusal is now a test rather than a hope.
+
+**Blast radius, measured rather than argued.** The widening is exactly one
+regex alternative, so what it can reach is exactly the set of sentences that
+alternative matches and no prior one does. Scanned across every figure in
+every cached answer in the book: **68 figures, 1 sentence reached, 1 rendered
+value moved** — Molina's, the case it was written for. Nine names unchanged.
+
+## Carried, flagged not diagnosed — a candidate unit mismatch in the same family
+
+The render log rejects `Term Loan Facility.drawn = $ 2,000 million` against a
+sentence that reads *"…$2.0 billion of borrowings…"*. Same amount, different
+unit; if `sentenceStatesFigure` is comparing digit strings, "2,000" does not
+appear in a sentence that says "2.0 billion", and a correct figure is thrown
+away by the check meant to protect it — the same shape as the zero Rule 53
+discarded, one layer over.
+
+**Not diagnosed.** It is not reproducible from Quest's base blob (both figures
+there verify true), so it likely lives in a dig answer, and confirming that
+costs a look this session is not taking. Recorded with what is known and what
+is not.
+
+## For the audit pass — the dominant defect class, and it is not a Session 23 fix
+
+Three checks this session returned confident WRONG answers, and all three
+failed the same way: **they compared across layers, or counted a list instead
+of the repo.**
+
+1. **The golden diff** printed "4 hold, 2 moved", folding three
+   not-applicable goldens in with the one that reproduced — measured and
+   unreachable summed into one number.
+2. **`dropVerdict`'s harness** printed REPRODUCING-DROP on a run where the
+   model was right, by comparing a post-verification row against a raw blob.
+3. **`test:offline`** reported green over 37 hand-listed paths while 47 suites
+   existed — a true statement about a list, a false one about the repo.
+
+A fourth landed in the promotion tool itself: its read-back reported MISMATCH
+on a write that had succeeded, because it read the CDN's pre-write copy.
+
+All four were committed by instruments built to catch regressions, which is
+what makes this the spine rather than a bug list. The family already has rules
+— 42 (a corpus covering only the types it walks), 43 (a meter read before the
+calls it covers), 52 (a guard handed one candidate) — and it now has more
+instances than any other pattern in this log.
+
+**The audit's question is not "fix these four."** It is: *what does a check
+have to demonstrate about its own inputs before its answer is allowed to
+count?* Left for the audit pass to answer as a rule, because four instances
+of a pattern is a design question and patching the fourth is not an answer
+to it.
