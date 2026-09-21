@@ -1974,3 +1974,27 @@
 {"at":"2026-09-21T21:34:13.944Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-21T21:34:18.000Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-21T21:34:20.821Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:54:11.550Z","company":"Universal Health Services","totalUsd":0.207682,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":89527,"outputTokens":9111,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.135082},{"model":"claude-sonnet-5","calls":1,"inputTokens":23990,"outputTokens":42,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.0726}],"unpricedModels":[]}
+{"at":"2026-09-21T21:55:16.015Z","company":"Universal Health Services","totalUsd":0.207567,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":89527,"outputTokens":9088,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.134967},{"model":"claude-sonnet-5","calls":1,"inputTokens":23990,"outputTokens":42,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.0726}],"unpricedModels":[]}
+{"at":"2026-09-21T21:56:11.143Z","company":"Universal Health Services","totalUsd":0.203187,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":89527,"outputTokens":8212,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.130587},{"model":"claude-sonnet-5","calls":1,"inputTokens":23990,"outputTokens":42,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.0726}],"unpricedModels":[]}
+{"at":"2026-09-21T21:56:41.832Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:56:46.419Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:56:50.087Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:57:57.384Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:58:01.860Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:58:05.155Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:58:27.746Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:58:32.038Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:58:35.549Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:58:47.368Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:58:53.049Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:58:56.770Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:59:45.841Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:59:49.986Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:59:53.793Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T22:00:00.685Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T22:00:05.264Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T22:00:09.256Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T22:01:21.043Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T22:01:25.186Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T22:01:28.232Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}

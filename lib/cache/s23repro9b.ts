@@ -26,7 +26,7 @@ import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
 import { PINNED_AS_OF, PINNED_AS_OF_DAY } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
-import { deriveGoldenState, type GoldenState } from "../events/golden";
+import { deriveGoldenState, compareToGolden, type GoldenState } from "../events/golden";
 import { currentCompanySpend } from "../agent/costMeter";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 
@@ -38,6 +38,7 @@ const FIELDS = ["facilitySize", "drawn", "lettersOfCredit", "available", "maturi
 interface Fig { value: string; sourceLine: string }
 interface Snap {
   label: string;
+  state: GoldenState;
   /** One line per row: identity, amount, date, provenance, capacity flag. */
   position: string[];
   coverage: string;
@@ -50,6 +51,37 @@ function positionOf(state: GoldenState): string[] {
   return state.rows
     .map((r) => `${r.instrument} | ${r.amount} | ${r.maturityDate} | ${r.dateGranularity} | ${r.provenance} | ${r.isCapacity}`)
     .sort();
+}
+
+/**
+ * 9b BY THE COMPARATOR THE SIGNATURE IS MADE UNDER, not by string equality.
+ *
+ * The first version of this harness compared the raw lines above and reported
+ * UHS's 9b as FAILING on fourteen fields. Eleven of the fourteen were not
+ * movement at all:
+ *
+ *   - "$700 million" against "$ 700 million" — a space. golden.test.ts [7a]
+ *     names this exactly: "WHITESPACE IS NOT A TRANSCRIPTION ... string
+ *     equality called that a divergence, which blocks a signature over
+ *     nothing and trains its reader to wave divergences through."
+ *   - "Revolving Credit Facility" against "Revolving credit facility" — a
+ *     RENAME. Session 22 moved row identity off the label for precisely this
+ *     (Molina's own v29 evidence records it), so keying on the label reports
+ *     one instrument as a row removed and a row added.
+ *
+ * A harness stricter than the signature it gates is not being careful; it is
+ * measuring a different thing and reporting it under the signature's name.
+ * `compareToGolden` IS that standard, so 9b is asked of it.
+ */
+function nineBVerdict(snaps: { state: GoldenState }[]): { holds: boolean; divergences: string[] } {
+  const divergences: string[] = [];
+  for (let i = 1; i < snaps.length; i++) {
+    const v = compareToGolden(snaps[0].state, snaps[i].state);
+    if (v.kind === "matches") continue;
+    if (v.kind === "diverged") divergences.push(...v.divergences.map((d) => `run 1 vs run ${i + 1}: ${d}`));
+    else divergences.push(`run 1 vs run ${i + 1}: ${v.reason}`);
+  }
+  return { holds: divergences.length === 0, divergences };
 }
 
 function figuresOf(result: { results: { triggerId: string; facilities?: unknown }[] }): string[] {
@@ -91,6 +123,7 @@ function driftOf(snaps: Snap[], pick: (s: Snap) => string[]): Map<string, Set<st
     const state = deriveGoldenState(result, PINNED_AS_OF);
     snaps.push({
       label: `run ${i}`,
+      state,
       position: positionOf(state),
       coverage: `statedTotalDebt=${state.coverage.statedTotalDebt} capturedFace=${state.coverage.capturedFace} statedBridge=${state.coverage.statedBridge} denominator=${state.coverage.denominatorSource}`,
       figures: figuresOf(result),
@@ -113,29 +146,77 @@ function driftOf(snaps: Snap[], pick: (s: Snap) => string[]): Map<string, Set<st
   console.log(`  rows per run: ${rowCounts.join(", ")}`);
   console.log(`  coverage:     ${covSame ? "identical across all three" : "MOVED"}`);
   if (!covSame) for (const s of snaps) console.log(`      ${s.label}: ${s.coverage}`);
-  if (posMoved.length === 0) {
-    console.log(`  every row identical across all three runs — identity, amount, date, granularity, provenance, capacity flag`);
+  // THE VERDICT, by the comparator a signature is made under.
+  const verdict = nineBVerdict(snaps);
+  const nineBHolds = verdict.holds && covSame && new Set(rowCounts).size === 1;
+  if (verdict.holds) {
+    console.log(`  every row reproduces under compareToGolden — identity, amount, date, granularity, provenance, capacity flag`);
   } else {
-    console.log(`  ${posMoved.length} row field(s) MOVED:`);
+    console.log(`  ${verdict.divergences.length} divergence(s) under compareToGolden:`);
+    for (const d of verdict.divergences) console.log(`      ${d}`);
+  }
+
+  // AND THE RAW LINES, SHOWN SEPARATELY AND LABELLED AS WHAT THEY ARE.
+  // Whitespace and label renames are not divergences under the signature's
+  // comparator, and they are still worth SEEING — a rename that appears every
+  // run is Session 22's known Molina case; a rename that appears once may not
+  // be. Shown, never counted toward the verdict.
+  if (posMoved.length > 0) {
+    console.log(`\n  ${posMoved.length} line(s) differ by transcription or label only — NOT divergences, shown so a rename is visible:`);
     for (const [k, vals] of posMoved) { console.log(`      ${k}`); for (const v of vals) console.log(`          ${v}`); }
   }
-  const nineBHolds = posMoved.length === 0 && covSame && new Set(rowCounts).size === 1;
   console.log(`\n  9b: ${nineBHolds ? "HOLDS — the position reproduced three times at this version" : "DOES NOT HOLD — the position moved between runs at the same version"}`);
 
   // ── the facility figures ──────────────────────────────────────────────
   const figDrift = driftOf(snaps, (s) => s.figures);
   const figMoved = [...figDrift.entries()].filter(([, vals]) => vals.size > 1);
   console.log(`\n[FACILITY FIGURES] — NOT covered by 9b, and the reason we are here\n`);
+
+  // VALUES WITHOUT LABELS, FIRST. figuresOf keys each figure by its facility's
+  // NAME, so a facility the filing calls two things reads as five figures
+  // vanishing and five appearing — UHS printed "40 figure(s) MOVED" for four
+  // renamed facilities whose numbers never changed. The same label-keying
+  // mistake as the position comparison, one layer down.
+  //
+  // So the multiset of VALUES is compared with names stripped. Identical
+  // multisets plus differing names is one finding — a rename — not forty.
+  const valuesOnly = snaps.map((s) =>
+    [...s.figures]
+      .map((line) => line.slice(line.indexOf(".") + 1).replace(/\s+/g, " ").replace(/\$ /g, "$"))
+      .sort()
+      .join("\n")
+  );
+  const valuesStable = new Set(valuesOnly).size === 1;
+  const namesPerRun = snaps.map((s) => new Set(s.figures.map((l) => l.slice(0, l.indexOf(".")))));
+  const namesStable = new Set(namesPerRun.map((n) => [...n].sort().join(" | "))).size === 1;
+  console.log(`  values, with facility labels stripped: ${valuesStable ? "IDENTICAL across all three runs" : "MOVED"}`);
+  console.log(`  facility labels:                       ${namesStable ? "identical across all three runs" : "MOVED — the filing names these instruments more than one way"}`);
+  if (valuesStable && !namesStable) {
+    console.log(`  → ONE finding, not ${[...driftOf(snaps, (s) => s.figures).entries()].filter(([, v]) => v.size > 1).length}: every figure holds, and the labels swing between the filing's own names.`);
+    for (let i = 0; i < namesPerRun.length; i++) console.log(`      ${snaps[i].label}: ${[...namesPerRun[i]].sort().join(" | ")}`);
+  }
+  console.log("");
   if (figMoved.length === 0) {
     console.log(`  every facility figure identical across all three runs`);
   } else {
     console.log(`  ${figMoved.length} figure(s) MOVED between runs at the same version:`);
-    for (const [k, vals] of figMoved) { console.log(`      ${k}`); for (const v of vals) console.log(`          ${v.slice(v.indexOf(" = ") + 3)}`); }
+    // THE SENTINEL IS NOT A VALUE AND MUST NOT BE SLICED LIKE ONE. This read
+    // `v.slice(v.indexOf(" = ") + 3)`, and "(absent this run)" contains no
+    // " = " — indexOf returned -1, so it printed "bsent this run)". A report
+    // that garbles the one line saying a thing was MISSING is the worst line
+    // in the report to garble.
+    for (const [k, vals] of figMoved) {
+      console.log(`      ${k}`);
+      for (const v of vals) {
+        const i = v.indexOf(" = ");
+        console.log(`          ${i < 0 ? v : v.slice(i + 3)}`);
+      }
+    }
   }
   for (const [k, vals] of figDrift) if (vals.size === 1 && /\.drawn/.test(k)) console.log(`  held: ${[...vals][0]}`);
 
   console.log(`\n${"=".repeat(104)}`);
   console.log(`  SPEND: $${spend.toFixed(4)} across ${RUNS} runs`);
-  console.log(`  ${nineBHolds && figMoved.length === 0 ? "Both hold — a re-baseline pins values that reproduce." : nineBHolds ? "9b holds, but a facility figure does not. The position is signable; the figure it renders is not stable." : "9b does not hold. Molina stays held, unsigned, exactly as Session 22 left it."}`);
+  console.log(`  ${nineBHolds && figMoved.length === 0 ? "Both hold — a re-baseline pins values that reproduce." : nineBHolds ? "9b holds, but a facility figure does not. The position is signable; the figure it renders is not stable." : `9b does not hold. ${COMPANY} stays held, unsigned, exactly as it was.`}`);
   console.log("=".repeat(104));
 })();
