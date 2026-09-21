@@ -4176,3 +4176,137 @@ confusing to an outsider:
    and can never card on one.
 
 Design around them; do not suppress either.
+
+## Rule 55 — price a re-ask only after confirming the filings state the field; where they do not, the null IS the answer and no re-ask is bought
+
+A missing field has two causes that look identical at the blob: the model was
+given the fact and dropped it, or the filing never stated it. **Nothing in a
+null distinguishes them**, and the second one cannot be bought. A re-ask
+priced against it purchases one of two outcomes — the same null again, or a
+number lifted from a document the anchor is not — and the second is worse
+than the first.
+
+So the check runs **before the price, not after the result**, and it is a
+check on OUR EXPECTATION rather than on the model:
+
+1. **Name the sentence that would fill the field**, verbatim, from the corpus
+   the model was actually given — not the anchor alone, and not a filing we
+   assume is in scope. The model's corpus is the only corpus the question is
+   about.
+2. **Record where that sentence lives relative to the anchor.** This decides
+   the answer, and the three cases do not share a disposition:
+
+   | where the filling sentence is | what null means | is a re-ask bought |
+   |---|---|---|
+   | in the anchor | the model had it and dropped it | **yes** — re-ask measures whether the drop reproduces |
+   | off-anchor only | the anchor does not state it | **no** — and a "successful" fill would be the off-anchor substitution Rule 51 removed |
+   | nowhere in the corpus | the expectation was never sourced | **no** — fix the expectation, not the prompt |
+3. **Where the expectation came from a hand-check, a prior session, or a
+   plausible-sounding identity, it is an expectation and not a fact** until
+   step 1 produces the sentence. An identity that closes on a number is a
+   tell, not a source.
+
+**The off-anchor row is the one that earns the rule.** The other two cost
+money; that one costs correctness. If the only place a field is stated is a
+document the anchor is not, then the only way a re-ask can "succeed" is by
+doing the thing an entire session was spent removing — and it would report as
+a fix.
+
+**Named example: Encompass Health.** The expectation was
+`lettersOfCredit: $0`. Step 1 found exactly two letter-of-credit sentences in
+the whole corpus, both in an 8-K, stating **$53.6 million as of March 9** —
+not zero, and not the anchor's date. The anchor 10-Q does not mention letters
+of credit at all. Null was correct, the watch was struck before it spent, and
+the identity closing at 1,000 − 200 − 53.6 = 746.4 against a stated $746
+million was treated as a tell rather than as a source.
+
+**Prior instance: Session 23's Stage 1 transcription premise**, where a bump
+was scoped against a truncation that had never been shown to reproduce and
+did not. Same shape, one layer up: the premise was never checked against the
+thing it described. Two instances, one check.
+
+*The contrapositive is the useful half: a null you have confirmed the filings
+do not contradict is a finished answer, and re-asking it is the expensive way
+to hear it again.*
+
+## The Molina refresh — the drop was variance, and the rejection underneath it was ours
+
+$0.1647, against a declared $0.10–$0.30. One name, one cold extraction, the
+corpus fingerprint `1710014c` unchanged before and after — so this was a
+genuine second trial of the same question, not a second run.
+
+**dropVerdict: ONE-TIME-DROP.** The model returned the field, correctly, from
+the anchor's own text:
+
+```
+observation 1  (v30)      null — dropped
+observation 2  (refresh)  $0   [from the anchor]
+                          "As of June 30, 2026, no amount was outstanding under the Credit Agreement."
+```
+
+Variance, not a prompt problem. **No prompt change is bought by this**, which
+is the answer the refresh was priced to get and the reason it was worth
+$0.1647 rather than a v31 bump.
+
+### But the run surfaced a second defect, and it was the more expensive one
+
+The extraction log carried a line the verdict did not:
+
+> FACILITY FIGURE REJECTED — revolving credit facility.drawn = $0: claimed
+> zero, but the sentence asserts nothing about this figure.
+
+**Rule 53 threw away a correct zero.** `drawn`'s field-noun matcher carries
+`amounts?\s+outstanding`, which requires the two words to be ADJACENT. Molina
+writes *"no amount **was** outstanding"* — the same noun and the same
+predicate with a copula between them. Measured, the whole pattern:
+
+| sentence | before |
+|---|---|
+| "no amount **was** outstanding" | rejected |
+| "no amounts **were** outstanding" | rejected |
+| "there was no **outstanding amount**" | kept |
+| "no **borrowings outstanding**" | kept |
+
+The same fact, stated four ways, scored two ways — **on word order**, which is
+not a distinction the filing is making.
+
+This is not the seam Rule 53 documented. That seam was a new filer's
+vocabulary needing a new noun; this was one noun the matcher could not
+recognise in the order English most often puts it. The fix admits the copula —
+a closed class, exactly like the negative determiners the rule already rests
+on — so it widens the matcher without moving the rule. The negative is
+asserted alongside it: Molina's own maturity clause, *"all amounts outstanding
+will be due and payable on November 20, 2030"*, carries the same noun pair and
+must not read as a stated zero. It does not.
+
+**The honest shape of Molina's null: two defects stacked.** The model dropped
+the field in v30 (variance, now recovered) and our own verifier would have
+rejected it anyway. Fixing only the first would have changed nothing on the
+page.
+
+### The harness scored the wrong layer, and said so with confidence
+
+The first run of this report printed **REPRODUCING-DROP** — the opposite
+verdict — because it read `runAgentLoop`'s result, which is the row AFTER
+verification, and compared it to the v30 blob, which is the model's raw
+answer. Two different layers, one comparison, and the instrument reported a
+prompt problem on a run where the model had been right.
+
+Third instance this session of a check whose inputs decide its answer (Rules
+42, 43, 52), and the second committed by a harness built to measure a
+regression. `dropVerdict` now reads both observations from their own blobs and
+the verifier's disposition is a separate printed line.
+
+## The offline runner ran a list, not the repo
+
+`test:offline` was a hand-maintained chain of 37 paths. Forty-seven suites
+exist. **Thirteen had drifted off the list, three of them shipped in this
+session's own pass** — so "all offline tests pass" was a true statement about
+the list and a false one about the repo.
+
+Replaced with discovery: `lib/cache/runOffline.ts` walks `lib/` for
+`*.test.ts` and runs everything it finds. The four genuinely non-offline
+suites are excluded **by name with a stated reason**, printed on every run,
+because an exclusion nobody can see is how the list went wrong to begin with.
+
+**47 of 47 suites, 1,072 assertions.**

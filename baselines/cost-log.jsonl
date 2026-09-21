@@ -1931,3 +1931,8 @@
 {"at":"2026-09-20T20:29:25.465Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-20T20:29:28.372Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-20T20:29:32.112Z","company":"Centene Corporation","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T16:44:10.844Z","company":"Molina Healthcare","totalUsd":0.164737,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":70526,"outputTokens":6676,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.103906},{"model":"claude-sonnet-5","calls":1,"inputTokens":20062,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.060831}],"unpricedModels":[]}
+{"at":"2026-09-21T16:48:07.920Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T16:50:38.684Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T16:50:48.095Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T16:50:54.516Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}

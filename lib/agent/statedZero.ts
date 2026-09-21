@@ -76,7 +76,16 @@ const QUANTITY = /\$\s?[\d,]+(\.\d+)?|\b[\d,]+(\.\d+)?\s*(thousand|million|billi
 const FIELD_NOUNS: { field: string; re: RegExp }[] = [
   { field: "lettersOfCredit", re: /letters?\s+of\s+credit|\bl\/?cs?\b|standby\s+letters?/i },
   { field: "available", re: /availab|undrawn|remaining\s+(?:capacity|availability)|capacity\s+(?:remaining|available)/i },
-  { field: "drawn", re: /borrow|drawn|draw(?:n|ings)?\b|advance|outstanding\s+(?:balance|principal|amount)|amounts?\s+outstanding|cash\s+borrowings/i },
+  // "amounts outstanding" and "no amount WAS outstanding" are the same claim.
+  // A COPULA BETWEEN A NOUN AND ITS PREDICATE DOES NOT CHANGE WHICH FIELD THE
+  // CLAUSE IS ABOUT — and copulas are a closed class, exactly like the
+  // negative determiners this rule already rests on, so admitting them is not
+  // a phrase list growing by one filer. Molina is the measured cost: its
+  // anchor says "As of June 30, 2026, no amount was outstanding under the
+  // Credit Agreement", the model returned $0 against that very sentence, and
+  // the adjacency requirement threw the zero away — which is the exact act
+  // Rule 53 exists to prevent, committed by Rule 53.
+  { field: "drawn", re: /borrow|drawn|draw(?:n|ings)?\b|advance|outstanding\s+(?:balance|principal|amount)|amounts?\s+(?:(?:was|were|is|are|remains?|remained|be|been)\s+)?outstanding|cash\s+borrowings/i },
   { field: "facilitySize", re: /facility|commitment|aggregate\s+principal|total\s+capacity|provides?\s+for/i },
 ];
 

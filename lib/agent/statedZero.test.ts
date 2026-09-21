@@ -81,5 +81,27 @@ console.log("\n=== [4] The primitives ===");
     "[4d] \"letters of credit outstanding\" reads as lettersOfCredit, not as drawn — the specific noun wins over the shared word \"outstanding\"");
 }
 
+console.log("\n=== [5] A copula between a noun and its predicate does not change the field ===");
+{
+  // MEASURED, not imagined. Molina's refresh returned drawn = $0 against this
+  // exact sentence and Rule 53 threw it away, because "amounts outstanding"
+  // was required to be ADJACENT. The rule was right and its matcher was
+  // order-and-adjacency bound.
+  assert(zeroSupportFor("As of June 30, 2026, no amount was outstanding under the Credit Agreement.", "drawn").kind === "asserts-absence",
+    "[5a] REAL Molina 10-Q: \"no amount WAS outstanding\" asserts absence for drawn — the copula splits the noun from its predicate and does not change what the clause is about");
+  assert(zeroSupportFor("As of December 31, 2025, no amounts were outstanding under the New Credit Agreement.", "drawn").kind === "asserts-absence",
+    "[5b] REAL Molina 10-K: the plural, with \"were\" — same claim, same disposition");
+  assert(zeroSupportFor("There were no amounts outstanding under the facility.", "drawn").kind === "asserts-absence",
+    "[5c] and the adjacent form that always worked still works — this widened the matcher, it did not move it");
+
+  // THE NEGATIVE THAT KEEPS THIS HONEST. The same noun pair appears in
+  // Molina's MATURITY sentence, and admitting the copula must not hand that
+  // clause to `drawn`.
+  assert(zeroSupportFor("The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.", "drawn").kind !== "asserts-absence",
+    "[5d] REAL Molina: \"all amounts outstanding will be due and payable\" is a maturity clause with no absence marker — it must NOT be read as a stated zero for drawn");
+  assert(zeroSupportFor("Borrowings under the Credit Agreement bear interest based, at our election, on a base rate or other defined rate.", "drawn").kind === "silent",
+    "[5e] and a clause about how borrowings are PRICED still says nothing about how much is drawn");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }

@@ -21,7 +21,7 @@ const OUT_PATH = join(process.cwd(), "docs", "rules.md");
 
 /** The highest rule number the log is expected to define. A rule added without */
 /** its heading fails the completeness check below rather than vanishing. */
-const HIGHEST_RULE = 54;
+const HIGHEST_RULE = 55;
 
 interface RuleHeading {
   /** The rule's number. Refinements share the number of the rule they refine. */
