@@ -1,5 +1,5 @@
 /**
- * MOLINA, CACHE_BUST x3 AT v30 — criterion 9b, tested rather than assumed.
+ * ONE NAME, CACHE_BUST x3 AT v30 — criterion 9b, tested rather than assumed.
  *
  * THIS RUN BILLS: three cold extractions.
  *
@@ -20,7 +20,7 @@
  * CACHE_BUST writes to its own key per run, so the canonical answer — the one
  * the page serves and the re-baseline would pin — is never touched here.
  *
- * Run: npx tsx lib/cache/s23molinarepro.ts
+ * Run: npx tsx lib/cache/s23molinarepro.ts "<Company>"
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
@@ -30,8 +30,9 @@ import { deriveGoldenState, type GoldenState } from "../events/golden";
 import { currentCompanySpend } from "../agent/costMeter";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 
-const COMPANY = "Molina Healthcare";
-const RUNS = 3;
+const COMPANY = process.argv[2] ?? "Molina Healthcare";
+const RUNS = Number(process.env.REPRO_RUNS ?? 3);
+const BUST_TAG = process.env.REPRO_TAG ?? "s23-9b";
 const FIELDS = ["facilitySize", "drawn", "lettersOfCredit", "available", "maturity"] as const;
 
 interface Fig { value: string; sourceLine: string }
@@ -82,7 +83,7 @@ function driftOf(snaps: Snap[], pick: (s: Snap) => string[]): Map<string, Set<st
   let spend = 0;
 
   for (let i = 1; i <= RUNS; i++) {
-    process.env.CACHE_BUST = `s23-molina-9b-${i}`;
+    process.env.CACHE_BUST = `${BUST_TAG}-${COMPANY.replace(/[^a-z0-9]/gi, "").slice(0, 14)}-${i}`;
     const result = await runAgentLoop(COMPANY);
     delete process.env.CACHE_BUST;
     const cost = currentCompanySpend().totalUsd;
