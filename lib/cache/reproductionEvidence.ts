@@ -35,6 +35,17 @@ export const RUNS_REQUIRED = 3;
 
 export const REPRODUCTION_EVIDENCE: ReproductionEvidence[] = [
   {
+    company: "Molina Healthcare", version: 30, runs: 3, recordedOn: "2026-09-21",
+    evidence:
+      "CACHE_BUST x3 at v30 on 2026-09-21 (lib/cache/s23molinarepro.ts, $0.6257): 6 rows in every run; every row " +
+      "identical across all three on identity, amount, maturity date, granularity, provenance and capacity flag; " +
+      "coverage identical (statedTotalDebt, capturedFace, statedBridge, denominator). " +
+      "TESTED RATHER THAN ASSUMED because v30 had already given two different answers for `drawn` earlier in the " +
+      "session — null on the cold pass, $0 on the refresh. Across these three it held at $0 every time, with every " +
+      "other facility figure identical too, so the value the re-baseline pins is one that reproduces. " +
+      "Facility figures are NOT covered by 9b and were measured separately for exactly that reason.",
+  },
+  {
     company: "DaVita", version: 29, runs: 3, recordedOn: "2026-09-17",
     evidence: "CACHE_BUST x3 at v29 on 2026-09-17: 9 of 9 rows carried a heading in every run, 9 classed in every run, row set / amounts / classes byte-identical across all three.",
   },
@@ -86,8 +97,20 @@ function namesMatch(recorded: string, asked: string): boolean {
  * recorded at another version is NOT returned as usable, however well it
  * matches the name.
  */
-export function evidenceFor(company: string, version: number): EvidenceLookup {
-  const forCompany = REPRODUCTION_EVIDENCE.filter((e) => namesMatch(e.company, company));
+export function evidenceFor(
+  company: string,
+  version: number,
+  /**
+   * The table to look in. Defaults to the real one; a caller passes its own
+   * so the MECHANISM can be tested independently of what happens to be
+   * recorded. The first version of the test suite asserted "Molina has no v30
+   * evidence" — a fact about the data — and every one of those assertions
+   * broke the moment the v30 evidence was recorded, which is what the suite
+   * was there to enable.
+   */
+  table: ReproductionEvidence[] = REPRODUCTION_EVIDENCE
+): EvidenceLookup {
+  const forCompany = table.filter((e) => namesMatch(e.company, company));
   if (forCompany.length === 0) {
     return { kind: "none", reason: `no reproduction evidence recorded for "${company}" at any version — criterion 9b cannot be attested` };
   }

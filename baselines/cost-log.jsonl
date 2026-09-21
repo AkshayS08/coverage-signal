@@ -1966,3 +1966,11 @@
 {"at":"2026-09-21T21:23:54.601Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-21T21:23:57.757Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-21T21:24:00.754Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:28:40.094Z","company":"Molina Healthcare","totalUsd":0.20838,"totalCalls":2,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":34778,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.104979},{"model":"claude-haiku-4-5","calls":1,"inputTokens":70526,"outputTokens":6575,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.103401}],"unpricedModels":[]}
+{"at":"2026-09-21T21:29:22.040Z","company":"Molina Healthcare","totalUsd":0.20828,"totalCalls":2,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":34778,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.104979},{"model":"claude-haiku-4-5","calls":1,"inputTokens":70526,"outputTokens":6555,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.103301}],"unpricedModels":[]}
+{"at":"2026-09-21T21:30:06.246Z","company":"Molina Healthcare","totalUsd":0.209065,"totalCalls":2,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":34778,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.104979},{"model":"claude-haiku-4-5","calls":1,"inputTokens":70526,"outputTokens":6712,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.104086}],"unpricedModels":[]}
+{"at":"2026-09-21T21:32:30.688Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:32:57.110Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:34:13.944Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:34:18.000Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-21T21:34:20.821Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}

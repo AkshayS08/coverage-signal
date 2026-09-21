@@ -29,6 +29,25 @@ import { evidenceFor, RUNS_REQUIRED } from "./reproductionEvidence";
 const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
 const SIGNER = "Akshay Sahani";
 
+/**
+ * WHY A GOLDEN IS BEING REPLACED, in the file that replaces it. A re-baseline
+ * that does not say what moved leaves the next reader comparing two signed
+ * states with no account of the distance between them.
+ */
+const REBASELINE_REASON: Record<string, string> = {
+  "Molina Healthcare":
+    "Re-baselined in Session 23 for two reasons, neither a correction of the previous reading. " +
+    "(1) THE CORPUS MOVED — the 10-K (moh-20251231.htm) is no longer in the cited set, so the v29 pin " +
+    "describes a corpus that is not the current one and cannot be compared against it (Rule 30). " +
+    "(2) THE EXTRACTION MOVED — `drawn` is now $0, stated by the anchor (\"As of June 30, 2026, no amount " +
+    "was outstanding under the Credit Agreement\") and recovered by Rule 53 once its noun matcher admitted " +
+    "the copula; and `lettersOfCredit` is now null, correctly: the v29 value of $100 million was the letter " +
+    "of credit SUB-FACILITY's limit, not letters of credit outstanding, which is Rule 48's category error. " +
+    "The filing states no LC balance for Molina, so null is the honest answer. Ruled by the signer on " +
+    "2026-09-21 against the sentences themselves. Five ladder sourceLines also collapsed from two period " +
+    "columns to one — cosmetic provenance, amounts and dates unchanged.",
+};
+
 const SIGNED = process.argv.slice(2);
 
 (async () => {
@@ -79,7 +98,12 @@ const SIGNED = process.argv.slice(2);
         signedBy: SIGNER,
         signedOn: PINNED_AS_OF_DAY,
         basis:
-          `First signature, Session 22 Stage 7, at PINNED_AS_OF ${PINNED_AS_OF_DAY}, extraction v${EXTRACTION_PROMPT_VERSION}. ` +
+          // A RE-BASELINE IS NOT A FIRST SIGNATURE, AND THE FILE MUST NOT SAY
+          // IT IS. This read "First signature, Session 22 Stage 7" no matter
+          // what it was writing — so replacing a golden stamped the new file
+          // with the previous signature's own story. `isNew` already knew.
+          `${isNew ? `First signature, at` : `RE-BASELINE (replaces an earlier signature), at`} PINNED_AS_OF ${PINNED_AS_OF_DAY}, extraction v${EXTRACTION_PROMPT_VERSION}. ` +
+          `${isNew ? "" : `${REBASELINE_REASON[company] ?? "Reason not recorded — a re-baseline states what moved or it is not a re-baseline."} `}` +
           `Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. ` +
           `Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus ` +
           `(Rule 46) — belonging clean, 0 composites. ` +

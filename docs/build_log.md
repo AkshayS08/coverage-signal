@@ -4471,3 +4471,59 @@ available balance, stated in the ordinary words filers use for it. The word
 "capacity" separates a limit from a balance in the `lettersOfCredit` field and
 does not separate anything in `available`. Reported as a heuristic that does
 not generalise across fields rather than as three findings.
+
+## Molina re-baselined at v30 — 9b tested, not assumed
+
+`$0.6257` across three CACHE_BUST re-asks, **against a declared $0.42–$0.60.
+Over by $0.0257.** The cause is worth more than the amount: the estimate was a
+3× extrapolation from ONE observation of the refresh, and the proceedsUse
+Sonnet call is not a constant — its region selector returned 1 region
+(in=20,062) on the refresh and 3–4 regions (in=34,778) on these runs.
+Extrapolating a total from a single reading of a component that varies is the
+same error as measuring a rate from one sample, and it is mine.
+
+**9b holds, and it was tested because it could not be assumed.** v30 had
+already produced two different answers for `drawn` this session — null on the
+cold pass, `$0` on the refresh — so a third-hand attestation would have been
+worthless.
+
+```
+rows per run:  6, 6, 6
+coverage:      identical across all three
+every row identical: identity, amount, maturity date, granularity, provenance, capacity flag
+```
+
+**The facility figures were measured separately, and that separation is the
+point.** 9b covers the POSITION; `GoldenState` carries no facility figures at
+all. So "9b holds" would have said nothing about the `$0` the page renders.
+Measured on its own: every facility figure identical across all three runs,
+`drawn = $0` every time. A pass on one with a failure on the other is a real
+outcome and the harness prints them as two answers, never averaged into a
+verdict.
+
+**The new baseline**, replacing the v29 signature:
+
+| | v29 | v30 |
+|---|---|---|
+| filing set | 3 documents | **2** — the 10-K left the cited set (Rule 30) |
+| `drawn` | null | **$0**, from the anchor's own sentence |
+| `lettersOfCredit` | $100 million | **null** — the $100M was the LC sub-facility's LIMIT |
+| issuance citation | the 10-K | the 8-K that announced it |
+| ladder rows | 6 | 6, no field moved |
+
+The signer's ruling, recorded in the file rather than in a commit message:
+*"$100 million letter of credit sub-facility"* is capacity, not letters of
+credit outstanding, and putting it in the outstanding field is Rule 48's
+category error. Molina's filings state no LC balance, so null is the honest
+answer — the same disposition as Encompass.
+
+**A re-baseline now says it is one.** The basis text was hardcoded to *"First
+signature, Session 22 Stage 7"* regardless of what it was writing, so
+replacing a golden stamped the new file with the previous signature's story.
+It now distinguishes the two and a replacement must state what moved.
+
+**Carried, cosmetic, not blocking:** five ladder `sourceLine`s collapsed from
+two period columns to one (`"$ 800   $ 800"` → `"$ 800"`) — amounts and dates
+unchanged. And the issuance's `verifiedQuote` now begins mid-word (*"erial
+Definitive Agreement. 6.500% Senior Notes…"*), a clean verification with an
+untidy left edge. Noted for the product read.
