@@ -4398,3 +4398,76 @@ have to demonstrate about its own inputs before its answer is allowed to
 count?* Left for the audit pass to answer as a rule, because four instances
 of a pattern is a design question and patching the fourth is not an answer
 to it.
+
+## Rule 56 — a signature refuses evidence recorded at a different version; where a claim is versioned, the version belongs in the KEY, not in the text
+
+Criterion 9b attests that a position reproduced three times **at the version
+being signed**. It is the one criterion no code can establish on its own
+behalf, so it is carried as recorded text — and the text was looked up by
+COMPANY ALONE.
+
+Molina's entry reads *"CACHE_BUST x3 at **v29**"*. At v30 the signer looked it
+up by name, found it, and would have written a v30 signature attesting
+reproduction on the strength of runs made against a different prompt. **No
+warning, no refusal — the gate was present and structurally could not fail
+for the case it exists to catch.** Fifth instance this session of that family
+(Rules 42, 43, 52, plus the two harnesses), and the first one sitting inside
+a signature.
+
+**The version was in the evidence the whole time.** It was written right there
+in the string. That is exactly what makes this a rule rather than a typo: a
+fact recorded only in prose is a fact nothing can check. An extraction bump
+changes what the model is asked, so evidence from before it is evidence about
+a different question — and the older it is, the more confidently it reads as
+fresh, because nothing in the lookup ever mentions age.
+
+So the version is part of the **key**:
+
+```
+evidenceFor(company, version) →
+    usable           | recorded at this version, with enough runs
+    wrong-version    | recorded — at another version. Names both.
+    none             | nothing on file at any version
+    too-few-runs     | right version, fewer than three
+```
+
+**Three refusals, not one**, because they need different actions from whoever
+reads them: `none` means measure it, `wrong-version` means re-measure it at
+this version, `too-few-runs` means finish measuring. A single "cannot attest"
+would have collapsed them and sent the reader looking for the wrong thing.
+
+Measured on the way in: **all six recorded names refuse at v30**, because
+every entry on file was recorded at v29. That is the honest state — no golden
+can be signed at the current version on last version's evidence — and it is
+asserted as a test rather than described.
+
+*The general form: an attestation carries the conditions it was made under. If
+those conditions can change, they belong in the key that retrieves it, because
+evidence that cannot be found to be stale will be found to be sufficient.*
+
+## The capacity-in-a-balance-field sweep — nothing else in the book
+
+Molina's golden carried `lettersOfCredit: $100 million`, sourced to *"a $100
+million letter of credit **sub-facility**"* — the sub-facility's limit, in the
+field that holds an outstanding balance. Rule 48's category error.
+
+Swept every `lettersOfCredit`, `drawn` and `available` figure in the book
+against its own sentence — **35 figures, 10 companies**. Every letter-of-credit
+figure on file is sourced to a sentence that genuinely states an outstanding
+balance:
+
+> DaVita — *"letters of credit outstanding under the facility, of which there
+> were none"* · Tenet — *"$105 million of standby letters of credit
+> outstanding under the LC Facility"* · Centene — *"outstanding letters of
+> credit of $113 million"* · CHS — *"the $32 million of outstanding letters of
+> credit"* · Quest — *"$82 million in letters of credit … were outstanding"*
+
+**Zero further instances.** Molina's was the only one, and it is gone.
+
+**The detector's own three hits were false positives, and that is worth
+recording.** It flagged Quest's and Molina's `available` figures for using the
+word "capacity" — but *"available borrowing capacity of $1.25 billion"* is the
+available balance, stated in the ordinary words filers use for it. The word
+"capacity" separates a limit from a balance in the `lettersOfCredit` field and
+does not separate anything in `available`. Reported as a heuristic that does
+not generalise across fields rather than as three findings.

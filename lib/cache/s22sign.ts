@@ -24,23 +24,10 @@ import { runAgentLoop } from "../agent";
 import { deriveGoldenState, filingSetOf, residualPercentOf, type GoldenFile } from "../events/golden";
 import { evaluateGoldenCriteria } from "../events/goldenCriteria";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
+import { evidenceFor, RUNS_REQUIRED } from "./reproductionEvidence";
 
 const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
 const SIGNER = "Akshay Sahani";
-
-/**
- * The reproducibility evidence, per name, from the CACHE_BUST x3 runs. Recorded
- * as text in the signature basis rather than asserted in code, because 9b is
- * an attestation about runs that happened, not a property this file can test.
- */
-const REPRODUCED: Record<string, string> = {
-  "DaVita": "CACHE_BUST x3 at v29 on 2026-09-17: 9 of 9 rows carried a heading in every run, 9 classed in every run, row set / amounts / classes byte-identical across all three.",
-  "Community Health Systems": "CACHE_BUST x3 at v29 on 2026-09-17: 12 rows and 9 classed in every run, row set / amounts / classes byte-identical across all three.",
-  "Universal Health Services": "CACHE_BUST x3 at v29: prose-only note (0 table rows), 5 classed in every run, row set / amounts / classes byte-identical across all three.",
-  "Encompass Health": "CACHE_BUST x3 at v29: 7 of 7 rows carried a heading in every run, 4 classed in every run, row set / amounts / classes byte-identical across all three.",
-  "Tenet Healthcare": "CACHE_BUST x3 at v29 after the letter-of-credit rule: 12 rows in every run, 11 classed in every run, row set / amounts / classes identical across all three. Before that rule a $200 million letter-of-credit facility appeared as a 13th row in one run of three; an LC is not borrowed money and now has no ladder destination, so it cannot be routed onto one.",
-  "Molina Healthcare": "CACHE_BUST x3 at v29 after row identity moved off the label: 6 rows in every run, 5 classed in every run, row set / amounts / classes identical across all three. The facility is named \"revolving credit facility\" in one run and \"Credit Facility\" in two — the filing uses both — and identity now keys on the facts the filing states about the instrument, so the rename is reported as a rename rather than as a row removed and a row added.",
-};
 
 const SIGNED = process.argv.slice(2);
 
@@ -64,11 +51,16 @@ const SIGNED = process.argv.slice(2);
       on: PINNED_AS_OF_DAY,
     });
     const filings = filingSetOf(result);
-    const reproduced = REPRODUCED[company] ?? Object.entries(REPRODUCED).find(([k]) => company.toLowerCase().includes(k.toLowerCase()))?.[1];
+    // 9b's EVIDENCE, LOOKED UP AT THE VERSION BEING SIGNED. The lookup was
+    // keyed by company alone, so Molina's "CACHE_BUST x3 at v29" satisfied a
+    // v30 signature silently. Version is now part of the key and a mismatch
+    // is a refusal that says which versions DO have evidence.
+    const lookup = evidenceFor(company, EXTRACTION_PROMPT_VERSION);
+    const reproduced = lookup.kind === "usable" ? lookup.evidence.evidence : null;
 
     const problems: string[] = [];
     if (filings.length === 0) problems.push("EMPTY FILING SET — a pin against no documents cannot fail, so it is not a pin (Rule 44)");
-    if (!reproduced) problems.push("no CACHE_BUST x3 evidence recorded for this name — criterion 9b cannot be attested");
+    if (!reproduced) problems.push(`criterion 9b: ${(lookup as { reason: string }).reason}`);
     for (const c of crit.criteria) {
       if (c.kind === "computed" && c.pass === false) problems.push(`criterion ${c.id} does not hold: ${c.detail.slice(0, 140)}`);
     }

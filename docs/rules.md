@@ -1,4 +1,4 @@
-# The rules, 1 to 55
+# The rules, 1 to 56
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -65,6 +65,7 @@ example that found it, never the thing the rule is about.
 | 53 | a stated zero is a stated figure; null means the filing is silent | [log](build_log.md#rule-53--a-stated-zero-is-a-stated-figure-null-means-the-filing-is-silent) |
 | 54 | where a fact is announced two ways, detect it on either; one signal alone misses the other's cases | [log](build_log.md#rule-54--where-a-fact-is-announced-two-ways-detect-it-on-either-one-signal-alone-misses-the-others-cases) |
 | 55 | price a re-ask only after confirming the filings state the field; where they do not, the null IS the answer and no re-ask is bought | [log](build_log.md#rule-55--price-a-re-ask-only-after-confirming-the-filings-state-the-field-where-they-do-not-the-null-is-the-answer-and-no-re-ask-is-bought) |
+| 56 | a signature refuses evidence recorded at a different version; where a claim is versioned, the version belongs in the KEY, not in the text | [log](build_log.md#rule-56--a-signature-refuses-evidence-recorded-at-a-different-version-where-a-claim-is-versioned-the-version-belongs-in-the-key-not-in-the-text) |
 
 ## Refinements and later occurrences
 
