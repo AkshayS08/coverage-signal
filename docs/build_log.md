@@ -4787,3 +4787,89 @@ Reaching for either alone mis-flags a real row, and the guard needed both. One
 fact, two functions, **Rule 21 exactly**. Logged for the audit rather than
 papered over: the correct end state is one zero predicate, which is a change
 across every caller and not this rule's to make.
+
+## Stage 0 — what 9b actually requires, built
+
+`compareToGolden` already knew the difference between kinds of difference. It
+emitted `RENAMED to "X" — same amount, maturity and status` and then filed
+that under `divergences` anyway. **The knowledge existed and was discarded at
+the reporting line**, so a golden could be blocked by a filer printing two of
+its own names for one instrument — which is most of the book.
+
+Differences are now **sorted, not counted**:
+
+| blocking | tolerated |
+|---|---|
+| amount by value AND unit | the instrument LABEL, where amount, maturity and status match |
+| maturity, granularity, status, provenance, isCapacity | WHICH valid sentence provides provenance, where **both** state the row's amount |
+| coverage, tier2, cards, row identity | |
+
+**And the tolerated set is written into the signature basis.** Non-negotiable
+per the signer's ruling, and structural rather than conventional:
+`ReproductionEvidence.toleratedDifferences` is a required field, so an empty
+array is an assertion that nothing was tolerated. The basis says either which
+differences were let through, or that none were. Tolerating silently is the
+failure `[7a]` already names — it trains a reader to wave differences through.
+
+**"Every amount is supported" moved OUT of the comparator.** It was written
+there first, and `[7b]` caught it at once: a test mutating an amount without
+touching its sentence began failing for a reason unrelated to the two states
+differing. `compareToGolden` answers *did this run move?*; whether one run's
+figures are checkable is a property of a SINGLE state and gates **signing**.
+It now refuses in `s22sign` — and HCA is the proof, refused by name on all
+four rows.
+
+### Q1 — the unit swing was real, not a normalizer gap
+
+All three earlier runs cite the **identical sentence**:
+
+> "increased the existing term loan A by $ 300 million to $ 1.455 billion
+> (**$ 1.448 billion** outstanding as of June 30, 2026) from $ 1.155 billion"
+
+Runs 1 and 2 print `$1.448 billion`. Run 3 printed `$1,448 million` — **a form
+that sentence does not contain**. The model converted the unit rather than
+copying it, which breaks "every figure is copied, never computed". `[7c]`
+stands, and normalizing the comparison would have hidden it.
+
+### Q2 — it is not widespread
+
+Swept every canonical ladder row: **90 rows, 81 faithful (23 in the sentence's
+own form, 58 with the unit supplied by the column header), 8 no scale to
+compare, 1 re-expressed** — and the one is Tenet's already-known truncated
+revolver row, not a second instance. **CHS and Encompass are clean.**
+
+The first version of this sweep reported **64 of 90 re-expressed** — nearly
+the whole book — by flagging every table row whose scale word comes from the
+column header. Third time this session a scan judged by a stricter standard
+than the page. Fixed to the narrow shape that is actually the defect: the
+sentence states the quantity WITH a scale word and the row prints a DIFFERENT
+one.
+
+### The re-taste — and a bigger finding than the one we were chasing
+
+`$0.6152` across three runs, against a declared $0.58–$0.85.
+
+**The gate worked.** 17 differences tolerated and named — renames across five
+note labels, and six provenance choices where both sentences state the amount.
+The unit re-expression did **not** recur: all three runs kept `$1.448 billion`.
+
+**But 9b still does not hold, for a reason that is not drift:**
+
+```
+rows per run: 10, 10, 9
+run 1 vs run 3: rows["July 2026 Delayed Draw Term Loan"]: MISSING
+run 1 vs run 3: tier2.count: expected 4, got 3
+```
+
+**The $700 million facility is absent from one run in three.** Not renamed,
+not re-cited — gone. That is exactly what a gate should block, and it is a
+different and more serious problem than the label noise that was masking it.
+UHS stays held.
+
+### One more in the session's own defect class, mine
+
+The session-spend tally filtered the cost log on `2026-09-2[01]`. **The date
+rolled to 09-22** and the filter silently excluded the three runs it existed
+to count, reporting spend unchanged at $3.2179 after $0.6152 had been billed.
+A measurement whose filter excludes its own subject. Recomputed across all
+days: **$3.8332**.

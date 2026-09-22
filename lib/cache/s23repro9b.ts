@@ -73,15 +73,16 @@ function positionOf(state: GoldenState): string[] {
  * measuring a different thing and reporting it under the signature's name.
  * `compareToGolden` IS that standard, so 9b is asked of it.
  */
-function nineBVerdict(snaps: { state: GoldenState }[]): { holds: boolean; divergences: string[] } {
+function nineBVerdict(snaps: { state: GoldenState }[]): { holds: boolean; divergences: string[]; tolerated: string[] } {
   const divergences: string[] = [];
+  const tolerated: string[] = [];
   for (let i = 1; i < snaps.length; i++) {
     const v = compareToGolden(snaps[0].state, snaps[i].state);
-    if (v.kind === "matches") continue;
+    if (v.kind === "not-applicable") { divergences.push(`run 1 vs run ${i + 1}: ${v.reason}`); continue; }
+    for (const t of v.tolerated) tolerated.push(`run 1 vs run ${i + 1}: ${t}`);
     if (v.kind === "diverged") divergences.push(...v.divergences.map((d) => `run 1 vs run ${i + 1}: ${d}`));
-    else divergences.push(`run 1 vs run ${i + 1}: ${v.reason}`);
   }
-  return { holds: divergences.length === 0, divergences };
+  return { holds: divergences.length === 0, divergences, tolerated };
 }
 
 function figuresOf(result: { results: { triggerId: string; facilities?: unknown }[] }): string[] {
@@ -149,6 +150,12 @@ function driftOf(snaps: Snap[], pick: (s: Snap) => string[]): Map<string, Set<st
   // THE VERDICT, by the comparator a signature is made under.
   const verdict = nineBVerdict(snaps);
   const nineBHolds = verdict.holds && covSame && new Set(rowCounts).size === 1;
+  if (verdict.tolerated.length > 0) {
+    console.log(`
+  TOLERATED by the gate — reported, not counted, and written into the signature basis:`);
+    for (const t of verdict.tolerated) console.log(`      ${t}`);
+    console.log("");
+  }
   if (verdict.holds) {
     console.log(`  every row reproduces under compareToGolden — identity, amount, date, granularity, provenance, capacity flag`);
   } else {

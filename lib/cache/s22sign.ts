@@ -21,7 +21,7 @@ import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { PINNED_AS_OF, PINNED_AS_OF_DAY } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
-import { deriveGoldenState, filingSetOf, residualPercentOf, type GoldenFile } from "../events/golden";
+import { deriveGoldenState, filingSetOf, residualPercentOf, unsupportedAmountRows, type GoldenFile } from "../events/golden";
 import { evaluateGoldenCriteria } from "../events/goldenCriteria";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 import { evidenceFor, RUNS_REQUIRED } from "./reproductionEvidence";
@@ -76,10 +76,20 @@ const SIGNED = process.argv.slice(2);
     // is a refusal that says which versions DO have evidence.
     const lookup = evidenceFor(company, EXTRACTION_PROMPT_VERSION);
     const reproduced = lookup.kind === "usable" ? lookup.evidence.evidence : null;
+    const toleratedDifferences = lookup.kind === "usable" ? lookup.evidence.toleratedDifferences : [];
 
     const problems: string[] = [];
     if (filings.length === 0) problems.push("EMPTY FILING SET — a pin against no documents cannot fail, so it is not a pin (Rule 44)");
     if (!reproduced) problems.push(`criterion 9b: ${(lookup as { reason: string }).reason}`);
+    // RULE 58 — A SIGNATURE DOES NOT PIN A NUMBER NOBODY CAN CHECK.
+    //
+    // A row whose amount no shown sentence states is unverifiable against the
+    // page it renders on. This is a property of THIS state, not a comparison,
+    // which is why it refuses here rather than diverging in compareToGolden.
+    // It is what holds HCA: all four of its rows cite a table row label plus
+    // an interest-rate parenthetical and no figure at all.
+    const unsupported = unsupportedAmountRows(state);
+    for (const u of unsupported) problems.push(`Rule 58 — ${u}`);
     for (const c of crit.criteria) {
       if (c.kind === "computed" && c.pass === false) problems.push(`criterion ${c.id} does not hold: ${c.detail.slice(0, 140)}`);
     }
@@ -109,7 +119,15 @@ const SIGNED = process.argv.slice(2);
           `(Rule 46) — belonging clean, 0 composites. ` +
           `Facility maturities verified against their own sentences; where the instrument's own cited sentence does not ` +
           `state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. ` +
-          `${reproduced}`,
+          `${reproduced}` +
+          // THE TOLERATED SET, IN THE SIGNATURE. Non-negotiable per the
+          // signer's ruling: a golden over a name the filing prints two ways
+          // must say which the reader will see. An empty list is stated too,
+          // because "nothing was tolerated" is a claim worth making.
+          (toleratedDifferences.length > 0
+            ? ` TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (${toleratedDifferences.length}): ` +
+              toleratedDifferences.map((t, i) => `(${i + 1}) ${t}`).join(" ")
+            : ` NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included.`),
       },
       attestation: {
         rowsCorrect: true,

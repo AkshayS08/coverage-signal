@@ -28,6 +28,17 @@ export interface ReproductionEvidence {
   runs: number;
   recordedOn: string;
   evidence: string;
+  /**
+   * DIFFERENCES THE GATE TOLERATED, recorded so the SIGNATURE can carry them.
+   *
+   * A golden signed over a name the filing prints two ways must say which the
+   * reader will see. Tolerating a difference and then not mentioning it is
+   * the failure golden.test.ts [7a] names — it trains a reader to wave
+   * differences through. This is a required field rather than a sentence
+   * inside `evidence`, because a convention is forgettable and a field is
+   * not: an empty array is an assertion that nothing was tolerated.
+   */
+  toleratedDifferences: string[];
 }
 
 /** 9b requires three. Named rather than inlined, because the number is the criterion. */
@@ -44,30 +55,39 @@ export const REPRODUCTION_EVIDENCE: ReproductionEvidence[] = [
       "session — null on the cold pass, $0 on the refresh. Across these three it held at $0 every time, with every " +
       "other facility figure identical too, so the value the re-baseline pins is one that reproduces. " +
       "Facility figures are NOT covered by 9b and were measured separately for exactly that reason.",
+    toleratedDifferences: [],
   },
   {
     company: "DaVita", version: 29, runs: 3, recordedOn: "2026-09-17",
     evidence: "CACHE_BUST x3 at v29 on 2026-09-17: 9 of 9 rows carried a heading in every run, 9 classed in every run, row set / amounts / classes byte-identical across all three.",
+    toleratedDifferences: [],
   },
   {
     company: "Community Health Systems", version: 29, runs: 3, recordedOn: "2026-09-17",
     evidence: "CACHE_BUST x3 at v29 on 2026-09-17: 12 rows and 9 classed in every run, row set / amounts / classes byte-identical across all three.",
+    toleratedDifferences: [],
   },
   {
     company: "Universal Health Services", version: 29, runs: 3, recordedOn: "2026-09-17",
     evidence: "CACHE_BUST x3 at v29: prose-only note (0 table rows), 5 classed in every run, row set / amounts / classes byte-identical across all three.",
+    toleratedDifferences: [],
   },
   {
     company: "Encompass Health", version: 29, runs: 3, recordedOn: "2026-09-17",
     evidence: "CACHE_BUST x3 at v29: 7 of 7 rows carried a heading in every run, 4 classed in every run, row set / amounts / classes byte-identical across all three.",
+    toleratedDifferences: [],
   },
   {
     company: "Tenet Healthcare", version: 29, runs: 3, recordedOn: "2026-09-17",
     evidence: "CACHE_BUST x3 at v29 after the letter-of-credit rule: 12 rows in every run, 11 classed in every run, row set / amounts / classes identical across all three. Before that rule a $200 million letter-of-credit facility appeared as a 13th row in one run of three; an LC is not borrowed money and now has no ladder destination, so it cannot be routed onto one.",
+    toleratedDifferences: [],
   },
   {
     company: "Molina Healthcare", version: 29, runs: 3, recordedOn: "2026-09-17",
-    evidence: "CACHE_BUST x3 at v29 after row identity moved off the label: 6 rows in every run, 5 classed in every run, row set / amounts / classes identical across all three. The facility is named \"revolving credit facility\" in one run and \"Credit Facility\" in two — the filing uses both — and identity now keys on the facts the filing states about the instrument, so the rename is reported as a rename rather than as a row removed and a row added.",
+    evidence: "CACHE_BUST x3 at v29 after row identity moved off the label: 6 rows in every run, 5 classed in every run, row set / amounts / classes identical across all three.",
+    toleratedDifferences: [
+      "the revolver is named \"revolving credit facility\" in one run and \"Credit Facility\" in two — the filing uses both. Same $1.25 billion, same 2030-11-20 maturity, same class in all three. A reader may see either name.",
+    ],
   },
 ];
 

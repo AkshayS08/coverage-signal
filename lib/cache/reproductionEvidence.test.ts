@@ -25,8 +25,8 @@ function assert(cond: boolean, msg: string) {
 
 /** The shape of the bug, frozen: one company, evidence at an older version only. */
 const FIXTURE: ReproductionEvidence[] = [
-  { company: "Molina Healthcare", version: 29, runs: 3, recordedOn: "2026-09-17", evidence: "CACHE_BUST x3 at v29 ..." },
-  { company: "Partial Co", version: 30, runs: 2, recordedOn: "2026-09-21", evidence: "CACHE_BUST x2 at v30 ..." },
+  { company: "Molina Healthcare", version: 29, runs: 3, recordedOn: "2026-09-17", evidence: "CACHE_BUST x3 at v29 ...", toleratedDifferences: [] },
+  { company: "Partial Co", version: 30, runs: 2, recordedOn: "2026-09-21", evidence: "CACHE_BUST x2 at v30 ...", toleratedDifferences: [] },
 ];
 
 console.log("=== [1] The bug, as the case that must refuse ===");

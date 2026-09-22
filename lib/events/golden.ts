@@ -19,7 +19,7 @@
  * failure reads as a diff rather than as an alarm.
  */
 import type { CompanyResult } from "../agent";
-import { assemblePosition, parseMoneyAmount, rowIdentityKey, rowIdentityKeyWithoutSize } from "./position";
+import { amountSupportOf, assemblePosition, parseMoneyAmount, rowIdentityKey, rowIdentityKeyWithoutSize } from "./position";
 import { computeCoverage } from "./coverage";
 import { buildDerivedLines } from "./derived";
 import { buildEvents } from "./buildEvents";
@@ -188,11 +188,35 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
   };
 }
 
+/**
+ * STAGE 0 — WHAT 9b ACTUALLY REQUIRES.
+ *
+ * The comparator already knew the difference between kinds of difference — it
+ * emitted `RENAMED to "X" — same amount, maturity and status` — and then filed
+ * that under `divergences` anyway. The knowledge existed and was discarded at
+ * the reporting line, so a golden could be blocked by a filer printing two of
+ * its own names for one instrument. That blocks most of the book over
+ * something that was never a defect.
+ *
+ * So differences are now SORTED, not counted:
+ *
+ *   blocking   amount by value AND unit, maturity, granularity, status,
+ *              provenance, isCapacity, coverage, tier2, cards, row identity,
+ *              and every amount being supported by its own sentence
+ *   tolerated  the instrument LABEL where amount, maturity and status match;
+ *              and which of two sentences provides provenance where BOTH
+ *              state the row's amount
+ *
+ * `tolerated` is returned, never dropped, and a signature writes it into its
+ * basis — a golden signed over a name that renders two ways must say which
+ * the reader will see. Silently swallowing them is the failure [7a] already
+ * names: it trains a reader to wave differences through.
+ */
 export type GoldenVerdict =
-  | { kind: "matches" }
+  | { kind: "matches"; tolerated: string[] }
   /** The documents moved. Not a failure — the pin no longer describes this input. */
   | { kind: "not-applicable"; reason: string; added: string[]; removed: string[] }
-  | { kind: "diverged"; divergences: string[] };
+  | { kind: "diverged"; divergences: string[]; tolerated: string[] };
 
 const fmt = (v: unknown): string => (v === null || v === undefined ? "—" : typeof v === "string" ? `"${v}"` : String(v));
 
@@ -204,6 +228,17 @@ const fmt = (v: unknown): string => (v === null || v === undefined ? "—" : typ
  * corpus. A moved filing set returns "not-applicable" and names what moved,
  * so a stale pin is visibly stale rather than silently red.
  */
+/**
+ * Rows whose amount no shown sentence supports (Rule 58). A property of one
+ * state, used by the signer to refuse rather than by the comparator to
+ * diverge.
+ */
+export function unsupportedAmountRows(state: GoldenState): string[] {
+  return state.rows
+    .filter((r) => amountSupportOf(r.amount, r.sourceLine).kind === "unsupported")
+    .map((r) => `${r.instrument}: ${r.amount} is not stated by the sentence shown for this row`);
+}
+
 export function compareToGolden(expected: GoldenState, actual: GoldenState): GoldenVerdict {
   const exp = new Set(expected.filingSet);
   const act = new Set(actual.filingSet);
@@ -218,6 +253,8 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
   }
 
   const d: string[] = [];
+  /** Differences that are real, reported, and do NOT block a signature. */
+  const tolerated: string[] = [];
   const cmp = (field: string, e: unknown, a: unknown) => {
     if (JSON.stringify(e) !== JSON.stringify(a)) d.push(`${field}: expected ${fmt(e)}, got ${fmt(a)}`);
   };
@@ -303,14 +340,42 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
     if (!a) { d.push(`rows["${e.instrument}"]: MISSING — the signed ladder carries it, this run does not`); continue; }
     matched.add(a);
     if (a.instrument !== e.instrument) {
-      d.push(`rows["${e.instrument}"].instrument: RENAMED to ${fmt(a.instrument)} — same amount, maturity and status, so the same instrument under another of the filing's own names`);
+      // TOLERATED. The row matched on what the filing STATES — amount,
+      // maturity, status — so this is one instrument under another of the
+      // filer's own names, which Session 22 already moved identity off.
+      tolerated.push(`rows["${e.instrument}"].instrument: RENAMED to ${fmt(a.instrument)} — same amount, maturity and status, so the same instrument under another of the filing's own names`);
     }
     cmpAmount(`rows["${e.instrument}"].amount`, e.amount, a.amount);
-    for (const k of ["maturityDate", "dateGranularity", "status", "provenance", "isCapacity", "sourceLine"] as const) {
+    for (const k of ["maturityDate", "dateGranularity", "status", "provenance", "isCapacity"] as const) {
       cmp(`rows["${e.instrument}"].${k}`, e[k], a[k]);
+    }
+    // PROVENANCE: WHICH valid sentence is a document choice; whether the
+    // sentence supports the amount is not.
+    //
+    // A filing states a facility's size in its 10-Q and again in the 8-K that
+    // created it. A run citing one and a run citing the other have not
+    // disagreed about anything — BOTH state the amount, and a reader checking
+    // either sees the number. That is tolerated. A run whose sentence does
+    // NOT state the amount has changed what backs the figure, and that blocks
+    // (Rule 58).
+    if (e.sourceLine !== a.sourceLine) {
+      const eOk = amountSupportOf(e.amount, e.sourceLine).kind !== "unsupported";
+      const aOk = amountSupportOf(a.amount, a.sourceLine).kind !== "unsupported";
+      const line = `rows["${e.instrument}"].sourceLine: expected ${fmt(e.sourceLine)}, got ${fmt(a.sourceLine)}`;
+      if (eOk && aOk) tolerated.push(`${line} — both sentences state the row's amount, so this is which document was cited, not a changed fact`);
+      else d.push(`${line}${aOk ? "" : " — and the new sentence does NOT state this row's amount (Rule 58)"}`);
     }
   }
   for (const a of actual.rows) if (!matched.has(a)) d.push(`rows["${a.instrument}"]: UNEXPECTED — this run carries it, the signed ladder does not`);
+
+  // "EVERY AMOUNT IS SUPPORTED" IS NOT A COMPARISON, SO IT DOES NOT LIVE
+  // HERE. It was written into this function first, and [7b] caught it
+  // immediately: a test mutating an amount without touching its sentence
+  // started failing for a reason that had nothing to do with the two states
+  // differing. `compareToGolden` answers "did this run move?"; whether a
+  // single run's figures are checkable is a property of ONE state and gates
+  // SIGNING. It is enforced in s22sign, where refusing is the right verb.
+  // See `unsupportedAmountRows` below.
 
   for (const k of ["denominatorSource", "statedTotalDebt", "capturedFace", "statedBridge", "residualPercent", "residualPasses"] as const) {
     // These are already numbers or booleans, not printed strings — cmp is
@@ -343,5 +408,5 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
     cmp(`cards[${i}].withheld`, e.withheld, a.withheld);
   }
 
-  return d.length === 0 ? { kind: "matches" } : { kind: "diverged", divergences: d };
+  return d.length === 0 ? { kind: "matches", tolerated } : { kind: "diverged", divergences: d, tolerated };
 }
