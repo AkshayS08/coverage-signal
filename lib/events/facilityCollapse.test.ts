@@ -14,7 +14,7 @@
  *
  * Offline, $0. The facilities below are REAL, as v30 stored them.
  */
-import { facilityOnlyRows } from "./position";
+import { facilityOnlyRows, amountProvenanceFor } from "./position";
 import { matchFacility } from "./position";
 import type { FacilityRow } from "../agent/claude";
 import type { TriggerResult } from "../agent";
@@ -92,6 +92,52 @@ console.log("\n=== [3] The suppression it replaces, and the safe direction ===")
   const ambiguous = facilityOnlyRows([{ instrument: "revolving credit facility" }] as never, dm([twinA, twinB]));
   assert(ambiguous.length >= 1,
     `[3b] where two facilities cannot be told apart, an ambiguous match is not a match and nothing is silently dropped (got ${ambiguous.length} row(s))`);
+}
+
+// NO SUMMARY HERE. A second `${passed} passed` line used to sit at this
+// point, left behind when block [4] was appended. runOffline reads the FIRST
+// "N passed, M failed" it finds, so this file reported 8 assertions while
+// running 14 — the suite-count drift of the session's own audit spine, inside
+// a single file. One summary, at the end, after every block.
+console.log("\n=== [4] RULE 58 — a row's sourceLine is the sentence that states its AMOUNT ===");
+{
+  // REAL UHS, as v30 stored it. The $700M facility states its size in one
+  // sentence and its maturity in another, and the row used to take the
+  // MATURITY sentence as provenance — rendering $700 million beside words
+  // that contain no amount at all.
+  const ddJulyReal: FacilityRow = {
+    ...ddJuly,
+    facilitySize: fig("$700 million", 'The Twelfth Amendment provides for the amendment of the Existing Credit Facility as of July 20, 2026 to add a new incremental delayed draw tranche A term loan facility of up to $700 million (the "July 2026 Delayed Draw Term Loan").'),
+    available: null,
+    maturity: fig("364 days after funding", "will mature on the date that is 364 days after the date of funding of the July 2026 Delayed Draw Term Loan"),
+  };
+  const p = amountProvenanceFor(ddJulyReal);
+  assert(p.statesAmount && /\$700 million/.test(p.sourceLine),
+    `[4a] REAL UHS $700M: provenance is the sentence STATING $700 million, not the maturity sentence (got "${p.sourceLine.slice(0, 70)}...")`);
+  assert(!/will mature on the date that is 364 days/.test(p.sourceLine),
+    "[4b] and it is specifically NOT the maturity sentence, which states no amount — the Encompass composite one field over");
+
+  const rows = facilityOnlyRows([], dm([ddJulyReal]));
+  assert(rows.length === 1 && /\$700 million/.test(String(rows[0].sourceLine)),
+    `[4c] the rendered row carries it, so what a reader checks the number against actually contains the number`);
+  assert(rows[0].amountProvenanceNote === undefined,
+    "[4d] and no provenance note is raised, because the amount IS supported");
+
+  // The maturity sentence is not discarded — it keeps its own home.
+  const dated: FacilityRow = { ...ddJulyReal, maturity: fig("September 26, 2029", "The maturity date for our Credit Agreement is September 26, 2029 .") };
+  const datedRows = facilityOnlyRows([], dm([dated]));
+  assert(datedRows[0].maturityFromFacility?.sourceLine.includes("September 26, 2029") === true,
+    "[4e] the maturity sentence still provides the MATURITY's provenance — it stops standing in for the amount's, it is not thrown away");
+
+  // NEVER SILENT. A facility no sentence supports still renders, saying so.
+  const unsupported: FacilityRow = {
+    ...ddJulyReal,
+    facilitySize: fig("$700 million", "The Company entered into the Twelfth Amendment to its Credit Agreement."),
+    maturity: null,
+  };
+  const bad = facilityOnlyRows([], dm([unsupported]));
+  assert(bad.length === 1 && typeof bad[0].amountProvenanceNote === "string",
+    "[4f] where NO stated sentence contains the amount, the row still renders and states the problem — never suppressed, never silently mismatched");
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

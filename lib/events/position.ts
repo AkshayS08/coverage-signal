@@ -5,6 +5,7 @@ import { classifyInstrument, priorityRank, type Classification, type NoteSeniori
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
 import { extractFactTokens, factTokensMatch, type FactToken } from "../agent/factTokens";
 import { isStatedZeroAmount } from "../agent/moneyScale";
+import { sentenceStatesFigure } from "../agent/verifyFacility";
 import { resolveFacilityMaturity, type FacilityMaturity } from "./facilityMaturity";
 
 /**
@@ -157,6 +158,8 @@ export interface LadderRow {
    * disclosure rather than an absence the filer does not have.
    */
   facilityMaturityNote?: string;
+  /** Rule 58: set only when no stated sentence supports this row's amount. */
+  amountProvenanceNote?: string;
 }
 
 export interface CompanyPosition {
@@ -600,6 +603,51 @@ function applyFacilityMaturities(rows: LadderRow[], facilities: FacilityRow[] | 
  * ladder. Capacity rows: they render, they carry their own maturity, and they
  * contribute nothing to any total.
  */
+/**
+ * RULE 58 — A ROW'S sourceLine IS THE SENTENCE THAT STATES ITS AMOUNT.
+ *
+ * `facilityOnlyRows` built the row's provenance as
+ * `f.maturity?.sourceLine ?? f.facilitySize?.sourceLine` — the MATURITY
+ * sentence first. The row's amount comes from `facilitySize`, so wherever a
+ * facility states its size and its maturity in different sentences, the row
+ * displayed one sentence's number against another sentence's words.
+ *
+ * UHS's $700 million delayed draw loan is the measured case: the row rendered
+ * `$700 million` beside
+ *
+ *   "will mature on the date that is 364 days after the date of funding of
+ *    the July 2026 Delayed Draw Term Loan"
+ *
+ * which states no amount at all. Third instance this session of a number next
+ * to a sentence that does not support it, and the same defect as Session 22's
+ * Encompass composite — $824 million of "available" riding on a sentence that
+ * says only "$200.0 million was drawn".
+ *
+ * The maturity sentence is not discarded: it already has its own home on
+ * `maturityFromFacility.sourceLine`, which is where a maturity's provenance
+ * belongs. It simply stops standing in for the amount's.
+ *
+ * AND THE CHOICE IS VERIFIED, NOT ASSUMED. `verifyFacilities` guarantees each
+ * figure is stated by its own sentence, so `facilitySize`'s line should always
+ * state the size — but "should always" is how the first version of this line
+ * came to be trusted. The chosen sentence is checked against the amount, and a
+ * row whose provenance cannot be established says so rather than rendering a
+ * number beside an unrelated sentence.
+ */
+export function amountProvenanceFor(f: FacilityRow): { sourceLine: string; statesAmount: boolean } {
+  const amount = f.facilitySize?.value ?? null;
+  // In preference order: the figure the amount IS, then the other stated
+  // figures, then the maturity sentence as a last resort rather than a first.
+  const candidates = [f.facilitySize, f.available, f.drawn, f.maturity]
+    .map((x) => x?.sourceLine)
+    .filter((s): s is string => typeof s === "string" && s.trim() !== "");
+  if (amount !== null) {
+    const stating = candidates.find((s) => sentenceStatesFigure(amount, s));
+    if (stating) return { sourceLine: stating, statesAmount: true };
+  }
+  return { sourceLine: candidates[0] ?? "", statesAmount: false };
+}
+
 export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerResult | undefined): LadderRow[] {
   const facilities = debtMaturity?.facilities ?? [];
   if (facilities.length === 0) return [];
@@ -653,6 +701,8 @@ export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerRes
     if (existing.some((r) => matchFacility({ name: r.instrument, category: null }, facilities, { byNameOnly: true }) === f)) continue;
     const m = resolveFacilityMaturity(f.maturity?.value);
     const classification = classifyInstrument({ headings: [], instrumentName: f.name });
+    // Rule 58 — the row's provenance is the sentence stating its AMOUNT.
+    const provenance = amountProvenanceFor(f);
     const row: LadderRow = {
       instrument: f.name,
       rate: null,
@@ -664,7 +714,7 @@ export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerRes
       amount: f.facilitySize?.value ?? "(no amount stated)",
       maturityDate: m.outcome === "dated" ? m.date : null,
       dateGranularity: m.outcome === "dated" ? m.granularity : null,
-      sourceLine: f.maturity?.sourceLine ?? f.facilitySize?.sourceLine ?? "",
+      sourceLine: provenance.sourceLine,
       citedUrl: "",
       id: ladderRowId({ instrument: f.name, rate: null, maturityDate: m.outcome === "dated" ? m.date : null, dateGranularity: null, amount: f.facilitySize?.value ?? "(no amount stated)" }),
       status: "live",
@@ -673,6 +723,13 @@ export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerRes
     };
     if (m.outcome === "dated") row.maturityFromFacility = { statedAs: m.statedAs, facility: f.name, sourceLine: f.maturity?.sourceLine ?? "" };
     if (m.outcome === "relative") row.facilityMaturityNote = m.why;
+    // NEVER SILENT. A row whose amount no stated sentence supports still
+    // renders — with the problem said out loud, not with the number quietly
+    // sitting beside an unrelated sentence.
+    if (!provenance.statesAmount && row.amount !== "(no amount stated)") {
+      row.amountProvenanceNote =
+        `no sentence returned for this facility states ${row.amount} — the line shown is the closest stated sentence and does not support the amount`;
+    }
     out.push(row);
   }
   return out;

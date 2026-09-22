@@ -292,9 +292,9 @@ console.log("\n=== [6] Scope — which lines a card gets, by what the line needs
     `[6a] a card with no headline ladder row gets the COMPANY-level line only. Scoped by what each line needs, never by which trigger the card happens to be (got ${lines.map((l) => l.kind).join(",")})`);
 }
 
-console.log(`\n${passed} passed, ${failed} failed.`);
-if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }
-
+// NO SUMMARY HERE — runOffline reads the FIRST "N passed, M failed" it finds,
+// so a leftover mid-file summary makes the suite report fewer assertions than
+// it runs. This file reported 30 while running 36. One summary, at the end.
 console.log("\n=== [9] THE MONTH CONVENTION, PINNED AT ITS BOUNDARIES ===");
 {
   const at = new Date("2026-09-04T00:00:00Z");

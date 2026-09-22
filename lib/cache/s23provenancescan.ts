@@ -1,0 +1,67 @@
+/**
+ * RULE 58's SWEEP — does every ladder row's sourceLine state that row's
+ * amount? $0, cached reads.
+ *
+ * This bug is book-wide by nature: any facility stating its size and its
+ * maturity in different sentences hit it, and nothing about it was specific
+ * to UHS. So the question is asked of EVERY row in every company's rendered
+ * ladder — facility rows and schedule rows alike, because a rule about
+ * provenance that checked only the rows it was written for would be the same
+ * mistake one layer up.
+ *
+ * Rows carrying no amount are counted separately and not as failures: "(no
+ * amount stated)" has nothing to support, which is a different fact from an
+ * amount nothing supports.
+ *
+ * Run: npx tsx lib/cache/s23provenancescan.ts
+ */
+import { loadEnvQuietly } from "./loadEnv";
+loadEnvQuietly();
+import { PINNED_AS_OF } from "./pinnedAsOf";
+import { runAgentLoop } from "../agent";
+import { assemblePosition } from "../events/position";
+import { sentenceStatesFigure } from "../agent/verifyFacility";
+import { currentCompanySpend } from "../agent/costMeter";
+
+const ALL = [
+  "DaVita", "HCA Healthcare", "Tenet Healthcare", "Universal Health Services", "Encompass Health",
+  "Community Health Systems", "Quest Diagnostics", "Centene Corporation", "Cigna Group", "Molina Healthcare",
+];
+
+(async () => {
+  let rows = 0, supported = 0, noAmount = 0, unsupported = 0, noted = 0, spend = 0;
+  console.log(`\n${"=".repeat(104)}`);
+  console.log(`RULE 58 — every ladder row in the book: does its sourceLine state its amount?`);
+  console.log("=".repeat(104));
+
+  for (const company of ALL) {
+    const result = await runAgentLoop(company);
+    spend += currentCompanySpend().totalUsd;
+    const pos = assemblePosition(result, PINNED_AS_OF);
+    const bad: string[] = [];
+    for (const r of pos.rows) {
+      rows++;
+      const amount = String(r.amount ?? "");
+      if (amount === "" || amount === "(no amount stated)") { noAmount++; continue; }
+      const line = String(r.sourceLine ?? "");
+      if (sentenceStatesFigure(amount, line)) { supported++; continue; }
+      unsupported++;
+      if (r.amountProvenanceNote) noted++;
+      bad.push(
+        `      ${String(r.instrument).slice(0, 46).padEnd(48)} ${amount.padEnd(22)} ${r.isCapacity ? "capacity" : "debt"}\n` +
+        `        sourceLine: "${line.replace(/\s+/g, " ").slice(0, 160)}"\n` +
+        `        ${r.amountProvenanceNote ? `stated on the row: ${r.amountProvenanceNote}` : "NO NOTE ON THE ROW — the mismatch renders silently"}`
+      );
+    }
+    console.log(`\n  ${company.padEnd(30)} ${pos.rows.length} row(s)   ${bad.length === 0 ? "all amounts supported by their own sentence" : `⚠ ${bad.length} unsupported`}`);
+    for (const b of bad) console.log(b);
+  }
+
+  console.log(`\n${"=".repeat(104)}`);
+  console.log(`  ${rows} ladder rows across the book`);
+  console.log(`  ${supported} carry a sourceLine that states their amount`);
+  console.log(`  ${noAmount} state no amount at all — nothing to support, not a failure`);
+  console.log(`  ${unsupported} have an amount their sourceLine does NOT state${unsupported > 0 ? `, ${noted} of which say so on the row` : ""}`);
+  console.log(`  SPEND: $${spend.toFixed(4)}`);
+  console.log("=".repeat(104));
+})();

@@ -4605,3 +4605,92 @@ borrowing capacity pursuant to the terms of the delayed draw term loan A
 facility"* states its own figure. The $700M row does not, and a row whose
 cited sentence does not state its amount is the Encompass composite one layer
 over.
+
+## Rule 58 — a row's sourceLine is the sentence that states the row's AMOUNT
+
+`facilityOnlyRows` built provenance as
+`f.maturity?.sourceLine ?? f.facilitySize?.sourceLine` — the **maturity**
+sentence first. The row's amount comes from `facilitySize`. So wherever a
+facility states its size and its maturity in different sentences, the row
+displayed one sentence's number against another sentence's words.
+
+UHS's $700 million delayed draw loan is the measured case. The row rendered
+`$700 million` beside:
+
+> "will mature on the date that is 364 days after the date of funding of the
+> July 2026 Delayed Draw Term Loan"
+
+which states no amount at all. **Third instance this session of a number next
+to a sentence that does not support it**, and the same defect as Session 22's
+Encompass composite — $824 million of "available" riding on a sentence that
+says only "$200.0 million was drawn".
+
+The maturity sentence is not discarded. It already has its own home on
+`maturityFromFacility.sourceLine`, which is where a maturity's provenance
+belongs; it simply stops standing in for the amount's. And the choice is
+**verified rather than assumed** — the chosen sentence is checked against the
+amount, and a row nothing supports renders with the problem stated (`never
+suppress`) instead of a number sitting quietly beside unrelated words.
+
+### The sweep — and the honest count is 4, not 10
+
+Asked of **every** ladder row in the book, facility and schedule alike,
+because a provenance rule that checked only the rows it was written for would
+be the same mistake one layer up.
+
+```
+90 ladder rows across the book
+78 carry a sourceLine that states their amount
+ 2 state no amount at all — nothing to support, not a failure
+10 have an amount their sourceLine does NOT state
+```
+
+**Six of the ten are my scan's strictness, not defects**, and saying so
+matters more than the headline number:
+
+| row | amount | its sentence | verdict |
+|---|---|---|---|
+| CHS 6⅞% Notes | `$42 million` | `"6 ⅞% Senior Notes due 2028 $ 42"` | digits present; the row appends the table's unit |
+| CHS Other | `$52 million` | `"Other 52"` | same |
+| CHS ABL | `$0 million` | `"ABL Facility —"` | em-dash zero, Rule 53's own convention |
+| Quest 3.45% Note | `$ —` | `"… $ — $ 501"` | em-dash zero |
+| Quest Other | `$ 35 millions` | `"Other 35 21"` | digits present |
+| Tenet revolver | `$1,900 million` | `"… aggregate principal amount of up to $ 1.900 …"` | separator convention |
+
+**The four that are real are all HCA, and they are ALL FOUR of its rows:**
+
+```
+Senior unsecured notes payable through 2095   44,200 million
+  "Senior unsecured notes payable through 2095 (effective interest rate of 5.1 %)"
+Senior unsecured credit facility               1,010 million
+  "Senior unsecured credit facility (effective interest rate of 4.8 %)"
+Commercial paper                             $ 3,890 million
+  "Commercial paper (average life of 38 days, weighted average rate of 4.3 %)"
+Other debt                                     1,069 million
+  "Other debt (effective interest rate of 4.9 %)"
+```
+
+Every one is a table **row label plus a parenthetical about interest rate**,
+and none contains a figure. HCA's entire rendered ladder has no provenance for
+any of its numbers — the transcription captured the label cell and the amounts
+came from columns the sentence does not include.
+
+**And the "never silent" half does not yet reach them.** `amountProvenanceNote`
+is set in `facilityOnlyRows`, so schedule rows carry no note and HCA's four
+render silently. Recorded as the gap it is rather than claimed as covered.
+
+**Cosmetic, found in passing:** Quest renders `$ 35 millions` — a pluralised
+scale word.
+
+### What it did to UHS
+
+`$400M` row's sourceLine divergence: **gone**. Both runs now take the
+amount-stating sentence. The `$700M` row still cites different sentences
+across runs, but **both now state $700 million** — run 1 the 10-Q's, run 3 the
+8-K's. A document choice, no longer a correctness one. Divergences 8 → 7.
+
+**9b still does not hold.** The remaining seven are four renames, one unit
+form (`$1.448 billion` / `$1,448 million`), and two sentence choices that are
+both valid. All of them are model-side variance that no code change touches —
+which is why a fresh billed re-taste was NOT run: it would draw three more
+samples of the same variance already characterised here.

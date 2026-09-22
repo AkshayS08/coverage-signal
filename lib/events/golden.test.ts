@@ -171,8 +171,9 @@ console.log("\n=== [4] An unchanged state matches, and matching is the only sile
     "[4b] even the as-of date is pinned — every month count in the state was measured against it, so a state compared at a different clock is not the same state");
 }
 
-console.log(`\n${passed} passed, ${failed} failed.`);
-if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }
+// NO SUMMARY HERE — runOffline reads the FIRST "N passed, M failed" it finds,
+// so a leftover mid-file summary makes the suite report fewer assertions than
+// it runs. This file reported 26 while running 44. One summary, at the end.
 
 // ===========================================================================
 // THE NINE CRITERIA, ASSERTED BY NAME.
