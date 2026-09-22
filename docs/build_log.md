@@ -4527,3 +4527,81 @@ two period columns to one (`"$ 800   $ 800"` → `"$ 800"`) — amounts and date
 unchanged. And the issuance's `verifiedQuote` now begins mid-word (*"erial
 Definitive Agreement. 6.500% Senior Notes…"*), a clean verification with an
 untidy left edge. Noted for the product read.
+
+## Rule 57 — a date inside a maturity clause is the maturity only where the clause predicates it of maturity
+
+`resolveFacilityMaturity` took the single date token out of a facility's
+stated maturity and called it the maturity. UHS is what that cost.
+
+Its 10-Q says of the $700 million delayed draw loan:
+
+> "…which, if we elect to utilize, **would be funded on or prior to September
+> 30, 2026**, with a **maturity date 364 days after the initial funding**."
+
+The only date in the sentence is the **funding deadline**. The maturity is a
+span from an event the disclosure does not date. Drawn on the last permitted
+day, the facility matures around **September 30, 2027**. The 8-K says the same
+thing from the other side — *"available to be drawn down … from July 20, 2026
+**through September 30, 2026**, and will mature on the date that is 364 days
+after the date of funding"*.
+
+**Taking the date anyway carded a $700 million maturity twelve months early**,
+and it did so in one run of three. The instability we were about to spend a
+re-taste chasing was a coin flip between correct and materially wrong — which
+is why the rule had to be settled before the re-taste rather than after it.
+
+**The test is predication, not proximity.**
+
+| the clause says | the date is |
+|---|---|
+| "matures on / due / payable on / expires **September 26, 2029**" | the maturity |
+| "**funded** on or prior to …" | when it may be FUNDED |
+| "**drawn** down … through …" | when it may be DRAWN |
+| "**amendment dated** …" / "**effective** …" | when the paper was signed |
+
+Where the maturity itself is stated as a relative term, a date in the same
+sentence is the maturity **only** if a maturity word governs it. Otherwise the
+facility is `relative` and cannot card — which is what this module's own
+header always said it should be, defeated by a foreign date inside the string.
+
+This is Rule 46's shape one field over: a real number and a real sentence,
+joined by nothing.
+
+**Deliberately conservative, and asserted as such.** A genuine outside bound
+that names no maturity word — *"364 days after funding, but in no event later
+than December 31, 2027"* — also resolves `relative`. Refusing to card is the
+recoverable direction; carding on a date the clause does not predicate of
+maturity is not.
+
+**Blast radius: 18 facility maturities scanned across the book, 0 moved.** The
+rule engages only where a relative term is present, and the canonical book
+already carries the honest transcription everywhere. It changes no rendered
+maturity today and closes the one that could flip tomorrow.
+
+**And it settles Stage 5's render case as logged**: "364 days after funding"
+shows as the filer's words — not a blank, and not a date we manufactured.
+
+### What it did to UHS's reproducibility
+
+The $700M facility stopped reading as a row REMOVED and a row ADDED, because
+both transcriptions now resolve to the same (dateless) maturity, so identity
+matches and the difference is reported as the rename it is. `cards.count`
+stopped diverging: 0 in every run, correctly. Divergences 9 → 8.
+
+**9b still does not hold, and UHS stays held.** Runs 1 and 2 match; run 3 is
+the outlier, on four renames, three `sourceLine` choices, and one genuine unit
+change — `$1.448 billion` against `$1,448 million`, which Session 22 already
+ruled is a changed transcription and not a tolerance.
+
+**A second reason not to sign it, found while checking the first.** The
+canonical answer's $700M ladder row carries `$700 million` against this
+sourceLine:
+
+> "will mature on the date that is 364 days after the date of funding of the
+> July 2026 Delayed Draw Term Loan"
+
+That sentence states no amount. The $400M row is clean — *"$400 million of
+borrowing capacity pursuant to the terms of the delayed draw term loan A
+facility"* states its own figure. The $700M row does not, and a row whose
+cited sentence does not state its amount is the Encompass composite one layer
+over.

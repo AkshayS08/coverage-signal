@@ -43,6 +43,72 @@ export type FacilityMaturity =
   /** The filing states no maturity for this facility at all. */
   | { outcome: "unstated" };
 
+/**
+ * A MATURITY STATED AS A SPAN FROM AN EVENT — the shape that cannot be a date
+ * until the event happens. Closed vocabulary of spans, not of filers.
+ */
+const RELATIVE_TERM =
+  /\b\d[\d,]*\s*(?:days?|months?|years?)\s+(?:after|from|following)\b|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+years?\b|\banniversary\s+of\b/i;
+
+/** A date immediately governed by one of these IS the maturity. */
+const MATURITY_PREDICATE = /\b(?:matur\w*|due|payable|expir\w*|terminat\w*|final\s+maturity)\b[^.;]{0,24}$/i;
+
+/**
+ * What a date sitting in a maturity sentence is otherwise predicated of. Each
+ * is a real fact about the facility, and none of them is when it comes due.
+ */
+const OTHER_PREDICATE: { re: RegExp; of: string }[] = [
+  { re: /\bfund(?:ed|ing)\b/i, of: "when the facility may be FUNDED" },
+  { re: /\bdraw(?:n|ing)?\b|\bborrow(?:ed|ing)\b|\butiliz/i, of: "when it may be DRAWN" },
+  { re: /\bamend(?:ed|ment)\b|\bentered\s+into\b/i, of: "when an AMENDMENT was made" },
+  { re: /\beffective\b|\bcommenc\w*\b/i, of: "when it became EFFECTIVE" },
+  { re: /\bthrough\b|\bperiod\s+from\b|\bavailab\w*\b/i, of: "the AVAILABILITY period" },
+];
+
+/** The date tokens as they appear in the text, so what precedes one can be read. */
+const DATE_IN_TEXT =
+  /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}?,?\s*\d{4}\b|\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/gi;
+
+/**
+ * WHAT IS THIS DATE ATTACHED TO? Rule 57.
+ *
+ * `resolveFacilityMaturity` took the single date token in the stated value and
+ * called it the maturity. UHS is the measured cost. Its 10-Q says the $700
+ * million delayed draw loan "would be FUNDED on or prior to September 30,
+ * 2026, with a maturity date 364 days after the initial funding" — so the only
+ * date in the sentence is the FUNDING deadline, and the maturity is a span
+ * from an event the disclosure does not date. Drawn on the last permitted day,
+ * the facility matures around September 30, 2027.
+ *
+ * Taking it anyway carded a $700 million maturity TWELVE MONTHS EARLY, and it
+ * did so in one run of three — so the variance we were about to chase was a
+ * coin flip between correct and materially wrong.
+ *
+ * The test is predication, not proximity: where the maturity itself is stated
+ * as a relative term, a date in the same sentence is the maturity only if the
+ * clause predicates it of maturity. Otherwise the facility is `relative` and
+ * cannot card — which is what this module's own header always said it should
+ * be, defeated by a foreign date sitting inside the string.
+ *
+ * DELIBERATELY CONSERVATIVE. A genuine outside bound that names no maturity
+ * word — "364 days after funding, but in no event later than December 31,
+ * 2027" — also resolves `relative`. Refusing to card is the safe direction and
+ * the facility still renders its stated words; carding on a date the sentence
+ * does not predicate of maturity is the failure that cannot be taken back.
+ */
+function predicationOf(stated: string): { kind: "maturity" } | { kind: "other"; of: string; date: string } | null {
+  if (!RELATIVE_TERM.test(stated)) return null; // no relative term: nothing to adjudicate
+  const matches = [...stated.matchAll(DATE_IN_TEXT)];
+  if (matches.length === 0) return null;
+  const m = matches[0];
+  const before = stated.slice(0, m.index ?? 0);
+  if (MATURITY_PREDICATE.test(before)) return { kind: "maturity" };
+  for (const p of OTHER_PREDICATE) {
+    if (p.re.test(before)) return { kind: "other", of: p.of, date: m[0] };
+  }
+  return { kind: "other", of: "something the clause does not state is maturity", date: m[0] };
+}
+
 /** Zero-padded, so the result is directly comparable with every other ISO date in the pipeline. */
 function iso(year: number, month: number | null, day: number | null): string {
   return `${year}-${String(month ?? 1).padStart(2, "0")}-${String(day ?? 1).padStart(2, "0")}`;
@@ -75,6 +141,19 @@ export function resolveFacilityMaturity(statedValue: string | null | undefined):
       outcome: "relative",
       statedAs: stated,
       why: `the filing's stated maturity for this facility names ${dates.length} dates ("${stated}"), and choosing between them would be a convention the filing does not state`,
+    };
+  }
+
+  // RULE 57 — a date is the maturity only where the clause predicates it of
+  // maturity. Checked before the date is accepted, never after.
+  const predication = predicationOf(stated);
+  if (predication && predication.kind === "other") {
+    return {
+      outcome: "relative",
+      statedAs: stated,
+      why:
+        `the filing states this facility's maturity as a span from an event it does not date, and the only date in ` +
+        `"${stated}" is ${predication.of} (${predication.date}) — a real fact about the facility, and not when it comes due`,
     };
   }
 
