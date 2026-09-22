@@ -14,7 +14,7 @@
  *
  * Offline, $0. The facilities below are REAL, as v30 stored them.
  */
-import { facilityOnlyRows, amountProvenanceFor } from "./position";
+import { facilityOnlyRows, amountProvenanceFor, amountSupportOf, noteUnsupportedAmounts } from "./position";
 import { matchFacility } from "./position";
 import type { FacilityRow } from "../agent/claude";
 import type { TriggerResult } from "../agent";
@@ -135,9 +135,47 @@ console.log("\n=== [4] RULE 58 — a row's sourceLine is the sentence that state
     facilitySize: fig("$700 million", "The Company entered into the Twelfth Amendment to its Credit Agreement."),
     maturity: null,
   };
-  const bad = facilityOnlyRows([], dm([unsupported]));
+  // The note is no longer set by the builder — `noteUnsupportedAmounts` runs
+  // once over the assembled ladder so EVERY builder is covered. This test
+  // failed the moment that moved, which is the test doing its job.
+  const bad = noteUnsupportedAmounts(facilityOnlyRows([], dm([unsupported])));
   assert(bad.length === 1 && typeof bad[0].amountProvenanceNote === "string",
     "[4f] where NO stated sentence contains the amount, the row still renders and states the problem — never suppressed, never silently mismatched");
+}
+
+console.log("\n=== [5] The never-silent guard reaches EVERY row, and knows the filing's conventions ===");
+{
+  // REAL HCA — all four of its ladder rows cite a table row LABEL plus an
+  // interest-rate parenthetical, and no figure at all.
+  assert(amountSupportOf("$ 3,890 million", "Commercial paper (average life of 38 days, weighted average rate of 4.3 %)").kind === "unsupported",
+    "[5a] REAL HCA: a row label with an interest-rate parenthetical does NOT support $3,890 million — the amount is real in the table and this sentence is not what carries it");
+  assert(amountSupportOf("44,200 million", "Senior unsecured notes payable through 2095 (effective interest rate of 5.1 %)").kind === "unsupported",
+    "[5b] REAL HCA: and the same for its largest row, so the finding is the pattern and not one line");
+
+  // REAL CHS and Quest — the filing's OWN zero conventions, which are not defects.
+  assert(amountSupportOf("$0 million", "ABL Facility —").kind === "stated-zero",
+    "[5c] REAL CHS: \"$0 million\" against a column printing an em-dash is the zero convention Rule 53 already recognises, not an unsupported amount");
+  assert(amountSupportOf("$ —", "3.45 % Senior Note due June 2026 $ — $ 501").kind === "stated-zero",
+    "[5d] REAL Quest: and the em-dash form of the same fact resolves too — it takes BOTH zero predicates, logged as a Rule 21 finding rather than hidden");
+
+  // REAL CHS — the scale word comes from the column header, not the cell.
+  assert(amountSupportOf("$52 million", "Other 52").kind === "scale-from-table",
+    "[5e] REAL CHS: digits present, scale word supplied by the column header — supported, and named as such rather than counted as a failure");
+  assert(amountSupportOf("$52 million", "Other 5,200").kind === "unsupported",
+    "[5f] but a DIFFERENT number in the sentence is still unsupported — the exemption is about the missing scale word, never about the digits");
+  assert(amountSupportOf("$52 million", "Other 52 thousand").kind === "unsupported",
+    "[5g] and where the sentence names its OWN scale and it disagrees, that is a real disagreement, not a header supplying the unit");
+
+  // THE GUARD RUNS OVER THE ASSEMBLED LADDER, so a schedule row cannot render
+  // an unsupported amount silently the way HCA's four did.
+  const rows = noteUnsupportedAmounts([
+    { instrument: "Commercial paper", amount: "$ 3,890 million", sourceLine: "Commercial paper (average life of 38 days, weighted average rate of 4.3 %)" },
+    { instrument: "Other", amount: "$52 million", sourceLine: "Other 52" },
+  ] as never);
+  assert(typeof rows[0].amountProvenanceNote === "string",
+    "[5h] a SCHEDULE row with an unsupported amount now carries a note — the guard used to live inside facilityOnlyRows and never saw these");
+  assert(rows[1].amountProvenanceNote === undefined,
+    "[5i] and a supported one carries none, so the note means something when it appears");
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

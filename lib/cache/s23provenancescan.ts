@@ -19,8 +19,7 @@ import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
 import { PINNED_AS_OF } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
-import { assemblePosition } from "../events/position";
-import { sentenceStatesFigure } from "../agent/verifyFacility";
+import { assemblePosition, amountSupportOf } from "../events/position";
 import { currentCompanySpend } from "../agent/costMeter";
 
 const ALL = [
@@ -30,6 +29,7 @@ const ALL = [
 
 (async () => {
   let rows = 0, supported = 0, noAmount = 0, unsupported = 0, noted = 0, spend = 0;
+  const byKind: Record<string, number> = {};
   console.log(`\n${"=".repeat(104)}`);
   console.log(`RULE 58 — every ladder row in the book: does its sourceLine state its amount?`);
   console.log("=".repeat(104));
@@ -44,7 +44,13 @@ const ALL = [
       const amount = String(r.amount ?? "");
       if (amount === "" || amount === "(no amount stated)") { noAmount++; continue; }
       const line = String(r.sourceLine ?? "");
-      if (sentenceStatesFigure(amount, line)) { supported++; continue; }
+      // THE SAME DECIDER THE RENDER USES. The first version of this scan ran
+      // sentenceStatesFigure directly and reported ten failures, six of which
+      // were the filing's own conventions — em-dash zeros and a scale word
+      // supplied by the column header. A scan that judges by a different
+      // standard than the page is measuring a different thing.
+      const support = amountSupportOf(amount, line);
+      if (support.kind !== "unsupported") { supported++; byKind[support.kind] = (byKind[support.kind] ?? 0) + 1; continue; }
       unsupported++;
       if (r.amountProvenanceNote) noted++;
       bad.push(
@@ -59,7 +65,7 @@ const ALL = [
 
   console.log(`\n${"=".repeat(104)}`);
   console.log(`  ${rows} ladder rows across the book`);
-  console.log(`  ${supported} carry a sourceLine that states their amount`);
+  console.log(`  ${supported} supported — ${Object.entries(byKind).map(([k, v]) => `${v} ${k}`).join(", ") || "none"}`);
   console.log(`  ${noAmount} state no amount at all — nothing to support, not a failure`);
   console.log(`  ${unsupported} have an amount their sourceLine does NOT state${unsupported > 0 ? `, ${noted} of which say so on the row` : ""}`);
   console.log(`  SPEND: $${spend.toFixed(4)}`);

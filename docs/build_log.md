@@ -4694,3 +4694,96 @@ form (`$1.448 billion` / `$1,448 million`), and two sentence choices that are
 both valid. All of them are model-side variance that no code change touches —
 which is why a fresh billed re-taste was NOT run: it would draw three more
 samples of the same variance already characterised here.
+
+## HARD FINDING — HCA's ladder renders four amounts with no supporting sentence. Do not card HCA.
+
+All four of HCA's ladder rows cite a table **row label plus an interest-rate
+parenthetical**, and not one contains a figure:
+
+```
+Senior unsecured notes payable through 2095   44,200 million
+  "Senior unsecured notes payable through 2095 (effective interest rate of 5.1 %)"
+Senior unsecured credit facility               1,010 million
+  "Senior unsecured credit facility (effective interest rate of 4.8 %)"
+Commercial paper                             $ 3,890 million
+  "Commercial paper (average life of 38 days, weighted average rate of 4.3 %)"
+Other debt                                     1,069 million
+  "Other debt (effective interest rate of 4.9 %)"
+```
+
+The amounts are real in the filing's table. The transcription captured the
+label cell; the figures live in columns the sentence does not include. So
+**every number on HCA's ladder is unverifiable against the line displayed
+beside it** — Rule 46's requirement failing not on one row but on all of them.
+
+**HCA is not carded until schedule-row provenance is fixed.** That fix is its
+own declared change: a different call site, and it re-extracts, so it bills.
+Scheduled with the deferred three (HCA / Quest / Centene), not with the demo
+seven, and not now.
+
+## Rule 58, second half — the guard reaches every row, not only the ones it was written at
+
+`amountProvenanceNote` was set inside `facilityOnlyRows`, so facility rows
+said when their amount was unsupported and **schedule rows did not**. HCA's
+four rendered in complete silence. A guard placed at one construction site is
+a guard about that site: `noteUnsupportedAmounts` now runs once over the
+assembled ladder, so no builder can put an unsupported amount on the page
+without the problem stated beside it.
+
+**Four outcomes, because "these characters are not in the sentence" is not
+"nothing supports this number".** Collapsing them reports the filer's own
+conventions as defects — the first scan did exactly that, calling ten rows
+bad when six were fine:
+
+| outcome | what it means | real example |
+|---|---|---|
+| `stated` | the sentence states the figure | most rows |
+| `stated-zero` | em-dash or $0 against a column printing the same | CHS `$0 million` ← `"ABL Facility —"` |
+| `scale-from-table` | digits present, scale word supplied by the column header | CHS `$52 million` ← `"Other 52"` |
+| `unsupported` | nothing in the sentence carries the number | HCA, all four |
+
+The exemptions are narrow and asserted: `"Other 5,200"` does not support
+`$52 million` (different digits), and `"Other 52 thousand"` does not either
+(the sentence names its own scale and it disagrees).
+
+### The demo seven, re-scanned
+
+```
+DaVita 9 · UHS 10 · Encompass 6 · CHS 13 · Cigna 6 · Molina 6    all supported
+Tenet 12                                                          1 unsupported
+```
+
+**Six of the seven are clean. Tenet has one, and it is a different disease
+from HCA's:**
+
+```
+senior secured revolving credit facility   $1,900 million
+  "…revolving loans in an aggregate principal amount of up to $ 1.900 "
+```
+
+The sourceLine is the **right sentence, truncated mid-figure** — it stops
+after `$ 1.900` with the scale word cut off. HCA's rows cite the wrong
+sentence; Tenet's cites the correct one incompletely. Both leave a reader
+unable to check the number, and both now say so on the row, but they need
+different fixes and are recorded as different findings.
+
+### Book totals
+
+```
+90 ladder rows
+83 supported — 78 stated, 3 scale-from-table, 2 stated-zero
+ 2 state no amount at all — nothing to support
+ 5 unsupported, 5 of which say so on the row   (was 0 of 10)
+```
+
+### Found on the way: two zero predicates that disagree
+
+```
+isStatedZeroAmount("$ —")        true     isZeroValue("$ —")         false
+isStatedZeroAmount("$0 million") false    isZeroValue("$0 million")  true
+```
+
+Reaching for either alone mis-flags a real row, and the guard needed both. One
+fact, two functions, **Rule 21 exactly**. Logged for the audit rather than
+papered over: the correct end state is one zero predicate, which is a change
+across every caller and not this rule's to make.

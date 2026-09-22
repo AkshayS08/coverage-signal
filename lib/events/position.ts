@@ -5,6 +5,7 @@ import { classifyInstrument, priorityRank, type Classification, type NoteSeniori
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
 import { extractFactTokens, factTokensMatch, type FactToken } from "../agent/factTokens";
 import { isStatedZeroAmount } from "../agent/moneyScale";
+import { isZeroValue } from "../agent/statedZero";
 import { sentenceStatesFigure } from "../agent/verifyFacility";
 import { resolveFacilityMaturity, type FacilityMaturity } from "./facilityMaturity";
 
@@ -634,6 +635,92 @@ function applyFacilityMaturities(rows: LadderRow[], facilities: FacilityRow[] | 
  * row whose provenance cannot be established says so rather than rendering a
  * number beside an unrelated sentence.
  */
+/**
+ * RULE 58, SECOND HALF — THE GUARD REACHES EVERY ROW, NOT ONLY THE ONES IT
+ * WAS WRITTEN AT.
+ *
+ * `amountProvenanceNote` was set inside `facilityOnlyRows`, so facility rows
+ * said when their amount was unsupported and SCHEDULE rows did not. HCA is
+ * the cost: all four of its ladder rows cite a table row label plus an
+ * interest-rate parenthetical — "Commercial paper (average life of 38 days,
+ * weighted average rate of 4.3 %)" against `$ 3,890 million` — and every one
+ * rendered silently.
+ *
+ * A guard placed at one construction site is a guard about that site. This
+ * runs once over the assembled ladder, so a row cannot reach the page with an
+ * unsupported amount and no note, whichever builder made it.
+ *
+ * FOUR OUTCOMES, because "the sentence does not contain these characters" is
+ * not the same as "nothing supports this number", and collapsing them would
+ * report the filer's own conventions as defects. The two exemptions are named
+ * and tested rather than folded into the pass condition:
+ *
+ *   stated            the sentence states the figure (sentenceStatesFigure)
+ *   stated-zero       an em-dash or $0 against a sentence printing the same —
+ *                     the zero convention Rule 53 already recognises
+ *   scale-from-table  the digits are in the sentence and the SCALE WORD is
+ *                     not, because the column header supplied it: "Other 52"
+ *                     rendering as "$52 million"
+ *   unsupported       nothing in the sentence carries the number
+ */
+export type AmountSupport =
+  | { kind: "stated" }
+  | { kind: "stated-zero" }
+  | { kind: "scale-from-table"; digits: string }
+  | { kind: "unsupported" };
+
+const SCALE_WORD = /\b(thousands?|millions?|billions?|trillions?)\b/i;
+
+export function amountSupportOf(amount: string | null | undefined, sourceLine: string | null | undefined): AmountSupport {
+  const a = (amount ?? "").trim();
+  const line = (sourceLine ?? "").trim();
+  if (a === "" || a === "(no amount stated)") return { kind: "stated" }; // nothing to support
+  if (line === "") return { kind: "unsupported" };
+  if (sentenceStatesFigure(a, line)) return { kind: "stated" };
+
+  // The zero convention. A filing prints zero as an em-dash in a column, and
+  // Rule 53 already treats that as a stated figure rather than a silence.
+  // BOTH ZERO PREDICATES, AND THE FACT THAT IT TAKES BOTH IS A FINDING.
+  //
+  // This codebase carries two functions answering "is this amount zero?" and
+  // they disagree on real inputs:
+  //
+  //   isStatedZeroAmount("$ —")       true      isZeroValue("$ —")        false
+  //   isStatedZeroAmount("$0 million") false    isZeroValue("$0 million") true
+  //
+  // Reaching for either one alone mis-flags a real row — CHS's "$0 million"
+  // against "ABL Facility —" with the first, Quest's "$ —" against
+  // "3.45 % Senior Note due June 2026 $ — $ 501" with the second. One fact,
+  // two fields, Rule 21 exactly, and it is logged for the audit rather than
+  // papered over here: the correct end state is ONE zero predicate, which is
+  // a change across every caller and not this rule's to make.
+  if ((isZeroValue(a) || isStatedZeroAmount(a)) && /[—–]|\$?\s*\b0\b/.test(line)) return { kind: "stated-zero" };
+
+  // The scale word comes from the column header, not the cell. Accepted ONLY
+  // when the digits themselves are present as their own token and the row's
+  // scale word is absent from the sentence — if the sentence names a
+  // different scale, that is a real disagreement and stays unsupported.
+  const digits = a.replace(SCALE_WORD, "").replace(/[$\s]/g, "");
+  if (digits !== "" && !SCALE_WORD.test(line)) {
+    const bare = digits.replace(/[,]/g, "");
+    const tokens: string[] = line.replace(/[,]/g, "").match(/\d[\d.]*/g) ?? [];
+    if (tokens.includes(bare) || tokens.includes(digits)) return { kind: "scale-from-table", digits };
+  }
+  return { kind: "unsupported" };
+}
+
+/** One pass over the assembled ladder. Never silent, whichever builder made the row. */
+export function noteUnsupportedAmounts(rows: LadderRow[]): LadderRow[] {
+  for (const r of rows) {
+    const support = amountSupportOf(r.amount, r.sourceLine);
+    if (support.kind !== "unsupported") { delete r.amountProvenanceNote; continue; }
+    r.amountProvenanceNote =
+      `the sentence shown for this row does not state ${r.amount} — the amount is real in the filing's table, ` +
+      `but this line is not what supports it, so the figure cannot be checked against what is displayed beside it`;
+  }
+  return rows;
+}
+
 export function amountProvenanceFor(f: FacilityRow): { sourceLine: string; statesAmount: boolean } {
   const amount = f.facilitySize?.value ?? null;
   // In preference order: the figure the amount IS, then the other stated
@@ -723,13 +810,11 @@ export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerRes
     };
     if (m.outcome === "dated") row.maturityFromFacility = { statedAs: m.statedAs, facility: f.name, sourceLine: f.maturity?.sourceLine ?? "" };
     if (m.outcome === "relative") row.facilityMaturityNote = m.why;
-    // NEVER SILENT. A row whose amount no stated sentence supports still
-    // renders — with the problem said out loud, not with the number quietly
-    // sitting beside an unrelated sentence.
-    if (!provenance.statesAmount && row.amount !== "(no amount stated)") {
-      row.amountProvenanceNote =
-        `no sentence returned for this facility states ${row.amount} — the line shown is the closest stated sentence and does not support the amount`;
-    }
+    // The never-silent note is NOT set here. `noteUnsupportedAmounts` runs
+    // once over the assembled ladder and covers every builder — two places
+    // deciding one rendered fact is the Rule 21 shape, and the first version
+    // of this guard had exactly that, covering facility rows and missing
+    // HCA's four schedule rows entirely.
     out.push(row);
   }
   return out;
@@ -1492,6 +1577,9 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // reads the trigger's own sequence rather than these rows), so putting a
   // facility on the ladder cannot move a checksum or a residual.
   rows = rows.concat(facilityOnlyRows(rows, debtMaturity));
+
+  // RULE 58 — every row, one pass, before anything sorts or renders.
+  noteUnsupportedAmounts(rows);
 
   // SESSION 22, STAGE 2 — THE SENIORITY STACK IS THE PRIMARY ORDER.
   //
