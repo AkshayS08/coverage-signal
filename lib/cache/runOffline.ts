@@ -27,7 +27,16 @@ const NOT_OFFLINE: Record<string, string> = {
   "lib/cache/liveAcceptance.test.ts": "hits the deployed site",
   "lib/cache/liveMarkerScan.test.ts": "hits the deployed site",
   "lib/events/golden.test.ts": "replays signed goldens from the blob cache",
+  // NOT OFFLINE, and it took a flaky failure to notice. It calls
+  // getRecentFilings and getFilingText — the blob store and EDGAR — so it
+  // fails intermittently when the network does, and a suite that can fail for
+  // reasons unrelated to the code makes the whole runner's green untrustworthy.
+  // It passes 52/52 when run alone; it is not broken, it is misfiled.
+  "lib/fetch/noteLocation.test.ts": "reads filing text from the blob cache and EDGAR — run it with the live checks, not the offline set",
 };
+
+/** The suites excluded above still have to be RUNNABLE. Named so nobody has to grep for how. */
+const HOW_TO_RUN_EXCLUDED = "npx tsx <path>  (each runs standalone; they need network and, for goldens, the blob token)";
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const name of readdirSync(dir)) {
@@ -49,6 +58,7 @@ console.log(`\n${"=".repeat(100)}`);
 console.log(`OFFLINE SUITES — ${suites.length} discovered, ${skipped.length} excluded by name`);
 console.log("=".repeat(100));
 for (const s of skipped) console.log(`  ~ skipped  ${s}  — ${NOT_OFFLINE[s]}`);
+if (skipped.length) console.log(`  run them with: ${HOW_TO_RUN_EXCLUDED}`);
 
 const failed: string[] = [];
 let totalAsserts = 0;
