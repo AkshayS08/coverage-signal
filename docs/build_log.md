@@ -4873,3 +4873,63 @@ rolled to 09-22** and the filter silently excluded the three runs it existed
 to count, reporting spend unchanged at $3.2179 after $0.6152 had been billed.
 A measurement whose filter excludes its own subject. Recomputed across all
 days: **$3.8332**.
+
+## The vanishing $700M — model variance, not assembly. And the assembly path checked anyway.
+
+UHS run 3 assembled 9 ladder rows where runs 1 and 2 assembled 10. The raw
+blob settles which it was, and the blob is the only place the answer is —
+reading the assembled result to answer a question about extraction is the
+layer mistake this session keeps finding.
+
+```
+RUN 1   raw: 4 facilities  →  10 ladder rows   $700M facility present in both
+RUN 2   raw: 4 facilities  →  10 ladder rows   $700M facility present in both
+RUN 3   raw: 3 facilities  →   9 ladder rows   $700M facility in NEITHER
+```
+
+**Never extracted.** Run 3's blob holds three facilities: the revolver, the
+tranche A term loan and the $400M delayed draw. The July 2026 Delayed Draw
+Term Loan is simply not in what the model returned. Model variance, the same
+class as Molina's `drawn` drop — characterised per name, **not a code
+defect**, and nothing Tenet, CHS or Encompass inherit.
+
+**But that answers the UHS question and not the one behind it.** Concluding
+"the assembly path is fine" from one name where the path was not at fault is
+measuring a rate from one sample. So the path was asked directly, of every
+company: does each extracted facility reach the ladder, or get dropped with a
+reason on record?
+
+```
+16 facilities extracted across the book
+14 reach the ladder · 1 dropped as a letter of credit · 1 already carried by another row
+ 0 SILENT DROPS — the assembly path is sound for every name
+```
+
+Both drops are legitimate and named: DaVita's bilateral LC facility (an LC is
+not borrowed money and has no ladder destination — the destination was
+removed deliberately) and Encompass's revolver (its $200.0M drawn balance is
+already a ladder row; a second row would double-count it).
+
+**Tenet has no cached answer at the current fingerprint — its corpus has moved
+again.** Reported rather than crashed on, and it is what a refresh exists to
+resolve.
+
+### Two false positives in my own instruments, both caught before reporting
+
+**The marker matched the wrong row.** The first diagnostic matched `/700/`
+against the amount, which also matches UHS's 1.65% Senior Secured Notes due
+2026 — a $700 million BOND — so it printed "assembled ladder HAS it" for the
+run where the facility is absent. **A marker that matches the wrong row makes
+the verdict line say the opposite of the finding.** Narrowed to the facility:
+a delayed-draw name AND that amount.
+
+**The stopword list emptied a row's identity.** The assembly checker reported
+Molina's revolver as a SILENT DROP. Its ladder row is `Credit Facility (no
+amount stated)` — the amount cannot match because none is stated, and the name
+reduces to nothing because the checker's own stopwords remove both "credit"
+and "facility". A detector whose stopwords can empty a row's identity reports
+that row as missing every time. Now also recognised by the facility's own
+resolved maturity against a capacity row.
+
+Both are the session's dominant defect class, in instruments built to find it.
+Neither reached a report as a finding, which is the only part that improved.
