@@ -4967,3 +4967,73 @@ deferred      HCA · Quest · Centene
 ```
 
 Six reliable names beat seven with one that flickers.
+
+## Tenet's revolver was never truncated — and the real defect is model-side re-expression
+
+The $0 diagnosis, held before the ~$0.90 refresh, and it changed the answer
+twice.
+
+**First: nothing was truncated.** The provenance scan sliced `sourceLine` at
+160 characters and printed the sentence as ending *"...up to $ 1.900 "*. The
+stored sentence is **232 characters** and complete:
+
+> "We have a senior secured revolving credit facility (the "Credit
+> Agreement") that provides for revolving loans in an aggregate principal
+> amount of **up to $ 1.900 billion** with a $ 200 million subfacility for
+> standby letters of credit."
+
+**A report that truncates its own evidence invents a defect in the thing it is
+reporting on**, and this one nearly sent a diagnosis after our sentence
+handling. The scan now prints the sentence whole, with its length.
+
+**Second: the real defect is a unit re-expression, and it is model-side.**
+
+```
+the filing prints    $1.900 billion
+the model returned   $1,900 million        ← facilitySize.value, in the blob
+```
+
+Same quantity, converted. The blob holds both the full sentence and the
+converted value, so nothing between the blob and the row is at fault — this
+is the model re-expressing rather than copying, which is what "every figure is
+copied, never computed" forbids.
+
+**It also mis-attributes if left to Rule 58.** `amountSupportOf` returns
+`unsupported` here and `s22sign` refuses, which is the right outcome by the
+wrong name: the sentence *does* support the quantity, in a unit the row does
+not use. This is Rule 57 / `[7c]`'s class — transcription fidelity — not Rule
+58's "nothing supports this number". Both block; only one names the fix.
+
+### This is the second independent instance, and the direction is the same
+
+| name | the filing prints | the model returned |
+|---|---|---|
+| UHS (run 3 of 3) | `$1.448 billion` | `$1,448 million` |
+| Tenet (canonical v30) | `$1.900 billion` | `$1,900 million` |
+
+Two unrelated filers, same conversion, same direction — billions to millions.
+One occurrence is variance; two in the same direction across two companies is
+a **pattern**, and a refresh that happens to print the right form would be
+luck rather than a fix. Reliable transcription here is a prompt-side change.
+
+## STOP — the threshold is reached. Three of six demo names are blocked prompt-side.
+
+```
+DaVita      signed, clean
+Cigna       BLOCKED — the not-located block contradicts itself (v31 candidate)
+Molina      signed, clean
+UHS         BLOCKED — $700M facility absent from 1 raw extraction in 3 (v31 candidate)
+Tenet       BLOCKED — unit re-expression, billions rendered as millions (v31 candidate)
+CHS         not yet refreshed
+Encompass   not yet refreshed
+```
+
+Per the standing agreement, this stops rather than proceeds to CHS and
+Encompass. **Half the demo set is now waiting on the same kind of fix**, which
+is the signal that the v31 prompt pass belongs BEFORE the demo rather than
+after it — refreshing the remaining two would spend ~$1.8 against a gate three
+of their peers already fail, and would answer a question the prompt pass is
+about to change.
+
+**No spend was made.** The refresh declaration stands as approved
+($0.82–$1.15, four extractions, four result shapes) and is not executed.

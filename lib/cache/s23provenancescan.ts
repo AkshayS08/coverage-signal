@@ -55,7 +55,14 @@ const ALL = [
       if (r.amountProvenanceNote) noted++;
       bad.push(
         `      ${String(r.instrument).slice(0, 46).padEnd(48)} ${amount.padEnd(22)} ${r.isCapacity ? "capacity" : "debt"}\n` +
-        `        sourceLine: "${line.replace(/\s+/g, " ").slice(0, 160)}"\n` +
+        // IN FULL. This sliced at 160 characters and printed Tenet's revolver
+        // sentence as ending "...up to $ 1.900 " — which read as a truncation
+        // in the DATA and very nearly sent a diagnosis after our sentence
+        // handling. The sentence is 232 characters and ends "$ 1.900 billion
+        // with a $ 200 million subfacility for standby letters of credit".
+        // A report that truncates its own evidence invents a defect in the
+        // thing it is reporting on.
+        `        sourceLine (${line.length} chars, in full): "${line.replace(/\s+/g, " ")}"\n` +
         `        ${r.amountProvenanceNote ? `stated on the row: ${r.amountProvenanceNote}` : "NO NOTE ON THE ROW — the mismatch renders silently"}`
       );
     }
