@@ -73,29 +73,6 @@ export const REFRESH_ROSTER: RosterEntry[] = [
       "product read, not an extraction one, and is not fixed by this refresh.",
   },
   {
-    company: "Molina Healthcare",
-    corpusMoved: false,
-    fieldDrops: [
-      {
-        field: "drawn",
-        facility: "revolving credit facility",
-        statedBy: {
-          location: "anchor",
-          document: "10-Q 2026-07-23",
-          sentence: "As of June 30, 2026, no amount was outstanding under the Credit Agreement.",
-        },
-        expected: "$0",
-        observedAtV30: null,
-      },
-    ],
-    note:
-      "NOT stale — Molina's corpus is unchanged, so this is a clean second trial of the same " +
-      "question against the same documents. The anchor states the field twice, on the anchor's own " +
-      "as-of date, in the same section the model DID draw `available` from ('Credit Agreement " +
-      "Borrowing Capacity'). The absence language is plain and Rule 53 accepts it. The model had it " +
-      "and did not return it.",
-  },
-  {
     company: "Encompass Health",
     corpusMoved: true,
     // STRUCK, and struck on evidence rather than dropped quietly. The session

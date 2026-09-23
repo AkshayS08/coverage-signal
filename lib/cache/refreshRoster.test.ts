@@ -18,20 +18,39 @@ function assert(cond: boolean, msg: string) {
   else { failed++; failures.push(msg); console.log(`  ✗ FAIL — ${msg}`); }
 }
 
-const molina = REFRESH_ROSTER.find((r) => r.company === "Molina Healthcare")!;
 const encompass = REFRESH_ROSTER.find((r) => r.company === "Encompass Health")!;
-const watch: FieldDropWatch = molina.fieldDrops[0];
+
+/**
+ * Molina's watch, kept as a FIXTURE after Molina came OFF the roster.
+ *
+ * The roster is a to-do list; Molina is done — refreshed, 9b tested at v30,
+ * re-baselined. But `dropVerdict` still has to be tested, and testing it
+ * against whatever happens to be on the roster ties the verdict rule's
+ * coverage to the work queue: empty the queue and the rule goes untested.
+ * The same mistake the 9b suite made asserting facts about its own table.
+ */
+const watch: FieldDropWatch = {
+  field: "drawn",
+  facility: "revolving credit facility",
+  statedBy: {
+    location: "anchor",
+    document: "10-Q 2026-07-23",
+    sentence: "As of June 30, 2026, no amount was outstanding under the Credit Agreement.",
+  },
+  expected: "$0",
+  observedAtV30: null,
+};
 
 console.log("=== [1] The roster says why each name is on it ===");
 {
-  assert(rosterNames().length === 4,
-    `[1a] four names — Tenet, CHS, Molina, Encompass (got ${rosterNames().join(", ")})`);
-  assert(molina.corpusMoved === false && molina.fieldDrops.length === 1,
-    "[1b] Molina is on for the FIELD DROP, not for staleness — its corpus is unchanged, which is what makes the refresh a clean second trial");
+  assert(rosterNames().length === 3,
+    `[1a] three names — Tenet, CHS, Encompass. Molina came OFF once it was refreshed and re-baselined; a roster that keeps finished names is a list nobody can read (got ${rosterNames().join(", ")})`);
+  assert(!rosterNames().includes("Molina Healthcare") && !rosterNames().includes("Universal Health Services"),
+    "[1b] neither Molina (done) nor UHS (held as a v31 candidate, never on this roster) appears — the queue lists work outstanding, not work discussed");
   assert(encompass.corpusMoved === true && encompass.fieldDrops.length === 0,
     "[1c] Encompass is on for the CORPUS MOVE only — its lettersOfCredit watch was struck on evidence before any spend");
-  assert(activeWatches().length === 1,
-    `[1d] exactly one field watch survives the pre-check, so the refresh reports on one field and does not claim to answer two (got ${activeWatches().length})`);
+  assert(activeWatches().length === 0,
+    `[1d] no field watches remain outstanding — Molina's was answered and Encompass's was struck on evidence, so the three refreshes are corpus re-signs and claim nothing more (got ${activeWatches().length})`);
 }
 
 console.log("\n=== [2] A watch is only worth re-asking if the filing states the field ===");
