@@ -49,6 +49,14 @@ export interface RosterEntry {
 }
 
 export const REFRESH_ROSTER: RosterEntry[] = [
+  // Molina was on this roster and is DONE — refreshed, 9b tested at v30, and
+  // re-baselined. Removed rather than left with a "done" flag, because a
+  // roster that keeps completed names is a list nobody can read at a glance.
+  //
+  // UHS was never on it: its corpus had not moved and it had no field drop.
+  // It is now HELD as a v31 candidate — its $700M delayed-draw facility is
+  // absent from one raw extraction in three, which no refresh fixes and no
+  // signature should pin.
   {
     company: "Tenet Healthcare",
     corpusMoved: true,

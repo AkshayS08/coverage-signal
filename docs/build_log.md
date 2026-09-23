@@ -4933,3 +4933,37 @@ resolved maturity against a capacity row.
 
 Both are the session's dominant defect class, in instruments built to find it.
 Neither reached a report as a finding, which is the only part that improved.
+
+## UHS is a v31 candidate, not a signature. Demo v1 scope is six names.
+
+UHS is held and **will not be re-tasted**, because it is not Molina's case and
+the difference decides the disposition:
+
+| | Molina | UHS |
+|---|---|---|
+| what dropped | `drawn` on the revolver | the entire $700M July 2026 Delayed Draw Term Loan |
+| did it recover | **yes** — the refresh returned `$0` from the anchor's own sentence, and held in all three re-tastes | **no** — present in 2 runs of 3, absent from the third's raw blob |
+| what a signature would pin | a value measured stable across three runs | one draw from a lottery |
+
+**A 3-of-3 by luck would still let the demo drop the row later.** That is the
+signed-golden-that-lies case this session has refused throughout, and buying a
+fourth sample only redraws the same lottery — the extraction's behaviour at
+v30 is already characterised.
+
+**v31 candidate, prompt-side: make the model reliably extract the July 2026
+Delayed Draw Term Loan.** The facility is stated plainly in the 8-K of
+2026-07-21 and again in the 10-Q; nothing about the retrieval is in doubt, so
+the fix is in what the prompt asks for, not in what it is given. Logged
+alongside the not-located block, and under the same discipline: written and
+reviewed cold, never bought on a same-session diagnosis.
+
+**Demo v1 scope is now SIX, not seven:**
+
+```
+signed        DaVita · Cigna · Molina
+refreshing    Tenet · CHS · Encompass
+held (v31)    UHS
+deferred      HCA · Quest · Centene
+```
+
+Six reliable names beat seven with one that flickers.
