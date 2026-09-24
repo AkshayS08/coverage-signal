@@ -619,7 +619,7 @@
  *            $751M stated against a $1.0B facility is a borrowing base
  *            smaller than the commitment, which is what an ABL IS.
  */
-export const EXTRACTION_PROMPT_VERSION = 30;
+export const EXTRACTION_PROMPT_VERSION = 31;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

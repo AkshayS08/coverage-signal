@@ -5110,3 +5110,73 @@ and a more honest sample than three CACHE_BUST runs none of which is the
 answer the signature actually pins. Signing is therefore **2 re-tastes per
 name, not 3** — a third of that cost removed, and the evidence improved rather
 than weakened.
+
+## v31, first attempt — stopped at the gate, by the gate
+
+The cold pass did not run. Three things went wrong before it could, and the
+reconciliation gate caught the first one.
+
+### 1. The gate failed: 9 of 10, not 10 of 10
+
+Preflight reported DaVita **cached** at v31 — a version that had never run.
+A `v31.json` existed, written minutes earlier.
+
+### 2. The cause was my own discovering runner
+
+`determinism.test.ts` says so in its own header:
+
+> "This is a **real-cost script** (calls Haiku/Sonnet on the FIRST run of any
+> given company) … **It is kept separate from `npm test`** … so ordinary
+> offline runs stay free."
+
+The hand-maintained list I replaced had excluded it **deliberately**.
+Discovery swept it back in. A list that was wrong by omission, replaced by
+discovery that was wrong by inclusion — and a routine `npm run test:offline`
+re-extracted DaVita at v31 for **$0.1887**.
+
+**An exclusion list is not a nuisance to keep short. It is the only place a
+discovering runner can know what discovery cannot see.**
+
+The ledger recorded the spend correctly: `$0.1887, 2 calls`. **My session
+tally was wrong, not the log** — it filtered on `2026-09-23` and the entry
+landed at `2026-09-24T02:27:57Z`. Third date-filter miss of this session, all
+mine. True total: **$4.0219**.
+
+### 3. And that accident bought the finding that matters
+
+DaVita at v31, same corpus and same fingerprint: **9 ladder rows became 17.**
+Every instrument duplicated — the current period AND the prior period each
+emitted as its own row:
+
+```
+Term Loan A-2        $1,975,000  (current)     Term Loan A-2        $1,987,500  (prior)
+Revolving line       $   65,000  (current)     Revolving line       $  375,000  (prior)
+Term Loan B-2        $2,357,910  (current)     Term Loan B-2        $1,863,864  (prior)
+```
+
+**Fix 3's third example caused it.** It read: *"The filing prints
+'$ 1,975,000' under a header reading '(in thousands)' → return '$ 1,975,000'
+and report the header's unit in the table's own unit field."*
+
+That is a true statement about scale declarations and it does not belong in a
+rule about scale WORDS. It put **column headers** in front of the model while
+it transcribed a two-column table, and the model started transcribing each
+column as its own entry. **A ladder showing every tranche twice, once at a
+stale balance, is worse for a reader than the conversion the rule exists to
+stop.**
+
+The example is removed. The scale declaration already has its own field
+(`scheduleTableUnit`) and its own instructions; the unit rule now says one
+thing and only that thing.
+
+### What this cost, and what it bought
+
+$0.1887 and no cold pass — against a v31 that would have re-extracted ten
+names and doubled DaVita's ladder on all of them. **The gate did exactly what
+it was declared to do**, and it caught a defect in the fix rather than in the
+model.
+
+**Required before any cold pass:** DaVita's `v31.json` was produced by a
+prompt that no longer exists at v31. It must be deleted, or the version bumped
+again, so nothing cached at a version was built by a different prompt at that
+version. **Held for the signer — it is a delete.**

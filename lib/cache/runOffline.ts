@@ -33,6 +33,19 @@ const NOT_OFFLINE: Record<string, string> = {
   // reasons unrelated to the code makes the whole runner's green untrustworthy.
   // It passes 52/52 when run alone; it is not broken, it is misfiled.
   "lib/fetch/noteLocation.test.ts": "reads filing text from the blob cache and EDGAR — run it with the live checks, not the offline set",
+  // BILLS. Its own header says so: "This is a real-cost script (calls
+  // Haiku/Sonnet on the FIRST run of any given company) ... It is kept
+  // separate from `npm test` ... so ordinary offline runs stay free."
+  //
+  // The hand-maintained list it replaced had excluded it deliberately.
+  // DISCOVERY SWEPT IT BACK IN — a list that was wrong by omission replaced
+  // by discovery that was wrong by inclusion — and it re-extracted DaVita at
+  // v31 during a routine `npm run test:offline`, spending real money and
+  // breaking the cold pass's 10/10 reconciliation gate before it ran.
+  //
+  // An exclusion list is not a nuisance to keep short. It is the only place
+  // this runner can know what discovery cannot see.
+  "lib/cache/determinism.test.ts": "BILLS — calls Haiku/Sonnet on the first run of any company; its own header keeps it out of the ordinary test path",
 };
 
 /** The suites excluded above still have to be RUNNABLE. Named so nobody has to grep for how. */

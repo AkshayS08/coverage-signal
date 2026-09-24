@@ -2227,3 +2227,9 @@
 {"at":"2026-09-24T01:05:40.842Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-24T01:05:43.924Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-24T01:05:47.202Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-24T02:27:57.588Z","company":"DaVita","totalUsd":0.188698,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":86417,"outputTokens":8836,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.130597},{"model":"claude-sonnet-5","calls":1,"inputTokens":19152,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058101}],"unpricedModels":[]}
+{"at":"2026-09-24T02:28:30.181Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-24T02:28:42.709Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-24T02:28:54.764Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-24T02:39:14.404Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-24T02:39:38.273Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}

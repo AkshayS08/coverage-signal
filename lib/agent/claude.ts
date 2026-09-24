@@ -1480,6 +1480,52 @@ async function attemptClassifyAllTriggers(params: {
   const userContent = [
     `Company: ${companyName}`,
     ``,
+    // SESSION 23, v31 — COPY THE PRINTED UNIT, NEVER CONVERT.
+    //
+    // The schema already said "verbatim, with its unit as printed" and the
+    // model converted anyway, twice, in the same direction:
+    //
+    //   Tenet    filing "$ 1.900 billion"  →  returned "$1,900 million"
+    //   UHS      filing "$ 1.448 billion"  →  returned "$1,448 million"
+    //
+    // Two unrelated filers, billions to millions. A field description was not
+    // enough; this is a named prohibition with a worked example.
+    //
+    // SYMMETRIC ON PURPOSE. The rule is "copy what is printed", NOT "prefer
+    // billions" — measured before the pass, 49 of 52 scaled ladder amounts in
+    // the book print in MILLIONS and 3 in billions, so a one-directional
+    // reading would break 49 figures to fix 2. Both directions are exampled
+    // so neither can be read as the preferred one.
+    // THE THIRD EXAMPLE WAS REMOVED AFTER ONE MEASURED RUN, and it is worth
+    // saying what it cost. It read: 'The filing prints "$ 1,975,000" under a
+    // header reading "(in thousands)" -> return "$ 1,975,000" and report the
+    // header's unit in the table's own unit field.'
+    //
+    // That is a true statement about scale declarations and it does not
+    // belong in a rule about scale WORDS. It put COLUMN HEADERS in front of
+    // the model while it was transcribing a two-column table, and DaVita came
+    // back with every instrument twice — current period AND prior period as
+    // separate ladder rows, 9 rows at v30 becoming 17 at v31 on an unchanged
+    // corpus:
+    //
+    //     Term Loan A-2   $1,975,000   AND   Term Loan A-2   $1,987,500
+    //     Revolving line  $   65,000   AND   Revolving line  $  375,000
+    //
+    // A ladder showing each tranche twice, once at a stale balance, is worse
+    // for a reader than the conversion this rule exists to stop. The scale
+    // declaration already has its own field (scheduleTableUnit) and its own
+    // instructions; this rule says one thing and now only says it.
+    `## Units: copy the scale word the filing prints`,
+    `Every amount you return carries the scale word the filing printed for it, exactly as printed. Do not convert between units, even when the arithmetic is right — converting is not transcribing, and the filing printed one of these forms and not the other.
+
+` +
+      `- The filing prints "$ 1.900 billion" → return "$ 1.900 billion". NOT "$1,900 million".
+` +
+      `- The filing prints "$52 million" → return "$52 million". NOT "$0.052 billion".
+` +
+
+      `A reader checks your figure against the sentence you cite. If you print a scale that sentence does not use, the number and its evidence no longer look like the same fact, and the check fails on a figure that was right.`,
+    ``,
     `## The 15 triggers`,
     formatTriggers(triggers),
     ``,
@@ -1488,7 +1534,21 @@ async function attemptClassifyAllTriggers(params: {
       ? ``
       : shape === "prose-only"
         ? `## This filer's debt note is NOT a table\n\nThe located debt note prints no comma-grouped figure anywhere in its debt disclosure: it states its instruments in sentences and bullets, in words ("$ 700 million of aggregate principal amount of 1.65 % senior secured notes due in September, 2026"). There is no schedule to transcribe and the scheduleSequence field has been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nEvery instrument this note states is a proseInstruments entry, one per instrument, with its amount copied in the unit the note prints it in. That is the complete and correct answer for a filer of this shape, not a degraded one.`
-        : `## No debt note could be located in the anchor filing\n\nThe anchor is the most recent 10-Q or 10-K, and it is the only filing whose debt note may state this company's CURRENT position. The locator found no debt note in it. The scheduleSequence field has therefore been REMOVED from your schema for this company — it is not available, not merely discouraged.\n\nAn older filing's debt table is NOT this company's current position. Its rows state a position as of ITS period, and reporting them as the anchor's would report a stale position as a current one.\n\nBut the anchor may DIRECT you to that older filing in its own words, and if it does, that is a fact worth capturing — under its own name, as the older filing's table, not as the anchor's. Three fields exist for exactly that:\n\n- noteCrossReference: the anchor's OWN sentence sending a reader elsewhere for debt detail, copied verbatim. Then, each only if the sentence itself names it: referencedSubject (what it says is there — "our short-term and long-term debt"), referencedNote ("Note 7"), referencedFiling ("the Company's 2025 Form 10-K"). Where the sentence names none of these — "refer to the consolidated financial statements and footnotes thereto included in our annual report" points at an entire document and at no note in particular — leave them null. That is the honest answer and it is how a general pointer is told apart from a direction. Null the whole field when the anchor states no such sentence at all.\n- referencedScheduleSequence: the debt table from the filing that sentence names, transcribed under exactly the same rules as any schedule — printed order, every row, subtotals as subtotals, each entry's own verbatim sourceLine, and each entry's periodColumn being THAT FILING'S period, never the anchor's.\n- referencedBalanceSheetDebtCaptions: that same referenced filing's balance-sheet debt captions, so its table can be checked against its own balance sheet.\n\nIf the anchor states no cross-reference, leave all three empty — do not transcribe another filing's table just because one exists in the catalog.\n\nAnd regardless: any instrument the ANCHOR itself states in sentences is a proseInstruments entry, and any facility the anchor describes belongs in facilities. If the anchor states none, returning none is the complete and correct answer.`,
+        : `## No debt note could be located in the anchor filing
+
+The anchor is the most recent 10-Q or 10-K, and it is the only filing whose debt note may state this company's CURRENT position. The locator found no debt note in it. **The scheduleSequence field has therefore been REMOVED from your schema for this company.** There is no field in which an older filing's table could be reported as this company's current position — that risk is closed by the schema, not by your restraint, and you do not need to guard against it.
+
+What remains is a separate fact, and it is wanted.
+
+The anchor may DIRECT a reader to another filing for debt detail. Where it does, that filing's table is worth capturing under its own name, with its own period. Three fields exist for exactly that:
+
+- noteCrossReference: the anchor's OWN sentence sending a reader elsewhere for debt detail, copied verbatim. Then, each only if the sentence itself names it: referencedSubject (what it says is there — \"our short-term and long-term debt\"), referencedNote (\"Note 7\"), referencedFiling (\"the Company's 2025 Form 10-K\"). Where the sentence names none of these — \"refer to the consolidated financial statements and footnotes thereto included in our annual report\" points at an entire document and at no note in particular — leave them null. That is the honest answer and it is how a general pointer is told apart from a direction. Null the whole field when the anchor states no such sentence at all.
+- referencedScheduleSequence: **transcribe that filing's debt table here, in full.** Printed order, every row, subtotals as subtotals, each entry's own verbatim sourceLine. Each entry's periodColumn is THAT FILING'S period — never the anchor's — which is what keeps it labelled as the older filing's position rather than this one's. Transcribing it here is correct and expected; it is a different field from the one that was removed, and filling it does not report a stale position as current.
+- referencedBalanceSheetDebtCaptions: that same referenced filing's balance-sheet debt captions, so its table can be checked against its own balance sheet.
+
+The one thing that would be wrong is transcribing a table NO sentence in the anchor points to. If the anchor states no cross-reference, leave all three empty — not because another filing's table is forbidden, but because nothing in the anchor asked for it.
+
+And regardless: any instrument the ANCHOR itself states in sentences is a proseInstruments entry, and any facility the anchor describes belongs in facilities. If the anchor states none, returning none is the complete and correct answer.`,
     ``,
     `## Full filing catalog (available for digging; not all are excerpted below)`,
     formatCatalog(catalog),
