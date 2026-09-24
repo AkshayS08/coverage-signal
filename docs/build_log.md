@@ -5037,3 +5037,76 @@ about to change.
 
 **No spend was made.** The refresh declaration stands as approved
 ($0.82–$1.15, four extractions, four result shapes) and is not executed.
+
+## v31 prerequisite — the extraction-version guard is now enforced
+
+`GoldenFile.extractionVersion` was documented as making an older file
+*"treated as un-comparable against a newer version rather than assumed to
+match it"* — and **nothing read it**. `compareToGolden` never saw the version;
+the diff harness printed it in a header and compared anyway. A guard written
+in a doc comment and nowhere else, in the file that defines what a signature
+means.
+
+It matters at exactly one moment, which is this one. A bump changes what the
+model is ASKED, so every difference it produces is a prompt change rather than
+a regression — the reasoning Rule 30 already applies to a moved filing set.
+Without the guard, **v31 verification would be noise**: prompt changes
+reported as failures until nobody reads the failures.
+
+`goldenVersionVerdict` returns not-applicable across a version (naming both),
+and null at the same one so a caller cannot read "no answer" as "matches".
+`compareGoldenFile` checks version before state, and the file-holding call
+sites now go through it. Asserted: identical states across a bump still return
+not-applicable, because the comparison is meaningless rather than passing.
+
+A file recording **no** version is also not-applicable — signed before the
+version was captured, so it cannot be shown to describe this question.
+
+## Fix 2 is WITHDRAWN — UHS has no diagnosable cause, and is measurement-only
+
+The lead was worth chasing: run 3 returned three facilities where runs 1 and 2
+returned four, and eight prose instruments where run 1 returned nine. A
+uniformly smaller response is the signature of output-budget pressure, and
+that would have made the fix the budget rather than a sentence about
+delayed-draw facilities.
+
+**It does not survive measurement.**
+
+```
+                        run 1    run 2    run 3
+facilities                  4        4        3   ← run-3-specific
+proseInstruments            9        8        8   ← ALSO run 2, which kept all four facilities
+output tokens           8,843    8,709    8,231   against max_tokens 20,000 — 41% of the ceiling
+input tokens           89,527   89,527   89,527   identical: neither prompt nor corpus moved
+```
+
+**Run 2 is the control that kills the story.** It returned eight prose
+instruments too and kept all four facilities, so prose count varies
+independently of facility count and proves nothing about compression. And at
+41% of the output ceiling there is no pressure to compress at all — "not
+truncated" and "not near the cap" are different facts, and only the second
+would have explained it.
+
+So: identical input, ample headroom, and the only run-3-specific shrink is
+`facilities`. **Nothing in the prompt or the budget explains the drop.**
+
+**Fix 2 is withdrawn rather than declared.** A prompt edit against an
+undiagnosed drop is Stage 1's mistake at full price — the one this session
+opened by catching. UHS is **measurement-only** at v31: it re-extracts with
+the book, its behaviour is observed, and it stays held either way. If the
+$700M facility appears in the cold pass and both re-tastes, that is three of
+three at v31 and a signature becomes arguable on evidence rather than on a fix
+nobody could ground.
+
+**My own harness over-claimed before it was corrected**, and printed "→
+smaller across unrelated arrays: consistent with OUTPUT BUDGET PRESSURE"
+without a control and without reading the ceiling. It now requires both.
+
+## Rule — the canonical run is 9b's first sample
+
+The signer's ruling, recorded as standing: **the canonical cold-pass run
+counts as 9b sample 1.** It is an independent ask at the version being signed,
+and a more honest sample than three CACHE_BUST runs none of which is the
+answer the signature actually pins. Signing is therefore **2 re-tastes per
+name, not 3** — a third of that cost removed, and the evidence improved rather
+than weakened.

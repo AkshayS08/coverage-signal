@@ -21,7 +21,7 @@
  */
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { compareToGolden, deriveGoldenState, filingSetOf, type GoldenFile, type GoldenState } from "./golden";
+import { compareToGolden, compareGoldenFile, goldenVersionVerdict, deriveGoldenState, filingSetOf, type GoldenFile, type GoldenState } from "./golden";
 import { EXTRACTION_PROMPT_VERSION } from "../cache/promptVersion";
 
 let passed = 0, failed = 0;
@@ -295,6 +295,32 @@ console.log("\n=== [7] AN AMOUNT IS COMPARED BY VALUE AND UNIT, NOT BY ITS WHITE
   parseable.rows[0].amount = "$ 396.9 million";
   assert(compareToGolden(unparseable, parseable).kind === "diverged",
     "[7f] AND A COMPARISON THAT CANNOT READ ITS INPUTS NEVER REPORTS THEM EQUAL — one side unparseable falls back to exact string comparison rather than defaulting to a pass");
+}
+
+console.log("\n=== [8] A GOLDEN DOES NOT APPLY ACROSS AN EXTRACTION VERSION ===");
+{
+  // The guard was written in GoldenFile's own doc comment — "treated as
+  // un-comparable against a newer version rather than assumed to match it" —
+  // and nothing read it. compareToGolden never saw the version; the diff
+  // harness printed it in a header and compared anyway.
+  const v = goldenVersionVerdict({ extractionVersion: 30, state: base() } as never, 31);
+  assert(v !== null && v.kind === "not-applicable",
+    `[8a] signed at v30, running at v31 → NOT-APPLICABLE. A bump changes what the model is ASKED, so its differences are prompt changes and not regressions — Rule 30's disposition for a moved corpus, applied to a moved question (got ${v?.kind ?? "null"})`);
+  assert(v !== null && v.kind === "not-applicable" && /v30/.test(v.reason) && /v31/.test(v.reason),
+    "[8b] and the reason names BOTH versions, so a reader knows which way it moved and what to re-sign against");
+
+  assert(goldenVersionVerdict({ extractionVersion: 30, state: base() } as never, 30) === null,
+    "[8c] at the SAME version the guard stands aside and returns null — it gates, it does not block");
+
+  const noVersion = goldenVersionVerdict({ state: base() } as never, 30);
+  assert(noVersion !== null && noVersion.kind === "not-applicable",
+    `[8d] a file recording NO extractionVersion is also not-applicable — signed before the version was captured, so it cannot be shown to describe this question (got ${noVersion?.kind ?? "null"})`);
+
+  // The wrapper is what makes the check unskippable at a call site.
+  assert(compareGoldenFile({ extractionVersion: 30, state: base() } as never, base(), 31).kind === "not-applicable",
+    "[8e] compareGoldenFile checks the version BEFORE the state — IDENTICAL states still return not-applicable across a bump, because the comparison is meaningless rather than passing");
+  assert(compareGoldenFile({ extractionVersion: 30, state: base() } as never, base(), 30).kind === "matches",
+    "[8f] and at the same version it delegates normally, so the wrapper is the safe default rather than a second behaviour");
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

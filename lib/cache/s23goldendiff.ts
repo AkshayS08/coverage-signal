@@ -15,7 +15,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PINNED_AS_OF } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
-import { deriveGoldenState, compareToGolden, type GoldenFile } from "../events/golden";
+import { deriveGoldenState, compareGoldenFile, type GoldenFile } from "../events/golden";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 
 const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
@@ -31,7 +31,7 @@ const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
     const golden = JSON.parse(readFileSync(join(GOLDEN_DIR, f), "utf-8")) as GoldenFile;
     const result = await runAgentLoop(golden.state.company);
     const actual = deriveGoldenState(result, PINNED_AS_OF);
-    const verdict = compareToGolden(golden.state, actual);
+    const verdict = compareGoldenFile(golden, actual, EXTRACTION_PROMPT_VERSION);
 
     const head = `${golden.state.company}  (signed at v${golden.extractionVersion}, now v${EXTRACTION_PROMPT_VERSION})`;
     if (verdict.kind === "matches") {

@@ -233,6 +233,61 @@ const fmt = (v: unknown): string => (v === null || v === undefined ? "—" : typ
  * state, used by the signer to refuse rather than by the comparator to
  * diverge.
  */
+/**
+ * DOES THIS GOLDEN FILE STILL APPLY AT THIS EXTRACTION VERSION?
+ *
+ * `GoldenFile.extractionVersion` was documented as making an older file "un-
+ * comparable against a newer version rather than assumed to match it" — and
+ * NOTHING read it. `compareToGolden` never saw it; the diff harness printed
+ * it in a header and compared anyway. A guard written in a doc comment and
+ * nowhere else is the session's own dominant defect class, sitting in the
+ * file that defines what a signature means.
+ *
+ * It matters at exactly one moment, which is now: a version bump changes what
+ * the model is ASKED, so every difference it produces is a prompt change and
+ * not a regression. Comparing across it reports prompt changes as failures,
+ * and after a few of those nobody reads the failures — the precise reasoning
+ * Rule 30 already applied to a moved filing set.
+ *
+ * Returns the verdict when the file does not apply, and null when it does, so
+ * a caller cannot accidentally treat "no answer" as "matches".
+ */
+export function goldenVersionVerdict(file: GoldenFile, currentVersion: number): GoldenVerdict | null {
+  if (file.extractionVersion === undefined) {
+    return {
+      kind: "not-applicable",
+      reason:
+        `this golden file records no extractionVersion, so it was signed before the version was captured and ` +
+        `cannot be shown to describe v${currentVersion}'s question. Re-sign it rather than compare against it.`,
+      added: [], removed: [],
+    };
+  }
+  if (file.extractionVersion !== currentVersion) {
+    return {
+      kind: "not-applicable",
+      reason:
+        `signed at extraction v${file.extractionVersion}, running at v${currentVersion}. A version bump changes what the ` +
+        `model is asked, so every difference it produces is a prompt change and not a regression — the same disposition ` +
+        `Rule 30 gives a moved filing set. Re-sign against the new version, do not compare across it.`,
+      added: [], removed: [],
+    };
+  }
+  return null;
+}
+
+/**
+ * The comparison a GOLDEN FILE gets: version first, then the state.
+ *
+ * Call sites that hold a file should use this rather than reaching past it to
+ * `compareToGolden`, because the version check is exactly the kind of step
+ * that gets skipped when it is optional. `compareToGolden` stays exported for
+ * comparing two states that share a version by construction — three re-asks
+ * of the same run, which is what 9b does.
+ */
+export function compareGoldenFile(file: GoldenFile, actual: GoldenState, currentVersion: number): GoldenVerdict {
+  return goldenVersionVerdict(file, currentVersion) ?? compareToGolden(file.state, actual);
+}
+
 export function unsupportedAmountRows(state: GoldenState): string[] {
   return state.rows
     .filter((r) => amountSupportOf(r.amount, r.sourceLine).kind === "unsupported")

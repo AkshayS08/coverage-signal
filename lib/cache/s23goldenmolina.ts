@@ -21,7 +21,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PINNED_AS_OF, PINNED_AS_OF_DAY } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
-import { deriveGoldenState, compareToGolden, type GoldenFile, type GoldenState } from "../events/golden";
+import { deriveGoldenState, compareGoldenFile, type GoldenFile, type GoldenState } from "../events/golden";
 import { currentCompanySpend } from "../agent/costMeter";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 
@@ -65,7 +65,7 @@ const rowKey = (r: GoldenState["rows"][number]) => r.instrument;
 
   console.log(`\n[2] THE SIGNED STATE — every field the golden actually pins\n`);
   const freshState = deriveGoldenState(fresh, PINNED_AS_OF);
-  const verdict = compareToGolden(g.state, freshState);
+  const verdict = compareGoldenFile(g, freshState, EXTRACTION_PROMPT_VERSION);
   console.log(`  rows: ${g.state.rows.length} signed, ${freshState.rows.length} now`);
 
   const byKey = new Map(freshState.rows.map((r) => [rowKey(r), r]));
