@@ -5223,3 +5223,93 @@ part is already satisfied.*
 
 **Measured cost of learning this: $0.1887 and no cold pass** — caught by the
 reconciliation gate before ten names re-extracted against it.
+
+## v31 checkpoint — three diagnostics, all $0
+
+### Cigna: the field is there, the table is there, and the model still declines
+
+**(a) `referencedScheduleSequence` IS populatable at v31.** Measured from the
+schema builder rather than assumed:
+
+```
+shape "tabular"       scheduleSequence present · referenced* ABSENT
+shape "prose-only"    everything ABSENT
+shape "not-located"   scheduleSequence ABSENT · referencedScheduleSequence PRESENT
+```
+
+Cigna takes the `not-located` branch, where the field is present. **The model
+could fill it and did not.** Rule 51's removal took `scheduleSequence` only;
+the referenced variant survived, as designed.
+
+Nor is anything clearing it after the fact. `coupleReferencedFields` only
+empties the referenced arrays when there is no cross-reference sentence **or**
+the anchor states its own ladder — Cigna has a sentence and no ladder, so the
+coupling returns the verdict untouched. Confirmed empirically: the blob holds
+a populated `noteCrossReference` beside an empty `referencedScheduleSequence`,
+which is a combination the coupling cannot produce.
+
+**(b) The 10-K table is still in the prompt.** Cigna's corpus fingerprint is
+`813c7d6b`, unchanged from the v30 measurement that found Note 7 at 6,991
+characters with its whole span verified by first and last sixty characters.
+The only change to `loop.ts` since that pass is field plumbing for the
+referenced trio — corpus assembly is untouched. Same documents, same text,
+same locator, therefore the same 6,991 characters.
+
+**So the diagnosis was wrong about cause.** The prompt did contradict itself,
+and removing the contradiction changed nothing. Given the pointer, the field
+and the table, the model declines to transcribe a prior-period table. That is
+a model behaviour, not a prompt defect, and **fix 1 did not move it.**
+
+This reframes what Cigna's empty ladder means for a demo. It is still honest —
+no stale table is presented as current — but the reason is *"the model will
+not transcribe the referenced table"*, not *"the prompt asked it not to."*
+
+### Encompass 6 → 7: a real instrument recovered
+
+The filing set has not moved (the v30 answer is readable at today's
+fingerprint), so the change is the prompt's. Nine entries differ only by
+whitespace. One is genuinely new:
+
+```
++ row | 5.875 % Senior Notes due 2034 | $ 491.0 million | 2034-06-01
+```
+
+v30 missed a note that v31 transcribes. **An improvement, not a spurious row.**
+
+### CHS 13 → 12: the duplicate ABL resolved itself
+
+Weighted highest, and it is not a regression. Schedule entries are **16 at
+both versions**. The drop is `proseInstruments 1 → 0`, and the lost instrument
+is:
+
+```
+ABL Facility · $1.0 billion · commitment · matures 2029-06-05
+```
+
+That prose instrument is exactly what produced the two-rows-one-instrument
+render case already logged for the Stage 5 product read — `ABL Facility $0
+million [repaid]` beside `ABL Facility $1.0 billion capacity`. With it gone,
+the ABL appears once.
+
+**What changed on the page, stated precisely:** CHS's ladder shows the ABL at
+`$0 million` (the note's own row) and **no longer carries a `$1.0 billion`
+capacity row.** The capacity is not lost — the facility line still reads size
+`$1.0 billion`, available `$751 million`, borrowing-base limited — but it is
+no longer a ladder row. `facilityOnlyRows` suppresses it because the schedule
+row already carries the instrument under its own name, which is the
+position.ts:603 logic working as designed.
+
+Nothing wrong is displayed and nothing is double-counted. **It is still a
+change to a demo name's ladder produced by a prompt edit that was not aimed at
+it**, and whether the ABL's $1.0 billion belongs on the ladder is a product
+call rather than a defect.
+
+**And one degradation found while diffing**, small but real:
+
+```
+v30   9 ¾% Senior Secured Notes due 2034 · $1,790 million · 2034-09-15
+v31   9 ¾% Senior Secured Notes due 2034 · $ 1,790 million · 2034
+```
+
+The maturity lost its month and day. A dated row can card; a bare-year row is
+table-only. Not a wrong number — a less precise one, on a demo name.
