@@ -1,4 +1,4 @@
-# The rules, 1 to 58
+# The rules, 1 to 59
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -68,6 +68,7 @@ example that found it, never the thing the rule is about.
 | 56 | a signature refuses evidence recorded at a different version; where a claim is versioned, the version belongs in the KEY, not in the text | [log](build_log.md#rule-56--a-signature-refuses-evidence-recorded-at-a-different-version-where-a-claim-is-versioned-the-version-belongs-in-the-key-not-in-the-text) |
 | 57 | a date inside a maturity clause is the maturity only where the clause predicates it of maturity | [log](build_log.md#rule-57--a-date-inside-a-maturity-clause-is-the-maturity-only-where-the-clause-predicates-it-of-maturity) |
 | 58 | a row's sourceLine is the sentence that states the row's AMOUNT | [log](build_log.md#rule-58--a-rows-sourceline-is-the-sentence-that-states-the-rows-amount) |
+| 59 | every example added to a prompt rule is a new misfire surface, and needs its own measured negative case before the pass | [log](build_log.md#rule-59--every-example-added-to-a-prompt-rule-is-a-new-misfire-surface-and-needs-its-own-measured-negative-case-before-the-pass) |
 
 ## Refinements and later occurrences
 
@@ -79,3 +80,4 @@ do not renumber; they qualify the rule above.
 | 13 | refined | a declared shape must be one the mechanism can produce (Session 20, Stage 2) | [log](build_log.md#rule-13-refined--a-declared-shape-must-be-one-the-mechanism-can-produce-session-20-stage-2) |
 | 37 | seventh occurrence | the redemption guard | [log](build_log.md#rule-37-seventh-occurrence--the-redemption-guard) |
 | 53 | refined | a copula between a noun and its predicate does not change which field a clause is about | [log](build_log.md#rule-53-refined--a-copula-between-a-noun-and-its-predicate-does-not-change-which-field-a-clause-is-about) |
+| 58 | second half | the guard reaches every row, not only the ones it was written at | [log](build_log.md#rule-58-second-half--the-guard-reaches-every-row-not-only-the-ones-it-was-written-at) |

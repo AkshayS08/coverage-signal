@@ -5180,3 +5180,46 @@ model.
 prompt that no longer exists at v31. It must be deleted, or the version bumped
 again, so nothing cached at a version was built by a different prompt at that
 version. **Held for the signer — it is a delete.**
+
+## Rule 59 — every example added to a prompt rule is a new misfire surface, and needs its own measured negative case before the pass
+
+A prompt rule is tested before it ships: the copula widening was scanned
+across 68 figures and moved 1; the no-convert rule was measured against 49
+million-printed figures it must not disturb. **The examples inside those rules
+were not tested at all**, and an example is not decoration — it is the part of
+the instruction a model attends to hardest, and the part most able to carry a
+meaning nobody wrote.
+
+The one example that skipped the check is the one that broke DaVita:
+
+> *"The filing prints '$ 1,975,000' under a header reading '(in thousands)' →
+> return '$ 1,975,000' and report the header's unit in the table's own unit
+> field."*
+
+Every clause of it is true. It sat inside a rule about scale WORDS and
+introduced **column headers**, and the model — mid-transcription of a
+two-column table — began emitting each column as its own entry. DaVita's
+ladder went from **9 rows to 17**, every instrument appearing twice, once at a
+stale balance. A rule written to stop a unit conversion produced a ladder that
+double-counts.
+
+**So an example carries the same gate as the rule it illustrates:**
+
+1. **Name what the example could be read to mean beyond its point.** "In
+   thousands" is a scale fact; "under a header" is a layout fact. The second
+   was never intended and was never checked.
+2. **Measure the population it could disturb**, the way the rule's own
+   negative case is measured. Had the header example been run against the
+   book's two-column filers before the pass — DaVita, Quest, Encompass,
+   Centene all print two periods — the doubling would have surfaced at $0.
+3. **Prefer the rule with fewer examples.** Each one is a surface. Two
+   symmetric examples proved the no-convert rule in both directions; the third
+   added no coverage and cost a regression.
+
+*The general form: an instruction is tested on what it says; an example is
+tested on what it shows, and what it shows includes everything incidental to
+it. The incidental part is what a model generalises from when the explicit
+part is already satisfied.*
+
+**Measured cost of learning this: $0.1887 and no cold pass** — caught by the
+reconciliation gate before ten names re-extracted against it.
