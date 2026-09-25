@@ -2257,3 +2257,70 @@
 {"at":"2026-09-25T00:55:14.441Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-25T00:55:58.142Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-25T00:56:14.209Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:25:43.625Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:25:50.008Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:25:55.709Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:26:03.451Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:26:06.909Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:26:10.865Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:26:45.928Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:26:51.968Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:26:58.154Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:27:06.672Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:27:09.994Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:27:13.863Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:28:05.059Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:28:45.681Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:29:41.896Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:30:04.883Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:33:06.781Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:33:11.804Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:33:16.593Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:33:22.106Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:33:25.175Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:35:29.859Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:35:34.069Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:35:38.127Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:35:43.267Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:35:45.685Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:45:17.584Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:46:38.291Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:46:47.320Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:47:00.744Z","company":"Tenet Healthcare","totalUsd":0.224613,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":110127,"outputTokens":10065,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.160452},{"model":"claude-sonnet-5","calls":1,"inputTokens":21177,"outputTokens":42,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.064161}],"unpricedModels":[]}
+{"at":"2026-09-25T01:47:04.805Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:47:26.300Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:47:39.297Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:47:53.779Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:48:01.082Z","company":"Quest Diagnostics","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:48:24.566Z","company":"Centene Corporation","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:48:38.565Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:49:04.318Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:49:16.390Z","company":"Tenet Healthcare","totalUsd":0.224613,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":110127,"outputTokens":10065,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.160452},{"model":"claude-sonnet-5","calls":1,"inputTokens":21177,"outputTokens":42,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.064161}],"unpricedModels":[]}
+{"at":"2026-09-25T01:49:48.224Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:51:55.176Z","company":"DaVita","totalUsd":0.19227,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":86361,"outputTokens":9561,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.134166},{"model":"claude-sonnet-5","calls":1,"inputTokens":19153,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058104}],"unpricedModels":[]}
+{"at":"2026-09-25T01:53:17.000Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:53:24.184Z","company":"DaVita","totalUsd":0.191095,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":86361,"outputTokens":9323,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.132976},{"model":"claude-sonnet-5","calls":1,"inputTokens":19158,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058119}],"unpricedModels":[]}
+{"at":"2026-09-25T01:53:40.453Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:54:06.782Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:54:42.959Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:55:14.276Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:55:30.868Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:56:01.423Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:56:25.483Z","company":"Quest Diagnostics","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:56:42.011Z","company":"Centene Corporation","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:56:46.194Z","company":"Encompass Health","totalUsd":0.194858,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":78733,"outputTokens":8618,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.121823},{"model":"claude-sonnet-5","calls":1,"inputTokens":24135,"outputTokens":42,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.073035}],"unpricedModels":[]}
+{"at":"2026-09-25T01:56:50.609Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:57:09.004Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:58:10.567Z","company":"Encompass Health","totalUsd":0.194858,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":78733,"outputTokens":8618,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.121823},{"model":"claude-sonnet-5","calls":1,"inputTokens":24135,"outputTokens":42,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.073035}],"unpricedModels":[]}
+{"at":"2026-09-25T01:58:18.586Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T01:59:19.102Z","company":"Community Health Systems","totalUsd":0.142749,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":91179,"outputTokens":10314,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.142749}],"unpricedModels":[]}
+{"at":"2026-09-25T02:00:18.265Z","company":"Community Health Systems","totalUsd":0.140554,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":91179,"outputTokens":9875,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.140554}],"unpricedModels":[]}
+{"at":"2026-09-25T02:00:22.042Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T02:01:18.086Z","company":"Molina Healthcare","totalUsd":0.206313,"totalCalls":2,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":34778,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.104979},{"model":"claude-haiku-4-5","calls":1,"inputTokens":70694,"outputTokens":6128,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.101334}],"unpricedModels":[]}
+{"at":"2026-09-25T02:02:15.449Z","company":"Molina Healthcare","totalUsd":0.206313,"totalCalls":2,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":34778,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.104979},{"model":"claude-haiku-4-5","calls":1,"inputTokens":70694,"outputTokens":6128,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.101334}],"unpricedModels":[]}
+{"at":"2026-09-25T02:05:33.918Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T02:05:44.494Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T02:05:50.698Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T02:05:57.740Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T02:06:04.793Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-25T02:06:11.585Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}

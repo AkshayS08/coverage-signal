@@ -288,6 +288,32 @@ export function compareGoldenFile(file: GoldenFile, actual: GoldenState, current
   return goldenVersionVerdict(file, currentVersion) ?? compareToGolden(file.state, actual);
 }
 
+/**
+ * AN AMOUNT'S IDENTITY: its value and its unit, and nothing about its
+ * whitespace. Null when the string does not parse as money, so a caller can
+ * fall back to exact comparison rather than treat two unreadable strings as
+ * equal.
+ *
+ * HOISTED OUT OF `compareToGolden` so there is ONE deciding function for
+ * "are these the same amount". A diff harness that re-derived it keyed rows
+ * on the raw string and reported twelve unmoved Tenet rows as twelve gone
+ * and twelve arrived — the same whitespace mistake this function exists to
+ * prevent, made one layer above the function that prevents it.
+ */
+export function amountKey(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const value = parseMoneyAmount(raw);
+  if (value === null) return null;
+  const unit = /\b(thousand|million|billion|trillion)s?\b/i.exec(raw);
+  return `${value}|${unit ? unit[1].toLowerCase() : "asPrinted"}`;
+}
+
+/** True when two printed amounts are the same value in the same unit. */
+export function sameAmount(e: unknown, a: unknown): boolean {
+  const ek = amountKey(e), ak = amountKey(a);
+  return ek !== null && ak !== null ? ek === ak : String(e) === String(a);
+}
+
 export function unsupportedAmountRows(state: GoldenState): string[] {
   return state.rows
     .filter((r) => amountSupportOf(r.amount, r.sourceLine).kind === "unsupported")
@@ -335,13 +361,6 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
    * `"$X drawn under $Y"` — because a comparison that cannot read its inputs
    * must not report them as equal.
    */
-  const amountKey = (raw: unknown): string | null => {
-    if (typeof raw !== "string") return null;
-    const value = parseMoneyAmount(raw);
-    if (value === null) return null;
-    const unit = /\b(thousand|million|billion|trillion)s?\b/i.exec(raw);
-    return `${value}|${unit ? unit[1].toLowerCase() : "asPrinted"}`;
-  };
   const cmpAmount = (field: string, e: unknown, a: unknown) => {
     const ek = amountKey(e), ak = amountKey(a);
     if (ek !== null && ak !== null) {
