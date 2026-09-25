@@ -135,5 +135,30 @@ console.log(`\n=== [4] Rule 51 — undefined is not a no ===`);
     "[4g] and every non-found status withholds, not just not_found — under_cap located nothing either");
 }
 
+console.log("\n=== [5] THE REFERENCED TRIO MOVES AS ONE BRANCH ===");
+{
+  // LOAD-BEARING, so it is pinned. Cigna's empty referencedScheduleSequence
+  // was diagnosed as "the model declined a field it HAD" rather than "the
+  // field was not there to fill", and the proof rested on this invariant:
+  // the three referenced fields are added and removed together, so a
+  // populated noteCrossReference in an answer proves referencedScheduleSequence
+  // was on that answer's schema too.
+  //
+  // If they ever stop moving together, that proof silently becomes wrong and
+  // a code bug gets filed as a prompt bug.
+  const TRIO = ["noteCrossReference", "referencedScheduleSequence", "referencedBalanceSheetDebtCaptions"] as const;
+  const props = (shape: "tabular" | "prose-only" | "not-located") =>
+    (verdictSchemaFor(shape) as unknown as { properties: Record<string, unknown> }).properties;
+
+  assert(TRIO.every((k) => k in props("not-located")),
+    "[5a] all three referenced fields are PRESENT on the not-located schema — the path Cigna takes");
+  assert(TRIO.every((k) => !(k in props("tabular"))),
+    "[5b] and all three are ABSENT on tabular, so they are ONE branch rather than three independent deletions");
+  assert(TRIO.every((k) => !(k in props("prose-only"))),
+    "[5c] and absent on prose-only too");
+  assert(!("scheduleSequence" in props("not-located")),
+    "[5d] scheduleSequence is still removed on not-located (Rule 51) — the referenced variant SURVIVED that removal, which is the whole point");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }

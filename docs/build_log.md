@@ -5313,3 +5313,77 @@ v31   9 ¾% Senior Secured Notes due 2034 · $ 1,790 million · 2034
 
 The maturity lost its month and day. A dated row can card; a bare-year row is
 table-only. Not a wrong number — a less precise one, on a demo name.
+
+## Closing the v31 checkpoint — three answers, no spend
+
+### Cigna: the field was PRESENT and the model declined it
+
+Proved from Cigna's own data rather than by reading the builder. The three
+referenced fields are added and removed as **one branch** — present together
+on `not-located`, absent together on `tabular` and `prose-only`. So a
+populated `noteCrossReference` in an answer proves `referencedScheduleSequence`
+was on that answer's schema.
+
+```
+Cigna's v31 answer:   noteCrossReference POPULATED · referencedScheduleSequence 0 entries
+```
+
+**A prompt problem, not a code one.** Rule 51 removed `scheduleSequence` and
+the referenced variant survived, exactly as designed. The v31 candidate stays
+prompt-side.
+
+That invariant is now pinned (`proseNoteRouting.test.ts [5a]–[5d]`), because
+the whole diagnosis rests on it: if the trio ever stops moving together, the
+proof silently inverts and a code bug gets filed as a prompt bug.
+
+**Fix 1 is kept, and logged for what it is: a correctness change earned by
+reasoning that moved no output.** The block no longer forbids and requests the
+same table, and it now matches what Rule 51 actually did to the schema.
+Reverting to v30's text to keep the changelog tidy would ship a known
+self-contradiction, which is the less honest of the two.
+
+### Encompass: the new row is anchor-sourced
+
+```
+5.875 % Senior Notes due 2034 · $491.0 million · 2034-06-01
+citedUrl  .../ehc-20260630.htm      anchor  10-Q 2026-08-07  .../ehc-20260630.htm
+periodColumn "June 30, 2026"        prior column prints "—"
+```
+
+Byte-identical to the anchor. The prior column printing `—` is consistent with
+a note that did not exist at the prior date. **A gained row, not an off-anchor
+pull.**
+
+### CHS: the borrowing-base story is not buried — it is the facility block
+
+```
+ABL Facility
+    size        $ 1.0 billion
+    drawn       $ 0 million
+    LCs         $ 32 million
+    available   $ 751 million
+    matures     June 5, 2029
+    BORROWING-BASE LIMITED (stated-language) — borrowing base capacity
+    check: borrowing-base-limited — implied base ~$783M
+      stated available 751M against a 1000M commitment (size less 0M drawn
+      less 32M of letters of credit would allow 968M)
+```
+
+Every figure, the filer's own language, the flag, and the implied base — in
+one block. **The ladder carries the ABL once, at `$0 million` drawn.**
+
+The `$1.0 billion` capacity row that left the ladder was never where the
+borrowing-base catch lived; the implied base was always a facility-line
+figure. The departed row said `$1.0 billion capacity` with no context, while
+the facility line says size, drawn, LCs, available, the flag and the
+arithmetic. **The story reads better in one place than it did in two.**
+
+**One legibility regression worth naming:** the evidence sentence now renders
+as the fragment `"subject to borrowing base capacity"` rather than the fuller
+ABL sentence v30 carried. The flag is right and its quote is thin.
+
+**And a warning worth watching:** `MATURITY DATE NOT IN SOURCE LINE` fires
+twice for the ABL — claimed 2029-06-05 with no date token in the entry's own
+sourceLine, nulled and kept. The facility still carries June 5, 2029 from its
+own maturity sentence, so the rendered date is sourced; the schedule entries
+simply are not the thing sourcing it.
