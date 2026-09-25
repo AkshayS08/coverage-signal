@@ -45,6 +45,50 @@ export interface ReproductionEvidence {
 export const RUNS_REQUIRED = 3;
 
 export const REPRODUCTION_EVIDENCE: ReproductionEvidence[] = [
+  // ── v31, Session 23 ────────────────────────────────────────────────────
+  //
+  // MEASURED UNDER THE STANDING RULE THAT THE CANONICAL COLD-PASS RUN IS
+  // SAMPLE 1. Signing is two re-tastes per name, not three: the cold pass is
+  // a real ask at this version against this corpus, and re-buying it to call
+  // it a sample would be paying for a run we already have. Sample 1 is a
+  // cache hit and is compared as an EQUAL of the two that bill — it is not a
+  // baseline they are measured against.
+  //
+  // FIVE NAMES WERE MEASURED AND THREE ARE RECORDED. DaVita returned 9, 17
+  // and 9 rows, and Community Health Systems 12, 13 and 13; both are absent
+  // from this table because they did not reproduce, which is the only reason
+  // a name should ever be absent from it.
+  {
+    company: "Tenet Healthcare", version: 31, runs: 3, recordedOn: "2026-09-25",
+    evidence:
+      "Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.4492): 12 rows in every " +
+      "run; every row identical across all three under compareToGolden on identity, amount, maturity date, " +
+      "granularity, provenance and capacity flag; coverage identical (statedTotalDebt, capturedFace, statedBridge, " +
+      "denominator); the cited document set identical across all three. Facility figures are NOT covered by 9b and " +
+      "were measured separately: identical across all three runs, labels included.",
+    toleratedDifferences: [],
+  },
+  {
+    company: "Encompass Health", version: 31, runs: 3, recordedOn: "2026-09-25",
+    evidence:
+      "Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.3897): 7 rows in every " +
+      "run, identical across all three under compareToGolden; coverage identical; cited document set identical. " +
+      "Facility figures measured separately and identical across all three, labels included — which is the " +
+      "measurement that matters most on this name, because the letter-of-credit field is the one the Session 23 " +
+      "refresh roster was watching for a reproducing drop.",
+    toleratedDifferences: [],
+  },
+  {
+    company: "Molina Healthcare", version: 31, runs: 3, recordedOn: "2026-09-25",
+    evidence:
+      "Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.4126): 6 rows in every " +
+      "run, identical across all three under compareToGolden; coverage identical; cited document set identical. " +
+      "Facility figures measured separately and identical across all three INCLUDING THE LABEL — worth recording, " +
+      "because Molina's v29 evidence had to tolerate the revolver appearing as \"Credit Facility\" in two runs of " +
+      "three and \"revolving credit facility\" in the other. At v31 all three printed the same name, so the " +
+      "tolerated set below is empty on its own evidence rather than by omission.",
+    toleratedDifferences: [],
+  },
   {
     company: "Molina Healthcare", version: 30, runs: 3, recordedOn: "2026-09-21",
     evidence:
