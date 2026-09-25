@@ -5533,3 +5533,96 @@ That string is ours, not the filing's: `applyTableUnitToAmount` appends the
 caption's own word, and "(In millions)" yields "millions". Value and unit are
 right and Rule 58 is clean, so it does not block a signature; it is ugly on
 the page and it is new against v29's `"$1,500 million"`.
+
+---
+
+# Session 23, after signing — corrections to the record
+
+## The DaVita off-anchor diagnosis was WRONG. Both of ours.
+
+It was reported — by me first, and accepted in the ruling that followed — that
+DaVita's 17-row run "cited the 10-K and transcribed its table alongside the
+10-Q". **That is not what happened, and the correction matters more than the
+original claim.**
+
+Every row-bearing field in all three DaVita runs is the same: same
+instruments, same values, same counts, same period columns, `scheduleSequence`
+13 and `priorScheduleSequence` 13 in each. The extra 10-K citation is real but
+reaches `filingSet` through `filingSetOf`, which unions citations across all
+fifteen triggers. **It never touched the ladder.** I read a filing-set
+difference and attributed it to the one field I was already thinking about.
+
+The actual cause is Rule 61, and it is ours: a date written `11/24/2030`
+instead of `2030-11-24` made `debtRowDateToken` return null, which
+`rowsRepresentSameTranche` reported as *not the same tranche*, which re-added
+seven prior entries beside their own live twins.
+
+**The conditional 10-K routing rule stands, with Cigna and HCA as its
+assertions. DaVita is not an instance of it and must not be cited as one.** A
+rule carrying an instance that does not belong to it is worse than a rule with
+one fewer example: the wrong instance is what a future reader reasons from.
+
+Also recorded from the same measurement: DaVita's facility figures swing on
+the unit word — `$ 188,482 thousand` in one run, `$ 188,482` in another, same
+number. Unit instability again, on the extraction side rather than ours.
+
+## Rule 49 on the ladder — and three wrong diagnoses before it
+
+CHS's duplicated ABL took three attempts, and the failures are the useful
+part:
+
+1. **"Two schedule entries."** There is exactly one. I never looked.
+2. **"`facilityOnlyRows`'s claim test."** I keyed it on a name match, the
+   count did not move, and I reverted it. Then, given a ruling that pointed at
+   identity, I applied *the same fix again* and it did not move again.
+3. **Only then** did I ask every row-producing field instead of the likeliest
+   one — and the answer was immediate: the model reports the ABL in the debt
+   note's schedule AND, on some runs, again as a prose instrument.
+
+The canonical run carried no prose entry and gave 12 rows. Four other
+extractions carried one and gave 13. **Rule 60 made it legible rather than
+causing it**: before, the pair read "$0 repaid" and "$1.0 billion capacity"
+and looked like two different things; after, both read "$1.0 billion capacity"
+and the duplication is plain.
+
+`collapseSameFacilityRows` merges only rows that resolve to the SAME stated
+facility and agree on amount by value and unit and on maturity. The surviving
+row is the one whose own sentence states its amount, and it records what it
+absorbed. **CHS is 12 rows in every run.**
+
+## Held for a ruling: the matured note at nil
+
+Rule 60's facility half is accepted and shipped. Its other half — what a
+NON-facility zero should be — is explicitly **not** settled here. Quest's
+3.45% Senior Note due June 2026 renders at `$ —`, classed `retired`, and the
+open question is whether a tranche the filing reports at nil belongs on the
+ladder as a $0 row at all or belongs to the events layer as a repayment that
+happened. Same question as the Quest matured-row item. It blocks nothing
+today and C1 is unchanged for non-facilities until it is ruled.
+
+## The scale word is the tool's, not the caption's
+
+`ScaleInfo.scaleWord` is captured from the filing's declaration and is plural
+because captions are ("In millions"). It was being appended verbatim to
+amounts whose cells carry no unit, rendering **"$ 1,500    millions"** across
+Tenet's entire ladder — a plural nobody writes after a figure, plus the
+column's own padding.
+
+The captured word stays as evidence about the declaration.
+`canonicalScaleWord` is what renders. **The filing states a SCALE; it does not
+state how that scale is spelled beside one number**, so there was nothing here
+to be faithful to. Verify as printed, display normalized.
+
+## The same billing mistake, twice in one day
+
+$0.2773 on CHS, then — after writing "derive the key, never retype it" into
+this log as a lesson — **$0.4492 on Tenet**, against an explicit instruction
+that nothing else should bill. Both were a hand-typed CACHE_BUST tag one
+character short of the harness's own `slice(0, 14)`: `CommunityHeal` for
+`CommunityHealt`, `TenetHealthca` for `TenetHealthcar`. Both misses looked
+exactly like a cache expiry.
+
+Writing the lesson down did not prevent the repeat. `s23davitaladder` now
+takes `--run N` and derives the tag itself. **A harness that makes the mistake
+impossible is worth more than a note saying not to make it** — and the note
+had already been written and had already failed.
