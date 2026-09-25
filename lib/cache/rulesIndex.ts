@@ -19,9 +19,20 @@ import { join } from "node:path";
 const LOG_PATH = join(process.cwd(), "docs", "build_log.md");
 const OUT_PATH = join(process.cwd(), "docs", "rules.md");
 
-/** The highest rule number the log is expected to define. A rule added without */
-/** its heading fails the completeness check below rather than vanishing. */
-const HIGHEST_RULE = 59;
+/**
+ * The highest rule number the log defines, READ FROM THE LOG rather than
+ * declared here.
+ *
+ * It was a hardcoded 59, and a hardcoded ceiling cannot notice anything above
+ * it. Rules 60, 61 and 62 were parsed correctly, rendered nowhere, and the
+ * generator printed "62 rules (1-59, no gaps)" — a sentence that contains its
+ * own contradiction and still read as success. The completeness check below
+ * is unchanged and still refuses on a GAP; what it no longer does is define
+ * the top of the range it is checking.
+ *
+ * Computed after parsing, so it lives beside the parse rather than above it.
+ */
+let HIGHEST_RULE = 0;
 
 interface RuleHeading {
   /** The rule's number. Refinements share the number of the rule they refine. */
@@ -79,6 +90,7 @@ for (const h of headings) {
   if (h.qualifier === null && !primary.has(h.n)) primary.set(h.n, h);
   else refinements.push(h);
 }
+HIGHEST_RULE = Math.max(0, ...primary.keys());
 const missing: number[] = [];
 for (let n = 1; n <= HIGHEST_RULE; n++) if (!primary.has(n)) missing.push(n);
 if (missing.length) {

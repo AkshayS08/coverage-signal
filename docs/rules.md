@@ -1,4 +1,4 @@
-# The rules, 1 to 59
+# The rules, 1 to 62
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -69,6 +69,9 @@ example that found it, never the thing the rule is about.
 | 57 | a date inside a maturity clause is the maturity only where the clause predicates it of maturity | [log](build_log.md#rule-57--a-date-inside-a-maturity-clause-is-the-maturity-only-where-the-clause-predicates-it-of-maturity) |
 | 58 | a row's sourceLine is the sentence that states the row's AMOUNT | [log](build_log.md#rule-58--a-rows-sourceline-is-the-sentence-that-states-the-rows-amount) |
 | 59 | every example added to a prompt rule is a new misfire surface, and needs its own measured negative case before the pass | [log](build_log.md#rule-59--every-example-added-to-a-prompt-rule-is-a-new-misfire-surface-and-needs-its-own-measured-negative-case-before-the-pass) |
+| 60 | a committed facility at a zero balance is UNDRAWN, not repaid | [log](build_log.md#rule-60--a-committed-facility-at-a-zero-balance-is-undrawn-not-repaid) |
+| 61 | a comparison that cannot read its inputs must not answer | [log](build_log.md#rule-61--a-comparison-that-cannot-read-its-inputs-must-not-answer) |
+| 62 | evidence-sentence stability is part of a prompt declaration's measured surface | [log](build_log.md#rule-62--evidence-sentence-stability-is-part-of-a-prompt-declarations-measured-surface) |
 
 ## Refinements and later occurrences
 

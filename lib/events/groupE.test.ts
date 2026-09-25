@@ -394,7 +394,11 @@ function fact(over: Partial<VerifiedFact> & { linkedTriggerId: string }): Verifi
   );
 }
 
-console.log(`\n${passed} passed, ${failed} failed.`);
+// THE SUMMARY USED TO PRINT HERE, with 17 assertions still to run below it.
+// runOffline reads the FIRST "N passed, M failed" a suite prints, so this
+// file reported its first two-thirds and the whole Stage-2 review block was
+// invisible to the repo-wide count. Same defect as position.test.ts, found
+// by the same sweep, fixed the same way.
 
 // ============================================================================
 // STAGE-2 REVIEW — items 2, 12, 13, 15, 16. One block per rule, each with the
@@ -509,6 +513,8 @@ console.log(`\n${passed} passed, ${failed} failed.`);
   });
   assert(monthKnown === "refi window ~15mo", `[I15-2] REVERSE: a filing that PRINTS the month keeps its real month count (got ${monthKnown})`);
 }
+
+console.log(`\n${passed} passed, ${failed} failed.`);
 
 if (failed > 0) {
   console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);

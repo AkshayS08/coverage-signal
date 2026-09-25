@@ -704,7 +704,13 @@ console.log("\n=== [S21] BOTH GATES, AND EACH ONE ALONE IS NOT ENOUGH ===");
     "[S21d] and neither alone, which is the trivial case and is asserted so the table of four is complete rather than three-quarters checked");
 }
 
-console.log(`\n${passed} passed, ${failed} failed.`);
+// THE SUMMARY USED TO PRINT HERE, with four more blocks still to run below
+// it. runOffline reads the FIRST "N passed, M failed" it finds, so this
+// suite reported 73 while running 83, and every assertion added after this
+// line was invisible to the repo-wide count — including the ten Rule 60
+// assertions that arrived tonight and did not move the total by one.
+// Moved to the end of the file, where it is a summary of the run rather
+// than of the first two-thirds of it.
 
 // ============================================================================
 // STAGE-2 REVIEW — THE NOTE IS THE POSITION. A redemption cannot retire a
@@ -789,6 +795,85 @@ console.log(`\n${passed} passed, ${failed} failed.`);
     "[UNMATCHABLE-2] REVERSE: an IDENTIFIED tranche that genuinely dropped off is still reported unconfirmed — the rule narrows what can be checked, it does not stop checking"
   );
 }
+
+// ============================================================================
+// SESSION 23, RULE 60 — A COMMITTED FACILITY AT ZERO IS UNDRAWN, NOT REPAID.
+//
+// Surfaced on CHS, whose ABL the filing reports at a zero balance. C1 read
+// every zero the same way and retired it, and the $1.0 billion commitment
+// left the page with it — CHS became the only name in ten with no capacity
+// row at all, while every other revolver in the book rendered as capacity.
+//
+// THE NEGATIVE CASES ARE WHAT MAKE THIS A RULE. A senior note at nil and a
+// term loan at nil are genuinely repaid and must stay repaid; a commercial
+// paper programme at nil has issued nothing, and calling THAT undrawn
+// capacity would promise headroom no lender committed. Each is asserted
+// below, because a rule tested only where it fires is a patch.
+// ============================================================================
+console.log("\n=== RULE 60 — zero balance: undrawn commitment vs discharged obligation ===\n");
+{
+  const facility = {
+    name: "ABL Facility",
+    category: "revolver",
+    facilitySize: { value: "$ 1.0 billion", sourceLine: "a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion" },
+    drawn: null, lettersOfCredit: null, available: null, maturity: null,
+  };
+  const dm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    facilities: [facility] as never,
+    scheduleSequence: [
+      row({ label: "ABL Facility", rate: null, maturityDate: "2029-06-05", dateGranularity: "day", amount: "$ 0 million" }),
+      row({ label: "9.75% Senior Secured Notes", rate: "9.75%", maturityDate: "2034-09-15", dateGranularity: "day", amount: "$ 0 million" }),
+      row({ label: "Term Loan H", rate: null, maturityDate: "2031-01-01", dateGranularity: "day", amount: "$ 0 million" }),
+      row({ label: "Commercial paper program", rate: null, maturityDate: null, dateGranularity: null, amount: "$ 0 million" }),
+      row({ label: "6.00% Senior Notes", rate: "6.00%", maturityDate: "2033-01-01", dateGranularity: "day", amount: "$ 500 million" }),
+      subtotal({ label: "Total debt", amount: "$ 500 million" }),
+    ],
+  });
+  const pos = assemblePosition(companyWith([dm]));
+  const find = (s: string) => pos.rows.find((r) => r.instrument.includes(s));
+  const abl = find("ABL"), notes = find("9.75"), loan = find("Term Loan H"), cp = find("Commercial paper");
+
+  assert(abl?.status === "live",
+    `[60a] a revolver the filing reports at zero stays LIVE — nothing is owed and the commitment has not expired (got ${abl?.status})`);
+  assert(abl?.isCapacity === true,
+    `[60b] and it renders as CAPACITY, which is what the other eight revolvers in the book already do — a $0 line on a debt ladder tells a reader nothing (got isCapacity ${abl?.isCapacity})`);
+  assert(abl?.amount === "$ 1.0 billion",
+    `[60c] showing the COMMITTED SIZE, taken from the facility's own stated sentence, not the zero drawn against it (got ${abl?.amount})`);
+  assert(typeof abl?.undrawnNote === "string" && /COMMITTED SIZE/.test(abl.undrawnNote!),
+    "[60d] NEVER SILENT: the row states that the figure beside it is the commitment and not an amount owed — a displayed amount that is not the number the schedule printed has to say so on the page");
+
+  assert(notes?.status === "repaid",
+    `[60e] NEGATIVE CASE — a senior note at nil is still REPAID. The obligation is discharged; this is C1 and Rule 60 must not touch it (got ${notes?.status})`);
+  assert(loan?.status === "repaid",
+    `[60f] NEGATIVE CASE — a term loan at nil is still REPAID, for the same reason (got ${loan?.status})`);
+  assert(cp?.status === "repaid",
+    `[60g] NEGATIVE CASE — a commercial paper programme at nil is REPAID, NOT undrawn capacity. A CP programme is an issuance facility, not a lender commitment, and reading zero outstanding as headroom would promise money no bank agreed to lend (got ${cp?.status})`);
+  assert(notes?.isCapacity !== true && loan?.isCapacity !== true && cp?.isCapacity !== true,
+    "[60h] and none of the three gains a capacity flag — the rule changes what a zero MEANS only where the zero is a starting state");
+}
+{
+  // THE OTHER HALF OF NEVER-SUPPRESS. A committed facility at zero whose
+  // filing states no size has nothing to show as headroom. The zero stands,
+  // and the row says why, rather than a size being invented for it.
+  const dm = baseTriggerResult({
+    triggerId: "debt-maturity",
+    facilities: [] as never,
+    scheduleSequence: [
+      row({ label: "Revolving credit facility", rate: null, maturityDate: "2030-01-01", dateGranularity: "day", amount: "$ 0 million" }),
+      row({ label: "6.00% Senior Notes", rate: "6.00%", maturityDate: "2033-01-01", dateGranularity: "day", amount: "$ 500 million" }),
+      subtotal({ label: "Total debt", amount: "$ 500 million" }),
+    ],
+  });
+  const pos = assemblePosition(companyWith([dm]));
+  const rev = pos.rows.find((r) => r.instrument.includes("Revolving"));
+  assert(rev?.status === "live" && rev?.amount === "$ 0 million",
+    `[60i] a committed facility at zero with NO stated size keeps its zero and stays live — no size is invented to fill the capacity column (got ${rev?.status} / ${rev?.amount})`);
+  assert(typeof rev?.undrawnNote === "string" && /states no committed size/.test(rev.undrawnNote!),
+    "[60j] and it states that absence on the row, rather than rendering a bare $0 a reader would misread as a repaid line");
+}
+
+console.log(`\n${passed} passed, ${failed} failed.`);
 
 if (failed > 0) {
   console.error(`\nFAILURES:\n${failures.map((f) => `  - ${f}`).join("\n")}`);

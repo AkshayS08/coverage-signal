@@ -5387,3 +5387,149 @@ twice for the ABL — claimed 2029-06-05 with no date token in the entry's own
 sourceLine, nulled and kept. The facility still carries June 5, 2029 from its
 own maturity sentence, so the rendered date is sourced; the schedule entries
 simply are not the thing sourcing it.
+
+---
+
+# Session 23, signing day — three signed, two held, one reframed
+
+Spend $2.20 today, $8.08 across the session against a $10 authorisation.
+Tenet, Encompass and Molina are signed at v31. DaVita and CHS failed 9b and
+are held. Cigna was never reached, and the reason it was not is the most
+important thing on this page.
+
+## Rule 60 — a committed facility at a zero balance is UNDRAWN, not repaid
+
+C1 turned any live row whose amount parsed to zero into `repaid`. For a term
+tranche the filing reports at nil that is exactly right: the obligation is
+discharged. **A revolver at zero is the opposite fact.** Nothing is owed AND
+the whole commitment is still there, which is the single thing an RM most
+wants to know about a revolver. Calling it repaid retires a line that has not
+expired and takes the headroom off the page with it.
+
+CHS's ABL was the only row in ten companies this fired on — and the negative
+cases are what make it a rule rather than a patch. **Every other revolver in
+the book already rendered the way this makes CHS's render:** Tenet $1,900M,
+Cigna $6,500M, Quest $750M and $600M, Molina $1,250M, UHS's July 2026 delayed
+draw $700M. CHS alone had *zero* capacity rows. One instance, eight negative
+cases showing the shape it should have had.
+
+The exclusion is deliberately narrow — `revolver`, `delayed-draw`,
+`credit-facility`. A term loan at nil is repaid; a senior note at nil is
+repaid; and **commercial paper keeps C1 too**, because a CP programme is an
+issuance facility rather than a lender commitment, so zero outstanding is not
+available headroom and saying otherwise promises money no bank agreed to
+lend. All four are asserted, `position.test.ts [60e]`-`[60h]`.
+
+Where the filing states a committed size, the row now shows THAT rather than
+the zero, flagged with `undrawnNote` so the page says the figure beside it is
+a commitment and not a debt. Where the filing states no size, the zero stands
+and says so — `[60i]`/`[60j]`. Never-suppress cuts both ways.
+
+## Rule 61 — a comparison that cannot read its inputs must not answer
+
+**DaVita returned 9, 17 and 9 ladder rows at one version off extractions
+whose every row-bearing field was the same.** Same instruments, same values,
+same counts, same period columns. The only thing that moved was the spelling:
+run 2 wrote `$ 1,975,000` and `11/24/2030` where the others wrote
+`$ 1,975,000 thousand` and `2030-11-24`.
+
+`debtRowDateToken` matched `^\d{4}-\d{2}-\d{2}$` and returned null for
+anything else. `rowsRepresentSameTranche` turned that null into `false` — *not
+the same tranche* — and the unconfirmed pass re-added seven prior entries
+beside their own live twins. **Four of the seven had character-identical
+instrument, amount AND maturity on both sides.** A comparison that fails on
+identical inputs is not detecting a change; it is failing to read.
+
+Two halves, both needed. `isoFromStatedDate` reads the common US form — and
+month-first is corroborated rather than assumed, because the two runs that
+DID emit ISO read this filer's own `5/9/2031` as `2031-05-09`. Anything else
+is left unreadable rather than made into a plausible wrong date. Then the
+unconfirmed pass skips any prior entry whose date cannot be read at all,
+because *the absence of a match is only evidence of absence when a match was
+possible* — a principle already written in that function's own comment, for
+the other way a match can be impossible.
+
+Run 2 rebuilt from its own cached answer: **17 rows to 9.**
+
+## Rule 62 — evidence-sentence stability is part of a prompt declaration's measured surface
+
+v31 was declared on two things: where a not-located anchor routes its table,
+and whether a printed unit gets converted. Both about amounts. **36 of 141
+evidence sentences moved between v30 and v31, and six degraded** — the new
+sentence no longer states the row's own amount (Cigna x4, HCA x1, Quest x1).
+Two improved, which is recorded so this is a measurement and not a case.
+
+Nothing in the declaration was wrong. The declaration was *incomplete*, and
+it was incomplete in a way that only shows up if you look: which sentence
+backs a figure is what an RM actually checks, and it moved unmeasured under a
+change that never mentioned it. **A prompt change's blast radius exceeds its
+named fixes.** Every future declaration measures evidence-sentence stability
+alongside the fixes it is actually about.
+
+## Cigna — the empty-ladder premise was WRONG, and it is logged as wrong
+
+The demo story on record was "honestly empty — the anchor note cannot be
+located, so the ladder renders empty with that reason." **The anchor
+`scheduleSequence` is empty. The ladder is not.** Cigna renders six rows:
+
+```
+4.500% Senior Notes due 2030   $ 1,000 million   pricing-8-K
+4.875% Senior Notes due 2032   $ 1,250 million   pricing-8-K
+5.250% Senior Notes due 2036   $ 1,500 million   pricing-8-K
+6.000% Senior Notes due 2056   $   750 million   pricing-8-K
+$6.5bn revolving credit and LC agreement   capacity   note-narrative
+Commercial paper program       $ 1.0 billion       note-narrative
+```
+
+All four 8-K rows cite an interest-rate sentence — *"The 2030 Notes will bear
+interest at a rate of 4.500% per annum ... until the maturity date of
+September 15, 2030"* — which states the rate and the date and **never the
+principal**. Signing refuses on criterion 4, criterion 6 and Rule 58 x4.
+Coverage reads 96.86% residual. **9b was never what blocked Cigna**, which is
+why no re-tastes were bought for it.
+
+This is **the HCA provenance defect, second instance**: a schedule or 8-K row
+whose amount no shown sentence states. One fix serves both names, and neither
+can be signed until it lands. It also moved at v31 — at v30 these four rows
+cited a flattened table fragment that *did* contain the principal, so v31
+traded a fragment that carries the number for a sentence that reads well and
+omits it.
+
+## CHS's 13th row is a duplicated ABL, and was never citation drift
+
+Both re-tastes dropped `cyh-20260401.htm` relative to the canonical run and
+both returned 13 rows against 12, which looked like a citation-set question.
+It is not. **The 13th row is the ABL Facility a second time** — same $1.0
+billion, same 2029-06-05 — in four of five extractions. The canonical
+collapses the note's two ABL entries into one row and the re-tastes do not,
+and which happens turns on fields that move between runs.
+
+**The canonical's 12 is right; the extra row is not an instrument.** This is
+the two-rows-one-instrument CHS item logged at the start of the session, now
+with a precise cause. Fixing it needs a ruling on how two schedule entries for
+one facility should collapse, so it is not fixed here — and one attempt that
+keyed the dedup on a name match was reverted when it did not change the
+count, because an unverified behaviour change that does not fix its target is
+worse than none.
+
+## Two mistakes of mine worth recording
+
+**$0.2773 billed on a miscounted `slice(0,14)`.** I hand-typed a CACHE_BUST
+tag as `CommunityHeal` where the harness composes `CommunityHealt`, so two
+re-reads I had called free were cache misses and re-extracted. The blobs were
+there the whole time. Derive the key, never retype it.
+
+**Two suites were printing their summary mid-file.** `runOffline` reads the
+first `N passed, M failed` it finds, so `position.test.ts` reported 73 while
+running 83 and `groupE.test.ts` hid its whole Stage-2 block. The repo-wide
+count was 1,070 and is 1,102 — **22 assertions had been running and not
+counting before tonight**, and my own ten Rule 60 assertions landed behind the
+same line and moved the total by zero, which is how it was found.
+
+## Rendering defect, named and not fixed
+
+Tenet's ladder amounts now read `"$ 1,500    millions"` — plural, padded.
+That string is ours, not the filing's: `applyTableUnitToAmount` appends the
+caption's own word, and "(In millions)" yields "millions". Value and unit are
+right and Rule 58 is clean, so it does not block a signature; it is ugly on
+the page and it is new against v29's `"$1,500 million"`.

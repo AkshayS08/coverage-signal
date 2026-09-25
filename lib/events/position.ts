@@ -159,6 +159,13 @@ export interface LadderRow {
    * disclosure rather than an absence the filer does not have.
    */
   facilityMaturityNote?: string;
+  /**
+   * RULE 60 — set on a committed facility the filing reports at a zero
+   * balance. States that nothing is drawn, and that the figure beside it is
+   * the commitment rather than a debt. Never silent: a row whose displayed
+   * amount is not the number the schedule printed has to say so on the page.
+   */
+  undrawnNote?: string;
   /** Rule 58: set only when no stated sentence supports this row's amount. */
   amountProvenanceNote?: string;
 }
@@ -476,6 +483,24 @@ function ladderRowFromSequenceEntry(
  * it cannot disagree about a revolver's drawn balance again.
  */
 /** See the call site: identity, never position. */
+/**
+ * RULE 60 — the instrument types where a zero balance means UNDRAWN.
+ *
+ * A lender commitment that can be drawn: the balance is what is borrowed
+ * today, and zero is a starting state, not an ending one. Everything else
+ * keeps C1, where zero means the obligation is discharged.
+ *
+ * `commercial-paper` is deliberately absent. A CP programme is an issuance
+ * facility, not a committed line — zero outstanding means nothing has been
+ * issued, and reading that as available headroom would promise a reader
+ * money no bank has agreed to lend.
+ */
+const COMMITTED_FACILITY_TYPES: ReadonlySet<string> = new Set(["revolver", "delayed-draw", "credit-facility"]);
+
+export function isCommittedFacility(t: InstrumentType | null | undefined): boolean {
+  return t !== null && t !== undefined && COMMITTED_FACILITY_TYPES.has(t);
+}
+
 export function matchFacility(
   p: { name?: string | null; category?: string | null },
   facilities: FacilityRow[] | undefined,
@@ -919,6 +944,38 @@ function ladderRowFromIssuedTranche(row: VerifiedIssuedTranche, status: LadderRo
  * can never match a redemption or a prior-period tranche by identity, which
  * is correct: there's nothing to confirm the match against.
  */
+/**
+ * SESSION 23 — THE DATE SPELLING THAT DOUBLED A LADDER.
+ *
+ * The schema asks for an ISO date. A filing's table prints "11/24/2030", and
+ * on some runs the model copies that instead — as printed, which is what it
+ * is told to do everywhere else. Nothing downstream could read it: every
+ * date comparison here matched ^\d{4}-\d{2}-\d{2}$ and returned null for
+ * anything else.
+ *
+ * WHAT THAT COST. DaVita returned 9, 17 and 9 ladder rows across three runs
+ * at one version, off extractions carrying the SAME instruments, the SAME
+ * values and the SAME counts — the only difference was this spelling. Seven
+ * tranches arrived twice, once live and once "dropped from the newest filing
+ * with nothing explaining it", including four whose instrument, amount AND
+ * maturity string were character-identical on both sides. A comparison that
+ * fails on identical inputs is not detecting a change.
+ *
+ * US convention, and corroborated rather than assumed: the two runs that DID
+ * emit ISO read this filer's "5/9/2031" as 2031-05-09, so month-first is the
+ * filer's own reading of its own table and not our guess about it. Anything
+ * that is not a 4-digit year with a month of 1-12 is left exactly as it came,
+ * because a date we cannot read must stay unreadable rather than become a
+ * plausible wrong one.
+ */
+export function isoFromStatedDate(raw: string): string | null {
+  const m = raw.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!m) return null;
+  const month = Number(m[1]), day = Number(m[2]), year = Number(m[3]);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
 function debtRowDateToken(row: DebtRowLike): FactToken | null {
   if (!row.maturityDate) return null;
   if (row.dateGranularity === "year") {
@@ -926,7 +983,8 @@ function debtRowDateToken(row: DebtRowLike): FactToken | null {
     if (Number.isNaN(year)) return null;
     return { kind: "date", raw: row.maturityDate, index: 0, dateValue: { year, month: null, day: null } };
   }
-  const m = row.maturityDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const normalized = isoFromStatedDate(row.maturityDate) ?? row.maturityDate;
+  const m = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!m) return null;
   return {
     kind: "date",
@@ -1512,6 +1570,18 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     // possible. These rows are on the current ladder, under the same
     // caption, and nothing about them is unconfirmed.
     if (!rowIdentifiesOneTranche(priorEntry)) continue;
+    // AND A DATE NOBODY CAN READ IS NOT EVIDENCE OF ANYTHING.
+    //
+    // `rowIdentifiesOneTranche` asks only whether a maturity is PRESENT.
+    // Presence is not legibility: a date in a spelling the comparison cannot
+    // parse makes `rowsRepresentSameTranche` return false against every row
+    // on the ladder, including the row that IS this tranche, and the entry is
+    // re-added beside its own twin. The comment above already states the
+    // principle this enforces — the absence of a match is only evidence of
+    // absence when a match was possible — and this is the second way a match
+    // can be impossible. `isoFromStatedDate` now reads the common US form, so
+    // this catches whatever is left rather than the case we know about.
+    if (debtRowDateToken(priorEntry) === null) continue;
     if (rows.some((r) => rowsRepresentSameTranche(r, priorEntry))) continue; // still on the current ladder (live or already retired above) — nothing to add
     if (redeemsText && retiredByEvidence && redemptionRetiresRow(priorEntry, redeemsText)) {
       rows.push(ladderRowFromSequenceEntry({ ...priorEntry, citedUrl: priorEntry.citedUrl }, "retired", noteStatement));
@@ -1524,7 +1594,50 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // C1 — a tranche the filing itself reports at nil is REPAID, and says so.
   // Applied only to rows still "live": a redemption already explained is a
   // better explanation than a zero balance, and should not be overwritten.
-  rows = rows.map((r) => (r.status === "live" && parseMoneyAmount(r.amount) === 0 ? { ...r, status: "repaid" as const } : r));
+  //
+  // RULE 60 — AND A COMMITTED FACILITY AT ZERO IS UNDRAWN, NOT REPAID.
+  //
+  // C1 read every zero the same way, and for a term tranche reported at nil
+  // that is right: the obligation is gone. A revolver at zero is the opposite
+  // fact. Nothing is owed AND the whole commitment is still there — the money
+  // can be drawn tomorrow, which is the single thing an RM most wants to know
+  // about a revolver. Calling it "repaid" retires a line that has not
+  // expired, and drops the headroom off the page with it.
+  //
+  // MEASURED, NOT ASSUMED, AND THE NEGATIVE CASES ARE THE BOOK. CHS's ABL is
+  // the only row in ten companies this fires on, and every other revolver
+  // renders the way this rule makes CHS's render — Tenet $1,900M, Cigna
+  // $6,500M, Quest $1,350M and $600M, Molina $1,250M, UHS's delayed draw
+  // $700M, all as capacity. One instance, eight negative cases showing the
+  // shape it should have had.
+  //
+  // THE EXCLUSION IS NARROW ON PURPOSE. A term loan at nil IS repaid, and so
+  // is a senior note; both keep C1. Commercial paper keeps it too — a CP
+  // program is an issuance programme, not a lender commitment, so zero
+  // outstanding is not undrawn capacity and saying otherwise would invent
+  // headroom nobody promised.
+  rows = rows.map((r) => {
+    if (r.status !== "live" || parseMoneyAmount(r.amount) !== 0) return r;
+    if (!isCommittedFacility(r.classification.instrumentType)) return { ...r, status: "repaid" as const };
+
+    // Undrawn. The row stays live, and what it SHOWS becomes the committed
+    // size rather than the zero — because a $0 line on a debt ladder tells a
+    // reader nothing, and the commitment is the fact. Only when the filing
+    // actually states a size: with none, the zero stands and says so, which
+    // is the never-suppress rule and not a fallback to guessing.
+    const facility = matchFacility({ name: r.instrument, category: null }, debtMaturity?.facilities, { byNameOnly: true });
+    const size = facility?.facilitySize?.value ?? null;
+    if (!size) {
+      return { ...r, undrawnNote: `nothing is drawn under this facility. It is not repaid — the commitment stands — and the filing states no committed size here, so no headroom is shown for it.` };
+    }
+    return {
+      ...r,
+      amount: size,
+      isCapacity: true,
+      sourceLine: facility?.facilitySize?.sourceLine ?? r.sourceLine,
+      undrawnNote: `nothing is drawn under this facility — the filing reports its balance as ${r.amount.trim()}. The figure shown is the COMMITTED SIZE, which is what remains available, not an amount owed.`,
+    };
+  });
 
   // D3 — a maturity date that has already passed means MATURED, not live.
   // Nothing compared a row's date to today before this, so a ladder from an
