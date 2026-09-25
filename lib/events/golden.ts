@@ -19,7 +19,13 @@
  * failure reads as a diff rather than as an alarm.
  */
 import type { CompanyResult } from "../agent";
-import { amountSupportOf, assemblePosition, parseMoneyAmount, rowIdentityKey, rowIdentityKeyWithoutSize } from "./position";
+import { amountKey, amountSupportOf, assemblePosition, rowIdentityKey, rowIdentityKeyWithoutSize, sameAmount } from "./position";
+
+// Re-exported from their home beside `parseMoneyAmount`. They moved there
+// when the ladder's own duplicate collapse needed the same notion of "same
+// amount" the golden comparator uses, and importing golden.ts from
+// position.ts would have been a cycle. Callers are unchanged.
+export { amountKey, sameAmount };
 import { computeCoverage } from "./coverage";
 import { buildDerivedLines } from "./derived";
 import { buildEvents } from "./buildEvents";
@@ -286,32 +292,6 @@ export function goldenVersionVerdict(file: GoldenFile, currentVersion: number): 
  */
 export function compareGoldenFile(file: GoldenFile, actual: GoldenState, currentVersion: number): GoldenVerdict {
   return goldenVersionVerdict(file, currentVersion) ?? compareToGolden(file.state, actual);
-}
-
-/**
- * AN AMOUNT'S IDENTITY: its value and its unit, and nothing about its
- * whitespace. Null when the string does not parse as money, so a caller can
- * fall back to exact comparison rather than treat two unreadable strings as
- * equal.
- *
- * HOISTED OUT OF `compareToGolden` so there is ONE deciding function for
- * "are these the same amount". A diff harness that re-derived it keyed rows
- * on the raw string and reported twelve unmoved Tenet rows as twelve gone
- * and twelve arrived — the same whitespace mistake this function exists to
- * prevent, made one layer above the function that prevents it.
- */
-export function amountKey(raw: unknown): string | null {
-  if (typeof raw !== "string") return null;
-  const value = parseMoneyAmount(raw);
-  if (value === null) return null;
-  const unit = /\b(thousand|million|billion|trillion)s?\b/i.exec(raw);
-  return `${value}|${unit ? unit[1].toLowerCase() : "asPrinted"}`;
-}
-
-/** True when two printed amounts are the same value in the same unit. */
-export function sameAmount(e: unknown, a: unknown): boolean {
-  const ek = amountKey(e), ak = amountKey(a);
-  return ek !== null && ak !== null ? ek === ak : String(e) === String(a);
 }
 
 export function unsupportedAmountRows(state: GoldenState): string[] {

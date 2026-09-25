@@ -44,7 +44,7 @@ import { LEAD_CHARS, buildExtractionText, assertCompanyHasLocatableDebtNote, typ
 import { fetchXbrlDebtTotal, fetchXbrlMaturityBuckets, type XbrlDebtTotal, type XbrlMaturityBuckets } from "../fetch/xbrlDebt";
 import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "../fetch/scheduleCompleteness";
 import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isSelfDescribingAmount, scaleWordFromDeclaration } from "./moneyScale";
-import { detectDollarScaleAt } from "./scaleNormalize";
+import { detectDollarScaleAt, canonicalScaleWord } from "./scaleNormalize";
 import { createTextLocator } from "./verifyQuote";
 import { corroborateRedemptionStatus } from "./redemptionStatus";
 import { beginCompanyCostScope, currentCompanySpend, formatCompanyCostLine, persistCompanySpend } from "./costMeter";
@@ -221,7 +221,13 @@ function deriveScaleFromFilingDeclaration<T extends { amount: string; sourceLine
     if (at === null) return entry; // genuinely absent under normalization too -> no derivation; falls through to the caption fallback
     const scale = detectDollarScaleAt(filingText, at);
     if (!scale) return entry; // (4) filing declares nothing in range -> stays indeterminate, dropped later
-    const candidate = `${entry.amount} ${scale.scaleWord}`;
+    // THE CANONICAL WORD, AND THE CELL'S PADDING DROPPED. A table cell
+    // arrives as "$ 1,500    ", and appending the caption's plural produced
+    // "$ 1,500    millions" on every row of Tenet's ladder. Verify as
+    // printed, display normalized: the VALUE is the filing's, the spelling
+    // of the unit beside it is ours, and a run of column whitespace is
+    // neither.
+    const candidate = `${entry.amount.replace(/\s+/g, " ").trim()} ${canonicalScaleWord(scale.scaleWord)}`;
     if (!checkMoneyScale(candidate).determinable) return entry;
     derived++;
     return { ...entry, amount: candidate };

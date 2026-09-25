@@ -26,7 +26,28 @@ import { currentCompanySpend } from "../agent/costMeter";
 
 const COMPANY = process.argv[2] ?? "DaVita";
 
+/**
+ * THE BUST TAG IS DERIVED, NEVER TYPED.
+ *
+ * Pass `--run 1` or `--run 2` and this composes the tag exactly as
+ * s23sign9b.ts composed it when it wrote the blob. Hand-typing it cost
+ * $0.2773 on CHS ("CommunityHeal" for "CommunityHealt") and then, after that
+ * was written into the build log as a lesson, another $0.4492 on Tenet
+ * ("TenetHealthca" for "TenetHealthcar"). Both times the miss looked exactly
+ * like a cache expiry and was a typo in a slice(0, 14).
+ *
+ * A harness that makes the mistake impossible is worth more than a note
+ * saying not to make it.
+ */
+const BUST_TAG = "s23-sign";
+const runFlag = process.argv.indexOf("--run");
+const RUN = runFlag >= 0 ? process.argv[runFlag + 1] : null;
+if (RUN) {
+  process.env.CACHE_BUST = `${BUST_TAG}-${COMPANY.replace(/[^a-z0-9]/gi, "").slice(0, 14)}-${RUN}`;
+}
+
 (async () => {
+  if (RUN) console.log(`\n  derived CACHE_BUST: ${process.env.CACHE_BUST}`);
   const r = await runAgentLoop(COMPANY);
   const spend = currentCompanySpend().totalUsd;
   const pos = assemblePosition(r, PINNED_AS_OF);

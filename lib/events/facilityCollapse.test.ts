@@ -14,7 +14,7 @@
  *
  * Offline, $0. The facilities below are REAL, as v30 stored them.
  */
-import { facilityOnlyRows, amountProvenanceFor, amountSupportOf, noteUnsupportedAmounts } from "./position";
+import { facilityOnlyRows, amountProvenanceFor, amountSupportOf, noteUnsupportedAmounts, collapseSameFacilityRows } from "./position";
 import { matchFacility } from "./position";
 import type { FacilityRow } from "../agent/claude";
 import type { TriggerResult } from "../agent";
@@ -176,6 +176,69 @@ console.log("\n=== [5] The never-silent guard reaches EVERY row, and knows the f
     "[5h] a SCHEDULE row with an unsupported amount now carries a note — the guard used to live inside facilityOnlyRows and never saw these");
   assert(rows[1].amountProvenanceNote === undefined,
     "[5i] and a supported one carries none, so the note means something when it appears");
+}
+
+// ============================================================================
+// SESSION 23, RULE 49 ON THE LADDER — one facility, one row.
+//
+// CHS's ABL reached the ladder twice: the model reports it in the debt note's
+// schedule AND, on some runs but not others, again as a prose instrument.
+// Same facility, same $1.0 billion, same 2029-06-05. The canonical run had no
+// prose entry and gave 12 rows; four other extractions had one and gave 13,
+// which read as citation drift for most of a day and was a duplicate.
+//
+// The negative case is the one that matters, and UHS already provides it:
+// two delayed-draw facilities that nearly collided on shared words. They are
+// DIFFERENT facilities, so nothing about a shared amount or date may merge
+// them.
+// ============================================================================
+console.log("\n=== RULE 49 on the ladder — two rows stating the same facts about one facility ===\n");
+{
+  const abl: FacilityRow = {
+    name: "ABL Facility", category: "revolver",
+    facilitySize: fig("$ 1.0 billion", "the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion"),
+    drawn: null, lettersOfCredit: null, available: null, maturity: null,
+  } as unknown as FacilityRow;
+
+  const scheduleRow = {
+    instrument: "ABL Facility", amount: "$ 1.0 billion", maturityDate: "2029-06-05",
+    sourceLine: "ABL Facility —", isCapacity: true, provenance: "note", status: "live",
+  };
+  const proseRow = {
+    instrument: "ABL Facility", amount: "$1.0 billion", maturityDate: "2029-06-05",
+    sourceLine: "the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion",
+    isCapacity: true, provenance: "note-narrative", status: "live",
+  };
+
+  const merged = collapseSameFacilityRows([scheduleRow, proseRow] as never, dm([abl]));
+  assert(merged.length === 1,
+    `[49a] one facility stated twice with the same amount and maturity collapses to ONE row (got ${merged.length})`);
+  assert(merged[0].sourceLine.includes("maximum aggregate principal amount"),
+    "[49b] and the row that SURVIVES is the one whose own sentence states its amount — the row a reader can check against the page (Rule 58), not whichever came first");
+  assert(typeof (merged[0] as unknown as { mergedDuplicate?: string }).mergedDuplicate === "string",
+    "[49c] NEVER SILENT: the surviving row records that it absorbed another and quotes what the other said — a merge leaving no trace is indistinguishable from a row we lost");
+  assert(
+    collapseSameFacilityRows([{ ...scheduleRow, amount: "$   1.0    billion" }, { ...proseRow, amount: "$1.0 billion" }] as never, dm([abl])).length === 1,
+    "[49d] WHITESPACE does not prevent the merge — the same value in the same unit, spaced differently, is one transcription"
+  );
+  assert(
+    collapseSameFacilityRows([{ ...scheduleRow, amount: "$ 1.0 billion" }, { ...proseRow, amount: "$ 1,000 million" }] as never, dm([abl])).length === 2,
+    "[49e] but a different UNIT does NOT merge, even at the same money. $1.0 billion and $1,000 million are the same amount and not the same transcription — the filing printed one of them, and a row printing the other has changed what it read. This assertion started life backwards, asserting the merge, which would have quietly widened amountKey to value-only everywhere it is used"
+  );
+  assert(
+    collapseSameFacilityRows([scheduleRow, { ...proseRow, maturityDate: "2031-06-05" }] as never, dm([abl])).length === 2,
+    "[49f] REVERSE: the same facility stated at a DIFFERENT maturity is two rows — the triple is facility, amount AND maturity, and a disagreement about any of them is something new being said"
+  );
+  assert(
+    collapseSameFacilityRows(
+      [
+        { instrument: "Delayed draw term loan A", amount: "$ 700 million", maturityDate: "2031-01-01", sourceLine: "x", isCapacity: true, provenance: "note", status: "live" },
+        { instrument: "July 2026 Delayed Draw Term Loan", amount: "$ 700 million", maturityDate: "2031-01-01", sourceLine: "y", isCapacity: true, provenance: "note", status: "live" },
+      ] as never,
+      dm([ddA, ddJuly])
+    ).length === 2,
+    "[49g] REVERSE, and the case this file exists for: UHS's TWO delayed-draw facilities sharing an amount and a date stay TWO rows. They resolve to different facilities, and a shared figure is not a shared instrument"
+  );
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

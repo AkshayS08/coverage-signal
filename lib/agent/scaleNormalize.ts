@@ -18,9 +18,32 @@
 
 export interface ScaleInfo {
   multiplier: number;
+  /**
+   * THE CAPTION'S OWN INFLECTION, and evidence rather than output. A filing
+   * writes "(In millions)", so this is plural — it describes what the
+   * declaration said. It is NOT what a rendered amount should carry; use
+   * `canonicalScaleWord` for that.
+   */
   scaleWord: "thousands" | "millions";
   declarationText: string;
   declarationIndex: number;
+}
+
+/**
+ * THE TOOL'S OWN WORD FOR A SCALE, never the caption's inflection.
+ *
+ * Composing an amount with the caption's word produced "$ 1,500    millions"
+ * across Tenet's whole ladder — a plural nobody writes after a figure, made
+ * by copying the grammatical number of "(In millions)" onto a single
+ * quantity. The filing states a scale; it does not state how that scale is
+ * spelled beside one number, so there is nothing here to be faithful TO.
+ *
+ * Singular, matching `formatScaledDollars` above and the closed SCALE_WORDS
+ * vocabulary in moneyScale.ts, so every scale word this tool renders comes
+ * out of one place.
+ */
+export function canonicalScaleWord(scaleWord: ScaleInfo["scaleWord"]): "thousand" | "million" {
+  return scaleWord === "millions" ? "million" : "thousand";
 }
 
 // Requires the word "dollar"/"dollars" to anchor the match — this is what

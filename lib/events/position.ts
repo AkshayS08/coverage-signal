@@ -166,6 +166,12 @@ export interface LadderRow {
    * amount is not the number the schedule printed has to say so on the page.
    */
   undrawnNote?: string;
+  /**
+   * RULE 49 on the ladder — set when this row absorbed another stating the
+   * same facts about the same facility. Never silent: a merge that leaves no
+   * trace is indistinguishable from a row we lost.
+   */
+  mergedDuplicate?: string;
   /** Rule 58: set only when no stated sentence supports this row's amount. */
   amountProvenanceNote?: string;
 }
@@ -349,6 +355,34 @@ export function rowIdentityKey(row: { rate: string | null; maturityDate: string 
 /** The key without size — for the second pass only; see compareToGolden. */
 export function rowIdentityKeyWithoutSize(row: { rate: string | null; maturityDate: string | null }): string {
   return `${row.rate ?? "no-rate"}::${row.maturityDate ?? "no-maturity-stated"}`;
+}
+
+/**
+ * AN AMOUNT'S IDENTITY: its value and its unit, and nothing about its
+ * whitespace. Null when the string does not parse as money, so a caller can
+ * fall back to exact comparison rather than treat two unreadable strings as
+ * equal.
+ *
+ * BOTH HALVES MATTER. Comparing value alone would make "$1.5 billion" equal
+ * "$1,500 million": the same money, and not the same transcription.
+ *
+ * Lives here, beside `parseMoneyAmount`, because it is now asked by two
+ * layers — the golden comparator and the ladder's own duplicate collapse —
+ * and a second copy is how "$ 1,500 million" and "$1,500 million" start
+ * disagreeing again depending on who is asking.
+ */
+export function amountKey(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const value = parseMoneyAmount(raw);
+  if (value === null) return null;
+  const unit = /\b(thousand|million|billion|trillion)s?\b/i.exec(raw);
+  return `${value}|${unit ? unit[1].toLowerCase() : "asPrinted"}`;
+}
+
+/** True when two printed amounts are the same value in the same unit. */
+export function sameAmount(e: unknown, a: unknown): boolean {
+  const ek = amountKey(e), ak = amountKey(a);
+  return ek !== null && ak !== null ? ek === ak : String(e) === String(a);
 }
 
 function ladderRowId(row: DebtRowLike & { instrument: string; amount?: string }): string {
@@ -758,6 +792,69 @@ export function amountProvenanceFor(f: FacilityRow): { sourceLine: string; state
     if (stating) return { sourceLine: stating, statesAmount: true };
   }
   return { sourceLine: candidates[0] ?? "", statesAmount: false };
+}
+
+/**
+ * RULE 49, APPLIED TO THE LADDER — two rows stating the same facts about the
+ * same facility are ONE instrument.
+ *
+ * CHS's ABL reached the ladder twice. Not from two schedule entries, and not
+ * from `facilityOnlyRows`: the model reports it in the debt note's schedule
+ * AND, on some runs, again as a prose instrument. Same facility, same
+ * revolver class, same $1.0 billion, same 2029-06-05 — two rows saying one
+ * thing. The canonical run happened to carry no prose entry for it and gave
+ * 12 rows; four other extractions carried one and gave 13. That looked like
+ * citation drift for most of a day, and was a duplicate all along.
+ *
+ * THE IDENTITY IS THE STATED FACTS, NEVER THE LABEL. Rows are only merged
+ * when BOTH resolve to the SAME facility the filing states, and agree on
+ * amount (by value and unit) and on maturity. That triple is deliberately
+ * strict: two genuinely different instruments can share an amount and a
+ * date — UHS has two delayed-draw facilities that nearly collided on words
+ * alone — so the shared facility is what makes them the same thing, and the
+ * amount and maturity are what confirm neither row is saying something new.
+ *
+ * WHICH ROW SURVIVES IS NOT ARBITRARY. The one whose own sentence states its
+ * amount wins, because that is the row a reader can check against the page
+ * (Rule 58). Ties keep the earlier row, which preserves the schedule's own
+ * ordering.
+ */
+export function collapseSameFacilityRows(rows: LadderRow[], debtMaturity: TriggerResult | undefined): LadderRow[] {
+  const facilities = debtMaturity?.facilities ?? [];
+  if (facilities.length === 0 || rows.length < 2) return rows;
+
+  const keyOf = (r: LadderRow): string | null => {
+    const f = matchFacility({ name: r.instrument, category: null }, facilities, { byNameOnly: true });
+    if (!f) return null;
+    const amount = amountKey(r.amount);
+    if (amount === null) return null; // an amount we cannot read is not evidence two rows agree
+    return `${f.name}::${amount}::${r.maturityDate ?? "no-maturity"}`;
+  };
+  const supported = (r: LadderRow) => amountSupportOf(r.amount, r.sourceLine).kind !== "unsupported";
+
+  const bestByKey = new Map<string, LadderRow>();
+  const order: LadderRow[] = [];
+  for (const r of rows) {
+    const k = keyOf(r);
+    if (k === null) { order.push(r); continue; }
+    const held = bestByKey.get(k);
+    if (!held) { bestByKey.set(k, r); order.push(r); continue; }
+    // A duplicate. Keep whichever row a reader can check, and record the merge
+    // on it rather than dropping the other silently.
+    const winner = supported(held) || !supported(r) ? held : r;
+    const loser = winner === held ? r : held;
+    winner.mergedDuplicate =
+      `the filing states this facility twice — once in the debt note's schedule and once in its prose — with the same amount and the same maturity. ` +
+      `One row is shown. The other said: "${String(loser.sourceLine).replace(/\s+/g, " ").slice(0, 120)}"`;
+    if (winner !== held) {
+      bestByKey.set(k, winner);
+      order[order.indexOf(held)] = winner;
+    }
+  }
+  return order.filter((r) => {
+    const k = keyOf(r);
+    return k === null || bestByKey.get(k) === r;
+  });
 }
 
 export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerResult | undefined): LadderRow[] {
@@ -1689,6 +1786,8 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // arithmetic (debtContribution returns zero for capacity, and coverage
   // reads the trigger's own sequence rather than these rows), so putting a
   // facility on the ladder cannot move a checksum or a residual.
+  rows = collapseSameFacilityRows(rows, debtMaturity);
+
   rows = rows.concat(facilityOnlyRows(rows, debtMaturity));
 
   // RULE 58 — every row, one pass, before anything sorts or renders.
