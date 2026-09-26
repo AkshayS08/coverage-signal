@@ -5626,3 +5626,82 @@ Writing the lesson down did not prevent the repeat. `s23davitaladder` now
 takes `--run N` and derives the tag itself. **A harness that makes the mistake
 impossible is worth more than a note saying not to make it** — and the note
 had already been written and had already failed.
+
+---
+
+## Rule 63 — when output disagrees with a field, ask EVERY producer, not the likeliest one
+
+Three diagnoses of CHS's duplicated ABL were wrong, and all three failed the
+same way: I picked the producer that seemed likeliest, asked only that one,
+and got a confident answer that explained nothing.
+
+1. **"Two schedule entries."** `scheduleSequence` holds exactly one ABL entry.
+   I never counted.
+2. **"`facilityOnlyRows`'s claim test."** Keyed it on a name match; the row
+   count did not move; reverted it. Then a ruling pointed at identity and I
+   applied *the same fix again*. It did not move again.
+3. **Only then** did I enumerate every row-producing field —
+   `scheduleSequence`, `priorScheduleSequence`, `referencedScheduleSequence`,
+   `proseInstruments`, `issuedTranches`, `balanceSheetDebtCaptions`,
+   `facilities` — and the answer was immediate and unambiguous: the model
+   reports the ABL in the schedule AND, on some runs, again as a prose
+   instrument.
+
+The same mistake, one day earlier, on DaVita: its ladder went 9, 17, 9, I
+compared `scheduleSequence` across the three runs, found 13 entries in each,
+and would have reported the name STABLE — while the ladder it actually renders
+had doubled. Eight rows cannot arrive from a field that did not move, and that
+arithmetic was available before any of the guessing.
+
+**THE RULE.** When rendered output and a field's contents disagree — more rows
+than entries, a row with no entry behind it, a count that moves while its
+input does not — the next step is to enumerate every field that can produce
+that output and print all of them. Not the likeliest one. The likeliest one is
+what produced three wrong answers in a row, and each wrong answer came with a
+plausible mechanism attached, which is what made them expensive: a fix was
+written against two of them.
+
+Corollary, and it is the cheap half: **the arithmetic comes first.** "Nine
+rows from thirteen entries, seventeen rows from thirteen entries" settles that
+the extraction did not move, at no cost and before any hypothesis. Ask what
+the numbers permit before asking what a mechanism would explain.
+
+This is the same family as Rules 42, 43 and 52 — a check whose inputs make its
+answer predetermined — with the input restricted by assumption rather than by
+construction. Asking one field cannot reveal a second field's contribution,
+however carefully it is asked.
+
+## DaVita and CHS after their fixes: rows reproduce, and neither signs
+
+Measured at $0 against the cached runs, no fresh samples bought.
+
+**DaVita — 9, 9, 9 rows.** The Rule 61 date-token fix holds: the doubling is
+gone, coverage identical across all three, Rule 58 clean. Two things still
+block it, and neither is the row count:
+
+  - **Facility figures MOVED.** Five of them alternate between carrying the
+    unit word and not — `$ 188,482 thousand` against `$ 188,482`, same digits,
+    same facility, same version. This is precisely why facility figures are
+    measured separately from 9b rather than folded into it.
+  - **Citation drift.** Run 2 cites the 10-K (dva-20251231.htm); the other two
+    do not.
+
+**CHS — 12, 12, 12 rows.** The Rule 49 collapse holds, coverage identical,
+facility figures identical across all three including labels. One thing blocks
+it:
+
+  - **Citation drift.** Both re-tastes omit cyh-20260401.htm, an 8-K the
+    canonical run cites.
+
+CITATION DRIFT IS NOT A COSMETIC FAILURE, and it is why neither signs on
+row-count alone. `filingSet` is part of `GoldenState`: it IS the golden's
+identity, and every future comparison keys on it first. A golden written
+against a citation set that two runs in three do not produce would answer
+"not applicable — the corpus moved" to most of its own future checks, against
+a corpus that never moved. That is a pin that cannot fail, which Rule 44
+already rules out for a different reason.
+
+Both names are held with their causes named rather than re-tasted. Fresh
+samples would measure the odds of an instability whose mechanism is already
+visible, which is the thing this session ruled against when DaVita's third
+sample was declined.

@@ -1,4 +1,4 @@
-# The rules, 1 to 62
+# The rules, 1 to 63
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -72,6 +72,7 @@ example that found it, never the thing the rule is about.
 | 60 | a committed facility at a zero balance is UNDRAWN, not repaid | [log](build_log.md#rule-60--a-committed-facility-at-a-zero-balance-is-undrawn-not-repaid) |
 | 61 | a comparison that cannot read its inputs must not answer | [log](build_log.md#rule-61--a-comparison-that-cannot-read-its-inputs-must-not-answer) |
 | 62 | evidence-sentence stability is part of a prompt declaration's measured surface | [log](build_log.md#rule-62--evidence-sentence-stability-is-part-of-a-prompt-declarations-measured-surface) |
+| 63 | when output disagrees with a field, ask EVERY producer, not the likeliest one | [log](build_log.md#rule-63--when-output-disagrees-with-a-field-ask-every-producer-not-the-likeliest-one) |
 
 ## Refinements and later occurrences
 
