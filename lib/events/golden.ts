@@ -63,7 +63,21 @@ export interface GoldenState {
   company: string;
   cik: string;
   anchor: { form: string; date: string; reportDate: string | null; url: string } | null;
+  /**
+   * THE DOCUMENTS THE POSITION RESTS ON — ladder rows' own citations, the
+   * anchor, and the debt-maturity trigger's citations (which is where a
+   * facility figure's document is recorded, since the figure itself carries
+   * only a sentence). This is the golden's IDENTITY: a change here means the
+   * answer is not comparable.
+   */
   filingSet: string[];
+  /**
+   * Everything else the run cited, across the other fourteen triggers.
+   * Recorded so the narrowing is visible in the signed file, and explicitly
+   * NOT identity-bearing — a difference here is reported and tolerated.
+   * Optional so files signed before Session 24 still parse.
+   */
+  otherCitations?: string[];
   asOf: string;
   rows: GoldenRow[];
   coverage: {
@@ -134,11 +148,77 @@ export interface GoldenFile {
   sourceResult: CompanyResult;
 }
 
-/** Every distinct filing this answer was built from — the golden file's identity. */
+/**
+ * Every distinct filing this answer was built from, across all fifteen
+ * triggers. Still the honest answer to "what did this run read" — the
+ * verification sheet says exactly that — but NO LONGER the golden's identity.
+ * See `positionFilingSetOf`.
+ */
 export function filingSetOf(result: CompanyResult): string[] {
   const urls = new Set<string>();
   for (const t of result.results) for (const c of t.citations) if (c.url) urls.add(c.url);
   return [...urls].sort();
+}
+
+/**
+ * SESSION 24 — THE GOLDEN'S IDENTITY IS THE DOCUMENTS THE POSITION RESTS ON.
+ *
+ * `filingSetOf` unions citations across all fifteen triggers, and that union
+ * was a golden file's identity. So an unrelated trigger citing one more
+ * document changed what a signed POSITION was pinned to, and every future
+ * comparison answered "not applicable, the corpus moved" — about a corpus
+ * that had not moved and a document the ladder never read.
+ *
+ * MEASURED, NOT ASSUMED. Both drifting documents were traced to a single
+ * trigger each, and neither backs anything rendered:
+ *
+ *   DaVita  dva-20251231.htm  cited ONLY by `international-expansion`, in 1
+ *           run of 3. Zero of nine ladder rows cite it; none of six facility
+ *           figure sentences appear in its text. That trigger's quote failed
+ *           verification and its evidence was discarded — so a golden's
+ *           identity moved on a citation from a fact the pipeline threw away.
+ *   CHS     cyh-20260401.htm  cited ONLY by `asset-sale`, in 1 run of 3. Zero
+ *           of twelve ladder rows; none of five facility sentences.
+ *
+ * And the replacement was measured BEFORE it was built: across three runs of
+ * five companies, the all-trigger union moves for two names and the
+ * position-only set is STABLE for all five.
+ *
+ * A POSITION DOCUMENT IS ONE OF THREE THINGS, and the third is the precise
+ * one: a facility's `figureSources` records WHICH FILING STATED EACH FIELD,
+ * because a facility's figures routinely come from different documents —
+ * Encompass's size from an 8-K about the credit agreement, its availability
+ * from the 10-Q's liquidity discussion. An earlier draft of this function
+ * used the debt-maturity trigger's whole citation list instead, on the belief
+ * that a facility figure carries no url at all. It does; I had not looked.
+ * Using the trigger's list would have swept in documents that trigger merely
+ * read, which is the same over-broad mistake one level down.
+ *
+ * WHAT IS NOT HERE IS STILL COMPARED. Tier 2 events, derived lines and cards
+ * are fields of GoldenState and diverge on their own contents; dropping their
+ * source documents from the IDENTITY does not stop a change in them from
+ * failing. Only the "is this even comparable" question narrows.
+ */
+export function positionFilingSetOf(result: CompanyResult, asOf: Date): string[] {
+  const urls = new Set<string>();
+  for (const row of assemblePosition(result, asOf).rows) if (row.citedUrl) urls.add(row.citedUrl);
+  const dm = result.results.find((t) => t.triggerId === "debt-maturity");
+  if (dm?.debtScheduleSourceFiling?.url) urls.add(dm.debtScheduleSourceFiling.url);
+  for (const f of dm?.facilities ?? []) {
+    if (f.citedUrl) urls.add(f.citedUrl);
+    for (const u of Object.values(f.figureSources ?? {})) if (u) urls.add(u);
+  }
+  return [...urls].sort();
+}
+
+/**
+ * Cited, recorded, and NOT identity-bearing. Kept in the signed file because
+ * "the run also read these" is worth knowing and because dropping them
+ * silently would make the narrowing invisible to a reader of the golden.
+ */
+export function otherCitationsOf(result: CompanyResult, asOf: Date): string[] {
+  const position = new Set(positionFilingSetOf(result, asOf));
+  return filingSetOf(result).filter((u) => !position.has(u));
 }
 
 /**
@@ -164,7 +244,8 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
     company: result.company,
     cik: result.cik,
     anchor: anchor ? { form: anchor.form, date: anchor.date, reportDate: anchor.reportDate ?? null, url: anchor.url } : null,
-    filingSet: filingSetOf(result),
+    filingSet: positionFilingSetOf(result, asOf),
+    otherCitations: otherCitationsOf(result, asOf),
     asOf: asOf.toISOString().slice(0, 10),
     rows: pos.rows.map((r) => ({
       instrument: r.instrument, amount: r.amount, maturityDate: r.maturityDate,
@@ -313,9 +394,23 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
     };
   }
 
+  // NON-POSITION CITATIONS: reported, tolerated, never a reason to stop
+  // comparing. This is the whole point of the Session 24 narrowing — an
+  // `international-expansion` trigger citing one more document is a fact about
+  // that trigger, not about whether the signed position is comparable.
+  const otherAdded = (actual.otherCitations ?? []).filter((u) => !(expected.otherCitations ?? []).includes(u));
+  const otherRemoved = (expected.otherCitations ?? []).filter((u) => !(actual.otherCitations ?? []).includes(u));
+
   const d: string[] = [];
   /** Differences that are real, reported, and do NOT block a signature. */
   const tolerated: string[] = [];
+  if (otherAdded.length > 0 || otherRemoved.length > 0) {
+    tolerated.push(
+      `non-position citations moved: ${otherAdded.length} added, ${otherRemoved.length} removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are recorded and do not make this answer incomparable.` +
+        otherAdded.map((u) => ` (+ ${u})`).join("") +
+        otherRemoved.map((u) => ` (− ${u})`).join("")
+    );
+  }
   const cmp = (field: string, e: unknown, a: unknown) => {
     if (JSON.stringify(e) !== JSON.stringify(a)) d.push(`${field}: expected ${fmt(e)}, got ${fmt(a)}`);
   };

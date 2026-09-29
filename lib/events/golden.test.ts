@@ -21,7 +21,7 @@
  */
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { compareToGolden, compareGoldenFile, goldenVersionVerdict, deriveGoldenState, filingSetOf, type GoldenFile, type GoldenState } from "./golden";
+import { compareToGolden, compareGoldenFile, goldenVersionVerdict, deriveGoldenState, filingSetOf, positionFilingSetOf, type GoldenFile, type GoldenState } from "./golden";
 import { EXTRACTION_PROMPT_VERSION } from "../cache/promptVersion";
 
 let passed = 0, failed = 0;
@@ -63,8 +63,30 @@ console.log("\n=== [1] EVERY SIGNED GOLDEN FILE REPRODUCES FROM ITS OWN CAPTURED
         `[1c:${name}] REPRODUCES EXACTLY from its captured input${verdict.kind === "diverged" ? ` — DIVERGED:\n      ${verdict.divergences.join("\n      ")}` : verdict.kind === "not-applicable" ? ` — ${verdict.reason}` : ""}`);
     }
 
-    assert(golden.state.filingSet.length > 0 && filingSetOf(golden.sourceResult).join("|") === golden.state.filingSet.join("|"),
-      `[1d:${name}] the pinned filing set is the one its captured result was actually built from`);
+    // SESSION 24 — THE PINNED SET IS THE POSITION'S, NOT EVERY TRIGGER'S.
+    // This compared against `filingSetOf`, the fifteen-trigger union, which is
+    // exactly what let an unrelated trigger's citation change a golden's
+    // identity. It kept passing after the narrowing shipped, because it was
+    // still asking the old question.
+    //
+    // VERSION-GUARDED FOR THE SAME REASON [1c] IS, and this is not the
+    // assertion being softened to go green. `positionFilingSetOf` reads the
+    // captured result's facilities and their `figureSources`; a v29 capture
+    // answers a different question about those bytes, so deriving a v31
+    // identity from it and demanding equality is the cross-version comparison
+    // Rule 30 already forbids. Applying the guard in one place and not the
+    // other is the inconsistency, not the guard.
+    if ((golden.extractionVersion ?? 0) !== EXTRACTION_PROMPT_VERSION) {
+      console.log(`  — SKIPPED [1d:${name}] — same reason as [1c]: a v${golden.extractionVersion ?? "(unrecorded)"} capture cannot be asked what a v${EXTRACTION_PROMPT_VERSION} identity would be.`);
+      assert(golden.state.filingSet.length > 0,
+        `[1d':${name}] but its pinned set is still non-empty — a pin against no documents cannot fail, so it is not a pin (Rule 44)`);
+    } else {
+      assert(golden.state.filingSet.length > 0 &&
+        positionFilingSetOf(golden.sourceResult, new Date(`${golden.state.asOf}T00:00:00Z`)).join("|") === golden.state.filingSet.join("|"),
+        `[1d:${name}] the pinned filing set is the POSITION's own documents, derived from its captured result`);
+    }
+    assert(!golden.state.filingSet.some((u) => (golden.state.otherCitations ?? []).includes(u)),
+      `[1e:${name}] and the two sets are disjoint — a document is identity-bearing or it is merely recorded, never both`);
   }
 }
 
@@ -321,6 +343,39 @@ console.log("\n=== [8] A GOLDEN DOES NOT APPLY ACROSS AN EXTRACTION VERSION ==="
     "[8e] compareGoldenFile checks the version BEFORE the state — IDENTICAL states still return not-applicable across a bump, because the comparison is meaningless rather than passing");
   assert(compareGoldenFile({ extractionVersion: 30, state: base() } as never, base(), 30).kind === "matches",
     "[8f] and at the same version it delegates normally, so the wrapper is the safe default rather than a second behaviour");
+}
+
+console.log("\n=== [9] SESSION 24 — A NON-POSITION CITATION IS NOT THE GOLDEN'S IDENTITY ===");
+{
+  // REAL SHAPES. DaVita's 10-K was cited by `international-expansion` in one
+  // run of three and by nothing else; CHS's 8-K by `asset-sale` in one run of
+  // three. Neither is cited by any ladder row, and no facility figure's
+  // sentence appears in either document. Under the old union-of-all-triggers
+  // identity, each of those made a signed position incomparable.
+  const withOther = (urls: string[]): GoldenState => ({ ...base(), otherCitations: urls });
+
+  const v1 = compareToGolden(withOther([]), withOther(["https://sec.gov/dva-20251231.htm"]));
+  assert(v1.kind === "matches",
+    `[9a] a citation APPEARING on a non-position trigger returns MATCHES — the position is unchanged, so the answer is comparable (got ${v1.kind})`);
+  assert(v1.kind === "matches" && v1.tolerated.some((t) => /non-position citations moved/.test(t)),
+    "[9b] and it is RECORDED as tolerated rather than dropped — the narrowing has to be visible in the output, or it reads as the comparator having quietly stopped looking");
+
+  const v2 = compareToGolden(withOther(["https://sec.gov/cyh-20260401.htm"]), withOther([]));
+  assert(v2.kind === "matches",
+    `[9c] and a non-position citation DISAPPEARING is equally comparable — CHS's case, which is the direction that actually blocked it (got ${v2.kind})`);
+
+  // THE REVERSE, and it is what keeps the narrowing honest: narrowing the
+  // IDENTITY must not narrow what counts as a divergence.
+  const posMoved = compareToGolden(base(), { ...base(), filingSet: [...base().filingSet, "https://sec.gov/some-other-10q.htm"] });
+  assert(posMoved.kind === "not-applicable",
+    `[9d] REVERSE: a change in the POSITION's own documents is still not-applicable — re-sign, never compare across it (got ${posMoved.kind})`);
+
+  const rowMoved = compareToGolden(base(), {
+    ...base(),
+    rows: base().rows.map((r, i) => (i === 0 ? { ...r, amount: "$ 999 million" } : r)),
+  });
+  assert(rowMoved.kind === "diverged",
+    `[9e] REVERSE: a change to a LADDER ROW still diverges — moving citations out of the identity did not move rows out of it (got ${rowMoved.kind})`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);
