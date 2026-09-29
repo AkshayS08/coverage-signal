@@ -6182,3 +6182,49 @@ of every rule in this log. Criteria 4 and 6 both PASS against the rolled
 position when computed with those inputs — the base's two printed subtotals tie
 exactly, and the residual moves 96.86% to -0.11% — so the remaining work is
 deriving the roll's events, not proving the criterion.
+
+---
+
+## A SEVENTH AUDIT-SPINE INSTANCE, and this one destroyed work
+
+Deriving the roll's events, I wrote `lib/events/rollForward.ts` without reading
+it. **It already existed** — 319 lines from Session 23 — and the write replaced
+it, taking 30 assertions with it.
+
+What was destroyed had already solved most of what I was rebuilding, and
+better:
+
+  - `RollDelta.statedApproximate` and `toleranceFor()`, implementing "a roll
+    built only from exact figures gets no band at all" — the rule I wrote out
+    as my own discovery.
+  - `rollForwardFires`, the firing conjunction, with Quest, UHS and HCA
+    already reasoned through as negative cases.
+  - **The frame distinction**, which I did not know existed: a filer states
+    debt in a balance-sheet frame (31,463 → 31,878) and a fair-value frame
+    (31,352 → 31,768), differing by a constant ~110 and mutually incomparable.
+    An earlier draft of a declaration used 31,352 as the base and reported a
+    $76M miss. That is pinned as test `[3g]`, and I deleted it.
+
+**It was caught by an assertion count.** The repo-wide total went 1,244 → 1,236
+while a 21-assertion suite was being ADDED. Nothing else would have surfaced
+it: the new file typechecked, its own suite passed, and the harness produced
+the right number.
+
+The rule this breaks is one of the oldest here — look at the target before
+overwriting it — and the Write tool said "updated", not "created", which was
+the tell I did not read.
+
+RESTORED, and my work reduced to the half that was actually missing:
+`rollForward.ts` takes `deltas` as an INPUT, and until now the only deltas that
+existed were hand-written in its own test and in a harness. `rollDeltas.ts`
+derives them from the filings and hands them over. It deliberately
+re-implements none of the ties, the band or the conjunction.
+
+**Still duplicated, and named rather than quietly kept:** `rolledPosition.ts`,
+which I wrote earlier this session, re-implements the base and roll ties that
+`rollForward.ts` already owns as `computeBaseTie` and `computeRollTie`. Its
+genuinely distinct part is the SIGNING criterion — when a rolled position may
+carry coverage, and the label rolled rows render under. That part should stay;
+the tie arithmetic should be folded into `rollForward.ts`. Not done here,
+because consolidating two tie implementations at the end of a long session is
+how a third one gets created.

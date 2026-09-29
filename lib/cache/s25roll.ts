@@ -1,14 +1,10 @@
 /**
  * THE DERIVED ROLL, AGAINST REAL CACHED DATA. $0.
  *
- * The first roll this build computed had its two movements typed in by hand.
- * This one reads them out of the filings — every event from a sentence, every
- * placement from its own date — and the number it produces is only worth
- * anything if it matches without being told to.
- *
- * Prints the placement of every derived event, including all four of Cigna's
- * 8-K tranches, which the hand roll never mentioned and which must therefore
- * be either in the base or after the anchor. Which one is proven, not assumed.
+ * The deltas are derived here (lib/events/rollDeltas.ts) and the ARITHMETIC is
+ * done by lib/events/rollForward.ts — the Session 23 module that already owns
+ * the base tie, the roll tie, the tolerance band and the firing conjunction.
+ * Nothing in this harness re-implements any of those.
  *
  * Run: npx tsx lib/cache/s25roll.ts
  */
@@ -19,20 +15,18 @@ import { join } from "node:path";
 import { getRecentFilings, getFilingText } from "../fetch";
 import { runAgentLoop } from "../agent";
 import { parseMoneyAmount } from "../events/position";
-import { deriveRollEvents, rollForward } from "../events/rollForward";
-import { rolledVerdict, ROLL_BAND_USD } from "../events/rolledPosition";
+import { derivePlacedMovements, toRollDeltas, inBaseButMissing, statesApproximation } from "../events/rollDeltas";
+import { computeRollTie, toleranceFor } from "../events/rollForward";
 import { locatorFor, resolvedAmountUsd } from "../agent/tableScale";
 import { fetchXbrlDebtTotal } from "../fetch/xbrlDebt";
 import { currentCompanySpend } from "../agent/costMeter";
 
 const COMPANY = "Cigna Group";
 const BASE_DATE = "2025-12-31";
-const usd = (n: number) => (Math.abs(n) >= 1e9 ? `$${(n / 1e9).toFixed(3)}B` : `$${Math.round(n / 1e6)}M`);
 
 (async () => {
-  let spend = 0;
   const r = await runAgentLoop(COMPANY);
-  spend += currentCompanySpend().totalUsd;
+  const spend = currentCompanySpend().totalUsd;
   const dm = r.results.find((t) => t.triggerId === "debt-maturity") as unknown as Record<string, unknown> | undefined;
   const nd = r.results.find((t) => t.triggerId === "new-debt-issuance") as unknown as Record<string, unknown> | undefined;
   const anchorDate = (dm?.debtScheduleSourceFiling as { reportDate?: string } | undefined)?.reportDate ?? "2026-06-30";
@@ -41,22 +35,22 @@ const usd = (n: number) => (Math.abs(n) >= 1e9 ? `$${(n / 1e9).toFixed(3)}B` : `
   const tenK = f.filings.find((x) => /^10-K$/i.test(x.form) && x.reportDate === BASE_DATE)!;
   const { text: tenKText } = await getFilingText(tenK.primaryDocUrl);
   const baseLoc = locatorFor(tenKText);
+  const base = JSON.parse(
+    readFileSync(join(process.cwd(), "baselines", "referenced-notes", `${f.cik}-${BASE_DATE}-v1.json`), "utf-8")
+  ) as { rows: { instrument: string; amount: string; sourceLine: string; kind: string }[] };
 
-  const base = JSON.parse(readFileSync(join(process.cwd(), "baselines", "referenced-notes", `${f.cik}-${BASE_DATE}-v1.json`), "utf-8")) as {
-    rows: { instrument: string; amount: string; sourceLine: string; kind: string }[];
-  };
-
-  // BOTH TOTALS FROM THE FILER'S OWN TAGS — never typed.
   const baseTag = await fetchXbrlDebtTotal(f.cik, BASE_DATE);
   const anchorTag = await fetchXbrlDebtTotal(f.cik, anchorDate);
 
-  console.log(`\n${"=".repeat(104)}`);
-  console.log(`CIGNA — the roll, DERIVED. base ${BASE_DATE} → anchor ${anchorDate}`);
-  console.log("=".repeat(104));
-  console.log(`\n  base total   ${usd(baseTag.total ?? 0)}   from ${baseTag.parts.map((p) => p.tag).join(" + ")}`);
-  console.log(`  anchor total ${usd(anchorTag.total ?? 0)}   from ${anchorTag.parts.map((p) => p.tag).join(" + ")}`);
+  /** Millions, resolved through Rule 67's one deciding function. */
+  const millions = (amount: string, sourceLine: string): number | null => {
+    const v = resolvedAmountUsd(amount, sourceLine, tenKText, baseLoc, parseMoneyAmount);
+    if (v !== null && Math.abs(v) >= 1e6) return v / 1e6;
+    const raw = parseMoneyAmount(amount);
+    return raw === null ? null : raw >= 1e6 ? raw / 1e6 : raw;
+  };
 
-  const events = deriveRollEvents({
+  const movements = derivePlacedMovements({
     baseDate: BASE_DATE,
     anchorDate,
     noteRetirements: (dm?.noteRetirements ?? []) as never,
@@ -65,40 +59,41 @@ const usd = (n: number) => (Math.abs(n) >= 1e9 ? `$${(n / 1e9).toFixed(3)}B` : `
     intendedRedemptions: (nd?.redeems ?? []) as never,
     anchorBalances: (dm?.proseInstruments ?? []) as never,
     baseRows: base.rows.filter((x) => x.kind === "row"),
-    parse: parseMoneyAmount,
-    resolveBase: (amount, sourceLine) => resolvedAmountUsd(amount, sourceLine, tenKText, baseLoc, parseMoneyAmount),
+    parseMillions: millions,
   });
 
-  console.log(`\n${"─".repeat(104)}\n  EVERY DERIVED EVENT, PLACED BY ITS OWN DATE\n${"─".repeat(104)}`);
-  for (const e of events) {
-    console.log(`\n  [${e.placement.toUpperCase()}]  ${e.kind}  ${e.instrument}`);
-    console.log(`      ${e.statedAs}${e.approximate ? "   (APPROXIMATE — the filing's own hedge)" : ""}   dated ${e.date ?? "—"}`);
-    console.log(`      counts: ${e.placement === "delta" ? usd(e.amountUsd) : "$0 — " + e.why.slice(0, 92)}`);
-    console.log(`      "${e.sourceLine.replace(/\s+/g, " ").slice(0, 118)}"`);
+  console.log(`\n${"=".repeat(104)}`);
+  console.log(`CIGNA — the roll, DERIVED. base ${BASE_DATE} → anchor ${anchorDate}`);
+  console.log("=".repeat(104));
+  console.log(`\n  base   $${Math.round((baseTag.total ?? 0) / 1e6).toLocaleString()}M  from ${baseTag.parts.map((p) => p.tag).join(" + ")}`);
+  console.log(`  anchor $${Math.round((anchorTag.total ?? 0) / 1e6).toLocaleString()}M  from ${anchorTag.parts.map((p) => p.tag).join(" + ")}`);
+
+  console.log(`\n${"─".repeat(104)}\n  EVERY MOVEMENT, PLACED BY ITS OWN DATE\n${"─".repeat(104)}`);
+  for (const m of movements) {
+    console.log(`\n  [${m.placement.toUpperCase()}]  ${m.kind}  ${m.instrument}`);
+    console.log(`      ${m.statedAs}${statesApproximation(m.sourceLine) ? "   (APPROXIMATE — the filing's own hedge)" : ""}   dated ${m.date ?? "—"}`);
+    console.log(`      counts: ${m.placement === "delta" ? `$${m.amountMillions.toLocaleString()}M` : `$0 — ${m.why.slice(0, 86)}`}`);
   }
 
-  const rolled = rollForward(baseTag.total ?? 0, events, base.rows);
-  console.log(`\n${"─".repeat(104)}\n  THE ROLL\n${"─".repeat(104)}`);
-  console.log(`      base                      ${usd(baseTag.total ?? 0)}`);
-  for (const e of rolled.counted) console.log(`      ${e.amountUsd < 0 ? "less" : "plus"} ${e.instrument.slice(0, 44).padEnd(46)} ${usd(e.amountUsd)}`);
-  console.log(`      rolled                    ${usd(rolled.total)}`);
-  console.log(`      anchor stated             ${usd(anchorTag.total ?? 0)}`);
-  console.log(`      residual                  ${usd(rolled.total - (anchorTag.total ?? 0))}  against ±${usd(ROLL_BAND_USD)}`);
-  console.log(`      approximate share         ${usd(rolled.approximateUsd)} — the only thing the band may absorb`);
-  console.log(`      in-base events            ${rolled.inBase.length}, of which MISSING from the transcription: ${rolled.missingFromBase.length === 0 ? "none" : rolled.missingFromBase.map((e) => e.instrument).join(", ")}`);
-  console.log(`      excluded                  ${rolled.excluded.length} (${rolled.excluded.map((e) => e.instrument).join(", ") || "none"})`);
+  const deltas = toRollDeltas(movements);
+  const missing = inBaseButMissing(movements, base.rows);
+  const tie = computeRollTie(
+    Math.round((baseTag.total ?? 0) / 1e6),
+    deltas,
+    Math.round((anchorTag.total ?? 0) / 1e6)
+  );
 
-  const rowsOnly = base.rows.filter((x) => x.kind === "row");
-  const baseComputed = rowsOnly.reduce((a, x) => a + (resolvedAmountUsd(x.amount, x.sourceLine, tenKText, baseLoc, parseMoneyAmount) ?? 0), 0);
-  const v = rolledVerdict({
-    baseStatedTotal: baseTag.total,
-    baseComputedTotal: baseComputed,
-    anchorStatedTotal: anchorTag.total,
-    rolledTotal: rolled.total,
-    baseAsOf: BASE_DATE, anchorAsOf: anchorDate, baseNote: "10-K Note 7",
-  });
-  console.log(`\n      base transcription sums to ${usd(baseComputed)} against a stated ${usd(baseTag.total ?? 0)}`);
-  console.log(`\n      VERDICT: ${v.kind.toUpperCase()}`);
-  console.log(`      ${v.statement}`);
+  console.log(`\n${"─".repeat(104)}\n  THE ROLL — arithmetic by rollForward.ts, deltas derived here\n${"─".repeat(104)}`);
+  console.log(`      base                      $${Math.round((baseTag.total ?? 0) / 1e6).toLocaleString()}M`);
+  for (const d of deltas) {
+    console.log(`      ${d.amountMillions < 0 ? "less" : "plus"} ${d.label.slice(0, 44).padEnd(46)} $${d.amountMillions.toLocaleString()}M${d.statedApproximate ? "  (approximate)" : ""}`);
+  }
+  console.log(`      rolled                    $${tie.computedMillions.toLocaleString()}M`);
+  console.log(`      anchor stated             $${(tie.statedMillions ?? 0).toLocaleString()}M`);
+  console.log(`      residual                  $${tie.residualMillions}M   tolerance ±$${toleranceFor(deltas)}M`);
+  console.log(`      TIES: ${tie.ties}`);
+  console.log(`      ${tie.detail}`);
+  console.log(`\n      in-base movements: ${movements.filter((m) => m.placement === "in-base").length}, MISSING from the transcription: ${missing.length === 0 ? "none" : missing.map((m) => m.instrument).join(", ")}`);
+  console.log(`      excluded: ${movements.filter((m) => m.placement !== "delta" && m.placement !== "in-base").map((m) => m.instrument).join(", ") || "none"}`);
   console.log(`\n  SPEND: $${spend.toFixed(4)}`);
 })();
