@@ -6034,3 +6034,67 @@ captures $1.0 billion of a stated $31.878 billion. **This change is what makes
 that residual addressable**, by giving the roll-forward a base to work from. It
 does not by itself make Cigna signable, and declaring otherwise would be
 promising a signature this design cannot deliver on its own.
+
+## CORRECTION to the declaration's reconciliation gate, before it billed
+
+The approved declaration says "the base ties to **31,463** at Dec 31, 2025".
+**That number appears nowhere in Cigna's 10-K** — not in the located debt note,
+not anywhere in its 518,211 characters, in either scale. Nor does 31,878.
+
+The target is right. Its description was wrong, and the difference would have
+failed the base tie for a reason that has nothing to do with the transcription.
+
+**What 31,463 actually is**, measured at $0 from the filer's own tags:
+
+```
+2025-12-31   DebtCurrent 592,000,000
+           + LongTermDebtAndCapitalLeaseObligations 30,871,000,000
+           = 31,463,000,000
+
+2026-06-30   DebtCurrent 2,792,000,000
+           + LongTermDebtAndCapitalLeaseObligations 29,086,000,000
+           = 31,878,000,000
+```
+
+A **sum of two XBRL tags**, never printed as one figure — which is also how
+31,878 has been the coverage denominator all along, so the construction was
+already in use and simply had not been stated.
+
+**And the 10-K's note prints both halves separately**, which is what makes the
+tie checkable at all:
+
+```
+"Total short-term debt"   $ 592
+"Total long-term debt"    $ 30,871
+                          592 + 30,871 = 31,463   ✓
+```
+
+### The gate, restated
+
+The base tie is **the transcribed rows reproducing the note's own two printed
+subtotals — short-term $592 and long-term $30,871 — whose sum is the filer's
+tagged total of 31,463.** Not a search for a printed "31,463", which does not
+exist.
+
+This makes the gate STRONGER rather than looser: a transcription must now
+reproduce both halves, and a run that got the long-term table right while
+missing the short-term line would previously have been invisible to a
+single-total check.
+
+### Why this was caught
+
+Rule 63, applied to the declaration itself rather than to a fix: before
+building the call, the four things it depends on were enumerated — is the 10-K
+in the corpus, can its note be located, is the reconciliation target in that
+note, and is the cross-reference verified in the anchor's own words. Three
+passed. The third did not, and it was the one nobody would have checked,
+because a number that has been correct in the coverage denominator for weeks
+reads as a number that must be printed somewhere.
+
+**The other three preconditions hold:** the 2025 10-K is in the corpus
+(ci-20251231.htm, filed 2026-02-26); its debt note locates at 6,991 characters
+and is tabular with 57 comma-grouped figures; and the anchor's cross-reference
+— "For more information regarding our short-term and long-term debt, see Note
+7 to the Consolidated Financial Statements in the Company's 2025 Form 10-K." —
+is verified verbatim in the anchor's own text, with `anchorNoteShape` recorded
+as `not-located`. Both halves of fix 5's gate are satisfied.
