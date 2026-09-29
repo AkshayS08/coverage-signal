@@ -2518,3 +2518,9 @@
 {"at":"2026-09-29T16:16:59.159Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-29T16:17:49.412Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-29T16:44:10.684Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T17:12:00.686Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T17:14:07.593Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T17:15:24.841Z","company":"Cigna Group (referenced note, call 1 — RECONSTRUCTED: billed without persisting)","totalUsd":0.0188,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":0,"outputTokens":0,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.0188}],"unpricedModels":[]}
+{"at":"2026-09-29T17:15:24.842Z","company":"Cigna Group (referenced note, call 2 — RECONSTRUCTED: billed without persisting)","totalUsd":0.0188,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":0,"outputTokens":0,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.0188}],"unpricedModels":[]}
+{"at":"2026-09-29T17:15:38.021Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T17:15:38.322Z","company":"Cigna Group (referenced note)","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
