@@ -6098,3 +6098,87 @@ and is tabular with 57 comma-grouped figures; and the anchor's cross-reference
 7 to the Consolidated Financial Statements in the Company's 2025 Form 10-K." —
 is verified verbatim in the anchor's own text, with `anchorNoteShape` recorded
 as `not-located`. Both halves of fix 5's gate are satisfied.
+
+---
+
+# Session 24 — the referenced-note call, wired
+
+## Rule 67 — one deciding function for a table cell's scale
+
+A filing declares its table's scale once and prints bare cells beneath it, so
+"does $592 mean 592 dollars or 592 million" is a question every layer has to
+answer. Three layers grew three answers:
+
+1. `deriveScaleFromFilingDeclaration` — schedule entries and captions.
+2. `deriveFacilityScale` — facility figures, added when it emerged that (1) had
+   never covered them, which cost DaVita five figures that vanished on a coin
+   flip.
+3. A harness's own `resolved()` — which read printed cells as bare dollars and
+   **reported a perfect 38-entry transcription of Cigna's 10-K as a failed base
+   tie**, "36 rows sum to $0M".
+
+The third is the worst of the three: it would have reported a working design as
+broken on its first run, and the only reason it did not is that the number
+disagreed with something already known.
+
+`governingScale` decides; `scaledAmountString` and `resolvedAmountUsd` are
+built on it. A cell naming its own scale wins over any caption — the other
+direction turns $1B into $1 quadrillion. A cell that cannot be located, or has
+no declaration above it, resolves to NOTHING rather than to a guess. And a bare
+"(In millions)" with no unit of account still does not scale, because it
+captions share counts as readily as money; that rejection is deliberate and is
+now pinned, after my own first fixture got it wrong and I briefly read three
+passing failures as a module bug.
+
+## Rule 68 — a call cannot bill without reaching the ledger
+
+`recordUsage` accumulates in memory; `persistCompanySpend` writes the line.
+Every billing path took both steps because every billing path went through
+`runAgentLoop`. Then a second path was added in a harness that took only the
+first: **two real calls billed $0.0376 while cost-log.jsonl read $0.0000, and
+that $0.0000 was reported as the budget position.**
+
+The ledger is the only thing that makes a budget measurable, and a path that
+bills outside it does not merely under-report — it makes every later total
+wrong by a silent amount that nothing reconciles against.
+
+`withCostScope` makes scoping and persisting one operation, persisting in a
+`finally` so a call that THROWS still reaches the ledger. That is the case that
+matters: a failed expensive call has still been paid for and is the one a human
+is least likely to record by hand. The suite asserts it, and restores the
+ledger it writes to — a test that permanently edits the spend record corrupts
+the thing it exists to protect.
+
+## A SIXTH AUDIT-SPINE INSTANCE: the zero-drift check that could not have failed
+
+"Evidence-sentence drift on the other nine: zero" was reported as a measured
+result. **The referenced-note module was not wired into loop.ts at the time.**
+No code path could have moved, so the answer was fixed before the check ran.
+
+It is the same class as Rules 42, 43 and 52 — a check whose inputs make its
+answer predetermined — committed while reporting on a feature built to avoid
+exactly that, and one prompt after logging four other instances of it. Knowing
+the pattern by name did not stop me producing another.
+
+Re-measured after wiring, where the question is real: nine non-firing names
+show no prior-period base, unchanged row counts, and zero Rule 58 failures;
+Cigna alone fires and carries a 38-entry base; all five signed goldens still
+MATCH. **Bar met, and this time the measurement could have said otherwise.**
+
+## What is wired, and what is not
+
+WIRED: the gated call (Rule 66's predicate on fix 5's recorded branch), cached
+on the document under its own prompt version so nothing under
+EXTRACTION_PROMPT_VERSION is orphaned; the transcribed note attached as
+`priorPeriodBase` with the single label every row renders under; and the
+guarantee that it never reaches the current ladder.
+
+NOT WIRED, AND NAMED RATHER THAN SMUGGLED: coverage does not yet switch to the
+rolled position. The roll's two inputs — a $550M repayment and ~$1.0B of
+commercial paper — were HAND-SUPPLIED from the signer's own statement in the
+harness. They are not derived from the filings. Wiring the switch today would
+mean hardcoding two Cigna figures into production code, which is the opposite
+of every rule in this log. Criteria 4 and 6 both PASS against the rolled
+position when computed with those inputs — the base's two printed subtotals tie
+exactly, and the residual moves 96.86% to -0.11% — so the remaining work is
+deriving the roll's events, not proving the criterion.

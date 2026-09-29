@@ -59,6 +59,27 @@ import { createTextLocator } from "./verifyQuote";
 import { amountSupportOf } from "../events/position";
 import { corroborateRedemptionStatus } from "./redemptionStatus";
 import { annualReportGate, withholdAnnualReportRows } from "./annualReportSource";
+import { transcribeReferencedNote, REFERENCED_NOTE_PROMPT_VERSION, type ReferencedNoteResult } from "./referencedNote";
+import { cachedReferencedNote } from "../cache/answerCache";
+import { rolledRowLabel } from "../events/rolledPosition";
+
+/** The transcribed prior-period note, plus the one label every row of it renders under. */
+export type PriorPeriodBase = ReferencedNoteResult & { label: string };
+
+/**
+ * The prior-period ANNUAL REPORT a cross-reference points at: the most recent
+ * 10-K that is not the anchor itself. The FORM decides, never the filename,
+ * and "most recent" is what "our 2025 Form 10-K" means read from a 2026 10-Q.
+ */
+function pickDirectedFiling(
+  filings: { form: string; reportDate?: string | null; primaryDocUrl: string }[],
+  anchorUrl: string | null
+): { form: string; reportDate?: string | null; primaryDocUrl: string } | null {
+  const tenKs = filings
+    .filter((x) => /^10-K$/i.test(x.form) && x.primaryDocUrl !== anchorUrl)
+    .sort((a, b) => String(b.reportDate ?? "").localeCompare(String(a.reportDate ?? "")));
+  return tenKs[0] ?? null;
+}
 import { beginCompanyCostScope, currentCompanySpend, formatCompanyCostLine, persistCompanySpend } from "./costMeter";
 
 /** Session 18 (post-v11): rewrites each entry's `amount` with its own table's declared unit where the amount states none — see moneyScale.ts's applyTableUnitToAmount. Generic over every money-bearing extracted array (sequence entries, balance-sheet captions) since all of them share the `amount` field and hit the identical bug. */
@@ -605,6 +626,13 @@ export interface TriggerResult {
   anchorNoteShape?: "tabular" | "prose-only" | "not-located" | "not-recorded";
   noteLocatorVersion?: number | null;
   /**
+   * SESSION 24 — THE LABELLED PRIOR-PERIOD BASE, when Rule 66's gate opened.
+   * NOT part of the current ladder and never becomes one: every row carries
+   * the transcribed filing's own period and renders under `label`. Null on
+   * nine of ten names today.
+   */
+  priorPeriodBase?: PriorPeriodBase | null;
+  /**
    * Session 18 (post-v6): raw row counts before/after verification, summed
    * across scheduleSequence + priorScheduleSequence + issuedTranches +
    * balanceSheetDebtCaptions for this trigger — zero for the 13 triggers
@@ -947,6 +975,60 @@ export async function runAgentLoop(
   // undefined" contract the rest of this pipeline (position.ts,
   // eligibility.ts) is written against.
   const verdictById = new Map(baseVerdicts.map((v) => [v.triggerId, withFieldDefaults(v)]));
+
+  // SESSION 24 — THE ONE-DOCUMENT-PER-CALL READ OF A CROSS-REFERENCED NOTE.
+  //
+  // Where the anchor locates no debt note AND itself directs the reader to
+  // another filing (Rule 66's gate, on fix 5's recorded branch), that filing's
+  // note is transcribed in ITS OWN call — the shape of the ask the model has
+  // already answered 38 times, rather than a fifth rewrite of an instruction it
+  // declines inside the combined prompt.
+  //
+  // It lives here rather than inside `finalizeVerified` because it is a
+  // per-COMPANY decision made once, and because it is async: the gate reads
+  // the debt-maturity verdict, which is already in hand.
+  //
+  // Cached on the DOCUMENT and its own prompt version. A new 8-K elsewhere in
+  // the corpus does not change what a 2025 10-K's Note 7 says, and nothing
+  // cached under EXTRACTION_PROMPT_VERSION is orphaned by this existing.
+  let priorPeriodBase: PriorPeriodBase | null = null;
+  {
+    const dmVerdict = verdictById.get("debt-maturity");
+    const gate = annualReportGate(anchorNoteShape, !!dmVerdict?.noteCrossReference);
+    if (gate.mayRead && gate.asLabeledBaseOnly) {
+      const directed = pickDirectedFiling(filingsResult.filings, debtScheduleGuidance.base?.url ?? null);
+      const directedText = directed ? textByUrl.get(directed.primaryDocUrl) : undefined;
+      if (!directed) {
+        log(`  REFERENCED NOTE NOT READ — the anchor directs to a prior-period annual report and none is in the fetched corpus. The base is absent and says so, rather than being filled from elsewhere.`);
+      } else if (!directedText) {
+        log(`  REFERENCED NOTE NOT READ — ${directed.form} ${directed.reportDate} is in the corpus but its text was not fetched this run. Not checked is not the same as not there.`);
+      } else {
+        const { data, hit } = await cachedReferencedNote(
+          filingsResult.cik,
+          directed.primaryDocUrl,
+          REFERENCED_NOTE_PROMPT_VERSION,
+          () =>
+            transcribeReferencedNote({
+              companyName: filingsResult.company,
+              filingUrl: directed.primaryDocUrl,
+              filingForm: directed.form,
+              periodOfReport: directed.reportDate ?? "",
+              filingText: directedText,
+              xbrlTotalForScale: null,
+            })
+        );
+        priorPeriodBase = {
+          ...data,
+          label: rolledRowLabel({
+            baseAsOf: directed.reportDate ?? "the prior period",
+            anchorAsOf: debtScheduleGuidance.base?.reportDate ?? "the anchor date",
+            baseNote: `${directed.form} debt note`,
+          }),
+        };
+        log(`  REFERENCED NOTE READ — ${data.rows.length} entries from ${directed.form} ${directed.reportDate} (${hit ? "cached, $0" : "BILLED one call"}), as the LABELLED PRIOR-PERIOD BASE. It is not on the current ladder.`);
+      }
+    }
+  }
 
   // Session 18: company-level hard failure (never per-filing — see
   // noteLocation.ts's doc comment: a SINGLE 10-Q genuinely not repeating
@@ -1390,6 +1472,7 @@ export async function runAgentLoop(
       debtScheduleGuidance.prior,
       anchorNoteShape,
       NOTE_LOCATOR_VERSION,
+      priorPeriodBase,
       { rowsExtracted, rowsVerified, baseRowsExtracted: v.scheduleSequence.length },
       trigger.id === "debt-maturity" && baseColumnOutcome.total > 0 && baseColumnOutcome.droppedForPeriod === baseColumnOutcome.total,
       scheduleCompleteness
@@ -2360,6 +2443,7 @@ function finalize(
   /** FIX 5 — the branch that gated these rows, threaded so it can be stored with them. */
   recordedAnchorShape: "tabular" | "prose-only" | "not-located" | "not-recorded",
   recordedLocatorVersion: number | null,
+  recordedPriorPeriodBase: PriorPeriodBase | null,
   rowAccounting: { rowsExtracted: number; rowsVerified: number; baseRowsExtracted: number },
   columnReadFailure: boolean,
   scheduleCompleteness: ScheduleCompletenessResult | null
@@ -2405,6 +2489,7 @@ function finalize(
     debtScheduleSourceFiling: trigger.id === "debt-maturity" ? debtScheduleBaseFiling : null,
     debtSchedulePriorFiling: trigger.id === "debt-maturity" ? debtSchedulePriorFiling : null,
     anchorNoteShape: trigger.id === "debt-maturity" ? recordedAnchorShape : "not-recorded",
+    priorPeriodBase: trigger.id === "debt-maturity" ? recordedPriorPeriodBase : null,
     noteLocatorVersion: trigger.id === "debt-maturity" ? recordedLocatorVersion : null,
     rowsExtracted: rowAccounting.rowsExtracted,
     rowsVerified: rowAccounting.rowsVerified,

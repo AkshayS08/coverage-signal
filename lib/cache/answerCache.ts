@@ -82,6 +82,30 @@ export async function cachedBaseClassification<T>(
   return getOrCompute(baseAnswerKey(cik, fingerprint), compute);
 }
 
+/**
+ * SESSION 24 — THE REFERENCED-NOTE CALL, ON ITS OWN VERSION AND ITS OWN KEY.
+ *
+ * Keyed on the DOCUMENT rather than on the corpus fingerprint, because that is
+ * what it reads: one filing's debt note, transcribed with that filing as the
+ * anchor of the ask. A new 8-K appearing elsewhere in the corpus does not
+ * change what the 2025 10-K's Note 7 says, and invalidating this on the
+ * fingerprint would re-buy an unchanged table every time anything moved.
+ *
+ * `REFERENCED_NOTE_PROMPT_VERSION` is deliberately NOT
+ * `EXTRACTION_PROMPT_VERSION`. The combined call's prompt is untouched by this
+ * feature existing, so nothing cached under the main version is orphaned by
+ * it — which was the design's main constraint.
+ */
+export async function cachedReferencedNote<T>(
+  cik: string,
+  filingUrl: string,
+  promptVersion: number,
+  compute: () => Promise<T>
+): Promise<{ data: T; hit: boolean }> {
+  const key = `answer/${cik}/referenced-note/${sha256(filingUrl)}/rn-v${promptVersion}.json`;
+  return getOrCompute(key, compute);
+}
+
 /** A single-trigger dig follow-up against one specific extra filing. */
 export async function cachedDigClassification<T>(
   cik: string,
