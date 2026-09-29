@@ -26,7 +26,26 @@ const NOT_OFFLINE: Record<string, string> = {
   "lib/cache/acceptance.test.ts": "determinism run — reads the live blob cache and replays both books",
   "lib/cache/liveAcceptance.test.ts": "hits the deployed site",
   "lib/cache/liveMarkerScan.test.ts": "hits the deployed site",
-  "lib/events/golden.test.ts": "replays signed goldens from the blob cache",
+  // SESSION 24 — golden.test.ts IS NO LONGER EXCLUDED, and its removal from
+  // this list is the point.
+  //
+  // THE AUDIT SPINE DID NOT COVER THE SIGNATURES. Every "47 of 47 suites,
+  // 1,109 assertions" reported across Sessions 22, 23 and 24 excluded the one
+  // suite that checks whether the signed goldens still reproduce. Green never
+  // meant the pins held. It was reported alongside three fresh signatures as
+  // though it did — and when fix 1's narrowing broke nine assertions about
+  // those very files, the runner said 47 of 47 and the failures were only
+  // visible by running the suite by hand.
+  //
+  // The exclusion reason was legitimate: it reads the blob cache. The
+  // consequence was not: a golden could rot indefinitely without the routine
+  // command noticing. Same family as the mid-file summary lines and the
+  // hardcoded HIGHEST_RULE — a measurement whose scope quietly excluded the
+  // thing it was trusted to measure.
+  //
+  // It runs. When the cache it needs is absent, the runner reports NOT RUN and
+  // FAILS, because "could not check the signatures" and "the signatures are
+  // fine" must never print the same way.
   // NOT OFFLINE, and it took a flaky failure to notice. It calls
   // getRecentFilings and getFilingText — the blob store and EDGAR — so it
   // fails intermittently when the network does, and a suite that can fail for
@@ -81,7 +100,22 @@ for (const suite of suites) {
   const m = out.match(/(\d+) passed, (\d+) failed/);
   if (m) totalAsserts += Number(m[1]);
   const ok = r.status === 0;
-  if (!ok) { failed.push(suite); console.log(`\n  ✗ FAIL  ${suite}${m ? `  (${m[0]})` : ""}`); console.log(out.split("\n").filter((l) => /FAIL|Error|✗/.test(l)).slice(0, 12).map((l) => `        ${l}`).join("\n")); }
+  // A SUITE THAT COULD NOT RUN IS NOT A SUITE THAT PASSED.
+  //
+  // golden.test.ts needs the blob cache. When that is unreachable it cannot
+  // say anything about the signed goldens, and the one outcome this runner
+  // must never produce is silence that reads as green. It is reported as NOT
+  // RUN and it FAILS the run — the same disposition the codebase already gives
+  // a comparison that cannot read its inputs (Rule 61).
+  const couldNotRun = !m && /Blob cache read failed|fetch failed|ENOTFOUND|ETIMEDOUT|EAI_AGAIN/i.test(out);
+  if (couldNotRun) {
+    failed.push(suite);
+    console.log(`\n  ⚠ NOT RUN  ${suite}`);
+    console.log(`        its inputs were unreachable, so it checked NOTHING. This fails the run rather than`);
+    console.log(`        passing quietly: "could not check" and "checked and fine" must not print the same way.`);
+    console.log(out.split("\n").filter((l) => /Blob cache read failed|fetch failed|Error/i.test(l)).slice(0, 4).map((l) => `        ${l}`).join("\n"));
+  }
+  else if (!ok) { failed.push(suite); console.log(`\n  ✗ FAIL  ${suite}${m ? `  (${m[0]})` : ""}`); console.log(out.split("\n").filter((l) => /FAIL|Error|✗/.test(l)).slice(0, 12).map((l) => `        ${l}`).join("\n")); }
   else console.log(`  ✓ ${suite.padEnd(52)} ${m ? m[0] : "(no assertion count printed)"}`);
 }
 
