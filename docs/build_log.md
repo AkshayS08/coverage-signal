@@ -6257,3 +6257,59 @@ TWO CONSEQUENCES WORTH KEEPING:
      existing.
   2. "I am adding a new module" is a belief about the repository, not a fact
      about it, and the check costs one read.
+
+---
+
+## Rule 70 — a stated balance is taken at the date its own sentence predicates
+
+A balance used as a roll delta is read from the sentence that states it, in
+the filing's own text. The model's `asOfDate` field is ONE SIGNAL and never
+the only one; where the two disagree, **the sentence wins and the
+disagreement is logged**.
+
+Cigna's commercial-paper delta rested on that field alone. One run in three
+set it to the BASE date with a null amount and a basis of "commitment" —
+reading the 10-K's period instead of the 10-Q's — so the delta vanished and
+the roll missed by 965 with no band to absorb it. This is the CHS/B4 pattern
+exactly: a derivation resting on one optional model field.
+
+Read from the anchor's sentence instead, **the roll ties 3 of 3** — including
+the sample whose field was wrong, whose disagreement is now printed rather
+than silently followed.
+
+WHERE A FIGURE IS STATED TWICE, THE HEDGE SURVIVES. The anchor states this
+balance in two sentences at the same date: "approximately $1.0 billion
+outstanding as of June 30, 2026" and "an outstanding balance of $1.0 billion
+as of June 30, 2026". They are the same rounded figure, and treating it as
+exact because the second omits the qualifier would assert a precision the
+filer did not consistently claim. **Said plainly because it is also the
+reading under which the roll ties** — an exact figure earns no band, and the
+roll misses by 35. The contrary reading is available to anyone who wants it.
+
+## THE EIGHTH AUDIT-SPINE INSTANCE: two gates weaker than their own wording
+
+Both of Cigna's first two gates asserted less than they said, and they are one
+instance rather than two:
+
+**Gate 1, "38 entries reproduce", was implemented as a COUNT.** Three samples
+of 38 would have passed it even if the entries differed. It took a separate
+diff to establish that they do not.
+
+**Gate 2, "both subtotals tie exactly", read the transcribed SUBTOTAL LINES**
+— it checked whether the model copied two numbers, not whether the rows it
+transcribed add up to them. A sample whose 36 rows summed to 22,783 passed it.
+
+The 22,783 was not the model's error either. `parseMoneyAmount` requires a "$"
+or a grouping comma and returns null for a bare "549" or "43" — correct for
+prose, wrong for a table cell, which the transcription prompt explicitly asks
+for as printed. Seventeen rows parsed to null and contributed zero. Sample 1
+happened to write its cells with "$" and sample 2 did not.
+
+So a correct transcription was reported as a failed reconciliation, by a gate
+that could not have caught it, because the gate was reading a different thing
+from the one its sentence named. `tableCellMillions` now owns that parse
+(Rule 67), and gate 2 sums the instrument rows against each printed subtotal,
+partitioning by position. **All three samples then tie: 5 rows to 592, 31 rows
+to 30,871, 36 rows to 31,463.**
+
+A gate should assert what its wording claims. Two in a row did not.

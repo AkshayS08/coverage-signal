@@ -77,6 +77,58 @@ export function scaledAmountString(amount: string, sourceLine: string, filingTex
 }
 
 /**
+ * A TABLE CELL'S VALUE, IN THE UNIT ITS CAPTION DECLARES.
+ *
+ * `parseMoneyAmount` requires a currency marker — a "$" or a grouping comma —
+ * and returns null for a bare "549" or "43". That strictness is right for
+ * prose, where a bare number is as likely to be a share count or a year as
+ * money. It is wrong for a TABLE CELL, because the transcription prompt asks
+ * for cells exactly as printed and a filing prints plenty of them bare.
+ *
+ * IT COST A WHOLE SAMPLE. Cigna's sample 2 wrote its cells without "$" where
+ * sample 1 wrote them with it. Seventeen rows parsed to null, contributed
+ * zero, and the base summed to 22,783 against 31,463 — a transcription that
+ * was entirely correct, reported as a failed reconciliation. The gate did not
+ * catch it because the gate was reading the transcribed SUBTOTAL LINES, which
+ * carried "$" and parsed fine.
+ *
+ * So a cell is read as a number and given the scale its table declares. The
+ * em-dash convention is preserved (a printed dash is a stated zero, Rule 53),
+ * and anything that is not a number at all still returns null rather than a
+ * guess.
+ */
+export function tableCellMillions(
+  amount: string,
+  sourceLine: string,
+  filingText: string,
+  locator: Locator
+): number | null {
+  const raw = String(amount).trim();
+  if (raw === "") return null;
+  // A printed dash IS a figure: zero, stated.
+  if (/^[$\s]*[—–-][\s]*$/.test(raw)) return 0;
+  const m = raw.replace(/,/g, "").match(/-?\d+(?:\.\d+)?/);
+  if (!m) return null;
+  const n = Number(m[0]);
+  if (!Number.isFinite(n)) return null;
+  // A cell naming its own scale is self-describing; otherwise the caption
+  // decides, through the one function that owns that decision.
+  const r = governingScale(raw, sourceLine, filingText, locator);
+  if (r.reason === "self-describing") {
+    if (/\bbillion/i.test(raw)) return n * 1000;
+    if (/\bmillion/i.test(raw)) return n;
+    if (/\bthousand/i.test(raw)) return n / 1000;
+    return n;
+  }
+  if (r.word === "million") return n;
+  if (r.word === "thousand") return n / 1000;
+  // No governing declaration: the cell is taken at the unit the surrounding
+  // table is already being read in, which is the caller's unit. Reported as-is
+  // rather than scaled by a guess.
+  return n;
+}
+
+/**
  * The amount as a NUMBER, for arithmetic. Null when it cannot be read — never
  * a bare-dollars fallback, which is the 1000x error this whole module exists
  * to prevent.

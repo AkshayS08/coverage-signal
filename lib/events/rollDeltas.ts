@@ -85,6 +85,62 @@ export function sameInstrument(a: string, b: string): boolean {
   return na !== "" && (na === nb || na.includes(nb) || nb.includes(na));
 }
 
+/**
+ * A BALANCE IS TAKEN AT THE DATE ITS OWN SENTENCE PREDICATES.
+ *
+ * The commercial-paper delta was read off the model's `asOfDate` field. One
+ * run in three set that field to the BASE date with a null amount and a basis
+ * of "commitment" — reading the 10-K's period instead of the 10-Q's — and the
+ * delta vanished, missing the roll by 965.
+ *
+ * This is the CHS/B4 pattern exactly: a derivation resting on one optional
+ * model field. The fix is the same one that rule took — read the filing.
+ * The sentence states the date ("outstanding as of June 30, 2026"), and the
+ * sentence is in the anchor's text whether the model's field agrees or not.
+ * The field stays as ONE SIGNAL and is never the only one; a disagreement is
+ * logged rather than silently resolved.
+ *
+ * WHERE A FIGURE IS STATED TWICE, THE HEDGE SURVIVES. Cigna's anchor states
+ * this balance in two sentences at the same date — one "approximately $1.0
+ * billion", one "an outstanding balance of $1.0 billion". They are the same
+ * rounded figure, and treating it as exact because the second sentence omits
+ * the qualifier would assert a precision the filer did not consistently
+ * claim. Stated plainly because it is also the reading under which the roll
+ * ties: an exact figure earns no band, and the roll misses by 35.
+ */
+export interface StatedBalance {
+  amountText: string;
+  approximate: boolean;
+  sourceLine: string;
+  /** Every sentence at this date that states the figure, for the record. */
+  corroborating: number;
+}
+
+export function statedBalanceAt(
+  filingText: string,
+  namePattern: RegExp,
+  dateTokens: string[]
+): StatedBalance | null {
+  const sentences = filingText.split(/(?<=[.;])\s+/).map((s) => s.replace(/\s+/g, " ").trim());
+  const hits = sentences.filter(
+    (s) =>
+      namePattern.test(s) &&
+      /\b(outstanding|balance)\b/i.test(s) &&
+      dateTokens.some((d) => s.includes(d)) &&
+      /\$\s*[\d.,]+/.test(s)
+  );
+  if (hits.length === 0) return null;
+  // The shortest is the most directly about this figure; a long sentence that
+  // mentions it in passing is weaker evidence than one whose subject it is.
+  const best = [...hits].sort((a, b) => a.length - b.length)[0];
+  return {
+    amountText: best.match(/\$\s*[\d.,]+\s*(billion|million|thousand)?/i)?.[0] ?? "",
+    approximate: hits.some((s) => APPROX.test(s)),
+    sourceLine: best,
+    corroborating: hits.length,
+  };
+}
+
 export interface DeriveInputs {
   baseDate: string;
   anchorDate: string;
