@@ -59,6 +59,33 @@ export const REPRODUCTION_EVIDENCE: ReproductionEvidence[] = [
   // from this table because they did not reproduce, which is the only reason
   // a name should ever be absent from it.
   {
+    company: "DaVita", version: 31, runs: 3, recordedOn: "2026-09-29",
+    evidence:
+      "Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.3834; re-read at $0 after each fix): 9 rows in " +
+      "every run, identical across all three under compareToGolden on identity, amount, maturity date, granularity, " +
+      "provenance and capacity flag; coverage identical; the cited position documents identical. Facility figures are " +
+      "NOT covered by 9b and were measured separately: identical across all three runs, labels included. " +
+      "THIS NAME FAILED 9b THREE TIMES BEFORE IT HELD, and each failure was ours rather than the model's — the " +
+      "ladder doubled to 17 rows when a date spelled \"11/24/2030\" made a comparison report identical tranches as " +
+      "different ones (Rule 61); the same spelling then broke ROW IDENTITY separately, reporting seven instruments " +
+      "as seven missing plus seven unexpected; and the identity of the answer itself moved when an " +
+      "`international-expansion` citation entered the filing set (Rule 65). The three runs behind this evidence are " +
+      "the same three extractions throughout: nothing was re-bought to make them agree.",
+    toleratedDifferences: [],
+  },
+  {
+    company: "Community Health Systems", version: 31, runs: 3, recordedOn: "2026-09-29",
+    evidence:
+      "Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.2833; re-read at $0 after each fix): 12 rows in " +
+      "every run, identical across all three under compareToGolden; coverage identical; the cited position documents " +
+      "identical. Facility figures measured separately and identical across all three, labels included. " +
+      "WHAT WAS DIAGNOSED AS CITATION DRIFT WAS TWO SEPARATE DEFECTS, both ours: the ABL reached the ladder twice — " +
+      "once from the debt note's schedule and once, on some runs only, as a prose instrument stating the same facts " +
+      "about the same facility (Rule 49 on the ladder) — and the answer's identity moved when an `asset-sale` " +
+      "citation entered the fifteen-trigger union (Rule 65). Neither was the model disagreeing with itself.",
+    toleratedDifferences: [],
+  },
+  {
     company: "Tenet Healthcare", version: 31, runs: 3, recordedOn: "2026-09-25",
     evidence:
       "Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.4492): 12 rows in every " +

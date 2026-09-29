@@ -78,6 +78,46 @@ const REBASELINE_REASON: Record<string, string> = {
     "value, unit, maturity, granularity, provenance and capacity flag; coverage unchanged; one card, as before. " +
     "Facility figures identical across all three v31 runs.",
 
+  "DaVita":
+    "Re-baselined at v31 in Session 24, and the position it pins is the one v29 pinned: nine rows, same instruments, " +
+    "same amounts, same maturities and classes. WHAT MOVED WAS OUR ABILITY TO SEE THAT. This name failed criterion 9b " +
+    "three times, and every failure was in this codebase rather than in the extraction. (1) The ladder returned 9, 17 " +
+    "and 9 rows across three runs whose every row-bearing field was IDENTICAL — same instruments, values, counts and " +
+    "period columns. The only difference was a date written \"11/24/2030\" instead of \"2030-11-24\", which made " +
+    "`debtRowDateToken` return null, which `rowsRepresentSameTranche` reported as \"not the same tranche\", which " +
+    "re-added seven prior entries beside their own live twins (Rule 61). An earlier diagnosis of mine blamed an " +
+    "off-anchor 10-K citation; that was wrong and is recorded as wrong — the citation was on `international-expansion` " +
+    "and never touched the ladder. (2) The same spelling then broke ROW IDENTITY, a second and independent path to the " +
+    "same question, reporting seven instruments as seven MISSING plus seven UNEXPECTED. (3) The answer's IDENTITY " +
+    "moved when that unrelated citation entered the fifteen-trigger filing set (Rule 65). " +
+    "Two extraction-side changes also land here and both are corrections rather than re-readings: five facility " +
+    "figures that alternated between \"$ 188,482 thousand\" and \"$ 188,482\" across runs — the bare form being " +
+    "dropped as indeterminate — now take their scale from the filing's own \"dollars and shares in thousands\" " +
+    "declaration in code; and maturity dates render canonically, while the extracted entry keeps what the filing " +
+    "printed. Nine rows, coverage unchanged, every facility figure identical across all three v31 runs.",
+
+  "Community Health Systems":
+    "Re-baselined at v31 in Session 24. Twelve rows, as v29 pinned, and the two changes are both ones a reader sees. " +
+    "(1) THE ABL IS UNDRAWN CAPACITY, NOT A REPAID TRANCHE. C1 turned any zero-balance row into `repaid`, which is " +
+    "right for a term tranche reported at nil and is the opposite of the truth for a revolver: nothing is owed AND the " +
+    "whole $1.0 billion commitment stands. CHS was the only name in ten this fired on, and the other eight revolvers " +
+    "in the book — Tenet $1,900M, Cigna $6,500M, Quest $750M and $600M, Molina $1,250M — already rendered as capacity, " +
+    "which is what made it a rule rather than a patch (Rule 60). The row now shows the committed size and states that " +
+    "nothing is drawn against it. (2) THE ABL APPEARED TWICE. The model reports it in the debt note's schedule and, on " +
+    "some runs, again as a prose instrument stating the same facility, the same $1.0 billion and the same 2029-06-05. " +
+    "The canonical run carried no prose entry and gave 12 rows; four other extractions carried one and gave 13. That " +
+    "was diagnosed as citation drift for most of a day and was a duplicate (Rule 49 on the ladder). It took three " +
+    "wrong diagnoses to find, all three recorded. " +
+    "The remaining \"drift\" was the third defect: an `asset-sale` citation entering the fifteen-trigger filing set " +
+    "made the whole answer read as incomparable, about a corpus that never moved (Rule 65). " +
+    "The borrowing-base catch is unchanged and still on the facility line, with the filer's own qualifying language " +
+    "and the implied-base arithmetic beside it. " +
+    "ONE CHANGE IS A LOSS AND IS SIGNED KNOWINGLY: the 9 3/4% Senior Secured Notes due 2034 carry a maturity of " +
+    "\"2034\" where v29 carried \"2034-09-15\". The year is right and the day is gone — a bare-year maturity is " +
+    "handled correctly everywhere downstream (it sorts to year-end for ordering, never renders as a real date, and " +
+    "cannot card on a day it does not have), so this is a loss of PRECISION rather than a wrong number. It is " +
+    "recorded here rather than noticed later, because a signature that lists only improvements is not a record.",
+
   // Encompass is the unusual case and the reason is written to say so: the
   // READING did not move at all. Re-baselined because the version and the
   // corpus moved, and for no other reason.
