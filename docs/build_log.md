@@ -5872,3 +5872,165 @@ further back: the other four were checks whose inputs made their answers
 predetermined. This was a check that was never run at all, excused by a
 sentence nobody checked. **An exclusion list is a set of claims, and a claim in
 it deserves the same scepticism as a result.**
+
+---
+
+# DECLARATION — one document per call, for a cross-referenced note
+
+Design only. Nothing in this section has billed. Declared to the shape v30 and
+v31 were declared to: the change, its gate, the names it touches, its cost, its
+reconciliation gate, its measured negative cases, and the regressions that
+would make it wrong.
+
+## The change
+
+When the anchor locates no debt note and itself directs the reader to another
+filing, that filing's note is transcribed in **its own extraction call, where
+it is the anchor of the ask** — not as a subordinate section of a combined
+prompt about a different filing. Its output feeds the roll-forward as the
+**labelled prior-period base**, carrying its own period, and never becomes a
+row in the current ladder.
+
+## Why a second call rather than better wording in the first
+
+The model already does this correctly when it is the whole question. The cache
+holds 38 entries, reproducible across thirteen prompt versions, in which a 10-K
+table was the anchor of the ask and was transcribed in full. **The decline
+happens only inside the combined call** — where the same table is a referenced
+aside in a prompt whose subject is the 10-Q.
+
+That is not a prompt-wording problem and three sessions have now treated it as
+one. v31's fix 1 rewrote the not-located block to route rather than prohibit;
+Cigna's `referencedScheduleSequence` came back with 0 entries anyway, and
+Session 23 proved from Cigna's own data that the field was **present on the
+schema and declined** — not absent. An instruction the model can decline is not
+a constraint, and the fourth rewrite of the same instruction is not a different
+strategy.
+
+**What changes is the shape of the ask, not its wording.** One document, one
+question, which is the condition under which this has already worked 38 times.
+
+## The gate — fix 5's recorded branch, and nothing else
+
+The extra call fires only when **`anchorNoteShape === "not-located"` AND a
+verified cross-reference directs to a filing**. Both conditions come from the
+branch fix 5 now records on the extraction result; neither is re-derived at
+call time.
+
+This is deliberately the same predicate that already governs whether the
+referenced table may be read at all (Rule 66). One decision, one place: if the
+gate says the annual report is not a source, no call is made, and if it says
+the table may be read as the labelled base, this is how it gets read.
+
+`not-recorded` does not fire. An answer that predates the recorded branch has
+no gate input, and spending on a call whose precondition cannot be evaluated is
+spending on a guess.
+
+## Which names take it — measured, not assumed
+
+Today, **one of ten: Cigna.** Measured at $0 against the recorded shapes:
+
+| name | anchorNoteShape | cross-reference | extra call |
+|---|---|---|---|
+| Cigna Group | not-located | POPULATED | **YES** |
+| DaVita | tabular | — | no |
+| Universal Health Services | prose-only | — | no |
+| HCA, Tenet, Encompass, CHS, Molina, Quest, Centene | tabular | — | no |
+
+**The two negative cases named in the ruling are measured, not argued.** DaVita
+is `tabular` and UHS is `prose-only`; neither is `not-located`, so neither can
+reach the first half of the gate regardless of what any cross-reference says.
+Rule 66's fixtures already assert both directions — `[1d]` asserts that a
+cross-reference does NOT unlock a tabular anchor, and `[3c]`/`[3d]` that
+prose-only withholds exactly as tabular does.
+
+If a tenth name ever becomes `not-located` with a verified reference, it fires
+automatically and its cost is one call. That is the intended behaviour and is
+worth stating: this is a rule, not a Cigna special case.
+
+## Version bump: NO, and that is the design's main constraint
+
+`EXTRACTION_PROMPT_VERSION` does **not** bump. The combined call's prompt is
+untouched, so every cached answer for all ten names stays valid and **nothing
+is orphaned**.
+
+The extra call carries its own `REFERENCED_NOTE_PROMPT_VERSION`, starting at 1,
+and its result is cached under its own key —
+`(cik, referenced filing url, that version)` — then merged in `loop.ts` after
+the base classification is read. The merge is post-cache by construction, which
+is what keeps the base answer's validity independent of it.
+
+**The alternative was a bump to v32**, which would orphan all ten names and
+require a cold pass at roughly $1.87 to learn one thing about one company. The
+declaration exists partly to reject that: the work is additive and should cost
+what it adds.
+
+## Cost shape
+
+| | |
+|---|---|
+| names firing today | 1 (Cigna) |
+| calls per firing | 1 |
+| input | Cigna's 2025 10-K debt note — measured at 6,991 characters, plus its table context |
+| estimated cold cost | **$0.04 – $0.12**, one Haiku call. Basis: Cigna's full ten-trigger run measures $0.1990 at v31 on ~76k input tokens; this call carries a small fraction of that corpus and produces one table. |
+| warm cost | $0.00 — cached under its own key, invalidated only by its own version or a moved filing |
+| **declared ceiling for the first run** | **$0.25**, stop and report above it |
+
+If it bills more than $0.25 the design is wrong about its own input size and I
+stop rather than continue.
+
+## Reconciliation gate — the numbers it must produce
+
+The call is a failure unless all three hold:
+
+1. **The base ties.** The transcribed 10-K table sums to **31,463** at
+   **December 31, 2025**, before any roll-forward is applied.
+2. **The roll ties.** Base rolled forward through the events between Dec 31
+   2025 and the anchor's June 30 2026 reaches **31,878**, within a **±$50M**
+   band. 31,878 is Cigna's own XBRL stated total at the anchor date, already
+   the coverage denominator today.
+3. **The period is labelled and separate.** Every transcribed row carries
+   December 31, 2025 and is rendered as the prior-period base, not merged into
+   the anchor ladder.
+
+A base that ties and a roll that misses is a different finding from a base that
+does not tie, and they are reported separately rather than as one pass/fail.
+
+## Regressions to watch — the three named, plus Rule 62's surface
+
+1. **Cigna's current ladder never gains 10-K rows.** It renders six rows today
+   — four pricing-8-K tranches and two note-narrative lines. If any row cited
+   to the 10-K appears on the current ladder, the call has done the exact thing
+   it was built to prevent and is withdrawn, not tuned. Rule 66's gate withholds
+   such a row independently, so this failing would mean two guards failed.
+2. **The base ties to 31,463 at Dec 31, 2025** before any roll.
+3. **The roll ties to 31,878 within ±$50M.**
+
+And **Rule 62's surface is measured for this change as it will be for every
+future one**: evidence-sentence stability across the ten names, v31 before
+against v31-plus-the-extra-call after. The declaration's named fixes are about
+Cigna's referenced table; a prompt change's blast radius exceeds its named
+fixes, and the six degradations v31 caused went unmeasured precisely because
+nobody had declared that surface. Specifically: **36 of 141 sentences moved at
+v31 with six degrading; the bar here is zero degradations on the nine names
+that do not fire**, since their prompt is unchanged and any movement at all
+would mean the change is not as isolated as this declaration claims.
+
+## What would make me withdraw it
+
+- Any 10-K-cited row on the current ladder (regression 1).
+- A base that does not tie to 31,463, which would mean the transcription is not
+  the table it claims to be.
+- Any evidence-sentence movement on the nine non-firing names, which would mean
+  the change is not isolated to its gate.
+- A first-run cost above $0.25.
+
+## What this does not fix
+
+Cigna still fails criterion 4, criterion 6 and Rule 58 on its four pricing-8-K
+rows — those are now repaired by fix 4, but Cigna's signature also needs
+coverage to pass, and coverage reads 96.86% residual today because the position
+captures $1.0 billion of a stated $31.878 billion. **This change is what makes
+that residual addressable**, by giving the roll-forward a base to work from. It
+does not by itself make Cigna signable, and declaring otherwise would be
+promising a signature this design cannot deliver on its own.
