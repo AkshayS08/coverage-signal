@@ -5705,3 +5705,131 @@ Both names are held with their causes named rather than re-tasted. Fresh
 samples would measure the odds of an instability whose mechanism is already
 visible, which is the thing this session ruled against when DaVita's third
 sample was declined.
+
+---
+
+# Session 24 — five fixes, and four ways a measurement lied
+
+## Rule 64 — a non-facility tranche at nil is an event, not a $0 row
+
+Rule 60's held half, ruled. A senior note the filing reports at nil BESIDE A
+PRIOR-PERIOD BALANCE is a repayment that happened; rendering it as "$0,
+repaid" puts a row on the ladder whose only content is that it has no content.
+
+**It is not Tier 2, and that distinction is load-bearing.** Tier 2 is events
+AFTER the anchor, kept out of `rows` so the anchor position stays true at one
+date. A tranche the anchor ITSELF reports at nil was repaid inside the
+anchor's own period and is already in its totals — filing it under Tier 2
+would double-count it and corrupt the one field whose meaning depends on being
+post-anchor. It goes to `withinPeriodRepayments`.
+
+Three negatives, all asserted: commercial paper keeps C1 (a CP programme at
+nil has issued nothing — no lender commitment, no repayment event); a
+committed facility stays with Rule 60; and a nil with NO prior balance is left
+alone, because nothing states a balance to have been repaid and inventing an
+event from one empty cell asserts a transaction the filing never makes.
+
+Measured book-wide: **0 ladder rows labelled `repaid`**, one row at nil
+(Quest's 3.45% Senior Note, already `retired`).
+
+## Rule 65 — the golden's identity is the documents the position rests on
+
+`filingSetOf` unioned citations across all fifteen triggers, and that union
+was a golden's identity. Both drifting documents traced to a single unrelated
+trigger each: DaVita's 10-K to `international-expansion` — **whose quote had
+failed verification and been discarded**, so a signed position's identity was
+moving on a citation from a fact the pipeline threw away — and CHS's 8-K to
+`asset-sale`. Neither is cited by any ladder row; no facility figure's
+sentence appears in either.
+
+The replacement was measured before it was built: across three runs of five
+companies, the all-trigger union moves for two names and the position-only set
+is stable for all five.
+
+**THE OLD IDENTITY WAS NOT A SUPERSET.** Re-pinning revealed that Tenet and
+Encompass each GAIN a document — `thc-20251231.htm` and `ehc-20260309.htm` —
+which a facility figure's `figureSources` points at and which the citation
+union never contained. The narrowing corrects an omission as well as an
+over-reach.
+
+## Rule 66 — a prior-period annual report is a source only when the anchor says so
+
+Keyed on Rule 51's shape. `tabular` and `prose-only`: the anchor has its own
+disclosure, so an annual report is not a source and any ladder row citing it
+is withheld with the reason stated. `not-located` AND a verified
+cross-reference: the referenced table may be read as the LABELLED PRIOR-PERIOD
+BASE, carrying that filing's period and never the anchor's, and never as a row
+in the current ladder. `not-located` undirected: two documents both existing
+is not a reference from one to the other.
+
+**THE BRANCH IS NOW PERSISTED.** `anchorNoteShape` was computed at the call
+site, passed into the extraction, and thrown away — a decision that gates rows,
+stored nowhere near the rows. It is recorded on the result with
+`noteLocatorVersion` beside it, because a shape is only meaningful as the
+output of a particular locator.
+
+`not-recorded` is not a fourth branch: it means the answer predates the field,
+so the gate has no input and DOES NOT RUN. The shape is deliberately not
+re-derived — today's locator answering about an extraction made under another
+one is a different fact wearing the same name. Verified at $0 that this costs
+nothing today: **no cached ladder row in the book cites an annual report.**
+
+## Verify as printed, display normalized — now applied to dates
+
+DaVita's rows rendered `2030-11-24` on one run and `11/24/2030` on the next,
+same tranche. Rule 61 taught `debtRowDateToken` to read the US form; row
+IDENTITY was a second, independent path to the same question and still keyed
+on the raw string, so seven instruments reported as seven MISSING plus seven
+UNEXPECTED between two runs whose rows were identical. Both now go through
+`isoFromStatedDate`, and the rendered value is canonicalised at the display
+layer while the extracted entry keeps what the filing printed.
+
+## FOUR AUDIT-SPINE INSTANCES, and they are the point of this entry
+
+Each is a measurement that returned a confident answer about something it was
+not looking at.
+
+**1. The suite count excluded the suite that checks signatures.** Every "47 of
+47 suites, 1,109 assertions" reported across Sessions 22, 23 and 24 ran with
+`golden.test.ts` excluded. Green never meant the pins held — and it was
+reported alongside three fresh signatures as though it did. When fix 1's
+narrowing broke nine assertions about those very files, the runner still said
+47 of 47. The suite now runs in the default loop, and a suite whose inputs are
+unreachable reports **NOT RUN and fails**, because "could not check" and
+"checked and fine" must never print the same way.
+
+**2. The fix-5 probe fed itself an undefined locator.** It read
+`dm?.anchorNoteLocator`, a field that does not exist, so every company resolved
+to `anchorNoteShapeOf(undefined) === "not-located"` — including DaVita and
+Tenet, whose own run logs say `found [tabular]`. Ten confident rows, all
+wrong, produced while measuring preconditions for a fix. The tell was that the
+output contradicted the ruling's own spec, which had come from reality.
+
+**3. The HCA diagnostic split on the label-cell gap.** It segmented text on
+runs of four or more spaces — precisely what separates a flattened table's
+label from its amount cell — then reported that no segment states HCA's
+amounts. It had torn each row in half and found that neither half contained
+the other. Asked without that split, all four amounts sit within 120
+characters of their own label. The first answer was the tokenizer describing
+itself.
+
+**4. The fix-4 wiring reached the wrong field.** Rule 58's repair was wired to
+`scheduleSequence` and `priorScheduleSequence`, which fixed HCA's four table
+rows and left all four of Cigna's untouched — Cigna's are `issuedTranches`,
+and Cigna is the name the extension was written FOR. The field a fix reaches
+is not the field that needed it unless someone checks.
+
+All four are Rule 63's family: ask every producer, not the likeliest one — and
+its corollary, that the arithmetic comes first. Three of the four were caught
+because a number disagreed with something already known, not because the
+measurement announced its own limits.
+
+## Open, not closed: cache.test.ts
+
+With the golden suite added, `lib/cache/cache.test.ts` reports **NOT RUN**
+under the runner on consecutive runs while passing 10/10 standalone. It reads
+the blob store, which makes it not-offline in the same way
+`noteLocation.test.ts` already is. It has NOT been excluded to restore a green
+line — excluding a suite to make a count look right is the defect this very
+entry is about. It needs a decision: move it to the live set, or make it
+genuinely offline.

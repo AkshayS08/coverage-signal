@@ -1,4 +1,4 @@
-# The rules, 1 to 63
+# The rules, 1 to 66
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -73,6 +73,9 @@ example that found it, never the thing the rule is about.
 | 61 | a comparison that cannot read its inputs must not answer | [log](build_log.md#rule-61--a-comparison-that-cannot-read-its-inputs-must-not-answer) |
 | 62 | evidence-sentence stability is part of a prompt declaration's measured surface | [log](build_log.md#rule-62--evidence-sentence-stability-is-part-of-a-prompt-declarations-measured-surface) |
 | 63 | when output disagrees with a field, ask EVERY producer, not the likeliest one | [log](build_log.md#rule-63--when-output-disagrees-with-a-field-ask-every-producer-not-the-likeliest-one) |
+| 64 | a non-facility tranche at nil is an event, not a $0 row | [log](build_log.md#rule-64--a-non-facility-tranche-at-nil-is-an-event-not-a-0-row) |
+| 65 | the golden's identity is the documents the position rests on | [log](build_log.md#rule-65--the-goldens-identity-is-the-documents-the-position-rests-on) |
+| 66 | a prior-period annual report is a source only when the anchor says so | [log](build_log.md#rule-66--a-prior-period-annual-report-is-a-source-only-when-the-anchor-says-so) |
 
 ## Refinements and later occurrences
 
