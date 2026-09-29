@@ -102,7 +102,14 @@ export async function cachedReferencedNote<T>(
   promptVersion: number,
   compute: () => Promise<T>
 ): Promise<{ data: T; hit: boolean }> {
-  const key = `answer/${cik}/referenced-note/${sha256(filingUrl)}/rn-v${promptVersion}.json`;
+  // CACHE_BUST REACHES THIS KEY TOO, and it has to. A re-taste exists to ask
+  // whether the model gives the same answer twice; busting only the anchor
+  // call would re-ask that one and serve the transcription from cache, so
+  // "the 38 entries reproduce" would be a statement about a stored file
+  // rather than about the model. Writes to its own key, so the canonical
+  // transcription is never disturbed.
+  const bust = process.env.CACHE_BUST ? `-bust${process.env.CACHE_BUST}` : "";
+  const key = `answer/${cik}/referenced-note/${sha256(filingUrl)}${bust}/rn-v${promptVersion}.json`;
   return getOrCompute(key, compute);
 }
 

@@ -1,4 +1,4 @@
-# The rules, 1 to 68
+# The rules, 1 to 69
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -78,6 +78,7 @@ example that found it, never the thing the rule is about.
 | 66 | a prior-period annual report is a source only when the anchor says so | [log](build_log.md#rule-66--a-prior-period-annual-report-is-a-source-only-when-the-anchor-says-so) |
 | 67 | one deciding function for a table cell's scale | [log](build_log.md#rule-67--one-deciding-function-for-a-table-cells-scale) |
 | 68 | a call cannot bill without reaching the ledger | [log](build_log.md#rule-68--a-call-cannot-bill-without-reaching-the-ledger) |
+| 69 | read before you write | [log](build_log.md#rule-69--read-before-you-write) |
 
 ## Refinements and later occurrences
 

@@ -6228,3 +6228,32 @@ carry coverage, and the label rolled rows render under. That part should stay;
 the tie arithmetic should be folded into `rollForward.ts`. Not done here,
 because consolidating two tie implementations at the end of a long session is
 how a third one gets created.
+
+---
+
+## Rule 69 — read before you write
+
+Before creating or replacing a file, read it if it exists.
+
+This is the oldest kind of rule here and it took the most expensive kind of
+lesson: `lib/events/rollForward.ts` was overwritten without being read. 319
+lines and 30 assertions from Session 23 were destroyed, including a
+fair-value/balance-sheet frame test — a distinction I did not know existed and
+would not have rebuilt.
+
+**It was caught only by a FALLING ASSERTION COUNT**: 1,244 → 1,236 while a
+21-assertion suite was being added. Everything else was green. The new file
+typechecked, its own suite passed, and the harness it fed produced the correct
+number. Nothing about the failure looked like a failure.
+
+The tell was in the tool output the whole time — "updated successfully" rather
+than "created successfully" — and I did not read it.
+
+TWO CONSEQUENCES WORTH KEEPING:
+
+  1. A repo-wide assertion count is not a vanity metric. It is the only signal
+     that caught this, and it caught it because it is a TOTAL: a number that
+     should never fall. Per-suite greens cannot see a suite that stopped
+     existing.
+  2. "I am adding a new module" is a belief about the repository, not a fact
+     about it, and the check costs one read.

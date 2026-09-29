@@ -2556,3 +2556,12 @@
 {"at":"2026-09-29T17:51:05.811Z","company":"Centene Corporation","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-29T17:51:07.475Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-29T17:51:09.569Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T19:00:18.486Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T19:02:02.871Z","company":"Cigna Group","totalUsd":0.222469,"totalCalls":3,"byModel":[{"model":"claude-haiku-4-5","calls":2,"inputTokens":79760,"outputTokens":10915,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.134335},{"model":"claude-sonnet-5","calls":1,"inputTokens":29163,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.088134}],"unpricedModels":[]}
+{"at":"2026-09-29T19:03:45.719Z","company":"Cigna Group","totalUsd":0.189921,"totalCalls":3,"byModel":[{"model":"claude-haiku-4-5","calls":2,"inputTokens":79760,"outputTokens":8999,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.124755},{"model":"claude-sonnet-5","calls":1,"inputTokens":21507,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.065166}],"unpricedModels":[]}
+{"at":"2026-09-29T19:05:07.844Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T19:05:16.269Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T19:05:22.944Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T19:06:31.940Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T19:06:39.863Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-29T19:06:50.451Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
