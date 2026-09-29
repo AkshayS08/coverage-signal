@@ -873,6 +873,58 @@ console.log("\n=== RULE 60 — zero balance: undrawn commitment vs discharged ob
     "[60j] and it states that absence on the row, rather than rendering a bare $0 a reader would misread as a repaid line");
 }
 
+// ============================================================================
+// SESSION 24, RULE 64 — A NON-FACILITY TRANCHE AT NIL IS AN EVENT.
+//
+// Rule 60 settled the facility half. This is the other half, ruled: a senior
+// note the filing reports at nil BESIDE A PRIOR-PERIOD BALANCE is a repayment
+// that happened, not a ladder row whose only content is that it has no
+// content. It goes to `withinPeriodRepayments` — NOT to Tier 2, which is
+// events AFTER the anchor; a tranche the anchor itself reports at nil was
+// repaid inside the anchor's own period and is already in its totals, so
+// filing it as Tier 2 would double-count it.
+//
+// The three negatives are the rule: commercial paper keeps C1, a committed
+// facility stays with Rule 60, and a nil with NO prior balance is left alone
+// because nothing states a balance to have been repaid.
+// ============================================================================
+console.log("\n=== RULE 64 — nil beside a prior balance is a repayment, not a row ===\n");
+{
+  const build = (over: { label: string; amount: string; rate?: string | null; prior?: string | null }) => {
+    const seq = [
+      row({ label: over.label, rate: over.rate ?? "5.00%", maturityDate: "2030-01-01", dateGranularity: "day", amount: over.amount }),
+      row({ label: "6.00% Senior Notes", rate: "6.00%", maturityDate: "2033-01-01", dateGranularity: "day", amount: "$ 500 million" }),
+      subtotal({ label: "Total debt", amount: "$ 500 million" }),
+    ];
+    const prior = over.prior
+      ? [row({ label: over.label, rate: over.rate ?? "5.00%", maturityDate: "2030-01-01", dateGranularity: "day", amount: over.prior })]
+      : [];
+    return assemblePosition(companyWith([baseTriggerResult({ triggerId: "debt-maturity", scheduleSequence: seq, priorScheduleSequence: prior })]));
+  };
+
+  const repaidNote = build({ label: "5.00% Senior Notes", amount: "$ 0 million", prior: "$ 501 million" });
+  assert(!repaidNote.rows.some((r) => r.instrument.includes("5.00%")),
+    `[64a] a senior note at nil beside a prior balance LEAVES THE LADDER — a $0 debt row tells a reader nothing (rows: ${repaidNote.rows.map((r) => r.instrument).join(", ")})`);
+  assert(repaidNote.withinPeriodRepayments.length === 1 && repaidNote.withinPeriodRepayments[0].priorAmount === "$ 501 million",
+    `[64b] and arrives as a repayment carrying the balance that was repaid (got ${repaidNote.withinPeriodRepayments.length}, prior ${repaidNote.withinPeriodRepayments[0]?.priorAmount})`);
+  assert(repaidNote.tier2.events.length === 0,
+    "[64c] and NOT as Tier 2 — Tier 2 is events after the anchor, and this one is already inside the anchor's own totals. Filing it there would double-count it");
+  assert(/already reflected in its totals/.test(repaidNote.withinPeriodRepayments[0]?.note ?? ""),
+    "[64d] NEVER SILENT: it says why it is off the ladder, so a reader sees a repayment rather than a tranche that vanished");
+
+  const noPrior = build({ label: "5.00% Senior Notes", amount: "$ 0 million", prior: null });
+  assert(noPrior.rows.some((r) => r.instrument.includes("5.00%")) && noPrior.withinPeriodRepayments.length === 0,
+    "[64e] NEGATIVE: a nil with NO prior balance stays put — nothing states a balance to have been repaid, and inventing an event from one empty cell asserts a transaction the filing never makes");
+
+  const cp = build({ label: "Commercial paper program", amount: "$ 0 million", rate: null, prior: "$ 3,890 million" });
+  assert(cp.withinPeriodRepayments.length === 0,
+    `[64f] NEGATIVE: COMMERCIAL PAPER KEEPS C1. A CP programme at nil has issued nothing — there is no lender commitment and no repayment event, which is the same reason it was excluded from Rule 60 (got ${cp.withinPeriodRepayments.length})`);
+
+  const revolver = build({ label: "Revolving credit facility", amount: "$ 0 million", rate: null, prior: "$ 200 million" });
+  assert(revolver.withinPeriodRepayments.length === 0,
+    "[64g] NEGATIVE: a committed facility at nil is Rule 60's — undrawn capacity, not a repayment. The two rules partition the zeros between them and must not both fire");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 
 if (failed > 0) {

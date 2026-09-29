@@ -176,6 +176,23 @@ export interface LadderRow {
   amountProvenanceNote?: string;
 }
 
+/**
+ * RULE 64 — a tranche the anchor reports at nil against a prior-period
+ * balance. Repaid INSIDE the anchor's period, already in its totals, and so
+ * neither a ladder row nor a Tier 2 event. Rendered beneath the ladder as what
+ * it is: a repayment that happened.
+ */
+export interface WithinPeriodRepayment {
+  instrument: string;
+  /** What the prior period stated — the balance that was repaid. */
+  priorAmount: string;
+  /** What the anchor states now, verbatim: "$ —", "$ 0 million". */
+  statedAs: string;
+  sourceLine: string;
+  citedUrl: string;
+  note: string;
+}
+
 export interface CompanyPosition {
   /** Sorted by maturity date. Built from the base filing's scheduleSequence "row" entries, adjusted for redemptions/new issuance/unconfirmed drops. */
   rows: LadderRow[];
@@ -187,6 +204,12 @@ export interface CompanyPosition {
    * ladder, as what they are.
    */
   issuancesInsideAggregate: LadderRow[];
+  /**
+   * RULE 64 — tranches the anchor reports at nil against a prior-period
+   * balance. Off the ladder, out of Tier 2, and NEVER dropped: they render
+   * beneath the ladder as repayments the anchor's own period already contains.
+   */
+  withinPeriodRepayments: WithinPeriodRepayment[];
   /**
    * SESSION 21, STAGE 3 — events since the anchor, kept OUT of `rows`.
    *
@@ -347,14 +370,53 @@ export function rowIdentityKey(row: { rate: string | null; maturityDate: string 
   // match (Rule 19), and a movement reported as "this row's amount changed"
   // is the whole point of pinning it.
   const rate = row.rate ?? "no-rate";
-  const maturity = row.maturityDate ?? "no-maturity-stated";
+  // Normalised, for the reason `normalizedMaturity` records: the model spells
+  // the same date two ways and identity must not depend on which.
+  const maturity = normalizedMaturity(row.maturityDate);
   const amount = row.amount ? parseMoneyAmount(row.amount) : null;
   return `${rate}::${maturity}::${amount === null ? (row.amount ?? "no-amount") : String(amount)}`;
 }
 
 /** The key without size — for the second pass only; see compareToGolden. */
 export function rowIdentityKeyWithoutSize(row: { rate: string | null; maturityDate: string | null }): string {
-  return `${row.rate ?? "no-rate"}::${row.maturityDate ?? "no-maturity-stated"}`;
+  return `${row.rate ?? "no-rate"}::${normalizedMaturity(row.maturityDate)}`;
+}
+
+/**
+ * ONE SPELLING OF A DATE FOR IDENTITY, wherever identity is asked.
+ *
+ * Rule 61 taught `debtRowDateToken` to read "11/24/2030". It did not teach
+ * THIS, and row identity is a second, independent path to the same question —
+ * so DaVita's ladder still reported seven instruments as seven MISSING plus
+ * seven UNEXPECTED between two runs whose rows were the same rows, because the
+ * keys were built from raw strings the model had spelled two ways.
+ *
+ * Rule 63 against my own fix: I repaired the producer I was looking at rather
+ * than every producer of the answer. Both now go through `isoFromStatedDate`.
+ */
+/**
+ * VERIFY AS PRINTED, DISPLAY NORMALIZED — applied to dates, as the units
+ * ruling applied it to scale words.
+ *
+ * The schema asks for an ISO date. On some runs the model copies the table's
+ * own "11/24/2030" instead, which is faithful to the cell and is not a format
+ * this tool renders. Identity stopped depending on the spelling once
+ * `normalizedMaturity` existed; the RENDERED VALUE still did, so one run's
+ * page showed 2030-11-24 and the next showed 11/24/2030 for the same tranche.
+ *
+ * The extracted entry keeps what the filing printed — verification still runs
+ * against that. Only the row a reader sees is canonicalised, and only where
+ * the form is unambiguous; anything else passes through untouched rather than
+ * becoming a plausible wrong date.
+ */
+function displayDate(raw: string | null | undefined): string | null {
+  if (!raw) return raw ?? null;
+  return isoFromStatedDate(raw) ?? raw;
+}
+
+function normalizedMaturity(raw: string | null | undefined): string {
+  if (!raw) return "no-maturity-stated";
+  return isoFromStatedDate(raw) ?? raw;
 }
 
 /**
@@ -490,11 +552,11 @@ function ladderRowFromSequenceEntry(
     classification: classifyInstrument({
       headings: [entry.section, entry.seniority],
       instrumentName: instrument,
-      maturityDate: entry.maturityDate,
+      maturityDate: displayDate(entry.maturityDate),
       noteStatement,
     }),
     amount: entry.amount,
-    maturityDate: entry.maturityDate,
+    maturityDate: displayDate(entry.maturityDate),
     dateGranularity: entry.dateGranularity,
     sourceLine: entry.sourceLine,
     citedUrl: entry.citedUrl,
@@ -977,7 +1039,7 @@ function ladderRowFromProseInstrument(
     classification: classifyInstrument({
       headings: [],
       instrumentName: instrument,
-      maturityDate: p.maturityDate,
+      maturityDate: displayDate(p.maturityDate),
       noteStatement,
     }),
     amount,
@@ -991,7 +1053,7 @@ function ladderRowFromProseInstrument(
     // post-pass above may still supply one from the facility's own maturity
     // sentence, which IS sourced; if it cannot, the row says the maturity is
     // not stated rather than showing a date nothing on the page supports.
-    maturityDate: maturityIsSourced ? p.maturityDate : null,
+    maturityDate: maturityIsSourced ? displayDate(p.maturityDate) : null,
     dateGranularity: maturityIsSourced ? p.dateGranularity : null,
     sourceLine: p.sourceLine,
     citedUrl: p.citedUrl ?? "",
@@ -1736,6 +1798,54 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     };
   });
 
+  // RULE 64 — A NON-FACILITY TRANCHE AT NIL IS AN EVENT, NOT A $0 LADDER ROW.
+  //
+  // Rule 60 settled the facility half: a revolver at zero is undrawn capacity.
+  // Its other half was held for a ruling and is now ruled. A senior note the
+  // filing reports at nil, beside a prior-period column that shows a balance,
+  // is not a line item on a debt ladder — it is a REPAYMENT THAT HAPPENED, and
+  // rendering it as "$0, repaid" puts a row on the ladder whose only content
+  // is that it has no content.
+  //
+  // WHERE IT GOES IS NOT TIER 2, and the distinction matters. Tier 2 is events
+  // AFTER the anchor, kept out of `rows` precisely so the anchor position
+  // stays true at one date. A tranche the ANCHOR ITSELF reports at nil against
+  // a prior balance was repaid INSIDE the anchor's own period, already
+  // reflected in its totals. Filing it under Tier 2 would double-count it and
+  // corrupt the one field whose meaning depends on being post-anchor.
+  //
+  // COMMERCIAL PAPER KEEPS C1, per the same ruling and for the same reason it
+  // was excluded from Rule 60: a CP programme at nil has issued nothing. There
+  // is no repayment event to report and no commitment to show, so it stays a
+  // row and says repaid.
+  //
+  // A NIL WITH NO PRIOR BALANCE IS LEFT ALONE. Without a prior figure there is
+  // nothing to say was repaid, and inventing an event from a single empty cell
+  // would be asserting a transaction the filing never states.
+  const withinPeriodRepayments: WithinPeriodRepayment[] = [];
+  rows = rows.filter((r) => {
+    if (r.status !== "repaid") return true;
+    if (r.classification.instrumentType === "commercial-paper") return true; // C1 stands
+    if (isCommittedFacility(r.classification.instrumentType)) return true; // Rule 60 already handled it
+    const priorEntry = normalizeScheduleSequence(debtMaturity?.priorScheduleSequence)
+      .filter((e) => e.kind === "row")
+      .find((e) => rowsRepresentSameTranche(r, e as unknown as DebtRowLike));
+    const priorAmount = priorEntry?.amount ?? null;
+    if (!priorAmount || parseMoneyAmount(priorAmount) === 0) return true; // nothing states a balance to have been repaid
+    withinPeriodRepayments.push({
+      instrument: r.instrument,
+      priorAmount,
+      statedAs: r.amount,
+      sourceLine: r.sourceLine,
+      citedUrl: r.citedUrl,
+      note:
+        `the anchor reports this tranche at ${r.amount.trim()} against ${priorAmount.trim()} in the prior period. ` +
+        `It was repaid within the anchor's own period and is already reflected in its totals, so it is reported as a ` +
+        `repayment rather than carried on the ladder as a line with no balance.`,
+    });
+    return false;
+  });
+
   // D3 — a maturity date that has already passed means MATURED, not live.
   // Nothing compared a row's date to today before this, so a ladder from an
   // older base filing carried tranches that had since come due and rendered
@@ -1880,6 +1990,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   return {
     rows,
     tier2,
+    withinPeriodRepayments,
     statedIntentions: intentions,
     rowsOutsideSubtotal: rowsOutsideSubtotal(debtMaturity?.scheduleSequence),
     issuancesInsideAggregate,
