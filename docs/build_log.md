@@ -5833,3 +5833,42 @@ the blob store, which makes it not-offline in the same way
 line — excluding a suite to make a count look right is the defect this very
 entry is about. It needs a decision: move it to the live set, or make it
 genuinely offline.
+
+---
+
+## cache.test.ts: the guard worked, and my reading of it did not
+
+`cache.test.ts` reported NOT RUN under the runner on two consecutive runs and
+passed 10/10 standalone. I called that reproducible. It was not: it passes
+under the runner now, 49 of 49 suites, 1,216 assertions.
+
+The suite genuinely touches the blob store — it round-trips a write and a read
+when the token is set, which is part of what it tests. When the store is
+unreachable `readCache` throws, the suite dies before printing its summary, and
+the new guard classifies it as NOT RUN and fails the run. That is exactly the
+intended behaviour, and the outage simply lasted longer than one run. The same
+window killed `s22sign` and `s24anchor` mid-command tonight.
+
+So: not moved to the live set, and not excluded. Its placement was right, the
+guard was right, and the "reproducible" reading was mine. What IS true is that
+any future outage will make it NOT RUN — loudly now, instead of silently.
+
+## A FIFTH AUDIT-SPINE INSTANCE: the exclusion reason was never true
+
+`golden.test.ts` was excluded from the routine run with the recorded reason
+"replays signed goldens from the blob cache". **It makes zero network calls.**
+Its only imports are `node:fs`, `node:path`, and three pure modules; it reads
+the signed files off disk and re-derives from the CompanyResult each one
+carries. That is the whole design — the header says so: "offline and needs no
+network and no model".
+
+So the suite that checks the signatures sat outside the audit spine for three
+sessions on a justification that was false, and the falseness was visible in
+six lines of imports. Nobody read them, including me, until the enumeration
+this fix required.
+
+This is the same shape as the other four, with the measurement one level
+further back: the other four were checks whose inputs made their answers
+predetermined. This was a check that was never run at all, excused by a
+sentence nobody checked. **An exclusion list is a set of claims, and a claim in
+it deserves the same scepticism as a result.**
