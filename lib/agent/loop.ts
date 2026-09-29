@@ -40,13 +40,25 @@ import { extractFactTokens, factTokensMatch, type FactToken } from "./factTokens
 import { textOutsideInstrumentLabel, splitIssueSizeFromName } from "./issueSize";
 import { assertBlobConfigured } from "../fetch/cache";
 import { corpusFingerprint, cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
-import { LEAD_CHARS, buildExtractionText, assertCompanyHasLocatableDebtNote, type DebtNoteFilingStatus } from "../fetch/noteLocation";
+import { LEAD_CHARS, buildExtractionText, assertCompanyHasLocatableDebtNote, type DebtNoteFilingStatus, NOTE_LOCATOR_VERSION } from "../fetch/noteLocation";
 import { fetchXbrlDebtTotal, fetchXbrlMaturityBuckets, type XbrlDebtTotal, type XbrlMaturityBuckets } from "../fetch/xbrlDebt";
 import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "../fetch/scheduleCompleteness";
 import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isSelfDescribingAmount, scaleWordFromDeclaration } from "./moneyScale";
 import { detectDollarScaleAt, canonicalScaleWord } from "./scaleNormalize";
 import { createTextLocator } from "./verifyQuote";
+// A LAYERING INVERSION, STATED RATHER THAN HIDDEN. `amountSupportOf` answers
+// "does this line state this amount", and Rule 58's extension needs that
+// question at extraction time. There is NO runtime cycle — position.ts imports
+// from "../agent" with `import type`, and its runtime dependencies are agent
+// LEAF modules (moneyScale, statedZero, verifyFacility, factTokens), none of
+// which import this file; that was checked rather than assumed. But the
+// function's own dependencies all live in the agent layer, so its home should
+// be here and position.ts should re-export it, the way amountKey now does.
+// Deferred deliberately: it is a move across every caller, and doing it at the
+// end of a long session is the larger risk. Logged as owed.
+import { amountSupportOf } from "../events/position";
 import { corroborateRedemptionStatus } from "./redemptionStatus";
+import { annualReportGate, withholdAnnualReportRows } from "./annualReportSource";
 import { beginCompanyCostScope, currentCompanySpend, formatCompanyCostLine, persistCompanySpend } from "./costMeter";
 
 /** Session 18 (post-v11): rewrites each entry's `amount` with its own table's declared unit where the amount states none — see moneyScale.ts's applyTableUnitToAmount. Generic over every money-bearing extracted array (sequence entries, balance-sheet captions) since all of them share the `amount` field and hit the identical bug. */
@@ -239,6 +251,188 @@ function deriveScaleFromFilingDeclaration<T extends { amount: string; sourceLine
 }
 
 /**
+ * RULE 58, EXTENDED — THE EVIDENCE IS THE THING THAT STATES THE AMOUNT.
+ *
+ * Rule 58 held facility rows to it. Schedule rows and 8-K tranches were only
+ * told about it: `noteUnsupportedAmounts` stated the problem on the page and
+ * changed nothing, which is honest and is not a fix. Eight rows in the book
+ * render a figure beside words that do not contain it — Cigna's four 8-K
+ * tranches cite an interest-rate sentence giving the rate and the maturity and
+ * never the principal, and HCA's four table rows cite a label plus a rate
+ * parenthetical with no figure at all.
+ *
+ * MEASURED FIRST, AND THE MEASUREMENT CORRECTED ITSELF. A first pass reported
+ * HCA as unrecoverable — no segment of its 10-Q states those amounts. That was
+ * the diagnostic's own tokenizer: it split on runs of four or more spaces,
+ * which is exactly what separates a flattened table's label from its amount
+ * cell, so it tore each row in half and reported that neither half contained
+ * the other. Asked without that split, all four amounts sit within 120
+ * characters of their own label. All eight rows are recoverable.
+ *
+ * TWO REPAIRS, IN THIS ORDER, because they are not interchangeable:
+ *
+ *   1. EXTEND THE ROW. For a table row the evidence is the full row INCLUDING
+ *      the amount cell, so the captured line is extended forward to the end of
+ *      the amount it is missing. This preserves the row's own words and adds
+ *      only what was cut off; it is the right answer whenever it works, and it
+ *      is tried first for that reason.
+ *
+ *   2. RE-SELECT BY AMOUNT CONTAINMENT. Where extension finds nothing — Cigna,
+ *      whose principal is stated in a different sentence of the same 8-K — the
+ *      document is searched for a sentence that states the amount, preferring
+ *      one that also names the instrument. A sentence about another tranche
+ *      would be worse than the rate sentence it replaced.
+ *
+ * WHERE NEITHER WORKS, NOTHING IS INVENTED. The row keeps its line and the
+ * never-silent note keeps saying so. A search that must succeed is a search
+ * that will start lying.
+ */
+function reselectAmountEvidence<T extends { amount: string; sourceLine: string; citedUrl?: string | null; instrument?: string | null; label?: string | null }>(
+  entries: T[],
+  textByUrl: Map<string, string>,
+  fallbackUrl: string | null,
+  log: (line: string) => void,
+  label: string
+): T[] {
+  if (entries.length === 0) return entries;
+  const locators = new Map<string, ReturnType<typeof createTextLocator>>();
+  let extended = 0, reselected = 0;
+  const unresolved: string[] = [];
+
+  const out = entries.map((e) => {
+    if (!e.amount || !e.sourceLine) return e;
+    if (amountSupportOf(e.amount, e.sourceLine).kind !== "unsupported") return e;
+    const url = e.citedUrl ?? fallbackUrl;
+    const text = url ? textByUrl.get(url) : undefined;
+    const name = String(e.instrument ?? e.label ?? "(unnamed row)");
+    if (!text) { unresolved.push(`${name} (no readable cited document)`); return e; }
+    if (!locators.has(url!)) locators.set(url!, createTextLocator(text));
+    const at = locators.get(url!)!.find(e.sourceLine);
+
+    // ── 1. EXTEND THROUGH THE AMOUNT CELL ──────────────────────────────
+    if (at !== null) {
+      const after = text.slice(at + e.sourceLine.length, at + e.sourceLine.length + 200);
+      // The first money-ish token after the row's own words. Bounded to 200
+      // characters so this reaches the next CELL and never the next paragraph.
+      const m = after.match(/[\d][\d,]*(?:\.\d+)?/);
+      if (m && m.index !== undefined) {
+        const candidate = text.slice(at, at + e.sourceLine.length + m.index + m[0].length).replace(/\s+/g, " ").trim();
+        if (amountSupportOf(e.amount, candidate).kind !== "unsupported") {
+          extended++;
+          return { ...e, sourceLine: candidate };
+        }
+      }
+    }
+
+    // ── 2. RE-SELECT A SENTENCE THAT STATES IT ─────────────────────────
+    const words = name.toLowerCase().match(/[a-z0-9.%]+/g)?.filter((w) => w.length > 2) ?? [];
+    const best = text
+      .split(/(?<=[.;])\s+|\n+/)
+      .map((s) => s.replace(/\s+/g, " ").trim())
+      .filter((s) => s.length > 12 && s.length < 700 && amountSupportOf(e.amount, s).kind !== "unsupported")
+      .map((s) => ({ s, hits: words.filter((w) => s.toLowerCase().includes(w)).length }))
+      .sort((a, b) => b.hits - a.hits || a.s.length - b.s.length)[0];
+    if (best) {
+      reselected++;
+      return { ...e, sourceLine: best.s };
+    }
+    unresolved.push(name);
+    return e;
+  });
+
+  if (extended > 0) log(`  EVIDENCE EXTENDED THROUGH THE AMOUNT CELL for ${label} — ${extended} row(s) whose captured line stopped before the figure it renders (Rule 58)`);
+  if (reselected > 0) log(`  EVIDENCE RE-SELECTED BY AMOUNT for ${label} — ${reselected} row(s) now cite a sentence that states their own amount (Rule 58)`);
+  for (const u of unresolved) log(`  ⚠ EVIDENCE STILL DOES NOT STATE THE AMOUNT for ${label} — ${u}. No line in the cited document states this figure; the row keeps its own sentence and says so rather than being given a plausible substitute.`);
+  return out;
+}
+
+/**
+ * SESSION 24 — A FACILITY FIGURE'S UNIT COMES FROM THE CAPTION, IN CODE.
+ *
+ * The function above is applied to `scheduleSequence`,
+ * `priorScheduleSequence`, `balanceSheetDebtCaptions` and `cashAmount`. It was
+ * never applied to `facilities` — so a facility figure's unit depended
+ * entirely on the model having appended one, which it does inconsistently.
+ *
+ * DAVITA PAID FOR IT AT ONE VERSION. Five figures alternate between
+ * "$ 188,482 thousand" and "$ 188,482" across three runs of the same prompt
+ * against the same documents. The bare form is `determinable: false`, so it is
+ * DROPPED — the honest failure rather than a wrong number, but it means a
+ * letter-of-credit balance and a revolver's entire size, drawn and available
+ * set vanish from the page on a coin flip.
+ *
+ * THE FILING ALREADY SAYS IT: "dollars and shares in thousands", locatable
+ * above every one of those sentences. So the unit is taken from the
+ * declaration, in code, WHETHER OR NOT the model appended one — and where the
+ * model appended a DIFFERENT one, the caption wins and the correction is
+ * logged, because a table cell's scale is the table's to declare.
+ *
+ * AND A SENTENCE THAT PRINTS ITS OWN UNIT IS LEFT ALONE. Tenet's revolver
+ * reads "$1.900 billion" inside a sentence that says so; there is no caption
+ * overriding prose and no cell to scale. That is the whole distinction — a
+ * cell under a caption versus a sentence stating its own magnitude — and a
+ * changed printed form still moves the value and still blocks a signature.
+ */
+function deriveFacilityScale(
+  facilities: VerifiedFacility[] | undefined,
+  textByUrl: Map<string, string>,
+  log: (line: string) => void,
+  label: string
+): VerifiedFacility[] | undefined {
+  if (!facilities || facilities.length === 0) return facilities;
+  // `maturity` is deliberately absent: it is a date, not money.
+  const MONEY = ["facilitySize", "drawn", "lettersOfCredit", "available"] as const;
+  const locators = new Map<string, ReturnType<typeof createTextLocator>>();
+  let applied = 0;
+  const corrections: string[] = [];
+
+  const out = facilities.map((f) => {
+    const next: VerifiedFacility = { ...f };
+    for (const k of MONEY) {
+      const fig = next[k];
+      if (!fig?.value || !fig.sourceLine) continue;
+      // THE SENTENCE WINS WHEN IT PRINTS A SCALE ITSELF.
+      if (scaleWordFromDeclaration(fig.sourceLine)) continue;
+      // EACH FIGURE'S OWN DOCUMENT, not the anchor's. `figureSources` records
+      // which filing stated each field precisely because a facility's figures
+      // routinely come from different ones — Encompass's size from an 8-K, its
+      // availability from the 10-Q. Resolving a cell's scale against the wrong
+      // document's caption would be the layer mistake this file is full of
+      // comments about.
+      const url = f.figureSources?.[k] ?? f.citedUrl;
+      const filingText = url ? textByUrl.get(url) : undefined;
+      if (!filingText) continue;
+      if (!locators.has(url)) locators.set(url, createTextLocator(filingText));
+      const at = locators.get(url)!.find(fig.sourceLine);
+      if (at === null) continue;
+      const scale = detectDollarScaleAt(filingText, at);
+      if (!scale) continue;
+      const word = canonicalScaleWord(scale.scaleWord);
+      const bare = fig.value.replace(/\b(thousands?|millions?|billions?|trillions?)\b/gi, "").replace(/\s+/g, " ").trim();
+      const candidate = `${bare} ${word}`;
+      if (candidate === fig.value) continue;
+      if (!checkMoneyScale(candidate).determinable) continue;
+      const modelSaid = scaleWordFromDeclaration(fig.value);
+      if (modelSaid && modelSaid !== word) {
+        corrections.push(`${f.name}.${k}: model wrote "${fig.value}", the table declares ${word}`);
+      } else {
+        applied++;
+      }
+      next[k] = { ...fig, value: candidate };
+    }
+    return next;
+  });
+
+  if (applied > 0) {
+    log(`  FACILITY SCALE DERIVED FROM FILING for ${label} — ${applied} figure(s) whose cell carries no unit resolved from the filing's own governing declaration (not the model)`);
+  }
+  for (const c of corrections) {
+    log(`  ⚠ FACILITY SCALE CORRECTED for ${label} — ${c}. A table cell's scale is the table's to declare; the caption wins, and the change is stated rather than applied quietly.`);
+  }
+  return out;
+}
+
+/**
  * Session 18 (post-v15) — cashAmount is the FOURTH field of the same class
  * as scheduleSequence / priorScheduleSequence / balanceSheetDebtCaptions,
  * and was the only one still left on bare checkMoneyScale.
@@ -388,6 +582,28 @@ export interface TriggerResult {
    * Null when no second filing with a locatable schedule exists.
    */
   debtSchedulePriorFiling: DebtScheduleFilingRef | null;
+  /**
+   * SESSION 24, FIX 5 — THE BRANCH THAT GATED THESE ROWS, STORED WITH THEM.
+   *
+   * `anchorNoteShapeOf` decides which schema the model is offered and, from
+   * now on, whether a prior-period annual report may be read at all. It was
+   * computed at the call site, passed into the extraction, and thrown away —
+   * so a cached answer could not say which branch produced it, and a later
+   * reader had no way to check the gate that shaped the rows short of
+   * re-deriving it and hoping the locator had not moved.
+   *
+   * A DECISION THAT GATES ROWS IS STORED WITH THE ROWS. `"not-recorded"` is
+   * its own value, carried by every answer cached before this existed, and it
+   * is deliberately NOT re-derived: re-running today's locator over an old
+   * answer produces today's shape, which is a different fact wearing the same
+   * name.
+   *
+   * `noteLocatorVersion` travels with it because the shape is only meaningful
+   * as the output of a particular locator. A shape recorded under one version
+   * and read under another is the Rule 30 situation one field down.
+   */
+  anchorNoteShape?: "tabular" | "prose-only" | "not-located" | "not-recorded";
+  noteLocatorVersion?: number | null;
   /**
    * Session 18 (post-v6): raw row counts before/after verification, summed
    * across scheduleSequence + priorScheduleSequence + issuedTranches +
@@ -696,6 +912,12 @@ export async function runAgentLoop(
   const fingerprint = corpusFingerprint(filingsResult.filings) + (cacheBust ? `-bust${cacheBust}` : "");
   if (cacheBust) log(`  ⚠ CACHE_BUST=${cacheBust} — answer cache deliberately bypassed; this run BILLS. Measurement only.`);
   log(`checking all 15 triggers...`);
+  // FIX 5 — COMPUTED ONCE, PASSED IN, AND RECORDED ON THE RESULT. It used to
+  // be computed inline in the argument list and discarded, so the branch that
+  // decided which schema the model saw could not be read back off the answer
+  // it produced.
+  const anchorNoteShape = anchorNoteShapeOf(anchorCandidates[0]);
+
   const { data: baseVerdicts, hit: baseHit } = await cachedBaseClassification(
     filingsResult.cik,
     fingerprint,
@@ -712,7 +934,7 @@ export async function runAgentLoop(
         // located-but-prose note and a note that was never located are
         // different facts, and `anchorNoteShape` is the one field that
         // decides, so neither can fall through to the other's branch.
-        anchorNoteShape: anchorNoteShapeOf(anchorCandidates[0]),
+        anchorNoteShape,
       })
   );
   log(`  answer cache ${baseHit ? "HIT" : "MISS"} (base classification, fingerprint ${fingerprint.slice(0, 8)})`);
@@ -828,10 +1050,20 @@ export async function runAgentLoop(
       balanceSheetDebtCaptions: deriveScaleFromFilingDeclaration(columnBound.balanceSheetDebtCaptions, baseText, log, `${label} (balance sheet)`),
     };
 
+    // RULE 58, EXTENDED — run AFTER the scale is resolved, because the test is
+    // "does this line state THIS amount" and the amount is not final until its
+    // unit is. Running it first would judge "44,200" against a line holding
+    // "44,200 million" and repair a row that was never broken.
+    const evidenced = {
+      scheduleSequence: reselectAmountEvidence(filingScaled.scheduleSequence, textByUrl, debtScheduleGuidance.base?.url ?? null, log, label),
+      priorScheduleSequence: reselectAmountEvidence(filingScaled.priorScheduleSequence, textByUrl, debtScheduleGuidance.prior?.url ?? null, log, `${label} (prior period)`),
+      balanceSheetDebtCaptions: filingScaled.balanceSheetDebtCaptions,
+    };
+
     const unitScoped = {
-      scheduleSequence: applyTableUnit(filingScaled.scheduleSequence, v.scheduleTableUnit),
-      priorScheduleSequence: applyTableUnit(filingScaled.priorScheduleSequence, v.priorScheduleTableUnit),
-      balanceSheetDebtCaptions: applyTableUnit(filingScaled.balanceSheetDebtCaptions, v.balanceSheetTableUnit),
+      scheduleSequence: applyTableUnit(evidenced.scheduleSequence, v.scheduleTableUnit),
+      priorScheduleSequence: applyTableUnit(evidenced.priorScheduleSequence, v.priorScheduleTableUnit),
+      balanceSheetDebtCaptions: applyTableUnit(evidenced.balanceSheetDebtCaptions, v.balanceSheetTableUnit),
     };
     for (const [field, declared] of [
       ["scheduleSequence", v.scheduleTableUnit],
@@ -884,7 +1116,28 @@ export async function runAgentLoop(
     // table are unaffected — those cite the anchor, which is why the prior
     // schedule legitimately does too on a two-column note.
     const anchorUrl = debtScheduleGuidance.base?.url ?? null;
-    const { kept: scheduleSequence, dropped: offAnchor } = rowsOnAnchor(verifiedBaseSequence, anchorUrl);
+    const { kept: onAnchorSequence, dropped: offAnchor } = rowsOnAnchor(verifiedBaseSequence, anchorUrl);
+
+    // FIX 5 — THE ANNUAL-REPORT GATE, KEYED ON THE RECORDED SHAPE.
+    //
+    // `rowsOnAnchor` above already drops anything not cited to the anchor, so
+    // on today's book this removes nothing — and that is the point rather than
+    // a reason to skip it. The two guards answer different questions: that one
+    // asks "is this the anchor's row", this one asks "may this DOCUMENT be a
+    // source for a ladder row at all", and only the second has an exception.
+    // Written so the exception has exactly one home: a directed, not-located
+    // anchor may read the annual report as the labelled prior-period base
+    // (Rule 51's own field), and never as a row here.
+    const annualGate = annualReportGate(anchorNoteShape, !!v.noteCrossReference);
+    const isAnnualReportUrl = (url: string) => /10-K/i.test(citationLookup.get(url)?.form ?? "");
+    const annualSplit = withholdAnnualReportRows(onAnchorSequence, isAnnualReportUrl, annualGate);
+    const scheduleSequence = annualSplit.kept;
+    for (const w of annualSplit.withheld) {
+      log(`  ⚠ ANNUAL-REPORT ROW WITHHELD for ${label} — "${String((w.entry as { label?: string | null }).label ?? "(unnamed row)")}" is cited to a prior-period annual report. ${w.reason}`);
+    }
+    if (!annualGate.enforced) {
+      log(`  ANNUAL-REPORT GATE NOT ENFORCED for ${label} — ${annualGate.reason}`);
+    }
     // THE GUARD THAT ENFORCES IT. Without this the drop is silent and the
     // ladder just looks thin; the mismatch is a READ FAILURE and says so, so
     // an empty ladder states why it is empty rather than implying there is
@@ -896,7 +1149,20 @@ export async function runAgentLoop(
         `  ⚠ OFF-ANCHOR ROWS DROPPED for ${label} — ${offAnchor.length} schedule row(s) verified against ${from}, but this company's anchor filing is ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date} (${anchorUrl}). A row from another filing is a balance as of THAT filing's date; rendering it as the current ladder states a position the anchor does not report.`
       );
     }
-    const issuedTranches = verifyIssuedTranches(v.issuedTranches, v.citedUrls ?? [], textByUrl, log, label);
+    // RULE 58, EXTENDED — issuedTranches too, and they are the reason it was
+    // extended. Cigna's four 8-K tranches cite the interest-rate sentence
+    // ("will bear interest at a rate of 4.500% per annum ... until the maturity
+    // date of September 15, 2030") while the same 8-K states each principal one
+    // sentence earlier. The first wiring of this repair covered the schedule
+    // fields only and left all four untouched — the field a fix reaches is not
+    // the field that needed it unless someone checks (Rule 63).
+    const issuedTranches = reselectAmountEvidence(
+      verifyIssuedTranches(v.issuedTranches, v.citedUrls ?? [], textByUrl, log, label),
+      textByUrl,
+      null,
+      log,
+      `${label} (issued tranches)`
+    );
     // Session 19: the new arrays go through the SAME walk. A field in the
     // schema and the prompt but not here is the drift item 1a killed on the
     // guard side, one layer over.
@@ -938,7 +1204,14 @@ export async function runAgentLoop(
       // in its own anchor 10-Q, deleting every facility it has.
       textByUrl,
     });
-    const facilities = facilityCheck.verified;
+    // SESSION 24 — THE CAPTION'S SCALE, APPLIED AFTER VERIFICATION.
+    //
+    // Order matters and this is the same order schedule entries use: verify
+    // the model's own value against the sentence FIRST, then resolve the
+    // scale. Doing it the other way round would hand the verifier a figure
+    // carrying a unit its own table cell does not print, and the guard that
+    // exists to catch fabricated composites would reject a correct number.
+    const facilities = deriveFacilityScale(facilityCheck.verified, textByUrl, log, label) ?? facilityCheck.verified;
     const facilityRejections = facilityCheck.rejections;
     for (const r of facilityRejections) {
       log(`  ⚠ FACILITY FIGURE REJECTED for ${label} — ${r.facility}.${r.field} = ${r.value}: ${r.reason}. Sentence given: "${r.sourceLine.replace(/\s+/g, " ").slice(0, 120)}"`);
@@ -1115,6 +1388,8 @@ export async function runAgentLoop(
       { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, facilities, facilityRejections, seniorityStatement },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
+      anchorNoteShape,
+      NOTE_LOCATOR_VERSION,
       { rowsExtracted, rowsVerified, baseRowsExtracted: v.scheduleSequence.length },
       trigger.id === "debt-maturity" && baseColumnOutcome.total > 0 && baseColumnOutcome.droppedForPeriod === baseColumnOutcome.total,
       scheduleCompleteness
@@ -2082,6 +2357,9 @@ function finalize(
   },
   debtScheduleBaseFiling: DebtScheduleFilingRef | null,
   debtSchedulePriorFiling: DebtScheduleFilingRef | null,
+  /** FIX 5 — the branch that gated these rows, threaded so it can be stored with them. */
+  recordedAnchorShape: "tabular" | "prose-only" | "not-located" | "not-recorded",
+  recordedLocatorVersion: number | null,
   rowAccounting: { rowsExtracted: number; rowsVerified: number; baseRowsExtracted: number },
   columnReadFailure: boolean,
   scheduleCompleteness: ScheduleCompletenessResult | null
@@ -2126,6 +2404,8 @@ function finalize(
     balanceSheetDebtCaptions: debtFields.balanceSheetDebtCaptions,
     debtScheduleSourceFiling: trigger.id === "debt-maturity" ? debtScheduleBaseFiling : null,
     debtSchedulePriorFiling: trigger.id === "debt-maturity" ? debtSchedulePriorFiling : null,
+    anchorNoteShape: trigger.id === "debt-maturity" ? recordedAnchorShape : "not-recorded",
+    noteLocatorVersion: trigger.id === "debt-maturity" ? recordedLocatorVersion : null,
     rowsExtracted: rowAccounting.rowsExtracted,
     rowsVerified: rowAccounting.rowsVerified,
     baseRowsExtracted: rowAccounting.baseRowsExtracted,

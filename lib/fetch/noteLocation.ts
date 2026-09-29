@@ -19,6 +19,23 @@ import { locateLiquiditySection, LIQUIDITY_OPEN, LIQUIDITY_CLOSE } from "./liqui
  * smaller half; see LEAD_CHARS for the part that was actually broken.
  */
 /**
+ * SESSION 24, FIX 5 — THE LOCATOR'S OWN VERSION.
+ *
+ * `anchorNoteShapeOf`'s answer is the output of THIS module, and a shape is
+ * only meaningful as the output of a particular locator. A shape recorded
+ * under one version and read under another is Rule 30's situation one field
+ * down: same name, different question. It is stored beside every recorded
+ * shape so a later reader can tell whether the two agree, rather than
+ * assuming they do.
+ *
+ * BUMP THIS whenever a change here could move a filing between `found`,
+ * `not_found`, `under_cap`, or between tabular and prose-only — the boundary
+ * cut, the tabular test, the cap. Not for comments or refactors that cannot
+ * move an answer.
+ */
+export const NOTE_LOCATOR_VERSION = 1;
+
+/**
  * Locates the debt-schedule section within a filing's FULL stripped text,
  * so the extraction corpus can include it even when it sits well past the
  * lead-40k-char window most other triggers' facts live inside.
