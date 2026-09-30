@@ -28,6 +28,7 @@ import { dedupAgainstRows, debtContribution, sameNormalisedAmount, type DebtCate
 export { dedupAgainstRows, debtContribution, sameNormalisedAmount } from "./instrument";
 export type { DebtCategory } from "./instrument";
 import type { TriggerResult, ProseInstrumentRow, FacilityRow, VerifiedSequenceEntry } from "../agent";
+import type { RolledCoverage } from "./rolledCoverage";
 import { borrowingBaseOf } from "../agent/borrowingBase";
 
 /**
@@ -168,7 +169,21 @@ export function computeCoverage(
   /** The assembled ladder's own capacity rows. Omitted only by fixtures that build no position. */
   ladderCapacity?: { category: string; label: string; amount: number | null; basisNote: string }[],
   /** Facility categories the ladder carries, drawn or undrawn — see facilityCategoriesOnLadder. */
-  facilityCategoriesAccounted?: string[]
+  facilityCategoriesAccounted?: string[],
+  /**
+   * SESSION 25 — THE ROLLED POSITION, WHERE ONE COUNTS.
+   *
+   * Passed in rather than derived here, for the same reason ladder capacity
+   * is: a second surface re-deriving whether a roll reconciles is a second
+   * answer to one question. `rolledCoverage` asks `rollForwardFires`,
+   * `baseRowTie` and `computeRollTie` and returns `counts: true` only when
+   * all three hold; this function does not re-litigate any of them.
+   *
+   * A roll that does NOT count changes nothing here — coverage stays on the
+   * rows the anchor states directly, which is criterion 3 of the signing
+   * rule, unchanged.
+   */
+  rolled?: RolledCoverage | null
 ): CoverageResult {
   const caps = debtMaturity?.balanceSheetDebtCaptions ?? [];
   const modelRead = caps.length > 0 ? caps.reduce((a, c) => a + (parseMoneyAmount(c.amount) ?? 0), 0) : null;
@@ -235,10 +250,43 @@ export function computeCoverage(
     from: "prose" as const,
     basisNote: contributionOf.get(p)?.why,
   }));
-  const entries: CapturedEntry[] = [
-    ...rows.map((r) => ({ category: "table-row" as const, label: r.label ?? "(unlabeled)", amount: parseMoneyAmount(r.amount), from: "row" as const })),
-    ...proseEntries,
-  ];
+  // THE ROLLED POSITION REPLACES THE ANCHOR'S ROWS, IT DOES NOT JOIN THEM.
+  //
+  // A roll only fires where the anchor prints no ladder (`rollForwardFires`),
+  // so in practice there are no anchor rows to displace — but stating it as a
+  // replacement rather than an addition is what keeps it true if that ever
+  // changes. Adding a rolled base to an anchor's own table would double the
+  // company's debt, and a guard that only works because the other branch
+  // happens to be empty is the guard that fails the first time it matters.
+  //
+  // Each movement enters as its own entry, so the walk from the base to the
+  // anchor is READABLE on the coverage surface rather than collapsed into one
+  // rolled number nobody can attribute.
+  const rolledEntries: CapturedEntry[] = rolled?.counts
+    ? rolled.entries.map((e) => ({
+        category: "table-row" as const,
+        label: e.kind === "movement" ? `${e.label} (movement)` : e.label,
+        amount: e.amountMillions * 1_000_000,
+        from: "row" as const,
+        basisNote: rolled.label,
+      }))
+    : [];
+  // AND THE PROSE INSTRUMENTS DO NOT JOIN IT EITHER. Measured, not reasoned
+  // about: the first wiring kept them, and Cigna's captured face came out at
+  // 32,913 against a roll that lands on 31,913 — the commercial paper counted
+  // twice, once as the movement the roll carries and once as the prose
+  // instrument it was read from.
+  //
+  // It is not a Cigna quirk. A roll that TIES has, by its own claim, already
+  // accounted for everything between the two dates: base + movements = the
+  // anchor's stated total. Anything added beside it is double-counted by
+  // construction, and the tie is what licenses saying so.
+  const entries: CapturedEntry[] = rolled?.counts
+    ? rolledEntries
+    : [
+        ...rows.map((r) => ({ category: "table-row" as const, label: r.label ?? "(unlabeled)", amount: parseMoneyAmount(r.amount), from: "row" as const })),
+        ...proseEntries,
+      ];
 
   // ONE INSTRUMENT CANNOT BE LARGER THAN THE TOTAL IT IS PART OF.
   //
@@ -279,9 +327,23 @@ export function computeCoverage(
   // A facility the LADDER carries is accounted for, whatever vocabulary each
   // surface uses for it — see facilityCategoriesOnLadder.
   const onLadder = new Set<string>(facilityCategoriesAccounted ?? []);
-  const categoriesMissing = [...statedCategories].filter(
-    (c) => c !== "delayed-draw-term-loan" && !capturedCategories.has(c) && !reportedAsCapacity.has(c) && !onLadder.has(c)
-  );
+  // A TIED ROLL ACCOUNTS FOR EVERY CATEGORY, AND SAYING OTHERWISE WAS A
+  // DEFECT THIS SESSION INTRODUCED.
+  //
+  // Switching the sum to the rolled entries dropped the prose entries, and
+  // with them the categories they were the evidence for — so Cigna's
+  // commercial paper read "stated but not captured" on a position whose roll
+  // reconciles to the filer's own total to within 35 of 31,878. Category
+  // completeness asks "is anything the note says exists unaccounted for", and
+  // a roll that ties is the strongest possible answer that nothing is.
+  //
+  // Stated rather than silently skipped: the test still RUNS, and it is the
+  // tie that discharges it.
+  const categoriesMissing = rolled?.counts
+    ? []
+    : [...statedCategories].filter(
+        (c) => c !== "delayed-draw-term-loan" && !capturedCategories.has(c) && !reportedAsCapacity.has(c) && !onLadder.has(c)
+      );
 
   return {
     statedTotalDebt,

@@ -158,6 +158,34 @@ export function rollForwardFires(input: {
   return { fires: true, reason: `the anchor states no ladder AND directs the reader to ${x.referencedNote}${x.referencedFiling ? ` in ${x.referencedFiling}` : ""} for ${x.referencedSubject}` };
 }
 
+/**
+ * SESSION 25 — THE ONE TIE DECISION, AND WHY IT IS ONE.
+ *
+ * Three places were deciding "does this reconcile": `computeBaseTie` (exact,
+ * in millions), `computeRollTie` (a band the filer's own approximation earns,
+ * in millions), and `rolledPosition.rolledVerdict` (its own copy of both, in
+ * dollars, with a band nothing earned). Two answers to one question is how
+ * they start disagreeing — and they already did: `rolledVerdict` granted a
+ * ±$50M band unconditionally, so a roll built entirely from exact figures
+ * would have reconciled there and failed here.
+ *
+ * UNIT-AGNOSTIC BY CONSTRUCTION. The epsilon is half of whatever unit the
+ * caller works in, which is what each of the three call sites already meant:
+ * half a dollar is exactness on integer dollars, half a million is float
+ * noise on millions. The band is passed in, never assumed, so "ties exactly"
+ * and "ties inside the filer's stated approximation" stay different claims
+ * decided by the same function.
+ */
+export function decideTie(
+  computed: number,
+  stated: number | null,
+  tolerance: number
+): { residual: number | null; ties: boolean } {
+  if (stated === null) return { residual: null, ties: false };
+  const residual = computed - stated;
+  return { residual, ties: Math.abs(residual) <= tolerance || Math.abs(residual) < 0.5 };
+}
+
 /** Section subtotals from a transcribed sequence, by their own section label. */
 export function subtotalsBySection(seq: ScheduleSequenceEntry[]): { section: string; amountMillions: number; label: string }[] {
   const out: { section: string; amountMillions: number; label: string }[] = [];
@@ -193,11 +221,12 @@ export function computeBaseTie(
     .filter((v): v is number => v !== null)
     .reduce((a, b) => a + b, 0);
   const statedOrNull = referencedCaptions.length ? stated : null;
-  const residual = statedOrNull === null ? null : computed - statedOrNull;
   // The base tie is an IDENTITY, not an approximation: both sides are the
   // filer's own stated figures at the same date, in the same frame. It ties
-  // exactly or it does not tie.
-  const ties = residual !== null && Math.abs(residual) < 0.5;
+  // exactly or it does not tie — so the tolerance handed to the one deciding
+  // function is ZERO, and the only slack is the half-unit that keeps float
+  // arithmetic from calling an exact match a miss.
+  const { residual, ties } = decideTie(computed, statedOrNull, 0);
   const parts = subs.map((s) => `${s.label || s.section}: ${s.amountMillions}`).join(" + ");
   return {
     computedMillions: computed,
@@ -232,9 +261,8 @@ export function computeRollTie(
   anchorTotalMillions: number | null
 ): TieResult {
   const computed = deltas.reduce((a, d) => a + d.amountMillions, baseMillions);
-  const residual = anchorTotalMillions === null ? null : computed - anchorTotalMillions;
   const tol = toleranceFor(deltas);
-  const ties = residual !== null && Math.abs(residual) <= tol;
+  const { residual, ties } = decideTie(computed, anchorTotalMillions, tol);
   const walk = `${baseMillions}${deltas.map((d) => ` ${d.amountMillions < 0 ? "−" : "+"} ${Math.abs(d.amountMillions)}`).join("")} = ${computed}`;
   return {
     computedMillions: computed,

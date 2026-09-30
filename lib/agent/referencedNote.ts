@@ -50,6 +50,13 @@ export interface ReferencedNoteRow {
   sourceLine: string;
   maturityDate: string | null;
   rate: string | null;
+  /**
+   * The cell resolved to MILLIONS by the caption governing it, added in
+   * `loop.ts` where the filing text is in scope (Rule 67). Null where nothing
+   * governs the cell — never a bare-dollars fallback, which is the 1000x
+   * error. Optional so answers cached before this field still parse.
+   */
+  amountMillions?: number | null;
 }
 
 export interface ReferencedNoteResult {
@@ -57,8 +64,15 @@ export interface ReferencedNoteResult {
   /** The period this note states — its own, never the anchor's. */
   periodOfReport: string;
   rows: ReferencedNoteRow[];
-  /** Every total the note prints, verbatim label and figure. This is what the base tie is checked against. */
-  statedSubtotals: { label: string; amount: string }[];
+  /**
+   * Every total the note prints, verbatim label and figure. This is what the
+   * base tie is checked against.
+   *
+   * `amountMillions` is added by `loop.ts` where the filing text is in scope
+   * (Rule 67) — null where no caption governs the cell. The verbatim `amount`
+   * is never overwritten: verify as printed, display normalized.
+   */
+  statedSubtotals: { label: string; amount: string; amountMillions?: number | null }[];
   noteLocated: boolean;
   noteChars: number;
 }

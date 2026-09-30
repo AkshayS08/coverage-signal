@@ -130,9 +130,23 @@ export function statedBalanceAt(
       /\$\s*[\d.,]+/.test(s)
   );
   if (hits.length === 0) return null;
-  // The shortest is the most directly about this figure; a long sentence that
-  // mentions it in passing is weaker evidence than one whose subject it is.
-  const best = [...hits].sort((a, b) => a.length - b.length)[0];
+  // WHERE THE FIGURE IS STATED TWICE, THE HEDGED SENTENCE IS THE EVIDENCE.
+  //
+  // Rule 70 already ruled that the hedge survives: the anchor states this
+  // balance both as "approximately $1.0 billion" and as "an outstanding
+  // balance of $1.0 billion", and treating it as exact would assert a
+  // precision the filer did not consistently claim. That ruling was carried
+  // by a separate `approximate` flag, and the flag did not travel — a caller
+  // that took `sourceLine` and re-read it downstream got the UNHEDGED
+  // sentence, earned no band, and missed an otherwise identical roll by 35.
+  //
+  // So the qualification travels WITH the sentence, which is the only way it
+  // cannot be dropped: one sentence, one figure, one hedge (Rule 58's shape).
+  // Shortest still breaks the tie within each group — a long sentence that
+  // mentions the figure in passing is weaker than one whose subject it is.
+  const best = [...hits].sort(
+    (a, b) => Number(APPROX.test(b)) - Number(APPROX.test(a)) || a.length - b.length
+  )[0];
   return {
     amountText: best.match(/\$\s*[\d.,]+\s*(billion|million|thousand)?/i)?.[0] ?? "",
     approximate: hits.some((s) => APPROX.test(s)),

@@ -23,6 +23,7 @@
 import type { CompanyResult, TriggerResult } from "../agent";
 import { assemblePosition, computeWalkChecksum, normalizeScheduleSequence, scheduleIsAggregateDisclosure, ladderCapacityFor, facilityCategoriesOnLadder, matchFacility } from "./position";
 import { computeCoverage } from "./coverage";
+import { rolledCoverageFor } from "./rolledCoverage";
 import { parseMoneyAmount } from "./position";
 import { classifyInstrument, priorityClassLabel } from "./instrumentClass";
 
@@ -64,7 +65,7 @@ export interface Attestation {
 export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: Attestation = {}): CriteriaResult {
   const dm = result.results.find((t: TriggerResult) => t.triggerId === "debt-maturity");
   const pos = assemblePosition(result, asOf);
-  const cov = computeCoverage(dm, ladderCapacityFor(pos), facilityCategoriesOnLadder(pos, dm?.facilities));
+  const cov = computeCoverage(dm, ladderCapacityFor(pos), facilityCategoriesOnLadder(pos, dm?.facilities), rolledCoverageFor(result));
   const seq = normalizeScheduleSequence(dm?.scheduleSequence);
   const walk = computeWalkChecksum(dm?.scheduleSequence);
   const anchor = dm?.debtScheduleSourceFiling ?? null;

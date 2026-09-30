@@ -3,7 +3,20 @@ import { TRIGGERS, type TriggerDef } from "./triggers";
 import { selectBaselineFilings } from "./selectFilings";
 import { getRecentFilings, readFiling, searchNews } from "./tools";
 import { quoteAppearsIn } from "./verifyQuote";
-import { verifyFacilities, type VerifiedFacility, type FigureRejection } from "./verifyFacility";
+import { verifyFacilities, retargetAnnualReportFigures, type VerifiedFacility, type FigureRejection } from "./verifyFacility";
+import { locatorFor, tableCellMillions } from "./tableScale";
+import { figurePeriodOf, dateTokensFor } from "./figurePeriod";
+import { statedBalanceAt } from "../events/rollDeltas";
+
+/**
+ * Words in nearly every instrument name, so they distinguish nothing. A small
+ * CLOSED set, the same shape as the other closed lists here — not company or
+ * instrument vocabulary.
+ */
+const NAME_STOPWORDS = new Set([
+  "facility", "facilities", "program", "agreement", "credit", "loan", "loans",
+  "notes", "note", "senior", "unsecured", "secured", "line", "lines",
+]);
 import { corpusOf } from "./corpus";
 import type { FilingEntry } from "../fetch";
 import {
@@ -1017,8 +1030,31 @@ export async function runAgentLoop(
               xbrlTotalForScale: null,
             })
         );
-        priorPeriodBase = {
+        // RULE 67 — THE BASE'S CELLS ARE SCALED HERE, WHERE THE TEXT IS.
+        //
+        // The transcription returns cells exactly as printed, which is what
+        // was asked for, and a printed cell is bare: "549", not "$549". Every
+        // downstream consumer that wants a NUMBER therefore needs the 10-K's
+        // own caption to resolve it, and only this point in the pipeline has
+        // both the row and the document. Three copies of that resolution
+        // already existed before `tableCellMillions` (Rule 67); a fourth
+        // living in coverage.ts — which cannot fetch a filing at all — would
+        // be the same defect with a worse excuse.
+        //
+        // Resolved once, persisted, and NULL where it cannot be resolved. A
+        // cell that will not scale must not become a plausible wrong number.
+        const baseLoc = locatorFor(directedText);
+        const scaled = {
           ...data,
+          rows: data.rows.map((r) => ({ ...r, amountMillions: tableCellMillions(r.amount, r.sourceLine, directedText, baseLoc) })),
+          statedSubtotals: data.statedSubtotals.map((s) => ({ ...s, amountMillions: tableCellMillions(s.amount, s.label, directedText, baseLoc) })),
+        };
+        const unscaled = scaled.rows.filter((r) => r.kind === "row" && r.amountMillions === null).length;
+        if (unscaled > 0) {
+          log(`  ⚠ ${unscaled} PRIOR-PERIOD BASE ROW(S) COULD NOT BE SCALED for ${directed.form} ${directed.reportDate} — no governing declaration above the cell. They carry null rather than a guess, and the base tie will report short by exactly them.`);
+        }
+        priorPeriodBase = {
+          ...scaled,
           label: rolledRowLabel({
             baseAsOf: directed.reportDate ?? "the prior period",
             anchorAsOf: debtScheduleGuidance.base?.reportDate ?? "the anchor date",
@@ -1266,6 +1302,104 @@ export async function runAgentLoop(
         `  ⚠ OFF-ANCHOR PROSE INSTRUMENTS DROPPED for ${label} — ${offAnchorProse.length} instrument(s) (${offAnchorProse.map((p) => p.name ?? p.category).join(", ")}) verified against ${[...new Set(offAnchorProse.map((p) => p.citedUrl))].join(", ")}, not the anchor ${debtScheduleGuidance.base?.form} ${debtScheduleGuidance.base?.date}. A balance is as of the filing that states it.`
       );
     }
+    // RULE 70, WIRED — a prose instrument's balance and its date both come
+    // from the sentence, with the model's fields as signals.
+    //
+    // Cigna's commercial paper is the measured case. The anchor says "had
+    // approximately $1.0 billion outstanding as of June 30, 2026"; one run in
+    // three returned that instrument with a NULL amount and an `asOfDate` of
+    // the base period, reading the 10-K's date instead of the 10-Q's. The
+    // roll lost its only balance-change delta and missed by 965, and the
+    // ladder rendered the row as "(no amount stated)" — the same run, two
+    // wrong surfaces, one empty field.
+    //
+    // Both are filled from the sentence that is already cited and already
+    // verified inside the note. Nothing is overridden: a stated field stands,
+    // and only an empty one is answered.
+    //
+    // AND THE FILL IS GUARDED, BECAUSE THE FIRST VERSION FABRICATED.
+    //
+    // A first attempt read the figure out of the model's OWN cited sentence.
+    // In the failing sample that sentence is not about the balance at all —
+    // it is "Under our commercial paper program, we may issue short-term,
+    // unsecured commercial paper notes…", which states the program's $6.5
+    // billion CAPACITY. The fill produced a commercial-paper balance of $6.5
+    // billion: a true number and a true sentence joined by nothing, which is
+    // the composite-fabrication class this codebase exists to prevent,
+    // introduced by the repair for a different defect.
+    //
+    // So the sentence is found rather than assumed. `statedBalanceAt` — the
+    // function Rule 70 was proven with — searches the ANCHOR'S OWN TEXT for a
+    // sentence that names the instrument, asserts an outstanding balance, and
+    // predicates the anchor's date of it. The evidence moves WITH the figure,
+    // so the row's sourceLine states the amount the row renders (Rule 58).
+    const anchorTextForProse = anchorUrl ? textByUrl.get(anchorUrl) : undefined;
+    const anchorTokens = debtScheduleGuidance.base?.reportDate ? dateTokensFor(debtScheduleGuidance.base.reportDate) : [];
+    const proseFromSentence = proseInstruments.map((p) => {
+      const period = figurePeriodOf(p.sourceLine, debtScheduleGuidance.base?.reportDate ?? null, p.asOfDate ?? null);
+      let next = p;
+      // AND THE *BASIS* IS THE SENTENCE'S TOO, NOT THE FIELD'S.
+      //
+      // A first guarded version required `amountBasis === "outstanding"`
+      // before looking, and in the failing sample that field says
+      // "commitment" — so the repair for a derivation resting on one optional
+      // model field was itself gated on another optional model field, and
+      // never ran at all. That is the CHS/B4 pattern twice in one fix.
+      //
+      // A sentence that says the instrument "had approximately $1.0 billion
+      // outstanding as of June 30, 2026" states an outstanding balance
+      // whatever the field says. `statedBalanceAt` requires exactly that
+      // sentence — the instrument named, an outstanding/balance word, and the
+      // anchor's own date predicated of it — so finding one IS the evidence
+      // for the basis, and the basis is set from it rather than trusted.
+      if (!p.amount && anchorTextForProse && anchorTokens.length > 0) {
+        // AN AMBIGUOUS NAME MATCH IS NOT A MATCH (Rule 19).
+        //
+        // The first version built its pattern from the first TWO significant
+        // words joined loosely, and UHS paid for it immediately: "Delayed
+        // draw term loan A" matched a sentence about the REVOLVER and the row
+        // rendered $1.272 billion — the revolver's availability, on the
+        // delayed-draw loan. A true figure and a true sentence joined by
+        // nothing, for the second time inside one repair.
+        //
+        // Two tests now, and a fill must pass BOTH: EVERY distinguishing word
+        // of the instrument's name appears in the sentence, and NO OTHER
+        // instrument on this company's list is named by that sentence too.
+        // Where two instruments both fit, neither is filled — the honest
+        // blank, which is exactly what the row showed before this existed.
+        const sig = (n: string) => [...new Set((n.toLowerCase().match(/[a-z]{4,}/g) ?? []).filter((w) => !NAME_STOPWORDS.has(w)))];
+        const namesAll = (sentence: string, ws: string[]) => ws.length > 0 && ws.every((w) => sentence.toLowerCase().includes(w));
+        const words = sig(String(p.name ?? p.category));
+        const namePattern = words.length
+          ? new RegExp(words.map((w) => `(?=[^]*${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`).join("") + "[^]", "i")
+          : null;
+        const candidate = namePattern ? statedBalanceAt(anchorTextForProse, namePattern, anchorTokens) : null;
+        const rivals = candidate
+          ? proseInstruments
+              .filter((q) => q !== p && namesAll(candidate.sourceLine, sig(String(q.name ?? q.category))))
+              .map((q) => String(q.name ?? q.category))
+          : [];
+        if (candidate && rivals.length > 0) {
+          log(`  ⚠ PROSE BALANCE NOT FILLED — AMBIGUOUS for ${label} — ${p.name ?? p.category}: the only sentence stating a balance at ${debtScheduleGuidance.base?.reportDate} also names ${rivals.join(", ")}, so it does not say whose balance it is. Neither is filled (Rule 19), and the row keeps its honest blank rather than a plausible wrong figure.`);
+        }
+        const found = rivals.length > 0 ? null : candidate;
+        if (found?.amountText) {
+          next = { ...next, amount: found.amountText, sourceLine: found.sourceLine, asOfDate: debtScheduleGuidance.base?.reportDate ?? next.asOfDate, amountBasis: "outstanding" };
+          log(
+            `  PROSE BALANCE READ FROM THE ANCHOR'S OWN SENTENCE for ${label} — ${p.name ?? p.category}: the model returned no amount, and the anchor states ${found.amountText} outstanding at ${debtScheduleGuidance.base?.reportDate} (Rule 70${found.approximate ? ", stated as an approximation — the hedge travels with the figure" : ""})${p.amountBasis && p.amountBasis !== "outstanding" ? `. The model called this a ${p.amountBasis}; the sentence states it OUTSTANDING, and the sentence wins` : ""}. ` +
+              `${found.corroborating} sentence(s) state it. The row's evidence moves with the figure: "${found.sourceLine.replace(/\s+/g, " ").slice(0, 110)}"`
+          );
+        } else {
+          log(`  PROSE BALANCE STILL NOT STATED for ${label} — ${p.name ?? p.category}: the model returned no amount and no sentence in the anchor names this instrument with an outstanding balance at ${debtScheduleGuidance.base?.reportDate}. The row renders "(no amount stated)" rather than borrowing a figure from a sentence about something else.`);
+        }
+      }
+      if (period.period === "anchor" && period.modelAgrees === false) {
+        next = { ...next, asOfDate: debtScheduleGuidance.base?.reportDate ?? next.asOfDate };
+        log(`  ⚠ PROSE asOfDate DISAGREES WITH ITS SENTENCE for ${label} — ${p.name ?? p.category}: the model said ${p.asOfDate}, the sentence says ${period.predicated.join(", ")}. The sentence wins (Rule 70) and the disagreement is stated rather than silently resolved.`);
+      }
+      return next;
+    });
+
     // SESSION 22, STAGE 3 — EVERY FIGURE AGAINST ITS OWN SENTENCE.
     //
     // This verified ONE sentence for the whole revolver object, so a figure
@@ -1278,13 +1412,39 @@ export async function runAgentLoop(
     // type it produces. A figure whose sentence does not state it is dropped
     // and NAMED; the facility survives, because withholding a figure and
     // erasing an instrument are different acts and only one of them is honest.
-    const facilityCheck = verifyFacilities({
+    // RULE 66, REACHING FACILITY FIGURES — before verification, so the
+    // re-pointed sentence is the one that gets verified and the one that
+    // lands in `figureSources`. `withholdAnnualReportRows` above does this
+    // for schedule rows; facility figures were the producer it never reached
+    // (Rule 63 — the field a fix reaches is not the field that needed it
+    // unless someone checks), and Cigna's position identity moved through it.
+    const annualFigures = retargetAnnualReportFigures({
       facilities: v.facilities ?? [],
+      textByUrl,
+      isAnnualReport: isAnnualReportUrl,
+      anchorUrl,
+      anchorReportDate: debtScheduleGuidance.base?.reportDate ?? null,
+      enforced: annualGate.enforced,
+      gateReason: annualGate.reason,
+    });
+    for (const r of annualFigures.retargeted) {
+      log(`  FACILITY EVIDENCE RE-POINTED AT THE ANCHOR for ${label} — ${r}`);
+    }
+    for (const n of annualFigures.notRestated) {
+      log(`  FACILITY FIGURE KEPT AT THE ANNUAL REPORT for ${label} — ${n}`);
+    }
+    const facilityCheck = verifyFacilities({
+      facilities: annualFigures.facilities,
       // THE FETCHED CORPUS, not `v.citedUrls`. The model's self-reported
       // citation list is routinely empty — Centene's was — and checking
       // against an empty list rejected eight figures, six of them verbatim
       // in its own anchor 10-Q, deleting every facility it has.
       textByUrl,
+      // RULE 71 — the anchor's PERIOD, so a figure stated as of another date
+      // stays out of the current position. Rows and prose instruments were
+      // already held to the anchor; facility figures were the one path in
+      // with no such rule, and Cigna's identity moved through it.
+      anchorReportDate: debtScheduleGuidance.base?.reportDate ?? null,
     });
     // SESSION 24 — THE CAPTION'S SCALE, APPLIED AFTER VERIFICATION.
     //
@@ -1296,6 +1456,16 @@ export async function runAgentLoop(
     const facilities = deriveFacilityScale(facilityCheck.verified, textByUrl, log, label) ?? facilityCheck.verified;
     const facilityRejections = facilityCheck.rejections;
     for (const r of facilityRejections) {
+      // RULE 71's rejection is not a fabrication finding and does not read
+      // like one: the figure is real, and it is as of another date.
+      if (r.reason === "stated as of a date other than the anchor's period") {
+        log(
+          `  ⚠ OFF-PERIOD FACILITY FIGURE WITHHELD for ${label} — ${r.facility}.${r.field} = ${r.value} is stated as of ${r.statedPeriod}, and this company's anchor reports ${debtScheduleGuidance.base?.reportDate}. ` +
+            `Recorded as prior-period evidence and kept out of the current position, its figureSources and the position identity. Sentence: "${r.sourceLine.replace(/\s+/g, " ").slice(0, 120)}"` +
+            (r.modelAsOfDisagreed ? ` — and the model's own asOfDate said ${r.modelAsOfDisagreed}; the sentence wins (Rule 70) and the disagreement is stated rather than silently resolved.` : "")
+        );
+        continue;
+      }
       log(`  ⚠ FACILITY FIGURE REJECTED for ${label} — ${r.facility}.${r.field} = ${r.value}: ${r.reason}. Sentence given: "${r.sourceLine.replace(/\s+/g, " ").slice(0, 120)}"`);
     }
     for (const d of facilityCheck.droppedFacilities) {
@@ -1467,7 +1637,7 @@ export async function runAgentLoop(
       result,
       dateGuard,
       textByUrl,
-      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments, facilities, facilityRejections, seniorityStatement },
+      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments: proseFromSentence, facilities, facilityRejections, seniorityStatement },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
       anchorNoteShape,

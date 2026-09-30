@@ -1,4 +1,5 @@
 import { computeCoverage, checkRevolverArithmetic, type CoverageResult } from "./coverage";
+import { rolledCoverageFor } from "./rolledCoverage";
 import type { Tier2 } from "./tier2";
 import type { RowOutsideSubtotal } from "./position";
 import type { CompanyResult, TriggerResult, VerifiedSequenceEntry } from "../agent";
@@ -731,7 +732,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
       maturityFloorAsOf: null,
       tailSummary: null,
       walkLines: [],
-      coverage: computeCoverage(debtMaturity),
+      coverage: computeCoverage(debtMaturity, undefined, undefined, rolledCoverageFor(result)),
       revolverCheck: checkRevolverArithmetic((debtMaturity?.facilities ?? []).find((f) => f.category === "revolver") ?? null),
       issuancesInsideAggregate: [],
       sourceCitation: null,
@@ -965,7 +966,7 @@ function buildRefiLadder(result: CompanyResult, headlineRowIds: Set<string>, now
     rowsOutsideSubtotal: position.rowsOutsideSubtotal,
     priorIntentions: position.statedIntentions.filter((i) => !i.postAnchor).map((i) => ({ instrument: i.instrument, amount: i.amount, date: i.date, sourceLine: i.sourceLine })),
     maturityFloor: (floor?.buckets ?? []).map((x) => ({ label: x.label, value: x.value })),
-    maturityFloorAsOf: floor && floor.buckets.length > 0 ? floor.asOf : null, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity), revolverCheck: checkRevolverArithmetic(((debtMaturity.facilities ?? []).find((f) => f.category === "revolver") ?? null)), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
+    maturityFloorAsOf: floor && floor.buckets.length > 0 ? floor.asOf : null, tailSummary, walkLines: buildWalkLines(normalizedSequence, walkCheck.subtotalChecks), coverage: computeCoverage(debtMaturity, undefined, undefined, rolledCoverageFor(result)), revolverCheck: checkRevolverArithmetic(((debtMaturity.facilities ?? []).find((f) => f.category === "revolver") ?? null)), issuancesInsideAggregate: position.issuancesInsideAggregate, sourceCitation, isAggregateDisclosure, adjustments: position.adjustments, rowsNotVerifiedAsTranscribed: position.rowsNotVerifiedAsTranscribed, walkGapFraction: position.walkGapFraction };
 }
 
 /**

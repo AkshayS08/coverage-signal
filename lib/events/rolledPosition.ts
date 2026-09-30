@@ -33,7 +33,14 @@
  * reported separately for the same reason.
  */
 
-/** Dollars. The band inside which a rolled total is taken to reconcile. */
+import { decideTie } from "./rollForward";
+
+/**
+ * Dollars. The band inside which a rolled total is taken to reconcile, where
+ * the filer's own words earn one. It is the DEFAULT here rather than the
+ * rule: `rollForward.toleranceFor` decides whether a band exists at all, and
+ * a caller that knows should pass `toleranceUsd`.
+ */
 export const ROLL_BAND_USD = 50_000_000;
 
 export interface RollInputs {
@@ -45,6 +52,12 @@ export interface RollInputs {
   anchorStatedTotal: number | null;
   /** The base carried forward through the events between the two dates. */
   rolledTotal: number | null;
+  /**
+   * The band this roll has EARNED, in dollars — `rollForward.toleranceFor`
+   * converted. Omitted falls back to ROLL_BAND_USD, which is what this file
+   * assumed unconditionally before the tie math was folded.
+   */
+  toleranceUsd?: number;
   /** For the label, in the filing's own terms. */
   baseAsOf: string;
   anchorAsOf: string;
@@ -100,10 +113,31 @@ export function rolledVerdict(i: RollInputs): RolledVerdict {
     };
   }
 
-  const baseGap = i.baseComputedTotal - i.baseStatedTotal;
-  const rollGap = i.rolledTotal - i.anchorStatedTotal;
-  const baseTies = baseGap === 0;
-  const rollTies = Math.abs(rollGap) <= ROLL_BAND_USD;
+  // SESSION 25 — THE TIE MATH IS NOT DECIDED HERE ANY MORE.
+  //
+  // This file owned a second copy of `rollForward`'s arithmetic: `baseGap ===
+  // 0` beside `computeBaseTie`, and `|rollGap| <= 50M` beside
+  // `computeRollTie`. Two answers to one question, and they had already
+  // begun to differ — the band here was UNCONDITIONAL, while rollForward's
+  // is earned by the filer's own stated approximation and is zero without
+  // one. A roll made entirely of exact figures reconciled here and failed
+  // there, on the same numbers.
+  //
+  // `decideTie` is now the single decision, and this file keeps what is
+  // actually its own: WHEN A ROLLED POSITION MAY BE SIGNED, and what a rolled
+  // row says about itself. The tolerance is passed explicitly rather than
+  // assumed, so the band is still a declared quantity on this surface.
+  //
+  // Unit-safe: these four totals are DOLLARS, and `decideTie`'s half-unit
+  // epsilon is therefore half a dollar — exactness on integer dollars, which
+  // is precisely what `baseGap === 0` meant. Equivalence was measured against
+  // a frozen copy of the old arithmetic before this replaced it.
+  const base = decideTie(i.baseComputedTotal, i.baseStatedTotal, 0);
+  const roll = decideTie(i.rolledTotal, i.anchorStatedTotal, i.toleranceUsd ?? ROLL_BAND_USD);
+  const baseGap = base.residual as number;
+  const rollGap = roll.residual as number;
+  const baseTies = base.ties;
+  const rollTies = roll.ties;
 
   // THE BASE TIE IS EXACT. It is a transcription of a printed table against
   // that table's own printed total — there is no rounding to allow for, and a
@@ -118,7 +152,7 @@ export function rolledVerdict(i: RollInputs): RolledVerdict {
       rollGap,
       statement:
         `the ${i.baseAsOf} base ties exactly to its own stated total, and rolled forward to ${i.anchorAsOf} ` +
-        `it lands ${fmtUsd(rollGap)} from the anchor's stated total, inside the ±${fmtUsd(ROLL_BAND_USD)} band. ` +
+        `it lands ${fmtUsd(rollGap)} from the anchor's stated total, inside the ±${fmtUsd(i.toleranceUsd ?? ROLL_BAND_USD)} band. ` +
         `Coverage is computed on the rolled position; every rolled row renders "${label}".`,
     };
   }
@@ -134,7 +168,7 @@ export function rolledVerdict(i: RollInputs): RolledVerdict {
         ? `the ${i.baseAsOf} base does NOT tie: the transcribed rows sum ${fmtUsd(baseGap)} from the total that table states, so the transcription is not the table it claims to be. `
         : "") +
       (failed === "roll" || failed === "both"
-        ? `the roll to ${i.anchorAsOf} lands ${fmtUsd(rollGap)} from the anchor's stated total, outside the ±${fmtUsd(ROLL_BAND_USD)} band, so the events between the two dates do not account for the distance. `
+        ? `the roll to ${i.anchorAsOf} lands ${fmtUsd(rollGap)} from the anchor's stated total, outside the ±${fmtUsd(i.toleranceUsd ?? ROLL_BAND_USD)} band, so the events between the two dates do not account for the distance. `
         : "") +
       "Coverage stays on the rows the anchor states directly. The base renders as prior-period context only, with this gap stated, and this name does not sign on a rolled position.",
   };

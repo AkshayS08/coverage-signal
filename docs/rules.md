@@ -1,4 +1,4 @@
-# The rules, 1 to 70
+# The rules, 1 to 73
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -80,6 +80,9 @@ example that found it, never the thing the rule is about.
 | 68 | a call cannot bill without reaching the ledger | [log](build_log.md#rule-68--a-call-cannot-bill-without-reaching-the-ledger) |
 | 69 | read before you write | [log](build_log.md#rule-69--read-before-you-write) |
 | 70 | a stated balance is taken at the date its own sentence predicates | [log](build_log.md#rule-70--a-stated-balance-is-taken-at-the-date-its-own-sentence-predicates) |
+| 71 | a current-position figure belongs to the period its own sentence predicates | [log](build_log.md#rule-71--a-current-position-figure-belongs-to-the-period-its-own-sentence-predicates) |
+| 72 | where the anchor states a figure itself, the anchor's sentence is the evidence | [log](build_log.md#rule-72--where-the-anchor-states-a-figure-itself-the-anchors-sentence-is-the-evidence) |
+| 73 | a rule proven in a harness has not been wired | [log](build_log.md#rule-73--a-rule-proven-in-a-harness-has-not-been-wired) |
 
 ## Refinements and later occurrences
 

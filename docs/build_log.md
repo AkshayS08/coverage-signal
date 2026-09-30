@@ -6313,3 +6313,196 @@ partitioning by position. **All three samples then tie: 5 rows to 592, 31 rows
 to 30,871, 36 rows to 31,463.**
 
 A gate should assert what its wording claims. Two in a row did not.
+
+## Rule 71 — a current-position figure belongs to the period its own sentence predicates
+
+Rule 57 and Rule 70 were the same rule written at two fields. Stated once,
+over the whole class:
+
+> A figure whose sentence predicates a date EARLIER than the anchor's is not a
+> current-position figure. It does not enter the current position, its
+> `figureSources`, or the position identity. It is recorded as prior-period
+> evidence, because it is real and merely as of the wrong date.
+
+**What it cost to not have it.** Schedule rows had `rowsOnAnchor`; prose
+instruments had `onAnchor`; facility figures had nothing. Cigna's re-taste 2
+sourced its revolver's `drawn` from
+
+> "As of December 31, 2025, there was no outstanding balance under the Credit
+> Agreement."
+
+— six months before the anchor — and the prior-period 10-K entered the
+position filing set through it. **Three samples, two position identities**,
+which is the thing Rule 65 exists to prevent.
+
+**Predication, not proximity**, exactly Rule 57's test. "Outstanding **as of**
+June 30, 2026" and "for the six months **ended** June 30, 2026" predicate a
+period of the figure. "will **mature** in April 2030", "**entered into** … in
+April 2025", "**funded** on or prior to …" do not.
+
+**A sentence that predicates no period is NOT excluded**, and this is the
+deliberate half. A facility's size is a standing contractual term: "the
+Company entered into a $6.5 billion, five-year revolving credit agreement" is
+true at the anchor whether or not the sentence carries a date. Excluding it on
+a date predicated of the signing would be Rule 57's own error pointed the
+other way. An ungoverned date is RECORDED and never acted on.
+
+### The asymmetry, measured rather than assumed
+
+A first version excluded BOTH directions. The book-wide pass found exactly one
+figure it caught: UHS's **$700 million July 2026 Delayed Draw Term Loan**,
+disclosed in an 8-K three weeks AFTER the anchor. That facility is committed,
+real and current, and BRD 6.0 already rules that an 8-K wins where it
+post-dates the note — the ladder acts on that today with Cigna's four
+September 2025 tranches. Deleting a correct facility to enforce a symmetry
+nothing asked for is the DaVita-five-figures harm. **Only the stale direction
+excludes.**
+
+### The one loose word, and its negative cases
+
+"at" had to join the governor set — filings write "was $29.1 billion at June
+30, 2026" constantly — and "at" is mostly not temporal. A window match read
+"priced **at** 99.5% of par **on** September 4, 2025" as a period and would
+have excluded a correct 8-K issuance figure. **Adjacency** separates the
+temporal "at" from the other three, and the word it hangs off still cannot be
+one that predicates the date of something else. Three measured negatives ship
+with the widening (Rule 59).
+
+### And it runs LAST
+
+The period check sits after "the sentence is real", "a claimed zero is
+asserted in words" and "the sentence states this figure". Asking which period
+a sentence predicates when it does not even state the figure classifies noise:
+the date in it belongs to whatever the sentence is actually about.
+
+## Rule 72 — where the anchor states a figure itself, the anchor's sentence is the evidence
+
+Rule 71 is necessary and was **not sufficient**, and saying so is the point:
+after it shipped, Cigna's sample 2 still carried a 3-document identity. The
+revolver's SIZE and MATURITY came from the 2025 10-K on sentences predicating
+nothing — April 2025 is when the paper was signed, April 2030 is the maturity
+— so Rule 71 correctly left them alone. The figures were right. **Which of two
+true sentences the model happened to pick decided the position's identity.**
+
+So where a figure's only source is the prior-period annual report AND the
+anchor states that figure itself, the anchor's sentence becomes the evidence.
+**The value never changes** — this re-points evidence, it does not re-derive a
+figure — and the identity stops depending on a coin flip.
+
+**Deliberately narrow, because the wide version was built and measured first.**
+A version that WITHHELD when the anchor does not restate the figure cost:
+Tenet's revolver lost its November 4, 2030 maturity, two of Quest's facilities
+lost theirs, and **a signed golden's identity moved**. A facility's maturity
+and size are standing terms and the anchor 10-Q does not restate every one of
+them each quarter. Rule 66 was decided about the 10-K's debt TABLE being
+substituted for the anchor's ladder — a balance at the wrong date — and a
+standing term is not that. The coin flip worth removing is "which of two
+documents that BOTH state it"; where only one does, there is no coin flip.
+
+Scoped to the prior-period annual report for the same reason: a general
+"prefer the anchor" rule would move Encompass's facility size off the 8-K that
+states it, which the anchor never restates.
+
+**Book-wide: three names re-point (HCA, Quest, Centene), every value
+identical, one identity narrows. Five signed goldens unchanged.**
+
+## Rule 73 — a rule proven in a harness has not been wired
+
+Rule 70 was measured, written up, and reached nothing. The shipped derivation
+still read Cigna's commercial-paper balance off the model's `amount` field,
+and the sample that left it null dropped the delta and missed the roll by 965
+— the identical failure Rule 70 was written to fix, still live, under a rule
+that said it was fixed.
+
+This is the pre-wiring drift check ("the zero proved nothing") in a second
+costume, and it is now a rule: **a rule is wired when the production path
+executes it, and the check for that is running the production path.**
+
+### The repair fabricated twice before it was safe
+
+Worth recording in full, because the repair was more dangerous than the defect.
+
+**First attempt — read the figure from the model's own cited sentence.** In
+the failing sample that sentence is "Under our commercial paper program, we
+may issue short-term, unsecured commercial paper notes…", which states the
+program's $6.5 billion CAPACITY. The fill produced a commercial-paper BALANCE
+of $6.5 billion: a true number and a true sentence joined by nothing, which is
+the composite-fabrication class, introduced by the fix for something else.
+
+**Second attempt — search the anchor's text, gated on `amountBasis ===
+"outstanding"`.** That field says "commitment" in the failing sample, so the
+repair for a derivation resting on one optional model field was itself gated
+on another optional model field and never ran at all. The CHS/B4 pattern twice
+inside one fix. **The basis is the sentence's too**: a sentence that says the
+instrument "had approximately $1.0 billion outstanding as of June 30, 2026"
+states an outstanding balance whatever the field says.
+
+**Third attempt — name-matched on the first two significant words.** UHS's
+"Delayed draw term loan A" matched a sentence about the REVOLVER and the row
+rendered **$1.272 billion**, the revolver's availability, on the delayed-draw
+loan. Second fabrication, same repair.
+
+**What ships** requires both: every distinguishing word of the instrument's
+name in the sentence, and no other instrument on the company's list named by
+it. Where two fit, neither is filled (Rule 19) and the row keeps its honest
+blank.
+
+### And the hedge travels with the sentence
+
+Rule 70 ruled that where a figure is stated twice the hedge survives. That
+ruling was carried by a separate `approximate` flag, and the flag did not
+travel: a caller taking `sourceLine` and re-reading it downstream got the
+UNHEDGED sentence, earned no band, and missed an otherwise identical roll by
+35. `statedBalanceAt` now returns the HEDGED sentence where one exists, so the
+qualification cannot be dropped — one sentence, one figure, one hedge.
+
+## THE TIE FOLD, AND THE TWO DEFECTS IT REMOVED
+
+`rolledPosition.ts` carried a second copy of `rollForward.ts`'s tie
+arithmetic. They had already begun to differ: **the band here was
+unconditional**, while `toleranceFor` earns it from the filer's own stated
+approximation and is zero without one. A roll built entirely of exact figures
+reconciled in one and failed in the other, on the same numbers.
+
+`decideTie` is now the single decision, unit-agnostic by construction — the
+epsilon is half of whatever unit the caller works in, which is what all three
+call sites already meant. Equivalence was proven against a **frozen copy** of
+the old arithmetic before anything was deleted: the fixture grid, 109 points
+swept across the band including every boundary dollar, both of rollForward's
+own ties, Cigna's real totals, and the fair-value frame test `[3g]` that a
+previous session destroyed by overwriting this module. The ONE difference —
+the unconditional band — is asserted as a difference rather than hidden.
+
+## COVERAGE ON THE ROLLED POSITION
+
+Cigna: residual **96.86% → 0.11%**, passes. The roll fires for one name in
+ten, and the book-wide diff confirms it: nine names' coverage is untouched.
+
+Two defects, both found by measuring rather than reasoning:
+
+**The commercial paper counted twice** — once as the movement the roll carries
+and once as the prose instrument it was read from. Captured face came out
+32,913 against a roll landing on 31,913. A roll that TIES has by its own claim
+accounted for everything between the two dates, so anything added beside it is
+double-counted by construction, and the tie is what licenses saying so.
+
+**Category completeness broke.** Dropping the prose entries dropped the
+categories they were evidence for, so commercial paper read "stated but not
+captured" on a position reconciling to the filer's own total within 35 of
+31,878. A tied roll is the strongest available answer that nothing is
+unaccounted for; the test still runs and the tie discharges it.
+
+## THE NINTH AUDIT-SPINE INSTANCE, and it was in this session's own harness
+
+`golden.test.ts` re-derives each signed state from the CompanyResult stored
+INSIDE the golden file. For a change to the derivation layer that is the right
+test. For a change to `loop.ts` it is worthless: the stored result was
+captured after the loop ran, so a loop-level filter cannot reach it, and the
+suite would have reported "five goldens unchanged" without executing one line
+of Rule 71. The book is therefore re-run THROUGH the loop, from cache, and
+compared against a snapshot taken before the rule existed.
+
+A second instance, in the three-sample harness: it re-derived the failing
+criteria locally by reading a field named `passes`. The field is `pass`. Every
+criterion compared `undefined === false`, and the harness reported "none
+failing" for a sample whose roll missed by 965.

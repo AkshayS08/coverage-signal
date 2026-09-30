@@ -27,6 +27,7 @@ import { amountKey, amountSupportOf, assemblePosition, rowIdentityKey, rowIdenti
 // position.ts would have been a cycle. Callers are unchanged.
 export { amountKey, sameAmount };
 import { computeCoverage } from "./coverage";
+import { rolledCoverageFor } from "./rolledCoverage";
 import { buildDerivedLines } from "./derived";
 import { buildEvents } from "./buildEvents";
 
@@ -236,7 +237,9 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
   const dm = result.results.find((t) => t.triggerId === "debt-maturity");
   const nd = result.results.find((t) => t.triggerId === "new-debt-issuance");
   const pos = assemblePosition(result, asOf);
-  const cov = computeCoverage(dm);
+  // SESSION 25 — coverage is computed on the ROLLED position where one
+  // reconciles, so a signed state pins what the page shows.
+  const cov = computeCoverage(dm, undefined, undefined, rolledCoverageFor(result));
   const anchor = dm?.debtScheduleSourceFiling ?? null;
   const cards = buildEvents([result], asOf).flashCardCandidates;
 
