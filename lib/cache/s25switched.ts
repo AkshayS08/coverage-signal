@@ -16,7 +16,7 @@ import { assemblePosition } from "../events/position";
 import { positionFilingSetOf, otherCitationsOf, deriveGoldenState } from "../events/golden";
 import { evaluateGoldenCriteria } from "../events/goldenCriteria";
 import { rolledCoverageFor, rolledCoverageLine } from "../events/rolledCoverage";
-import { currentCompanySpend } from "../agent/costMeter";
+import { assertFree, spendTracker } from "./freeRun";
 
 const COMPANY = "Cigna Group";
 const BUST_TAG = "s25-cigna";
@@ -38,12 +38,23 @@ interface S {
 }
 
 (async () => {
+  // RULE 75 — ASKED BEFORE A SINGLE CALL IS MADE. This harness printed
+  // "SPEND: $0.0000" over $0.5714 of live re-extraction when Cigna's
+  // filing-list TTL lapsed and moved the corpus fingerprint. It now refuses
+  // to start rather than discovering the bill afterwards.
+  await assertFree([{ company: COMPANY }, { company: COMPANY, bust: `${BUST_TAG}-1` }, { company: COMPANY, bust: `${BUST_TAG}-2` }]);
+  const spend = spendTracker();
   const out: S[] = [];
+  // The canonical result is KEPT rather than re-run. Re-running it to print
+  // one line opened a fresh cost scope, and that scope is what the old SPEND
+  // line reported.
+  let canonical: Awaited<ReturnType<typeof runAgentLoop>> | null = null;
   for (const n of [0, 1, 2]) {
     if (n === 0) delete process.env.CACHE_BUST;
     else process.env.CACHE_BUST = `${BUST_TAG}-${n}`;
     const r = await runAgentLoop(COMPANY);
     delete process.env.CACHE_BUST;
+    if (n === 0) canonical = r;
 
     const pos = assemblePosition(r, PINNED_AS_OF);
     const rc = rolledCoverageFor(r);
@@ -70,7 +81,7 @@ interface S {
       failing: crit.failing,
       triggers: r.results.filter((t) => t.fired).map((t) => t.triggerId),
     });
-    console.log(`  ${out[out.length - 1].label} done`);
+    console.log(`  ${out[out.length - 1].label} done — $${spend.record(out[out.length - 1].label).toFixed(4)}`);
   }
 
   const col = (f: (s: S) => string) => out.map((s) => f(s).padEnd(34)).join("");
@@ -110,7 +121,10 @@ interface S {
   console.log(`    coverage:                           ${eq((s) => s.coverage) ? "YES" : "NO"}`);
   console.log(`    criteria 4 and 6:                   ${eq((s) => [s.c4, s.c6]) ? "YES" : "NO"}`);
   console.log(`    the full computed-criteria verdict: ${eq((s) => s.failing) ? "YES" : "NO"}`);
-  console.log(`\n  ${rolledCoverageLine(rolledCoverageFor(await (async () => { delete process.env.CACHE_BUST; return runAgentLoop(COMPANY); })()), 31878)}`);
-  console.log(`\n  SPEND: $${currentCompanySpend().totalUsd.toFixed(4)}`);
+  // THE CANONICAL RESULT IS REUSED, NOT RE-RUN. Re-running it to print one
+  // line opened a fresh cost scope — and that empty scope is exactly what the
+  // old SPEND line below read and reported as the run's total.
+  console.log(`\n  ${rolledCoverageLine(rolledCoverageFor(canonical!), 31878)}`);
+  console.log(`\n  ${spend.line()}`);
   console.log("=".repeat(120));
 })();

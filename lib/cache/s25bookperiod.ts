@@ -32,7 +32,7 @@ import { PINNED_AS_OF } from "./pinnedAsOf";
 import { runAgentLoop } from "../agent";
 import { deriveGoldenState, compareToGolden, positionFilingSetOf, type GoldenFile } from "../events/golden";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
-import { currentCompanySpend } from "../agent/costMeter";
+import { assertFree, spendTracker } from "./freeRun";
 
 const BOOK = [
   "DaVita", "HCA Healthcare", "Tenet Healthcare", "Universal Health Services", "Encompass Health",
@@ -68,6 +68,10 @@ function goldenFor(cik: string): GoldenFile | null {
   const label = (process.argv[2] || "").trim();
   if (!/^[a-z0-9-]+$/.test(label)) { console.error("usage: npx tsx lib/cache/s25bookperiod.ts <before|after>"); process.exit(1); }
   mkdirSync(OUT, { recursive: true });
+  // RULE 75 — a book re-run described as free is checked before it runs. Ten
+  // companies re-extracting live is not a rounding error.
+  await assertFree(BOOK.map((company) => ({ company })));
+  const spend = spendTracker();
 
   const snaps: Snap[] = [];
   for (const company of BOOK) {
@@ -102,6 +106,7 @@ function goldenFor(cik: string): GoldenFile | null {
       ),
       goldenVerdict: verdict,
     });
+    spend.record(company);
     console.log(`  ${company.padEnd(28)} ${snaps[snaps.length - 1].positionSet.length} docs, ${state.rows.length} rows — ${verdict.slice(0, 60)}`);
   }
 
@@ -136,5 +141,5 @@ function goldenFor(cik: string): GoldenFile | null {
     }
     console.log(`\n  ${moved} of ${snaps.length} name(s) moved.`);
   }
-  console.log(`  SPEND: $${currentCompanySpend().totalUsd.toFixed(4)}`);
+  console.log(`  ${spend.line()}`);
 })();

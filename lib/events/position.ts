@@ -138,6 +138,8 @@ export interface LadderRow {
    * revolver semantics and evaluateRowEligibility.
    */
   isCapacity?: boolean;
+  /** Rule 74 — why a capacity row shows what it shows. Never silent about the swap. */
+  capacityFigureNote?: string;
   /**
    * SESSION 22, STAGE 5 — this row's maturity came from the FACILITY's own
    * stated maturity, not from the debt note's table. Both are the filer's
@@ -1775,9 +1777,36 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // program is an issuance programme, not a lender commitment, so zero
   // outstanding is not undrawn capacity and saying otherwise would invent
   // headroom nobody promised.
+  //
+  // RULE 74 — AND A BLANK IS THE SAME FACT AS A ZERO, WHICH IS WHY THIS
+  // GATE NOW READS BOTH.
+  //
+  // `parseMoneyAmount(r.amount) !== 0` returns early on a row whose amount is
+  // ABSENT, because null is not 0. So the whole undrawn-capacity treatment
+  // below — the one that turns a zero balance into the committed size —
+  // could only reach a facility whose balance the model happened to fill in.
+  //
+  // Cigna's revolver is the measured cost, and it is a coin flip rather than
+  // a wrong number: in two runs of three the model put the facility's SIZE
+  // into its outstanding-amount field and the row rendered "$ 6.5 billion";
+  // in the third it left that field blank and the row rendered "(no amount
+  // stated)". Same undrawn facility, same filing, two renderings — and the
+  // two that looked right were right by accident, on a figure taken from a
+  // field that is not supposed to hold it.
+  //
+  // "Nothing is drawn" and "the model did not say what is drawn" are
+  // different claims, and the second is not evidence of the first — so the
+  // blank does NOT become a stated zero. What it becomes is a row that gets
+  // its figure from the right place: see `commitmentSizeOf` below.
   rows = rows.map((r) => {
-    if (r.status !== "live" || parseMoneyAmount(r.amount) !== 0) return r;
-    if (!isCommittedFacility(r.classification.instrumentType)) return { ...r, status: "repaid" as const };
+    const amountAbsent = parseMoneyAmount(r.amount) === null;
+    if (r.status !== "live" || !(parseMoneyAmount(r.amount) === 0 || amountAbsent)) return r;
+    // A BLANK NEVER RETIRES ANYTHING. C1 reads a stated nil as repayment;
+    // an absent figure states nothing, and retiring a tranche because a field
+    // was empty would be the loudest possible version of that mistake.
+    if (!isCommittedFacility(r.classification.instrumentType)) {
+      return amountAbsent ? r : { ...r, status: "repaid" as const };
+    }
 
     // Undrawn. The row stays live, and what it SHOWS becomes the committed
     // size rather than the zero — because a $0 line on a debt ladder tells a
@@ -1794,7 +1823,54 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
       amount: size,
       isCapacity: true,
       sourceLine: facility?.facilitySize?.sourceLine ?? r.sourceLine,
-      undrawnNote: `nothing is drawn under this facility — the filing reports its balance as ${r.amount.trim()}. The figure shown is the COMMITTED SIZE, which is what remains available, not an amount owed.`,
+      undrawnNote: amountAbsent
+        ? `nothing is shown as drawn under this facility because the extraction states no balance for it — which is not the same as a stated zero, and is not treated as one. The figure shown is the COMMITTED SIZE the anchor states, which is what this row has always been about.`
+        : `nothing is drawn under this facility — the filing reports its balance as ${r.amount.trim()}. The figure shown is the COMMITTED SIZE, which is what remains available, not an amount owed.`,
+    };
+  });
+
+  // RULE 74 — A CAPACITY ROW'S FIGURE IS THE STATED COMMITMENT SIZE, AND IT
+  // COMES FROM THE SIZE SENTENCE.
+  //
+  // THREE PRODUCERS MAKE A CAPACITY ROW, and they did not agree about where
+  // its figure comes from (Rule 63 — ask every producer, not the likeliest):
+  //
+  //   1. `facilityOnlyRows`      amount = f.facilitySize.value       ✓ right
+  //   2. the undrawn re-label    amount = facilitySize.value          ✓ right,
+  //                              but reachable only through a STATED zero
+  //   3. `proseInstrumentRow`    amount = the model's `amount` field   ✗ wrong
+  //
+  // Producer 3 is the coin flip. `amount` on a prose instrument is the
+  // instrument's OUTSTANDING balance; a capacity row is not about a balance
+  // at all. When the model wrote the size into that field the row looked
+  // correct, and when it left the field blank the row rendered "(no amount
+  // stated)" — the same facility, the same filing, and the difference was
+  // which field a model chose to fill.
+  //
+  // So one function decides it, over every producer: a capacity row shows the
+  // COMMITTED SIZE the anchor states, sourced to the sentence that states it
+  // ("The Company maintains a $ 6.5 billion, five-year revolving credit and
+  // letter of credit agreement…"). What is DRAWN stays a separate fact on its
+  // own separate evidence — $0 from the anchor's own stated absence, "there
+  // was no outstanding balance under the Credit Agreement", which is Rule 53
+  // and is already how `zeroSupportFor` verifies it.
+  //
+  // NOTHING IS INVENTED. A capacity row whose facility states no size keeps
+  // whatever it had and says so; an ambiguous name match is not a match and
+  // `matchFacility` already returns null for one (Rule 19).
+  rows = rows.map((r) => {
+    if (!r.isCapacity) return r;
+    const facility = matchFacility({ name: r.instrument, category: null }, debtMaturity?.facilities, { byNameOnly: true });
+    const size = facility?.facilitySize;
+    if (!size?.value) return r;
+    if (size.value === r.amount) return r;
+    return {
+      ...r,
+      amount: size.value,
+      sourceLine: size.sourceLine || r.sourceLine,
+      capacityFigureNote:
+        `the figure shown is this facility's stated COMMITMENT SIZE, taken from the anchor's own size sentence. ` +
+        `It is not an amount owed, and it is not read from the instrument's outstanding-balance field — that field holds a different fact and is blank on this facility in some extractions and filled in others.`,
     };
   });
 

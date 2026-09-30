@@ -6506,3 +6506,105 @@ A second instance, in the three-sample harness: it re-derived the failing
 criteria locally by reading a field named `passes`. The field is `pass`. Every
 criterion compared `undefined === false`, and the harness reported "none
 failing" for a sample whose roll missed by 965.
+
+## Rule 74 — a capacity row's figure is the stated commitment size, from the size sentence
+
+**Three producers make a capacity row, and they did not agree about where its
+figure comes from** (Rule 63 — ask every producer, not the likeliest):
+
+| producer | source of the figure | |
+|---|---|---|
+| `facilityOnlyRows` | `f.facilitySize.value` | ✓ right |
+| the Rule 60 undrawn re-label | `facilitySize.value` | ✓ right, but reachable **only through a stated zero** |
+| `proseInstrumentRow` | the model's `amount` field | ✗ **wrong** |
+
+`amount` on a prose instrument is the instrument's OUTSTANDING balance. A
+capacity row is not about a balance at all.
+
+**Cigna's revolver was a coin flip, not a wrong number.** In two runs of three
+the model wrote the facility's SIZE into its outstanding-amount field and the
+row rendered "$ 6.5 billion"; in the third it left that field blank and the
+row rendered "(no amount stated)". Same facility, same filing, and the two
+that looked right were right **by accident** — on a figure taken from a field
+that does not hold it.
+
+So one function decides it over every producer: **a capacity row shows the
+committed size the anchor states, sourced to the sentence that states it** —
+"The Company maintains a $ 6.5 billion, five-year revolving credit and letter
+of credit agreement…". What is DRAWN stays a separate fact on its own separate
+evidence: $0 from the anchor's own stated absence, "there was no outstanding
+balance under the Credit Agreement", verified in words by `zeroSupportFor`
+(Rule 53).
+
+**And a blank is not a stated zero.** The Rule 60 gate read
+`parseMoneyAmount(r.amount) !== 0` and returned early on an ABSENT amount,
+because null is not 0 — so the whole undrawn-capacity treatment could only
+reach a facility whose balance the model happened to fill in. It now reads
+both, and a blank never retires a tranche: "nothing is drawn" and "the model
+did not say what is drawn" are different claims, and the second is not
+evidence of the first.
+
+**Book-wide: one mover, by name. Universal Health Services' "Delayed draw term
+loan A" goes from "(no amount stated)" to its stated $400 million commitment.**
+Five signed goldens unchanged, eight other names unchanged. UHS's own golden
+is at v29, so its pin does not apply either way (Rule 30).
+
+## Rule 75 — a run described as free is checked before it runs, not after
+
+`preflight.ts` has said this since it was written: *"a replay is only free
+INSIDE a TTL window, and 'I replayed from cache' is a claim about a moment,
+not a property of the code."* It exists because two runs were once reported as
+free that had re-extracted live.
+
+**It happened again, on an instruction that said "no spend."** Cigna's
+filing-list cache passed its 24-hour TTL mid-session, EDGAR returned a catalog
+differing somewhere in 160 filings, the corpus fingerprint moved
+`813c7d6b → f1237506`, every cached answer for that company became
+unreachable, and three re-renders that had cost $0 an hour earlier
+re-extracted live. **$0.5714 billed, unauthorised.**
+
+Two separate failures, and the second is worse:
+
+1. **The harness never asked whether the run would be free.** `preflight.ts`
+   existed, answers exactly this question, makes no model calls, and was not
+   called. A guard nobody invokes is not a guard.
+
+2. **The harness then printed `SPEND: $0.0000` while it billed.** It read
+   `currentCompanySpend()` once at the end, and the last thing it had done was
+   an extra fully-cached run that opened a fresh scope. The figure was real,
+   current, and about the wrong thing. **The ledger was correct throughout** —
+   Rule 68 held and caught every cent — the REPORT was not.
+
+`freeRun.ts` now owns both halves: `assertFree` throws before a single call is
+made, naming the fingerprint, because "the corpus moved" is the answer every
+time and the next reader should not have to rediscover it. `spendTracker`
+records each run as it finishes and cannot report a total it did not observe.
+
+**A moved fingerprint is not a fault to work around.** It means the run is a
+NEW EXTRACTION on a NEW CORPUS, which has to be authorised on its own terms
+and priced first (Rule 13).
+
+## THE TENTH AUDIT-SPINE INSTANCE: the golden check could not see the loop
+
+`golden.test.ts` re-derives each signed state from the `CompanyResult` stored
+INSIDE the golden file. That result was captured AFTER the loop ran, so the
+suite is **structurally unable to observe a change in `loop.ts`**.
+
+Rules 71, 72, 73 and 74 all live in the loop. Every one of them could have
+shipped under that suite reporting "five goldens reproduce", without executing
+a single line of any of them. Green there has never meant the signatures
+survive an extraction change, and it was read that way.
+
+**Verification now runs the pipeline:**
+
+    cached raw answers  →  the current loop  →  deriveGoldenState  →  compare
+
+`lib/cache/goldenThroughLoop.test.ts` is the primary check. It preflights its
+own answer keys (Rule 75) so it re-derives rather than re-extracts, fails by
+name, and also pins each signed name's position IDENTITY (Rule 65). It is
+excluded from the offline runner because it needs the blob cache — and
+`golden.test.ts` now prints a standing pointer to it on every offline run, so
+green is never read as a claim it cannot make.
+
+The replay stays. It is the right test for the derivation half, and it is
+labelled as that and nothing more.

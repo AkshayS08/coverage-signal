@@ -4,6 +4,26 @@
  * A run whose filing set matches a golden file's must reproduce it, and any
  * divergence fails BY NAME.
  *
+ * ==========================================================================
+ * SESSION 25 — THIS IS THE SECONDARY CHECK. READ THIS BEFORE TRUSTING IT.
+ * ==========================================================================
+ *
+ * What follows replays the `CompanyResult` stored INSIDE each golden file.
+ * That result was captured AFTER the loop ran, so this suite is structurally
+ * UNABLE TO OBSERVE A CHANGE IN `loop.ts`. It tests the derivation half —
+ * position assembly, coverage, Tier 2, the comparator — and nothing upstream
+ * of it.
+ *
+ * Rules 71, 72, 73 and 74 all live in the loop. Every one of them could have
+ * shipped under this suite reporting "five goldens reproduce", because none
+ * of them can reach the stored bytes. Green here has never meant the
+ * signatures survive an extraction change, and it was read that way.
+ *
+ * THE PRIMARY CHECK IS `lib/cache/goldenThroughLoop.test.ts`, which re-derives
+ * each signed name from its cached raw answers through the CURRENT loop. It
+ * is excluded from the offline runner by name (it needs the blob cache) and
+ * costs nothing. Run it before trusting any change to extraction.
+ *
  * This is offline and needs no network and no model: each golden file carries
  * the CompanyResult it was signed from, so the suite re-derives the state
  * from that captured input and compares it to the signed one. That makes it a
@@ -32,6 +52,13 @@ function assert(c: boolean, label: string) {
 }
 
 const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
+
+console.log("\n=== [0] WHAT THIS SUITE CAN AND CANNOT SEE ===");
+console.log("  NOTE — this is the SECONDARY golden check. It replays the CompanyResult stored inside each");
+console.log("  golden file, so it CANNOT observe a change in loop.ts: those bytes were captured after the");
+console.log("  loop ran. The PRIMARY check is lib/cache/goldenThroughLoop.test.ts, which re-derives each");
+console.log("  signed name from its cached raw answers through the current loop. Green here is NOT a");
+console.log("  statement that the signatures survive an extraction change.");
 
 console.log("\n=== [1] EVERY SIGNED GOLDEN FILE REPRODUCES FROM ITS OWN CAPTURED INPUT ===");
 {

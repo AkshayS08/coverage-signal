@@ -1,4 +1,4 @@
-# The rules, 1 to 73
+# The rules, 1 to 75
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -83,6 +83,8 @@ example that found it, never the thing the rule is about.
 | 71 | a current-position figure belongs to the period its own sentence predicates | [log](build_log.md#rule-71--a-current-position-figure-belongs-to-the-period-its-own-sentence-predicates) |
 | 72 | where the anchor states a figure itself, the anchor's sentence is the evidence | [log](build_log.md#rule-72--where-the-anchor-states-a-figure-itself-the-anchors-sentence-is-the-evidence) |
 | 73 | a rule proven in a harness has not been wired | [log](build_log.md#rule-73--a-rule-proven-in-a-harness-has-not-been-wired) |
+| 74 | a capacity row's figure is the stated commitment size, from the size sentence | [log](build_log.md#rule-74--a-capacity-rows-figure-is-the-stated-commitment-size-from-the-size-sentence) |
+| 75 | a run described as free is checked before it runs, not after | [log](build_log.md#rule-75--a-run-described-as-free-is-checked-before-it-runs-not-after) |
 
 ## Refinements and later occurrences
 

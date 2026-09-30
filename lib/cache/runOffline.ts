@@ -25,6 +25,21 @@ import { spawnSync } from "node:child_process";
 const NOT_OFFLINE: Record<string, string> = {
   "lib/cache/acceptance.test.ts": "determinism run — reads the live blob cache and replays both books",
   "lib/cache/liveAcceptance.test.ts": "hits the deployed site",
+  // THE PRIMARY GOLDEN VERIFICATION, and it cannot be offline BY DESIGN.
+  //
+  // `golden.test.ts` replays the CompanyResult stored inside each golden file,
+  // so it is structurally unable to see a change in `loop.ts`. Rules 71-74 all
+  // live in the loop and would every one of them have shipped under a green
+  // replay claiming "five goldens reproduce". This suite re-derives each
+  // signed name from its cached raw answers THROUGH the current loop, which
+  // needs the filing list and the answer cache — the very thing that makes it
+  // able to answer the question.
+  //
+  // It is free (it preflights its own answer keys and refuses to re-extract),
+  // but it is not OFFLINE, and the two are different claims. `golden.test.ts`
+  // prints a standing pointer to it so a green offline run is never read as
+  // "the signatures hold against a loop change".
+  "lib/cache/goldenThroughLoop.test.ts": "re-derives each signed golden THROUGH the loop from cached answers — the primary signature check; needs the blob cache, costs nothing, and must be run before trusting any loop change",
   "lib/cache/liveMarkerScan.test.ts": "hits the deployed site",
   // SESSION 24 — golden.test.ts IS NO LONGER EXCLUDED, and its removal from
   // this list is the point.
