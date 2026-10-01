@@ -1,6 +1,8 @@
 # Coverage Signal — Business Requirements Document
 
-Version 1.7 · September 2026 · Status: Session 22. The ladder now names what each instrument IS — facility type, from the filer's own words — carries every committed facility whether drawn or not, and shows each figure beside the sentence that states it. Six names are signed as golden files. **The demo opens on names whose position reproduces; the standing cost figures below come from the persisted cost log, which does not capture narration (Rule 43), so every estimate drawn from it understates any run that narrates.**
+Version 1.8 · September 2026 · Status: Session 25 — **6 signed**. The ladder names what each instrument IS, carries every committed facility whether drawn or not, and shows each figure beside the sentence that states it. Six names are signed as golden files at extraction v31, and the sixth rests on a **rolled position**: where the anchor's note carries no ladder and the anchor itself directs the reader to a specific note in a specific filing, that note's table becomes a labelled prior-period base, rolled forward to the anchor date through movements derived from the filings — and coverage is computed on it only when both ties hold (8.14). **The demo opens on names whose position reproduces; the standing cost figures below come from the persisted cost log, which does not capture narration (Rule 43), so every estimate drawn from it understates any run that narrates.**
+
+**What changed in 1.8:** a figure belongs to the period its own sentence predicates, and one stated as of an EARLIER date than the anchor's is not a current-position figure — it does not enter the position, its `figureSources`, or the position identity (6.0, Rule 71); a figure stated as of a LATER date is kept, because a later disclosure is fresher and BRD 6.0's authority rule already prefers it; where a figure's only source is the prior-period annual report and the anchor states that figure itself, the anchor's sentence is the evidence and the value is unchanged (6.0, Rule 72); a capacity row's figure is the facility's stated COMMITMENT SIZE taken from the size sentence, never the instrument's outstanding-amount field, and what is drawn stays a separate fact on its own evidence (8.6, Rule 74); coverage is computed on the rolled position where one reconciles, and a golden pins the roll itself — every base row with its sentence, both printed subtotals, every counted delta with the sentence stating it, and the roll tie — so a signature fixes the work and not only the result (8.8, 8.14); and a run described as free is checked against its own answer key before it runs (13.2, Rule 75).
 
 **Addendum, added after Session 21 closed:** the four demo cards were read against their filings as an RM reads them. Every fact is correct and sourced; three of the four stories are weak, and every story failure has one root — the tool knows what each number is and not what it is for. Nine rules follow, logged in 13.2d. Session 21 itself is unchanged and stays closed.
 
@@ -720,6 +722,64 @@ named. Where the model cites nothing and the quote verified, the corpus
 supplies the citation. A company reporting no citations had five verified
 triggers and an empty filing set — and a golden pinned against no documents
 cannot fail. (Rule 44.)
+
+### 8.14 The rolled position (v1.8 — Session 25)
+
+A ladder may rest on a **prior-period base rolled forward**, and only under a
+conjunction that no single signal satisfies.
+
+**When it fires.** The anchor's own note yields no ladder **AND** the anchor
+itself directs the reader to a named note in a named filing, in its own
+verified words. A cross-reference alone is not sufficient — Quest carries three
+debt-specific pointers beside a full twelve-tranche ladder, and firing on the
+pointer would replace a good ladder with a rolled one. Absence alone is not
+sufficient either — UHS has no ladder and nine boilerplate pointers. A pointer
+that names nothing points at a document rather than a disclosure, and so at no
+note at all.
+
+**What the base is, and what it is never.** The referenced table is the
+**labelled prior-period base** — "as of <base date>, per <note>, rolled to
+<anchor date>" — carried with that label or not at all. It never becomes a row
+on the current ladder under the anchor's own period. Being allowed to read a
+table as a base is not being allowed to substitute it for the position.
+
+**Two ties, reported separately, and both required.** The base tie asks whether
+the transcribed ROWS sum to the subtotals the same table prints — not whether
+the model copied two numbers, which is a different and weaker question. The
+roll tie asks whether the movements between the two dates account for the
+distance to the anchor's own stated total. Either alone is satisfiable by an
+error: a base that ties under a roll that misses means real movement is
+missing, and a roll that lands under a base that does not tie means two errors
+cancelled.
+
+**The band is earned, never assumed.** Zero unless the filer states a figure as
+an approximation; a roll built only of exact figures must tie exactly. Where a
+figure is stated twice and one sentence hedges, the hedged sentence is the
+evidence — asserting a precision the filer did not consistently claim is the
+worse error.
+
+**Every movement is placed by its own date.** Before the base date it is
+already IN the base and moves nothing — and that claim is checked against the
+transcription, because "the base already carries it" left unchecked lets a roll
+tie for the wrong reason. Between the dates it is a delta. After the anchor it
+is a subsequent event. An intent is excluded by status rather than by date,
+with its reason carried: a roll that counted one would report money that has
+not left.
+
+**Coverage switches to the rolled position only when both ties hold**, and the
+rolled entries then REPLACE the anchor's rows rather than joining them — adding
+a base to a table the anchor also prints would double the company's debt. Each
+counted movement enters as its own entry so the walk is readable rather than
+collapsed into one rolled number nobody can attribute. If either tie fails,
+coverage stays on the rows the anchor states, the base renders prior-period
+only with the gap stated, and the name does not sign.
+
+**A signature over a rolled position pins the roll.** `state.rolled` carries
+every base row with its sentence, both printed subtotals against the rows
+preceding them, every counted delta with the sentence and document stating it,
+and the roll tie — all of it blocking. Pinning only the coverage result would
+fix a conclusion and leave every input free: a base row dropped and a delta
+gained of the same size leaves every coverage figure matching.
 
 ## 9. User journeys
 

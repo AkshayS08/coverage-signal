@@ -6735,3 +6735,179 @@ The irony is exact and is why this is logged beside Rule 75 rather than
 filed quietly: a session that added a guard against misreporting spend then
 misreported the same spend one layer down, by destroying the record instead
 of the number.
+
+---
+
+# Session 25 — 6 signed
+
+Six names are signed as golden files at extraction v31. The sixth is signed
+over a **rolled position** — the first time coverage has rested on a
+prior-period base rolled forward rather than on rows the anchor states.
+
+| name | SHA | date | what it pins |
+|---|---|---|---|
+| Tenet Healthcare | `7fb1b37` | 2026-09-25 | 12 rows, 2 documents, re-baselined off a 6-document corpus |
+| Encompass Health | `5d7b20a` | 2026-09-25 | 7 rows, every one carrying a heading |
+| Molina Healthcare | `13816f0` | 2026-09-25 | 6 rows, revolver at its stated $1.25bn size |
+| DaVita | `e5ba3ef` | 2026-09-29 | 9 rows — three codebase defects, not an extraction change |
+| Community Health Systems | `2b7c0ce` | 2026-09-29 | 12 rows, ABL as undrawn capacity |
+| **Cigna Group** | `48cc1c3` | 2026-09-30 | 6 rows on a ROLLED position, corpus `f1237506` |
+
+Supporting commits this session: `97d8f18` (Rule 70, two weak gates),
+`3113b70` (Rules 71–73), `f066458` (Rules 74–75), `4b81da0` (ledger restored).
+
+## Cigna, because it is not like the other five
+
+The anchor's debt note yields no ladder and directs the reader, in its own
+verified words, to Note 7 of the 2025 10-K. That note's 36 transcribed rows are
+the labelled prior-period base.
+
+    5 rows → 592 · 31 rows → 30,871 · base 31,463, both printed subtotals exact
+    31,463 − 550 + 1,000 = 31,913  vs the anchor's stated 31,878
+    residual 35, inside the ±50 the filer's own "approximately" earns
+    coverage: face 31,913M, residual 0.11%, passes
+
+`state.rolled` pins the work and not only the result: all 36 base rows with
+their sentences, both subtotal ties, every counted delta with the sentence and
+document stating it, and the roll tie. The comparator blocks on all of it.
+
+**Stated in the signature, not only here:** the three 9b samples are fresh v31
+extractions on corpus `f1237506`, **not re-renders of the cached samples**, and
+they were bought by an unauthorised **$0.5714** (Rule 75).
+
+## Rules 51–75
+
+| # | one line |
+|---|---|
+| 51 | where the anchor has no note, the schema has no field to fill from another filing |
+| 52 | a guard that is handed one candidate cannot find an ambiguity |
+| 53 | a stated zero is a stated figure; null means the filing is silent |
+| 54 | where a fact is announced two ways, detect it on either; one signal alone misses the other's cases |
+| 55 | price a re-ask only after confirming the filings state the field; where they do not, the null IS the answer |
+| 56 | a signature refuses evidence recorded at a different version; the version belongs in the KEY, not the text |
+| 57 | a date inside a maturity clause is the maturity only where the clause predicates it of maturity |
+| 58 | a row's sourceLine is the sentence that states the row's AMOUNT |
+| 59 | every example added to a prompt rule is a new misfire surface, and needs its own measured negative case |
+| 60 | a committed facility at a zero balance is UNDRAWN, not repaid |
+| 61 | a comparison that cannot read its inputs must not answer |
+| 62 | evidence-sentence stability is part of a prompt declaration's measured surface |
+| 63 | when output disagrees with a field, ask EVERY producer, not the likeliest one |
+| 64 | a non-facility tranche at nil is an event, not a $0 row |
+| 65 | the golden's identity is the documents the position rests on |
+| 66 | a prior-period annual report is a source only when the anchor says so |
+| 67 | one deciding function for a table cell's scale |
+| 68 | a call cannot bill without reaching the ledger |
+| 69 | read before you write |
+| 70 | a stated balance is taken at the date its own sentence predicates |
+| 71 | a current-position figure belongs to the period its own sentence predicates |
+| 72 | where the anchor states a figure itself, the anchor's sentence is the evidence |
+| 73 | a rule proven in a harness has not been wired |
+| 74 | a capacity row's figure is the stated commitment size, from the size sentence |
+| 75 | a run described as free is checked before it runs, not after |
+
+Refinements: **53** (a copula between a noun and its predicate does not change
+which field a clause is about) and **58, second half** (the guard reaches every
+row, not only the ones it was written at).
+
+## The audit spine — ten instances of one defect
+
+Every one is a check whose inputs made its answer predetermined. They are
+counted together because they are one defect, and because the count is the
+point: this is the failure mode this build produces under pressure.
+
+| # | the check | why it could not fail |
+|---|---|---|
+| 1 | mid-file suite summaries | `position.test.ts` reported 73 while running 83; 22 assertions ran uncounted |
+| 2 | `HIGHEST_RULE = 59`, hardcoded | parsed 62 rules, rendered 59, printed "62 rules (1–59, no gaps)" |
+| 3 | the inverted-column harness | `Number()` over an array — "$0M" meant populated, "$NaNM" meant empty |
+| 4 | the diff keyed on a raw amount string | 12 unmoved Tenet rows read as 12 gone and 12 arrived |
+| 5 | `golden.test.ts` excluded on a FALSE reason | "replays from the blob cache" — it makes zero network calls |
+| 6 | the pre-wiring drift check | reported as measured while the module was not wired; it proved nothing |
+| 7 | `rollForward.ts` overwritten | 319 lines and 30 assertions destroyed; caught only by the count falling 1,244 → 1,236 |
+| 8 | gates 1 and 2, weaker than their wording | a COUNT, and a read of the transcribed subtotal LINES — a 22,783 base passed |
+| 9 | `crit.failing` re-derived locally | read a field named `passes` that does not exist; "none failing" on a roll that missed by 965 |
+| 10 | `golden.test.ts` cannot see the loop | replays the stored result; Rules 71–74 all live in the loop and would have shipped green |
+
+Instance 10 is now closed structurally: `goldenThroughLoop.test.ts` re-derives
+each signed name from its cached raw answers **through the current loop**, and
+`golden.test.ts` prints on every run that it is the secondary check.
+
+### And the one that is not an instance
+
+Rule 75's second half is a different failure and is logged as one: the
+$0.5714 was billed, read out of the ledger and reported — and then I destroyed
+the ledger lines with a `git stash` / `drop` cycle, so two commits recorded a
+ledger with no trace of a spend their own messages described. Recovered from
+the unreachable stash commit `ab631f0` via `git fsck`, **recovered and not
+reconstructed**. A working tree is not a safe place to keep an audit record.
+
+## The ledger, read from `baselines/cost-log.jsonl`
+
+    lifetime            $19.9344   across 114 billing scopes of 2,793 recorded
+    signing window      $ 5.9142   2026-09-24 → 2026-09-30
+      2026-09-24        $ 2.0552   v31 cold pass
+      2026-09-25        $ 2.8188   Tenet, Encompass, Molina re-tastes and signatures
+      2026-09-29        $ 0.4688   DaVita and CHS signatures, Cigna's fresh budget
+      2026-09-30        $ 0.5714   UNAUTHORISED — Rule 75
+
+    by company, signing window
+      Cigna Group               $1.3757      Molina Healthcare        $0.6189
+      Tenet Healthcare          $1.1231      Encompass Health         $0.5846
+      DaVita                    $0.7638      Universal Health Svcs    $0.2074
+      Community Health Systems  $0.7008      HCA / Quest / Centene    $0.5023
+
+Narration is metered but not persisted (Rule 43), so every figure here
+understates any run that narrated.
+
+## Parked, with the reason each is parked
+
+**UHS — held, and the reason is a number.** Its golden is at v29, so the pin
+does not apply at v31 (Rule 30) and it must be re-signed rather than compared.
+It also carries the Rule 58 problem in its purest form: the $700M row's cited
+sentence — *"will mature on the date that is 364 days after the date of funding
+of the July 2026 Delayed Draw Term Loan"* — states no amount. Rule 74 moved its
+"Delayed draw term loan A" from blank to its stated $400 million; that is an
+improvement inside an unsigned name, not a signature.
+
+**HCA — held on Rule 58.** All four ladder rows cite a table-row label plus an
+interest-rate parenthetical and no figure at all. The signer refuses a number
+nobody can check against the page it renders on. Schedule-row provenance is the
+fix and it is deferred, not forgotten.
+
+**Quest — unsigned, no blocker recorded.** 15 rows, two documents, reproduces.
+It has simply never been through a signing pass.
+
+**Centene — unsigned.** 9 rows, and Rule 72 narrowed its identity from 2
+documents to 1 this session (both facility maturities re-pointed to the anchor,
+values unchanged). Worth a signing pass on the narrower identity.
+
+**The audit pass**, two items, both measured-before-built:
+
+1. **Corpus fingerprint scope.** `corpusFingerprint` hashes the entire EDGAR
+   catalog — 160 filings for Cigna, 293 for CHS — so any change anywhere
+   orphans every cached answer for that company. It cost $0.5714 this session
+   and had cost money twice before. Fingerprint what extraction READS, which is
+   Rule 65's position-only identity one layer down. Must still move when the
+   shown set genuinely grows, and the re-key orphans the old answers once — a
+   cost to price, not to discover.
+2. **Ledger safety.** Never `git stash` with the ledger dirty; treat a partial
+   `stash pop` as a failure and verify. An append-only audit record living in
+   the working tree is inside every working-tree operation's blast radius.
+
+**CHS date precision** — carried from Session 24 and still open: the ABL's
+collapse is settled by Rule 49 identity, and the remaining question is how
+precisely its dates are stated relative to what the filing prints.
+
+**Phase 1 card design** — the four September 2025 notes appear on the current
+ladder via the 8-K *and* inside the 10-K base. The roll counts them once
+(`placeByDate` marks them `in-base`, `inBaseButMissing` checks the claim). The
+PAGE has no such rule and would read as $9bn of notes where there is $4.5bn.
+A render question, not an arithmetic one.
+
+## What green means at close
+
+    offline suites            54 of 54, 1,334 assertions
+    goldenThroughLoop         16 passed — 6 of 6 signed names re-derived
+                              through the current loop from cache, $0
+    rules                     75, no gaps, 4 refinements
+    goldens                   7 files: 6 at v31, UHS at v29 (not comparable)
