@@ -137,6 +137,37 @@ const REBASELINE_REASON: Record<string, string> = {
     "Facility figures identical across all three v31 runs.",
 };
 
+/**
+ * WHAT THIS PARTICULAR SIGNATURE HAS TO SAY FOR ITSELF, beyond the standard
+ * basis. A first signature has no re-baseline reason, and some of them still
+ * carry a fact the next reader needs — which corpus is pinned, and how the
+ * evidence was obtained.
+ */
+const SIGNING_NOTE: Record<string, string> = {
+  "Cigna Group":
+    "CORPUS PINNED: f1237506 — the September 2025 pricing 8-K and the June 2026 10-Q. " +
+    "THE THREE 9b SAMPLES ARE FRESH v31 EXTRACTIONS ON THAT CORPUS, NOT RE-RENDERS OF THE CACHED SAMPLES, " +
+    "and they were bought by an UNAUTHORISED $0.5714 (Rule 75): the filing-list cache passed its 24-hour TTL " +
+    "mid-session, EDGAR returned a changed catalog, the fingerprint moved 813c7d6b → f1237506, and three " +
+    "re-renders that had been free an hour earlier re-extracted live under an instruction that said no spend. " +
+    "What it bought is what 9b asks for — three independent asks at one version against one corpus — and it is " +
+    "recorded here as what it is rather than presented as the measurement that was authorised. " +
+    "THIS IS THE FIRST SIGNATURE OVER A ROLLED POSITION. Coverage is not computed on rows the anchor states: " +
+    "the anchor's debt note yields no ladder and directs the reader, in its own verified words, to Note 7 of the " +
+    "2025 10-K. That note's 36 transcribed rows are the labelled prior-period base, rolled forward to the anchor " +
+    "date through movements derived from the filings. The signature pins the WORK and not only the result — " +
+    "`state.rolled` carries all 36 base rows with their sentences, both printed subtotals against the rows that " +
+    "precede them, every counted delta with the sentence and document stating it, and the roll tie — so a later " +
+    "change that dropped a row and gained an equal delta would still fail, though every coverage figure matched. " +
+    "THE LOAD-BEARING ASSUMPTION, STATED: commercial paper outstanding at the base date is ZERO, sourced to the " +
+    "10-K twice (the MD&A sentence and the note table's em-dash). The CP delta is therefore the whole closing " +
+    "balance rather than an increment, so if that base is not zero the roll is wrong by exactly the amount it is " +
+    "not. AND THE HEDGE SURVIVES: the anchor states the $1.0 billion twice, once qualified and once not; the " +
+    "qualified sentence is the evidence, because asserting a precision the filer did not consistently claim would " +
+    "be worse — and because it is also the reading under which the roll ties. The contrary reading gives no band " +
+    "and a 35 miss, and is available to anyone who wants it.",
+};
+
 const SIGNED = process.argv.slice(2);
 
 (async () => {
@@ -208,6 +239,7 @@ const SIGNED = process.argv.slice(2);
           `(Rule 46) — belonging clean, 0 composites. ` +
           `Facility maturities verified against their own sentences; where the instrument's own cited sentence does not ` +
           `state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. ` +
+          `${SIGNING_NOTE[company] ? `${SIGNING_NOTE[company]} ` : ""}` +
           `${reproduced}` +
           // THE TOLERATED SET, IN THE SIGNATURE. Non-negotiable per the
           // signer's ruling: a golden over a name the filing prints two ways

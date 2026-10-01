@@ -100,6 +100,50 @@ export interface GoldenState {
   tier2: { kind: string; date: string | null; effect: number | null; nets: string | null; instrument: string }[];
   rowsOutsideSubtotal: number;
   cards: GoldenCard[];
+  /**
+   * SESSION 25 — THE ROLLED POSITION, PINNED, BECAUSE IT IS WHAT MAKES
+   * COVERAGE PASS.
+   *
+   * Coverage switched to the rolled position, and this state pinned the
+   * RESULT of that — `capturedFace`, `residualPercent`, `residualPasses` —
+   * while pinning nothing about how it was reached. A signature over Cigna
+   * would have fixed "0.11%, passes" and left free every input that produces
+   * it: which 36 rows were transcribed, whether they still tie to the two
+   * subtotals the 10-K prints, which movements the roll counts, and whether
+   * the walk still lands inside the band the filer's own "approximately"
+   * earns.
+   *
+   * That is a signature over a conclusion rather than over the work, and this
+   * project has a name for it: a check whose inputs are free is a check whose
+   * answer is predetermined. If a later change silently dropped a base row
+   * and silently gained a delta of the same size, every pinned coverage
+   * figure would still match.
+   *
+   * Null for the nine names whose roll does not fire. Optional so the five
+   * goldens signed before this field still parse and still compare — their
+   * roll does not fire, so both sides are absent and nothing diverges.
+   */
+  rolled?: GoldenRolled | null;
+}
+
+/** What the roll rests on, in the shape a reader can check line by line. */
+export interface GoldenRolled {
+  /** The label every rolled row renders under — "as of X, per Y, rolled to Z". */
+  label: string;
+  /** Every transcribed base row, with the sentence it came from. */
+  baseRows: { instrument: string; amountMillions: number; sourceLine: string }[];
+  /** Each printed subtotal against the rows that precede it. */
+  baseSections: { label: string; rowCount: number; computedMillions: number; statedMillions: number | null; ties: boolean }[];
+  baseComputedMillions: number;
+  baseTies: boolean;
+  /** The movements the roll counts, each with the sentence stating it and the document it is in. */
+  deltas: { instrument: string; amountMillions: number; statedAs: string; date: string | null; sourceLine: string; citedUrl: string }[];
+  rollComputedMillions: number;
+  rollStatedMillions: number | null;
+  rollResidualMillions: number | null;
+  rollTies: boolean;
+  /** Zero unless a delta is stated as an approximation by the filer. */
+  toleranceMillions: number;
 }
 
 export interface GoldenFile {
@@ -239,7 +283,8 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
   const pos = assemblePosition(result, asOf);
   // SESSION 25 — coverage is computed on the ROLLED position where one
   // reconciles, so a signed state pins what the page shows.
-  const cov = computeCoverage(dm, undefined, undefined, rolledCoverageFor(result));
+  const rc = rolledCoverageFor(result);
+  const cov = computeCoverage(dm, undefined, undefined, rc);
   const anchor = dm?.debtScheduleSourceFiling ?? null;
   const cards = buildEvents([result], asOf).flashCardCandidates;
 
@@ -265,6 +310,35 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
     },
     tier2: pos.tier2.events.map((e) => ({ kind: e.kind, date: e.date, effect: e.effect, nets: e.nets, instrument: e.instrument })),
     rowsOutsideSubtotal: pos.rowsOutsideSubtotal.length,
+    // Pinned only where the roll COUNTS. A roll that fired and failed a tie
+    // contributes nothing to coverage, so there is nothing about it for a
+    // signature to fix — and recording a failed roll here would make the
+    // field look load-bearing when it is not.
+    rolled: rc.counts
+      ? {
+          label: rc.label,
+          baseRows: rc.entries
+            .filter((e) => e.kind === "base-row")
+            .map((e) => ({ instrument: e.label, amountMillions: e.amountMillions, sourceLine: e.sourceLine })),
+          baseSections: rc.baseTie.sections.map((x) => ({
+            label: x.label, rowCount: x.rowCount, computedMillions: x.computedMillions,
+            statedMillions: x.statedMillions, ties: x.ties,
+          })),
+          baseComputedMillions: rc.baseTie.computedMillions,
+          baseTies: rc.baseTie.ties,
+          deltas: rc.movements
+            .filter((m) => m.placement === "delta")
+            .map((m) => ({
+              instrument: m.instrument, amountMillions: m.amountMillions, statedAs: m.statedAs,
+              date: m.date, sourceLine: m.sourceLine, citedUrl: m.citedUrl,
+            })),
+          rollComputedMillions: rc.rollTie.computedMillions,
+          rollStatedMillions: rc.rollTie.statedMillions,
+          rollResidualMillions: rc.rollTie.residualMillions,
+          rollTies: rc.rollTie.ties,
+          toleranceMillions: rc.toleranceMillions,
+        }
+      : null,
     cards: cards.map((card) => {
       const block = buildDerivedLines({ card, position: pos, debtMaturity: dm, newDebtIssuance: nd, asOf });
       return {
@@ -535,6 +609,52 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
     cmp(`coverage.${k}`, expected.coverage[k], actual.coverage[k]);
   }
   cmp("rowsOutsideSubtotal", expected.rowsOutsideSubtotal, actual.rowsOutsideSubtotal);
+
+  // THE ROLLED POSITION IS BLOCKING, because it is what makes coverage pass.
+  //
+  // Comparing the ties and the totals alone would not be enough: a base row
+  // dropped and a delta gained of the same size leaves every total identical.
+  // So the ROWS and the DELTAS are compared line by line, each against the
+  // sentence it was signed with, and the label too — a rolled row that stops
+  // saying it is rolled is the substitution this whole design exists to
+  // prevent.
+  const er = expected.rolled ?? null;
+  const ar = actual.rolled ?? null;
+  if (!er && !ar) {
+    // Neither side rolls. Nothing to compare, and that is the ordinary case
+    // for nine names in ten.
+  } else if (!er || !ar) {
+    d.push(
+      `rolled: ${er ? "the signed state was computed on a ROLLED position and this run is not" : "this run is computed on a ROLLED position and the signed state was not"}. ` +
+        `Coverage is being reached a different way than the one that was signed, which is a change in the answer and not in its presentation.`
+    );
+  } else {
+    cmp("rolled.label", er.label, ar.label);
+    cmp("rolled.baseTies", er.baseTies, ar.baseTies);
+    cmp("rolled.baseComputedMillions", er.baseComputedMillions, ar.baseComputedMillions);
+    cmp("rolled.baseRows.count", er.baseRows.length, ar.baseRows.length);
+    for (let i = 0; i < Math.min(er.baseRows.length, ar.baseRows.length); i++) {
+      const e = er.baseRows[i], a = ar.baseRows[i];
+      cmp(`rolled.baseRows[${i}].instrument`, e.instrument, a.instrument);
+      cmp(`rolled.baseRows[${i}].amountMillions`, e.amountMillions, a.amountMillions);
+      cmp(`rolled.baseRows[${i}].sourceLine`, e.sourceLine, a.sourceLine);
+    }
+    cmp("rolled.baseSections.count", er.baseSections.length, ar.baseSections.length);
+    for (let i = 0; i < Math.min(er.baseSections.length, ar.baseSections.length); i++) {
+      for (const k of ["label", "rowCount", "computedMillions", "statedMillions", "ties"] as const) {
+        cmp(`rolled.baseSections[${i}].${k}`, er.baseSections[i][k], ar.baseSections[i][k]);
+      }
+    }
+    cmp("rolled.deltas.count", er.deltas.length, ar.deltas.length);
+    for (let i = 0; i < Math.min(er.deltas.length, ar.deltas.length); i++) {
+      for (const k of ["instrument", "amountMillions", "statedAs", "date", "sourceLine", "citedUrl"] as const) {
+        cmp(`rolled.deltas[${i}].${k}`, er.deltas[i][k], ar.deltas[i][k]);
+      }
+    }
+    for (const k of ["rollComputedMillions", "rollStatedMillions", "rollResidualMillions", "rollTies", "toleranceMillions"] as const) {
+      cmp(`rolled.${k}`, er[k], ar[k]);
+    }
+  }
 
   cmp("tier2.count", expected.tier2.length, actual.tier2.length);
   for (let i = 0; i < Math.min(expected.tier2.length, actual.tier2.length); i++) {

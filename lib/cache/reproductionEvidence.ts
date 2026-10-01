@@ -160,6 +160,36 @@ export const REPRODUCTION_EVIDENCE: ReproductionEvidence[] = [
       "the revolver is named \"revolving credit facility\" in one run and \"Credit Facility\" in two — the filing uses both. Same $1.25 billion, same 2030-11-20 maturity, same class in all three. A reader may see either name.",
     ],
   },
+  // ── v31, Session 25 ────────────────────────────────────────────────────
+  //
+  // THE ONLY ENTRY IN THIS TABLE WHOSE SAMPLES WERE NOT BOUGHT ON PURPOSE,
+  // and it says so because a reader of a signature is entitled to know how
+  // its evidence was obtained.
+  //
+  // Cigna's filing-list cache passed its 24-hour TTL mid-session and EDGAR
+  // returned a changed catalog, moving the corpus fingerprint 813c7d6b →
+  // f1237506 and orphaning every cached answer for the company. Three
+  // re-renders that had been free an hour earlier re-extracted live and
+  // billed $0.5714 against an instruction that said no spend (Rule 75).
+  //
+  // What that bought is nonetheless exactly what 9b asks for: three
+  // independent extractions at v31 against one corpus. They are FRESH ASKS,
+  // not re-renders of the cached samples — which is a stronger sample in one
+  // sense and a different measurement from the one that was authorised.
+  // Recorded as what it is.
+  {
+    company: "Cigna Group", version: 31, runs: 3, recordedOn: "2026-09-30",
+    evidence:
+      "Three independent v31 extractions against corpus f1237506 (canonical + CACHE_BUST x2), unintentionally bought — see Rule 75. " +
+      "Identical in all three: the position identity (2 documents — the September 2025 pricing 8-K and the June 2026 10-Q), the ladder row for row " +
+      "(4 senior-note tranches, the $6.5bn revolver as capacity, the commercial paper programme at $1.0bn), the base tie " +
+      "(5 rows → 592 and 31 rows → 30,871, both exact against the 10-K's own printed subtotals, 31,463 total), the roll tie " +
+      "(31,463 − 550 + 1,000 = 31,913 against the anchor's stated 31,878, residual 35 inside the ±50 the filer's own \"approximately\" earns), " +
+      "coverage (31,913 face, residual 0.11%, passes), criteria 4 and 6, and the full computed-criteria verdict.",
+    toleratedDifferences: [
+      "the three runs fire a different NUMBER of triggers (5, 4 and 5) — large-cash-balance and floating-rate-debt come and go. None of them touches the position: the roll reads only debt-maturity and new-debt-issuance, both fired in all three, and a non-position citation is not identity-bearing (Rule 65). A reader may see a different count of non-refi signals.",
+    ],
+  },
 ];
 
 export type EvidenceLookup =

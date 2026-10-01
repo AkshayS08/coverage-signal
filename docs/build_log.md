@@ -6608,3 +6608,88 @@ green is never read as a claim it cannot make.
 
 The replay stays. It is the right test for the derivation half, and it is
 labelled as that and nothing more.
+
+## CIGNA SIGNED AT v31 — the first signature over a rolled position
+
+Six names signed. Cigna's is unlike the other five: **coverage is not computed
+on rows the anchor states.** The anchor's debt note yields no ladder and
+directs the reader, in its own verified words, to Note 7 of the 2025 10-K.
+That note's 36 transcribed rows are the labelled prior-period base, rolled
+forward through movements derived from the filings.
+
+**Corpus pinned: `f1237506`** — the September 2025 pricing 8-K and the June
+2026 10-Q.
+
+**The three 9b samples are FRESH v31 extractions on that corpus, not
+re-renders of the cached samples, and they were bought by an unauthorised
+$0.5714 (Rule 75).** What that bought is what 9b asks for — three independent
+asks at one version against one corpus — and it is recorded as what it is
+rather than presented as the measurement that was authorised. The signature
+and the evidence registry both say so.
+
+### The signature pins the work, not only the result
+
+`state.rolled` carries all 36 base rows with their sentences, both printed
+subtotals against the rows that precede them, every counted delta with the
+sentence and document stating it, and the roll tie. Before this, the state
+pinned `capturedFace`, `residualPercent` and `residualPasses` and left every
+input free — **a signature over a conclusion.** A later change that dropped a
+base row and gained a delta of the same size would have matched every pinned
+figure. `golden.test.ts` [10e] is that exact case, asserted.
+
+    5 rows → 592 · 31 rows → 30,871 · base 31,463, both exact
+    31,463 − 550 + 1,000 = 31,913  vs the anchor's stated 31,878
+    residual 35, inside the ±50 the filer's own "approximately" earns
+
+## LOGGED FOR PHASE 1 CARD DESIGN — the four September notes appear twice
+
+The $4.5bn of September 2025 notes are on the current ladder via the pricing
+8-K **and** inside the 10-K base, because they were priced before the base
+date. `rollDeltas.placeByDate` already handles the arithmetic: they place as
+`in-base`, contribute no delta, and `inBaseButMissing` checks the claim
+against the transcription so "the base already carries it" cannot be asserted
+unchecked. **The roll counts them once.**
+
+**The PAGE has no such rule.** A surface that renders the ladder and the
+rolled base side by side will show each tranche twice — once as a live row
+from the 8-K and once inside the 36-row base — and nothing currently says they
+are the same four instruments. That reads as $9bn of notes where there is
+$4.5bn.
+
+This is a render question and not an arithmetic one, and it is Phase 1's to
+answer: the two views are both correct and both wanted (a reader needs the
+current ladder AND the base the roll started from), so the fix is presentation
+— collapse, cross-reference, or a stated "also in the base" marker — not the
+removal of either. Not a defect in anything signed today; coverage is correct.
+
+## LOGGED FOR THE AUDIT PASS — fingerprint only what extraction reads
+
+`corpusFingerprint` hashes the company's **entire** EDGAR catalog: 160 filings
+for Cigna, 293 for CHS, every form, filing date, item code and URL. Anything
+that changes anywhere in that list moves the fingerprint and **orphans every
+cached answer for that company** — the base classification, every dig, every
+proceedsUse.
+
+It cost $0.5714 this session on a single catalog change, and `preflight.ts`
+was written after it cost money twice before. The exposure scales with the
+roster: at forty names this is a near-certainty on any given day.
+
+**The fix is Rule 65's principle one layer down.** Rule 65 narrowed a golden's
+identity from the fifteen-trigger citation union to the documents the POSITION
+rests on, because an `international-expansion` trigger citing one more 8-K was
+invalidating a signed ladder that never read it. A cache key has the same
+defect in the same shape: **a fingerprint should cover what extraction
+actually reads, not what EDGAR happens to list.**
+
+Measured before built, as Rule 65 was: take the candidate key — the filings
+actually fetched into the corpus, or the catalog SUBSET the prompt is shown —
+and replay how often each definition would have moved across the sessions
+already on record. A narrowing that cannot be shown to be stable is a
+narrowing that moves the instability somewhere harder to see.
+
+Two things to settle in that pass, both of which Rule 65 also had to answer:
+a narrower key must still change when a genuinely new filing enters the set
+the model is shown (otherwise a stale answer is served about a corpus that
+grew), and the old keys do not disappear — a re-key orphans every answer
+written under the old one exactly once, which is a one-time cost to price
+rather than a surprise to discover.

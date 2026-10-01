@@ -405,5 +405,66 @@ console.log("\n=== [9] SESSION 24 — A NON-POSITION CITATION IS NOT THE GOLDEN'
     `[9e] REVERSE: a change to a LADDER ROW still diverges — moving citations out of the identity did not move rows out of it (got ${rowMoved.kind})`);
 }
 
+console.log("\n=== [10] THE ROLLED POSITION IS PINNED, AND MOVING IT BLOCKS ===");
+{
+  // Coverage is computed on the rolled position where one reconciles, so a
+  // signature that pinned only "residual 0.11%, passes" would fix a
+  // conclusion and leave every input free. The failure that motivates each
+  // assertion below is the same one: totals that still match while the work
+  // behind them has changed.
+  const rolledBase = (over: Partial<NonNullable<GoldenState["rolled"]>> = {}) => ({
+    label: "as of 2025-12-31, per 10-K debt note, rolled to 2026-06-30",
+    baseRows: [
+      { instrument: "4.500% Notes due 2030", amountMillions: 993, sourceLine: "4.500% Notes due September 2030 993" },
+      { instrument: "Commercial paper", amountMillions: 0, sourceLine: "Commercial paper —" },
+    ],
+    baseSections: [{ label: "Total long-term debt", rowCount: 2, computedMillions: 993, statedMillions: 993, ties: true }],
+    baseComputedMillions: 993,
+    baseTies: true,
+    deltas: [{ instrument: "Commercial paper program", amountMillions: 1000, statedAs: "$ 1.0 billion", date: "2026-06-30", sourceLine: "had approximately $ 1.0 billion outstanding as of June 30, 2026", citedUrl: "https://sec.gov/anchor.htm" }],
+    rollComputedMillions: 1993,
+    rollStatedMillions: 1993,
+    rollResidualMillions: 0,
+    rollTies: true,
+    toleranceMillions: 50,
+    ...over,
+  });
+  const withRoll = (r: unknown): GoldenState => ({ ...base(), rolled: r as GoldenState["rolled"] });
+
+  assert(compareToGolden(withRoll(rolledBase()), withRoll(rolledBase())).kind === "matches",
+    "[10a] an unchanged rolled position matches — the field is compared, not merely carried");
+
+  assert(compareToGolden(withRoll(rolledBase()), withRoll(null)).kind === "diverged",
+    "[10b] a signed state that ROLLED against a run that does not is a divergence: coverage is being reached a different way than the one that was signed");
+  assert(compareToGolden(withRoll(null), withRoll(rolledBase())).kind === "diverged",
+    "[10c] and the reverse too — a run that starts rolling under a signature that did not is equally a changed answer");
+  assert(compareToGolden(withRoll(null), withRoll(null)).kind === "matches",
+    "[10d] while two states that neither roll match, which is the ordinary case for nine names in ten");
+
+  // THE CASE EVERY TOTAL SURVIVES. One base row lighter, one delta heavier by
+  // the same amount: baseComputed moves, but if only the ROLL total were
+  // pinned this would pass with a different position underneath it.
+  const swapped = rolledBase({
+    baseRows: [
+      { instrument: "4.500% Notes due 2030", amountMillions: 893, sourceLine: "4.500% Notes due September 2030 993" },
+      { instrument: "Commercial paper", amountMillions: 0, sourceLine: "Commercial paper —" },
+    ],
+    baseComputedMillions: 893,
+    deltas: [{ instrument: "Commercial paper program", amountMillions: 1100, statedAs: "$ 1.1 billion", date: "2026-06-30", sourceLine: "had approximately $ 1.0 billion outstanding as of June 30, 2026", citedUrl: "https://sec.gov/anchor.htm" }],
+  });
+  const v = compareToGolden(withRoll(rolledBase()), withRoll(swapped));
+  assert(v.kind === "diverged" && v.divergences.some((x) => x.startsWith("rolled.baseRows[0].amountMillions")) && v.divergences.some((x) => x.startsWith("rolled.deltas[0].amountMillions")),
+    `[10e] A ROW DROPPED AND A DELTA GAINED OF THE SAME SIZE IS CAUGHT. The roll still lands on 1,993 and every coverage figure still matches; the rows and the deltas are compared line by line precisely so that identical totals cannot hide a different position (got ${v.kind})`);
+
+  const resourced = compareToGolden(withRoll(rolledBase()), withRoll(rolledBase({
+    deltas: [{ instrument: "Commercial paper program", amountMillions: 1000, statedAs: "$ 1.0 billion", date: "2026-06-30", sourceLine: "an outstanding balance of $ 1.0 billion as of June 30, 2026", citedUrl: "https://sec.gov/anchor.htm" }],
+  })));
+  assert(resourced.kind === "diverged",
+    "[10f] and a delta that keeps its figure while changing the SENTENCE behind it diverges — Rule 70's hedge lives in which sentence was chosen, and an unhedged one earns no band");
+
+  assert(compareToGolden(withRoll(rolledBase()), withRoll(rolledBase({ label: "as of 2025-12-31, per 10-K debt note" }))).kind === "diverged",
+    "[10g] a rolled row that stops saying it is ROLLED TO the anchor date diverges — a rolled row indistinguishable from one the anchor states is the substitution this design exists to prevent");
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed > 0) { console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`); process.exit(1); }
