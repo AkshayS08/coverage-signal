@@ -6693,3 +6693,45 @@ the model is shown (otherwise a stale answer is served about a corpus that
 grew), and the old keys do not disappear — a re-key orphans every answer
 written under the old one exactly once, which is a one-time cost to price
 rather than a surprise to discover.
+
+## RULE 75's SECOND HALF — AND I DESTROYED THE AUDIT RECORD OF ITS FIRST
+
+The $0.5714 of Rule 75 was billed, read out of the ledger, and reported. Then
+it vanished from the ledger, and the ledger is the only durable record of it.
+
+`git stash push -u` captured `baselines/cost-log.jsonl` among the modified
+files and reverted the working copy to the last commit — which predated the
+spend. The subsequent `git stash pop` failed partway on that very file, I
+restored the three SOURCE files I cared about with `git checkout stash@{0} --`,
+and then `git stash drop`ped the stash. **The dropped stash held the only copy
+of the three billing lines.** Both commits made afterwards recorded a ledger
+with no trace of the spend, while the build log and the commit messages said
+it had happened.
+
+Recovered from the unreachable stash commit `ab631f0` via `git fsck
+--unreachable` and re-appended verbatim, each stamped with a `restoredNote`
+saying what happened. **Recovered, not reconstructed** — the figures are the
+ones the meter wrote, not ones retyped from a transcript, and the distinction
+is the whole value of a ledger.
+
+**THE RULE: a working-tree operation is not a safe place to keep an audit
+record.** `git stash` is lossy by design — it reverts tracked files to HEAD,
+it can fail partway and leave a caller believing it succeeded, and `drop`
+destroys the only copy. An append-only ledger modified in the working tree is
+inside that blast radius like any other file.
+
+Two concrete consequences, both cheap:
+
+1. **Never stash with the ledger dirty.** Commit it first, or copy it outside
+   the repo. A stash taken over an audit record is a deletion with a delay.
+2. **A partial `git stash pop` must be treated as a failure, not a warning.**
+   It printed "The stash entry is kept in case you need it again", I read that
+   as reassurance, and it was in fact telling me the restore had not completed.
+   The tracked files were untouched and I did not check before moving on — the
+   same shape as every other instance in this session's audit spine: a step
+   reported as done, believed rather than verified.
+
+The irony is exact and is why this is logged beside Rule 75 rather than
+filed quietly: a session that added a guard against misreporting spend then
+misreported the same spend one layer down, by destroying the record instead
+of the number.
