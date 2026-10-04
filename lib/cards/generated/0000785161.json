@@ -1,0 +1,1454 @@
+{
+ "cik": "0000785161",
+ "company": "Encompass Health Corp",
+ "briefDate": "2026-10-04",
+ "weekFrom": "2026-09-28",
+ "weekTo": "2026-10-04",
+ "previousBrief": null,
+ "header": [
+  [
+   {
+    "k": "text",
+    "t": "Encompass Health Corp"
+   }
+  ],
+  [
+   {
+    "k": "text",
+    "t": "Brief week: Sept 28 to Oct 4, 2026 (first brief for this name: the trailing seven days)"
+   }
+  ],
+  [
+   {
+    "k": "text",
+    "t": "Position from "
+   },
+   {
+    "k": "filing",
+    "t": "10-Q for the quarter ended June 30, 2026, filed Aug 7, 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+   }
+  ]
+ ],
+ "thisWeek": {
+  "heading": "This week",
+  "lines": [
+   [
+    {
+     "k": "text",
+     "t": "No new filings affecting debt since Sept 28, 2026."
+    }
+   ]
+  ]
+ },
+ "headlines": {
+  "totalDebt": {
+   "heading": "Total debt",
+   "lines": [
+    [
+     {
+      "k": "text",
+      "t": "Total debt "
+     },
+     {
+      "k": "computed",
+      "t": "$2.6B",
+      "usd": 2634000000,
+      "parts": [
+       {
+        "printed": "$ 396.9 million",
+        "usd": 396900000,
+        "src": {
+         "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 788.4 million",
+        "usd": 788400000,
+        "src": {
+         "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 394.1 million",
+        "usd": 394100000,
+        "src": {
+         "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 491.0 million",
+        "usd": 491000000,
+        "src": {
+         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 200.0 million",
+        "usd": 200000000,
+        "src": {
+         "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 81.9 million",
+        "usd": 81900000,
+        "src": {
+         "sentence": "Other notes payable 81.9   93.6",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 281.7 million",
+        "usd": 281700000,
+        "src": {
+         "sentence": "Finance lease obligations 281.7   294.6",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " as of "
+     },
+     {
+      "k": "date",
+      "t": "June 30, 2026",
+      "date": "2026-06-30",
+      "granularity": "day",
+      "src": {
+       "sentence": "For the quarterly period ended June 30, 2026",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": ""
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$2.1B",
+      "usd": 2070400000,
+      "parts": [
+       {
+        "printed": "$ 396.9 million",
+        "usd": 396900000,
+        "src": {
+         "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 788.4 million",
+        "usd": 788400000,
+        "src": {
+         "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 394.1 million",
+        "usd": 394100000,
+        "src": {
+         "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 491.0 million",
+        "usd": 491000000,
+        "src": {
+         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "finance leases",
+      "stated": "Finance lease",
+      "src": {
+       "sentence": "Finance lease obligations 281.7   294.6",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$281.7M",
+      "usd": 281700000,
+      "parts": [
+       {
+        "printed": "$ 281.7 million",
+        "usd": 281700000,
+        "src": {
+         "sentence": "Finance lease obligations 281.7   294.6",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$200M",
+      "usd": 200000000,
+      "parts": [
+       {
+        "printed": "$ 200.0 million",
+        "usd": 200000000,
+        "src": {
+         "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "notes",
+      "src": {
+       "sentence": "Other notes payable 81.9   93.6",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$81.9M",
+      "usd": 81900000,
+      "parts": [
+       {
+        "printed": "$ 81.9 million",
+        "usd": 81900000,
+        "src": {
+         "sentence": "Other notes payable 81.9   93.6",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     }
+    ]
+   ]
+  },
+  "liquidity": {
+   "heading": "Liquidity",
+   "lines": [
+    [
+     {
+      "k": "text",
+      "t": "Liquidity "
+     },
+     {
+      "k": "computed",
+      "t": "$853.7M",
+      "usd": 853700000,
+      "parts": [
+       {
+        "printed": "$ 107.7 million",
+        "usd": 107700000,
+        "src": {
+         "sentence": "Cash and cash equivalents $ 107.7 $ 72.2",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 746 million",
+        "usd": 746000000,
+        "src": {
+         "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " as of "
+     },
+     {
+      "k": "date",
+      "t": "June 30, 2026",
+      "date": "2026-06-30",
+      "granularity": "day",
+      "src": {
+       "sentence": "For the quarterly period ended June 30, 2026",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "Cash plus stated availability, both stated as of the position date."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "Cash "
+     },
+     {
+      "k": "figure",
+      "t": "$107.7M",
+      "printed": "$ 107.7 million",
+      "src": {
+       "sentence": "Cash and cash equivalents $ 107.7 $ 72.2",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " as of "
+     },
+     {
+      "k": "date",
+      "t": "June 30, 2026",
+      "date": "2026-06-30",
+      "granularity": "day",
+      "src": {
+       "sentence": "For the quarterly period ended June 30, 2026",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+       "doc": "ehc-20260309.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "figure",
+      "t": "$1.0B",
+      "printed": "$ 1 billion",
+      "src": {
+       "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+       "doc": "ehc-20260309.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": " facility, "
+     },
+     {
+      "k": "figure",
+      "t": "~$746M",
+      "printed": "$ 746 million",
+      "src": {
+       "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " available as stated"
+     },
+     {
+      "k": "text",
+      "t": ", matures "
+     },
+     {
+      "k": "date",
+      "t": "March 9, 2031",
+      "date": "2031-03-09",
+      "granularity": "day",
+      "src": {
+       "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+       "doc": "ehc-20260309.htm"
+      }
+     }
+    ]
+   ]
+  },
+  "due24": {
+   "heading": "Due in 24 months (to Oct 4, 2028)",
+   "lines": [
+    [
+     {
+      "k": "figure",
+      "t": "$396.9M",
+      "printed": "$ 396.9 million",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", "
+     },
+     {
+      "k": "date",
+      "t": "2028",
+      "date": "2028",
+      "granularity": "year",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "notStated",
+      "t": "security not stated, please refer to sources",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " — "
+     },
+     {
+      "k": "label",
+      "t": "4.50 % Senior Notes due 2028",
+      "stated": "4.50 % Senior Notes due 2028",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · year only stated, may fall within 24 months, see source"
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "next: "
+     },
+     {
+      "k": "figure",
+      "t": "$396.9M",
+      "printed": "$ 396.9 million",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", "
+     },
+     {
+      "k": "date",
+      "t": "2028",
+      "date": "2028",
+      "granularity": "year",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "notStated",
+      "t": "security not stated, please refer to sources",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " — "
+     },
+     {
+      "k": "label",
+      "t": "4.50 % Senior Notes due 2028",
+      "stated": "4.50 % Senior Notes due 2028",
+      "src": {
+       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     }
+    ]
+   ]
+  }
+ },
+ "ladder": {
+  "heading": "Maturity ladder",
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2028"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$396.9M",
+       "printed": "$ 396.9 million",
+       "src": {
+        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "date",
+       "t": "2028",
+       "date": "2028",
+       "granularity": "year",
+       "src": {
+        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
+       "src": {
+        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " — "
+      },
+      {
+       "k": "label",
+       "t": "4.50 % Senior Notes due 2028",
+       "stated": "4.50 % Senior Notes due 2028",
+       "src": {
+        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2030"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$788.4M",
+       "printed": "$ 788.4 million",
+       "src": {
+        "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "date",
+       "t": "2030",
+       "date": "2030",
+       "granularity": "year",
+       "src": {
+        "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
+       "src": {
+        "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " — "
+      },
+      {
+       "k": "label",
+       "t": "4.75 % Senior Notes due 2030",
+       "stated": "4.75 % Senior Notes due 2030",
+       "src": {
+        "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2031"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$394.1M",
+       "printed": "$ 394.1 million",
+       "src": {
+        "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "date",
+       "t": "2031",
+       "date": "2031",
+       "granularity": "year",
+       "src": {
+        "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
+       "src": {
+        "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " — "
+      },
+      {
+       "k": "label",
+       "t": "4.625 % Senior Notes due 2031",
+       "stated": "4.625 % Senior Notes due 2031",
+       "src": {
+        "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ],
+     [
+      {
+       "k": "figure",
+       "t": "$200M",
+       "printed": "$ 200.0 million",
+       "src": {
+        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "revolver",
+       "stated": "revolv",
+       "src": {
+        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "date",
+       "t": "March 9, 2031",
+       "date": "2031-03-09",
+       "granularity": "day",
+       "src": {
+        "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+        "doc": "ehc-20260309.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
+       "src": {
+        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " — "
+      },
+      {
+       "k": "label",
+       "t": "Advances under revolving credit facility",
+       "stated": "Advances under revolving credit facility",
+       "src": {
+        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2034"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$491M",
+       "printed": "$ 491.0 million",
+       "src": {
+        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "date",
+       "t": "2034",
+       "date": "2034",
+       "granularity": "year",
+       "src": {
+        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
+       "src": {
+        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " — "
+      },
+      {
+       "k": "label",
+       "t": "5.875 % Senior Notes due 2034",
+       "stated": "5.875 % Senior Notes due 2034",
+       "src": {
+        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "No maturity stated"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$81.9M",
+       "printed": "$ 81.9 million",
+       "src": {
+        "sentence": "Other notes payable 81.9   93.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Other notes payable 81.9   93.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", no maturity stated"
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
+       "src": {
+        "sentence": "Other notes payable 81.9   93.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " — "
+      },
+      {
+       "k": "label",
+       "t": "Other notes payable",
+       "stated": "Other notes payable",
+       "src": {
+        "sentence": "Other notes payable 81.9   93.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ],
+     [
+      {
+       "k": "figure",
+       "t": "$281.7M",
+       "printed": "$ 281.7 million",
+       "src": {
+        "sentence": "Finance lease obligations 281.7   294.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "finance leases",
+       "stated": "Finance lease",
+       "src": {
+        "sentence": "Finance lease obligations 281.7   294.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", no maturity stated"
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
+       "src": {
+        "sentence": "Finance lease obligations 281.7   294.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " — "
+      },
+      {
+       "k": "label",
+       "t": "Finance lease obligations",
+       "stated": "Finance lease obligations",
+       "src": {
+        "sentence": "Finance lease obligations 281.7   294.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ]
+    ]
+   }
+  ]
+ },
+ "facilities": {
+  "heading": "Facilities",
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+       "doc": "ehc-20260309.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": " — senior secured revolving credit facility"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "text",
+       "t": "Size "
+      },
+      {
+       "k": "figure",
+       "t": "$1.0B",
+       "printed": "$ 1 billion",
+       "src": {
+        "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+        "doc": "ehc-20260309.htm"
+       },
+       "field": "facilitySize"
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Drawn "
+      },
+      {
+       "k": "figure",
+       "t": "$200M",
+       "printed": "$ 200.0 million",
+       "src": {
+        "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       },
+       "field": "drawn"
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Letters of credit "
+      },
+      {
+       "k": "notStated",
+       "t": "not stated",
+       "src": {
+        "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+        "doc": "ehc-20260309.htm"
+       }
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Available "
+      },
+      {
+       "k": "figure",
+       "t": "~$746M",
+       "printed": "$ 746 million",
+       "src": {
+        "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       },
+       "field": "available"
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Maturity "
+      },
+      {
+       "k": "date",
+       "t": "March 9, 2031",
+       "date": "2031-03-09",
+       "granularity": "day",
+       "src": {
+        "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+        "doc": "ehc-20260309.htm"
+       }
+      }
+     ]
+    ]
+   }
+  ]
+ },
+ "withheld": {
+  "heading": "What the tool did not show",
+  "lines": [
+   [
+    {
+     "k": "text",
+     "t": "senior secured revolving credit facility, letters of credit $53.6M: withheld — sentence does not state this figure. "
+    },
+    {
+     "k": "notStated",
+     "t": "see the sentence offered",
+     "src": {
+      "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+      "doc": "10-Q 2026-08-07"
+     }
+    }
+   ],
+   [
+    {
+     "k": "text",
+     "t": "Seniority and security stated only outside the anchor, so not used for labels (prior 10-K, Rule 66 candidate): “The Senior Notes are senior, unsecured obligations of Encompass Health and rank equally with our other senior indebtedness, senior to any of our subordinated indebtedness, and effectively junior to our secured indebtedness to the extent of the value of the collateral securing such indebtedness.”"
+    }
+   ]
+  ]
+ },
+ "coverage": {
+  "heading": "Coverage",
+  "lines": [
+   [
+    {
+     "k": "text",
+     "t": "Ladder "
+    },
+    {
+     "k": "computed",
+     "t": "$2.6B",
+     "usd": 2634000000,
+     "parts": [
+      {
+       "printed": "$ 396.9 million",
+       "usd": 396900000,
+       "src": {
+        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 788.4 million",
+       "usd": 788400000,
+       "src": {
+        "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 394.1 million",
+       "usd": 394100000,
+       "src": {
+        "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 491.0 million",
+       "usd": 491000000,
+       "src": {
+        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 200.0 million",
+       "usd": 200000000,
+       "src": {
+        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 81.9 million",
+       "usd": 81900000,
+       "src": {
+        "sentence": "Other notes payable 81.9   93.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 281.7 million",
+       "usd": 281700000,
+       "src": {
+        "sentence": "Finance lease obligations 281.7   294.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ]
+    },
+    {
+     "k": "text",
+     "t": " ties to balance-sheet debt of "
+    },
+    {
+     "k": "computed",
+     "t": "$2.6B",
+     "usd": 2634000000,
+     "parts": [
+      {
+       "printed": "$ 35.9 million",
+       "usd": 35900000,
+       "src": {
+        "sentence": "Current portion of long-term debt $ 35.9   $ 43.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 2,598.1 million",
+       "usd": 2598100000,
+       "src": {
+        "sentence": "Long-term debt, net of current portion 2,598.1   2,447.2",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ]
+    },
+    {
+     "k": "text",
+     "t": " within $0 (0.00%)."
+    }
+   ]
+  ]
+ }
+}
