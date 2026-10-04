@@ -41,6 +41,8 @@ const NOT_OFFLINE: Record<string, string> = {
   // "the signatures hold against a loop change".
   "lib/cache/goldenThroughLoop.test.ts": "re-derives each signed golden THROUGH the loop from cached answers — the primary signature check; needs the blob cache, costs nothing, and must be run before trusting any loop change",
   "lib/cache/liveMarkerScan.test.ts": "hits the deployed site",
+  "lib/cards/cardSources.test.ts": "reads filing text from the document cache to prove every sentence a card links to is in the filing the link opens; free, not offline",
+  "lib/cards/thisWeekFingerprint.test.ts": "reads the LIVE EDGAR filing list and HEADs each signed name's answer key — asserts the card's this-week read never moves a fingerprint; free, not offline",
   // SESSION 24 — golden.test.ts IS NO LONGER EXCLUDED, and its removal from
   // this list is the point.
   //

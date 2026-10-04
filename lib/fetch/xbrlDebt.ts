@@ -173,6 +173,36 @@ export async function fetchXbrlDebtTotal(cik: string, asOf: string): Promise<Xbr
   return { total: parts.reduce((a, p) => a + p.value, 0), asOf, parts, separateLeases, unavailableReason: null };
 }
 
+/**
+ * SESSION 26 — CASH AS THE FILER TAGS IT, AT THE ANCHOR'S OWN PERIOD END.
+ *
+ * Cash reached the page only through the `large-cash-balance` trigger, which
+ * fires on a LARGE balance, so a name whose cash the trigger thought ordinary
+ * had none: CHS prints $149 million and Encompass $107 million on their
+ * balance sheets and the card had nothing. Cash is a position fact, not an
+ * event; it is read wherever the filer states it. The tag supplies the value
+ * and its date (the fact's own period end, which is the balance-sheet
+ * column); the card shows it beside the printed balance-sheet line.
+ */
+export interface XbrlCash {
+  value: number | null;
+  tag: string | null;
+  asOf: string;
+  unavailableReason: string | null;
+}
+
+const CASH_TAGS = ["CashAndCashEquivalentsAtCarryingValue"];
+
+export async function fetchXbrlCash(cik: string, asOf: string): Promise<XbrlCash> {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) return { value: null, tag: null, asOf, unavailableReason: "the anchor filing states no period end to look up" };
+  const outcome = await companyFacts(cik);
+  if (outcome.kind === "unreadable") return { value: null, tag: null, asOf, unavailableReason: `WE could not read this filer's XBRL — ${outcome.detail}` };
+  const hit = firstTagged(outcome.facts, CASH_TAGS, asOf);
+  return hit
+    ? { value: hit.value, tag: hit.tag, asOf, unavailableReason: null }
+    : { value: null, tag: null, asOf, unavailableReason: `this filer reports no ${CASH_TAGS.join(" / ")} tag at ${asOf}` };
+}
+
 /** 2d — the filer's own contractual maturity ladder, where it tags one. */
 export async function fetchXbrlMaturityBuckets(cik: string, asOf: string): Promise<XbrlMaturityBuckets> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) return { buckets: [], asOf };
