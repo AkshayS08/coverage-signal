@@ -1,0 +1,608 @@
+/**
+ * BUILD ONE CARD — card_spec.md v1.2. Pure: no network, no model.
+ *
+ * Inputs are the signed name's result re-derived from cache (`generate.ts`
+ * checks it against the golden before building), this week's filings as
+ * EDGAR metadata, and the filer's tagged cash with its printed line. Output
+ * is a `Card` whose every figure, date and label carries its own sentence.
+ *
+ * Rules this file applies, each over the class:
+ *   - every instrument appears once; where two sources state one instrument
+ *     (an anchor row and a rolled base row), identity is rate + compatible
+ *     maturity + stated face, and an ambiguous match is never merged
+ *   - no bare amount: every amount line names its type
+ *   - capacity is never debt; commercial paper is never liquidity
+ *   - a date is shown at the precision of the sentence it links to
+ *   - nothing withheld disappears: section 2.6 lists it, and says so when empty
+ */
+import type { CompanyResult } from "../agent";
+import type { FilingEntry } from "../fetch/filings";
+import type { DateGranularity } from "../agent/claude";
+import type { VerifiedFacility } from "../agent/verifyFacility";
+import { assemblePosition, amountProvenanceFor, facilityMaturityAtItsSentence, matchFacility, parseMoneyAmount, type LadderRow } from "../events/position";
+import { computeCoverage } from "../events/coverage";
+import { rolledCoverageFor } from "../events/rolledCoverage";
+import { borrowingBaseOf } from "../agent/borrowingBase";
+import { classifyInstrument, type NoteSeniorityStatement } from "../events/instrumentClass";
+import { extractFactTokens, factTokensMatch } from "../agent/factTokens";
+import { createTextLocator } from "../agent/verifyQuote";
+
+import type { Card, CardSection, Line, Segment, Source } from "./types";
+import { classLabels, notStatedSuffix, statementReaches, typeLabel, containsWord } from "./labels";
+import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, shortDate, weekRange } from "./format";
+
+export interface CardInputs {
+  result: CompanyResult;
+  briefDate: string;
+  previousBrief: string | null;
+  weekFilings: FilingEntry[];
+  /** `printed` is the balance-sheet cell with the scale its caption declares (Rule 67), e.g. "$ 149 million". */
+  cash: { usd: number | null; printed: string | null; printedLine: string | null; reason: string | null };
+  /** The text of every document a row cites, preloaded so this function stays pure. */
+  textByUrl: Map<string, string>;
+  /** The anchor's own sentence stating its period end (its cover line), for every "as of" date. */
+  periodSentence: string | null;
+}
+
+/** 8-K items that change, or could change, debt, liquidity or maturities (card_spec 2.2). */
+const ACTIONABLE_ITEMS: Record<string, string> = {
+  "1.01": "a material agreement entered into or amended",
+  "1.02": "a material agreement terminated",
+  "2.03": "a new direct financial obligation",
+  "2.04": "an event accelerating an obligation",
+  "2.01": "an acquisition or disposition completed",
+};
+const WHY: Record<string, string> = {
+  "1.01": "may change a facility, a commitment or the debt terms",
+  "1.02": "may end a facility or commitment",
+  "2.03": "adds debt or an off-balance-sheet obligation",
+  "2.04": "may make debt due early",
+  "2.01": "counts only if financed with debt, which needs the filing's text",
+};
+
+const t = (text: string): Segment => ({ k: "text", t: text });
+
+/** A display row: one instrument, wherever it came from. */
+interface Item {
+  row: LadderRow | null;
+  name: string;
+  /** The sentence holding the instrument's own name — which note this is, linked (Rule 19: same size is not same instrument). */
+  nameSrc: Source;
+  amountPrinted: string | null;
+  amountSrc: Source;
+  maturity: { date: string; granularity: DateGranularity; src: Source } | null;
+  labels: { type: Segment; seniority: Segment | null; security: Segment | null };
+  isCapacity: boolean;
+  rolled: boolean;
+  note?: string;
+  /** Set when one instrument is stated in two rows (a current and a long-term portion): the amount shown is their sum. */
+  amountParts?: { printed: string; usd: number; src: Source }[];
+}
+
+export function buildCard(i: CardInputs): Card {
+  const { result, briefDate } = i;
+  const dm = result.results.find((r) => r.triggerId === "debt-maturity") as any;
+  const anchor = dm?.debtScheduleSourceFiling as { form: string; date: string; reportDate: string; url: string } | undefined;
+  if (!anchor) throw new Error(`${result.company}: no anchor filing — a card states where its position comes from or it is not built`);
+  const periodEnd = anchor.reportDate;
+  const pos = assemblePosition(result, new Date(`${briefDate}T00:00:00Z`));
+  const rc = rolledCoverageFor(result);
+  const cov = computeCoverage(dm, undefined, undefined, rc);
+  const facilities: VerifiedFacility[] = dm?.facilities ?? [];
+  // A note's seniority sentence is a label source only where the ANCHOR states
+  // it. One found only in a prior 10-K is the Rule 66 interaction deferred for
+  // days from a prior 10-K, and a security label is the same kind of standing
+  // term, so it is not used and the trust section says so.
+  const rawStatement: NoteSeniorityStatement | null = dm?.seniorityStatement ?? null;
+  const statementInAnchor = (s: NoteSeniorityStatement | null) => {
+    const text = i.textByUrl.get(anchor.url);
+    return !!s && !!text && createTextLocator(text).find(s.statement) !== null;
+  };
+  const statement: NoteSeniorityStatement | null = statementInAnchor(rawStatement) ? rawStatement : null;
+
+  // ── document labels: every URL the result cites, named for the reader ──
+  const docs = new Map<string, string>();
+  for (const r of result.results) for (const c of (r as any).citations ?? []) if (c?.url) docs.set(c.url, `${c.form} ${c.date}`);
+  docs.set(anchor.url, `${anchor.form} ${anchor.date}`);
+  if (dm?.priorPeriodBase?.filingUrl) docs.set(dm.priorPeriodBase.filingUrl, `10-K for ${dm.priorPeriodBase.periodOfReport}`);
+  // RULE 44 ON THE CARD — a sentence's document is the one it is FOUND in.
+  // The URL a caller proposes is tried first; where the sentence is not in it
+  // but is in another document this card holds, that document is cited. The
+  // proposal is kept only where no held document can answer.
+  const locators = new Map<string, ReturnType<typeof createTextLocator>>();
+  const foundIn = (url: string, sentence: string): boolean => {
+    const text = i.textByUrl.get(url);
+    if (!text) return false;
+    if (!locators.has(url)) locators.set(url, createTextLocator(text));
+    return locators.get(url)!.find(sentence) !== null;
+  };
+  const src = (sentence: string, url: string): Source => {
+    const where = foundIn(url, sentence) ? url : [...i.textByUrl.keys()].find((u) => foundIn(u, sentence)) ?? url;
+    return { sentence, url: where, doc: docs.get(where) ?? where.split("/").pop() ?? where };
+  };
+  const anchorSrc = (sentence: string) => src(sentence, anchor.url);
+  const periodSrc = i.periodSentence ? anchorSrc(i.periodSentence) : null;
+  const periodDate = (): Segment => (periodSrc ? { k: "date", t: displayDate(periodEnd, "day"), date: periodEnd, granularity: "day", src: periodSrc } : t(displayDate(periodEnd, "day")));
+
+  const facilityFor = (row: LadderRow) =>
+    facilities.find((f) => f.name === row.instrument) ?? (row.maturityFromFacility ? facilities.find((f) => f.name === row.maturityFromFacility!.facility) : undefined);
+  const headingFor = (row: LadderRow): string | null => {
+    const e = (dm?.scheduleSequence ?? []).find((x: any) => x.kind === "row" && (x.label ?? "") === row.instrument);
+    return e ? e.section ?? e.seniority ?? null : null;
+  };
+
+  // ── one Item per ladder row ──
+  const fromRow = (row: LadderRow): Item => {
+    const f = row.isCapacity ? facilityFor(row) : undefined;
+    const amtSentence = f && row.isCapacity ? amountProvenanceFor(f).sourceLine : row.sourceLine;
+    const amtUrl = f && row.isCapacity ? f.figureSources?.facilitySize ?? f.citedUrl : row.citedUrl || anchor.url;
+    const amountSrc = src(amtSentence, amtUrl);
+    const mf = row.maturityFromFacility ? facilityFor(row) : undefined;
+    const matUrl = mf ? mf.figureSources?.maturity ?? mf.citedUrl : row.citedUrl || anchor.url;
+    const maturity =
+      row.maturityDate && row.dateGranularity && row.maturitySourceLine
+        ? { date: row.maturityDate, granularity: row.dateGranularity, src: src(row.maturitySourceLine, matUrl) }
+        : null;
+    const stated = row.classification.instrumentTypeStatedAs ?? "";
+    const heading = headingFor(row);
+    // The sentence naming the instrument: its amount or maturity sentence where
+    // either carries the name, otherwise the sentence in its own document that
+    // does (an 8-K's amount sentence can stop before the name it belongs to).
+    const nameSentence = [amtSentence, maturity?.src.sentence].find((s) => s && containsWord(s, row.instrument));
+    const nameUrl = row.citedUrl || anchor.url;
+    const found = nameSentence ?? findSentenceWith(i.textByUrl.get(nameUrl), row.instrument);
+    const nameSrc = found ? (found === amtSentence ? amountSrc : found === maturity?.src.sentence ? maturity!.src : src(found, nameUrl)) : amountSrc;
+    const typeSrc = [amountSrc, maturity?.src, nameSrc].find((s) => s && stated && containsWord(s.sentence, stated)) ?? (heading && containsWord(heading, stated) ? anchorSrc(heading) : nameSrc);
+    const st = statementReaches(statement, row) && statement ? { s: statement, src: anchorSrc(statement.statement) } : null;
+    const cls = classLabels(row.instrument, nameSrc, st);
+    // A row drawn under a facility ("Advances under revolving credit facility")
+    // is that facility: the facility's own name is the instrument's own name,
+    // linked to the facility sentence that carries it.
+    const fac = facilityFor(row) ?? (isFacilityType(row) ? (matchFacility({ name: row.instrument, category: null }, facilities) as VerifiedFacility | null) : null);
+    if (fac && (!cls.seniority || !cls.security)) {
+      const ownFig = [fac.facilitySize, fac.available, fac.drawn, fac.maturity].find((x) => x && containsWord(x.sourceLine, fac.name));
+      const facUrl = fac.figureSources?.facilitySize ?? fac.citedUrl;
+      const own = ownFig ? { sentence: ownFig.sourceLine, url: facUrl } : (() => {
+        for (const url of [facUrl, fac.citedUrl, ...Object.values(fac.figureSources ?? {})]) {
+          const s = findSentenceWith(i.textByUrl.get(url), fac.name);
+          if (s) return { sentence: s, url };
+        }
+        return null;
+      })();
+      if (own) {
+        const fcls = classLabels(fac.name, src(own.sentence, own.url), null);
+        cls.seniority = cls.seniority ?? fcls.seniority;
+        cls.security = cls.security ?? fcls.security;
+      }
+    }
+    const printed = row.isCapacity ? f?.facilitySize?.value ?? row.amount : row.amount;
+    return { row, name: row.instrument, nameSrc, amountPrinted: printed, amountSrc, maturity, labels: { type: typeLabel(row, typeSrc), ...cls }, isCapacity: !!row.isCapacity, rolled: false };
+  };
+  const anchorItems = pos.rows.filter((r) => r.status === "live").map(fromRow);
+
+  // ── the rolled base, where coverage rests on one (card_spec 2.4, BRD 8.14) ──
+  const rolledLabel = rc.counts ? rc.label : null;
+  const rolledItems: Item[] = [];
+  const rolledEvents: Line[] = [];
+  const rolledNil: string[] = [];
+  const dedupNotes: string[] = [];
+  if (rc.counts) {
+    const base = rc.entries.filter((e) => e.kind === "base-row");
+    const counted = rc.movements.filter((m) => m.placement === "delta");
+    const live = base.filter((b) => b.amountMillions !== 0);
+    for (const b of base.filter((b) => b.amountMillions === 0)) rolledNil.push(b.label);
+    // A counted retirement nets the base row it retires: identity by rate and stated maturity, unique, or not at all.
+    const retired = new Set<typeof live[number]>();
+    for (const m of counted.filter((m) => m.amountMillions < 0)) {
+      const hits = live.filter((b) => sameInstrument(b.label, `${m.instrument} ${m.sourceLine}`, { face: false }));
+      if (hits.length === 1) {
+        retired.add(hits[0]);
+        rolledEvents.push([
+          t("Repaid: "),
+          { k: "figure", t: displayAmount(m.statedAs, m.sourceLine), printed: m.statedAs, src: src(m.sourceLine, m.citedUrl) },
+          t(` ${m.instrument}, between the base date and the position date. Its base row is shown here, not on the ladder.`),
+        ]);
+      }
+    }
+    for (const b of live) {
+      if (retired.has(b)) continue;
+      // EACH INSTRUMENT APPEARS ONCE. A base row stating the same instrument as an anchor row is shown under the anchor.
+      const twins = anchorItems.filter((a) => !a.isCapacity && sameInstrument(b.label, `${a.name} ${a.amountPrinted ?? ""}`, { face: true }));
+      const rivals = live.filter((x) => twins.length === 1 && sameInstrument(x.label, `${twins[0].name} ${twins[0].amountPrinted ?? ""}`, { face: true }));
+      if (twins.length === 1 && rivals.length === 1) {
+        dedupNotes.push(`${b.label} — shown once, under the anchor's own row ("${twins[0].name}")`);
+        continue;
+      }
+      const bsrc = src(b.sourceLine, b.citedUrl);
+      const dt = extractFactTokens(b.label).find((x) => x.kind === "date" && x.dateValue);
+      const gran: DateGranularity | null = dt?.dateValue ? (dt.dateValue.day !== null ? "day" : dt.dateValue.month !== null ? "month" : "year") : null;
+      const date = dt?.dateValue ? isoOf(dt.dateValue) : null;
+      const pseudo = { instrument: b.label, classification: classifyInstrument({ headings: [], instrumentName: b.label }), provenance: "note" as const, maturityDate: date };
+      rolledItems.push({
+        row: null,
+        name: b.label,
+        nameSrc: bsrc,
+        amountPrinted: `$ ${b.amountMillions.toLocaleString("en-US")} million`,
+        amountSrc: bsrc,
+        maturity: date && gran ? { date, granularity: gran, src: bsrc } : null,
+        labels: { type: typeLabel(pseudo, bsrc), ...classLabels(b.label, bsrc, null) },
+        isCapacity: false,
+        rolled: true,
+      });
+    }
+  }
+  // ONE INSTRUMENT, ONE LINE. A base table states some instruments twice —
+  // once in its short-term section, once in its long-term section — under the
+  // same label. They are two portions of one instrument; the line shows their
+  // sum, computed and declared (Rule 27), each portion linked to its row.
+  const byName = new Map<string, Item[]>();
+  for (const it of rolledItems) byName.set(it.name, [...(byName.get(it.name) ?? []), it]);
+  rolledItems.splice(0, rolledItems.length, ...[...byName.values()].map((group) => {
+    if (group.length === 1) return group[0];
+    const parts = group.map((g) => ({ printed: g.amountPrinted!, usd: parseMoneyAmount(g.amountPrinted) ?? 0, src: g.amountSrc }));
+    return { ...group[0], amountParts: parts, note: `${group.length} portions of one instrument (short- and long-term sections), summed` };
+  }));
+  const allDebtItems = [...anchorItems.filter((x) => !x.isCapacity), ...rolledItems];
+
+  // ── an instrument line, in card_spec 3.2's wording ──
+  const describe = (it: Item, opts: { withDate?: boolean } = { withDate: true }): Line => {
+    const out: Line = [];
+    if (it.amountParts) {
+      const usd = it.amountParts.reduce((a, p) => a + p.usd, 0);
+      out.push({ k: "computed", t: displayUsd(usd), usd, parts: it.amountParts }, t(" "));
+    } else if (it.amountPrinted) out.push({ k: "figure", t: displayAmount(it.amountPrinted, it.amountSrc.sentence), printed: it.amountPrinted, src: it.amountSrc }, t(" "));
+    if (it.labels.seniority) out.push(it.labels.seniority, t(" "));
+    if (it.labels.security) out.push(it.labels.security, t(" "));
+    out.push(it.labels.type);
+    if (opts.withDate !== false) {
+      if (it.maturity) out.push(t(", "), { k: "date", t: displayDate(it.maturity.date, it.maturity.granularity), date: it.maturity.date, granularity: it.maturity.granularity, src: it.maturity.src });
+      else if (it.row?.facilityMaturityNote) out.push(t(", maturity stated as a relative term, not a date"));
+      else out.push(t(", no maturity stated"));
+    }
+    const suffix = notStatedSuffix(it.labels.seniority, it.labels.security);
+    if (suffix) out.push(t(" · "), { k: "notStated", t: suffix, src: it.amountSrc });
+    if (it.isCapacity) out.push(t(" · undrawn commitment, not debt"));
+    // Which instrument, in the filer's own name: two same-size notes due the
+    // same year are told apart only here.
+    out.push(t(" — "), { k: "label", t: it.name, stated: it.name, src: it.nameSrc });
+    return out;
+  };
+
+  // ── 2.1 header ──
+  const weekFrom = i.previousBrief ? addDays(i.previousBrief, 1) : addDays(briefDate, -6);
+  const header: Line[] = [
+    [t(result.company)],
+    [t(`Brief week: ${weekRange(weekFrom, briefDate)}${i.previousBrief ? "" : " (first brief for this name: the trailing seven days)"}`)],
+    [t("Position from "), { k: "filing", t: `${anchor.form} for the ${anchor.form === "10-K" ? "year" : "quarter"} ended ${displayDate(periodEnd, "day")}, filed ${shortDate(anchor.date)}`, url: anchor.url }],
+  ];
+  if (rolledLabel) header.push([t(`Rolled position: ${rolledLabelText(rolledLabel)}. Coverage rests on it because both ties hold.`)]);
+
+  // ── 2.2 this week ──
+  const actionable: Line[] = [];
+  const other: FilingEntry[] = [];
+  for (const f of i.weekFilings) {
+    const items = f.items.split(",").map((s) => s.trim()).filter(Boolean);
+    const hit = items.filter((it) => ACTIONABLE_ITEMS[it]);
+    const meta = `${formName(f.form)}${items.length ? `, Item${items.length > 1 ? "s" : ""} ${items.join(", ")}` : ""} · ${shortDate(f.filingDate)}`;
+    if (f.form === "10-Q" || f.form === "10-K") {
+      actionable.push([{ k: "filing", t: meta, url: f.primaryDocUrl }, t(` — a new ${f.form}, which carries a new position. Not yet read: this card's position is still the ${anchor.form} for ${displayDate(periodEnd, "day")}.`)]);
+    } else if (hit.length > 0) {
+      actionable.push([
+        { k: "filing", t: meta, url: f.primaryDocUrl },
+        t(` — ${hit.map((h) => ACTIONABLE_ITEMS[h]).join("; ")}. Amount and instrument: not read (filing text not yet extracted). Why it matters: ${hit.map((h) => WHY[h]).join("; ")}.`),
+      ]);
+    } else other.push(f);
+  }
+  const thisWeekLines: Line[] = [...actionable];
+  if (actionable.length === 0) thisWeekLines.push([t(`No new filings affecting debt since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
+  if (other.length > 0) {
+    const line: Line = [t(`${other.length} other filing${other.length === 1 ? "" : "s"} this week, none affecting debt: `)];
+    other.forEach((f, n) => {
+      const items = f.items.split(",").map((s) => s.trim()).filter(Boolean);
+      if (n > 0) line.push(t(" "));
+      line.push({ k: "filing", t: `[${formName(f.form)}${items.length ? `, Item${items.length > 1 ? "s" : ""} ${items.join(", ")}` : ""}]`, url: f.primaryDocUrl });
+    });
+    thisWeekLines.push(line);
+  } else if (actionable.length > 0) thisWeekLines.push([t("No other filings this week.")]);
+
+  // ── 2.3 total debt ──
+  type DebtPart = { it: Item | null; printed: string; usd: number; src: Source; label: string };
+  const debtParts: DebtPart[] = rc.counts
+    ? rc.entries
+        .filter((e) => e.amountMillions !== 0)
+        .map((e) => ({ it: null, printed: printedIn(e.sourceLine, Math.abs(e.amountMillions) * 1e6) ?? `$ ${Math.abs(e.amountMillions).toLocaleString("en-US")} million`, usd: e.amountMillions * 1e6, src: src(e.sourceLine, e.citedUrl), label: e.label }))
+    : allDebtItems.map((it) => ({ it, printed: it.amountPrinted!, usd: parseMoneyAmount(it.amountPrinted) ?? 0, src: it.amountSrc, label: it.name }));
+  const groups = new Map<string, { labels: Segment[]; parts: { printed: string; usd: number; src: Source }[]; hedged: boolean }>();
+  for (const p of debtParts) {
+    let labels: Segment[];
+    const usd = p.usd;
+    if (p.it) labels = [p.it.labels.seniority, p.it.labels.security, p.it.labels.type].filter((x): x is Segment => !!x);
+    else {
+      // A rolled entry: typed from its own label. Signed as the roll counts it.
+      const pseudo = { instrument: p.label, classification: classifyInstrument({ headings: [], instrumentName: p.label }) };
+      labels = [typeLabel(pseudo, p.src)];
+    }
+    const key = labels.map((l) => l.t).join(" ");
+    const g = groups.get(key) ?? { labels, parts: [], hedged: false };
+    g.parts.push({ printed: p.printed, usd, src: p.src });
+    g.hedged = g.hedged || hedgedIn(p.src.sentence, p.printed);
+    groups.set(key, g);
+  }
+  const totalUsd = [...groups.values()].reduce((a, g) => a + g.parts.reduce((b, x) => b + x.usd, 0), 0);
+  const allParts = [...groups.values()].flatMap((g) => g.parts);
+  const anyHedge = [...groups.values()].some((g) => g.hedged);
+  const totalDebt: CardSection = {
+    heading: "Total debt",
+    lines: [
+      [t("Total debt "), { k: "computed", t: displayUsd(totalUsd, anyHedge), usd: totalUsd, parts: allParts }, t(" as of "), periodDate(), t(rc.counts ? ", using the rolled position" : "")],
+      ...[...groups.values()]
+        .sort((a, b) => sum(b.parts) - sum(a.parts))
+        .map((g): Line => {
+          const line: Line = [];
+          g.labels.forEach((l, n) => line.push(...(n ? [t(" ")] : []), l));
+          line.push(t(" "), { k: "computed", t: displayUsd(sum(g.parts), g.hedged), usd: sum(g.parts), parts: g.parts });
+          return line;
+        }),
+    ],
+  };
+
+  // ── 2.3 liquidity ──
+  const liqLines: Line[] = [];
+  const liqParts: { printed: string; usd: number; src: Source }[] = [];
+  let liqComputable = true;
+  if (i.cash.usd !== null && i.cash.printedLine && i.cash.printed) {
+    const printed = i.cash.printed;
+    const s = anchorSrc(i.cash.printedLine);
+    liqLines.push([t("Cash "), { k: "figure", t: displayUsd(i.cash.usd), printed, src: s }, t(" as of "), periodDate()]);
+    liqParts.push({ printed, usd: i.cash.usd, src: s });
+  } else {
+    liqComputable = false;
+    liqLines.push([t(`Cash: not shown — ${i.cash.reason ?? "no printed line states the tagged figure"}.`)]);
+  }
+  for (const f of facilities) {
+    const kind = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;
+    if (f.category === "commercial-paper" || kind === "commercial-paper") {
+      liqLines.push([t(`${f.name}: not counted. Commercial paper is an issuance program, not a lender commitment.`)]);
+      continue;
+    }
+    if (kind === "letter-of-credit") continue; // capacity for letters of credit only; not cash a borrower can draw (Rule 48)
+    const fsrc = (field: string, sentence: string) => src(sentence, f.figureSources?.[field] ?? f.citedUrl);
+    const sizeSentence = f.facilitySize?.sourceLine ?? f.name;
+    const pseudo = { instrument: f.name, classification: classifyInstrument({ headings: [], instrumentName: f.name }) };
+    const line: Line = [typeLabel(pseudo, fsrc("facilitySize", sizeSentence)), t(" ")];
+    if (f.facilitySize) line.push({ k: "figure", t: displayAmount(f.facilitySize.value, f.facilitySize.sourceLine), printed: f.facilitySize.value, src: fsrc("facilitySize", f.facilitySize.sourceLine) }, t(" facility, "));
+    const bb = borrowingBaseOf(f);
+    if (f.available) {
+      const usd = parseMoneyAmount(f.available.value) ?? 0;
+      line.push({ k: "figure", t: displayAmount(f.available.value, f.available.sourceLine), printed: f.available.value, src: fsrc("available", f.available.sourceLine) }, t(bb ? " available as stated (borrowing-base limited)" : " available as stated"));
+      liqParts.push({ printed: f.available.value, usd, src: fsrc("available", f.available.sourceLine) });
+      if (f.asOfDate !== periodEnd) liqComputable = false;
+    } else if (f.facilitySize && !bb) {
+      const parts = [{ printed: f.facilitySize.value, usd: parseMoneyAmount(f.facilitySize.value) ?? 0, src: fsrc("facilitySize", f.facilitySize.sourceLine) }];
+      for (const [field, fig] of [["drawn", f.drawn], ["lettersOfCredit", f.lettersOfCredit]] as const) if (fig) parts.push({ printed: fig.value, usd: -(parseMoneyAmount(fig.value) ?? 0), src: fsrc(field, fig.sourceLine) });
+      const usd = parts.reduce((a, p) => a + p.usd, 0);
+      line.push({ k: "computed", t: displayUsd(usd), usd, parts }, t(" available (size less drawn and letters of credit; no availability stated)"));
+      liqParts.push(...parts);
+    } else {
+      line.push({ k: "notStated", t: "availability not stated", src: fsrc("facilitySize", sizeSentence) });
+      liqComputable = false;
+    }
+    const m = facilityMaturityAtItsSentence(f);
+    if (m.kind === "dated") line.push(t(", matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: fsrc("maturity", m.sentence) });
+    else line.push(t(m.kind === "relative" ? ", maturity stated as a relative term, not a date" : ", no maturity stated"));
+    liqLines.push(line);
+  }
+  const liqUsd = liqParts.reduce((a, p) => a + p.usd, 0);
+  liqLines.unshift(
+    liqComputable && liqParts.length > 0
+      ? [t("Liquidity "), { k: "computed", t: displayUsd(liqUsd), usd: liqUsd, parts: liqParts }, t(" as of "), periodDate()]
+      : [t("No liquidity total: cash and every facility's availability are not all stated as of the position date.")]
+  );
+  if (liqComputable && liqParts.length > 0) liqLines.splice(1, 0, [t("Cash plus stated availability, both stated as of the position date.")]);
+
+  // ── 2.3 due in 24 months, from the brief date ──
+  const windowEnd = addMonths(briefDate, 24);
+  const dueLines: { sort: string; line: Line }[] = [];
+  const candidates = [...anchorItems, ...rolledItems].filter((it) => it.maturity);
+  for (const it of candidates) {
+    const m = it.maturity!;
+    const [start, end] = spanOf(m.date, m.granularity);
+    if (end <= briefDate && start > periodEnd && !it.isCapacity) {
+      dueLines.push({ sort: start, line: [...describe(it), t(" · matured since the position date, repayment not yet confirmed in a filing")] });
+      continue;
+    }
+    if (end <= briefDate || start > windowEnd) continue;
+    const partial = start <= briefDate || end > windowEnd;
+    const flag = partial && m.granularity !== "day" ? ` · ${m.granularity === "year" ? "year" : "month"} only stated, may fall within 24 months, see source` : "";
+    dueLines.push({ sort: start, line: [...describe(it), ...(it.rolled ? [t(` · ${rolledLabelText(rolledLabel!)}`)] : []), ...(flag ? [t(flag)] : [])] });
+  }
+  dueLines.sort((a, b) => a.sort.localeCompare(b.sort));
+  const due: Line[] = dueLines.map((d) => d.line);
+  if (due.length === 0) due.push([t(`Nothing due between ${shortDate(briefDate)} and ${shortDate(windowEnd)}.`)]);
+  const next = allDebtItems.filter((it) => it.maturity && spanOf(it.maturity.date, it.maturity.granularity)[1] > briefDate).sort((a, b) => spanOf(a.maturity!.date, a.maturity!.granularity)[0].localeCompare(spanOf(b.maturity!.date, b.maturity!.granularity)[0]))[0];
+  if (next) due.push([t("next: "), ...describe(next)]);
+  if (allDebtItems.some((it) => /term loan/.test(it.labels.type.t))) due.push([t("Scheduled term-loan amortization: not read. Only final maturities are counted here.")]);
+
+  // ── 2.4 maturity ladder ──
+  const byYear = new Map<string, Line[]>();
+  for (const it of allDebtItems) {
+    const y = it.maturity ? it.maturity.date.slice(0, 4) : "No maturity stated";
+    const lines = byYear.get(y) ?? [];
+    lines.push([...describe(it), ...(it.rolled ? [t(` · ${rolledLabelText(rolledLabel!)}`)] : [])]);
+    byYear.set(y, lines);
+  }
+  const ladderBlocks = [...byYear.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([y, lines]) => ({ heading: [t(y)] as Line, lines }));
+  const ladderLines: Line[] = [];
+  const capacity = anchorItems.filter((x) => x.isCapacity);
+  if (capacity.length) ladderLines.push([t("Capacity, not debt:")], ...capacity.map((c) => describe(c)));
+  const events: Line[] = [...rolledEvents];
+  for (const w of pos.withinPeriodRepayments) events.push([t(`Repaid inside the period: ${w.instrument}, prior balance `), { k: "figure", t: displayAmount(w.priorAmount, w.sourceLine), printed: w.priorAmount, src: src(w.sourceLine, w.citedUrl) }, t(`. ${w.note}`)]);
+  for (const e of pos.tier2.events) {
+    const line: Line = [t(`Since ${displayDate(periodEnd, "day")}: `), { k: "label", t: e.instrument, stated: e.instrument, src: src(e.sourceLine, e.citedUrl) }];
+    if (e.effect !== null) line.push(t(", "), { k: "figure", t: displayUsd(Math.abs(e.effect)), printed: `$${Math.abs(e.effect).toLocaleString("en-US")}`, src: src(e.sourceLine, e.citedUrl) });
+    line.push(t(` (${e.kind}${e.nets ? `, ${e.nets === "unsized" ? "amount not stated in the confirming filing" : "not yet confirmed by a filing"}` : ""}) — not in the position-date total.`));
+    events.push(line);
+  }
+  if (events.length) ladderLines.push([t("Events:")], ...events);
+  if (rolledLabel) ladderLines.push([t(`Rows marked "${rolledLabelText(rolledLabel)}" come from the prior-period base, not from rows the anchor states.`)]);
+  if (rolledNil.length) ladderLines.push([t(`${rolledNil.length} base rows stated at nil at the base date, not debt: ${rolledNil.join("; ")}.`)]);
+  if (dedupNotes.length) ladderLines.push([t(`Shown once: ${dedupNotes.length} instrument${dedupNotes.length === 1 ? "" : "s"} appear both on the anchor's ladder and in the rolled base. The roll's arithmetic counts each once already.`)]);
+
+  // ── 2.5 facilities ──
+  const facBlocks = facilities.map((f) => {
+    const fsrc = (field: string, sentence: string) => src(sentence, f.figureSources?.[field] ?? f.citedUrl);
+    const own = fsrc("facilitySize", f.facilitySize?.sourceLine ?? f.name);
+    const fig = (label: string, field: "facilitySize" | "drawn" | "lettersOfCredit" | "available"): Line => {
+      const v = f[field];
+      return v ? [t(`${label} `), { k: "figure", t: displayAmount(v.value, v.sourceLine), printed: v.value, src: fsrc(field, v.sourceLine), field }] : [t(`${label} `), { k: "notStated", t: "not stated", src: own }];
+    };
+    const lines: Line[] = [fig("Size", "facilitySize"), fig("Drawn", "drawn"), fig("Letters of credit", "lettersOfCredit"), fig("Available", "available")];
+    const m = facilityMaturityAtItsSentence(f);
+    lines.push(m.kind === "dated" ? [t("Maturity "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: fsrc("maturity", m.sentence) }] : [t("Maturity "), { k: "notStated", t: m.kind === "relative" ? "stated as a relative term, not a date" : "not stated", src: own }]);
+    const bb = borrowingBaseOf(f);
+    if (bb) {
+      const full = widen(bb.statement, [f.facilitySize, f.drawn, f.lettersOfCredit, f.available, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => x.sourceLine));
+      lines.push([{ k: "label", t: "Borrowing-base limited", stated: bb.limitedBy, src: src(full, f.figureSources?.facilitySize ?? f.citedUrl) }, t(": stated availability is authoritative.")]);
+    }
+    const kind = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;
+    if (kind === "letter-of-credit") lines.push([t("Letters of credit only: capacity, not borrowed money (Rule 48).")]);
+    if (f.category === "commercial-paper" || kind === "commercial-paper") lines.push([t("Issuance program, not a lender commitment: never counted as liquidity.")]);
+    const pseudo = { instrument: f.name, classification: classifyInstrument({ headings: [], instrumentName: f.name }) };
+    return { heading: [typeLabel(pseudo, own), t(` — ${f.name}`)] as Line, lines };
+  });
+
+  // ── 2.6 what the tool did not show ──
+  const withheld: Line[] = [];
+  const FIELD_NAMES: Record<string, string> = { facilitySize: "size", drawn: "drawn", lettersOfCredit: "letters of credit", available: "available", maturity: "maturity" };
+  for (const r of dm?.facilityRejections ?? []) withheld.push([t(`${r.facility}, ${FIELD_NAMES[r.field] ?? r.field} ${displayAmount(r.value, "")}: withheld — ${r.reason}. `), { k: "notStated", t: "see the sentence offered", src: src(r.sourceLine ?? r.facility, anchor.url) }]);
+  // A claimed date that a sourced one replaced is no longer withheld: the card shows the sourced date.
+  for (const r of pos.rows) if (r.maturityWithheld && !r.maturityDate) withheld.push([t(`${r.instrument}: maturity ${r.maturityWithheld.claimed} withheld — ${r.maturityWithheld.why}.`)]);
+  if (rawStatement && !statement) withheld.push([t(`Seniority and security stated only outside the anchor, so not used for labels (prior 10-K, Rule 66 candidate): “${rawStatement.statement}”`)]);
+  if (i.cash.usd === null || !i.cash.printedLine) withheld.push([t(`Cash: ${i.cash.reason ?? "not stated for this date"}.`)]);
+  const unread = actionable.length;
+  if (unread) withheld.push([t(`${unread} filing${unread === 1 ? "" : "s"} this week affecting debt: text not read, so amount and instrument are not shown.`)]);
+  if (allDebtItems.some((it) => /term loan/.test(it.labels.type.t))) withheld.push([t("Term-loan scheduled amortization: not read.")]);
+  // "Stated but not captured" is a claim about the card, so it is checked
+  // against the card: a category any ladder row carries — debt or capacity —
+  // is captured (the known misfire on tabulated facilities, BRD 13.2c item 9).
+  const onCard = (c: string) => pos.rows.some((r) => (r.classification.instrumentType ?? "").startsWith(c.split("-")[0]) || (c === "revolver" && r.classification.instrumentType === "credit-facility"));
+  for (const c of cov.categoriesMissing ?? []) if (!onCard(c)) withheld.push([t(`Stated in the note but not captured: ${c}.`)]);
+  if (rc.counts) for (const m of rc.movements.filter((x) => x.placement === "excluded-not-completed" || x.placement === "undated")) withheld.push([t(`Not counted in the roll: ${m.instrument} — ${m.placement === "undated" ? "no date stated" : "stated as an intention, not completed"}.`)]);
+  if (withheld.length === 0) withheld.push([t("Nothing withheld this week.")]);
+
+  // ── 2.7 coverage ──
+  const caps: any[] = dm?.balanceSheetDebtCaptions ?? [];
+  const capParts = caps.map((c) => ({ printed: c.amount as string, usd: parseMoneyAmount(c.amount) ?? 0, src: src(c.sourceLine, c.citedUrl || anchor.url) }));
+  const capSum = capParts.reduce((a, p) => a + p.usd, 0);
+  const coverageLines: Line[] = [];
+  const statedSeg: Segment = cov.statedTotalDebt !== null && Math.abs(capSum - cov.statedTotalDebt) < 1
+    ? { k: "computed", t: displayUsd(cov.statedTotalDebt), usd: capSum, parts: capParts }
+    : t(cov.statedTotalDebt === null ? "an unmeasured total" : `${displayUsd(cov.statedTotalDebt)} (per the filer's XBRL tags; no caption set sums to it)`);
+  const face: Segment = { k: "computed", t: displayUsd(totalUsd, anyHedge), usd: totalUsd, parts: allParts };
+  if (cov.statedTotalDebt === null) coverageLines.push([t("Coverage unmeasured: the anchor states no balance-sheet debt caption to measure against.")]);
+  else if (cov.residualPasses) {
+    // The residual is what is left AFTER the note's own bridge (BRD 8.6): a
+    // difference the note itemises is explained, not "within".
+    const residual = Math.abs(cov.residual ?? 0);
+    const bridge = cov.statedBridge ? ` The ${displayUsd(Math.abs(cov.statedBridge))} between them is the note's own unamortized issuance costs and discounts.` : "";
+    coverageLines.push([t("Ladder "), face, t(" ties to balance-sheet debt of "), statedSeg, t(` within ${displayUsd(residual)} (${((residual / cov.statedTotalDebt) * 100).toFixed(2)}%)${rc.counts ? ", using the rolled position" : ""}.${bridge}`)]);
+  } else {
+    coverageLines.push([t("Ladder covers "), face, t(" of "), statedSeg, t(`. ${displayUsd(Math.abs(cov.residual ?? 0))} is not accounted for.`)]);
+  }
+
+  return {
+    cik: result.cik,
+    company: result.company,
+    briefDate,
+    weekFrom,
+    weekTo: briefDate,
+    previousBrief: i.previousBrief,
+    header,
+    thisWeek: { heading: "This week", lines: thisWeekLines },
+    headlines: {
+      totalDebt,
+      liquidity: { heading: "Liquidity", lines: liqLines },
+      due24: { heading: `Due in 24 months (to ${shortDate(windowEnd)})`, lines: due },
+    },
+    ladder: { heading: "Maturity ladder", lines: ladderLines, blocks: ladderBlocks },
+    facilities: { heading: "Facilities", lines: facBlocks.length ? [] : [[t("No facility stated.")]], blocks: facBlocks },
+    withheld: { heading: "What the tool did not show", lines: withheld },
+    coverage: { heading: "Coverage", lines: coverageLines },
+  };
+}
+
+function sum(parts: { usd: number }[]): number {
+  return parts.reduce((a, p) => a + p.usd, 0);
+}
+
+function isoOf(v: { year: number; month: number | null; day: number | null }): string {
+  if (v.month === null) return String(v.year);
+  return `${v.year}-${String(v.month).padStart(2, "0")}-${String(v.day ?? 1).padStart(2, "0")}`;
+}
+
+/** The first and last day a date at this precision could be. */
+function spanOf(date: string, g: DateGranularity): [string, string] {
+  const y = date.slice(0, 4);
+  if (g === "year") return [`${y}-01-01`, `${y}-12-31`];
+  if (g === "month") {
+    const m = Number(date.slice(5, 7));
+    const last = new Date(Date.UTC(Number(y), m, 0)).getUTCDate();
+    return [`${date.slice(0, 7)}-01`, `${date.slice(0, 7)}-${String(last).padStart(2, "0")}`];
+  }
+  return [date, date];
+}
+
+/** "as of 2025-12-31, per 10-K debt note, rolled to 2026-06-30" → "as of Dec 31, 2025, per 10-K, rolled to June 30, 2026". */
+function rolledLabelText(label: string): string {
+  const m = /as of (\d{4}-\d{2}-\d{2}), per (.+?), rolled to (\d{4}-\d{2}-\d{2})/.exec(label);
+  if (!m) return label;
+  return `as of ${shortDate(m[1])}, per ${m[2].replace(/ debt note$/, "")}, rolled to ${displayDate(m[3], "day")}`;
+}
+
+/**
+ * Two statements of one instrument? Rate and maturity must both be stated and
+ * agree (maturity at compatible precision); with `face`, the stated face must
+ * agree by value too. Rule 49's identity, applied across two sources.
+ */
+function sameInstrument(a: string, b: string, opts: { face: boolean }): boolean {
+  const ta = extractFactTokens(a), tb = extractFactTokens(b);
+  const rate = (ts: typeof ta) => ts.filter((x) => x.kind === "percent");
+  const dates = (ts: typeof ta) => ts.filter((x) => x.kind === "date" && x.dateValue && x.dateValue.year > 2000);
+  const ra = rate(ta), rb = rate(tb);
+  if (ra.length === 0 || rb.length === 0 || !ra.some((x) => rb.some((y) => factTokensMatch(x, y)))) return false;
+  const da = dates(ta), db = dates(tb);
+  if (da.length === 0 || db.length === 0 || !da.some((x) => db.some((y) => factTokensMatch(x, y)))) return false;
+  if (!opts.face) return true;
+  const faceOf = (s: string) => parseMoneyAmount((/\$\s*[\d,]+(?:\.\d+)?\s*(?:million|billion|thousand)?/i.exec(s) ?? [""])[0]);
+  const fa = faceOf(a), fb = faceOf(b);
+  return fa !== null && fb !== null && Math.abs(fa - fb) < 1;
+}
+
+/** The money token in `sentence` stating `usd`, exactly as printed — so a part is checked in the sentence's own words. */
+function printedIn(sentence: string, usd: number): string | null {
+  const tok = extractFactTokens(sentence).find((x) => x.kind === "money" && x.moneyValue !== undefined && Math.abs(x.moneyValue - usd) < 1);
+  return tok ? tok.raw : null;
+}
+
+/** The shortest sentence in `text` containing `phrase`, typography-insensitive. */
+function findSentenceWith(text: string | undefined, phrase: string): string | null {
+  if (!text || !phrase) return null;
+  const hits = text.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"])/).filter((s) => s.length < 900 && containsWord(s, phrase));
+  return hits.sort((a, b) => a.length - b.length)[0] ?? null;
+}
+
+/** A fragment shown as the shortest of the facility's own sentences that contains it (card_spec 2.5). */
+function widen(fragment: string, sentences: string[]): string {
+  const containing = sentences.filter((s) => containsWord(s, fragment)).sort((a, b) => a.length - b.length);
+  return containing[0] ?? fragment;
+}
+
+/** EDGAR names some forms by number alone ("4", "144"); a reader sees "Form 4". */
+function formName(form: string): string {
+  return /^\d/.test(form) ? `Form ${form}` : form;
+}
+
+/** A facility-kind row (revolver, term loan, delayed draw, credit facility). */
+function isFacilityType(row: LadderRow): boolean {
+  return ["revolver", "credit-facility", "term-loan", "term-loan-a", "term-loan-b", "delayed-draw"].includes(row.classification.instrumentType ?? "");
+}

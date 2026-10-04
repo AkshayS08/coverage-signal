@@ -712,13 +712,13 @@ const FACILITY_INSTRUMENT_TYPES = new Set<InstrumentType>([
  * ladder, and a facility with no balance row), so the rule cannot be applied
  * in one and missed in the other.
  */
-type SourcedFacilityMaturity =
+export type SourcedFacilityMaturity =
   | { kind: "dated"; date: string; granularity: DateGranularity; statedAs: string; sentence: string }
   | { kind: "withheld"; claimed: string; why: string }
   | { kind: "relative"; why: string }
   | { kind: "unstated" };
 
-function facilityMaturityAtItsSentence(f: FacilityRow): SourcedFacilityMaturity {
+export function facilityMaturityAtItsSentence(f: FacilityRow): SourcedFacilityMaturity {
   const m = resolveFacilityMaturity(f.maturity?.value);
   if (m.outcome === "relative") return { kind: "relative", why: m.why };
   if (m.outcome === "unstated") return { kind: "unstated" };

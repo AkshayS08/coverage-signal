@@ -7003,3 +7003,36 @@ CHS's 9¾% notes have a filed day, January 15, 2034, but only in a pre-anchor
 8-K, and the CHS and Encompass days that were clamped sit in the prior 10-K.
 Pulling a day from either is a design question because of Rule 66 (a
 prior-period annual report is a source only when the anchor says so). Not done.
+
+## The Demo v1 cards — built from cache, at $0 by construction
+
+Six cards, one per signed name, per card_spec.md v1.2. `lib/cards/generate.ts`
+refuses to run unless `ANTHROPIC_API_KEY` is empty, so an uncached call throws
+rather than bills; it runs `assertFree`, re-derives each name through the loop,
+and builds a card only where the position matches its golden. The page
+(`/cards`, `/cards/<cik>`) reads the generated JSON and nothing else.
+
+**Every figure, date and label is a segment carrying its sentence and
+document**, and `cards.test.ts` re-checks each with the guard that admitted it
+(Rule 58's test for amounts, the stated-zero test for zeros, Rule 77's test for
+dates, containment for labels, arithmetic for computed totals), with negative
+controls that must fail. `cardSources.test.ts` proves each sentence is in the
+filing its link opens. `thisWeekFingerprint.test.ts` proves reading this week's
+live filing list moves no fingerprint: 0 of 6 would re-extract.
+
+Defects the tests and a card read caught while building, each fixed as a rule:
+
+- a linked sentence cited to a document it is not in (Encompass's revolver
+  maturity, Tenet's period line) — a sentence's document is the one it is
+  FOUND in (Rule 44 on the card)
+- a "~" on every figure sharing a sentence with one hedged figure — a hedge
+  must govern the figure itself
+- "stated in the note but not captured: revolver" on CHS, whose ABL is on the
+  card — a not-captured claim is checked against the card's own rows
+- a withheld maturity still listed after a sourced date replaced it (Tenet)
+- one instrument's current and long-term portions shown as two lines (Cigna)
+- my own test asserting "at most once" for Cigna's four notes, which passed at
+  zero because the lines carried no coupon — now "exactly once", against lines
+  that carry the filer's own name for each instrument
+- Encompass's "senior, unsecured" sentence is in the prior 10-K, not the
+  anchor: not used for labels, stated in the trust section (Rule 66 candidate)
