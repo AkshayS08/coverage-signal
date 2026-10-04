@@ -1,6 +1,6 @@
 # Coverage Signal card spec, Demo v1
 
-Version 1.1, Oct 4, 2026. Decisions by Akshay in Phase 1. v1.1: date display rule (3.3), CHS 9¾% item corrected (4).
+Version 1.2, Oct 4, 2026. Decisions by Akshay in Phase 1. v1.1: date display rule (3.3), CHS 9¾% item corrected (4). v1.2: year-only maturities in "due in 24 months" (2.3).
 
 ## 1. What the card is for
 
@@ -58,7 +58,7 @@ Three headlines. A fourth slot is reserved for the tranche mix once proper senio
 - Underneath, the next maturity: "next: $1.5B senior unsecured notes, March 2027".
 - An instrument whose maturity falls after the position date but before the brief date, with no repayment yet in a filing, shows as "matured since the position date, repayment not yet confirmed in a filing". It is never silently dropped and never assumed repaid.
 - Scheduled term-loan amortization is included where the filing states a schedule. Otherwise only the final maturity counts.
-- A maturity stated as a year only counts when that year-end falls inside the window, and is marked "date stated as year only".
+- A maturity stated as a year only is included when its year overlaps the window, flagged "year only stated, may fall within 24 months, see source". The year-end test applies only where an exact placement is needed (the ladder bucket, carding).
 - A maturity stated as a relative term ("364 days after funding") shows those words and is not placed in the window unless a date can be computed from stated facts.
 
 ### 2.4 Maturity ladder
