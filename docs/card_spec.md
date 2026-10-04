@@ -1,6 +1,6 @@
 # Coverage Signal card spec, Demo v1
 
-Version 1.0, Oct 2, 2026. Decisions by Akshay in Phase 1.
+Version 1.1, Oct 4, 2026. Decisions by Akshay in Phase 1. v1.1: date display rule (3.3), CHS 9¾% item corrected (4).
 
 ## 1. What the card is for
 
@@ -111,13 +111,14 @@ Every amount, date, and label links to the exact sentence it came from, highligh
 - The unit word is the tool's canonical one ("million"), never the caption's inflection.
 - Where a table caption declares scale, the unit comes from the caption in code (Rule 67).
 - A date display never drops precision the filing printed. A bare year stays a bare year.
+- A displayed date never claims more precision than the sentence it links to. Year-only stays year-only, month-year stays month-year (Rules 76 to 78).
 - Approximate figures carry "~" where the filer hedged them ("approximately $1.0 billion").
 
 ## 4. Known render cases to handle
 
 - **Cigna's four September 2025 notes** appear on the anchor ladder and inside the rolled base. Show them once (2.4). The page must not read $9B where there is $4.5B.
 - **CHS borrowing base**: full ABL sentence behind the flag, not the fragment "subject to borrowing base capacity".
-- **CHS 9¾% notes**: currently display 2034 where the filing prints 2034-09-15. Fix and re-sign before cards build (session 26, task 1).
+- CHS 9¾% notes display 2034, as the anchor states. The filed day (January 15, 2034) sits only in a pre-anchor 8-K; see the post-demo candidate.
 - **Undrawn revolvers** (Cigna $6.5B, CHS ABL $1.0B) show as capacity under liquidity and facilities, never as debt.
 - **Commercial paper** shows under total debt with "~" where hedged, never under liquidity.
 
