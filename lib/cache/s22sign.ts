@@ -115,19 +115,23 @@ const REBASELINE_REASON: Record<string, string> = {
   // READING did not move at all. Re-baselined because the version and the
   // corpus moved, and for no other reason.
   "Encompass Health":
-    "Re-baselined at v31 in Session 23, and the notable fact is what did NOT change. (1) THE READING DID NOT MOVE " +
-    "— not one row field differs from the v29 signature. Seven rows, identical instruments, amounts, maturities, " +
-    "granularities, provenance and capacity flags; coverage unchanged; one card. The v30 extraction had carried " +
-    "six rows; v31 carries seven, which is what v29 read, and the seventh (5.875 % Senior Notes due 2034, " +
-    "$491.0 million, 2034-06-01) is cited byte-identically to the anchor 10-Q (ehc-20260630.htm) with the prior " +
-    "period column printing an em-dash — a note that did not exist at the prior date, not an off-anchor pull. " +
-    "(2) THE CORPUS MOVED — the 10-K (ehc-20251231.htm) is no longer in the cited set, 4 documents down to 3, " +
-    "which is on its own sufficient reason to re-sign rather than compare (Rule 30). (3) THE LETTER-OF-CREDIT " +
-    "WATCH CLOSES ON EVIDENCE — a $53.6 million LC figure was claimed and REJECTED by the per-figure guard, " +
-    "because the sentence offered for it states \"$ 200.0 million was drawn under the revolving credit facility\" " +
-    "and not $53.6 million. The anchor states no LC balance for Encompass, so null is the honest answer and the " +
-    "Session 23 refresh-roster watch on this field is struck on the filings rather than on a preference. " +
-    "Facility figures identical across all three v31 runs.",
+    "Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the " +
+    "CHS 9¾% notes was an interest date read as a maturity. (1) FOUR MATURITIES MOVE FROM DAY TO YEAR — the 4.50% " +
+    "notes due 2028, 4.75% due 2030, 4.625% due 2031 and 5.875% due 2034. Each row cites its line in the anchor's " +
+    "debt table (\"4.50 % Senior Notes due 2028 396.9 792.0\"), which prints the year only. The first three days " +
+    "are stated in the 10-K (\"The 2028 Notes mature on February 1, 2028…\"); the 5.875% notes' June 1, 2034 is " +
+    "printed elsewhere in the anchor, not in the row's own line. A date may not be finer than the sentence it links " +
+    "to (Rules 76, 77); taking a day from another sentence or filing is the post-demo candidate logged with Rule 66. " +
+    "(2) THE REVOLVER'S MATURITY now cites its own sentence (\"the maturity date is March 9, 2031, rather than " +
+    "October 7, 2027\"), not the amount line (Rule 78); the date is unchanged. (3) ONE CHANGE IS A LOSS AND IS " +
+    "SIGNED KNOWINGLY: THE REFI CARD IS GONE. The Session 23 state carded the 4.50% notes on 2028-02-01, inside the " +
+    "18-month window. At year precision the row cannot card — a bare year never does, because there is no day to " +
+    "be inside a window (BRD 6.2) — so the state carries no card. The notes, their amount and their year are " +
+    "unchanged on the ladder. The day exists in the 10-K, and whether a card may rest on it is the Rule 66 " +
+    "candidate, not something this signature decides. (4) NOTHING ELSE MOVED: seven rows, " +
+    "the same amounts, statuses, provenance and capacity flags; coverage unchanged; the letter-of-credit figure " +
+    "still null, because the anchor states no LC balance and the $53.6 million once claimed was rejected against " +
+    "its own sentence.",
 };
 
 /**
