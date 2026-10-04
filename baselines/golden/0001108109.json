@@ -3,7 +3,7 @@
   "signature": {
     "signedBy": "Akshay Sahani",
     "signedOn": "2026-09-09",
-    "basis": "RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 24. Twelve rows, as v29 pinned, and the two changes are both ones a reader sees. (1) THE ABL IS UNDRAWN CAPACITY, NOT A REPAID TRANCHE. C1 turned any zero-balance row into `repaid`, which is right for a term tranche reported at nil and is the opposite of the truth for a revolver: nothing is owed AND the whole $1.0 billion commitment stands. CHS was the only name in ten this fired on, and the other eight revolvers in the book — Tenet $1,900M, Cigna $6,500M, Quest $750M and $600M, Molina $1,250M — already rendered as capacity, which is what made it a rule rather than a patch (Rule 60). The row now shows the committed size and states that nothing is drawn against it. (2) THE ABL APPEARED TWICE. The model reports it in the debt note's schedule and, on some runs, again as a prose instrument stating the same facility, the same $1.0 billion and the same 2029-06-05. The canonical run carried no prose entry and gave 12 rows; four other extractions carried one and gave 13. That was diagnosed as citation drift for most of a day and was a duplicate (Rule 49 on the ladder). It took three wrong diagnoses to find, all three recorded. The remaining \"drift\" was the third defect: an `asset-sale` citation entering the fifteen-trigger filing set made the whole answer read as incomparable, about a corpus that never moved (Rule 65). The borrowing-base catch is unchanged and still on the facility line, with the filer's own qualifying language and the implied-base arithmetic beside it. ONE CHANGE IS A LOSS AND IS SIGNED KNOWINGLY: the 9 3/4% Senior Secured Notes due 2034 carry a maturity of \"2034\" where v29 carried \"2034-09-15\". The year is right and the day is gone — a bare-year maturity is handled correctly everywhere downstream (it sorts to year-end for ordering, never renders as a real date, and cannot card on a day it does not have), so this is a loss of PRECISION rather than a wrong number. It is recorded here rather than noticed later, because a signature that lists only improvements is not a record. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.2833; re-read at $0 after each fix): 12 rows in every run, identical across all three under compareToGolden; coverage identical; the cited position documents identical. Facility figures measured separately and identical across all three, labels included. WHAT WAS DIAGNOSED AS CITATION DRIFT WAS TWO SEPARATE DEFECTS, both ours: the ABL reached the ladder twice — once from the debt note's schedule and once, on some runs only, as a prose instrument stating the same facts about the same facility (Rule 49 on the ladder) — and the answer's identity moved when an `asset-sale` citation entered the fifteen-trigger union (Rule 65). Neither was the model disagreeing with itself. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
+    "basis": "RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the CHS 9¾% notes was an interest date read as a maturity. (1) SIX MATURITIES MOVE FROM DAY TO YEAR — the 6%, 5¼%, 4¾%, 10⅞% and 10¾% senior secured notes and the 6⅞% senior notes. Each row cites its line in the anchor's debt table (\"6 % Senior Secured Notes due 2029 644\"), which prints the year only; the days had come from the 10-K. A date may not be finer than the sentence it links to (Rules 76, 77), and pulling a day from a prior 10-K is a separate question under Rule 66, logged as a post-demo candidate. (2) THE 9¾% NOTES STAY AT 2034, which is what the anchor states. The Session 24 signature called this \"a loss of precision\"; read against the filings it is a correction — no filing states 2034-09-15 as a maturity, September 15 is an interest payment date, and the filed day (January 15, 2034) is only in the pre-anchor 2025-08-12 8-K. (3) THE ABL's MATURITY now cites its own sentence (\"…will be due and payable in full on June 5, 2029\"), not the size sentence (Rule 78); the date is unchanged. (4) NOTHING ELSE MOVED: twelve rows, the same amounts, statuses, provenance and capacity flags; coverage unchanged; the ABL still undrawn capacity with the borrowing-base sentence on its facility line. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.2833; re-read at $0 after each fix): 12 rows in every run, identical across all three under compareToGolden; coverage identical; the cited position documents identical. Facility figures measured separately and identical across all three, labels included. WHAT WAS DIAGNOSED AS CITATION DRIFT WAS TWO SEPARATE DEFECTS, both ours: the ABL reached the ladder twice — once from the debt note's schedule and once, on some runs only, as a prose instrument stating the same facts about the same facility (Rule 49 on the ladder) — and the answer's identity moved when an `asset-sale` citation entered the fifteen-trigger union (Rule 65). Neither was the model disagreeing with itself. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
   },
   "attestation": {
     "rowsCorrect": true,
@@ -136,7 +136,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244"
+        "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
+        "maturitySourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244"
       },
       {
         "instrument": "6 ⅛% Junior-Priority Secured Notes due 2030",
@@ -146,57 +147,63 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227"
+        "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
+        "maturitySourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227"
       },
       {
         "instrument": "6 % Senior Secured Notes due 2029",
         "amount": "$ 644 million",
-        "maturityDate": "2029-01-15",
-        "dateGranularity": "day",
+        "maturityDate": "2029",
+        "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6 % Senior Secured Notes due 2029 644"
+        "sourceLine": "6 % Senior Secured Notes due 2029 644",
+        "maturitySourceLine": "6 % Senior Secured Notes due 2029 644"
       },
       {
         "instrument": "5 ¼% Senior Secured Notes due 2030",
         "amount": "$ 1,535 million",
-        "maturityDate": "2030-05-15",
-        "dateGranularity": "day",
+        "maturityDate": "2030",
+        "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535"
+        "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
+        "maturitySourceLine": "5 ¼% Senior Secured Notes due 2030 1,535"
       },
       {
         "instrument": "4 ¾% Senior Secured Notes due 2031",
         "amount": "$ 689 million",
-        "maturityDate": "2031-02-15",
-        "dateGranularity": "day",
+        "maturityDate": "2031",
+        "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4 ¾% Senior Secured Notes due 2031 689"
+        "sourceLine": "4 ¾% Senior Secured Notes due 2031 689",
+        "maturitySourceLine": "4 ¾% Senior Secured Notes due 2031 689"
       },
       {
         "instrument": "10 ⅞% Senior Secured Notes due 2032",
         "amount": "$ 1,549 million",
-        "maturityDate": "2032-01-15",
-        "dateGranularity": "day",
+        "maturityDate": "2032",
+        "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549"
+        "sourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549",
+        "maturitySourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549"
       },
       {
         "instrument": "10 ¾% Senior Secured Notes due 2033",
         "amount": "$ 700 million",
-        "maturityDate": "2033-06-15",
-        "dateGranularity": "day",
+        "maturityDate": "2033",
+        "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "10 ¾% Senior Secured Notes due 2033 700"
+        "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
+        "maturitySourceLine": "10 ¾% Senior Secured Notes due 2033 700"
       },
       {
         "instrument": "9 ¾% Senior Secured Notes due 2034",
@@ -206,17 +213,19 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790"
+        "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
+        "maturitySourceLine": "9 ¾% Senior Secured Notes due 2034 1,790"
       },
       {
         "instrument": "6 ⅞% Senior Notes due 2028",
         "amount": "$ 42 million",
-        "maturityDate": "2028-04-01",
-        "dateGranularity": "day",
+        "maturityDate": "2028",
+        "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42"
+        "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
+        "maturitySourceLine": "6 ⅞% Senior Notes due 2028 $ 42"
       },
       {
         "instrument": "ABL Facility",
@@ -226,7 +235,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": true,
-        "sourceLine": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\")."
+        "sourceLine": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\").",
+        "maturitySourceLine": "Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029."
       },
       {
         "instrument": "Finance lease and financing obligations",
@@ -236,7 +246,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Finance lease and financing obligations 298"
+        "sourceLine": "Finance lease and financing obligations 298",
+        "maturitySourceLine": null
       },
       {
         "instrument": "Other",
@@ -246,7 +257,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Other 52"
+        "sourceLine": "Other 52",
+        "maturitySourceLine": null
       }
     ],
     "coverage": {
@@ -259,6 +271,7 @@
     },
     "tier2": [],
     "rowsOutsideSubtotal": 0,
+    "rolled": null,
     "cards": []
   },
   "sourceResult": {
@@ -342,12 +355,13 @@
             "amount": "$ 42 million",
             "rate": "6.875%",
             "seniority": null,
-            "maturityDate": "2028-04-01",
-            "dateGranularity": "day",
+            "maturityDate": "2028",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "6 ⅞% Senior Notes due 2028 $ 42"
           },
           {
             "kind": "row",
@@ -355,12 +369,13 @@
             "amount": "$ 644 million",
             "rate": "6%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2029-01-15",
-            "dateGranularity": "day",
+            "maturityDate": "2029",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "6 % Senior Secured Notes due 2029 644",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "6 % Senior Secured Notes due 2029 644"
           },
           {
             "kind": "row",
@@ -368,12 +383,13 @@
             "amount": "$ 1,535 million",
             "rate": "5.25%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2030-05-15",
-            "dateGranularity": "day",
+            "maturityDate": "2030",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "5 ¼% Senior Secured Notes due 2030 1,535"
           },
           {
             "kind": "row",
@@ -381,12 +397,13 @@
             "amount": "$ 689 million",
             "rate": "4.75%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2031-02-15",
-            "dateGranularity": "day",
+            "maturityDate": "2031",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "4 ¾% Senior Secured Notes due 2031 689",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "4 ¾% Senior Secured Notes due 2031 689"
           },
           {
             "kind": "row",
@@ -394,12 +411,13 @@
             "amount": "$ 1,549 million",
             "rate": "10.875%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2032-01-15",
-            "dateGranularity": "day",
+            "maturityDate": "2032",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549"
           },
           {
             "kind": "row",
@@ -407,12 +425,13 @@
             "amount": "$ 700 million",
             "rate": "10.75%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2033-06-15",
-            "dateGranularity": "day",
+            "maturityDate": "2033",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "10 ¾% Senior Secured Notes due 2033 700"
           },
           {
             "kind": "row",
@@ -425,7 +444,8 @@
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "9 ¾% Senior Secured Notes due 2034 1,790"
           },
           {
             "kind": "row",
@@ -438,7 +458,8 @@
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244"
           },
           {
             "kind": "row",
@@ -451,7 +472,8 @@
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227"
           },
           {
             "kind": "row",
@@ -464,7 +486,8 @@
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "ABL Facility —",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": null
           },
           {
             "kind": "row",
@@ -552,12 +575,13 @@
             "amount": "42 million",
             "rate": "6.875%",
             "seniority": null,
-            "maturityDate": "2028-04-01",
-            "dateGranularity": "day",
+            "maturityDate": "2028",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "6 ⅞% Senior Notes due 2028 42",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "6 ⅞% Senior Notes due 2028 42"
           },
           {
             "kind": "row",
@@ -565,12 +589,13 @@
             "amount": "644 million",
             "rate": "6%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2029-01-15",
-            "dateGranularity": "day",
+            "maturityDate": "2029",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "6 % Senior Secured Notes due 2029 644",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "6 % Senior Secured Notes due 2029 644"
           },
           {
             "kind": "row",
@@ -578,12 +603,13 @@
             "amount": "1,535 million",
             "rate": "5.25%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2030-05-15",
-            "dateGranularity": "day",
+            "maturityDate": "2030",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "5 ¼% Senior Secured Notes due 2030 1,535"
           },
           {
             "kind": "row",
@@ -591,12 +617,13 @@
             "amount": "1,058 million",
             "rate": "4.75%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2031-02-15",
-            "dateGranularity": "day",
+            "maturityDate": "2031",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "4 ¾% Senior Secured Notes due 2031 1,058",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm",
+            "maturitySourceLine": "4 ¾% Senior Secured Notes due 2031 1,058"
           },
           {
             "kind": "row",
@@ -604,12 +631,13 @@
             "amount": "1,780 million",
             "rate": "10.875%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2032-01-15",
-            "dateGranularity": "day",
+            "maturityDate": "2032",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "10 ⅞% Senior Secured Notes due 2032 1,780",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm",
+            "maturitySourceLine": "10 ⅞% Senior Secured Notes due 2032 1,780"
           },
           {
             "kind": "row",
@@ -617,12 +645,13 @@
             "amount": "700 million",
             "rate": "10.75%",
             "seniority": "senior-priority secured",
-            "maturityDate": "2033-06-15",
-            "dateGranularity": "day",
+            "maturityDate": "2033",
+            "dateGranularity": "year",
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "10 ¾% Senior Secured Notes due 2033 700"
           },
           {
             "kind": "row",
@@ -635,7 +664,8 @@
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "9 ¾% Senior Secured Notes due 2034 1,790"
           },
           {
             "kind": "row",
@@ -648,7 +678,8 @@
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244"
           },
           {
             "kind": "row",
@@ -661,7 +692,8 @@
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227"
           },
           {
             "kind": "row",
@@ -674,7 +706,8 @@
             "section": null,
             "periodColumn": "March 31, 2026",
             "sourceLine": "ABL Facility —",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "maturitySourceLine": null
           },
           {
             "kind": "row",
@@ -784,6 +817,7 @@
           "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
         },
         "anchorNoteShape": "tabular",
+        "priorPeriodBase": null,
         "noteLocatorVersion": 1,
         "rowsExtracted": 34,
         "rowsVerified": 34,
@@ -900,6 +934,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -955,6 +990,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1010,6 +1046,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1065,6 +1102,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1120,6 +1158,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1175,6 +1214,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1242,6 +1282,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1352,6 +1393,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1400,6 +1442,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1455,6 +1498,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1510,6 +1554,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1565,6 +1610,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1620,6 +1666,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1675,6 +1722,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,

@@ -98,26 +98,18 @@ const REBASELINE_REASON: Record<string, string> = {
     "printed. Nine rows, coverage unchanged, every facility figure identical across all three v31 runs.",
 
   "Community Health Systems":
-    "Re-baselined at v31 in Session 24. Twelve rows, as v29 pinned, and the two changes are both ones a reader sees. " +
-    "(1) THE ABL IS UNDRAWN CAPACITY, NOT A REPAID TRANCHE. C1 turned any zero-balance row into `repaid`, which is " +
-    "right for a term tranche reported at nil and is the opposite of the truth for a revolver: nothing is owed AND the " +
-    "whole $1.0 billion commitment stands. CHS was the only name in ten this fired on, and the other eight revolvers " +
-    "in the book — Tenet $1,900M, Cigna $6,500M, Quest $750M and $600M, Molina $1,250M — already rendered as capacity, " +
-    "which is what made it a rule rather than a patch (Rule 60). The row now shows the committed size and states that " +
-    "nothing is drawn against it. (2) THE ABL APPEARED TWICE. The model reports it in the debt note's schedule and, on " +
-    "some runs, again as a prose instrument stating the same facility, the same $1.0 billion and the same 2029-06-05. " +
-    "The canonical run carried no prose entry and gave 12 rows; four other extractions carried one and gave 13. That " +
-    "was diagnosed as citation drift for most of a day and was a duplicate (Rule 49 on the ladder). It took three " +
-    "wrong diagnoses to find, all three recorded. " +
-    "The remaining \"drift\" was the third defect: an `asset-sale` citation entering the fifteen-trigger filing set " +
-    "made the whole answer read as incomparable, about a corpus that never moved (Rule 65). " +
-    "The borrowing-base catch is unchanged and still on the facility line, with the filer's own qualifying language " +
-    "and the implied-base arithmetic beside it. " +
-    "ONE CHANGE IS A LOSS AND IS SIGNED KNOWINGLY: the 9 3/4% Senior Secured Notes due 2034 carry a maturity of " +
-    "\"2034\" where v29 carried \"2034-09-15\". The year is right and the day is gone — a bare-year maturity is " +
-    "handled correctly everywhere downstream (it sorts to year-end for ordering, never renders as a real date, and " +
-    "cannot card on a day it does not have), so this is a loss of PRECISION rather than a wrong number. It is " +
-    "recorded here rather than noticed later, because a signature that lists only improvements is not a record.",
+    "Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the " +
+    "CHS 9¾% notes was an interest date read as a maturity. (1) SIX MATURITIES MOVE FROM DAY TO YEAR — the 6%, 5¼%, " +
+    "4¾%, 10⅞% and 10¾% senior secured notes and the 6⅞% senior notes. Each row cites its line in the anchor's debt " +
+    "table (\"6 % Senior Secured Notes due 2029 644\"), which prints the year only; the days had come from the 10-K. " +
+    "A date may not be finer than the sentence it links to (Rules 76, 77), and pulling a day from a prior 10-K is a " +
+    "separate question under Rule 66, logged as a post-demo candidate. (2) THE 9¾% NOTES STAY AT 2034, which is what " +
+    "the anchor states. The Session 24 signature called this \"a loss of precision\"; read against the filings it is a " +
+    "correction — no filing states 2034-09-15 as a maturity, September 15 is an interest payment date, and the filed " +
+    "day (January 15, 2034) is only in the pre-anchor 2025-08-12 8-K. (3) THE ABL's MATURITY now cites its own " +
+    "sentence (\"…will be due and payable in full on June 5, 2029\"), not the size sentence (Rule 78); the date is " +
+    "unchanged. (4) NOTHING ELSE MOVED: twelve rows, the same amounts, statuses, provenance and capacity flags; " +
+    "coverage unchanged; the ABL still undrawn capacity with the borrowing-base sentence on its facility line.",
 
   // Encompass is the unusual case and the reason is written to say so: the
   // READING did not move at all. Re-baselined because the version and the
