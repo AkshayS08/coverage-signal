@@ -1,0 +1,214 @@
+.page {
+  --ink: #16202b;
+  --muted: #5b6876;
+  --faint: #8a96a3;
+  --line: #e2e7ec;
+  --panel: #ffffff;
+  --wash: #f4f6f8;
+  --accent: #0f5c8c;
+  --warn: #8a5a00;
+  background: var(--wash);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 24px 16px 64px;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    --ink: #e6ebf0;
+    --muted: #a3afbb;
+    --faint: #7c8895;
+    --line: #2a333d;
+    --panel: #151b22;
+    --wash: #0d1116;
+    --accent: #6cb4e6;
+    --warn: #e0b45c;
+  }
+}
+
+.nav {
+  max-width: 980px;
+  margin: 0 auto 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: baseline;
+}
+.navTitle {
+  font-weight: 600;
+  margin-right: 8px;
+}
+.navLink {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+}
+.navLink:hover {
+  text-decoration: underline;
+}
+
+.card {
+  max-width: 980px;
+  margin: 0 auto 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 22px 26px 18px;
+}
+
+.header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+}
+.company {
+  font-size: 20px;
+  font-weight: 650;
+  margin: 0 0 2px;
+  letter-spacing: -0.01em;
+}
+.meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.section {
+  padding: 12px 0 10px;
+  border-bottom: 1px solid var(--line);
+}
+.sectionHead {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.headlines {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+.headlines > .section {
+  border-bottom: none;
+}
+.headlines > .section:nth-child(3) {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 720px) {
+  .headlines {
+    grid-template-columns: 1fr;
+  }
+}
+
+.line {
+  padding: 2px 0;
+}
+.line::first-letter,
+.headline::first-letter,
+.blockHead::first-letter {
+  text-transform: uppercase;
+}
+.headline {
+  font-size: 17px;
+  font-weight: 600;
+  padding: 2px 0 6px;
+}
+
+.block {
+  margin: 8px 0 4px;
+}
+.blockHead {
+  font-weight: 650;
+  font-size: 13px;
+  color: var(--ink);
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 2px;
+}
+
+.figure,
+.date {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline dotted var(--accent);
+  text-underline-offset: 3px;
+}
+.label {
+  color: inherit;
+  text-decoration: underline dotted var(--faint);
+  text-underline-offset: 3px;
+}
+.figure:hover,
+.date:hover,
+.label:hover {
+  color: var(--accent);
+}
+.notStated {
+  color: var(--warn);
+  font-style: italic;
+  text-decoration: underline dotted var(--warn);
+  text-underline-offset: 3px;
+}
+.filing {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.filing:hover {
+  text-decoration: underline;
+}
+
+.computed {
+  /* A <details> will not flow as plain inline content; inline-block keeps the
+     figure in its sentence and lets the parts open beneath it. */
+  display: inline-block;
+  vertical-align: baseline;
+}
+.computed > summary {
+  display: inline;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  text-decoration: underline double var(--accent);
+  text-underline-offset: 3px;
+}
+.computed > summary::-webkit-details-marker {
+  display: none;
+}
+.computed > summary::after {
+  content: " Σ";
+  font-size: 10px;
+  color: var(--faint);
+  font-weight: 400;
+}
+.parts {
+  display: block;
+  margin: 4px 0 6px 12px;
+  padding: 6px 10px;
+  border-left: 2px solid var(--line);
+  background: var(--wash);
+  font-size: 12px;
+  font-weight: 400;
+}
+.part {
+  display: block;
+}
+.part a {
+  color: var(--ink);
+  text-decoration: underline dotted var(--accent);
+}
+.partDoc {
+  color: var(--faint);
+}
+
+.footer {
+  padding-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
