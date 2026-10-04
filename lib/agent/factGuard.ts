@@ -1,4 +1,4 @@
-import { extractFactTokens, factTokensMatch, type FactToken } from "./factTokens";
+import { extractFactTokens, factTokensMatch, dateSupportedBy, datePrecisionOf, morePrecise, clampDateToken, type DatePrecision, type FactToken } from "./factTokens";
 import type { DateGranularity } from "./claude";
 
 const FULL_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -60,6 +60,8 @@ export interface EventDateGuardResult {
   eventDate: string | null;
   /** Passed through from the claim on acceptance; null on rejection (nothing verified, so no known precision). */
   eventDateGranularity: DateGranularity | null;
+  /** Rule 76 — set when the filing supported the date only at a coarser precision; this is what was claimed. */
+  clampedFrom?: string;
 }
 
 /**
@@ -94,27 +96,52 @@ export function verifyEventDate(params: {
   const { eventDate, eventDateGranularity, anchorText, citedUrls, textByUrl } = params;
   if (!eventDate) return { accepted: true, eventDate: null, eventDateGranularity: null };
 
-  const target = claimedDateToToken(eventDate);
-  if (!target) return { accepted: false, eventDate: null, eventDateGranularity: null };
+  const parsed = claimedDateToToken(eventDate);
+  if (!parsed) return { accepted: false, eventDate: null, eventDateGranularity: null };
+  // The claim at its OWN granularity: a month-granularity "2027-11-01" claims
+  // November 2027, not the 1st of it.
+  const target: FactToken =
+    eventDateGranularity === "month" && parsed.dateValue ? { ...parsed, dateValue: { ...parsed.dateValue, day: null } } : parsed;
 
   const anchorWords = anchorText ? extractDateAnchorWords(anchorText) : [];
 
   const citedTexts = citedUrls.map((u) => textByUrl.get(u)).filter((t): t is string => !!t);
   const candidateTexts = citedTexts.length > 0 ? citedTexts : Array.from(textByUrl.values());
 
+  // RULE 77 — a token supports the claim only at the precision it states.
+  // An anchored token coarser than the claim does not approve it; it is
+  // remembered, and if nothing finer is found the date is CLAMPED to it
+  // (Rule 76) rather than accepted at a precision no text in the filing
+  // gave it.
+  let coarser: DatePrecision | null = null;
+  const consider = (dt: FactToken): EventDateGuardResult | null => {
+    if (dateSupportedBy(target, dt)) return { accepted: true, eventDate, eventDateGranularity };
+    const p = datePrecisionOf(dt);
+    if (p && (coarser === null || morePrecise(p, coarser))) coarser = p;
+    return null;
+  };
   for (const text of candidateTexts) {
     const dateTokens = extractFactTokens(text).filter((t) => t.kind === "date");
     for (const dt of dateTokens) {
       if (!factTokensMatch(target, dt)) continue;
       // No anchor words to check against (e.g. very short evidence) — accept on the date match alone, nothing more precise is possible.
-      if (anchorWords.length === 0) return { accepted: true, eventDate, eventDateGranularity };
+      if (anchorWords.length === 0) {
+        const hit = consider(dt);
+        if (hit) return hit;
+        continue;
+      }
       const from = Math.max(0, dt.index - DATE_ANCHOR_WINDOW_CHARS);
       const to = Math.min(text.length, dt.index + dt.raw.length + DATE_ANCHOR_WINDOW_CHARS);
       const nearby = text.slice(from, to).toLowerCase();
       if (anchorWords.some((w) => new RegExp(`\\b${w}\\b`).test(nearby))) {
-        return { accepted: true, eventDate, eventDateGranularity };
+        const hit = consider(dt);
+        if (hit) return hit;
       }
     }
+  }
+  if (coarser !== null) {
+    const shown = clampDateToken(target, coarser);
+    return { accepted: true, eventDate: shown.date, eventDateGranularity: shown.granularity, clampedFrom: eventDate };
   }
   return { accepted: false, eventDate: null, eventDateGranularity: null };
 }

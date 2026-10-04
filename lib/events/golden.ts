@@ -19,7 +19,8 @@
  * failure reads as a diff rather than as an alarm.
  */
 import type { CompanyResult } from "../agent";
-import { amountKey, amountSupportOf, assemblePosition, rowIdentityKey, rowIdentityKeyWithoutSize, sameAmount } from "./position";
+import { amountKey, amountSupportOf, assemblePosition, rowIdentityKey, rowIdentityKeyWithoutSize, sameAmount, sentenceSupportsMaturity } from "./position";
+import type { DateGranularity } from "../agent/claude";
 
 // Re-exported from their home beside `parseMoneyAmount`. They moved there
 // when the ladder's own duplicate collapse needed the same notion of "same
@@ -41,6 +42,13 @@ export interface GoldenRow {
   provenance: string;
   isCapacity: boolean;
   sourceLine: string;
+  /**
+   * Rule 78 — the sentence stating the row's MATURITY. Optional so files
+   * signed before Session 26 still parse; a signature that does not carry it
+   * does not pin it, and the comparison says so rather than inventing an
+   * expectation the signer never made.
+   */
+  maturitySourceLine?: string | null;
 }
 
 export interface GoldenDerivedLine {
@@ -299,6 +307,7 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
       instrument: r.instrument, amount: r.amount, maturityDate: r.maturityDate,
       dateGranularity: r.dateGranularity ?? null, status: r.status, provenance: r.provenance,
       isCapacity: !!r.isCapacity, sourceLine: r.sourceLine,
+      maturitySourceLine: r.maturitySourceLine ?? null,
     })),
     coverage: {
       denominatorSource: cov.denominatorSource,
@@ -590,6 +599,17 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
       const line = `rows["${e.instrument}"].sourceLine: expected ${fmt(e.sourceLine)}, got ${fmt(a.sourceLine)}`;
       if (eOk && aOk) tolerated.push(`${line} — both sentences state the row's amount, so this is which document was cited, not a changed fact`);
       else d.push(`${line}${aOk ? "" : " — and the new sentence does NOT state this row's amount (Rule 58)"}`);
+    }
+    // RULE 78 — the same shape for the maturity's own sentence, and only
+    // where the signature pinned one. A file signed before the field existed
+    // made no claim about it; reporting a difference against nothing would be
+    // a finding about the comparison, not the filing.
+    if (Object.prototype.hasOwnProperty.call(e, "maturitySourceLine") && (e.maturitySourceLine ?? null) !== (a.maturitySourceLine ?? null)) {
+      const eOk = !e.maturityDate || sentenceSupportsMaturity(e.maturityDate, e.dateGranularity as DateGranularity | null, e.maturitySourceLine);
+      const aOk = !a.maturityDate || sentenceSupportsMaturity(a.maturityDate, a.dateGranularity as DateGranularity | null, a.maturitySourceLine);
+      const line = `rows["${e.instrument}"].maturitySourceLine: expected ${fmt(e.maturitySourceLine ?? null)}, got ${fmt(a.maturitySourceLine ?? null)}`;
+      if (eOk && aOk && e.maturityDate) tolerated.push(`${line} — both sentences state the row's maturity at the precision shown, so this is which sentence was cited, not a changed fact`);
+      else d.push(`${line}${aOk ? "" : " — and the new sentence does NOT state this row's maturity at the precision shown (Rule 77)"}`);
     }
   }
   for (const a of actual.rows) if (!matched.has(a)) d.push(`rows["${a.instrument}"]: UNEXPECTED — this run carries it, the signed ladder does not`);

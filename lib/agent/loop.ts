@@ -49,7 +49,7 @@ import { verifyTriggerQuote, verifyClaim, discriminatingDigitGroups } from "./ve
 import { verifyEventDate, type EventDateGuardResult } from "./factGuard";
 import { classifyProceedsUse } from "./proceedsUse";
 import { boundProceedsFilingText } from "./proceedsUseInput";
-import { extractFactTokens, factTokensMatch, type FactToken } from "./factTokens";
+import { extractFactTokens, factTokensMatch, statedDatePrecision, datePrecisionOf, morePrecise, clampDateToken, type DatePrecision, type FactToken } from "./factTokens";
 import { textOutsideInstrumentLabel, splitIssueSizeFromName } from "./issueSize";
 import { assertBlobConfigured } from "../fetch/cache";
 import { corpusFingerprint, cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
@@ -368,7 +368,9 @@ function reselectAmountEvidence<T extends { amount: string; sourceLine: string; 
       .sort((a, b) => b.hits - a.hits || a.s.length - b.s.length)[0];
     if (best) {
       reselected++;
-      return { ...e, sourceLine: best.s };
+      // Rule 78: the amount gets its own sentence; the line the model cited
+      // is kept, because it may be the one that states the MATURITY.
+      return { ...e, sourceLine: best.s, modelSourceLine: e.sourceLine };
     }
     unresolved.push(name);
     return e;
@@ -523,11 +525,17 @@ export type TraceHandler = (line: string) => void;
 /** Session 18 (post-v9 redesign): a ScheduleSequenceEntry whose `sourceLine` verified against the fetched corpus, plus which specific filing it verified against — an unverified entry never reaches this shape, it's dropped (see verifySequenceEntries below). */
 export interface VerifiedSequenceEntry extends ScheduleSequenceEntry {
   citedUrl: string;
+  /** Rule 78 — the sentence that states this row's MATURITY, at the precision shown. Null when none does. */
+  maturitySourceLine?: string | null;
+  /** The line the model cited, kept when Rule 58 re-selected an amount sentence in its place. */
+  modelSourceLine?: string;
 }
 
 /** Same verification, for new-debt-issuance's issuedTranches (not part of the debt note's running-total walk, just rows to append to the ladder). */
 export interface VerifiedIssuedTranche extends IssuedTrancheRow {
   citedUrl: string;
+  maturitySourceLine?: string | null;
+  modelSourceLine?: string;
 }
 
 /** Session 19, item 2a — an eventInstance whose sourceLine verified. An unverified entry never reaches this shape; it is dropped. */
@@ -1125,6 +1133,11 @@ export async function runAgentLoop(
     if (normalizedDate.eventDate && !dateGuard.accepted) {
       log(
         `  ⚠ EVENT DATE REJECTED for ${companyName} — ${label}: claimed "${normalizedDate.eventDate}" not found (or not anchored to this fact) in the fetched filing text; eventDate set to null`
+      );
+    }
+    if (dateGuard.clampedFrom) {
+      log(
+        `  EVENT DATE CLAMPED for ${companyName} — ${label}: claimed "${dateGuard.clampedFrom}", and the filing states it only to the ${dateGuard.eventDateGranularity}; shown as ${dateGuard.eventDate} (Rule 76)`
       );
     }
 
@@ -2327,7 +2340,23 @@ function recoverStatedMonth<T extends { maturityDate: string | null; dateGranula
   return { ...row, maturityDate: recovered, dateGranularity: "month" as DateGranularity };
 }
 
-function withVerifiedMaturity<T extends { maturityDate: string | null; dateGranularity: DateGranularity | null; sourceLine: string }>(
+/**
+ * RULES 76–78 — A MATURITY IS SHOWN AT THE PRECISION OF THE SENTENCE IT CITES,
+ * AND IT CITES ITS OWN SENTENCE.
+ *
+ * The candidates are the sentences this row already carries, in order: one
+ * already named for its date, the row's own sourceLine, and the line the
+ * model cited before Rule 58 re-selected an amount sentence. The most precise one
+ * that states this date becomes `maturitySourceLine`. Where it is coarser
+ * than the claim, the claim is CLAMPED to it rather than nulled: "due 2029"
+ * supports 2029, and the year is a true, sourced fact (Rule 76). Where none
+ * states the date at all, the date is nulled and the entry kept, as before.
+ *
+ * Never reaches into another document for a day. A prior 10-K or a pre-anchor
+ * 8-K stating one is a separate design question because of Rule 66, logged as
+ * a candidate, not answered here.
+ */
+function withVerifiedMaturity<T extends { maturityDate: string | null; dateGranularity: DateGranularity | null; sourceLine: string; maturitySourceLine?: string | null; modelSourceLine?: string | null }>(
   row: T,
   log: (line: string) => void,
   label: string,
@@ -2335,13 +2364,27 @@ function withVerifiedMaturity<T extends { maturityDate: string | null; dateGranu
 ): T {
   const claimedDate = rowMaturityToken(row);
   if (!claimedDate) return row;
-  const sourceLineDateTokens = extractFactTokens(row.sourceLine).filter((t) => t.kind === "date");
-  const dateConfirmed = sourceLineDateTokens.some((t) => factTokensMatch(claimedDate, t));
-  if (dateConfirmed) return row;
-  log(
-    `  ⚠ MATURITY DATE NOT IN SOURCE LINE for ${label} — "${describe(row)}" claimed maturity ${row.maturityDate}, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept`
-  );
-  return { ...row, maturityDate: null, dateGranularity: null };
+  const candidates = [...new Set([row.maturitySourceLine, row.sourceLine, row.modelSourceLine].filter((s): s is string => !!s))];
+  let best: { sentence: string; precision: DatePrecision } | null = null;
+  for (const sentence of candidates) {
+    const precision = statedDatePrecision(claimedDate, sentence);
+    if (precision && (best === null || morePrecise(precision, best.precision))) best = { sentence, precision };
+  }
+  if (!best) {
+    log(
+      `  ⚠ MATURITY DATE NOT IN SOURCE LINE for ${label} — "${describe(row)}" claimed maturity ${row.maturityDate}, but no matching date token exists in its own verified sourceLine; maturityDate/dateGranularity nulled, entry kept`
+    );
+    return { ...row, maturityDate: null, dateGranularity: null, maturitySourceLine: null };
+  }
+  const claimed = datePrecisionOf(claimedDate)!;
+  if (morePrecise(claimed, best.precision)) {
+    const clamped = clampDateToken(claimedDate, best.precision);
+    log(
+      `  MATURITY CLAMPED TO ITS SENTENCE for ${label} — "${describe(row)}" claimed ${row.maturityDate} (${claimed}), and the sentence stating it prints only the ${best.precision}; shown as ${clamped.date} (Rule 76)`
+    );
+    return { ...row, maturityDate: clamped.date, dateGranularity: clamped.granularity as DateGranularity, maturitySourceLine: best.sentence };
+  }
+  return { ...row, maturitySourceLine: best.sentence };
 }
 
 /**

@@ -340,6 +340,70 @@ export function factTokensMatch(a: FactToken, b: FactToken): boolean {
   return false;
 }
 
+/**
+ * RULE 77 — A SENTENCE SUPPORTS A DATE ONLY AT THE PRECISION IT STATES.
+ *
+ * `factTokensMatch` answers "could these two be the same date?", and for
+ * that question "2034" and "2034-09-15" rightly agree — it is how two
+ * mentions of one tranche are recognised as one. It was ALSO the test for
+ * "does this sentence support this date?", and there the symmetry is wrong:
+ * a sentence printing "April 2030" approved "2030-04-01" at day precision,
+ * and a table row printing "due 2029" approved "2029-01-15". The day came
+ * from the model, or another document, and the page linked it to a sentence
+ * that does not contain it. A check looser than its name.
+ *
+ * So support is directional. The match must hold AND the stated token must
+ * be at least as precise as the claim.
+ */
+export type DatePrecision = "year" | "month" | "day";
+const DATE_PRECISION_RANK: Record<DatePrecision, number> = { year: 0, month: 1, day: 2 };
+
+export function datePrecisionOf(t: FactToken): DatePrecision | null {
+  if (t.kind !== "date" || !t.dateValue) return null;
+  return t.dateValue.day !== null ? "day" : t.dateValue.month !== null ? "month" : "year";
+}
+
+export function morePrecise(a: DatePrecision, b: DatePrecision): boolean {
+  return DATE_PRECISION_RANK[a] > DATE_PRECISION_RANK[b];
+}
+
+/** Does `stated` support `claim` at the claim's own precision? */
+export function dateSupportedBy(claim: FactToken, stated: FactToken): boolean {
+  const c = datePrecisionOf(claim), s = datePrecisionOf(stated);
+  if (!c || !s) return false;
+  return factTokensMatch(claim, stated) && !morePrecise(c, s);
+}
+
+/**
+ * The most precise date this sentence states that agrees with `claim`, or
+ * null when it states none. What a caller may DISPLAY is the claim at this
+ * precision or coarser (Rule 76), never finer.
+ */
+export function statedDatePrecision(claim: FactToken, sentence: string): DatePrecision | null {
+  let best: DatePrecision | null = null;
+  for (const t of extractFactTokens(sentence)) {
+    if (t.kind !== "date" || !factTokensMatch(claim, t)) continue;
+    const p = datePrecisionOf(t);
+    if (p && (best === null || morePrecise(p, best))) best = p;
+  }
+  return best;
+}
+
+/**
+ * RULE 76 — the claim cut down to `to`, in the pipeline's own spellings: a
+ * bare year stays a bare year ("2034"), a month is the first of its month
+ * with month granularity, as recoverStatedMonth already writes it.
+ */
+export function clampDateToken(claim: FactToken, to: DatePrecision): { date: string; granularity: DatePrecision } {
+  const v = claim.dateValue!;
+  const from = datePrecisionOf(claim)!;
+  const level = morePrecise(from, to) ? to : from;
+  const mm = String(v.month ?? 1).padStart(2, "0");
+  if (level === "year") return { date: String(v.year), granularity: "year" };
+  if (level === "month") return { date: `${v.year}-${mm}-01`, granularity: "month" };
+  return { date: `${v.year}-${mm}-${String(v.day ?? 1).padStart(2, "0")}`, granularity: "day" };
+}
+
 const SALIENT_STOPWORDS = new Set([
   "the", "and", "due", "for", "with", "its", "that", "this", "from", "will", "would", "have", "has",
   "had", "were", "was", "are", "total", "approximately", "aggregate", "principal", "amount", "amounts",

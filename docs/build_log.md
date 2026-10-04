@@ -6911,3 +6911,95 @@ A render question, not an arithmetic one.
                               through the current loop from cache, $0
     rules                     75, no gaps, 4 refinements
     goldens                   7 files: 6 at v31, UHS at v29 (not comparable)
+
+# Session 26 — dates at the precision their sentence prints
+
+The session prompt said CHS's 9¾% notes "display 2034 where the filing prints
+2034-09-15". The filing does not print that. Every producer of the row's date
+was asked (Rule 63): the model's raw schedule row, both loop steps that touch
+a maturity, every other row-bearing field, and the display formatters. All of
+them carry "2034", because the anchor 10-Q prints "due 2034" and nothing finer.
+September 15 appears in the 10-K only as an interest date ("payable … on March
+15 and September 15 of each year"). The one day-precise maturity in the corpus
+is **January 15, 2034**, in the pre-anchor 2025-08-12 8-K. v29's 2034-09-15
+cited "9 ¾% Senior Secured Notes due 2034 1,790", a sentence with no day in
+it: an interest date read as a maturity, Rule 57's error. The v31 "2034" that
+Session 23 signed as "a loss of precision" was a correction.
+
+The rule the prompt asked for (no display drops precision the filing printed)
+holds book-wide: 0 of 44 dated signed rows. The opposite defect is real:
+**14 rows showed a date more precise than the sentence they cite**, and 5 more
+cited their size sentence for a date that sentence does not contain.
+
+## Rule 76 — a displayed date never claims more precision than the sentence it links to
+
+Year-only stays year-only, month-year stays month-year. A date finer than its
+sentence is clamped to the sentence, not nulled: "due 2029" supports 2029,
+and the year is a true, sourced fact. Measured across the six signed names:
+
+    CHS        6 notes   day → year   (days from the 10-K; the row cites "due 2029")
+    Encompass  4 notes   day → year   (three from the 10-K, one from elsewhere in the anchor)
+    Cigna      revolver  day → month  ("will mature in April 2030"; the day was the model's)
+    DaVita, Tenet, Molina: no row moved
+
+## Rule 77 — a sentence supports a date only at the precision it states
+
+`factTokensMatch` answers "could these be the same date?", and there "2034"
+and 2034-09-15 rightly agree. It was also the test for "does this sentence
+support this date?", and there the symmetry is wrong. `dateSupportedBy` is
+directional: the match must hold AND the stated token must be at least as
+precise as the claim. Wired into every checker that approves a date from text:
+`withVerifiedMaturity` (schedule rows and issued tranches), the prose-instrument
+builder, the facility maturity path, and the event-date guard, which now clamps
+an event date to the precision the filing states rather than approving a finer
+one. The identity callers (the redemption matcher and row identity) keep the
+symmetric test, because they need it.
+
+### THE ELEVENTH AUDIT-SPINE INSTANCE: a check looser than its name
+
+| # | the check | why it could not fail |
+|---|---|---|
+| 11 | "does this sentence state this maturity?" | a symmetric compatibility test: any coarser date in the sentence approved any finer claim. "April 2030" approved 2030-04-01 at day precision |
+
+## Rule 78 — each field cites its own sentence; a maturity links to the sentence stating the maturity
+
+Rule 58's shape, applied to dates. A row now carries `maturitySourceLine`, and
+its date is checked against that sentence and no other. Two mechanisms were
+discarding the right sentence:
+
+  1. **Rule 58's own re-selection.** Cigna's four tranches cited "…until the
+     maturity date of September 15, 2030"; re-selecting the amount sentence
+     threw that line away, so the day was left beside a sentence without it.
+     The model's line is now kept (`modelSourceLine`) and is a candidate for
+     the maturity, so all four keep their day, correctly sourced.
+  2. **Facility rows.** The row's sourceLine is the size sentence (Rule 74).
+     The maturity now cites the facility's own maturity sentence. The five:
+     Tenet's revolver, Encompass's revolver advances, CHS's ABL, Molina's
+     revolver, and Cigna's 4.500% note.
+
+After the change, 44 of 44 dated rows across the six names show their date at
+the precision of the sentence they link to. `GoldenRow.maturitySourceLine` is
+optional: a signature that does not carry it does not pin it, so DaVita, Tenet
+and Molina reproduce unchanged on every field they pinned.
+
+## Found, not fixed
+
+- **Note-wide month recovery has been dead since Session 18 (`0892493`).**
+  `monthsStatedForYear` builds its pattern in a template literal with single
+  backslashes, so the regex looks for a backspace character and matches
+  nothing. Its own comment cites Tenet's 6.125% due 2028 → October 2028;
+  Tenet's signed row is year-only. Fixing it would move Tenet. If fixed, the
+  month must carry its note sentence as `maturitySourceLine`, or Rule 76 clamps
+  it straight back to the year.
+- **Cigna's 9b samples differ in the rolled base's label spelling** ("$900
+  million, 3.250%" against "$ 900 million, 3.250 %"; 33 base rows and one
+  delta label). Identical under the pre-change code at `17a54de`, so it is not
+  from this session. Session 25's gate compared the roll's arithmetic, which
+  agrees in all three, and not the label strings.
+
+## Candidate, post-demo — a day from another filing
+
+CHS's 9¾% notes have a filed day, January 15, 2034, but only in a pre-anchor
+8-K, and the CHS and Encompass days that were clamped sit in the prior 10-K.
+Pulling a day from either is a design question because of Rule 66 (a
+prior-period annual report is a source only when the anchor says so). Not done.

@@ -1,4 +1,4 @@
-# The rules, 1 to 75
+# The rules, 1 to 78
 
 **Generated from `build_log.md`'s own headings by `lib/cache/rulesIndex.ts`.**
 Not hand-maintained: every statement below is the rule's own heading text, and
@@ -85,6 +85,9 @@ example that found it, never the thing the rule is about.
 | 73 | a rule proven in a harness has not been wired | [log](build_log.md#rule-73--a-rule-proven-in-a-harness-has-not-been-wired) |
 | 74 | a capacity row's figure is the stated commitment size, from the size sentence | [log](build_log.md#rule-74--a-capacity-rows-figure-is-the-stated-commitment-size-from-the-size-sentence) |
 | 75 | a run described as free is checked before it runs, not after | [log](build_log.md#rule-75--a-run-described-as-free-is-checked-before-it-runs-not-after) |
+| 76 | a displayed date never claims more precision than the sentence it links to | [log](build_log.md#rule-76--a-displayed-date-never-claims-more-precision-than-the-sentence-it-links-to) |
+| 77 | a sentence supports a date only at the precision it states | [log](build_log.md#rule-77--a-sentence-supports-a-date-only-at-the-precision-it-states) |
+| 78 | each field cites its own sentence; a maturity links to the sentence stating the maturity | [log](build_log.md#rule-78--each-field-cites-its-own-sentence-a-maturity-links-to-the-sentence-stating-the-maturity) |
 
 ## Refinements and later occurrences
 

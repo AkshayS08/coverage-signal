@@ -3,7 +3,7 @@ import { dedupAgainstRows, debtContribution } from "./instrument";
 import { buildTier2, isPostAnchorSource, type Tier2 } from "./tier2";
 import { classifyInstrument, priorityRank, type Classification, type NoteSeniorityStatement, type InstrumentType } from "./instrumentClass";
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
-import { extractFactTokens, factTokensMatch, type FactToken } from "../agent/factTokens";
+import { extractFactTokens, factTokensMatch, statedDatePrecision, clampDateToken, type FactToken } from "../agent/factTokens";
 import { isStatedZeroAmount } from "../agent/moneyScale";
 import { isZeroValue } from "../agent/statedZero";
 import { sentenceStatesFigure } from "../agent/verifyFacility";
@@ -147,6 +147,13 @@ export interface LadderRow {
    * the surface says which one it read.
    */
   maturityFromFacility?: { statedAs: string; facility: string; sourceLine: string };
+  /**
+   * RULE 78 — the sentence that states this row's MATURITY, never its size
+   * sentence (Rule 58's shape, applied to dates). The date beside it is shown
+   * at that sentence's precision and no finer (Rules 76, 77). Null when the
+   * row shows no maturity.
+   */
+  maturitySourceLine?: string | null;
   /**
    * SESSION 22, STAGE 7 — a maturity the extraction claimed whose own cited
    * sentence does not state it. The row carries NO maturity and says why;
@@ -561,6 +568,7 @@ function ladderRowFromSequenceEntry(
     maturityDate: displayDate(entry.maturityDate),
     dateGranularity: entry.dateGranularity,
     sourceLine: entry.sourceLine,
+    maturitySourceLine: entry.maturitySourceLine ?? null,
     citedUrl: entry.citedUrl,
     // The SIZE is part of identity (see rowIdentityKey) — omitting it here
     // would key every row of a filer whose rows state no rate on maturity
@@ -694,6 +702,36 @@ const FACILITY_INSTRUMENT_TYPES = new Set<InstrumentType>([
   "revolver", "term-loan", "term-loan-a", "term-loan-b", "delayed-draw", "credit-facility", "commercial-paper",
 ]);
 
+/**
+ * RULES 76–78 FOR A FACILITY — its maturity is shown beside the facility's
+ * own MATURITY sentence, at that sentence's precision. The row's sourceLine
+ * is the size sentence (Rule 74) and states no date; linking the date to it
+ * shows a figure beside a sentence that does not contain it.
+ *
+ * ONE function for both facility paths (a facility found by name on the
+ * ladder, and a facility with no balance row), so the rule cannot be applied
+ * in one and missed in the other.
+ */
+type SourcedFacilityMaturity =
+  | { kind: "dated"; date: string; granularity: DateGranularity; statedAs: string; sentence: string }
+  | { kind: "withheld"; claimed: string; why: string }
+  | { kind: "relative"; why: string }
+  | { kind: "unstated" };
+
+function facilityMaturityAtItsSentence(f: FacilityRow): SourcedFacilityMaturity {
+  const m = resolveFacilityMaturity(f.maturity?.value);
+  if (m.outcome === "relative") return { kind: "relative", why: m.why };
+  if (m.outcome === "unstated") return { kind: "unstated" };
+  const sentence = f.maturity?.sourceLine ?? "";
+  const claim = debtRowDateToken({ rate: null, maturityDate: m.date, dateGranularity: m.granularity });
+  const stated = claim && sentence ? statedDatePrecision(claim, sentence) : null;
+  if (!claim || !stated) {
+    return { kind: "withheld", claimed: m.statedAs, why: "the facility's own maturity sentence does not state this date" };
+  }
+  const shown = clampDateToken(claim, stated);
+  return { kind: "dated", date: shown.date, granularity: shown.granularity, statedAs: m.statedAs, sentence };
+}
+
 function applyFacilityMaturities(rows: LadderRow[], facilities: FacilityRow[] | undefined): LadderRow[] {
   const list = facilities ?? [];
   if (list.length === 0) return rows;
@@ -707,17 +745,18 @@ function applyFacilityMaturities(rows: LadderRow[], facilities: FacilityRow[] | 
     if (t === null || !FACILITY_INSTRUMENT_TYPES.has(t)) return row;
     const f = matchFacility({ name: row.instrument, category: null }, list, { byNameOnly: true });
     if (!f) return row;
-    const m = resolveFacilityMaturity(f.maturity?.value);
-    if (m.outcome !== "dated") {
-      // Stated and not a date. Recorded so the surface can say so rather
-      // than render an absence the filer does not have.
-      return m.outcome === "relative" ? { ...row, facilityMaturityNote: m.why } : row;
-    }
+    const m = facilityMaturityAtItsSentence(f);
+    // Stated and not a date. Recorded so the surface can say so rather
+    // than render an absence the filer does not have.
+    if (m.kind === "relative") return { ...row, facilityMaturityNote: m.why };
+    if (m.kind === "withheld") return { ...row, maturityWithheld: { claimed: m.claimed, why: m.why } };
+    if (m.kind === "unstated") return row;
     return {
       ...row,
       maturityDate: m.date,
       dateGranularity: m.granularity,
-      maturityFromFacility: { statedAs: m.statedAs, facility: f.name, sourceLine: f.maturity?.sourceLine ?? "" },
+      maturitySourceLine: m.sentence,
+      maturityFromFacility: { statedAs: m.statedAs, facility: f.name, sourceLine: m.sentence },
     };
   });
 }
@@ -972,9 +1011,11 @@ export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerRes
     // both — neither is claimed, both render, and an ambiguous match stays not
     // a match in the safe direction.
     if (existing.some((r) => matchFacility({ name: r.instrument, category: null }, facilities, { byNameOnly: true }) === f)) continue;
-    const m = resolveFacilityMaturity(f.maturity?.value);
+    const m = facilityMaturityAtItsSentence(f);
+    const dated = m.kind === "dated" ? m : null;
     const classification = classifyInstrument({ headings: [], instrumentName: f.name });
     // Rule 58 — the row's provenance is the sentence stating its AMOUNT.
+    // Rule 78 — its maturity cites the sentence stating the MATURITY.
     const provenance = amountProvenanceFor(f);
     const row: LadderRow = {
       instrument: f.name,
@@ -985,17 +1026,19 @@ export function facilityOnlyRows(existing: LadderRow[], debtMaturity: TriggerRes
       // is capacity; what is drawn under it, where the filing states any, is
       // already on the ladder as its own row.
       amount: f.facilitySize?.value ?? "(no amount stated)",
-      maturityDate: m.outcome === "dated" ? m.date : null,
-      dateGranularity: m.outcome === "dated" ? m.granularity : null,
+      maturityDate: dated ? dated.date : null,
+      dateGranularity: dated ? dated.granularity : null,
       sourceLine: provenance.sourceLine,
+      maturitySourceLine: dated ? dated.sentence : null,
       citedUrl: "",
-      id: ladderRowId({ instrument: f.name, rate: null, maturityDate: m.outcome === "dated" ? m.date : null, dateGranularity: null, amount: f.facilitySize?.value ?? "(no amount stated)" }),
+      id: ladderRowId({ instrument: f.name, rate: null, maturityDate: dated ? dated.date : null, dateGranularity: null, amount: f.facilitySize?.value ?? "(no amount stated)" }),
       status: "live",
       provenance: "note-narrative",
       isCapacity: true,
     };
-    if (m.outcome === "dated") row.maturityFromFacility = { statedAs: m.statedAs, facility: f.name, sourceLine: f.maturity?.sourceLine ?? "" };
-    if (m.outcome === "relative") row.facilityMaturityNote = m.why;
+    if (dated) row.maturityFromFacility = { statedAs: dated.statedAs, facility: f.name, sourceLine: dated.sentence };
+    if (m.kind === "relative") row.facilityMaturityNote = m.why;
+    if (m.kind === "withheld") row.maturityWithheld = { claimed: m.claimed, why: m.why };
     // The never-silent note is NOT set here. `noteUnsupportedAmounts` runs
     // once over the assembled ladder and covers every builder — two places
     // deciding one rendered fact is the Rule 21 shape, and the first version
@@ -1021,7 +1064,8 @@ function ladderRowFromProseInstrument(
 ): LadderRow {
   const c = debtContribution(p, revolver);
   const instrument = p.name ?? p.category;
-  const maturityIsSourced = sentenceStatesMaturity(p.maturityDate, p.dateGranularity, p.sourceLine);
+  const sourcedMaturity = maturityAtSentencePrecision(p.maturityDate, p.dateGranularity, p.sourceLine);
+  const maturityIsSourced = sourcedMaturity !== null;
   // A revolver's line leads with what is DRAWN, naming the facility it is
   // drawn under rather than in place of it.
   const stated = p.amount ? parseMoneyAmount(p.amount) : null;
@@ -1055,9 +1099,10 @@ function ladderRowFromProseInstrument(
     // post-pass above may still supply one from the facility's own maturity
     // sentence, which IS sourced; if it cannot, the row says the maturity is
     // not stated rather than showing a date nothing on the page supports.
-    maturityDate: maturityIsSourced ? displayDate(p.maturityDate) : null,
-    dateGranularity: maturityIsSourced ? p.dateGranularity : null,
+    maturityDate: sourcedMaturity ? sourcedMaturity.date : null,
+    dateGranularity: sourcedMaturity ? sourcedMaturity.granularity : null,
     sourceLine: p.sourceLine,
+    maturitySourceLine: sourcedMaturity ? p.sourceLine : null,
     citedUrl: p.citedUrl ?? "",
     id: ladderRowId({ instrument, rate: p.rate, maturityDate: p.maturityDate, dateGranularity: p.dateGranularity, amount }),
     status,
@@ -1170,14 +1215,33 @@ function debtRowDateToken(row: DebtRowLike): FactToken | null {
  * Agreement and states no date at all. The date is real; nothing on the page
  * can confirm it.
  *
- * Reuses the date-token comparison the redemption matcher already uses —
- * partial precision and all — rather than a second date parser.
+ * SESSION 26 — AND AT WHAT PRECISION (Rules 76, 77). This reused the
+ * redemption matcher's comparison "partial precision and all", and partial
+ * precision is right for matching two mentions of one tranche and wrong for
+ * support: Cigna's revolver sentence says "will mature in April 2030" and the
+ * row showed 2030-04-01 at DAY precision, the day supplied by the model. The
+ * date is now shown at the precision its sentence prints, or not at all.
  */
-function sentenceStatesMaturity(maturityDate: string | null, granularity: DateGranularity | null, sentence: string): boolean {
-  if (!maturityDate) return false;
+function maturityAtSentencePrecision(
+  maturityDate: string | null,
+  granularity: DateGranularity | null,
+  sentence: string
+): { date: string; granularity: DateGranularity } | null {
+  if (!maturityDate) return null;
   const want = debtRowDateToken({ rate: null, maturityDate, dateGranularity: granularity });
-  if (!want) return false;
-  return extractFactTokens(sentence).some((t) => t.kind === "date" && factTokensMatch(want, t));
+  if (!want) return null;
+  const stated = statedDatePrecision(want, sentence);
+  if (!stated) return null;
+  const shown = clampDateToken(want, stated);
+  // Unclamped, the filing's own spelling is kept exactly as displayDate gives it.
+  return shown.granularity === granularity ? { date: displayDate(maturityDate) ?? shown.date, granularity } : shown;
+}
+
+/** Rule 77 as a yes/no: does this sentence state this maturity at the precision shown? */
+export function sentenceSupportsMaturity(maturityDate: string | null, granularity: DateGranularity | null, sentence: string | null | undefined): boolean {
+  if (!sentence) return false;
+  const at = maturityAtSentencePrecision(maturityDate, granularity, sentence);
+  return at !== null && at.granularity === granularity;
 }
 
 /** A row's own rate as a FactToken, or null when the filing stated none. */

@@ -25,6 +25,7 @@ import { deriveGoldenState, filingSetOf, residualPercentOf, unsupportedAmountRow
 import { evaluateGoldenCriteria } from "../events/goldenCriteria";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 import { evidenceFor, RUNS_REQUIRED } from "./reproductionEvidence";
+import { assertFree } from "./freeRun";
 
 const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
 const SIGNER = "Akshay Sahani";
@@ -176,6 +177,9 @@ const SIGNED = process.argv.slice(2);
     process.exit(1);
   }
   mkdirSync(GOLDEN_DIR, { recursive: true });
+  // RULE 75 — a signature is written from cached answers. If any name's
+  // corpus has moved, this is a new extraction and is not signed here.
+  await assertFree(SIGNED.map((company) => ({ company })));
   console.log(`\n${"=".repeat(100)}\nWRITING GOLDEN FILES at ${PINNED_AS_OF_DAY} — signed by ${SIGNER}\n${"=".repeat(100)}`);
 
   let written = 0, refused = 0;
