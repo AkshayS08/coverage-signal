@@ -3,7 +3,7 @@
   "signature": {
     "signedBy": "Akshay Sahani",
     "signedOn": "2026-09-09",
-    "basis": "First signature, at PINNED_AS_OF 2026-09-09, extraction v31. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. CORPUS PINNED: f1237506 — the September 2025 pricing 8-K and the June 2026 10-Q. THE THREE 9b SAMPLES ARE FRESH v31 EXTRACTIONS ON THAT CORPUS, NOT RE-RENDERS OF THE CACHED SAMPLES, and they were bought by an UNAUTHORISED $0.5714 (Rule 75): the filing-list cache passed its 24-hour TTL mid-session, EDGAR returned a changed catalog, the fingerprint moved 813c7d6b → f1237506, and three re-renders that had been free an hour earlier re-extracted live under an instruction that said no spend. What it bought is what 9b asks for — three independent asks at one version against one corpus — and it is recorded here as what it is rather than presented as the measurement that was authorised. THIS IS THE FIRST SIGNATURE OVER A ROLLED POSITION. Coverage is not computed on rows the anchor states: the anchor's debt note yields no ladder and directs the reader, in its own verified words, to Note 7 of the 2025 10-K. That note's 36 transcribed rows are the labelled prior-period base, rolled forward to the anchor date through movements derived from the filings. The signature pins the WORK and not only the result — `state.rolled` carries all 36 base rows with their sentences, both printed subtotals against the rows that precede them, every counted delta with the sentence and document stating it, and the roll tie — so a later change that dropped a row and gained an equal delta would still fail, though every coverage figure matched. THE LOAD-BEARING ASSUMPTION, STATED: commercial paper outstanding at the base date is ZERO, sourced to the 10-K twice (the MD&A sentence and the note table's em-dash). The CP delta is therefore the whole closing balance rather than an increment, so if that base is not zero the roll is wrong by exactly the amount it is not. AND THE HEDGE SURVIVES: the anchor states the $1.0 billion twice, once qualified and once not; the qualified sentence is the evidence, because asserting a precision the filer did not consistently claim would be worse — and because it is also the reading under which the roll ties. The contrary reading gives no band and a 35 miss, and is available to anyone who wants it. Three independent v31 extractions against corpus f1237506 (canonical + CACHE_BUST x2), unintentionally bought — see Rule 75. Identical in all three: the position identity (2 documents — the September 2025 pricing 8-K and the June 2026 10-Q), the ladder row for row (4 senior-note tranches, the $6.5bn revolver as capacity, the commercial paper programme at $1.0bn), the base tie (5 rows → 592 and 31 rows → 30,871, both exact against the 10-K's own printed subtotals, 31,463 total), the roll tie (31,463 − 550 + 1,000 = 31,913 against the anchor's stated 31,878, residual 35 inside the ±50 the filer's own \"approximately\" earns), coverage (31,913 face, residual 0.11%, passes), criteria 4 and 6, and the full computed-criteria verdict. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (1): (1) the three runs fire a different NUMBER of triggers (5, 4 and 5) — large-cash-balance and floating-rate-debt come and go. None of them touches the position: the roll reads only debt-maturity and new-debt-issuance, both fired in all three, and a non-position citation is not identity-bearing (Rule 65). A reader may see a different count of non-refi signals."
+    "basis": "RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the CHS 9¾% notes was an interest date read as a maturity. (1) THE REVOLVER'S MATURITY MOVES FROM DAY TO MONTH. Its sentence says the agreement \"will mature in April 2030\"; the row had shown 2030-04-01 at day precision, the day supplied by the model's prose entry and approved by a check that let a coarser sentence support a finer date (Rules 76, 77). It now shows April 2030. (2) THE FOUR SEPTEMBER 2025 NOTES KEEP THEIR DAYS, NOW CORRECTLY SOURCED. Each maturity cites the 8-K sentence that states it (\"…until the maturity date of September 15, 2030\"), which Rule 58's amount re-selection had been discarding; the amount still cites the sentence stating the amount (Rule 78). (3) NOTHING ELSE MOVED: six rows, the same amounts, statuses and capacity flags; the roll pinned in `state.rolled` identical — 36 base rows, both subtotal ties, the counted deltas and the roll tie. (4) RECORDED, NOT NEW: re-read at $0 under this loop, the two 9b samples agree with the canonical run on every ladder row, every date, coverage and the roll, and differ in the rolled base's label spelling (\"$900 million, 3.250%\" against \"$ 900 million, 3.250 %\", 33 base rows and one delta label). The pre-change code at 17a54de gives the identical difference, so it is a property of the three transcriptions and not of this change; the Session 25 gate compared the roll's arithmetic, which agrees, and not label strings. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. CORPUS PINNED: f1237506 — the September 2025 pricing 8-K and the June 2026 10-Q. THE THREE 9b SAMPLES ARE FRESH v31 EXTRACTIONS ON THAT CORPUS, NOT RE-RENDERS OF THE CACHED SAMPLES, and they were bought by an UNAUTHORISED $0.5714 (Rule 75): the filing-list cache passed its 24-hour TTL mid-session, EDGAR returned a changed catalog, the fingerprint moved 813c7d6b → f1237506, and three re-renders that had been free an hour earlier re-extracted live under an instruction that said no spend. What it bought is what 9b asks for — three independent asks at one version against one corpus — and it is recorded here as what it is rather than presented as the measurement that was authorised. THIS IS THE FIRST SIGNATURE OVER A ROLLED POSITION. Coverage is not computed on rows the anchor states: the anchor's debt note yields no ladder and directs the reader, in its own verified words, to Note 7 of the 2025 10-K. That note's 36 transcribed rows are the labelled prior-period base, rolled forward to the anchor date through movements derived from the filings. The signature pins the WORK and not only the result — `state.rolled` carries all 36 base rows with their sentences, both printed subtotals against the rows that precede them, every counted delta with the sentence and document stating it, and the roll tie — so a later change that dropped a row and gained an equal delta would still fail, though every coverage figure matched. THE LOAD-BEARING ASSUMPTION, STATED: commercial paper outstanding at the base date is ZERO, sourced to the 10-K twice (the MD&A sentence and the note table's em-dash). The CP delta is therefore the whole closing balance rather than an increment, so if that base is not zero the roll is wrong by exactly the amount it is not. AND THE HEDGE SURVIVES: the anchor states the $1.0 billion twice, once qualified and once not; the qualified sentence is the evidence, because asserting a precision the filer did not consistently claim would be worse — and because it is also the reading under which the roll ties. The contrary reading gives no band and a 35 miss, and is available to anyone who wants it. Three independent v31 extractions against corpus f1237506 (canonical + CACHE_BUST x2), unintentionally bought — see Rule 75. Identical in all three: the position identity (2 documents — the September 2025 pricing 8-K and the June 2026 10-Q), the ladder row for row (4 senior-note tranches, the $6.5bn revolver as capacity, the commercial paper programme at $1.0bn), the base tie (5 rows → 592 and 31 rows → 30,871, both exact against the 10-K's own printed subtotals, 31,463 total), the roll tie (31,463 − 550 + 1,000 = 31,913 against the anchor's stated 31,878, residual 35 inside the ±50 the filer's own \"approximately\" earns), coverage (31,913 face, residual 0.11%, passes), criteria 4 and 6, and the full computed-criteria verdict. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (1): (1) the three runs fire a different NUMBER of triggers (5, 4 and 5) — large-cash-balance and floating-rate-debt come and go. None of them touches the position: the roll reads only debt-maturity and new-debt-issuance, both fired in all three, and a non-position citation is not identity-bearing (Rule 65). A reader may see a different count of non-refi signals."
   },
   "attestation": {
     "rowsCorrect": true,
@@ -136,7 +136,8 @@
         "status": "live",
         "provenance": "pricing-8-K",
         "isCapacity": false,
-        "sourceLine": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its"
+        "sourceLine": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
+        "maturitySourceLine": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030."
       },
       {
         "instrument": "4.875% Senior Notes due 2032",
@@ -146,7 +147,8 @@
         "status": "live",
         "provenance": "pricing-8-K",
         "isCapacity": false,
-        "sourceLine": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036"
+        "sourceLine": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+        "maturitySourceLine": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032."
       },
       {
         "instrument": "5.250% Senior Notes due 2036",
@@ -156,7 +158,8 @@
         "status": "live",
         "provenance": "pricing-8-K",
         "isCapacity": false,
-        "sourceLine": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036"
+        "sourceLine": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+        "maturitySourceLine": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036."
       },
       {
         "instrument": "6.000% Senior Notes due 2056",
@@ -166,17 +169,19 @@
         "status": "live",
         "provenance": "pricing-8-K",
         "isCapacity": false,
-        "sourceLine": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”)."
+        "sourceLine": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+        "maturitySourceLine": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056."
       },
       {
         "instrument": "revolving credit and letter of credit agreement",
         "amount": "$ 6.5 billion",
         "maturityDate": "2030-04-01",
-        "dateGranularity": "day",
+        "dateGranularity": "month",
         "status": "live",
         "provenance": "note-narrative",
         "isCapacity": true,
-        "sourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\")."
+        "sourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+        "maturitySourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\")."
       },
       {
         "instrument": "commercial paper program",
@@ -186,7 +191,8 @@
         "status": "live",
         "provenance": "note-narrative",
         "isCapacity": false,
-        "sourceLine": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %."
+        "sourceLine": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+        "maturitySourceLine": null
       }
     ],
     "coverage": {
@@ -1080,7 +1086,9 @@
             "maturityDate": "2030-09-15",
             "dateGranularity": "day",
             "sourceLine": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+            "maturitySourceLine": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+            "modelSourceLine": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030."
           },
           {
             "instrument": "4.875% Senior Notes due 2032",
@@ -1090,7 +1098,9 @@
             "maturityDate": "2032-09-15",
             "dateGranularity": "day",
             "sourceLine": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+            "maturitySourceLine": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032.",
+            "modelSourceLine": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032."
           },
           {
             "instrument": "5.250% Senior Notes due 2036",
@@ -1100,7 +1110,9 @@
             "maturityDate": "2036-01-15",
             "dateGranularity": "day",
             "sourceLine": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+            "maturitySourceLine": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036.",
+            "modelSourceLine": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036."
           },
           {
             "instrument": "6.000% Senior Notes due 2056",
@@ -1110,7 +1122,9 @@
             "maturityDate": "2056-01-15",
             "dateGranularity": "day",
             "sourceLine": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+            "maturitySourceLine": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056.",
+            "modelSourceLine": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056."
           }
         ],
         "eventInstances": [],

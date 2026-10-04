@@ -132,6 +132,22 @@ const REBASELINE_REASON: Record<string, string> = {
     "the same amounts, statuses, provenance and capacity flags; coverage unchanged; the letter-of-credit figure " +
     "still null, because the anchor states no LC balance and the $53.6 million once claimed was rejected against " +
     "its own sentence.",
+
+  "Cigna Group":
+    "Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the " +
+    "CHS 9¾% notes was an interest date read as a maturity. (1) THE REVOLVER'S MATURITY MOVES FROM DAY TO MONTH. Its " +
+    "sentence says the agreement \"will mature in April 2030\"; the row had shown 2030-04-01 at day precision, the " +
+    "day supplied by the model's prose entry and approved by a check that let a coarser sentence support a finer " +
+    "date (Rules 76, 77). It now shows April 2030. (2) THE FOUR SEPTEMBER 2025 NOTES KEEP THEIR DAYS, NOW CORRECTLY " +
+    "SOURCED. Each maturity cites the 8-K sentence that states it (\"…until the maturity date of September 15, " +
+    "2030\"), which Rule 58's amount re-selection had been discarding; the amount still cites the sentence stating " +
+    "the amount (Rule 78). (3) NOTHING ELSE MOVED: six rows, the same amounts, statuses and capacity flags; the roll " +
+    "pinned in `state.rolled` identical — 36 base rows, both subtotal ties, the counted deltas and the roll tie. " +
+    "(4) RECORDED, NOT NEW: re-read at $0 under this loop, the two 9b samples agree with the canonical run on every " +
+    "ladder row, every date, coverage and the roll, and differ in the rolled base's label spelling (\"$900 million, " +
+    "3.250%\" against \"$ 900 million, 3.250 %\", 33 base rows and one delta label). The pre-change code at 17a54de " +
+    "gives the identical difference, so it is a property of the three transcriptions and not of this change; the " +
+    "Session 25 gate compared the roll's arithmetic, which agrees, and not label strings.",
 };
 
 /**
