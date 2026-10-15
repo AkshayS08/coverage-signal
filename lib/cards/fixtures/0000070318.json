@@ -1,0 +1,238 @@
+{
+ "cik": "0000070318",
+ "company": "TENET HEALTHCARE CORP",
+ "briefDate": "2026-10-04",
+ "positionSource": "signed golden's stored result",
+ "anchor": {
+  "form": "10-Q",
+  "date": "2026-07-29",
+  "reportDate": "2026-06-30",
+  "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+ },
+ "table": {
+  "basis": "face (the table prints its own bridge line)",
+  "rows": [
+   {
+    "label": "6.125 % due 2028",
+    "amount": "$ 1,750 million",
+    "sourceLine": "6.125 % due 2028 $ 1,750   $ 1,750",
+    "recordedHeading": "Senior unsecured notes"
+   },
+   {
+    "label": "6.875 % due 2031",
+    "amount": "$ 362 million",
+    "sourceLine": "6.875 % due 2031 $ 362   $ 362",
+    "recordedHeading": "Senior unsecured notes"
+   },
+   {
+    "label": "6.000 % due 2033",
+    "amount": "$ 750 million",
+    "sourceLine": "6.000 % due 2033 $ 750   $ —",
+    "recordedHeading": "Senior unsecured notes"
+   },
+   {
+    "label": "5.125 % due 2027",
+    "amount": "$ 1,500 million",
+    "sourceLine": "5.125 % due 2027 $ 1,500   $ 1,500",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "4.625 % due 2028",
+    "amount": "$ 600 million",
+    "sourceLine": "4.625 % due 2028 $ 600   $ 600",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "4.250 % due 2029",
+    "amount": "$ 1,400 million",
+    "sourceLine": "4.250 % due 2029 $ 1,400   $ 1,400",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "4.375 % due 2030",
+    "amount": "$ 1,450 million",
+    "sourceLine": "4.375 % due 2030 $ 1,450   $ 1,450",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "6.125 % due 2030",
+    "amount": "$ 2,000 million",
+    "sourceLine": "6.125 % due 2030 $ 2,000   $ 2,000",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "6.750 % due 2031",
+    "amount": "$ 1,350 million",
+    "sourceLine": "6.750 % due 2031 $ 1,350   $ 1,350",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "5.500 % due 2032",
+    "amount": "$ 1,500 million",
+    "sourceLine": "5.500 % due 2032 $ 1,500   $ 1,500",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "Finance leases, mortgages and other notes",
+    "amount": "$ 671 million",
+    "sourceLine": "Finance leases, mortgages and other notes $ 671   $ 603",
+    "recordedHeading": null
+   }
+  ],
+  "scale": "million",
+  "bridge": [
+   {
+    "label": "Unamortized issue costs and note discounts",
+    "amount": "( 85 ) million"
+   }
+  ],
+  "text": " costs and impairment charges totaling $ 3 million. Restructuring charges during this period included $ 10 million of contract and lease termination fees, $ 7 million related to the transition of various administrative functions to our GBC, $ 4 million of employee severance costs, $ 3 million of legal costs related to the sale of certain businesses and $ 1 million of other restructuring costs. NOTE 5. LONG-TERM DEBT The table below presents our long‑term debt included in the accompanying Condensed Consolidated Balance Sheets: June 30, 2026 December 31, 2025 Senior unsecured notes: 6.125 % due 2028 $ 1,750 $ 1,750 6.875 % due 2031 362 362 6.000 % due 2033 750 750 Senior secured first lien notes: 5.125 % due 2027 1,500 1,500 4.625 % due 2028 600 600 4.250 % due 2029 1,400 1,400 4.375 % due 2030 1,450 1,450 6.125 % due 2030 2,000 2,000 6.750 % due 2031 1,350 1,350 5.500 % due 2032 1,500 1,500 Finance leases, mortgages and other notes 671 603 Unamortized issue costs and note discounts ( 85 ) ( 94 ) Total long-term debt 13,248 13,171 Less: Current portion 160 79 Long-term debt, net of current portion $ 13,088 $ 13,092 At June 30, 2026, we had senior unsecured notes and seni"
+ },
+ "headings": [
+  {
+   "text": "Senior unsecured notes",
+   "governs": [
+    "6.125 % due 2028",
+    "6.875 % due 2031",
+    "6.000 % due 2033"
+   ]
+  },
+  {
+   "text": "Senior secured first lien notes",
+   "governs": [
+    "5.125 % due 2027",
+    "4.625 % due 2028",
+    "4.250 % due 2029",
+    "4.375 % due 2030",
+    "6.125 % due 2030",
+    "6.750 % due 2031",
+    "5.500 % due 2032"
+   ]
+  }
+ ],
+ "rolled": null,
+ "schedule": {
+  "doc": "10-Q 2026-07-29",
+  "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+  "entries": [
+   {
+    "period": "2026",
+    "amount": "45"
+   },
+   {
+    "period": "2027",
+    "amount": "1,643"
+   },
+   {
+    "period": "2028",
+    "amount": "2,422"
+   },
+   {
+    "period": "2029",
+    "amount": "1,457"
+   },
+   {
+    "period": "2030",
+    "amount": "3,488"
+   },
+   {
+    "period": "Thereafter",
+    "amount": "4,278"
+   }
+  ],
+  "excerpt": "Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278 $ 13,333 $ 13,224 Average effective interest rates 7.5 % 5.4 % 5.8 % 4.4 % 5.4 % 6.3 % 5.7 % We have no affiliation with partnerships, trusts or other entities (sometimes referred to as “special-"
+ },
+ "classSentences": [
+  {
+   "doc": "10-Q 2026-07-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+   "sentence": "LONG-TERM DEBT The table below presents our long‑term debt included in the accompanying Condensed Consolidated Balance Sheets: June 30, 2026 December 31, 2025 Senior unsecured notes: 6.125 % due 2028 $ 1,750 $ 1,750 6.875 % due 2031 362 362 6.000 % due 2033 750 750 Senior secured first lien notes: 5.125 % due 2027 1,500 1,500 4.625 % due 2028 600 600 4.250 % due 2029 1,400 1,400 4.375 % due 2030 1,450 1,450 6.125 % due 2030 2,000 2,000 6.750 % due 2031 1,350 1,350 5.500 % due 2032 1,500 1,500 Finance leases, mortgages and other notes 671 603 Unamortized issue costs and note discounts ( 85 ) ( 94 ) Total long-term debt 13,248 13,171 Less: Current portion 160 79 Long-term debt, net of current portion $ 13,088 $ 13,092 At June 30, 2026, we had senior unsecured notes and senior secured notes with aggregate principal amounts outstanding of $ 12.662 billion."
+  },
+  {
+   "doc": "10-Q 2026-07-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+   "sentence": "Managing Our Capital Structure —All of our long‑term debt has a fixed rate of interest, except for outstanding borrowings under our senior secured revolving credit facility (the “Credit Agreement”), of which we had none at June 30, 2026."
+  },
+  {
+   "doc": "10-Q 2026-07-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+   "sentence": "Senior Unsecured Notes and Senior Secured Notes— At June 30, 2026, we had outstanding senior unsecured notes and senior secured notes with aggregate principal amounts outstanding of $12.662 billion."
+  },
+  {
+   "doc": "10-Q 2026-07-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+   "sentence": "We believe our existing debt agreements provide flexibility for future secured or unsecured borrowings."
+  },
+  {
+   "doc": "8-K 2026-09-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+   "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”)."
+  },
+  {
+   "doc": "8-K 2026-09-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+   "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”)."
+  },
+  {
+   "doc": "8-K 2026-09-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+   "sentence": "On September 8, 2026 , Tenet Healthcare Corporation (the “Company”) issued a press release announcing the commencement of private placement offering of $1.5 billion in aggregate principal amount of its senior notes due 2034."
+  },
+  {
+   "doc": "8-K 2026-09-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+   "sentence": "Additionally, on September 8, 2026 , the Company issued a press release announcing the upsize and pricing of $2.0 billion in aggregate principal amount of its 6.250% senior notes due 2034 (the “notes”)."
+  },
+  {
+   "doc": "8-K 2026-09-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+   "sentence": "The notes will be the Company’s unsecured obligations and will rank equally in right of payment with its existing and future senior unsecured obligations, will rank senior in right of payment to all of the Company’s existing and future unsecured subordinated obligations, will be effectively subordinated to all of the Company’s existing and future senior secured obligations to the extent of the value of the collateral securing the Company’s senior secured obligations and will be structurally subordinated to all obligations and liabilities of the Company’s subsidiaries to the extent of the value of the assets of such subsidiaries."
+  },
+  {
+   "doc": "8-K 2026-09-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+   "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”)."
+  }
+ ],
+ "moveSentences": [
+  {
+   "doc": "8-K 2026-09-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+   "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”)."
+  },
+  {
+   "doc": "8-K 2026-09-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+   "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”)."
+  },
+  {
+   "doc": "8-K 2026-09-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+   "sentence": "On September 8, 2026 , Tenet Healthcare Corporation (the “Company”) issued a press release announcing the commencement of private placement offering of $1.5 billion in aggregate principal amount of its senior notes due 2034."
+  },
+  {
+   "doc": "8-K 2026-09-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+   "sentence": "Additionally, on September 8, 2026 , the Company issued a press release announcing the upsize and pricing of $2.0 billion in aggregate principal amount of its 6.250% senior notes due 2034 (the “notes”)."
+  },
+  {
+   "doc": "8-K 2026-09-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+   "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”)."
+  }
+ ],
+ "docs": [
+  {
+   "doc": "10-Q 2026-07-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+  },
+  {
+   "doc": "8-K 2026-09-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+  },
+  {
+   "doc": "8-K 2026-09-08",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm"
+  }
+ ]
+}

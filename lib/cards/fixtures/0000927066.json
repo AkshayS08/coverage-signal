@@ -1,0 +1,233 @@
+{
+ "cik": "0000927066",
+ "company": "DAVITA INC.",
+ "briefDate": "2026-10-04",
+ "positionSource": "signed golden's stored result",
+ "anchor": {
+  "form": "10-Q",
+  "date": "2026-08-04",
+  "reportDate": "2026-06-30",
+  "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+ },
+ "table": {
+  "basis": "face (the table prints its own bridge line)",
+  "rows": [
+   {
+    "label": "Term Loan A-2",
+    "amount": "$ 1,975,000 thousand",
+    "sourceLine": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
+    "recordedHeading": "Senior Secured Credit Facilities"
+   },
+   {
+    "label": "Term Loan B-2",
+    "amount": "$ 2,357,910 thousand",
+    "sourceLine": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
+    "recordedHeading": "Senior Secured Credit Facilities"
+   },
+   {
+    "label": "Revolving line of credit",
+    "amount": "$ 65,000 thousand",
+    "sourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
+    "recordedHeading": "Senior Secured Credit Facilities"
+   },
+   {
+    "label": "4.625% Senior Notes",
+    "amount": "$ 2,750,000 thousand",
+    "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
+    "recordedHeading": "Senior Notes"
+   },
+   {
+    "label": "3.75% Senior Notes",
+    "amount": "$ 1,500,000 thousand",
+    "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %",
+    "recordedHeading": "Senior Notes"
+   },
+   {
+    "label": "6.875% Senior Notes",
+    "amount": "$ 1,000,000 thousand",
+    "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %",
+    "recordedHeading": "Senior Notes"
+   },
+   {
+    "label": "6.75% Senior Notes",
+    "amount": "$ 1,000,000 thousand",
+    "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %",
+    "recordedHeading": "Senior Notes"
+   },
+   {
+    "label": "Acquisition obligations and other notes payable",
+    "amount": "$ 39,463 thousand",
+    "sourceLine": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
+    "recordedHeading": "Senior Notes"
+   },
+   {
+    "label": "Financing lease obligations",
+    "amount": "$ 160,143 thousand",
+    "sourceLine": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+    "recordedHeading": "Senior Notes"
+   }
+  ],
+  "scale": "thousand",
+  "bridge": [
+   {
+    "label": "Discount, premium and deferred financing costs",
+    "amount": "( $ 66,503 thousand )"
+   }
+  ],
+  "text": "y performed various annual impairment assessments during the six months ended June 30, 2026, with no impairment indicated. None of the Company's various reporting units were considered at risk of significant goodwill impairment as of June 30, 2026. 10 DAVITA INC. NOTES TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS—(continued) (unaudited) (dollars and shares in thousands, except per share data) 6. Long-term debt Long-term debt comprised the following: As of June 30, 2026 June 30, 2026 December 31, 2025 Maturity date Interest rate Estimated fair value (1) Senior Secured Credit Facilities: Term Loan A-2 (2) $ 1,975,000 $ 2,000,000 11/24/2030 SOFR + 1.50% $ 1,970,063 Term Loan B-2 2,357,910 1,868,559 5/9/2031 SOFR + 1.75% $ 2,352,015 Revolving line of credit (2) 65,000 — 11/24/2030 SOFR + 1.50% $ 65,000 Senior Notes: 4.625% Senior Notes 2,750,000 2,750,000 6/1/2030 4.625 % $ 2,653,750 3.75% Senior Notes 1,500,000 1,500,000 2/15/2031 3.75 % $ 1,385,625 6.875% Senior Notes 1,000,000 1,000,000 9/1/2032 6.875 % $ 1,028,750 6.75% Senior Notes 1,000,000 1,000,000 7/15/2033 6.75 % $ 1,028,750 Acquisition obligations and other notes payable (3) 39,463 40,904 2026-2038 4.67 % $ 39,463 Financing lease obligations (4) 160,143 185,120 2027-2039 4.30 % Total debt principal outstanding 10,847,516 10,344,583 Discount, premium and deferred financing costs ( 66,503 ) ( 71,394 ) 10,781,013 10,273,189 Less current portion ( 117,177 ) ( 109,201 ) $ 10,663,836 $ 10,163,988 "
+ },
+ "headings": [
+  {
+   "text": "Senior Secured Credit Facilities",
+   "governs": [
+    "Term Loan A-2",
+    "Term Loan B-2",
+    "Revolving line of credit"
+   ]
+  },
+  {
+   "text": "Senior Notes",
+   "governs": [
+    "4.625% Senior Notes",
+    "3.75% Senior Notes",
+    "6.875% Senior Notes",
+    "6.75% Senior Notes"
+   ]
+  }
+ ],
+ "rolled": null,
+ "schedule": {
+  "doc": "10-Q 2026-08-04",
+  "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+  "entries": [
+   {
+    "period": "2026 (remainder of the year)",
+    "amount": "62,283"
+   },
+   {
+    "period": "2027",
+    "amount": "114,026"
+   },
+   {
+    "period": "2028",
+    "amount": "160,808"
+   },
+   {
+    "period": "2029",
+    "amount": "144,566"
+   },
+   {
+    "period": "2030",
+    "amount": "4,554,268"
+   },
+   {
+    "period": "2031",
+    "amount": "3,764,157"
+   },
+   {
+    "period": "Thereafter",
+    "amount": "2,047,408"
+   }
+  ],
+  "excerpt": "lues at inception. The interest rate presented is the weighted average discount rate embedded in financing leases outstanding. Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268 2031 $ 3,764,157 Thereafter $ 2,047,408 On June 8, 2026 (the Ninth Amendment "
+ },
+ "classSentences": [
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "Long-term debt Long-term debt comprised the following: As of June 30, 2026 June 30, 2026 December 31, 2025 Maturity date Interest rate Estimated fair value (1) Senior Secured Credit Facilities: Term Loan A-2 (2) $ 1,975,000 $ 2,000,000 11/24/2030 SOFR + 1.50% $ 1,970,063 Term Loan B-2 2,357,910 1,868,559 5/9/2031 SOFR + 1.75% $ 2,352,015 Revolving line of credit (2) 65,000 — 11/24/2030 SOFR + 1.50% $ 65,000 Senior Notes: 4.625% Senior Notes 2,750,000 2,750,000 6/1/2030 4.625 % $ 2,653,750 3.75% Senior Notes 1,500,000 1,500,000 2/15/2031 3.75 % $ 1,385,625 6.875% Senior Notes 1,000,000 1,000,000 9/1/2032 6.875 % $ 1,028,750 6.75% Senior Notes 1,000,000 1,000,000 7/15/2033 6.75 % $ 1,028,750 Acquisition obligations and other notes payable (3) 39,463 40,904 2026-2038 4.67 % $ 39,463 Financing lease obligations (4) 160,143 185,120 2027-2039 4.30 % Total debt principal outstanding 10,847,516 10,344,583 Discount, premium and deferred financing costs ( 66,503 ) ( 71,394 ) 10,781,013 10,273,189 Less current portion ( 117,177 ) ( 109,201 ) $ 10,663,836 $ 10,163,988 (1) See Note 11 for discussion of the Company's fair value estimates."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "(2) Outstanding Term Loan A-2 and revolving line of credit balances are due on November 24, 2030 , unless any of the 4.625 % senior notes due 2030 (the 4.625 % Senior Notes) remain outstanding 91 days prior to the 4.625 % Senior Notes maturity date, in which case the outstanding Term Loan A-2 and revolving line of credit balances become due at that 91 day date ( March 2, 2030 )."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "NOTES TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS—(continued) (unaudited) (dollars and shares in thousands, except per share data) During the first six months of 2026, the Company made regularly scheduled principal payments under its senior secured credit facilities totaling $ 25,000 on Term Loan A-2 and $ 10,649 on Term Loan B-2."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "As a result of the variable rate cap from the Company's 2023 interest rate cap agreements, the Company’s weighted average effective interest rate on its senior secured credit facilities at the end of the second quarter of 2026 was 5.76 %, based on the current margins in effect for its senior secured credit facilities as of June 30, 2026, as detailed in the table above."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "The Company also had letters of credit of approximately $ 188,482 outstanding under a separate bilateral secured letter of credit facility as of June 30, 2026. 7."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "Although these share repurchase authorizations do not have an expiration date, the Company remains subject to share repurchase limitations, including under the terms of its senior secured credit facilities. 15 DAVITA INC."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "The Company's fair value estimates for its senior secured credit facilities are based upon quoted bid and ask prices for these instruments, a level 2 input."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "For the Company's senior notes, fair value estimates are based on market level 1 inputs."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "Significant uses of cash included regularly scheduled principal payments under our senior secured credit facilities totaling approximately $25 million on our Term Loan A-2 and $11 million on Term Loan B-2, as well as additional required payments under other debt arrangements."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "By comparison, the same period in 2025 included the issuance of the 6.75% Senior Notes in the amount of $1,000 million."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "We also recognized financing cash outflows of $12 million in deferred financing costs related to the 6.75% Senior Notes transaction, as well as $13 million in cap premium fees for our 2025 forward interest rate cap agreements."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "Available liquidity As of June 30, 2026, we had $1.435 billion available and $65 million drawn on our $1.5 billion revolving line of credit under our senior secured credit facilities."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "We separately had approximately $188 million in letters of credit outstanding under a separate bilateral secured letter of credit facility."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "Although these share repurchase authorizations do not have an expiration date, we remain subject to share repurchase limitations including under our current senior secured credit facilities."
+  }
+ ],
+ "moveSentences": [
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2."
+  },
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+   "sentence": "Significant sources of cash during the period included the incurrence of an incremental Term Loan B-2 tranche in the aggregate principal amount of $500 million and net draws on our revolving line of credit of $65 million."
+  }
+ ],
+ "docs": [
+  {
+   "doc": "10-Q 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+  },
+  {
+   "doc": "8-K 2026-08-04",
+   "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000105/dva-20260804.htm"
+  }
+ ]
+}

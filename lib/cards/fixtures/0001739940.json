@@ -1,0 +1,328 @@
+{
+ "cik": "0001739940",
+ "company": "Cigna Group",
+ "briefDate": "2026-10-04",
+ "positionSource": "signed golden's stored result",
+ "anchor": {
+  "form": "10-Q",
+  "date": "2026-07-30",
+  "reportDate": "2026-06-30",
+  "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+ },
+ "table": {
+  "basis": "rolled: referenced-table labels state face, cells carry carrying value",
+  "rows": [],
+  "scale": "million",
+  "bridge": [],
+  "text": ""
+ },
+ "headings": [],
+ "rolled": {
+  "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+  "rows": [
+   {
+    "label": "Commercial paper",
+    "amount": "$—",
+    "sourceLine": "Commercial paper $ —"
+   },
+   {
+    "label": "$900 million, 3.250% Notes due April 2025",
+    "amount": "$—",
+    "sourceLine": "$900 million, 3.250 % Notes due April 2025 —"
+   },
+   {
+    "label": "$1,216 million, 4.125% Notes due November 2025",
+    "amount": "$—",
+    "sourceLine": "$1,216 million, 4.125 % Notes due November 2025 —"
+   },
+   {
+    "label": "$550 million, 1.250% Notes due March 2026",
+    "amount": "$549",
+    "sourceLine": "$550 million, 1.250 % Notes due March 2026 549"
+   },
+   {
+    "label": "Other, including finance leases",
+    "amount": "$43",
+    "sourceLine": "Other, including finance leases 43"
+   },
+   {
+    "label": "$1,284 million, 4.500% Notes due February 2026",
+    "amount": "$—",
+    "sourceLine": "$1,284 million, 4.500 % Notes due February 2026 $ —"
+   },
+   {
+    "label": "$700 million, 5.685% Notes due March 2026",
+    "amount": "$—",
+    "sourceLine": "$700 million, 5.685 % Notes due March 2026 —"
+   },
+   {
+    "label": "$550 million, 1.250% Notes due March 2026",
+    "amount": "$—",
+    "sourceLine": "$550 million, 1.250 % Notes due March 2026 —"
+   },
+   {
+    "label": "$1,500 million, 3.400% Notes due March 2027",
+    "amount": "$1,481",
+    "sourceLine": "$1,500 million, 3.400 % Notes due March 2027 1,481"
+   },
+   {
+    "label": "$259 million, 7.875% Debentures due May 2027",
+    "amount": "$260",
+    "sourceLine": "$259 million, 7.875 % Debentures due May 2027 260"
+   },
+   {
+    "label": "$600 million, 3.050% Notes due October 2027",
+    "amount": "$599",
+    "sourceLine": "$600 million, 3.050 % Notes due October 2027 599"
+   },
+   {
+    "label": "$3,800 million, 4.375% Notes due October 2028",
+    "amount": "$3,792",
+    "sourceLine": "$3,800 million, 4.375 % Notes due October 2028 3,792"
+   },
+   {
+    "label": "$1,000 million, 5.000% Notes due May 2029",
+    "amount": "$996",
+    "sourceLine": "$1,000 million, 5.000 % Notes due May 2029 996"
+   },
+   {
+    "label": "$1,400 million, 2.400% Notes due March 2030",
+    "amount": "$1,406",
+    "sourceLine": "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406"
+   },
+   {
+    "label": "$1,000 million, 4.500% Notes due September 2030",
+    "amount": "$993",
+    "sourceLine": "$1,000 million, 4.500 % Notes due September 2030 993"
+   },
+   {
+    "label": "$1,500 million, 2.375% Notes due March 2031",
+    "amount": "$1,420",
+    "sourceLine": "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420"
+   },
+   {
+    "label": "$750 million, 5.125% Notes due May 2031",
+    "amount": "$750",
+    "sourceLine": "$750 million, 5.125 % Notes due May 2031 (1) 750"
+   },
+   {
+    "label": "$1,250 million, 4.875% Notes due September 2032",
+    "amount": "$1,243",
+    "sourceLine": "$1,250 million, 4.875 % Notes due September 2032 1,243"
+   },
+   {
+    "label": "$45 million, 8.080% Step Down Notes due January 2033",
+    "amount": "$45",
+    "sourceLine": "$45 million, 8.080 % Step Down Notes due January 2033 45"
+   },
+   {
+    "label": "$800 million, 5.400% Notes due March 2033",
+    "amount": "$796",
+    "sourceLine": "$800 million, 5.400 % Notes due March 2033 (1) 796"
+   },
+   {
+    "label": "$1,250 million, 5.250% Notes due February 2034",
+    "amount": "$1,250",
+    "sourceLine": "$1,250 million, 5.250 % Notes due February 2034 (1) 1,250"
+   },
+   {
+    "label": "$1,500 million, 5.250% Notes due January 2036",
+    "amount": "$1,488",
+    "sourceLine": "$1,500 million, 5.250 % Notes due January 2036 1,488"
+   },
+   {
+    "label": "$190 million, 6.150% Notes due November 2036",
+    "amount": "$190",
+    "sourceLine": "$190 million, 6.150 % Notes due November 2036 190"
+   },
+   {
+    "label": "$2,200 million, 4.800% Notes due August 2038",
+    "amount": "$2,194",
+    "sourceLine": "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194"
+   },
+   {
+    "label": "$750 million, 3.200% Notes due March 2040",
+    "amount": "$748",
+    "sourceLine": "$750 million, 3.200 % Notes due March 2040 748"
+   },
+   {
+    "label": "$121 million, 5.875% Notes due March 2041",
+    "amount": "$119",
+    "sourceLine": "$121 million, 5.875 % Notes due March 2041 119"
+   },
+   {
+    "label": "$448 million, 6.125% Notes due November 2041",
+    "amount": "$484",
+    "sourceLine": "$448 million, 6.125 % Notes due November 2041 484"
+   },
+   {
+    "label": "$317 million, 5.375% Notes due February 2042",
+    "amount": "$315",
+    "sourceLine": "$317 million, 5.375 % Notes due February 2042 315"
+   },
+   {
+    "label": "$1,500 million, 4.800% Notes due July 2046",
+    "amount": "$1,469",
+    "sourceLine": "$1,500 million, 4.800 % Notes due July 2046 1,469"
+   },
+   {
+    "label": "$1,000 million, 3.875% Notes due October 2047",
+    "amount": "$990",
+    "sourceLine": "$1,000 million, 3.875 % Notes due October 2047 990"
+   },
+   {
+    "label": "$3,000 million, 4.900% Notes due December 2048",
+    "amount": "$2,972",
+    "sourceLine": "$3,000 million, 4.900 % Notes due December 2048 2,972"
+   },
+   {
+    "label": "$1,184 million, 3.400% Notes due March 2050",
+    "amount": "$1,172",
+    "sourceLine": "$1,184 million, 3.400 % Notes due March 2050 1,172"
+   },
+   {
+    "label": "$1,429 million, 3.400% Notes due March 2051",
+    "amount": "$1,410",
+    "sourceLine": "$1,429 million, 3.400 % Notes due March 2051 1,410"
+   },
+   {
+    "label": "$1,500 million, 5.600% Notes due February 2054",
+    "amount": "$1,486",
+    "sourceLine": "$1,500 million, 5.600 % Notes due February 2054 1,486"
+   },
+   {
+    "label": "$750 million, 6.000% Notes due January 2056",
+    "amount": "$735",
+    "sourceLine": "$750 million, 6.000 % Notes due January 2056 735"
+   },
+   {
+    "label": "Other, including finance leases",
+    "amount": "$68",
+    "sourceLine": "Other, including finance leases 68"
+   }
+  ],
+  "label": "as of 2025-12-31, per 10-K debt note, rolled to 2026-06-30",
+  "changes": [
+   {
+    "instrument": "1.250 % senior notes",
+    "amountMillions": -550,
+    "statedAs": "$ 550 million",
+    "sourceLine": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026."
+   },
+   {
+    "instrument": "commercial paper program",
+    "amountMillions": 1000,
+    "statedAs": "$ 1.0 billion at 2026-06-30 against $— at 2025-12-31",
+    "sourceLine": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %."
+   }
+  ]
+ },
+ "schedule": {
+  "doc": "10-K for 2025-12-31",
+  "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+  "entries": [
+   {
+    "period": "2026",
+    "amount": "550"
+   },
+   {
+    "period": "2027",
+    "amount": "2,359"
+   },
+   {
+    "period": "2028",
+    "amount": "3,800"
+   },
+   {
+    "period": "2029",
+    "amount": "1,000"
+   },
+   {
+    "period": "2030",
+    "amount": "2,400"
+   },
+   {
+    "period": "Maturities after 2030",
+    "amount": "21,485"
+   }
+  ],
+  "excerpt": "There was no commercial paper balance as of December 31, 2025. Debt Maturities. Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800 2029 $ 1,000 2030 $ 2,400 Maturities after 2030 $ 21,485 (1) Long-term debt maturity a"
+ },
+ "classSentences": [
+  {
+   "doc": "10-Q 2026-07-30",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+   "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026."
+  },
+  {
+   "doc": "10-Q 2026-07-30",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+   "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion."
+  },
+  {
+   "doc": "10-Q 2026-07-30",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+   "sentence": "As of June 30, 2026, approximately 100 % of the Berkshire recoverable is secured by assets in a trust. 16 Note 9 – Investments The following table summarizes the Company's investments by category and current or long-term classification: June 30, 2026 December 31, 2025 (In millions) Current Long-Term Total Current Long-Term Total Debt securities $ 549 $ 7,901 $ 8,450 $ 691 $ 7,671 $ 8,362 Equity securities 17 3,756 3,773 22 3,534 3,556 Commercial mortgage loans 88 1,111 1,199 86 1,147 1,233 Policy loans — 1,023 1,023 — 1,082 1,082 Other long-term investments — 5,246 5,246 — 5,037 5,037 Short-term investments 305 — 305 257 — 257 Total $ 959 $ 19,037 $ 19,996 $ 1,056 $ 18,471 $ 19,527 A."
+  },
+  {
+   "doc": "10-K for 2025-12-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+   "sentence": "In September 2025, we issued $4.5 billion of new senior notes."
+  },
+  {
+   "doc": "10-K for 2025-12-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+   "sentence": "In September 2025, we issued $ 4.5 billion of new senior notes, as detailed in the table below."
+  },
+  {
+   "doc": "10-K for 2025-12-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+   "sentence": "The Credit Agreement allows for borrowings at either a base rate, term Secured Overnight Financing Rate (\"SOFR\") or daily simple SOFR, plus, in each case, an applicable margin based on the Company's senior unsecured credit ratings."
+  },
+  {
+   "doc": "10-K for 2025-12-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+   "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion."
+  },
+  {
+   "doc": "10-K for 2025-12-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+   "sentence": "The Credit Agreement allows for borrowings at either a base rate, term Secured Overnight Financing Rate (\"SOFR\") or daily simple SOFR, plus, in each case, an applicable margin based on the Company's senior unsecured credit ratings."
+  },
+  {
+   "doc": "10-K for 2025-12-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+   "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion."
+  },
+  {
+   "doc": "10-K for 2025-12-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+   "sentence": "In September 2025, we issued $ 4.5 billion of new senior notes, as detailed in the table below."
+  }
+ ],
+ "moveSentences": [
+  {
+   "doc": "10-Q 2026-07-30",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+   "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026."
+  }
+ ],
+ "docs": [
+  {
+   "doc": "10-Q 2026-07-30",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+  },
+  {
+   "doc": "8-K 2026-09-30",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126038056/ef20082869_8k.htm"
+  },
+  {
+   "doc": "8-K 2026-07-30",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126030135/ef20078875_8k.htm"
+  },
+  {
+   "doc": "10-K for 2025-12-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+  }
+ ]
+}
