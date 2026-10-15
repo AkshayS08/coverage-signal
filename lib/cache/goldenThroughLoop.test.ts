@@ -42,7 +42,7 @@ import { join } from "node:path";
 import { runAgentLoop } from "../agent";
 import { deriveGoldenState, compareToGolden, positionFilingSetOf, type GoldenFile } from "../events/golden";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
-import { assertFree, spendTracker } from "./freeRun";
+import { assertFree, checkFree, spendTracker } from "./freeRun";
 
 let passed = 0, failed = 0;
 const failures: string[] = [];
@@ -68,24 +68,30 @@ const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
   }
 
   console.log("\n=== [2] THE RUN IS FREE BEFORE IT RUNS (Rule 75) ===");
-  let preflighted = false;
-  try {
-    await assertFree(current.map((g) => ({ company: g.state.company })));
-    preflighted = true;
-  } catch (e) {
-    console.error(`  ${(e as Error).message}`);
-  }
-  assert(preflighted,
-    "[2a] every signed name's answer is reachable in cache, so this suite re-derives rather than re-extracts. A corpus whose fingerprint has moved STOPS this suite: re-extracting ten companies to check five signatures is a different act, and it is priced and authorised separately (Rule 13)");
-  if (!preflighted) {
-    console.error(`\n${passed} passed, ${failed} failed.`);
-    console.error("\nFAILURES:"); for (const f of failures) console.error(`  - ${f}`);
-    process.exit(1);
-  }
-
-  console.log("\n=== [3] EACH SIGNED NAME, RE-DERIVED THROUGH THE CURRENT LOOP ===");
-  const spend = spendTracker();
+  // PER NAME, AND NEVER RE-EXTRACTED. A name whose corpus fingerprint has
+  // moved cannot be re-derived from the answer it was signed from: its cached
+  // answer is unreachable, and re-extracting it is a new extraction on a new
+  // corpus, priced and authorised separately (Rule 13). It is reported as NOT
+  // COMPARABLE, by name, with the reason — the same disposition Rule 30 gives
+  // a moved filing set — and the other names are still checked. Before
+  // Session 26 one moved name stopped the whole suite, so a single officer
+  // change at one filer left five signatures unchecked.
+  const comparable: typeof current = [];
+  const notComparable: string[] = [];
   for (const g of current) {
+    let v;
+    try { v = await checkFree(g.state.company); } catch (e) { notComparable.push(`${g.state.company} — preflight could not read its filing list: ${(e as Error).message.slice(0, 100)}`); continue; }
+    if (v.cached) comparable.push(g);
+    else notComparable.push(`${g.state.company} — its corpus fingerprint is now ${v.fingerprint.slice(0, 8)} and no answer is cached at ${v.key}. A filing has landed since it was signed; re-deriving would re-extract on a new corpus. Its card renders from the signed golden's stored result. Not compared, not re-signed.`);
+  }
+  for (const n of notComparable) console.log(`  — NOT COMPARABLE: ${n}`);
+  assert(comparable.length + notComparable.length === current.length && comparable.length > 0,
+    `[2a] every signed name is either cached (${comparable.length}) or reported not comparable with its reason (${notComparable.length}); nothing is re-extracted, and at least one name is actually checked`);
+
+  console.log("\n=== [3] EACH CACHED SIGNED NAME, RE-DERIVED THROUGH THE CURRENT LOOP ===");
+  await assertFree(comparable.map((g) => ({ company: g.state.company }))); // Rule 75, again, for exactly what runs
+  const spend = spendTracker();
+  for (const g of comparable) {
     const name = g.state.company;
     delete process.env.CACHE_BUST;
     const result = await runAgentLoop(name);
