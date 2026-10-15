@@ -31,13 +31,13 @@ export type Segment =
    * must state it. `field` names a facility figure (drawn, lettersOfCredit…),
    * whose zero is checked the way the facility guard checks one (Rule 53).
    */
-  | { k: "figure"; t: string; printed: string; src: Source; field?: string }
+  | { k: "figure"; t: string; printed: string; src: Source; field?: string; row?: string }
   /** A date shown at `granularity`; the sentence must state it at least that precisely. */
   | { k: "date"; t: string; date: string; granularity: DateGranularity; src: Source }
   /** A label word (type, seniority, security). `stated` is the filer's word, which the sentence must contain. */
   | { k: "label"; t: string; stated: string; src: Source }
   /** Arithmetic over stated figures. `usd` must equal the sum of the parts' signed values. */
-  | { k: "computed"; t: string; usd: number; parts: { printed: string; usd: number; src: Source }[] }
+  | { k: "computed"; t: string; usd: number; parts: { printed: string; usd: number; src: Source }[]; row?: string }
   /** "seniority not stated" and its kin: links to the instrument's own sentence so the reader can judge. */
   | { k: "notStated"; t: string; src: Source }
   /** A filing named by its EDGAR metadata (form, date, items), linked to the filing itself. No sentence is claimed. */
@@ -62,7 +62,10 @@ export interface Card {
   previousBrief: string | null;
   header: Line[];
   thisWeek: CardSection;
-  headlines: { totalDebt: CardSection; liquidity: CardSection; due24: CardSection };
+  /** card_spec v2.0 §2.3 — recent debt moves. Absent on v1 cards. */
+  moves?: CardSection;
+  /** v2.0 §2.4 replaces the 24-month list with the 18-month refinance window (`refi`). */
+  headlines: { totalDebt: CardSection; liquidity: CardSection; due24: CardSection; refi?: CardSection };
   ladder: CardSection;
   facilities: CardSection;
   withheld: CardSection;
