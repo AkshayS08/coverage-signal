@@ -7036,3 +7036,49 @@ Defects the tests and a card read caught while building, each fixed as a rule:
   that carry the filer's own name for each instrument
 - Encompass's "senior, unsecured" sentence is in the prior 10-K, not the
   anchor: not used for labels, stated in the trust section (Rule 66 candidate)
+
+# Session 26, part 2 — card_spec v2.0, tests first
+
+### THE TWELFTH AUDIT-SPINE INSTANCE: a heading the filing never printed
+
+Stored answers record a "section" or "seniority" heading against each debt
+row, and nothing checked that the table PRINTS it. Measured against the six
+signed goldens' stored results, with a heading counted as printed only where
+its text sits directly before the first row it governs:
+
+| name | recorded heading | printed | rows | fed the row's class |
+|---|---|---|---|---|
+| Encompass | "senior unsecured" | no | 4 | yes |
+| CHS | "senior-priority secured" | no | 6 | yes |
+| CHS | "junior-priority secured" | no | 2 | yes |
+| Molina | "senior unsecured" | no | 5 | yes |
+| DaVita | "Senior Notes" | yes | recorded over 6, governs 4 | yes, on 2 rows it does not govern |
+
+Seventeen rows across three signed names carry invented heading text, and
+every one fed the computed class. Where it reached a reader: **no v1 card**
+(card labels never read recorded headings); **criterion 8b in the signed
+goldens** counted those classes (Molina's reads "all 5 row(s) carry a class
+(senior unsecured)"), though no 8b verdict turns on them; and **the main
+product page**, which renders the computed class on every ladder row.
+
+My first version of this audit was itself the defect it was auditing: it
+counted a heading "printed" when its text appeared anywhere near the table,
+so a row's own name ("Junior-Priority Secured Notes") or the prose after the
+table ("senior unsecured obligations") passed. A check looser than its name.
+
+The rule now: a heading counts only where printed before the first row it
+governs, and governs a contiguous block ending at the next heading or at a
+row whose own label names a different instrument type (Akshay, Oct 15 2026).
+`lib/cards/headings.ts`, asserted on all six printed headings.
+
+### FIRST AFTER THE DEMO: scope the fingerprint to what extraction reads
+
+Cigna's fingerprint moved again (`f1237506` → `baca1fcf`), this time on an
+Oct 9 8-K, Item 5.02, an officer change that states nothing about debt. Its
+answer is unreachable without re-extraction, so `goldenThroughLoop` now
+reports a moved name as NOT COMPARABLE with its reason instead of stopping
+the suite, and Cigna's card renders from its signed golden's stored result.
+The fix is option (c) from Checkpoint A: fingerprint only the filings
+extraction reads (Rule 65's position-only identity, one layer down). It
+orphans every cached answer once, so it is priced (~$3–4 with re-signing)
+and run as its own session.
