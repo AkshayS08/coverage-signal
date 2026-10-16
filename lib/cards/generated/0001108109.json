@@ -357,8 +357,8 @@
     [
      {
       "k": "label",
-      "t": "finance leases",
-      "stated": "Finance lease",
+      "t": "Finance lease and financing obligations",
+      "stated": "Finance lease and financing obligations",
       "src": {
        "sentence": "Finance lease and financing obligations 298",
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -673,11 +673,12 @@
      },
      {
       "k": "text",
-      "t": " · "
+      "t": " — "
      },
      {
-      "k": "notStated",
-      "t": "security not stated, please refer to sources",
+      "k": "label",
+      "t": "6 ⅞% Senior Notes due 2028",
+      "stated": "6 ⅞% Senior Notes due 2028",
       "src": {
        "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -686,12 +687,11 @@
      },
      {
       "k": "text",
-      "t": " — "
+      "t": " · "
      },
      {
-      "k": "label",
-      "t": "6 ⅞% Senior Notes due 2028",
-      "stated": "6 ⅞% Senior Notes due 2028",
+      "k": "notStated",
+      "t": "security not stated, please refer to sources",
       "src": {
        "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -764,11 +764,12 @@
      },
      {
       "k": "text",
-      "t": " · "
+      "t": " — "
      },
      {
-      "k": "notStated",
-      "t": "security not stated, please refer to sources",
+      "k": "label",
+      "t": "6 ⅞% Senior Notes due 2028",
+      "stated": "6 ⅞% Senior Notes due 2028",
       "src": {
        "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -777,12 +778,11 @@
      },
      {
       "k": "text",
-      "t": " — "
+      "t": " · "
      },
      {
-      "k": "label",
-      "t": "6 ⅞% Senior Notes due 2028",
-      "stated": "6 ⅞% Senior Notes due 2028",
+      "k": "notStated",
+      "t": "security not stated, please refer to sources",
       "src": {
        "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -820,6 +820,34 @@
     },
     {
      "k": "label",
+     "t": "senior",
+     "stated": "Senior",
+     "src": {
+      "sentence": "Principal amounts outstanding under the ABL Facility, if any, will be due and payable in full on June 5, 2029. 2026 Financing Activity On February 2, 2026, we exercised a special call provision to redeem 10% of the original principal amount, or approximately $223 million, of the 10.875% Senior Secured Notes due 2032, at a redemption price of 103% of the principal amount, plus accrued and unpaid interest.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+      "doc": "10-Q 2026-07-23"
+     }
+    },
+    {
+     "k": "text",
+     "t": " "
+    },
+    {
+     "k": "label",
+     "t": "secured",
+     "stated": "secured",
+     "src": {
+      "sentence": "Subject to certain exceptions, all obligations under the ABL Facility and the related guarantees are secured by a perfected first-priority security interest in substantially all of the receivables, deposit, collection and other accounts and contract rights, books, records and other instruments related to the foregoing of the Company, CHS and the guarantors, as well as a perfected junior-priority third lien security interest in substantially all of the other assets of the Company, CHS and the guarantors, subject to customary exceptions and intercreditor arrangements.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+      "doc": "10-Q 2026-07-23"
+     }
+    },
+    {
+     "k": "text",
+     "t": " "
+    },
+    {
+     "k": "label",
      "t": "ABL",
      "stated": "ABL",
      "src": {
@@ -839,19 +867,6 @@
      "granularity": "day",
      "src": {
       "sentence": "Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029.",
-      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-      "doc": "10-Q 2026-07-23"
-     }
-    },
-    {
-     "k": "text",
-     "t": " · "
-    },
-    {
-     "k": "notStated",
-     "t": "seniority and security not stated, please refer to sources",
-     "src": {
-      "sentence": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\").",
       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
       "doc": "10-Q 2026-07-23"
      }
@@ -942,11 +957,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "security not stated, please refer to sources",
+       "k": "label",
+       "t": "6 ⅞% Senior Notes due 2028",
+       "stated": "6 ⅞% Senior Notes due 2028",
        "src": {
         "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -955,12 +971,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "6 ⅞% Senior Notes due 2028",
-       "stated": "6 ⅞% Senior Notes due 2028",
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
        "src": {
         "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1728,8 +1743,8 @@
       },
       {
        "k": "label",
-       "t": "finance leases",
-       "stated": "Finance lease",
+       "t": "Finance lease and financing obligations",
+       "stated": "Finance lease and financing obligations",
        "src": {
         "sentence": "Finance lease and financing obligations 298",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1742,11 +1757,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
+       "k": "label",
+       "t": "Finance lease and financing obligations",
+       "stated": "Finance lease and financing obligations",
        "src": {
         "sentence": "Finance lease and financing obligations 298",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1755,12 +1771,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "Finance lease and financing obligations",
-       "stated": "Finance lease and financing obligations",
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "Finance lease and financing obligations 298",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1800,11 +1815,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
+       "k": "label",
+       "t": "Other",
+       "stated": "Other",
        "src": {
         "sentence": "Other 52",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1813,12 +1829,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "Other",
-       "stated": "Other",
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "Other 52",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",

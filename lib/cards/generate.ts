@@ -43,6 +43,7 @@ for (const cik of ORDER) {
     cash: snap.cash,
     textByUrl,
     periodSentence: snap.periodSentence,
+    laterUrls: (snap.laterFilings ?? []).filter((x: { filingDate: string }) => x.filingDate <= BRIEF).map((x: { url: string }) => x.url),
     facts,
   });
   writeFileSync(join(OUT, `${cik}.json`), JSON.stringify(card, null, 1) + "\n", "utf-8");

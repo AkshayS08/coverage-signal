@@ -601,19 +601,6 @@
     },
     {
      "k": "text",
-     "t": " · "
-    },
-    {
-     "k": "notStated",
-     "t": "seniority and security not stated, please refer to sources",
-     "src": {
-      "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
-      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-      "doc": "10-Q 2026-07-23"
-     }
-    },
-    {
-     "k": "text",
      "t": " · undrawn commitment, not debt"
     },
     {
@@ -624,6 +611,19 @@
      "k": "label",
      "t": "revolving credit facility",
      "stated": "revolving credit facility",
+     "src": {
+      "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+      "doc": "10-Q 2026-07-23"
+     }
+    },
+    {
+     "k": "text",
+     "t": " · "
+    },
+    {
+     "k": "notStated",
+     "t": "seniority and security not stated, please refer to sources",
      "src": {
       "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",

@@ -260,8 +260,8 @@
     [
      {
       "k": "label",
-      "t": "finance leases",
-      "stated": "Finance lease",
+      "t": "Finance lease obligations",
+      "stated": "Finance lease obligations",
       "src": {
        "sentence": "Finance lease obligations 281.7   294.6",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -296,8 +296,8 @@
     [
      {
       "k": "label",
-      "t": "notes",
-      "stated": "notes",
+      "t": "Other notes payable",
+      "stated": "Other notes payable",
       "src": {
        "sentence": "Other notes payable 81.9   93.6",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -542,11 +542,12 @@
      },
      {
       "k": "text",
-      "t": " · "
+      "t": " — "
      },
      {
-      "k": "notStated",
-      "t": "security not stated, please refer to sources",
+      "k": "label",
+      "t": "4.50 % Senior Notes due 2028",
+      "stated": "4.50 % Senior Notes due 2028",
       "src": {
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -555,12 +556,11 @@
      },
      {
       "k": "text",
-      "t": " — "
+      "t": " · "
      },
      {
-      "k": "label",
-      "t": "4.50 % Senior Notes due 2028",
-      "stated": "4.50 % Senior Notes due 2028",
+      "k": "notStated",
+      "t": "security not stated, please refer to sources",
       "src": {
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -637,11 +637,12 @@
      },
      {
       "k": "text",
-      "t": " · "
+      "t": " — "
      },
      {
-      "k": "notStated",
-      "t": "security not stated, please refer to sources",
+      "k": "label",
+      "t": "4.50 % Senior Notes due 2028",
+      "stated": "4.50 % Senior Notes due 2028",
       "src": {
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -650,12 +651,11 @@
      },
      {
       "k": "text",
-      "t": " — "
+      "t": " · "
      },
      {
-      "k": "label",
-      "t": "4.50 % Senior Notes due 2028",
-      "stated": "4.50 % Senior Notes due 2028",
+      "k": "notStated",
+      "t": "security not stated, please refer to sources",
       "src": {
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -739,11 +739,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "security not stated, please refer to sources",
+       "k": "label",
+       "t": "4.50 % Senior Notes due 2028",
+       "stated": "4.50 % Senior Notes due 2028",
        "src": {
         "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -752,12 +753,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "4.50 % Senior Notes due 2028",
-       "stated": "4.50 % Senior Notes due 2028",
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
        "src": {
         "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -836,11 +836,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "security not stated, please refer to sources",
+       "k": "label",
+       "t": "4.75 % Senior Notes due 2030",
+       "stated": "4.75 % Senior Notes due 2030",
        "src": {
         "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -849,12 +850,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "4.75 % Senior Notes due 2030",
-       "stated": "4.75 % Senior Notes due 2030",
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
        "src": {
         "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -933,11 +933,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "security not stated, please refer to sources",
+       "k": "label",
+       "t": "4.625 % Senior Notes due 2031",
+       "stated": "4.625 % Senior Notes due 2031",
        "src": {
         "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -946,12 +947,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "4.625 % Senior Notes due 2031",
-       "stated": "4.625 % Senior Notes due 2031",
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
        "src": {
         "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1003,19 +1003,6 @@
       },
       {
        "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
-       "src": {
-        "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "k": "text",
        "t": " — "
       },
       {
@@ -1024,6 +1011,19 @@
        "stated": "Advances under revolving credit facility",
        "src": {
         "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
+       "src": {
+        "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
@@ -1100,11 +1100,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "security not stated, please refer to sources",
+       "k": "label",
+       "t": "5.875 % Senior Notes due 2034",
+       "stated": "5.875 % Senior Notes due 2034",
        "src": {
         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1113,12 +1114,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "5.875 % Senior Notes due 2034",
-       "stated": "5.875 % Senior Notes due 2034",
+       "k": "notStated",
+       "t": "security not stated, please refer to sources",
        "src": {
         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1158,8 +1158,8 @@
       },
       {
        "k": "label",
-       "t": "notes",
-       "stated": "notes",
+       "t": "Other notes payable",
+       "stated": "Other notes payable",
        "src": {
         "sentence": "Other notes payable 81.9   93.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1172,11 +1172,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
+       "k": "label",
+       "t": "Other notes payable",
+       "stated": "Other notes payable",
        "src": {
         "sentence": "Other notes payable 81.9   93.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1185,12 +1186,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "Other notes payable",
-       "stated": "Other notes payable",
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "Other notes payable 81.9   93.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1220,8 +1220,8 @@
       },
       {
        "k": "label",
-       "t": "finance leases",
-       "stated": "Finance lease",
+       "t": "Finance lease obligations",
+       "stated": "Finance lease obligations",
        "src": {
         "sentence": "Finance lease obligations 281.7   294.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1234,11 +1234,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
+       "k": "label",
+       "t": "Finance lease obligations",
+       "stated": "Finance lease obligations",
        "src": {
         "sentence": "Finance lease obligations 281.7   294.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1247,12 +1248,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "Finance lease obligations",
-       "stated": "Finance lease obligations",
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "Finance lease obligations 281.7   294.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",

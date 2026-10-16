@@ -28,7 +28,8 @@ import { extractFactTokens, factTokensMatch } from "../agent/factTokens";
 import { createTextLocator } from "../agent/verifyQuote";
 
 import type { Card, CardFacts, CardSection, Line, Segment, Source } from "./types";
-import { classLabels, notStatedSuffix, statementReaches, typeLabel, containsWord } from "./labels";
+import { classLabels, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord } from "./labels";
+import { headingFor as printedHeadingFor, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 
 export interface CardInputs {
@@ -42,6 +43,8 @@ export interface CardInputs {
   textByUrl: Map<string, string>;
   /** The anchor's own sentence stating its period end (its cover line), for every "as of" date. */
   periodSentence: string | null;
+  /** Filings after the anchor through the brief date: permitted label sources (§3.5). */
+  laterUrls?: string[];
   /** Verified card facts (capture/facts.ts), where captured. */
   facts?: CardFacts | null;
 }
@@ -146,9 +149,40 @@ export function buildCard(i: CardInputs): Card {
 
   const facilityFor = (row: LadderRow) =>
     facilities.find((f) => f.name === row.instrument) ?? (row.maturityFromFacility ? facilities.find((f) => f.name === row.maturityFromFacility!.facility) : undefined);
-  const headingFor = (row: LadderRow): string | null => {
-    const e = (dm?.scheduleSequence ?? []).find((x: any) => x.kind === "row" && (x.label ?? "") === row.instrument);
-    return e ? e.section ?? e.seniority ?? null : null;
+  // PRINTED HEADINGS ONLY (§3.5). A heading the stored answer records is a
+  // label source only where the table prints it directly before the rows it
+  // governs; a recorded heading the filer never printed counts for nothing
+  // (audit-spine instance 12).
+  const anchorText = i.textByUrl.get(anchor.url) ?? "";
+  const rowEntries: any[] = (dm?.scheduleSequence ?? []).filter((e: any) => e.kind === "row");
+  const tableText = (() => {
+    const loc = createTextLocator(anchorText);
+    const at = rowEntries.map((e) => loc.find(e.sourceLine)).filter((x): x is number => x !== null);
+    return at.length ? anchorText.slice(Math.max(0, Math.min(...at) - 600), Math.max(...at) + 300).replace(/[\s\u00a0]+/g, " ").trim() : "";
+  })();
+  const headings = printedHeadings(tableText, rowEntries.map((e) => {
+    const cands = [e.section, e.seniority].filter(Boolean) as string[];
+    return { label: e.label ?? "", recordedHeading: cands.find((h) => printedBefore(tableText, h, e.label ?? "")) ?? cands[0] ?? null };
+  }));
+  const headingFor = (name: string): string | null => printedHeadingFor(headings, name)?.text ?? null;
+  // The sentences a label may come from: the anchor, every later filing through
+  // the brief date, and the row's own cited document (§3.5, Rule 66).
+  const sentencePools = new Map<string, Source[]>();
+  const sentencesOf = (url: string): Source[] => {
+    if (!sentencePools.has(url)) {
+      const text = i.textByUrl.get(url) ?? "";
+      const ss = text.replace(/[\s\u00a0]+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(\u201c"])/).filter((x) => x.length < 900);
+      sentencePools.set(url, ss.map((x) => ({ sentence: x, url, doc: docs.get(url) ?? url.split("/").pop() ?? url })));
+    }
+    return sentencePools.get(url)!;
+  };
+  const labelSentences = (ownUrl: string | null): Source[] => [...new Set([anchor.url, ...(i.laterUrls ?? []), ...(ownUrl ? [ownUrl] : [])])].filter((u) => i.textByUrl.has(u)).flatMap(sentencesOf);
+  /** Name, then printed heading, then a naming sentence, then the note's statement: the first that states each label. */
+  const withSources = (name: string, base: { seniority: Segment | null; security: Segment | null }, ownUrl: string | null) => {
+    const h = headingFor(name);
+    const hc = headingClass(h, h ? anchorSrc(h) : null);
+    const sc = base.seniority && base.security ? { seniority: null, security: null } : sentenceClass(name, labelSentences(ownUrl));
+    return { seniority: base.seniority ?? hc.seniority ?? sc.seniority, security: base.security ?? hc.security ?? sc.security };
   };
 
   // ── one Item per ladder row ──
@@ -164,7 +198,7 @@ export function buildCard(i: CardInputs): Card {
         ? { date: row.maturityDate, granularity: row.dateGranularity, src: src(row.maturitySourceLine, matUrl) }
         : null;
     const stated = row.classification.instrumentTypeStatedAs ?? "";
-    const heading = headingFor(row);
+    const heading = headingFor(row.instrument);
     // The sentence naming the instrument: its amount or maturity sentence where
     // either carries the name, otherwise the sentence in its own document that
     // does (an 8-K's amount sentence can stop before the name it belongs to).
@@ -174,7 +208,10 @@ export function buildCard(i: CardInputs): Card {
     const nameSrc = found ? (found === amtSentence ? amountSrc : found === maturity?.src.sentence ? maturity!.src : src(found, nameUrl)) : amountSrc;
     const typeSrc = [amountSrc, maturity?.src, nameSrc].find((s) => s && stated && containsWord(s.sentence, stated)) ?? (heading && containsWord(heading, stated) ? anchorSrc(heading) : nameSrc);
     const st = statementReaches(statement, row) && statement ? { s: statement, src: anchorSrc(statement.statement) } : null;
-    const cls = classLabels(row.instrument, nameSrc, st);
+    const fromName = classLabels(row.instrument, nameSrc, null);
+    const named = withSources(row.instrument, fromName, row.citedUrl || null);
+    const fromStatement = classLabels(row.instrument, nameSrc, st);
+    const cls = { seniority: named.seniority ?? fromStatement.seniority, security: named.security ?? fromStatement.security };
     // A row drawn under a facility ("Advances under revolving credit facility")
     // is that facility: the facility's own name is the instrument's own name,
     // linked to the facility sentence that carries it.
@@ -263,7 +300,7 @@ export function buildCard(i: CardInputs): Card {
         amountPrinted: faceTok ? faceTok.raw : `$ ${b.amountMillions.toLocaleString("en-US")} million`,
         amountSrc: bsrc,
         maturity: date && gran ? { date, granularity: gran, src: bsrc } : null,
-        labels: { type: typeLabel(pseudo, bsrc), ...classLabels(b.label, bsrc, null) },
+        labels: { type: typeLabel(pseudo, bsrc), ...withSources(b.label, classLabels(b.label, bsrc, null), b.citedUrl) },
         isCapacity: false,
         rolled: true,
       });
@@ -298,12 +335,13 @@ export function buildCard(i: CardInputs): Card {
       else if (it.row?.facilityMaturityNote) out.push(t(", maturity stated as a relative term, not a date"));
       else out.push(t(", no maturity stated"));
     }
-    const suffix = notStatedSuffix(it.labels.seniority, it.labels.security);
-    if (suffix) out.push(t(" · "), { k: "notStated", t: suffix, src: it.amountSrc });
     if (it.isCapacity) out.push(t(" · undrawn commitment, not debt"));
     // Which instrument, in the filer's own name: two same-size notes due the
     // same year are told apart only here.
     out.push(t(" — "), { k: "label", t: it.name, stated: it.name, src: it.nameSrc });
+    // §3.5: the fallback goes at the end of the line, after the instrument and its date.
+    const suffix = notStatedSuffix(it.labels.seniority, it.labels.security);
+    if (suffix) out.push(t(" · "), { k: "notStated", t: suffix, src: it.amountSrc });
     return out;
   };
 

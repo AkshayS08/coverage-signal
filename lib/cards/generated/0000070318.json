@@ -183,6 +183,34 @@
     [
      {
       "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "Senior secured first lien notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "secured",
+      "stated": "secured",
+      "src": {
+       "sentence": "Senior secured first lien notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "notes",
       "src": {
@@ -197,8 +225,8 @@
      },
      {
       "k": "computed",
-      "t": "$12,662MM",
-      "usd": 12662000000,
+      "t": "$9,800MM",
+      "usd": 9800000000,
       "parts": [
        {
         "printed": "$ 1,500 million",
@@ -262,7 +290,58 @@
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
          "doc": "10-Q 2026-07-29"
         }
-       },
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "Senior unsecured notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "unsecured",
+      "stated": "unsecured",
+      "src": {
+       "sentence": "Senior unsecured notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "notes",
+      "src": {
+       "sentence": "Senior unsecured notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$2,862MM",
+      "usd": 2862000000,
+      "parts": [
        {
         "printed": "$ 1,750 million",
         "usd": 1750000000,
@@ -296,8 +375,8 @@
     [
      {
       "k": "label",
-      "t": "finance leases",
-      "stated": "Finance lease",
+      "t": "Finance leases, mortgages and other notes",
+      "stated": "Finance leases, mortgages and other notes",
       "src": {
        "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -495,6 +574,34 @@
      },
      {
       "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "Senior secured first lien notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "secured",
+      "stated": "secured",
+      "src": {
+       "sentence": "Senior secured first lien notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "notes",
       "src": {
@@ -512,19 +619,6 @@
       "t": "2027",
       "date": "2027",
       "granularity": "year",
-      "src": {
-       "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-       "doc": "10-Q 2026-07-29"
-      }
-     },
-     {
-      "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "notStated",
-      "t": "seniority and security not stated, please refer to sources",
       "src": {
        "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -564,6 +658,34 @@
      },
      {
       "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "Senior secured first lien notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "secured",
+      "stated": "secured",
+      "src": {
+       "sentence": "Senior secured first lien notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "notes",
       "src": {
@@ -581,19 +703,6 @@
       "t": "2028",
       "date": "2028",
       "granularity": "year",
-      "src": {
-       "sentence": "4.625 % due 2028 $ 600   $ 600",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-       "doc": "10-Q 2026-07-29"
-      }
-     },
-     {
-      "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "notStated",
-      "t": "seniority and security not stated, please refer to sources",
       "src": {
        "sentence": "4.625 % due 2028 $ 600   $ 600",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -637,6 +746,34 @@
      },
      {
       "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "Senior unsecured notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "unsecured",
+      "stated": "unsecured",
+      "src": {
+       "sentence": "Senior unsecured notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "notes",
       "src": {
@@ -654,19 +791,6 @@
       "t": "2028",
       "date": "2028",
       "granularity": "year",
-      "src": {
-       "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-       "doc": "10-Q 2026-07-29"
-      }
-     },
-     {
-      "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "notStated",
-      "t": "seniority and security not stated, please refer to sources",
       "src": {
        "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -714,6 +838,34 @@
      },
      {
       "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "Senior secured first lien notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "secured",
+      "stated": "secured",
+      "src": {
+       "sentence": "Senior secured first lien notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "notes",
       "src": {
@@ -731,19 +883,6 @@
       "t": "2027",
       "date": "2027",
       "granularity": "year",
-      "src": {
-       "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-       "doc": "10-Q 2026-07-29"
-      }
-     },
-     {
-      "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "notStated",
-      "t": "seniority and security not stated, please refer to sources",
       "src": {
        "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -973,6 +1112,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -990,19 +1157,6 @@
        "t": "2027",
        "date": "2027",
        "granularity": "year",
-       "src": {
-        "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1052,6 +1206,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1069,19 +1251,6 @@
        "t": "2028",
        "date": "2028",
        "granularity": "year",
-       "src": {
-        "sentence": "4.625 % due 2028 $ 600   $ 600",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "4.625 % due 2028 $ 600   $ 600",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1121,6 +1290,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1138,19 +1335,6 @@
        "t": "2028",
        "date": "2028",
        "granularity": "year",
-       "src": {
-        "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1200,6 +1384,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1217,19 +1429,6 @@
        "t": "2029",
        "date": "2029",
        "granularity": "year",
-       "src": {
-        "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1279,6 +1478,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1296,19 +1523,6 @@
        "t": "2030",
        "date": "2030",
        "granularity": "year",
-       "src": {
-        "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1348,6 +1562,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1365,19 +1607,6 @@
        "t": "2030",
        "date": "2030",
        "granularity": "year",
-       "src": {
-        "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1427,6 +1656,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1444,19 +1701,6 @@
        "t": "2031",
        "date": "2031",
        "granularity": "year",
-       "src": {
-        "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1496,6 +1740,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1513,19 +1785,6 @@
        "t": "2031",
        "date": "2031",
        "granularity": "year",
-       "src": {
-        "sentence": "6.875 % due 2031 $ 362   $ 362",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "6.875 % due 2031 $ 362   $ 362",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1575,6 +1834,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1592,19 +1879,6 @@
        "t": "2032",
        "date": "2032",
        "granularity": "year",
-       "src": {
-        "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1654,6 +1928,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "notes",
        "src": {
@@ -1671,19 +1973,6 @@
        "t": "2033",
        "date": "2033",
        "granularity": "year",
-       "src": {
-        "sentence": "6.000 % due 2033 $ 750   $ —",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "6.000 % due 2033 $ 750   $ —",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1733,8 +2022,8 @@
       },
       {
        "k": "label",
-       "t": "finance leases",
-       "stated": "Finance lease",
+       "t": "Finance leases, mortgages and other notes",
+       "stated": "Finance leases, mortgages and other notes",
        "src": {
         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1747,11 +2036,12 @@
       },
       {
        "k": "text",
-       "t": " · "
+       "t": " — "
       },
       {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
+       "k": "label",
+       "t": "Finance leases, mortgages and other notes",
+       "stated": "Finance leases, mortgages and other notes",
        "src": {
         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1760,12 +2050,11 @@
       },
       {
        "k": "text",
-       "t": " — "
+       "t": " · "
       },
       {
-       "k": "label",
-       "t": "Finance leases, mortgages and other notes",
-       "stated": "Finance leases, mortgages and other notes",
+       "k": "notStated",
+       "t": "seniority and security not stated, please refer to sources",
        "src": {
         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
