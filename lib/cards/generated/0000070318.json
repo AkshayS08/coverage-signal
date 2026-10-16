@@ -158,6 +158,10 @@
      },
      {
       "k": "text",
+      "t": " at face"
+     },
+     {
+      "k": "text",
       "t": " as of "
      },
      {
@@ -482,7 +486,8 @@
        "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
        "doc": "10-Q 2026-07-29"
-      }
+      },
+      "row": "5.125 % due 2027"
      },
      {
       "k": "text",
@@ -550,7 +555,8 @@
        "sentence": "4.625 % due 2028 $ 600   $ 600",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
        "doc": "10-Q 2026-07-29"
-      }
+      },
+      "row": "4.625 % due 2028"
      },
      {
       "k": "text",
@@ -622,7 +628,8 @@
        "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
        "doc": "10-Q 2026-07-29"
-      }
+      },
+      "row": "6.125 % due 2028"
      },
      {
       "k": "text",
@@ -698,7 +705,8 @@
        "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
        "doc": "10-Q 2026-07-29"
-      }
+      },
+      "row": "5.125 % due 2027"
      },
      {
       "k": "text",
@@ -778,7 +786,8 @@
       "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
       "doc": "10-Q 2026-07-29"
-     }
+     },
+     "row": "senior secured revolving credit facility"
     },
     {
      "k": "text",
@@ -955,7 +964,8 @@
         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "5.125 % due 2027"
       },
       {
        "k": "text",
@@ -1033,7 +1043,8 @@
         "sentence": "4.625 % due 2028 $ 600   $ 600",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "4.625 % due 2028"
       },
       {
        "k": "text",
@@ -1101,7 +1112,8 @@
         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "6.125 % due 2028"
       },
       {
        "k": "text",
@@ -1179,7 +1191,8 @@
         "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "4.250 % due 2029"
       },
       {
        "k": "text",
@@ -1257,7 +1270,8 @@
         "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "4.375 % due 2030"
       },
       {
        "k": "text",
@@ -1325,7 +1339,8 @@
         "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "6.125 % due 2030"
       },
       {
        "k": "text",
@@ -1403,7 +1418,8 @@
         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "6.750 % due 2031"
       },
       {
        "k": "text",
@@ -1471,7 +1487,8 @@
         "sentence": "6.875 % due 2031 $ 362   $ 362",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "6.875 % due 2031"
       },
       {
        "k": "text",
@@ -1549,7 +1566,8 @@
         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "5.500 % due 2032"
       },
       {
        "k": "text",
@@ -1627,7 +1645,8 @@
         "sentence": "6.000 % due 2033 $ 750   $ —",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "6.000 % due 2033"
       },
       {
        "k": "text",
@@ -1705,7 +1724,8 @@
         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
+       },
+       "row": "Finance leases, mortgages and other notes"
       },
       {
        "k": "text",
@@ -2006,7 +2026,7 @@
    [
     {
      "k": "text",
-     "t": "Ladder "
+     "t": "Face total "
     },
     {
      "k": "computed",
@@ -2116,7 +2136,7 @@
     },
     {
      "k": "text",
-     "t": " ties to balance-sheet debt of "
+     "t": ". Balance sheet "
     },
     {
      "k": "computed",
@@ -2145,7 +2165,35 @@
     },
     {
      "k": "text",
-     "t": " within $0MM (0.00%). The $85MM between them is the note's own unamortized issuance costs and discounts."
+     "t": ", after "
+    },
+    {
+     "k": "figure",
+     "t": "$85MM",
+     "printed": "$ 85 million",
+     "src": {
+      "sentence": "Unamortized issue costs and note discounts ( 85 ) ( 94 )",
+      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+      "doc": "10-Q 2026-07-29"
+     }
+    },
+    {
+     "k": "text",
+     "t": " of "
+    },
+    {
+     "k": "label",
+     "t": "unamortized issue costs and note discounts",
+     "stated": "Unamortized issue costs and note discounts",
+     "src": {
+      "sentence": "Unamortized issue costs and note discounts ( 85 ) ( 94 )",
+      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+      "doc": "10-Q 2026-07-29"
+     }
+    },
+    {
+     "k": "text",
+     "t": "."
     }
    ]
   ]

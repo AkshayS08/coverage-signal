@@ -69,21 +69,57 @@
      },
      {
       "k": "computed",
-      "t": "~$31,913MM",
-      "usd": 31913000000,
+      "t": "~$32,043MM",
+      "usd": 32043000000,
       "parts": [
        {
-        "printed": "$ 549 million",
-        "usd": 549000000,
+        "printed": "$ 1,000 million",
+        "usd": 1000000000,
         "src": {
-         "sentence": "$550 million, 1.250 % Notes due March 2026 549",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
+         "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
         }
        },
        {
-        "printed": "$ 1,481 million",
-        "usd": 1481000000,
+        "printed": "$ 1,250 million",
+        "usd": 1250000000,
+        "src": {
+         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
+       {
+        "printed": "$ 1.0 billion",
+        "usd": 1000000000,
+        "src": {
+         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+         "doc": "10-Q 2026-07-30"
+        }
+       },
+       {
+        "printed": "$1,500 million",
+        "usd": 1500000000,
         "src": {
          "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -91,8 +127,8 @@
         }
        },
        {
-        "printed": "$ 599 million",
-        "usd": 599000000,
+        "printed": "$600 million",
+        "usd": 600000000,
         "src": {
          "sentence": "$600 million, 3.050 % Notes due October 2027 599",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -100,8 +136,8 @@
         }
        },
        {
-        "printed": "$ 3,792 million",
-        "usd": 3792000000,
+        "printed": "$3,800 million",
+        "usd": 3800000000,
         "src": {
          "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -109,8 +145,8 @@
         }
        },
        {
-        "printed": "$ 996 million",
-        "usd": 996000000,
+        "printed": "$1,000 million",
+        "usd": 1000000000,
         "src": {
          "sentence": "$1,000 million, 5.000 % Notes due May 2029 996",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -118,8 +154,8 @@
         }
        },
        {
-        "printed": "$ 1,406 million",
-        "usd": 1406000000,
+        "printed": "$1,400 million",
+        "usd": 1400000000,
         "src": {
          "sentence": "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -127,17 +163,8 @@
         }
        },
        {
-        "printed": "$ 993 million",
-        "usd": 993000000,
-        "src": {
-         "sentence": "$1,000 million, 4.500 % Notes due September 2030 993",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
-        }
-       },
-       {
-        "printed": "$ 1,420 million",
-        "usd": 1420000000,
+        "printed": "$1,500 million",
+        "usd": 1500000000,
         "src": {
          "sentence": "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -154,15 +181,6 @@
         }
        },
        {
-        "printed": "$ 1,243 million",
-        "usd": 1243000000,
-        "src": {
-         "sentence": "$1,250 million, 4.875 % Notes due September 2032 1,243",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
-        }
-       },
-       {
         "printed": "$45 million",
         "usd": 45000000,
         "src": {
@@ -172,8 +190,8 @@
         }
        },
        {
-        "printed": "$ 796 million",
-        "usd": 796000000,
+        "printed": "$800 million",
+        "usd": 800000000,
         "src": {
          "sentence": "$800 million, 5.400 % Notes due March 2033 (1) 796",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -190,15 +208,6 @@
         }
        },
        {
-        "printed": "$ 1,488 million",
-        "usd": 1488000000,
-        "src": {
-         "sentence": "$1,500 million, 5.250 % Notes due January 2036 1,488",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
-        }
-       },
-       {
         "printed": "$190 million",
         "usd": 190000000,
         "src": {
@@ -208,8 +217,8 @@
         }
        },
        {
-        "printed": "$ 2,194 million",
-        "usd": 2194000000,
+        "printed": "$2,200 million",
+        "usd": 2200000000,
         "src": {
          "sentence": "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -217,8 +226,8 @@
         }
        },
        {
-        "printed": "$ 748 million",
-        "usd": 748000000,
+        "printed": "$750 million",
+        "usd": 750000000,
         "src": {
          "sentence": "$750 million, 3.200 % Notes due March 2040 748",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -226,8 +235,8 @@
         }
        },
        {
-        "printed": "$ 119 million",
-        "usd": 119000000,
+        "printed": "$121 million",
+        "usd": 121000000,
         "src": {
          "sentence": "$121 million, 5.875 % Notes due March 2041 119",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -235,8 +244,8 @@
         }
        },
        {
-        "printed": "$ 484 million",
-        "usd": 484000000,
+        "printed": "$448 million",
+        "usd": 448000000,
         "src": {
          "sentence": "$448 million, 6.125 % Notes due November 2041 484",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -244,8 +253,8 @@
         }
        },
        {
-        "printed": "$ 315 million",
-        "usd": 315000000,
+        "printed": "$317 million",
+        "usd": 317000000,
         "src": {
          "sentence": "$317 million, 5.375 % Notes due February 2042 315",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -253,8 +262,8 @@
         }
        },
        {
-        "printed": "$ 1,469 million",
-        "usd": 1469000000,
+        "printed": "$1,500 million",
+        "usd": 1500000000,
         "src": {
          "sentence": "$1,500 million, 4.800 % Notes due July 2046 1,469",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -262,8 +271,8 @@
         }
        },
        {
-        "printed": "$ 990 million",
-        "usd": 990000000,
+        "printed": "$1,000 million",
+        "usd": 1000000000,
         "src": {
          "sentence": "$1,000 million, 3.875 % Notes due October 2047 990",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -271,8 +280,8 @@
         }
        },
        {
-        "printed": "$ 2,972 million",
-        "usd": 2972000000,
+        "printed": "$3,000 million",
+        "usd": 3000000000,
         "src": {
          "sentence": "$3,000 million, 4.900 % Notes due December 2048 2,972",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -280,8 +289,8 @@
         }
        },
        {
-        "printed": "$ 1,172 million",
-        "usd": 1172000000,
+        "printed": "$1,184 million",
+        "usd": 1184000000,
         "src": {
          "sentence": "$1,184 million, 3.400 % Notes due March 2050 1,172",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -289,8 +298,8 @@
         }
        },
        {
-        "printed": "$ 1,410 million",
-        "usd": 1410000000,
+        "printed": "$1,429 million",
+        "usd": 1429000000,
         "src": {
          "sentence": "$1,429 million, 3.400 % Notes due March 2051 1,410",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -298,8 +307,8 @@
         }
        },
        {
-        "printed": "$ 1,486 million",
-        "usd": 1486000000,
+        "printed": "$1,500 million",
+        "usd": 1500000000,
         "src": {
          "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -307,23 +316,29 @@
         }
        },
        {
-        "printed": "$ 735 million",
-        "usd": 735000000,
+        "printed": "$259 million",
+        "usd": 259000000,
         "src": {
-         "sentence": "$750 million, 6.000 % Notes due January 2056 735",
+         "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
          "doc": "10-K for 2025-12-31"
         }
-       },
-       {
-        "printed": "$ 550 million",
-        "usd": -550000000,
-        "src": {
-         "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-         "doc": "10-Q 2026-07-30"
-        }
-       },
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " at face"
+     },
+     {
+      "k": "text",
+      "t": ", plus "
+     },
+     {
+      "k": "computed",
+      "t": "$111MM",
+      "usd": 111000000,
+      "parts": [
        {
         "printed": "$ 43 million",
         "usd": 43000000,
@@ -341,26 +356,12 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
          "doc": "10-K for 2025-12-31"
         }
-       },
-       {
-        "printed": "$ 260 million",
-        "usd": 260000000,
-        "src": {
-         "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
-        }
-       },
-       {
-        "printed": "$ 1.0 billion",
-        "usd": 1000000000,
-        "src": {
-         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-         "doc": "10-Q 2026-07-30"
-        }
        }
       ]
+     },
+     {
+      "k": "text",
+      "t": " stated only at carrying value"
      },
      {
       "k": "text",
@@ -388,7 +389,7 @@
       "t": "notes",
       "stated": "Notes",
       "src": {
-       "sentence": "$550 million, 1.250 % Notes due March 2026 549",
+       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
       }
@@ -399,21 +400,12 @@
      },
      {
       "k": "computed",
-      "t": "$30,542MM",
-      "usd": 30542000000,
+      "t": "$26,284MM",
+      "usd": 26284000000,
       "parts": [
        {
-        "printed": "$ 549 million",
-        "usd": 549000000,
-        "src": {
-         "sentence": "$550 million, 1.250 % Notes due March 2026 549",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
-        }
-       },
-       {
-        "printed": "$ 1,481 million",
-        "usd": 1481000000,
+        "printed": "$1,500 million",
+        "usd": 1500000000,
         "src": {
          "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -421,8 +413,8 @@
         }
        },
        {
-        "printed": "$ 599 million",
-        "usd": 599000000,
+        "printed": "$600 million",
+        "usd": 600000000,
         "src": {
          "sentence": "$600 million, 3.050 % Notes due October 2027 599",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -430,8 +422,8 @@
         }
        },
        {
-        "printed": "$ 3,792 million",
-        "usd": 3792000000,
+        "printed": "$3,800 million",
+        "usd": 3800000000,
         "src": {
          "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -439,8 +431,8 @@
         }
        },
        {
-        "printed": "$ 996 million",
-        "usd": 996000000,
+        "printed": "$1,000 million",
+        "usd": 1000000000,
         "src": {
          "sentence": "$1,000 million, 5.000 % Notes due May 2029 996",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -448,8 +440,8 @@
         }
        },
        {
-        "printed": "$ 1,406 million",
-        "usd": 1406000000,
+        "printed": "$1,400 million",
+        "usd": 1400000000,
         "src": {
          "sentence": "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -457,17 +449,8 @@
         }
        },
        {
-        "printed": "$ 993 million",
-        "usd": 993000000,
-        "src": {
-         "sentence": "$1,000 million, 4.500 % Notes due September 2030 993",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
-        }
-       },
-       {
-        "printed": "$ 1,420 million",
-        "usd": 1420000000,
+        "printed": "$1,500 million",
+        "usd": 1500000000,
         "src": {
          "sentence": "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -484,15 +467,6 @@
         }
        },
        {
-        "printed": "$ 1,243 million",
-        "usd": 1243000000,
-        "src": {
-         "sentence": "$1,250 million, 4.875 % Notes due September 2032 1,243",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
-        }
-       },
-       {
         "printed": "$45 million",
         "usd": 45000000,
         "src": {
@@ -502,8 +476,8 @@
         }
        },
        {
-        "printed": "$ 796 million",
-        "usd": 796000000,
+        "printed": "$800 million",
+        "usd": 800000000,
         "src": {
          "sentence": "$800 million, 5.400 % Notes due March 2033 (1) 796",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -520,15 +494,6 @@
         }
        },
        {
-        "printed": "$ 1,488 million",
-        "usd": 1488000000,
-        "src": {
-         "sentence": "$1,500 million, 5.250 % Notes due January 2036 1,488",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
-        }
-       },
-       {
         "printed": "$190 million",
         "usd": 190000000,
         "src": {
@@ -538,8 +503,8 @@
         }
        },
        {
-        "printed": "$ 2,194 million",
-        "usd": 2194000000,
+        "printed": "$2,200 million",
+        "usd": 2200000000,
         "src": {
          "sentence": "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -547,8 +512,8 @@
         }
        },
        {
-        "printed": "$ 748 million",
-        "usd": 748000000,
+        "printed": "$750 million",
+        "usd": 750000000,
         "src": {
          "sentence": "$750 million, 3.200 % Notes due March 2040 748",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -556,8 +521,8 @@
         }
        },
        {
-        "printed": "$ 119 million",
-        "usd": 119000000,
+        "printed": "$121 million",
+        "usd": 121000000,
         "src": {
          "sentence": "$121 million, 5.875 % Notes due March 2041 119",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -565,8 +530,8 @@
         }
        },
        {
-        "printed": "$ 484 million",
-        "usd": 484000000,
+        "printed": "$448 million",
+        "usd": 448000000,
         "src": {
          "sentence": "$448 million, 6.125 % Notes due November 2041 484",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -574,8 +539,8 @@
         }
        },
        {
-        "printed": "$ 315 million",
-        "usd": 315000000,
+        "printed": "$317 million",
+        "usd": 317000000,
         "src": {
          "sentence": "$317 million, 5.375 % Notes due February 2042 315",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -583,8 +548,8 @@
         }
        },
        {
-        "printed": "$ 1,469 million",
-        "usd": 1469000000,
+        "printed": "$1,500 million",
+        "usd": 1500000000,
         "src": {
          "sentence": "$1,500 million, 4.800 % Notes due July 2046 1,469",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -592,8 +557,8 @@
         }
        },
        {
-        "printed": "$ 990 million",
-        "usd": 990000000,
+        "printed": "$1,000 million",
+        "usd": 1000000000,
         "src": {
          "sentence": "$1,000 million, 3.875 % Notes due October 2047 990",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -601,8 +566,8 @@
         }
        },
        {
-        "printed": "$ 2,972 million",
-        "usd": 2972000000,
+        "printed": "$3,000 million",
+        "usd": 3000000000,
         "src": {
          "sentence": "$3,000 million, 4.900 % Notes due December 2048 2,972",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -610,8 +575,8 @@
         }
        },
        {
-        "printed": "$ 1,172 million",
-        "usd": 1172000000,
+        "printed": "$1,184 million",
+        "usd": 1184000000,
         "src": {
          "sentence": "$1,184 million, 3.400 % Notes due March 2050 1,172",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -619,8 +584,8 @@
         }
        },
        {
-        "printed": "$ 1,410 million",
-        "usd": 1410000000,
+        "printed": "$1,429 million",
+        "usd": 1429000000,
         "src": {
          "sentence": "$1,429 million, 3.400 % Notes due March 2051 1,410",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -628,30 +593,85 @@
         }
        },
        {
-        "printed": "$ 1,486 million",
-        "usd": 1486000000,
+        "printed": "$1,500 million",
+        "usd": 1500000000,
         "src": {
          "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
          "doc": "10-K for 2025-12-31"
         }
-       },
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036 Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+       "doc": "8-K 2025-09-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+       "doc": "8-K 2025-09-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$4,500MM",
+      "usd": 4500000000,
+      "parts": [
        {
-        "printed": "$ 735 million",
-        "usd": 735000000,
+        "printed": "$ 1,000 million",
+        "usd": 1000000000,
         "src": {
-         "sentence": "$750 million, 6.000 % Notes due January 2056 735",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for 2025-12-31"
+         "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
         }
        },
        {
-        "printed": "$ 550 million",
-        "usd": -550000000,
+        "printed": "$ 1,250 million",
+        "usd": 1250000000,
         "src": {
-         "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-         "doc": "10-Q 2026-07-30"
+         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
         }
        }
       ]
@@ -706,12 +726,12 @@
      },
      {
       "k": "computed",
-      "t": "$260MM",
-      "usd": 260000000,
+      "t": "$259MM",
+      "usd": 259000000,
       "parts": [
        {
-        "printed": "$ 260 million",
-        "usd": 260000000,
+        "printed": "$259 million",
+        "usd": 259000000,
         "src": {
          "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -760,6 +780,10 @@
         }
        }
       ]
+     },
+     {
+      "k": "text",
+      "t": " (carrying value)"
      }
     ]
    ]
@@ -923,13 +947,14 @@
     [
      {
       "k": "figure",
-      "t": "$1,481MM",
-      "printed": "$ 1,481 million",
+      "t": "$1,500MM",
+      "printed": "$1,500 million",
       "src": {
        "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
-      }
+      },
+      "row": "$1,500 million, 3.400% Notes due March 2027"
      },
      {
       "k": "text",
@@ -995,13 +1020,14 @@
     [
      {
       "k": "figure",
-      "t": "$260MM",
-      "printed": "$ 260 million",
+      "t": "$259MM",
+      "printed": "$259 million",
       "src": {
        "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
-      }
+      },
+      "row": "$259 million, 7.875% Debentures due May 2027"
      },
      {
       "k": "text",
@@ -1067,13 +1093,14 @@
     [
      {
       "k": "figure",
-      "t": "$599MM",
-      "printed": "$ 599 million",
+      "t": "$600MM",
+      "printed": "$600 million",
       "src": {
        "sentence": "$600 million, 3.050 % Notes due October 2027 599",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
-      }
+      },
+      "row": "$600 million, 3.050% Notes due October 2027"
      },
      {
       "k": "text",
@@ -1139,13 +1166,14 @@
     [
      {
       "k": "figure",
-      "t": "$3,792MM",
-      "printed": "$ 3,792 million",
+      "t": "$3,800MM",
+      "printed": "$3,800 million",
       "src": {
        "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
-      }
+      },
+      "row": "$3,800 million, 4.375% Notes due October 2028"
      },
      {
       "k": "text",
@@ -1219,13 +1247,14 @@
      },
      {
       "k": "figure",
-      "t": "$1,481MM",
-      "printed": "$ 1,481 million",
+      "t": "$1,500MM",
+      "printed": "$1,500 million",
       "src": {
        "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
-      }
+      },
+      "row": "$1,500 million, 3.400% Notes due March 2027"
      },
      {
       "k": "text",
@@ -1305,7 +1334,8 @@
       "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
       "doc": "10-Q 2026-07-30"
-     }
+     },
+     "row": "revolving credit and letter of credit agreement"
     },
     {
      "k": "text",
@@ -1425,13 +1455,14 @@
      [
       {
        "k": "figure",
-       "t": "$1,481MM",
-       "printed": "$ 1,481 million",
+       "t": "$1,500MM",
+       "printed": "$1,500 million",
        "src": {
         "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,500 million, 3.400% Notes due March 2027"
       },
       {
        "k": "text",
@@ -1497,13 +1528,14 @@
      [
       {
        "k": "figure",
-       "t": "$260MM",
-       "printed": "$ 260 million",
+       "t": "$259MM",
+       "printed": "$259 million",
        "src": {
         "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$259 million, 7.875% Debentures due May 2027"
       },
       {
        "k": "text",
@@ -1569,13 +1601,14 @@
      [
       {
        "k": "figure",
-       "t": "$599MM",
-       "printed": "$ 599 million",
+       "t": "$600MM",
+       "printed": "$600 million",
        "src": {
         "sentence": "$600 million, 3.050 % Notes due October 2027 599",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$600 million, 3.050% Notes due October 2027"
       },
       {
        "k": "text",
@@ -1651,13 +1684,14 @@
      [
       {
        "k": "figure",
-       "t": "$3,792MM",
-       "printed": "$ 3,792 million",
+       "t": "$3,800MM",
+       "printed": "$3,800 million",
        "src": {
         "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$3,800 million, 4.375% Notes due October 2028"
       },
       {
        "k": "text",
@@ -1733,13 +1767,14 @@
      [
       {
        "k": "figure",
-       "t": "$996MM",
-       "printed": "$ 996 million",
+       "t": "$1,000MM",
+       "printed": "$1,000 million",
        "src": {
         "sentence": "$1,000 million, 5.000 % Notes due May 2029 996",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,000 million, 5.000% Notes due May 2029"
       },
       {
        "k": "text",
@@ -1821,7 +1856,8 @@
         "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
         "doc": "8-K 2025-09-04"
-       }
+       },
+       "row": "$1,000 million, 4.500% Notes due September 2030"
       },
       {
        "k": "text",
@@ -1897,13 +1933,14 @@
      [
       {
        "k": "figure",
-       "t": "$1,406MM",
-       "printed": "$ 1,406 million",
+       "t": "$1,400MM",
+       "printed": "$1,400 million",
        "src": {
         "sentence": "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,400 million, 2.400% Notes due March 2030"
       },
       {
        "k": "text",
@@ -1979,13 +2016,14 @@
      [
       {
        "k": "figure",
-       "t": "$1,420MM",
-       "printed": "$ 1,420 million",
+       "t": "$1,500MM",
+       "printed": "$1,500 million",
        "src": {
         "sentence": "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,500 million, 2.375% Notes due March 2031"
       },
       {
        "k": "text",
@@ -2052,12 +2090,13 @@
       {
        "k": "figure",
        "t": "$750MM",
-       "printed": "$ 750 million",
+       "printed": "$750 million",
        "src": {
         "sentence": "$750 million, 5.125 % Notes due May 2031 (1) 750",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$750 million, 5.125% Notes due May 2031"
       },
       {
        "k": "text",
@@ -2139,7 +2178,8 @@
         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
         "doc": "8-K 2025-09-04"
-       }
+       },
+       "row": "$1,250 million, 4.875% Notes due September 2032"
       },
       {
        "k": "text",
@@ -2226,12 +2266,13 @@
       {
        "k": "figure",
        "t": "$45MM",
-       "printed": "$ 45 million",
+       "printed": "$45 million",
        "src": {
         "sentence": "$45 million, 8.080 % Step Down Notes due January 2033 45",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$45 million, 8.080% Step Down Notes due January 2033"
       },
       {
        "k": "text",
@@ -2297,13 +2338,14 @@
      [
       {
        "k": "figure",
-       "t": "$796MM",
-       "printed": "$ 796 million",
+       "t": "$800MM",
+       "printed": "$800 million",
        "src": {
         "sentence": "$800 million, 5.400 % Notes due March 2033 (1) 796",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$800 million, 5.400% Notes due March 2033"
       },
       {
        "k": "text",
@@ -2380,12 +2422,13 @@
       {
        "k": "figure",
        "t": "$1,250MM",
-       "printed": "$ 1,250 million",
+       "printed": "$1,250 million",
        "src": {
         "sentence": "$1,250 million, 5.250 % Notes due February 2034 (1) 1,250",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,250 million, 5.250% Notes due February 2034"
       },
       {
        "k": "text",
@@ -2467,7 +2510,8 @@
         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
         "doc": "8-K 2025-09-04"
-       }
+       },
+       "row": "$1,500 million, 5.250% Notes due January 2036"
       },
       {
        "k": "text",
@@ -2544,12 +2588,13 @@
       {
        "k": "figure",
        "t": "$190MM",
-       "printed": "$ 190 million",
+       "printed": "$190 million",
        "src": {
         "sentence": "$190 million, 6.150 % Notes due November 2036 190",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$190 million, 6.150% Notes due November 2036"
       },
       {
        "k": "text",
@@ -2625,13 +2670,14 @@
      [
       {
        "k": "figure",
-       "t": "$2,194MM",
-       "printed": "$ 2,194 million",
+       "t": "$2,200MM",
+       "printed": "$2,200 million",
        "src": {
         "sentence": "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$2,200 million, 4.800% Notes due August 2038"
       },
       {
        "k": "text",
@@ -2707,13 +2753,14 @@
      [
       {
        "k": "figure",
-       "t": "$748MM",
-       "printed": "$ 748 million",
+       "t": "$750MM",
+       "printed": "$750 million",
        "src": {
         "sentence": "$750 million, 3.200 % Notes due March 2040 748",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$750 million, 3.200% Notes due March 2040"
       },
       {
        "k": "text",
@@ -2789,13 +2836,14 @@
      [
       {
        "k": "figure",
-       "t": "$119MM",
-       "printed": "$ 119 million",
+       "t": "$121MM",
+       "printed": "$121 million",
        "src": {
         "sentence": "$121 million, 5.875 % Notes due March 2041 119",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$121 million, 5.875% Notes due March 2041"
       },
       {
        "k": "text",
@@ -2861,13 +2909,14 @@
      [
       {
        "k": "figure",
-       "t": "$484MM",
-       "printed": "$ 484 million",
+       "t": "$448MM",
+       "printed": "$448 million",
        "src": {
         "sentence": "$448 million, 6.125 % Notes due November 2041 484",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$448 million, 6.125% Notes due November 2041"
       },
       {
        "k": "text",
@@ -2943,13 +2992,14 @@
      [
       {
        "k": "figure",
-       "t": "$315MM",
-       "printed": "$ 315 million",
+       "t": "$317MM",
+       "printed": "$317 million",
        "src": {
         "sentence": "$317 million, 5.375 % Notes due February 2042 315",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$317 million, 5.375% Notes due February 2042"
       },
       {
        "k": "text",
@@ -3025,13 +3075,14 @@
      [
       {
        "k": "figure",
-       "t": "$1,469MM",
-       "printed": "$ 1,469 million",
+       "t": "$1,500MM",
+       "printed": "$1,500 million",
        "src": {
         "sentence": "$1,500 million, 4.800 % Notes due July 2046 1,469",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,500 million, 4.800% Notes due July 2046"
       },
       {
        "k": "text",
@@ -3107,13 +3158,14 @@
      [
       {
        "k": "figure",
-       "t": "$990MM",
-       "printed": "$ 990 million",
+       "t": "$1,000MM",
+       "printed": "$1,000 million",
        "src": {
         "sentence": "$1,000 million, 3.875 % Notes due October 2047 990",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,000 million, 3.875% Notes due October 2047"
       },
       {
        "k": "text",
@@ -3189,13 +3241,14 @@
      [
       {
        "k": "figure",
-       "t": "$2,972MM",
-       "printed": "$ 2,972 million",
+       "t": "$3,000MM",
+       "printed": "$3,000 million",
        "src": {
         "sentence": "$3,000 million, 4.900 % Notes due December 2048 2,972",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$3,000 million, 4.900% Notes due December 2048"
       },
       {
        "k": "text",
@@ -3271,13 +3324,14 @@
      [
       {
        "k": "figure",
-       "t": "$1,172MM",
-       "printed": "$ 1,172 million",
+       "t": "$1,184MM",
+       "printed": "$1,184 million",
        "src": {
         "sentence": "$1,184 million, 3.400 % Notes due March 2050 1,172",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,184 million, 3.400% Notes due March 2050"
       },
       {
        "k": "text",
@@ -3353,13 +3407,14 @@
      [
       {
        "k": "figure",
-       "t": "$1,410MM",
-       "printed": "$ 1,410 million",
+       "t": "$1,429MM",
+       "printed": "$1,429 million",
        "src": {
         "sentence": "$1,429 million, 3.400 % Notes due March 2051 1,410",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,429 million, 3.400% Notes due March 2051"
       },
       {
        "k": "text",
@@ -3435,13 +3490,14 @@
      [
       {
        "k": "figure",
-       "t": "$1,486MM",
-       "printed": "$ 1,486 million",
+       "t": "$1,500MM",
+       "printed": "$1,500 million",
        "src": {
         "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
-       }
+       },
+       "row": "$1,500 million, 5.600% Notes due February 2054"
       },
       {
        "k": "text",
@@ -3523,7 +3579,8 @@
         "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
         "doc": "8-K 2025-09-04"
-       }
+       },
+       "row": "$750 million, 6.000% Notes due January 2056"
       },
       {
        "k": "text",
@@ -3615,7 +3672,8 @@
         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
         "doc": "10-Q 2026-07-30"
-       }
+       },
+       "row": "commercial paper program"
       },
       {
        "k": "text",
@@ -3687,11 +3745,16 @@
           "doc": "10-K for 2025-12-31"
          }
         }
-       ]
+       ],
+       "row": "Other, including finance leases"
       },
       {
        "k": "text",
        "t": " "
+      },
+      {
+       "k": "text",
+       "t": "(carrying value) "
       },
       {
        "k": "label",
@@ -3974,25 +4037,61 @@
    [
     {
      "k": "text",
-     "t": "Ladder "
+     "t": "Face total "
     },
     {
      "k": "computed",
-     "t": "~$31,913MM",
-     "usd": 31913000000,
+     "t": "~$32,043MM",
+     "usd": 32043000000,
      "parts": [
       {
-       "printed": "$ 549 million",
-       "usd": 549000000,
+       "printed": "$ 1,000 million",
+       "usd": 1000000000,
        "src": {
-        "sentence": "$550 million, 1.250 % Notes due March 2026 549",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
+        "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
        }
       },
       {
-       "printed": "$ 1,481 million",
-       "usd": 1481000000,
+       "printed": "$ 1,250 million",
+       "usd": 1250000000,
+       "src": {
+        "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "printed": "$ 1,500 million",
+       "usd": 1500000000,
+       "src": {
+        "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "printed": "$ 750 million",
+       "usd": 750000000,
+       "src": {
+        "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "printed": "$ 1.0 billion",
+       "usd": 1000000000,
+       "src": {
+        "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+        "doc": "10-Q 2026-07-30"
+       }
+      },
+      {
+       "printed": "$1,500 million",
+       "usd": 1500000000,
        "src": {
         "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4000,8 +4099,8 @@
        }
       },
       {
-       "printed": "$ 599 million",
-       "usd": 599000000,
+       "printed": "$600 million",
+       "usd": 600000000,
        "src": {
         "sentence": "$600 million, 3.050 % Notes due October 2027 599",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4009,8 +4108,8 @@
        }
       },
       {
-       "printed": "$ 3,792 million",
-       "usd": 3792000000,
+       "printed": "$3,800 million",
+       "usd": 3800000000,
        "src": {
         "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4018,8 +4117,8 @@
        }
       },
       {
-       "printed": "$ 996 million",
-       "usd": 996000000,
+       "printed": "$1,000 million",
+       "usd": 1000000000,
        "src": {
         "sentence": "$1,000 million, 5.000 % Notes due May 2029 996",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4027,8 +4126,8 @@
        }
       },
       {
-       "printed": "$ 1,406 million",
-       "usd": 1406000000,
+       "printed": "$1,400 million",
+       "usd": 1400000000,
        "src": {
         "sentence": "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4036,17 +4135,8 @@
        }
       },
       {
-       "printed": "$ 993 million",
-       "usd": 993000000,
-       "src": {
-        "sentence": "$1,000 million, 4.500 % Notes due September 2030 993",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
-      },
-      {
-       "printed": "$ 1,420 million",
-       "usd": 1420000000,
+       "printed": "$1,500 million",
+       "usd": 1500000000,
        "src": {
         "sentence": "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4063,15 +4153,6 @@
        }
       },
       {
-       "printed": "$ 1,243 million",
-       "usd": 1243000000,
-       "src": {
-        "sentence": "$1,250 million, 4.875 % Notes due September 2032 1,243",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
-      },
-      {
        "printed": "$45 million",
        "usd": 45000000,
        "src": {
@@ -4081,8 +4162,8 @@
        }
       },
       {
-       "printed": "$ 796 million",
-       "usd": 796000000,
+       "printed": "$800 million",
+       "usd": 800000000,
        "src": {
         "sentence": "$800 million, 5.400 % Notes due March 2033 (1) 796",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4099,15 +4180,6 @@
        }
       },
       {
-       "printed": "$ 1,488 million",
-       "usd": 1488000000,
-       "src": {
-        "sentence": "$1,500 million, 5.250 % Notes due January 2036 1,488",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
-      },
-      {
        "printed": "$190 million",
        "usd": 190000000,
        "src": {
@@ -4117,8 +4189,8 @@
        }
       },
       {
-       "printed": "$ 2,194 million",
-       "usd": 2194000000,
+       "printed": "$2,200 million",
+       "usd": 2200000000,
        "src": {
         "sentence": "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4126,8 +4198,8 @@
        }
       },
       {
-       "printed": "$ 748 million",
-       "usd": 748000000,
+       "printed": "$750 million",
+       "usd": 750000000,
        "src": {
         "sentence": "$750 million, 3.200 % Notes due March 2040 748",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4135,8 +4207,8 @@
        }
       },
       {
-       "printed": "$ 119 million",
-       "usd": 119000000,
+       "printed": "$121 million",
+       "usd": 121000000,
        "src": {
         "sentence": "$121 million, 5.875 % Notes due March 2041 119",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4144,8 +4216,8 @@
        }
       },
       {
-       "printed": "$ 484 million",
-       "usd": 484000000,
+       "printed": "$448 million",
+       "usd": 448000000,
        "src": {
         "sentence": "$448 million, 6.125 % Notes due November 2041 484",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4153,8 +4225,8 @@
        }
       },
       {
-       "printed": "$ 315 million",
-       "usd": 315000000,
+       "printed": "$317 million",
+       "usd": 317000000,
        "src": {
         "sentence": "$317 million, 5.375 % Notes due February 2042 315",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4162,8 +4234,8 @@
        }
       },
       {
-       "printed": "$ 1,469 million",
-       "usd": 1469000000,
+       "printed": "$1,500 million",
+       "usd": 1500000000,
        "src": {
         "sentence": "$1,500 million, 4.800 % Notes due July 2046 1,469",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4171,8 +4243,8 @@
        }
       },
       {
-       "printed": "$ 990 million",
-       "usd": 990000000,
+       "printed": "$1,000 million",
+       "usd": 1000000000,
        "src": {
         "sentence": "$1,000 million, 3.875 % Notes due October 2047 990",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4180,8 +4252,8 @@
        }
       },
       {
-       "printed": "$ 2,972 million",
-       "usd": 2972000000,
+       "printed": "$3,000 million",
+       "usd": 3000000000,
        "src": {
         "sentence": "$3,000 million, 4.900 % Notes due December 2048 2,972",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4189,8 +4261,8 @@
        }
       },
       {
-       "printed": "$ 1,172 million",
-       "usd": 1172000000,
+       "printed": "$1,184 million",
+       "usd": 1184000000,
        "src": {
         "sentence": "$1,184 million, 3.400 % Notes due March 2050 1,172",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4198,8 +4270,8 @@
        }
       },
       {
-       "printed": "$ 1,410 million",
-       "usd": 1410000000,
+       "printed": "$1,429 million",
+       "usd": 1429000000,
        "src": {
         "sentence": "$1,429 million, 3.400 % Notes due March 2051 1,410",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4207,8 +4279,8 @@
        }
       },
       {
-       "printed": "$ 1,486 million",
-       "usd": 1486000000,
+       "printed": "$1,500 million",
+       "usd": 1500000000,
        "src": {
         "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
@@ -4216,23 +4288,25 @@
        }
       },
       {
-       "printed": "$ 735 million",
-       "usd": 735000000,
+       "printed": "$259 million",
+       "usd": 259000000,
        "src": {
-        "sentence": "$750 million, 6.000 % Notes due January 2056 735",
+        "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "printed": "$ 550 million",
-       "usd": -550000000,
-       "src": {
-        "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-        "doc": "10-Q 2026-07-30"
-       }
-      },
+      }
+     ]
+    },
+    {
+     "k": "text",
+     "t": ", plus "
+    },
+    {
+     "k": "computed",
+     "t": "$111MM",
+     "usd": 111000000,
+     "parts": [
       {
        "printed": "$ 43 million",
        "usd": 43000000,
@@ -4250,30 +4324,16 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "printed": "$ 260 million",
-       "usd": 260000000,
-       "src": {
-        "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
-      },
-      {
-       "printed": "$ 1.0 billion",
-       "usd": 1000000000,
-       "src": {
-        "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-        "doc": "10-Q 2026-07-30"
-       }
       }
      ]
     },
     {
      "k": "text",
-     "t": " ties to balance-sheet debt of "
+     "t": " at carrying value"
+    },
+    {
+     "k": "text",
+     "t": ". Balance sheet "
     },
     {
      "k": "computed",
@@ -4302,7 +4362,314 @@
     },
     {
      "k": "text",
-     "t": " within $35MM (0.11%), using the rolled position."
+     "t": "."
+    },
+    {
+     "k": "text",
+     "t": " "
+    },
+    {
+     "k": "computed",
+     "t": "$276MM",
+     "usd": 276000000,
+     "parts": [
+      {
+       "printed": "$ 2,792 million",
+       "usd": -2792000000,
+       "src": {
+        "sentence": "Short-term debt $ 2,792   $ 592",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+        "doc": "10-Q 2026-07-30"
+       }
+      },
+      {
+       "printed": "$ 29,086 million",
+       "usd": -29086000000,
+       "src": {
+        "sentence": "Long-term debt 29,086   30,871",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+        "doc": "10-Q 2026-07-30"
+       }
+      },
+      {
+       "printed": "$ 1,000 million",
+       "usd": 1000000000,
+       "src": {
+        "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "printed": "$ 1,250 million",
+       "usd": 1250000000,
+       "src": {
+        "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "printed": "$ 1,500 million",
+       "usd": 1500000000,
+       "src": {
+        "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "printed": "$ 750 million",
+       "usd": 750000000,
+       "src": {
+        "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "printed": "$ 1.0 billion",
+       "usd": 1000000000,
+       "src": {
+        "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+        "doc": "10-Q 2026-07-30"
+       }
+      },
+      {
+       "printed": "$1,500 million",
+       "usd": 1500000000,
+       "src": {
+        "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$600 million",
+       "usd": 600000000,
+       "src": {
+        "sentence": "$600 million, 3.050 % Notes due October 2027 599",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$3,800 million",
+       "usd": 3800000000,
+       "src": {
+        "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,000 million",
+       "usd": 1000000000,
+       "src": {
+        "sentence": "$1,000 million, 5.000 % Notes due May 2029 996",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,400 million",
+       "usd": 1400000000,
+       "src": {
+        "sentence": "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,500 million",
+       "usd": 1500000000,
+       "src": {
+        "sentence": "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$750 million",
+       "usd": 750000000,
+       "src": {
+        "sentence": "$750 million, 5.125 % Notes due May 2031 (1) 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$45 million",
+       "usd": 45000000,
+       "src": {
+        "sentence": "$45 million, 8.080 % Step Down Notes due January 2033 45",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$800 million",
+       "usd": 800000000,
+       "src": {
+        "sentence": "$800 million, 5.400 % Notes due March 2033 (1) 796",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,250 million",
+       "usd": 1250000000,
+       "src": {
+        "sentence": "$1,250 million, 5.250 % Notes due February 2034 (1) 1,250",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$190 million",
+       "usd": 190000000,
+       "src": {
+        "sentence": "$190 million, 6.150 % Notes due November 2036 190",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$2,200 million",
+       "usd": 2200000000,
+       "src": {
+        "sentence": "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$750 million",
+       "usd": 750000000,
+       "src": {
+        "sentence": "$750 million, 3.200 % Notes due March 2040 748",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$121 million",
+       "usd": 121000000,
+       "src": {
+        "sentence": "$121 million, 5.875 % Notes due March 2041 119",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$448 million",
+       "usd": 448000000,
+       "src": {
+        "sentence": "$448 million, 6.125 % Notes due November 2041 484",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$317 million",
+       "usd": 317000000,
+       "src": {
+        "sentence": "$317 million, 5.375 % Notes due February 2042 315",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,500 million",
+       "usd": 1500000000,
+       "src": {
+        "sentence": "$1,500 million, 4.800 % Notes due July 2046 1,469",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,000 million",
+       "usd": 1000000000,
+       "src": {
+        "sentence": "$1,000 million, 3.875 % Notes due October 2047 990",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$3,000 million",
+       "usd": 3000000000,
+       "src": {
+        "sentence": "$3,000 million, 4.900 % Notes due December 2048 2,972",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,184 million",
+       "usd": 1184000000,
+       "src": {
+        "sentence": "$1,184 million, 3.400 % Notes due March 2050 1,172",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,429 million",
+       "usd": 1429000000,
+       "src": {
+        "sentence": "$1,429 million, 3.400 % Notes due March 2051 1,410",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$1,500 million",
+       "usd": 1500000000,
+       "src": {
+        "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$259 million",
+       "usd": 259000000,
+       "src": {
+        "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$ 43 million",
+       "usd": 43000000,
+       "src": {
+        "sentence": "Other, including finance leases 43",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "printed": "$ 68 million",
+       "usd": 68000000,
+       "src": {
+        "sentence": "Other, including finance leases 68",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      }
+     ]
+    },
+    {
+     "k": "text",
+     "t": " is not accounted for."
+    },
+    {
+     "k": "text",
+     "t": " Using the Dec 31, 2025 10-K, updated through June 30, 2026."
     }
    ]
   ]

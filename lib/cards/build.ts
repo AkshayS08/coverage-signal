@@ -64,6 +64,9 @@ const WHY: Record<string, string> = {
 
 const t = (text: string): Segment => ({ k: "text", t: text });
 
+/** A table line bridging face to carrying value: issue costs, discounts, premium. */
+const BRIDGE = /discount|premium|issu(?:e|ance) costs|financing costs/i;
+
 /** A display row: one instrument, wherever it came from. */
 interface Item {
   row: LadderRow | null;
@@ -76,6 +79,17 @@ interface Item {
   labels: { type: Segment; seniority: Segment | null; security: Segment | null };
   isCapacity: boolean;
   rolled: boolean;
+  /**
+   * CARD_SPEC §3.2 — what the amount IS. "face" where a permitted source
+   * states principal: a table that prints its own bridge to carrying value, a
+   * sentence, a drawn figure, or the instrument's own name. Otherwise
+   * "carrying", and the line says so. The two never mix in one figure.
+   */
+  basis: "face" | "carrying";
+  /** The filer row this line stands for, where it is not the line's own name (a base row shown under its anchor twin). */
+  rowLabel?: string;
+  /** The facility field the amount is, where it is one ("drawn"). */
+  amountField?: string;
   note?: string;
   /** Set when one instrument is stated in two rows (a current and a long-term portion): the amount shown is their sum. */
   amountParts?: { printed: string; usd: number; src: Source }[];
@@ -123,6 +137,10 @@ export function buildCard(i: CardInputs): Card {
     return { sentence, url: where, doc: docs.get(where) ?? where.split("/").pop() ?? where };
   };
   const anchorSrc = (sentence: string) => src(sentence, anchor.url);
+  // A table that prints its own bridge line (issue costs, discounts, premium)
+  // states its rows at face: the bridge is what takes them to carrying value.
+  // A table with no bridge line states carrying value (card_spec §3.2).
+  const bridgeLines: any[] = (dm?.scheduleSequence ?? []).filter((e: any) => e.kind === "adjustment" && BRIDGE.test(e.label ?? ""));
   const periodSrc = i.periodSentence ? anchorSrc(i.periodSentence) : null;
   const periodDate = (): Segment => (periodSrc ? { k: "date", t: displayDate(periodEnd, "day"), date: periodEnd, granularity: "day", src: periodSrc } : t(displayDate(periodEnd, "day")));
 
@@ -178,7 +196,19 @@ export function buildCard(i: CardInputs): Card {
       }
     }
     const printed = row.isCapacity ? f?.facilitySize?.value ?? row.amount : row.amount;
-    return { row, name: row.instrument, nameSrc, amountPrinted: printed, amountSrc, maturity, labels: { type: typeLabel(row, typeSrc), ...cls }, isCapacity: !!row.isCapacity, rolled: false };
+    const item: Item = { row, name: row.instrument, nameSrc, amountPrinted: printed, amountSrc, maturity, labels: { type: typeLabel(row, typeSrc), ...cls }, isCapacity: !!row.isCapacity, rolled: false, basis: "face" };
+    // FACE FIRST. A row of a table with no bridge line is carrying value —
+    // unless the facility it is drawn under states its drawn amount for the
+    // position date, which is principal borrowed.
+    if (!row.isCapacity && row.provenance === "note" && bridgeLines.length === 0) {
+      const drawn = fac?.drawn && fac.asOfDate === periodEnd ? fac.drawn : null;
+      if (drawn) {
+        item.amountPrinted = drawn.value;
+        item.amountSrc = src(drawn.sourceLine, fac!.figureSources?.drawn ?? fac!.citedUrl);
+        item.amountField = "drawn";
+      } else item.basis = "carrying";
+    }
+    return item;
   };
   const anchorItems = pos.rows.filter((r) => r.status === "live").map(fromRow);
 
@@ -212,6 +242,7 @@ export function buildCard(i: CardInputs): Card {
       const twins = anchorItems.filter((a) => !a.isCapacity && sameInstrument(b.label, `${a.name} ${a.amountPrinted ?? ""}`, { face: true }));
       const rivals = live.filter((x) => twins.length === 1 && sameInstrument(x.label, `${twins[0].name} ${twins[0].amountPrinted ?? ""}`, { face: true }));
       if (twins.length === 1 && rivals.length === 1) {
+        twins[0].rowLabel = b.label;
         dedupNotes.push(`${b.label} — shown once, under the anchor's own row ("${twins[0].name}")`);
         continue;
       }
@@ -220,11 +251,16 @@ export function buildCard(i: CardInputs): Card {
       const gran: DateGranularity | null = dt?.dateValue ? (dt.dateValue.day !== null ? "day" : dt.dateValue.month !== null ? "month" : "year") : null;
       const date = dt?.dateValue ? isoOf(dt.dateValue) : null;
       const pseudo = { instrument: b.label, classification: classifyInstrument({ headings: [], instrumentName: b.label }), provenance: "note" as const, maturityDate: date };
+      // The base row's label states its face ("$1,500 million, 3.400% Notes
+      // due March 2027"); its cell is carrying value. Face where the label
+      // states it, carrying value labelled where it does not.
+      const faceTok = extractFactTokens(b.label).find((x) => x.kind === "money" && x.moneyValue !== undefined && x.moneyValue > 0);
       rolledItems.push({
         row: null,
         name: b.label,
         nameSrc: bsrc,
-        amountPrinted: `$ ${b.amountMillions.toLocaleString("en-US")} million`,
+        basis: faceTok ? "face" : "carrying",
+        amountPrinted: faceTok ? faceTok.raw : `$ ${b.amountMillions.toLocaleString("en-US")} million`,
         amountSrc: bsrc,
         maturity: date && gran ? { date, granularity: gran, src: bsrc } : null,
         labels: { type: typeLabel(pseudo, bsrc), ...classLabels(b.label, bsrc, null) },
@@ -251,8 +287,9 @@ export function buildCard(i: CardInputs): Card {
     const out: Line = [];
     if (it.amountParts) {
       const usd = it.amountParts.reduce((a, p) => a + p.usd, 0);
-      out.push({ k: "computed", t: displayUsd(usd, false, dp(it.amountParts)), usd, parts: it.amountParts }, t(" "));
-    } else if (it.amountPrinted) out.push({ k: "figure", t: displayAmount(it.amountPrinted, it.amountSrc.sentence), printed: it.amountPrinted, src: it.amountSrc }, t(" "));
+      out.push({ k: "computed", t: displayUsd(usd, false, dp(it.amountParts)), usd, parts: it.amountParts, row: it.rowLabel ?? it.name }, t(" "));
+    } else if (it.amountPrinted) out.push({ k: "figure", t: displayAmount(it.amountPrinted, it.amountSrc.sentence), printed: it.amountPrinted, src: it.amountSrc, row: it.rowLabel ?? it.name, ...(it.amountField ? { field: it.amountField } : {}) }, t(" "));
+    if (it.basis === "carrying" && !it.isCapacity) out.push(t("(carrying value) "));
     if (it.labels.seniority) out.push(it.labels.seniority, t(" "));
     if (it.labels.security) out.push(it.labels.security, t(" "));
     out.push(it.labels.type);
@@ -307,42 +344,63 @@ export function buildCard(i: CardInputs): Card {
     thisWeekLines.push(line);
   } else if (actionable.length > 0) thisWeekLines.push([t("No other filings this week.")]);
 
-  // ── 2.3 total debt ──
-  type DebtPart = { it: Item | null; printed: string; usd: number; src: Source; label: string };
-  const debtParts: DebtPart[] = rc.counts
-    ? rc.entries
-        .filter((e) => e.amountMillions !== 0)
-        .map((e) => ({ it: null, printed: printedIn(e.sourceLine, Math.abs(e.amountMillions) * 1e6) ?? `$ ${Math.abs(e.amountMillions).toLocaleString("en-US")} million`, usd: e.amountMillions * 1e6, src: src(e.sourceLine, e.citedUrl), label: e.label }))
-    : allDebtItems.map((it) => ({ it, printed: it.amountPrinted!, usd: parseMoneyAmount(it.amountPrinted) ?? 0, src: it.amountSrc, label: it.name }));
-  const groups = new Map<string, { labels: Segment[]; parts: { printed: string; usd: number; src: Source }[]; hedged: boolean }>();
-  for (const p of debtParts) {
-    let labels: Segment[];
-    const usd = p.usd;
-    if (p.it) labels = [p.it.labels.seniority, p.it.labels.security, p.it.labels.type].filter((x): x is Segment => !!x);
-    else {
-      // A rolled entry: typed from its own label. Signed as the roll counts it.
-      const pseudo = { instrument: p.label, classification: classifyInstrument({ headings: [], instrumentName: p.label }) };
-      labels = [typeLabel(pseudo, p.src)];
+  // ── 2.3 total debt, at face (card_spec §3.2) ──
+  // Every line is one basis. Face where every line states face; where some
+  // lines state only carrying value, the face total is the filer's own
+  // maturity schedule for the position date, where printed — otherwise the
+  // face lines are totalled and the carrying lines stated beside them, never
+  // added in.
+  type Part = { printed: string; usd: number; src: Source };
+  const partOf = (it: Item): Part[] => it.amountParts ?? [{ printed: it.amountPrinted!, usd: parseMoneyAmount(it.amountPrinted) ?? 0, src: it.amountSrc }];
+  const groups = new Map<string, { labels: Segment[]; basis: Item["basis"]; parts: Part[]; hedged: boolean }>();
+  for (const it of allDebtItems) {
+    const labels = [it.labels.seniority, it.labels.security, it.labels.type].filter((x): x is Segment => !!x);
+    const key = `${it.basis} ${labels.map((l) => l.t).join(" ")}`;
+    const g = groups.get(key) ?? { labels, basis: it.basis, parts: [], hedged: false };
+    for (const p of partOf(it)) {
+      g.parts.push(p);
+      g.hedged = g.hedged || hedgedIn(p.src.sentence, p.printed);
     }
-    const key = labels.map((l) => l.t).join(" ");
-    const g = groups.get(key) ?? { labels, parts: [], hedged: false };
-    g.parts.push({ printed: p.printed, usd, src: p.src });
-    g.hedged = g.hedged || hedgedIn(p.src.sentence, p.printed);
     groups.set(key, g);
   }
-  const totalUsd = [...groups.values()].reduce((a, g) => a + g.parts.reduce((b, x) => b + x.usd, 0), 0);
-  const allParts = [...groups.values()].flatMap((g) => g.parts);
-  const anyHedge = [...groups.values()].some((g) => g.hedged);
+  const faceGroups = [...groups.values()].filter((g) => g.basis === "face");
+  const carryingGroups = [...groups.values()].filter((g) => g.basis === "carrying");
+  const faceParts = faceGroups.flatMap((g) => g.parts);
+  const carryingParts = carryingGroups.flatMap((g) => g.parts);
+  // The filer's maturity schedule where the anchor itself prints it: principal by year, at the caption's scale (Rule 67).
+  const scheduleScale = (sentence: string) => (/in thousands/i.test(sentence) ? "thousand" : /in billions/i.test(sentence) ? "billion" : "million");
+  const scheduleParts: Part[] = rc.counts
+    ? []
+    : (i.facts?.schedule ?? [])
+        .filter((e) => e.amount.src.url === anchor.url)
+        .map((e) => {
+          const printed = `$ ${e.amount.value.replace(/[$\s]/g, "")} ${scheduleScale(e.amount.src.sentence)}`;
+          return { printed, usd: parseMoneyAmount(printed) ?? 0, src: src(e.amount.src.sentence, e.amount.src.url) };
+        });
+  const faceFromSchedule = carryingParts.length > 0 && scheduleParts.length > 0;
+  const faceTotalParts = faceFromSchedule ? scheduleParts : faceParts;
+  const faceTotal = sum(faceTotalParts);
+  const carryingBeside = faceFromSchedule ? [] : carryingParts;
+  const faceHedged = !faceFromSchedule && faceGroups.some((g) => g.hedged);
+  const faceSeg = (decimals = dp(faceTotalParts)): Segment => ({ k: "computed", t: displayUsd(faceTotal, faceHedged, decimals), usd: faceTotal, parts: faceTotalParts });
+  const carryingSeg: Segment | null = carryingBeside.length
+    ? { k: "computed", t: displayUsd(sum(carryingBeside), carryingGroups.some((g) => g.hedged), dp(carryingBeside)), usd: sum(carryingBeside), parts: carryingBeside }
+    : null;
+  const totalLine: Line = [t("Total debt "), faceSeg(), t(" at face")];
+  if (faceFromSchedule) totalLine.push(t(", per the filer's maturity schedule"));
+  if (carryingSeg) totalLine.push(t(", plus "), carryingSeg, t(" stated only at carrying value"));
+  totalLine.push(t(" as of "), periodDate(), t(rc.counts ? ", using the rolled position" : ""));
   const totalDebt: CardSection = {
     heading: "Total debt",
     lines: [
-      [t("Total debt "), { k: "computed", t: displayUsd(totalUsd, anyHedge, dp(allParts)), usd: totalUsd, parts: allParts }, t(" as of "), periodDate(), t(rc.counts ? ", using the rolled position" : "")],
+      totalLine,
       ...[...groups.values()]
-        .sort((a, b) => sum(b.parts) - sum(a.parts))
+        .sort((a, b) => (a.basis === b.basis ? sum(b.parts) - sum(a.parts) : a.basis === "face" ? -1 : 1))
         .map((g): Line => {
           const line: Line = [];
           g.labels.forEach((l, n) => line.push(...(n ? [t(" ")] : []), l));
           line.push(t(" "), { k: "computed", t: displayUsd(sum(g.parts), g.hedged, dp(g.parts)), usd: sum(g.parts), parts: g.parts });
+          if (g.basis === "carrying") line.push(t(" (carrying value)"));
           return line;
         }),
     ],
@@ -492,24 +550,42 @@ export function buildCard(i: CardInputs): Card {
   if (rc.counts) for (const m of rc.movements.filter((x) => x.placement === "excluded-not-completed" || x.placement === "undated")) withheld.push([t(`Not counted in the roll: ${m.instrument} — ${m.placement === "undated" ? "no date stated" : "stated as an intention, not completed"}.`)]);
   if (withheld.length === 0) withheld.push([t("Nothing withheld this week.")]);
 
-  // ── 2.7 coverage ──
+  // ── 2.8 coverage footnote: all bridging between face and the balance sheet is here ──
   const caps: any[] = dm?.balanceSheetDebtCaptions ?? [];
-  const capParts = caps.map((c) => ({ printed: c.amount as string, usd: parseMoneyAmount(c.amount) ?? 0, src: src(c.sourceLine, c.citedUrl || anchor.url) }));
-  const capSum = capParts.reduce((a, p) => a + p.usd, 0);
+  const capParts: Part[] = caps.map((c) => ({ printed: c.amount as string, usd: parseMoneyAmount(c.amount) ?? 0, src: src(c.sourceLine, c.citedUrl || anchor.url) }));
+  const capSum = sum(capParts);
   const coverageLines: Line[] = [];
-  const statedSeg: Segment = cov.statedTotalDebt !== null && Math.abs(capSum - cov.statedTotalDebt) < 1
-    ? { k: "computed", t: displayUsd(cov.statedTotalDebt, false, dp(capParts)), usd: capSum, parts: capParts }
-    : t(cov.statedTotalDebt === null ? "an unmeasured total" : `${displayUsd(cov.statedTotalDebt)} (per the filer's XBRL tags; no caption set sums to it)`);
-  const face: Segment = { k: "computed", t: displayUsd(totalUsd, anyHedge, dp(allParts)), usd: totalUsd, parts: allParts };
-  if (cov.statedTotalDebt === null) coverageLines.push([t("Coverage unmeasured: the anchor states no balance-sheet debt caption to measure against.")]);
-  else if (cov.residualPasses) {
-    // The residual is what is left AFTER the note's own bridge (BRD 8.6): a
-    // difference the note itemises is explained, not "within".
-    const residual = Math.abs(cov.residual ?? 0);
-    const bridge = cov.statedBridge ? ` The ${displayUsd(Math.abs(cov.statedBridge))} between them is the note's own unamortized issuance costs and discounts.` : "";
-    coverageLines.push([t("Ladder "), face, t(" ties to balance-sheet debt of "), statedSeg, t(` within ${displayUsd(residual)} (${((residual / cov.statedTotalDebt) * 100).toFixed(2)}%)${rc.counts ? ", using the rolled position" : ""}.${bridge}`)]);
+  if (capParts.length === 0) {
+    coverageLines.push([t("Face total "), faceSeg(), t(". Balance sheet: not measured, the anchor states no balance-sheet debt caption.")]);
   } else {
-    coverageLines.push([t("Ladder covers "), face, t(" of "), statedSeg, t(`. ${displayUsd(Math.abs(cov.residual ?? 0))} is not accounted for.`)]);
+    // The bridge the filer prints, each line in its own words, with its sign.
+    const bridge = bridgeLines.map((e) => {
+      const digits = String(e.amount).replace(/[()$\s]+/g, " ").trim();
+      const printed = `$ ${digits}`;
+      const abs = parseMoneyAmount(printed) ?? 0;
+      return { label: String(e.label).replace(/^less:\s*/i, ""), usd: /\(|−/.test(e.amount) ? -abs : abs, printed, src: src(e.sourceLine, e.citedUrl || anchor.url) };
+    });
+    const residual = capSum - (faceTotal + sum(carryingBeside) + sum(bridge));
+    const decimals = Math.max(dp(faceTotalParts), dp(capParts), dp(carryingBeside), ...bridge.map((x) => mmDecimals(x.printed)));
+    // The two numbers never render as one string when their values differ.
+    let d = decimals;
+    while (d < 3 && Math.abs(faceTotal - capSum) >= 1 && displayUsd(faceTotal, false, d) === displayUsd(capSum, false, d)) d++;
+    const line: Line = [t("Face total "), faceSeg(d)];
+    if (carryingSeg) line.push(t(", plus "), carryingSeg, t(" at carrying value"));
+    line.push(t(". Balance sheet "), { k: "computed", t: displayUsd(capSum, false, d), usd: capSum, parts: capParts });
+    bridge.forEach((x, n) => {
+      const label = x.label.charAt(0).toLowerCase() + x.label.slice(1);
+      line.push(t(n === 0 ? ", after " : " and "), { k: "figure", t: displayAmount(x.printed, x.src.sentence), printed: x.printed, src: x.src }, t(" of "), { k: "label", t: label, stated: x.label, src: x.src });
+    });
+    line.push(t("."));
+    // A difference the filer's own bridge does not explain is stated, with its arithmetic.
+    if (Math.abs(residual) >= 0.5 * 10 ** -decimals * 1e6) {
+      const neg = (ps: Part[]) => ps.map((p) => ({ ...p, usd: -p.usd }));
+      const parts = [...capParts, ...neg(faceTotalParts), ...neg(carryingBeside), ...neg(bridge)];
+      line.push(t(" "), { k: "computed", t: displayUsd(Math.abs(residual), false, decimals), usd: Math.abs(residual), parts: residual < 0 ? neg(parts) : parts }, t(" is not accounted for."));
+    }
+    if (rolledLabel) line.push(t(` ${rolledFootnote(rolledLabel)}`));
+    coverageLines.push(line);
   }
 
   return {
@@ -557,6 +633,13 @@ function spanOf(date: string, g: DateGranularity): [string, string] {
     return [`${date.slice(0, 7)}-01`, `${date.slice(0, 7)}-${String(last).padStart(2, "0")}`];
   }
   return [date, date];
+}
+
+/** "as of 2025-12-31, per 10-K debt note, rolled to 2026-06-30" → "Using the Dec 31, 2025 10-K, updated through June 30, 2026." */
+function rolledFootnote(label: string): string {
+  const m = /as of (\d{4}-\d{2}-\d{2}), per (\S+)/.exec(label);
+  const to = /rolled to (\d{4}-\d{2}-\d{2})/.exec(label);
+  return m && to ? `Using the ${shortDate(m[1])} ${m[2]}, updated through ${displayDate(to[1], "day")}.` : `Using the rolled position: ${label}.`;
 }
 
 /** "as of 2025-12-31, per 10-K debt note, rolled to 2026-06-30" → "as of Dec 31, 2025, per 10-K, rolled to June 30, 2026". */

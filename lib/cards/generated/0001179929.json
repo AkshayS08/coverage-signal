@@ -104,6 +104,10 @@
      },
      {
       "k": "text",
+      "t": " at face"
+     },
+     {
+      "k": "text",
       "t": " as of "
      },
      {
@@ -379,7 +383,8 @@
        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
        "doc": "10-Q 2026-07-23"
-      }
+      },
+      "row": "4.375 % Notes due June 15, 2028"
      },
      {
       "k": "text",
@@ -466,7 +471,8 @@
        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
        "doc": "10-Q 2026-07-23"
-      }
+      },
+      "row": "4.375 % Notes due June 15, 2028"
      },
      {
       "k": "text",
@@ -561,7 +567,8 @@
       "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
       "doc": "10-Q 2026-07-23"
-     }
+     },
+     "row": "revolving credit facility"
     },
     {
      "k": "text",
@@ -643,7 +650,8 @@
         "sentence": "4.375 % Notes due June 15, 2028 $ 800",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
         "doc": "10-Q 2026-07-23"
-       }
+       },
+       "row": "4.375 % Notes due June 15, 2028"
       },
       {
        "k": "text",
@@ -736,7 +744,8 @@
         "sentence": "3.875 % Notes due November 15, 2030 650",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
         "doc": "10-Q 2026-07-23"
-       }
+       },
+       "row": "3.875 % Notes due November 15, 2030"
       },
       {
        "k": "text",
@@ -829,7 +838,8 @@
         "sentence": "6.500 % Notes due February 15, 2031 850",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
         "doc": "10-Q 2026-07-23"
-       }
+       },
+       "row": "6.500 % Notes due February 15, 2031"
       },
       {
        "k": "text",
@@ -922,7 +932,8 @@
         "sentence": "3.875 % Notes due May 15, 2032 750",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
         "doc": "10-Q 2026-07-23"
-       }
+       },
+       "row": "3.875 % Notes due May 15, 2032"
       },
       {
        "k": "text",
@@ -1015,7 +1026,8 @@
         "sentence": "6.250 % Notes due January 15, 2033 750",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
         "doc": "10-Q 2026-07-23"
-       }
+       },
+       "row": "6.250 % Notes due January 15, 2033"
       },
       {
        "k": "text",
@@ -1219,7 +1231,7 @@
    [
     {
      "k": "text",
-     "t": "Ladder "
+     "t": "Face total "
     },
     {
      "k": "computed",
@@ -1275,7 +1287,7 @@
     },
     {
      "k": "text",
-     "t": " ties to balance-sheet debt of "
+     "t": ". Balance sheet "
     },
     {
      "k": "computed",
@@ -1295,7 +1307,35 @@
     },
     {
      "k": "text",
-     "t": " within $0MM (0.00%). The $31MM between them is the note's own unamortized issuance costs and discounts."
+     "t": ", after "
+    },
+    {
+     "k": "figure",
+     "t": "$31MM",
+     "printed": "$ 31 million",
+     "src": {
+      "sentence": "Deferred debt issuance costs ( 31 )",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+      "doc": "10-Q 2026-07-23"
+     }
+    },
+    {
+     "k": "text",
+     "t": " of "
+    },
+    {
+     "k": "label",
+     "t": "deferred debt issuance costs",
+     "stated": "Deferred debt issuance costs",
+     "src": {
+      "sentence": "Deferred debt issuance costs ( 31 )",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+      "doc": "10-Q 2026-07-23"
+     }
+    },
+    {
+     "k": "text",
+     "t": "."
     }
    ]
   ]

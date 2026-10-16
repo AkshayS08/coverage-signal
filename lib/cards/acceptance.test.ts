@@ -172,9 +172,14 @@ const T3_TABLE: Test = {
       if (reps.length !== 1) { bad.push(`"${e.label}" appears ${reps.length} times`); continue; }
       const a = amountSeg(reps[0]);
       const shown = a ? shownUsd(a.t) : null;
+      // §2.5: an undrawn facility sits in the capacity group, never as $0 debt.
+      if (e.faceUsd === 0 && e.kind === "facility" && /undrawn commitment/.test(text(reps[0]))) continue;
       if (e.faceUsd !== null) {
-        if (shown === null || Math.abs(shown - e.faceUsd) > Math.max(1, e.faceUsd * 1e-9)) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"}, face is ${e.faceUsd}`);
-      } else if (!/carrying value/i.test(text(reps[0])) && !(a && a.k === "figure" && /principal|face amount/i.test(a.src.sentence))) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"} with no face source and no "carrying value" label`);
+        // §3.3: compared at the precision the card shows ("$188,482 thousand" is "$188.5MM").
+        const dec = ((/\.(\d+)MM/.exec(a?.t ?? "") ?? [])[1] ?? "").length;
+        const tol = Math.max(1, 0.5 * 10 ** -dec * 1e6 + 1);
+        if (shown === null || Math.abs(shown - e.faceUsd) > tol) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"}, face is ${e.faceUsd}`);
+      } else if (!/carrying value/i.test(text(reps[0])) && !(a && a.k === "figure" && (/principal|face amount/i.test(a.src.sentence) || (a.field === "drawn" && /\bdrawn\b|borrowings? outstanding/i.test(a.src.sentence))))) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"} with no face source and no "carrying value" label`);
     }
     const faceTotal = exp.every((e) => e.faceUsd !== null)
       ? exp.reduce((s, e) => s + (e.faceUsd ?? 0), 0)

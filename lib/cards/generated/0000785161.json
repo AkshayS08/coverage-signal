@@ -52,73 +52,81 @@
      },
      {
       "k": "computed",
-      "t": "$2,634.0MM",
-      "usd": 2634000000,
+      "t": "$2,663.7MM",
+      "usd": 2663700000,
       "parts": [
        {
-        "printed": "$ 396.9 million",
-        "usd": 396900000,
+        "printed": "$ 18.4 million",
+        "usd": 18400000,
         "src": {
-         "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
        },
        {
-        "printed": "$ 788.4 million",
-        "usd": 788400000,
+        "printed": "$ 46.9 million",
+        "usd": 46900000,
         "src": {
-         "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
        },
        {
-        "printed": "$ 394.1 million",
-        "usd": 394100000,
+        "printed": "$ 435.8 million",
+        "usd": 435800000,
         "src": {
-         "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
        },
        {
-        "printed": "$ 491.0 million",
-        "usd": 491000000,
+        "printed": "$ 44.9 million",
+        "usd": 44900000,
         "src": {
-         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
        },
        {
-        "printed": "$ 200.0 million",
-        "usd": 200000000,
+        "printed": "$ 850.8 million",
+        "usd": 850800000,
         "src": {
-         "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
        },
        {
-        "printed": "$ 81.9 million",
-        "usd": 81900000,
+        "printed": "$ 640.1 million",
+        "usd": 640100000,
         "src": {
-         "sentence": "Other notes payable 81.9   93.6",
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
        },
        {
-        "printed": "$ 281.7 million",
-        "usd": 281700000,
+        "printed": "$ 626.8 million",
+        "usd": 626800000,
         "src": {
-         "sentence": "Finance lease obligations 281.7   294.6",
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1 634.1 Thereafter 626.8",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
        }
       ]
+     },
+     {
+      "k": "text",
+      "t": " at face"
+     },
+     {
+      "k": "text",
+      "t": ", per the filer's maturity schedule"
      },
      {
       "k": "text",
@@ -138,6 +146,38 @@
      {
       "k": "text",
       "t": ""
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$200.0MM",
+      "usd": 200000000,
+      "parts": [
+       {
+        "printed": "$ 200.0 million",
+        "usd": 200000000,
+        "src": {
+         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
      }
     ],
     [
@@ -211,6 +251,10 @@
         }
        }
       ]
+     },
+     {
+      "k": "text",
+      "t": " (carrying value)"
      }
     ],
     [
@@ -243,38 +287,10 @@
         }
        }
       ]
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "revolver",
-      "stated": "revolv",
-      "src": {
-       "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-       "doc": "10-Q 2026-08-07"
-      }
      },
      {
       "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$200.0MM",
-      "usd": 200000000,
-      "parts": [
-       {
-        "printed": "$ 200.0 million",
-        "usd": 200000000,
-        "src": {
-         "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-         "doc": "10-Q 2026-08-07"
-        }
-       }
-      ]
+      "t": " (carrying value)"
      }
     ],
     [
@@ -307,6 +323,10 @@
         }
        }
       ]
+     },
+     {
+      "k": "text",
+      "t": " (carrying value)"
      }
     ]
    ]
@@ -470,11 +490,16 @@
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
        "doc": "10-Q 2026-08-07"
-      }
+      },
+      "row": "4.50 % Senior Notes due 2028"
      },
      {
       "k": "text",
       "t": " "
+     },
+     {
+      "k": "text",
+      "t": "(carrying value) "
      },
      {
       "k": "label",
@@ -560,11 +585,16 @@
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
        "doc": "10-Q 2026-08-07"
-      }
+      },
+      "row": "4.50 % Senior Notes due 2028"
      },
      {
       "k": "text",
       "t": " "
+     },
+     {
+      "k": "text",
+      "t": "(carrying value) "
      },
      {
       "k": "label",
@@ -657,11 +687,16 @@
         "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
-       }
+       },
+       "row": "4.50 % Senior Notes due 2028"
       },
       {
        "k": "text",
        "t": " "
+      },
+      {
+       "k": "text",
+       "t": "(carrying value) "
       },
       {
        "k": "label",
@@ -749,11 +784,16 @@
         "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
-       }
+       },
+       "row": "4.75 % Senior Notes due 2030"
       },
       {
        "k": "text",
        "t": " "
+      },
+      {
+       "k": "text",
+       "t": "(carrying value) "
       },
       {
        "k": "label",
@@ -841,11 +881,16 @@
         "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
-       }
+       },
+       "row": "4.625 % Senior Notes due 2031"
       },
       {
        "k": "text",
        "t": " "
+      },
+      {
+       "k": "text",
+       "t": "(carrying value) "
       },
       {
        "k": "label",
@@ -920,10 +965,12 @@
        "t": "$200.0MM",
        "printed": "$ 200.0 million",
        "src": {
-        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
-       }
+       },
+       "row": "Advances under revolving credit facility",
+       "field": "drawn"
       },
       {
        "k": "text",
@@ -962,7 +1009,7 @@
        "k": "notStated",
        "t": "seniority and security not stated, please refer to sources",
        "src": {
-        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
@@ -1001,11 +1048,16 @@
         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
-       }
+       },
+       "row": "5.875 % Senior Notes due 2034"
       },
       {
        "k": "text",
        "t": " "
+      },
+      {
+       "k": "text",
+       "t": "(carrying value) "
       },
       {
        "k": "label",
@@ -1093,11 +1145,16 @@
         "sentence": "Other notes payable 81.9   93.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
-       }
+       },
+       "row": "Other notes payable"
       },
       {
        "k": "text",
        "t": " "
+      },
+      {
+       "k": "text",
+       "t": "(carrying value) "
       },
       {
        "k": "label",
@@ -1150,11 +1207,16 @@
         "sentence": "Finance lease obligations 281.7   294.6",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
-       }
+       },
+       "row": "Finance lease obligations"
       },
       {
        "k": "text",
        "t": " "
+      },
+      {
+       "k": "text",
+       "t": "(carrying value) "
       },
       {
        "k": "label",
@@ -1343,72 +1405,72 @@
    [
     {
      "k": "text",
-     "t": "Ladder "
+     "t": "Face total "
     },
     {
      "k": "computed",
-     "t": "$2,634.0MM",
-     "usd": 2634000000,
+     "t": "$2,663.7MM",
+     "usd": 2663700000,
      "parts": [
       {
-       "printed": "$ 396.9 million",
-       "usd": 396900000,
+       "printed": "$ 18.4 million",
+       "usd": 18400000,
        "src": {
-        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
       },
       {
-       "printed": "$ 788.4 million",
-       "usd": 788400000,
+       "printed": "$ 46.9 million",
+       "usd": 46900000,
        "src": {
-        "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
       },
       {
-       "printed": "$ 394.1 million",
-       "usd": 394100000,
+       "printed": "$ 435.8 million",
+       "usd": 435800000,
        "src": {
-        "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
       },
       {
-       "printed": "$ 491.0 million",
-       "usd": 491000000,
+       "printed": "$ 44.9 million",
+       "usd": 44900000,
        "src": {
-        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
       },
       {
-       "printed": "$ 200.0 million",
-       "usd": 200000000,
+       "printed": "$ 850.8 million",
+       "usd": 850800000,
        "src": {
-        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
       },
       {
-       "printed": "$ 81.9 million",
-       "usd": 81900000,
+       "printed": "$ 640.1 million",
+       "usd": 640100000,
        "src": {
-        "sentence": "Other notes payable 81.9   93.6",
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
       },
       {
-       "printed": "$ 281.7 million",
-       "usd": 281700000,
+       "printed": "$ 626.8 million",
+       "usd": 626800000,
        "src": {
-        "sentence": "Finance lease obligations 281.7   294.6",
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1 634.1 Thereafter 626.8",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
@@ -1417,7 +1479,7 @@
     },
     {
      "k": "text",
-     "t": " ties to balance-sheet debt of "
+     "t": ". Balance sheet "
     },
     {
      "k": "computed",
@@ -1446,7 +1508,103 @@
     },
     {
      "k": "text",
-     "t": " within $0MM (0.00%)."
+     "t": "."
+    },
+    {
+     "k": "text",
+     "t": " "
+    },
+    {
+     "k": "computed",
+     "t": "$29.7MM",
+     "usd": 29700000,
+     "parts": [
+      {
+       "printed": "$ 35.9 million",
+       "usd": -35900000,
+       "src": {
+        "sentence": "Current portion of long-term debt $ 35.9   $ 43.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 2,598.1 million",
+       "usd": -2598100000,
+       "src": {
+        "sentence": "Long-term debt, net of current portion 2,598.1   2,447.2",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 18.4 million",
+       "usd": 18400000,
+       "src": {
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 46.9 million",
+       "usd": 46900000,
+       "src": {
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 435.8 million",
+       "usd": 435800000,
+       "src": {
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 44.9 million",
+       "usd": 44900000,
+       "src": {
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 850.8 million",
+       "usd": 850800000,
+       "src": {
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 640.1 million",
+       "usd": 640100000,
+       "src": {
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "printed": "$ 626.8 million",
+       "usd": 626800000,
+       "src": {
+        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1 634.1 Thereafter 626.8",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ]
+    },
+    {
+     "k": "text",
+     "t": " is not accounted for."
     }
    ]
   ]
