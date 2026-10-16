@@ -330,6 +330,8 @@ const T6_PRECISION: Test = {
   },
 };
 
+/** Results that are reported, not failed: a year not comparable at face, with its reason. */
+const NOT_COMPARABLE: string[] = [];
 const T7_SCHEDULE: Test = {
   id: "5.7", name: "schedule reconciliation — per-year amounts tie to the filer's schedule, remainder shown",
   run: (card, f) => {
@@ -346,6 +348,15 @@ const T7_SCHEDULE: Test = {
       const y = yearOf(e.period)!;
       const want = Number(e.amount.replace(/,/g, "")) * scale - (retiredByYear.get(y) ?? 0);
       const b = blocks.find((x) => x.heading.map((s) => s.t).join("").startsWith(y));
+      // Ruling, Oct 16: a year holding an instrument stated only at carrying value is
+      // not comparable at face. It is reported with the instrument named, not failed.
+      const carrying = b ? b.lines.filter((l) => /\(carrying value\)/.test(text(l))) : [];
+      if (carrying.length) {
+        const named = b!.lines.map(text).find((l) => /Not comparable at face, stated only at carrying value: the .+/.test(l));
+        if (!named) bad.push(`${y}: carrying-value lines with no "not comparable at face" line naming them`);
+        else NOT_COMPARABLE.push(`5.7 ${card.company.split(/\s/)[0]} ${y}: not comparable at face — ${named.replace(/^.*Not comparable at face, /, "")}`);
+        continue;
+      }
       const got = b ? blockSum(b) : 0;
       if (Math.abs(got - want) > 0.05e6 * (f.table.scale === "thousand" ? 10 : 1)) bad.push(`${y}: card ${got / 1e6}MM, schedule ${want / 1e6}MM`);
       if (b && Math.abs(got - want) <= 0.5e6 && want - b.lines.filter((l) => !/other scheduled principal/i.test(text(l))).reduce((s, l) => { const a = amountSeg(l); return s + ((a && shownUsd(a.t)) ?? 0); }, 0) > 0.5e6 && !b.lines.some((l) => /other scheduled principal/i.test(text(l)))) bad.push(`${y}: remainder not shown as "other scheduled principal"`);
@@ -438,6 +449,25 @@ function controls(): { id: string; failed: boolean; what: string }[] {
   { const c = clone(c0); const s = linesOf(c).flatMap((w) => w.line).find((x) => x.k === "figure" && !isZeroValue((x as any).printed)) as any; s.t = "$1.5B"; s.printed = "$ 1,549 million"; out.push({ id: "5.6", failed: T6_PRECISION.run(c, f0).length > 0, what: "$1,549 million shown as $1.5B" }); }
   // 5.7: a schedule year the card does not reconcile.
   { const f = clone(f0); f.schedule = { entries: [{ period: "2098", amount: "777" }, { period: "Thereafter", amount: "1" }] }; out.push({ id: "5.7", failed: T7_SCHEDULE.run(c0, f).length > 0, what: "a schedule year with no matching ladder amount" }); }
+  // 5.7: "not comparable at face" must not hide a genuine face gap. A carrying year whose
+  // lines are relabelled face is compared again and must fail; a carrying year with no
+  // line naming the instrument must fail too.
+  {
+    const ehc = cards.find((c) => /encompass/i.test(c.company));
+    if (ehc) {
+      const fe = fixtureOf(ehc.cik);
+      const year = (ehc.ladder.blocks ?? []).find((b) => b.lines.some((l) => /\(carrying value\)/.test(text(l))))!;
+      const y = text(year.heading);
+      const asFace = clone(ehc);
+      const bf = asFace.ladder.blocks!.find((b) => text(b.heading) === y)!;
+      bf.lines = bf.lines.filter((l) => !/Not comparable at face/.test(text(l))).map((l) => l.map((s) => (s.k === "text" ? { ...s, t: s.t.replace("(carrying value) ", "") } : s)));
+      out.push({ id: "5.7", failed: T7_SCHEDULE.run(asFace, fe).length > 0, what: "a carrying year relabelled face, whose genuine face gap must fail" });
+      const unnamed = clone(ehc);
+      const bu = unnamed.ladder.blocks!.find((b) => text(b.heading) === y)!;
+      bu.lines = bu.lines.filter((l) => !/Not comparable at face/.test(text(l)));
+      out.push({ id: "5.7", failed: T7_SCHEDULE.run(unnamed, fe).length > 0, what: "a carrying year with no line naming the instrument" });
+    }
+  }
   // 5.8: a stated move missing from the card.
   { const f = clone(f0); f.moveSentences.push({ doc: "x", url: "x", sentence: "In May 2026, we issued $999 million of 9.999% Phantom Notes due 2099." }); out.push({ id: "5.8", failed: T8_MOVES.run(c0, f).length > 0, what: "a stated move the card omits" }); }
   // 5.9: an engine term.
@@ -471,6 +501,7 @@ for (const t of TESTS) {
     if (fails.length > 4) details.push(`  ${t.id} ${short[cik].padEnd(9)} … and ${fails.length - 4} more`);
   }
 }
+const reported = [...new Set(NOT_COMPARABLE)];
 const ctl = controls();
 
 console.log("§5 ACCEPTANCE — failures per test per card (0 = passes)\n");
@@ -486,6 +517,7 @@ console.log(`  5.1 gen    the card generator reaches ${genBad.length} extraction
 genBad.slice(0, 4).forEach((b) => console.log(`             ${b.replace(ROOT, "").replace(/\\/g, "/")}`));
 totalFail += pageBad.length + genBad.length;
 console.log("\nFirst failures:\n" + details.join("\n"));
+if (reported.length) console.log("\nReported, not failed (ruling, Oct 16):\n" + reported.map((r) => `  ${r}`).join("\n"));
 const broken = ctl.filter((c) => !c.failed);
 for (const c of broken) console.log(`\n  ✗ NEGATIVE CONTROL ${c.id} DID NOT FAIL — ${c.what}: this test cannot fail as written`);
 console.log(`\n${TESTS.length * run.length - Object.values(counts).reduce((a, o) => a + Object.values(o).filter((n) => n > 0).length, 0)} passed, ${Object.values(counts).reduce((a, o) => a + Object.values(o).filter((n) => n > 0).length, 0) + broken.length} failed.`);

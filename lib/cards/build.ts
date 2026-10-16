@@ -740,6 +740,16 @@ export function buildCard(i: CardInputs): Card {
           if (g.basis === "carrying") line.push(t(" (carrying value)"));
           return line;
         }),
+      // Where the face total and the lines shown are on different bases, the card says so, with the difference.
+      ...(faceFromSchedule
+        ? (() => {
+            const lineParts = [...groups.values()].flatMap((g) => g.parts);
+            const diff = faceTotal - sum(lineParts);
+            const parts = [...faceTotalParts, ...lineParts.map((p) => ({ ...p, usd: -p.usd }))];
+            const seg: Segment = { k: "computed", t: displayUsd(Math.abs(diff), false, Math.max(dp(faceTotalParts), dp(lineParts))), usd: Math.abs(diff), parts: diff < 0 ? parts.map((p) => ({ ...p, usd: -p.usd })) : parts };
+            return [[t("Lines marked carrying value do not sum to the face total; difference "), seg] as Line];
+          })()
+        : []),
     ],
   };
 
@@ -863,7 +873,8 @@ export function buildCard(i: CardInputs): Card {
       const scheduleFig: Segment = { k: "computed", t: displayUsd(sch.part.usd, false, decimals), usd: sch.part.usd, parts: [sch.part] };
       if (items.some((it) => it.basis === "carrying")) {
         // Face and carrying are never netted: the schedule is shown, not compared.
-        lines.push([t("The filer's schedule shows "), scheduleFig, t(` principal for ${period}. Lines above at carrying value are not compared with it.`)]);
+        const named = items.filter((it) => it.basis === "carrying").map((it) => (couponOf(it.name) ? `${couponOf(it.name)!.shown} ${it.labels.type.t} due ${y}` : it.name));
+        lines.push([t("The filer's schedule shows "), scheduleFig, t(` principal for ${period}. Not comparable at face, stated only at carrying value: the ${named.join("; the ")}.`)]);
       } else if (residual >= unit) {
         const parts = [sch.part, ...neg(retired), ...neg(rowParts)];
         const seg: Segment = { k: "computed", t: displayUsd(residual, false, decimals), usd: residual, parts };
@@ -930,7 +941,12 @@ export function buildCard(i: CardInputs): Card {
 
   // ── 2.6 facilities: one block per facility, in the fields its kind has (card_spec §2.6) ──
   // A fact is a source only where it is stated in the anchor or a later filing (Rule 66).
-  const permitted = (url: string) => url === anchor.url || (i.laterUrls ?? []).includes(url);
+  const permitted = (url: string) => url === anchor.url || (i.laterUrls ?? []).includes(url) || !!directedNote(url);
+  /** The annual report the anchor directs to (Rule 66), named by its date and the note the anchor names. */
+  function directedNote(url: string): string | null {
+    const base = dm?.priorPeriodBase, ref = dm?.noteCrossReference;
+    return base?.filingUrl === url && ref?.referencedNote ? `as of ${shortDate(base.periodOfReport)}, per 10-K ${ref.referencedNote}` : null;
+  }
   const factFig = (fact: { value: string; src: { sentence: string; url: string } }): Segment => ({ k: "figure", t: displayAmount(fact.value, fact.src.sentence), printed: fact.value, src: src(fact.src.sentence, fact.src.url) });
   const unpermittedFacts: string[] = [];
   const kindOfFacility = (f: VerifiedFacility) => {
@@ -950,7 +966,10 @@ export function buildCard(i: CardInputs): Card {
     else orphanSubs.push(sf);
   }
   const SUB_NAME: Record<string, string> = { "letter-of-credit": "Letter-of-credit sub-facility", swingline: "Swingline sub-facility" };
-  const subLine = (sf: NonNullable<typeof i.facts>["subFacilities"][number], of?: string): Line => [t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`}${of ? ` of the ${of}` : ""} `), factFig(sf.amount), t(": capacity within the facility, not drawn")];
+  const subLine = (sf: NonNullable<typeof i.facts>["subFacilities"][number], of?: string): Line => {
+    const note = directedNote(sf.amount.src.url);
+    return [t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`}${of ? ` of the ${of}` : ""} `), factFig(sf.amount), t(`: capacity within the facility, not drawn${note ? `, ${note}` : ""}`)];
+  };
   const cpFacts = i.facts?.commercialPaper ?? null;
   const facBlocks = facilities.map((f) => {
     const fsrc = (field: string, sentence: string) => src(sentence, f.figureSources?.[field] ?? f.citedUrl);
@@ -1051,8 +1070,28 @@ export function buildCard(i: CardInputs): Card {
       line.push(t(n === 0 ? ", after " : " and "), { k: "figure", t: displayAmount(x.printed, x.src.sentence), printed: x.printed, src: x.src }, t(" of "), { k: "label", t: label, stated: x.label, src: x.src });
     });
     line.push(t("."));
-    // A difference the filer's own bridge does not explain is stated, with its arithmetic.
-    if (Math.abs(residual) >= 0.5 * 10 ** -decimals * 1e6) {
+    // Where the filer states its table is net of issuance costs, discounts or
+    // premiums, the difference has a stated explanation: the footnote says so,
+    // linked, and cites the carrying-basis check where it holds.
+    const basisUrl = rc.counts ? dm?.priorPeriodBase?.filingUrl ?? anchor.url : anchor.url;
+    const basisText = (i.textByUrl.get(basisUrl) ?? "").replace(/[\s\u00a0]+/g, " ");
+    const basisHit = /[^.:]{0,200}\((net of [^)]{0,80}?(?:issuance costs|discounts?|premiums?)[^)]{0,40})\)[^.:]{0,200}:/i.exec(basisText) ?? /[^.:]{0,200}(net of (?:unamortized )?(?:debt )?(?:issuance costs|discounts?|premiums?)(?:(?:,| or| and) (?:unamortized )?(?:debt )?(?:issuance costs|discounts?|premiums?))*)[^.:]{0,200}:/i.exec(basisText);
+    const explained = Math.abs(residual) >= 0.5 * 10 ** -decimals * 1e6 && basisHit;
+    if (explained) {
+      const where = src(basisHit![0].trim(), basisUrl);
+      line.push(t(" The filer states its debt table is "), { k: "label", t: basisHit![1], stated: basisHit![1], src: where }, t("."));
+      // The carrying-basis check: the lines as the table states them, against the balance sheet.
+      const carryParts: Part[] = rc.counts
+        ? rc.entries.filter((e) => e.amountMillions !== 0).map((e) => ({ printed: printedIn(e.sourceLine, Math.abs(e.amountMillions) * 1e6) ?? `$ ${Math.abs(e.amountMillions).toLocaleString("en-US")} million`, usd: e.amountMillions * 1e6, src: src(e.sourceLine, e.citedUrl) }))
+        : [];
+      if (carryParts.length && cov.residualPasses) {
+        const gap = capSum - sum(carryParts);
+        const parts = [...capParts, ...carryParts.map((p) => ({ ...p, usd: -p.usd }))];
+        line.push(t(" At carrying value, the lines match the balance sheet within "), { k: "computed", t: displayUsd(Math.abs(gap), false, dp(carryParts)), usd: Math.abs(gap), parts: gap < 0 ? parts.map((p) => ({ ...p, usd: -p.usd })) : parts }, t("."));
+      }
+    }
+    // A difference nothing stated explains is shown as such, with its arithmetic.
+    if (!explained && Math.abs(residual) >= 0.5 * 10 ** -decimals * 1e6) {
       const neg = (ps: Part[]) => ps.map((p) => ({ ...p, usd: -p.usd }));
       const parts = [...capParts, ...neg(faceTotalParts), ...neg(carryingBeside), ...neg(bridge)];
       line.push(t(" "), { k: "computed", t: displayUsd(Math.abs(residual), false, decimals), usd: Math.abs(residual), parts: residual < 0 ? neg(parts) : parts }, t(" is not accounted for."));
