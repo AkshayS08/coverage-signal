@@ -52,6 +52,10 @@ function assert(c: boolean, label: string) {
 }
 
 const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
+const snapshotOf = (cik: string): { result: unknown; extractionVersion: number } | null => {
+  const p = join(process.cwd(), "lib", "cards", "inputs", `${cik}.json`);
+  return existsSync(p) ? JSON.parse(readFileSync(p, "utf-8")) : null;
+};
 
 (async () => {
   const files = existsSync(GOLDEN_DIR) ? readdirSync(GOLDEN_DIR).filter((f) => f.endsWith(".json")) : [];
@@ -107,6 +111,17 @@ const GOLDEN_DIR = join(process.cwd(), "baselines", "golden");
       }`);
     assert(positionFilingSetOf(result, asOf).join("|") === g.state.filingSet.join("|"),
       `[3id:${name}] and rests on the same documents it was signed against — the position identity, which is what makes the comparison meaningful at all (Rule 65)`);
+    // THE CARD'S INPUT IS THIS ANSWER, BYTE FOR BYTE. Cards build only from
+    // committed snapshots; a snapshot that drifted from what the loop
+    // reproduces today would be a card resting on an answer nothing re-derives.
+    const snap = snapshotOf(g.state.cik);
+    assert(!!snap && JSON.stringify(JSON.parse(JSON.stringify(result))) === JSON.stringify(snap.result) && snap.extractionVersion === EXTRACTION_PROMPT_VERSION,
+      `[3snap:${name}] its card input snapshot is byte-identical to the answer reproduced here, at v${EXTRACTION_PROMPT_VERSION}`);
+  }
+  for (const g of current.filter((x) => !comparable.includes(x))) {
+    const snap = snapshotOf(g.state.cik);
+    assert(!!snap && JSON.stringify(snap.result) === JSON.stringify(g.sourceResult),
+      `[3snap:${g.state.company}] not comparable, so its card input snapshot is its signed golden's stored result, byte for byte`);
   }
 
   console.log("\n=== [4] AND IT COST NOTHING ===");
