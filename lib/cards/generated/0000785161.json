@@ -2231,16 +2231,20 @@
    [
     {
      "k": "text",
-     "t": "senior secured revolving credit facility, letters of credit $53.6MM: withheld — sentence does not state this figure. "
+     "t": "senior secured revolving credit facility, letters of credit $53.6MM: withheld: sentence does not state this figure. "
     },
     {
      "k": "notStated",
-     "t": "see the sentence offered",
+     "t": "See the sentence offered",
      "src": {
       "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
       "doc": "10-Q 2026-08-07"
      }
+    },
+    {
+     "k": "text",
+     "t": "."
     }
    ],
    [

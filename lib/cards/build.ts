@@ -131,7 +131,7 @@ export function buildCard(i: CardInputs): Card {
   const docs = new Map<string, string>();
   for (const r of result.results) for (const c of (r as any).citations ?? []) if (c?.url) docs.set(c.url, `${c.form} ${c.date}`);
   docs.set(anchor.url, `${anchor.form} ${anchor.date}`);
-  if (dm?.priorPeriodBase?.filingUrl) docs.set(dm.priorPeriodBase.filingUrl, `10-K for ${dm.priorPeriodBase.periodOfReport}`);
+  if (dm?.priorPeriodBase?.filingUrl) docs.set(dm.priorPeriodBase.filingUrl, `10-K for ${shortDate(dm.priorPeriodBase.periodOfReport)}`);
   // RULE 44 ON THE CARD — a sentence's document is the one it is FOUND in.
   // The URL a caller proposes is tried first; where the sentence is not in it
   // but is in another document this card holds, that document is cited. The
@@ -411,7 +411,7 @@ export function buildCard(i: CardInputs): Card {
     [t(`Brief week: ${weekRange(weekFrom, briefDate)}${i.previousBrief ? "" : " (first brief for this name: the trailing seven days)"}`)],
     [t("Position from "), { k: "filing", t: `${anchor.form} for the ${anchor.form === "10-K" ? "year" : "quarter"} ended ${displayDate(periodEnd, "day")}, filed ${shortDate(anchor.date)}`, url: anchor.url }],
   ];
-  if (rolledLabel) header.push([t(`This company's ${anchor.form} does not list its notes; it refers to its annual report. ${rolledSentence(rolledLabel)}`)]);
+  if (rolledLabel) header.push([t(`This company's ${anchor.form} does not list its notes. ${rolledSentence(rolledLabel)}`)]);
 
   // ── 2.2 this week ──
   const actionable: Line[] = [];
@@ -431,13 +431,19 @@ export function buildCard(i: CardInputs): Card {
   }
   const thisWeekLines: Line[] = [...actionable];
   if (actionable.length === 0) thisWeekLines.push([t(`No new filings affecting debt since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
+  // §2.2: everything else in one line, grouped by form, each filing one click deeper.
   if (other.length > 0) {
-    const line: Line = [t(`${other.length} other filing${other.length === 1 ? "" : "s"} this week, none affecting debt: `)];
-    other.forEach((f, n) => {
-      const items = f.items.split(",").map((s) => s.trim()).filter(Boolean);
-      if (n > 0) line.push(t(" "));
-      line.push({ k: "filing", t: `[${formName(f.form)}${items.length ? `, Item${items.length > 1 ? "s" : ""} ${items.join(", ")}` : ""}]`, url: f.primaryDocUrl });
+    const byForm = new Map<string, FilingEntry[]>();
+    for (const f of other) byForm.set(f.form, [...(byForm.get(f.form) ?? []), f]);
+    const line: Line = [];
+    [...byForm.entries()].forEach(([form, fs], n) => {
+      if (n > 0) line.push(t("; "));
+      const items = [...new Set(fs.flatMap((f) => f.items.split(",").map((x) => x.trim()).filter(Boolean)))];
+      const what = FORM_WHAT[form] ?? (items.length ? items.map((it) => `Item ${it}${ITEM_WHAT[it] ? `, ${ITEM_WHAT[it]}` : ""}`).join("; ") : "");
+      line.push(t(`${fs.length} ${formName(form)}${fs.length === 1 ? "" : "s"}${what ? ` (${what})` : ""} `));
+      fs.forEach((f, k) => line.push(...(k ? [t(" ")] : []), { k: "filing", t: `[${shortDate(f.filingDate)}]`, url: f.primaryDocUrl }));
     });
+    line.push(t(", none affecting debt."));
     thisWeekLines.push(line);
   } else if (actionable.length > 0) thisWeekLines.push([t("No other filings this week.")]);
 
@@ -990,7 +996,7 @@ export function buildCard(i: CardInputs): Card {
   // ── 2.6 what the tool did not show ──
   const withheld: Line[] = [];
   const FIELD_NAMES: Record<string, string> = { facilitySize: "size", drawn: "drawn", lettersOfCredit: "letters of credit", available: "available", maturity: "maturity" };
-  for (const r of dm?.facilityRejections ?? []) withheld.push([t(`${r.facility}, ${FIELD_NAMES[r.field] ?? r.field} ${displayAmount(r.value, "")}: withheld — ${r.reason}. `), { k: "notStated", t: "see the sentence offered", src: src(r.sourceLine ?? r.facility, anchor.url) }]);
+  for (const r of dm?.facilityRejections ?? []) withheld.push([t(`${r.facility}, ${FIELD_NAMES[r.field] ?? r.field} ${displayAmount(r.value, "")}: withheld: ${r.reason}. `), { k: "notStated", t: "See the sentence offered", src: src(r.sourceLine ?? r.facility, anchor.url) }, t(".")]);
   // A claimed date that a sourced one replaced is no longer withheld: the card shows the sourced date.
   for (const r of pos.rows) if (r.maturityWithheld && !r.maturityDate) withheld.push([t(`${r.instrument}: maturity ${r.maturityWithheld.claimed} withheld — ${r.maturityWithheld.why}.`)]);
   if (rawStatement && !statement) withheld.push([t(`Seniority and security are stated only in an earlier annual report, which this card does not use for labels: “${rawStatement.statement}”`)]);
@@ -998,13 +1004,23 @@ export function buildCard(i: CardInputs): Card {
   if (i.cash.usd === null || !i.cash.printedLine) withheld.push([t(`Cash: ${i.cash.reason ?? "not stated for this date"}.`)]);
   const unread = actionable.length;
   if (unread) withheld.push([t(`${unread} filing${unread === 1 ? "" : "s"} this week affecting debt: text not read, so amount and instrument are not shown.`)]);
-  if (allDebtItems.some((it) => /term loan/.test(it.labels.type.t))) withheld.push([t("Term-loan scheduled amortization: not read.")]);
+  if (allDebtItems.some((it) => /term loan/i.test(it.labels.type.t))) withheld.push([t(scheduleByYear.size ? "Term-loan amortization by instrument: not stated. The filer's schedule shows it only inside its yearly totals, which the ladder carries as other scheduled principal." : "Term-loan scheduled amortization: not stated in a schedule, so not shown.")]);
   // "Stated but not captured" is a claim about the card, so it is checked
   // against the card: a category any ladder row carries — debt or capacity —
   // is captured (the known misfire on tabulated facilities, BRD 13.2c item 9).
   const onCard = (c: string) => pos.rows.some((r) => (r.classification.instrumentType ?? "").startsWith(c.split("-")[0]) || (c === "revolver" && r.classification.instrumentType === "credit-facility"));
   for (const c of cov.categoriesMissing ?? []) if (!onCard(c)) withheld.push([t(`Stated in the note but not captured: ${c}.`)]);
-  if (rc.counts) for (const m of rc.movements.filter((x) => x.placement === "excluded-not-completed" || x.placement === "undated")) withheld.push([t(`Not counted in the totals: ${m.instrument}, ${m.placement === "undated" ? "no date stated" : "stated as an intention, not completed"}.`)]);
+  // §2.7: A REASON MATCHES THE ITEM'S STATED STATUS. A move read from an
+  // "intends to" sentence is called an intention only where no filing this
+  // card holds states it done; where one does, that is the reason given,
+  // linked, and a move done before the base date is not a change in this period.
+  if (rc.counts) for (const m of rc.movements.filter((x) => x.placement === "excluded-not-completed" || x.placement === "undated")) {
+    const done = m.placement === "excluded-not-completed"
+      ? [...i.textByUrl.keys()].flatMap(sentencesOf).find((x) => containsWord(x.sentence, m.instrument) && /\b(?:were|was) used to repay|\b(?:was|were) repaid\b|\brepaid\b|\bredeemed\b|\bterminated\b/i.test(x.sentence) && !/\bintends?\b|\bwill\b|\bexpects?\b/i.test(x.sentence))
+      : undefined;
+    if (done) withheld.push([t(`Not counted in the totals: ${m.instrument}. `), { k: "label", t: "Stated as done", stated: m.instrument, src: done }, t(` in the ${done.doc}, before ${rolledFrom(rolledLabel ?? "")}, so it is already outside the list the totals start from.`)]);
+    else withheld.push([t(`Not counted in the totals: ${m.instrument}, ${m.placement === "undated" ? "no date stated" : "stated as an intention, and no filing this card holds states it done"}.`)]);
+  }
   if (withheld.length === 0) withheld.push([t("Nothing withheld this week.")]);
 
   // ── 2.8 coverage footnote: all bridging between face and the balance sheet is here ──
@@ -1166,6 +1182,10 @@ function widen(fragment: string, sentences: string[]): string {
 }
 
 /** EDGAR names some forms by number alone ("4", "144"); a reader sees "Form 4". */
+/** What a form or an 8-K item is, in plain words, for the "everything else" line (§2.2). */
+const FORM_WHAT: Record<string, string> = { "4": "insider trades", "3": "insider holdings", "144": "planned insider sales", "SC 13G": "ownership", "SC 13G/A": "ownership", "S-8": "employee share plans", "DEF 14A": "proxy statement" };
+const ITEM_WHAT: Record<string, string> = { "2.02": "results", "5.02": "officer or director change", "5.07": "shareholder vote", "7.01": "Regulation FD disclosure", "8.01": "other events", "9.01": "exhibits" };
+
 function formName(form: string): string {
   return /^\d/.test(form) ? `Form ${form}` : form;
 }
