@@ -101,7 +101,7 @@ for (const card of cards) {
   // v2.0 adds fields of its own: a CP program's size and outstanding (§2.6), a
   // sub-facility (§2.6), the schedule's other principal (§2.5), the coverage
   // footnote's face total and balance sheet (§2.8).
-  const NAMED = /^(Total debt|Cash|Liquidity|Size|Drawn|Letters of credit|Available|Repaid|Ladder|Since |Repaid inside|next: |Next|Face total|Program size|Outstanding|Average rate|The filer's schedule shows)/;
+  const NAMED = /^(Total debt|Cash|Liquidity|Size|Drawn|Letters of credit|Available|Repaid|Ladder|Since |Repaid inside|next: |Next|Face total|Program size|Outstanding|Average rate|The filer's schedule shows|Lines marked carrying value)/;
   const NAMED_ANYWHERE = /other scheduled principal|sub-facility/;
   const bare = lines.filter(({ line }) => line.some((s) => s.k === "figure" || s.k === "computed") && !line.some((s) => s.k === "label") && !NAMED.test(text(line)) && !NAMED_ANYWHERE.test(text(line)));
   assert(bare.length === 0, `[3:${name}] no bare amount — every amount line names its instrument type or the field it is${bare.length ? ": " + bare.slice(0, 3).map((b) => `"${text(b.line).slice(0, 80)}"`).join("; ") : ""}`);
