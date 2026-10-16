@@ -99,7 +99,8 @@ export interface Card {
   /** card_spec v2.0 §2.3 — recent debt moves. Absent on v1 cards. */
   moves?: CardSection;
   /** v2.0 §2.4 replaces the 24-month list with the 18-month refinance window (`refi`). */
-  headlines: { totalDebt: CardSection; liquidity: CardSection; due24: CardSection; refi?: CardSection };
+  /** v2.0 §2.4: the 18-month refinance window (`refi`) replaces v1's 24-month list (`due24`, kept only for reading v1 cards). */
+  headlines: { totalDebt: CardSection; liquidity: CardSection; due24?: CardSection; refi?: CardSection };
   ladder: CardSection;
   facilities: CardSection;
   withheld: CardSection;

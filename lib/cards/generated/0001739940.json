@@ -1079,8 +1079,8 @@
     ]
    ]
   },
-  "due24": {
-   "heading": "Due in 24 months (to Oct 15, 2028)",
+  "refi": {
+   "heading": "Potential refinance opportunities (to Apr 15, 2028)",
    "lines": [
     [
      {
@@ -1303,6 +1303,10 @@
     ],
     [
      {
+      "k": "text",
+      "t": "Next, after Apr 15, 2028: "
+     },
+     {
       "k": "figure",
       "t": "$3,800MM",
       "printed": "$3,800 million",
@@ -1362,10 +1366,6 @@
      },
      {
       "k": "text",
-      "t": " · month only stated, may fall within 24 months, see source"
-     },
-     {
-      "k": "text",
       "t": " · "
      },
      {
@@ -1373,83 +1373,6 @@
       "t": "seniority and security not stated, please refer to sources",
       "src": {
        "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
-     }
-    ],
-    [
-     {
-      "k": "text",
-      "t": "next: "
-     },
-     {
-      "k": "figure",
-      "t": "$1,500MM",
-      "printed": "$1,500 million",
-      "src": {
-       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      },
-      "row": "$1,500 million, 3.400% Notes due March 2027"
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "3.400%",
-      "stated": "3.400%",
-      "src": {
-       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "notes",
-      "stated": "Notes",
-      "src": {
-       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
-     },
-     {
-      "k": "text",
-      "t": ", due "
-     },
-     {
-      "k": "date",
-      "t": "March 2027",
-      "date": "2027-03-01",
-      "granularity": "month",
-      "src": {
-       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
-     },
-     {
-      "k": "text",
-      "t": " · from the 10-K"
-     },
-     {
-      "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "notStated",
-      "t": "seniority and security not stated, please refer to sources",
-      "src": {
-       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
       }

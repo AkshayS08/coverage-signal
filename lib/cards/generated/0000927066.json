@@ -712,19 +712,203 @@
     ]
    ]
   },
-  "due24": {
-   "heading": "Due in 24 months (to Oct 15, 2028)",
+  "refi": {
+   "heading": "Potential refinance opportunities (to Apr 15, 2028)",
    "lines": [
     [
      {
+      "k": "figure",
+      "t": "$39.5MM",
+      "printed": "$ 39,463 thousand",
+      "src": {
+       "sentence": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      },
+      "row": "Acquisition obligations and other notes payable"
+     },
+     {
       "k": "text",
-      "t": "Nothing due between Oct 15, 2026 and Oct 15, 2028."
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "Acquisition obligations and other notes payable",
+      "stated": "Acquisition obligations and other notes payable",
+      "src": {
+       "sentence": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", due "
+     },
+     {
+      "k": "label",
+      "t": "2026 to 2038",
+      "stated": "2026-2038",
+      "src": {
+       "sentence": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · matures over a range of years, part may fall within 18 months, see source"
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "notStated",
+      "t": "seniority and security not stated, please refer to sources",
+      "src": {
+       "sentence": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     }
+    ],
+    [
+     {
+      "k": "computed",
+      "t": "$62.3MM",
+      "usd": 62283000,
+      "parts": [
+       {
+        "printed": "$ 62,283 thousand",
+        "usd": 62283000,
+        "src": {
+         "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283",
+         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+         "doc": "10-Q 2026-08-04"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " other scheduled principal, per the filer's schedule for 2026 (remainder of the year)"
+     },
+     {
+      "k": "text",
+      "t": " · year bucket partly inside the window, not pro-rated, may fall within 18 months, see source"
+     }
+    ],
+    [
+     {
+      "k": "figure",
+      "t": "$160.1MM",
+      "printed": "$ 160,143 thousand",
+      "src": {
+       "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      },
+      "row": "Financing lease obligations"
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "Financing lease obligations",
+      "stated": "Financing lease obligations",
+      "src": {
+       "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", due "
+     },
+     {
+      "k": "label",
+      "t": "2027 to 2039",
+      "stated": "2027-2039",
+      "src": {
+       "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · matures over a range of years, part may fall within 18 months, see source"
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "notStated",
+      "t": "seniority and security not stated, please refer to sources",
+      "src": {
+       "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     }
+    ],
+    [
+     {
+      "k": "computed",
+      "t": "$114.0MM",
+      "usd": 114026000,
+      "parts": [
+       {
+        "printed": "$ 114,026 thousand",
+        "usd": 114026000,
+        "src": {
+         "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026",
+         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+         "doc": "10-Q 2026-08-04"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " other scheduled principal, per the filer's schedule for 2027"
+     }
+    ],
+    [
+     {
+      "k": "computed",
+      "t": "$160.8MM",
+      "usd": 160808000,
+      "parts": [
+       {
+        "printed": "$ 160,808 thousand",
+        "usd": 160808000,
+        "src": {
+         "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808",
+         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+         "doc": "10-Q 2026-08-04"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " other scheduled principal, per the filer's schedule for 2028"
+     },
+     {
+      "k": "text",
+      "t": " · year bucket partly inside the window, not pro-rated, may fall within 18 months, see source"
      }
     ],
     [
      {
       "k": "text",
-      "t": "next: "
+      "t": "Next, after Apr 15, 2028: "
      },
      {
       "k": "figure",
@@ -806,12 +990,6 @@
        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
        "doc": "10-Q 2026-08-04"
       }
-     }
-    ],
-    [
-     {
-      "k": "text",
-      "t": "Scheduled term-loan amortization: not read. Only final maturities are counted here."
      }
     ]
    ]

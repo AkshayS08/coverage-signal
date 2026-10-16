@@ -96,7 +96,7 @@ export default function CardView({ card }: { card: Card }) {
       <div className={styles.headlines}>
         <Section s={card.headlines.totalDebt} lead />
         <Section s={card.headlines.liquidity} lead />
-        <Section s={card.headlines.due24} />
+        {card.headlines.refi ?? card.headlines.due24 ? <Section s={(card.headlines.refi ?? card.headlines.due24)!} /> : null}
       </div>
       <Section s={card.ladder} />
       <Section s={card.facilities} />

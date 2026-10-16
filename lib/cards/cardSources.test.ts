@@ -29,7 +29,7 @@ const cards: Card[] = JSON.parse(readFileSync(join(process.cwd(), "lib", "cards"
 
 function sourcesOf(card: Card): Source[] {
   const lines: Line[] = [...card.header];
-  for (const s of [card.thisWeek, card.headlines.totalDebt, card.headlines.liquidity, card.headlines.due24, card.ladder, card.facilities, card.withheld, card.coverage]) {
+  for (const s of [card.thisWeek, card.headlines.totalDebt, card.headlines.liquidity, (card.headlines.refi ?? card.headlines.due24)!, card.ladder, card.facilities, card.withheld, card.coverage]) {
     lines.push(...s.lines);
     for (const b of s.blocks ?? []) lines.push(b.heading, ...b.lines);
   }

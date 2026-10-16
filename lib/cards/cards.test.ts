@@ -44,7 +44,7 @@ function allLines(card: Card): { where: string; line: Line }[] {
   sec("this week", card.thisWeek);
   sec("total debt", card.headlines.totalDebt);
   sec("liquidity", card.headlines.liquidity);
-  sec("due in 24 months", card.headlines.due24);
+  sec("refinance window", (card.headlines.refi ?? card.headlines.due24)!);
   sec("ladder", card.ladder);
   sec("facilities", card.facilities);
   sec("withheld", card.withheld);
@@ -108,7 +108,7 @@ for (const card of cards) {
   assert(dup.length === 0, `[4:${name}] each instrument appears once on the ladder${dup.length ? ": " + dup[0] : ""}`);
 
   // Every section renders, and the trust section is never empty.
-  for (const [k, s] of Object.entries({ thisWeek: card.thisWeek, totalDebt: card.headlines.totalDebt, liquidity: card.headlines.liquidity, due24: card.headlines.due24, withheld: card.withheld, coverage: card.coverage })) {
+  for (const [k, s] of Object.entries({ thisWeek: card.thisWeek, totalDebt: card.headlines.totalDebt, liquidity: card.headlines.liquidity, refi: (card.headlines.refi ?? card.headlines.due24)!, withheld: card.withheld, coverage: card.coverage })) {
     assert(s.lines.length > 0, `[5:${name}] section "${s.heading}" renders (${k})`);
   }
 }
@@ -137,8 +137,8 @@ if (chs) {
 }
 const ehc = cards.find((c) => /encompass/i.test(c.company));
 if (ehc) {
-  const due = ehc.headlines.due24.lines.map(text);
-  assert(due.some((l) => l.includes("2028") && /year only stated, may fall within 24 months, see source/.test(l)), "[6f] Encompass's 4.50% notes due 2028 are in the 24-month list, flagged year only (card_spec v1.2)");
+  const due = (ehc.headlines.refi ?? ehc.headlines.due24)!.lines.map(text);
+  assert(due.some((l) => l.includes("2028") && /year only stated, may fall within 18 months, see source/.test(l)), "[6f] Encompass's 4.50% notes due 2028 are in the 18-month refinance window, flagged year only (card_spec v2.0 §2.4)");
 }
 for (const c of cards) {
   const cap = c.ladder.lines.map(text).join(" ");

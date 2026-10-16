@@ -457,97 +457,17 @@
     ]
    ]
   },
-  "due24": {
-   "heading": "Due in 24 months (to Oct 15, 2028)",
+  "refi": {
+   "heading": "Potential refinance opportunities (to Apr 15, 2028)",
    "lines": [
     [
      {
-      "k": "figure",
-      "t": "$800MM",
-      "printed": "$ 800 million",
-      "src": {
-       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
-       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      },
-      "row": "4.375 % Notes due June 15, 2028"
+      "k": "text",
+      "t": "Nothing matures within 18 months."
      },
      {
       "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "4.375%",
-      "stated": "4.375 %",
-      "src": {
-       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
-       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "senior",
-      "stated": "senior",
-      "src": {
-       "sentence": "Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
-       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "unsecured",
-      "stated": "unsecured",
-      "src": {
-       "sentence": "Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
-       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "notes",
-      "stated": "Notes",
-      "src": {
-       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
-       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": ", due "
-     },
-     {
-      "k": "date",
-      "t": "June 15, 2028",
-      "date": "2028-06-15",
-      "granularity": "day",
-      "src": {
-       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
-       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     }
-    ],
-    [
-     {
-      "k": "text",
-      "t": "next: "
+      "t": " Next: "
      },
      {
       "k": "figure",

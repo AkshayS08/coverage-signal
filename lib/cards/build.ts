@@ -820,31 +820,10 @@ export function buildCard(i: CardInputs): Card {
   );
   if (liqComputable && liqParts.length > 0) liqLines.splice(1, 0, [t("Cash plus stated availability, both stated as of the position date.")]);
 
-  // ── 2.3 due in 24 months, from the brief date ──
-  const windowEnd = addMonths(briefDate, 24);
-  const dueLines: { sort: string; line: Line }[] = [];
-  const candidates = [...anchorItems, ...rolledItems].filter((it) => it.maturity);
-  for (const it of candidates) {
-    const m = it.maturity!;
-    const [start, end] = spanOf(m.date, m.granularity);
-    if (end <= briefDate && start > periodEnd && !it.isCapacity) {
-      dueLines.push({ sort: start, line: describe(it, { flags: ["matured since the position date, repayment not yet confirmed in a filing"] }) });
-      continue;
-    }
-    if (end <= briefDate || start > windowEnd) continue;
-    const partial = start <= briefDate || end > windowEnd;
-    const flag = partial && m.granularity !== "day" ? ` · ${m.granularity === "year" ? "year" : "month"} only stated, may fall within 24 months, see source` : "";
-    dueLines.push({ sort: start, line: describe(it, { flags: flag ? [flag.replace(/^ · /, "")] : [] }) });
-  }
-  dueLines.sort((a, b) => a.sort.localeCompare(b.sort));
-  const due: Line[] = dueLines.map((d) => d.line);
-  if (due.length === 0) due.push([t(`Nothing due between ${shortDate(briefDate)} and ${shortDate(windowEnd)}.`)]);
-  const next = allDebtItems.filter((it) => it.maturity && spanOf(it.maturity.date, it.maturity.granularity)[1] > briefDate).sort((a, b) => spanOf(a.maturity!.date, a.maturity!.granularity)[0].localeCompare(spanOf(b.maturity!.date, b.maturity!.granularity)[0]))[0];
-  if (next) due.push([t("next: "), ...describe(next)]);
-  if (allDebtItems.some((it) => /term loan/.test(it.labels.type.t))) due.push([t("Scheduled term-loan amortization: not read. Only final maturities are counted here.")]);
-
   // ── 2.5 maturity ladder: drawn debt by year, reconciled to the filer's schedule where printed ──
   const RANGE = "Maturing over a range of years", NONE = "No maturity stated";
+  /** Each year's principal the schedule shows and no line accounts for, for the refinance window. */
+  const otherScheduled = new Map<string, { seg: Segment; period: string }>();
   const byYear = new Map<string, Item[]>();
   for (const it of allDebtItems) {
     const y = it.maturity ? it.maturity.date.slice(0, 4) : it.range ? RANGE : NONE;
@@ -881,7 +860,9 @@ export function buildCard(i: CardInputs): Card {
         lines.push([t("The filer's schedule shows "), scheduleFig, t(` principal for ${period}. Lines above at carrying value are not compared with it.`)]);
       } else if (residual >= unit) {
         const parts = [sch.part, ...neg(retired), ...neg(rowParts)];
-        lines.push([{ k: "computed", t: displayUsd(residual, false, decimals), usd: residual, parts }, t(` other scheduled principal, per the filer's schedule${period === y ? "" : ` for ${period}`}`)]);
+        const seg: Segment = { k: "computed", t: displayUsd(residual, false, decimals), usd: residual, parts };
+        otherScheduled.set(y, { seg, period });
+        lines.push([seg, t(` other scheduled principal, per the filer's schedule${period === y ? "" : ` for ${period}`}`)]);
       } else if (residual <= -unit) {
         const parts = [...rowParts, ...retired, ...neg([sch.part])];
         lines.push([t("The filer's schedule shows "), scheduleFig, t(` for ${period}: `), { k: "computed", t: displayUsd(-residual, false, decimals), usd: -residual, parts }, t(" less than the lines above. That much of them is scheduled in other years.")]);
@@ -889,6 +870,42 @@ export function buildCard(i: CardInputs): Card {
     }
     return { heading: [t(y)] as Line, lines };
   });
+
+  // ── 2.4 potential refinance opportunities: the next 18 months from the brief date ──
+  const windowEnd = addMonths(briefDate, 18);
+  const refiLines: { sort: string; line: Line }[] = [];
+  const MAYBE = "may fall within 18 months, see source";
+  for (const it of [...anchorItems, ...rolledItems]) {
+    if (it.maturity) {
+      const m = it.maturity;
+      const [start, end] = spanOf(m.date, m.granularity);
+      if (end <= briefDate && start > periodEnd && !it.isCapacity) {
+        refiLines.push({ sort: start, line: describe(it, { flags: ["matured since the position date, repayment not yet confirmed in a filing"] }) });
+        continue;
+      }
+      if (end <= briefDate || start > windowEnd) continue;
+      const partial = (start <= briefDate || end > windowEnd) && m.granularity !== "day";
+      refiLines.push({ sort: start, line: describe(it, { flags: partial ? [`${m.granularity} only stated, ${MAYBE}`] : [] }) });
+    } else if (it.range && it.range.from <= windowEnd.slice(0, 4) && it.range.to >= briefDate.slice(0, 4)) {
+      refiLines.push({ sort: `${it.range.from}-01-01`, line: describe(it, { flags: [`matures over a range of years, part ${MAYBE}`] }) });
+    }
+  }
+  // Scheduled principal from the filer's own schedule (§2.5) for each year bucket the window reaches. A bucket partly inside is flagged, never pro-rated.
+  for (const [y, o] of otherScheduled) {
+    const [start, end] = [`${y}-01-01`, `${y}-12-31`];
+    if (end < briefDate || start > windowEnd) continue;
+    const partial = start < briefDate || end > windowEnd;
+    refiLines.push({ sort: start, line: [o.seg, t(` other scheduled principal, per the filer's schedule for ${o.period}`), ...(partial ? [t(` · year bucket partly inside the window, not pro-rated, ${MAYBE}`)] : [])] });
+  }
+  refiLines.sort((a, b) => a.sort.localeCompare(b.sort));
+  const refi: Line[] = refiLines.map((d) => d.line);
+  // A Next line always shows: the first maturity after the window.
+  const after = allDebtItems
+    .filter((it) => it.maturity && spanOf(it.maturity.date, it.maturity.granularity)[0] > windowEnd)
+    .sort((a, b) => a.maturity!.date.localeCompare(b.maturity!.date))[0];
+  if (refi.length === 0) refi.push([t("Nothing matures within 18 months."), ...(after ? [t(" Next: "), ...describe(after)] : [t(" No later maturity is stated.")])]);
+  else refi.push(after ? [t(`Next, after ${shortDate(windowEnd)}: `), ...describe(after)] : [t(`Nothing stated matures after ${shortDate(windowEnd)}.`)]);
+  if (!scheduleByYear.size && allDebtItems.some((it) => /term loan/i.test(it.labels.type.t))) refi.push([t("Scheduled term-loan amortization is not stated in a schedule, so only final maturities are counted here.")]);
   const ladderLines: Line[] = [];
   const capacity = anchorItems.filter((x) => x.isCapacity);
   if (capacity.length) ladderLines.push([t("Capacity, not debt:")], ...capacity.map((c) => describe(c)));
@@ -1041,7 +1058,7 @@ export function buildCard(i: CardInputs): Card {
     headlines: {
       totalDebt,
       liquidity: { heading: "Liquidity", lines: liqLines },
-      due24: { heading: `Due in 24 months (to ${shortDate(windowEnd)})`, lines: due },
+      refi: { heading: `Potential refinance opportunities (to ${shortDate(windowEnd)})`, lines: refi },
     },
     ladder: { heading: "Maturity ladder", lines: ladderLines, blocks: ladderBlocks },
     facilities: { heading: "Facilities", lines: facBlocks.length ? [] : [[t("No facility stated.")]], blocks: facBlocks },
