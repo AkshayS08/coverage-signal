@@ -1834,37 +1834,7 @@
      [
       {
        "k": "text",
-       "t": "Size "
-      },
-      {
-       "k": "notStated",
-       "t": "not stated",
-       "src": {
-        "sentence": "bilateral secured letter of credit facility",
-        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-        "doc": "10-Q 2026-08-04"
-       }
-      }
-     ],
-     [
-      {
-       "k": "text",
-       "t": "Drawn "
-      },
-      {
-       "k": "notStated",
-       "t": "not stated",
-       "src": {
-        "sentence": "bilateral secured letter of credit facility",
-        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-        "doc": "10-Q 2026-08-04"
-       }
-      }
-     ],
-     [
-      {
-       "k": "text",
-       "t": "Letters of credit "
+       "t": "Letters of credit outstanding "
       },
       {
        "k": "figure",
@@ -1880,29 +1850,10 @@
      ],
      [
       {
-       "k": "text",
-       "t": "Available "
-      },
-      {
        "k": "notStated",
-       "t": "not stated",
+       "t": "facility size not stated",
        "src": {
-        "sentence": "bilateral secured letter of credit facility",
-        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-        "doc": "10-Q 2026-08-04"
-       }
-      }
-     ],
-     [
-      {
-       "k": "text",
-       "t": "Maturity "
-      },
-      {
-       "k": "notStated",
-       "t": "not stated",
-       "src": {
-        "sentence": "bilateral secured letter of credit facility",
+        "sentence": "The Company also had letters of credit of approximately $ 188,482 outstanding under a separate bilateral secured letter of credit facility as of June 30, 2026.",
         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
         "doc": "10-Q 2026-08-04"
        }

@@ -2293,6 +2293,26 @@
      ],
      [
       {
+       "k": "text",
+       "t": "Letter-of-credit sub-facility "
+      },
+      {
+       "k": "figure",
+       "t": "$200MM",
+       "printed": "$ 200 million",
+       "src": {
+        "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": capacity within the facility, not drawn"
+      }
+     ],
+     [
+      {
        "k": "label",
        "t": "Borrowing-base limited",
        "stated": "borrowing base",
@@ -2330,39 +2350,7 @@
      [
       {
        "k": "text",
-       "t": "Size "
-      },
-      {
-       "k": "figure",
-       "t": "$200MM",
-       "printed": "$ 200 million",
-       "src": {
-        "sentence": "We have a letter of credit facility (as amended to date, the \"LC Facility\") that provides for the issuance, from time to time, of standby and documentary letters of credit in an aggregate principal amount of up to $ 200  million.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       },
-       "field": "facilitySize"
-      }
-     ],
-     [
-      {
-       "k": "text",
-       "t": "Drawn "
-      },
-      {
-       "k": "notStated",
-       "t": "not stated",
-       "src": {
-        "sentence": "We have a letter of credit facility (as amended to date, the \"LC Facility\") that provides for the issuance, from time to time, of standby and documentary letters of credit in an aggregate principal amount of up to $ 200  million.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
-      }
-     ],
-     [
-      {
-       "k": "text",
-       "t": "Letters of credit "
+       "t": "Letters of credit outstanding "
       },
       {
        "k": "figure",
@@ -2379,31 +2367,18 @@
      [
       {
        "k": "text",
-       "t": "Available "
+       "t": "Size "
       },
       {
-       "k": "notStated",
-       "t": "not stated",
+       "k": "figure",
+       "t": "$200MM",
+       "printed": "$ 200 million",
        "src": {
         "sentence": "We have a letter of credit facility (as amended to date, the \"LC Facility\") that provides for the issuance, from time to time, of standby and documentary letters of credit in an aggregate principal amount of up to $ 200  million.",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
-      }
-     ],
-     [
-      {
-       "k": "text",
-       "t": "Maturity "
-      },
-      {
-       "k": "notStated",
-       "t": "not stated",
-       "src": {
-        "sentence": "We have a letter of credit facility (as amended to date, the \"LC Facility\") that provides for the issuance, from time to time, of standby and documentary letters of credit in an aggregate principal amount of up to $ 200  million.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-        "doc": "10-Q 2026-07-29"
-       }
+       },
+       "field": "facilitySize"
       }
      ],
      [

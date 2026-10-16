@@ -3933,7 +3933,7 @@
      [
       {
        "k": "text",
-       "t": "Size "
+       "t": "Program size "
       },
       {
        "k": "figure",
@@ -3943,14 +3943,13 @@
         "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
         "doc": "10-Q 2026-07-30"
-       },
-       "field": "facilitySize"
+       }
       }
      ],
      [
       {
        "k": "text",
-       "t": "Drawn "
+       "t": "Outstanding "
       },
       {
        "k": "figure",
@@ -3960,20 +3959,20 @@
         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
         "doc": "10-Q 2026-07-30"
-       },
-       "field": "drawn"
+       }
       }
      ],
      [
       {
        "k": "text",
-       "t": "Letters of credit "
+       "t": "Average rate "
       },
       {
-       "k": "notStated",
-       "t": "not stated",
+       "k": "label",
+       "t": "3.92%",
+       "stated": "3.92 %",
        "src": {
-        "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
+        "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
         "doc": "10-Q 2026-07-30"
        }
@@ -3982,28 +3981,14 @@
      [
       {
        "k": "text",
-       "t": "Available "
+       "t": "Backed by the "
       },
       {
-       "k": "notStated",
-       "t": "not stated",
+       "k": "label",
+       "t": "revolving credit agreement",
+       "stated": "revolving credit agreement",
        "src": {
-        "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-        "doc": "10-Q 2026-07-30"
-       }
-      }
-     ],
-     [
-      {
-       "k": "text",
-       "t": "Maturity "
-      },
-      {
-       "k": "notStated",
-       "t": "not stated",
-       "src": {
-        "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
+        "sentence": "As of June 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are available for general corporate purposes, including providing liquidity support for our commercial paper program), $5.5 billion of remaining capacity under our commercial paper program, and $6.6 billion in cash and short-term investments, approximately $0.8 billion of which was held by the parent company or certain non-regulated subsidiaries.",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
         "doc": "10-Q 2026-07-30"
        }
@@ -4022,6 +4007,12 @@
  "withheld": {
   "heading": "What the tool did not show",
   "lines": [
+   [
+    {
+     "k": "text",
+     "t": "A letter of credit sub-facility of $500MM: stated only in an earlier annual report, which this card does not use for facility terms."
+    }
+   ],
    [
     {
      "k": "text",

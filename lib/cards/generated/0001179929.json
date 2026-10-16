@@ -1195,6 +1195,46 @@
         "doc": "10-Q 2026-07-23"
        }
       }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Swingline sub-facility "
+      },
+      {
+       "k": "figure",
+       "t": "$15MM",
+       "printed": "$ 15 million",
+       "src": {
+        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": capacity within the facility, not drawn"
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Letter-of-credit sub-facility "
+      },
+      {
+       "k": "figure",
+       "t": "$100MM",
+       "printed": "$ 100 million",
+       "src": {
+        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": capacity within the facility, not drawn"
+      }
      ]
     ]
    }

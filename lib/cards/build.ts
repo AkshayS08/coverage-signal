@@ -644,7 +644,30 @@ export function buildCard(i: CardInputs): Card {
   if (rolledNil.length) ladderLines.push([t(`${rolledNil.length} line${rolledNil.length === 1 ? "" : "s"} the ${rolledFrom(rolledLabel ?? "")} 10-K states at $0, not debt: ${rolledNil.join("; ")}.`)]);
   if (dedupNotes.length) ladderLines.push([t(`${dedupNotes.length} note${dedupNotes.length === 1 ? " is" : "s are"} stated in both the ${anchor.form} and the 10-K; each is shown once, as the ${anchor.form} states it.`)]);
 
-  // ── 2.5 facilities ──
+  // ── 2.6 facilities: one block per facility, in the fields its kind has (card_spec §2.6) ──
+  // A fact is a source only where it is stated in the anchor or a later filing (Rule 66).
+  const permitted = (url: string) => url === anchor.url || (i.laterUrls ?? []).includes(url);
+  const factFig = (fact: { value: string; src: { sentence: string; url: string } }): Segment => ({ k: "figure", t: displayAmount(fact.value, fact.src.sentence), printed: fact.value, src: src(fact.src.sentence, fact.src.url) });
+  const unpermittedFacts: string[] = [];
+  const kindOfFacility = (f: VerifiedFacility) => {
+    const k = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;
+    return f.category === "commercial-paper" || k === "commercial-paper" ? "cp" : k === "letter-of-credit" || /\bletters? of credit facilit/i.test(f.name) ? "lc" : "facility";
+  };
+  // Sub-facilities and sub-limits are capacity inside a facility (Rule 48): matched by the
+  // facility's own name, or to the only lender facility where there is one.
+  const lenders = facilities.filter((f) => kindOfFacility(f) === "facility");
+  const subsFor = new Map<VerifiedFacility, NonNullable<typeof i.facts>["subFacilities"]>();
+  const orphanSubs: NonNullable<typeof i.facts>["subFacilities"] = [];
+  for (const sf of i.facts?.subFacilities ?? []) {
+    if (!permitted(sf.amount.src.url)) { unpermittedFacts.push(`${sf.kind.replace(/-/g, " ")} sub-facility of ${displayAmount(sf.amount.value, sf.amount.src.sentence)}`); continue; }
+    const byName = lenders.filter((f) => containsWord(sf.amount.src.sentence, f.name) || containsWord(f.name, sf.facility));
+    const host = byName.length === 1 ? byName[0] : lenders.length === 1 ? lenders[0] : null;
+    if (host) subsFor.set(host, [...(subsFor.get(host) ?? []), sf]);
+    else orphanSubs.push(sf);
+  }
+  const SUB_NAME: Record<string, string> = { "letter-of-credit": "Letter-of-credit sub-facility", swingline: "Swingline sub-facility" };
+  const subLine = (sf: NonNullable<typeof i.facts>["subFacilities"][number], of?: string): Line => [t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`}${of ? ` of the ${of}` : ""} `), factFig(sf.amount), t(": capacity within the facility, not drawn")];
+  const cpFacts = i.facts?.commercialPaper ?? null;
   const facBlocks = facilities.map((f) => {
     const fsrc = (field: string, sentence: string) => src(sentence, f.figureSources?.[field] ?? f.citedUrl);
     const own = fsrc("facilitySize", f.facilitySize?.sourceLine ?? f.name);
@@ -652,20 +675,39 @@ export function buildCard(i: CardInputs): Card {
       const v = f[field];
       return v ? [t(`${label} `), { k: "figure", t: displayAmount(v.value, v.sourceLine), printed: v.value, src: fsrc(field, v.sourceLine), field }] : [t(`${label} `), { k: "notStated", t: "not stated", src: own }];
     };
-    const lines: Line[] = [fig("Size", "facilitySize"), fig("Drawn", "drawn"), fig("Letters of credit", "lettersOfCredit"), fig("Available", "available")];
     const m = facilityMaturityAtItsSentence(f);
-    lines.push(m.kind === "dated" ? [t("Maturity "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: fsrc("maturity", m.sentence) }] : [t("Maturity "), { k: "notStated", t: m.kind === "relative" ? "stated as a relative term, not a date" : "not stated", src: own }]);
+    const maturityLine = (): Line => (m.kind === "dated" ? [t("Maturity "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: fsrc("maturity", m.sentence) }] : [t("Maturity "), { k: "notStated", t: m.kind === "relative" ? "stated as a relative term, not a date" : "not stated", src: own }]);
+    const kind = kindOfFacility(f);
+    const lines: Line[] = [];
+    if (kind === "cp") {
+      // A commercial paper program: program size, outstanding, average rate, backing. Never facility fields.
+      const ok = (x: { src: { url: string } } | null | undefined) => !!x && permitted(x.src.url);
+      if (ok(cpFacts?.programSize)) lines.push([t("Program size "), factFig(cpFacts!.programSize!)]);
+      else if (f.facilitySize) lines.push(fig("Program size", "facilitySize"));
+      if (ok(cpFacts?.outstanding)) lines.push([t("Outstanding "), factFig(cpFacts!.outstanding!)]);
+      else if (f.drawn) lines.push(fig("Outstanding", "drawn"));
+      if (ok(cpFacts?.averageRate)) lines.push([t("Average rate "), { k: "label", t: cpFacts!.averageRate!.value.replace(/\s+%/, "%"), stated: cpFacts!.averageRate!.value, src: src(cpFacts!.averageRate!.src.sentence, cpFacts!.averageRate!.src.url) }]);
+      if (ok(cpFacts?.backedBy)) lines.push([t("Backed by the "), { k: "label", t: cpFacts!.backedBy!.value, stated: cpFacts!.backedBy!.value, src: src(cpFacts!.backedBy!.src.sentence, cpFacts!.backedBy!.src.url) }]);
+      lines.push([t("Issuance program, not a lender commitment: never counted as liquidity.")]);
+    } else if (kind === "lc") {
+      // Letters of credit only: what is outstanding, and the size where stated. No drawn line.
+      lines.push(fig("Letters of credit outstanding", "lettersOfCredit"));
+      lines.push(f.facilitySize ? fig("Size", "facilitySize") : [{ k: "notStated", t: "facility size not stated", src: f.lettersOfCredit ? fsrc("lettersOfCredit", f.lettersOfCredit.sourceLine) : own }]);
+      if (m.kind === "dated") lines.push(maturityLine());
+      lines.push([t("Letters of credit only: capacity, not borrowed money.")]);
+    } else {
+      lines.push(fig("Size", "facilitySize"), fig("Drawn", "drawn"), fig("Letters of credit", "lettersOfCredit"), fig("Available", "available"), maturityLine());
+      for (const sf of subsFor.get(f) ?? []) lines.push(subLine(sf));
+    }
     const bb = borrowingBaseOf(f);
     if (bb) {
       const full = widen(bb.statement, [f.facilitySize, f.drawn, f.lettersOfCredit, f.available, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => x.sourceLine));
       lines.push([{ k: "label", t: "Borrowing-base limited", stated: bb.limitedBy, src: src(full, f.figureSources?.facilitySize ?? f.citedUrl) }, t(": stated availability is authoritative.")]);
     }
-    const kind = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;
-    if (kind === "letter-of-credit") lines.push([t("Letters of credit only: capacity, not borrowed money.")]);
-    if (f.category === "commercial-paper" || kind === "commercial-paper") lines.push([t("Issuance program, not a lender commitment: never counted as liquidity.")]);
     const pseudo = { instrument: f.name, classification: classifyInstrument({ headings: [], instrumentName: f.name }) };
     return { heading: [typeLabel(pseudo, own), t(` — ${f.name}`)] as Line, lines };
   });
+  for (const sf of orphanSubs) facBlocks.push({ heading: [t(`Sub-facility of the ${sf.facility}`)], lines: [subLine(sf)] });
 
   // ── 2.6 what the tool did not show ──
   const withheld: Line[] = [];
@@ -674,6 +716,7 @@ export function buildCard(i: CardInputs): Card {
   // A claimed date that a sourced one replaced is no longer withheld: the card shows the sourced date.
   for (const r of pos.rows) if (r.maturityWithheld && !r.maturityDate) withheld.push([t(`${r.instrument}: maturity ${r.maturityWithheld.claimed} withheld — ${r.maturityWithheld.why}.`)]);
   if (rawStatement && !statement) withheld.push([t(`Seniority and security are stated only in an earlier annual report, which this card does not use for labels: “${rawStatement.statement}”`)]);
+  for (const u of unpermittedFacts) withheld.push([t(`A ${u}: stated only in an earlier annual report, which this card does not use for facility terms.`)]);
   if (i.cash.usd === null || !i.cash.printedLine) withheld.push([t(`Cash: ${i.cash.reason ?? "not stated for this date"}.`)]);
   const unread = actionable.length;
   if (unread) withheld.push([t(`${unread} filing${unread === 1 ? "" : "s"} this week affecting debt: text not read, so amount and instrument are not shown.`)]);
