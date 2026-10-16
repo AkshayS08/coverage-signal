@@ -2925,3 +2925,62 @@
 {"at":"2026-10-16T16:05:02.061Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0.100515,"totalCalls":3,"byModel":[{"model":"claude-haiku-4-5","calls":3,"inputTokens":37290,"outputTokens":12645,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.100515}],"unpricedModels":[]}
 {"at":"2026-10-16T16:05:59.155Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0.064356,"totalCalls":3,"byModel":[{"model":"claude-haiku-4-5","calls":3,"inputTokens":26091,"outputTokens":7653,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.064356}],"unpricedModels":[]}
 {"at":"2026-10-16T16:06:57.625Z","company":"Cigna Group","totalUsd":0.096261,"totalCalls":3,"byModel":[{"model":"claude-haiku-4-5","calls":3,"inputTokens":59451,"outputTokens":7362,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.096261}],"unpricedModels":[]}
+{"at":"2026-10-16T16:16:41.666Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:16:43.608Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:16:45.654Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:16:48.843Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:16:50.815Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:25:26.784Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:25:28.882Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:25:30.966Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:25:34.260Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:25:36.286Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:29:29.758Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:29:31.976Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:29:33.905Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:29:37.394Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:29:39.475Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:31:52.400Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:31:54.570Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:31:56.627Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:31:59.945Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:32:01.986Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:34:37.948Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:34:40.035Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:34:42.090Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:34:45.223Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:34:47.102Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:35:24.704Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:35:26.760Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:35:28.634Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:35:31.900Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:35:33.822Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:36:14.844Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:36:16.914Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:36:18.949Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:36:22.115Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:36:24.051Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:37:09.343Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:37:11.428Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:37:13.303Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:37:16.494Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:37:18.328Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:39:51.254Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:39:53.394Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:39:55.304Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:39:58.550Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:40:00.495Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:41:51.145Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:41:53.187Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:41:55.156Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T16:41:58.429Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T17:02:27.243Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T18:07:02.324Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T18:07:45.045Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T18:07:49.126Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T18:08:05.754Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T19:29:28.177Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T19:29:35.542Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T19:29:42.623Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T19:29:54.217Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-16T19:30:00.502Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
