@@ -29,7 +29,7 @@ import { createTextLocator } from "../agent/verifyQuote";
 
 import type { Card, CardFacts, CardSection, Line, Segment, Source } from "./types";
 import { classLabels, notStatedSuffix, statementReaches, typeLabel, containsWord } from "./labels";
-import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, shortDate, weekRange } from "./format";
+import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 
 export interface CardInputs {
   result: CompanyResult;
@@ -251,7 +251,7 @@ export function buildCard(i: CardInputs): Card {
     const out: Line = [];
     if (it.amountParts) {
       const usd = it.amountParts.reduce((a, p) => a + p.usd, 0);
-      out.push({ k: "computed", t: displayUsd(usd), usd, parts: it.amountParts }, t(" "));
+      out.push({ k: "computed", t: displayUsd(usd, false, dp(it.amountParts)), usd, parts: it.amountParts }, t(" "));
     } else if (it.amountPrinted) out.push({ k: "figure", t: displayAmount(it.amountPrinted, it.amountSrc.sentence), printed: it.amountPrinted, src: it.amountSrc }, t(" "));
     if (it.labels.seniority) out.push(it.labels.seniority, t(" "));
     if (it.labels.security) out.push(it.labels.security, t(" "));
@@ -336,13 +336,13 @@ export function buildCard(i: CardInputs): Card {
   const totalDebt: CardSection = {
     heading: "Total debt",
     lines: [
-      [t("Total debt "), { k: "computed", t: displayUsd(totalUsd, anyHedge), usd: totalUsd, parts: allParts }, t(" as of "), periodDate(), t(rc.counts ? ", using the rolled position" : "")],
+      [t("Total debt "), { k: "computed", t: displayUsd(totalUsd, anyHedge, dp(allParts)), usd: totalUsd, parts: allParts }, t(" as of "), periodDate(), t(rc.counts ? ", using the rolled position" : "")],
       ...[...groups.values()]
         .sort((a, b) => sum(b.parts) - sum(a.parts))
         .map((g): Line => {
           const line: Line = [];
           g.labels.forEach((l, n) => line.push(...(n ? [t(" ")] : []), l));
-          line.push(t(" "), { k: "computed", t: displayUsd(sum(g.parts), g.hedged), usd: sum(g.parts), parts: g.parts });
+          line.push(t(" "), { k: "computed", t: displayUsd(sum(g.parts), g.hedged, dp(g.parts)), usd: sum(g.parts), parts: g.parts });
           return line;
         }),
     ],
@@ -355,7 +355,7 @@ export function buildCard(i: CardInputs): Card {
   if (i.cash.usd !== null && i.cash.printedLine && i.cash.printed) {
     const printed = i.cash.printed;
     const s = anchorSrc(i.cash.printedLine);
-    liqLines.push([t("Cash "), { k: "figure", t: displayUsd(i.cash.usd), printed, src: s }, t(" as of "), periodDate()]);
+    liqLines.push([t("Cash "), { k: "figure", t: displayAmount(printed, i.cash.printedLine), printed, src: s }, t(" as of "), periodDate()]);
     liqParts.push({ printed, usd: i.cash.usd, src: s });
   } else {
     liqComputable = false;
@@ -383,7 +383,7 @@ export function buildCard(i: CardInputs): Card {
       const parts = [{ printed: f.facilitySize.value, usd: parseMoneyAmount(f.facilitySize.value) ?? 0, src: fsrc("facilitySize", f.facilitySize.sourceLine) }];
       for (const [field, fig] of [["drawn", f.drawn], ["lettersOfCredit", f.lettersOfCredit]] as const) if (fig) parts.push({ printed: fig.value, usd: -(parseMoneyAmount(fig.value) ?? 0), src: fsrc(field, fig.sourceLine) });
       const usd = parts.reduce((a, p) => a + p.usd, 0);
-      line.push({ k: "computed", t: displayUsd(usd), usd, parts }, t(" available (size less drawn and letters of credit; no availability stated)"));
+      line.push({ k: "computed", t: displayUsd(usd, false, dp(parts)), usd, parts }, t(" available (size less drawn and letters of credit; no availability stated)"));
       liqParts.push(...parts);
     } else {
       line.push({ k: "notStated", t: "availability not stated", src: fsrc("facilitySize", sizeSentence) });
@@ -397,7 +397,7 @@ export function buildCard(i: CardInputs): Card {
   const liqUsd = liqParts.reduce((a, p) => a + p.usd, 0);
   liqLines.unshift(
     liqComputable && liqParts.length > 0
-      ? [t("Liquidity "), { k: "computed", t: displayUsd(liqUsd), usd: liqUsd, parts: liqParts }, t(" as of "), periodDate()]
+      ? [t("Liquidity "), { k: "computed", t: displayUsd(liqUsd, false, dp(liqParts)), usd: liqUsd, parts: liqParts }, t(" as of "), periodDate()]
       : [t("No liquidity total: cash and every facility's availability are not all stated as of the position date.")]
   );
   if (liqComputable && liqParts.length > 0) liqLines.splice(1, 0, [t("Cash plus stated availability, both stated as of the position date.")]);
@@ -441,7 +441,7 @@ export function buildCard(i: CardInputs): Card {
   for (const w of pos.withinPeriodRepayments) events.push([t(`Repaid inside the period: ${w.instrument}, prior balance `), { k: "figure", t: displayAmount(w.priorAmount, w.sourceLine), printed: w.priorAmount, src: src(w.sourceLine, w.citedUrl) }, t(`. ${w.note}`)]);
   for (const e of pos.tier2.events) {
     const line: Line = [t(`Since ${displayDate(periodEnd, "day")}: `), { k: "label", t: e.instrument, stated: e.instrument, src: src(e.sourceLine, e.citedUrl) }];
-    if (e.effect !== null) line.push(t(", "), { k: "figure", t: displayUsd(Math.abs(e.effect)), printed: `$${Math.abs(e.effect).toLocaleString("en-US")}`, src: src(e.sourceLine, e.citedUrl) });
+    if (e.effect !== null) line.push(t(", "), { k: "figure", t: displayAmount(`$${Math.abs(e.effect).toLocaleString("en-US")}`, e.sourceLine), printed: `$${Math.abs(e.effect).toLocaleString("en-US")}`, src: src(e.sourceLine, e.citedUrl) });
     line.push(t(` (${e.kind}${e.nets ? `, ${e.nets === "unsized" ? "amount not stated in the confirming filing" : "not yet confirmed by a filing"}` : ""}) — not in the position-date total.`));
     events.push(line);
   }
@@ -498,9 +498,9 @@ export function buildCard(i: CardInputs): Card {
   const capSum = capParts.reduce((a, p) => a + p.usd, 0);
   const coverageLines: Line[] = [];
   const statedSeg: Segment = cov.statedTotalDebt !== null && Math.abs(capSum - cov.statedTotalDebt) < 1
-    ? { k: "computed", t: displayUsd(cov.statedTotalDebt), usd: capSum, parts: capParts }
+    ? { k: "computed", t: displayUsd(cov.statedTotalDebt, false, dp(capParts)), usd: capSum, parts: capParts }
     : t(cov.statedTotalDebt === null ? "an unmeasured total" : `${displayUsd(cov.statedTotalDebt)} (per the filer's XBRL tags; no caption set sums to it)`);
-  const face: Segment = { k: "computed", t: displayUsd(totalUsd, anyHedge), usd: totalUsd, parts: allParts };
+  const face: Segment = { k: "computed", t: displayUsd(totalUsd, anyHedge, dp(allParts)), usd: totalUsd, parts: allParts };
   if (cov.statedTotalDebt === null) coverageLines.push([t("Coverage unmeasured: the anchor states no balance-sheet debt caption to measure against.")]);
   else if (cov.residualPasses) {
     // The residual is what is left AFTER the note's own bridge (BRD 8.6): a
@@ -531,6 +531,11 @@ export function buildCard(i: CardInputs): Card {
     withheld: { heading: "What the tool did not show", lines: withheld },
     coverage: { heading: "Coverage", lines: coverageLines },
   };
+}
+
+/** The finest $MM precision any part carries (§3.3: never rounded beyond the source). */
+function dp(parts: { printed: string }[]): number {
+  return parts.reduce((d, p) => Math.max(d, mmDecimals(p.printed)), 0);
 }
 
 function sum(parts: { usd: number }[]): number {

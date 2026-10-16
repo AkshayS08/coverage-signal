@@ -1,10 +1,10 @@
 {
  "cik": "0000785161",
  "company": "Encompass Health Corp",
- "briefDate": "2026-10-04",
- "weekFrom": "2026-09-28",
- "weekTo": "2026-10-04",
- "previousBrief": null,
+ "briefDate": "2026-10-15",
+ "weekFrom": "2026-10-05",
+ "weekTo": "2026-10-15",
+ "previousBrief": "2026-10-04",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Sept 28 to Oct 4, 2026 (first brief for this name: the trailing seven days)"
+    "t": "Brief week: Oct 5 to Oct 15, 2026"
    }
   ],
   [
@@ -36,7 +36,7 @@
    [
     {
      "k": "text",
-     "t": "No new filings affecting debt since Sept 28, 2026."
+     "t": "No new filings affecting debt since Oct 4, 2026."
     }
    ]
   ]
@@ -52,7 +52,7 @@
      },
      {
       "k": "computed",
-      "t": "$2.6B",
+      "t": "$2,634.0MM",
       "usd": 2634000000,
       "parts": [
        {
@@ -171,7 +171,7 @@
      },
      {
       "k": "computed",
-      "t": "$2.1B",
+      "t": "$2,070.4MM",
       "usd": 2070400000,
       "parts": [
        {
@@ -230,7 +230,7 @@
      },
      {
       "k": "computed",
-      "t": "$281.7M",
+      "t": "$281.7MM",
       "usd": 281700000,
       "parts": [
        {
@@ -262,7 +262,7 @@
      },
      {
       "k": "computed",
-      "t": "$200M",
+      "t": "$200.0MM",
       "usd": 200000000,
       "parts": [
        {
@@ -294,7 +294,7 @@
      },
      {
       "k": "computed",
-      "t": "$81.9M",
+      "t": "$81.9MM",
       "usd": 81900000,
       "parts": [
        {
@@ -321,7 +321,7 @@
      },
      {
       "k": "computed",
-      "t": "$853.7M",
+      "t": "$853.7MM",
       "usd": 853700000,
       "parts": [
        {
@@ -373,7 +373,7 @@
      },
      {
       "k": "figure",
-      "t": "$107.7M",
+      "t": "$107.7MM",
       "printed": "$ 107.7 million",
       "src": {
        "sentence": "Cash and cash equivalents $ 107.7 $ 72.2",
@@ -414,7 +414,7 @@
      },
      {
       "k": "figure",
-      "t": "$1.0B",
+      "t": "$1,000MM",
       "printed": "$ 1 billion",
       "src": {
        "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
@@ -428,7 +428,7 @@
      },
      {
       "k": "figure",
-      "t": "~$746M",
+      "t": "~$746MM",
       "printed": "$ 746 million",
       "src": {
        "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
@@ -459,12 +459,12 @@
    ]
   },
   "due24": {
-   "heading": "Due in 24 months (to Oct 4, 2028)",
+   "heading": "Due in 24 months (to Oct 15, 2028)",
    "lines": [
     [
      {
       "k": "figure",
-      "t": "$396.9M",
+      "t": "$396.9MM",
       "printed": "$ 396.9 million",
       "src": {
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
@@ -554,7 +554,7 @@
      },
      {
       "k": "figure",
-      "t": "$396.9M",
+      "t": "$396.9MM",
       "printed": "$ 396.9 million",
       "src": {
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
@@ -651,7 +651,7 @@
      [
       {
        "k": "figure",
-       "t": "$396.9M",
+       "t": "$396.9MM",
        "printed": "$ 396.9 million",
        "src": {
         "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
@@ -743,7 +743,7 @@
      [
       {
        "k": "figure",
-       "t": "$788.4M",
+       "t": "$788.4MM",
        "printed": "$ 788.4 million",
        "src": {
         "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
@@ -835,7 +835,7 @@
      [
       {
        "k": "figure",
-       "t": "$394.1M",
+       "t": "$394.1MM",
        "printed": "$ 394.1 million",
        "src": {
         "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
@@ -917,7 +917,7 @@
      [
       {
        "k": "figure",
-       "t": "$200M",
+       "t": "$200.0MM",
        "printed": "$ 200.0 million",
        "src": {
         "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
@@ -995,7 +995,7 @@
      [
       {
        "k": "figure",
-       "t": "$491M",
+       "t": "$491.0MM",
        "printed": "$ 491.0 million",
        "src": {
         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
@@ -1087,7 +1087,7 @@
      [
       {
        "k": "figure",
-       "t": "$81.9M",
+       "t": "$81.9MM",
        "printed": "$ 81.9 million",
        "src": {
         "sentence": "Other notes payable 81.9   93.6",
@@ -1144,7 +1144,7 @@
      [
       {
        "k": "figure",
-       "t": "$281.7M",
+       "t": "$281.7MM",
        "printed": "$ 281.7 million",
        "src": {
         "sentence": "Finance lease obligations 281.7   294.6",
@@ -1231,7 +1231,7 @@
       },
       {
        "k": "figure",
-       "t": "$1.0B",
+       "t": "$1,000MM",
        "printed": "$ 1 billion",
        "src": {
         "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
@@ -1248,7 +1248,7 @@
       },
       {
        "k": "figure",
-       "t": "$200M",
+       "t": "$200.0MM",
        "printed": "$ 200.0 million",
        "src": {
         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
@@ -1280,7 +1280,7 @@
       },
       {
        "k": "figure",
-       "t": "~$746M",
+       "t": "~$746MM",
        "printed": "$ 746 million",
        "src": {
         "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
@@ -1317,7 +1317,7 @@
    [
     {
      "k": "text",
-     "t": "senior secured revolving credit facility, letters of credit $53.6M: withheld — sentence does not state this figure. "
+     "t": "senior secured revolving credit facility, letters of credit $53.6MM: withheld — sentence does not state this figure. "
     },
     {
      "k": "notStated",
@@ -1347,7 +1347,7 @@
     },
     {
      "k": "computed",
-     "t": "$2.6B",
+     "t": "$2,634.0MM",
      "usd": 2634000000,
      "parts": [
       {
@@ -1421,7 +1421,7 @@
     },
     {
      "k": "computed",
-     "t": "$2.6B",
+     "t": "$2,634.0MM",
      "usd": 2634000000,
      "parts": [
       {
@@ -1446,7 +1446,7 @@
     },
     {
      "k": "text",
-     "t": " within $0 (0.00%)."
+     "t": " within $0MM (0.00%)."
     }
    ]
   ]

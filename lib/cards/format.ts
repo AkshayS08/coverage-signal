@@ -3,9 +3,9 @@
  * Verification always runs on the as-printed value; these only render.
  */
 import type { DateGranularity } from "../agent/claude";
-import { formatMoneyForDisplay, formatMoneyValue } from "../events/money";
+
 import { parseMoneyAmount } from "../events/position";
-import { statesApproximation } from "../events/rollDeltas";
+
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
@@ -30,22 +30,34 @@ export function weekRange(from: string, to: string): string {
   return from.slice(0, 4) === to.slice(0, 4) ? `${f.replace(/, \d{4}$/, "")} to ${t}` : `${f} to ${t}`;
 }
 
-/** An amount in the house format, with "~" where the filer hedged THIS figure. */
-export function displayAmount(printed: string, sentence: string): string {
-  const shown = formatMoneyForDisplay(printed);
-  // A stated zero is "nil", the filer's own claim, and is never hedged.
-  if (shown === "nil" || shown === "$0") return "nil";
-  return hedgedIn(sentence, printed) && shown.startsWith("$") ? `~${shown}` : shown;
+/**
+ * CARD_SPEC v2.0 §3.3 — EVERY AMOUNT IN $MM, AT THE SOURCE'S OWN PRECISION.
+ *
+ * "$13,333MM", "$1,450MM", "$396.9MM". Decimals only where the source carries
+ * them, or one where a thousands figure converts ("$188,482 thousand" →
+ * "$188.5MM"); billions convert in code ("$1.900 billion" → "$1,900MM").
+ * Never rounded beyond the source: "$1,549 million" is never "$1.5B". The
+ * printed form is what verification reads; this is display only.
+ */
+export function mmDecimals(printed: string): number {
+  const dec = ((/[\d,]+\.(\d+)/.exec(printed) ?? [])[1] ?? "").length;
+  if (/thousand/i.test(printed)) return 1;
+  if (/billion/i.test(printed)) return Math.max(0, dec - 3);
+  return dec;
+}
+
+export function formatMM(usd: number, decimals = 0): string {
+  const body = (Math.abs(usd) / 1e6).toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return usd < 0 ? `($${body}MM)` : `$${body}MM`;
 }
 
 /**
- * Did the filer hedge THIS figure? The hedge must govern the figure itself —
- * "approximately $ 751 million … the $ 32 million of outstanding letters of
- * credit" hedges the 751 and not the 32. A sentence-wide test put a "~" on
- * every figure that shared a sentence with one hedged figure.
+ * The hedge the filer put on THIS figure: "~" for approximately, "<" for less
+ * than. A hedge governs only the figure it qualifies — "approximately $ 751
+ * million … the $ 32 million of outstanding letters of credit" hedges the 751
+ * and not the 32.
  */
-export function hedgedIn(sentence: string, printed: string): boolean {
-  if (!statesApproximation(sentence)) return false;
+export function hedgeMark(sentence: string, printed: string): "" | "~" | "<" {
   const want = parseMoneyAmount(printed);
   const digits = (printed.match(/[\d,]+(?:\.\d+)?/) ?? [""])[0];
   for (const m of sentence.matchAll(/\$?\s*[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/gi)) {
@@ -53,14 +65,24 @@ export function hedgedIn(sentence: string, printed: string): boolean {
     const same = (want !== null && v !== null && Math.abs(v - want) < 1) || (digits && m[0].includes(digits));
     if (!same) continue;
     const before = sentence.slice(Math.max(0, (m.index ?? 0) - 30), m.index ?? 0);
-    if (/(approximately|about|approx\.?|roughly|nearly|an estimated)\s*\$?\s*$/i.test(before)) return true;
+    if (/(?:approximately|about|approx\.?|roughly|nearly|an estimated)\s*\$?\s*$/i.test(before)) return "~";
+    if (/(?:less than|fewer than|under)\s*\$?\s*$/i.test(before)) return "<";
   }
-  return false;
+  return "";
+}
+export const hedgedIn = (sentence: string, printed: string) => hedgeMark(sentence, printed) !== "";
+
+/** An amount as the card shows it. A stated absence is "$0", never "nil", and is never hedged. */
+export function displayAmount(printed: string, sentence: string, scaledUsd?: number | null): string {
+  const usd = scaledUsd ?? parseMoneyAmount(printed);
+  if (usd === null) return printed.trim();
+  if (usd === 0 || /^\s*\$?\s*[—–-]\s*$/.test(printed)) return "$0";
+  return `${hedgeMark(sentence, printed)}${formatMM(usd, mmDecimals(printed))}`;
 }
 
-export function displayUsd(usd: number, hedged = false): string {
-  const shown = formatMoneyValue(usd);
-  return hedged && shown.startsWith("$") ? `~${shown}` : shown;
+/** A computed figure: $MM at the finest precision any of its parts carries. */
+export function displayUsd(usd: number, hedged = false, decimals = 0): string {
+  return `${hedged ? "~" : ""}${formatMM(usd, decimals)}`;
 }
 
 /**

@@ -1,10 +1,10 @@
 {
  "cik": "0001179929",
  "company": "MOLINA HEALTHCARE, INC.",
- "briefDate": "2026-10-04",
- "weekFrom": "2026-09-28",
- "weekTo": "2026-10-04",
- "previousBrief": null,
+ "briefDate": "2026-10-15",
+ "weekFrom": "2026-10-05",
+ "weekTo": "2026-10-15",
+ "previousBrief": "2026-10-04",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Sept 28 to Oct 4, 2026 (first brief for this name: the trailing seven days)"
+    "t": "Brief week: Oct 5 to Oct 15, 2026"
    }
   ],
   [
@@ -36,90 +36,7 @@
    [
     {
      "k": "text",
-     "t": "No new filings affecting debt since Sept 28, 2026."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "9 other filings this week, none affecting debt: "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000116949026000008/xslF345X06/wk-form4_1790973906.xml"
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000123318426000017/xslF345X06/wk-form4_1790973981.xml"
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000125799626000008/xslF345X06/wk-form4_1790974045.xml"
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000185601326000008/xslF345X06/wk-form4_1790974131.xml"
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000121149326000008/xslF345X06/wk-form4_1790974190.xml"
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000120668426000010/xslF345X06/wk-form4_1790974245.xml"
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000164977326000008/xslF345X06/wk-form4_1790974324.xml"
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000122886126000010/xslF345X06/wk-form4_1790974396.xml"
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "filing",
-     "t": "[Form 4]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000126371426000011/xslF345X06/wk-form4_1790974468.xml"
+     "t": "No new filings affecting debt since Oct 4, 2026."
     }
    ]
   ]
@@ -135,7 +52,7 @@
      },
      {
       "k": "computed",
-      "t": "$3.8B",
+      "t": "$3,800MM",
       "usd": 3800000000,
       "parts": [
        {
@@ -250,7 +167,7 @@
      },
      {
       "k": "computed",
-      "t": "$3.8B",
+      "t": "$3,800MM",
       "usd": 3800000000,
       "parts": [
        {
@@ -313,7 +230,7 @@
      },
      {
       "k": "computed",
-      "t": "$6.2B",
+      "t": "$6,235MM",
       "usd": 6235000000,
       "parts": [
        {
@@ -365,7 +282,7 @@
      },
      {
       "k": "figure",
-      "t": "$5.0B",
+      "t": "$4,985MM",
       "printed": "$ 4,985 million",
       "src": {
        "sentence": "Cash and cash equivalents $ 4,985 $ 4,248",
@@ -406,7 +323,7 @@
      },
      {
       "k": "figure",
-      "t": "$1.3B",
+      "t": "$1,250MM",
       "printed": "$ 1.25 billion",
       "src": {
        "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
@@ -420,7 +337,7 @@
      },
      {
       "k": "figure",
-      "t": "$1.3B",
+      "t": "$1,250MM",
       "printed": "$ 1.25 billion",
       "src": {
        "sentence": "As of June 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
@@ -451,12 +368,12 @@
    ]
   },
   "due24": {
-   "heading": "Due in 24 months (to Oct 4, 2028)",
+   "heading": "Due in 24 months (to Oct 15, 2028)",
    "lines": [
     [
      {
       "k": "figure",
-      "t": "$800M",
+      "t": "$800MM",
       "printed": "$ 800 million",
       "src": {
        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
@@ -543,7 +460,7 @@
      },
      {
       "k": "figure",
-      "t": "$800M",
+      "t": "$800MM",
       "printed": "$ 800 million",
       "src": {
        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
@@ -638,7 +555,7 @@
    [
     {
      "k": "figure",
-     "t": "$1.3B",
+     "t": "$1,250MM",
      "printed": "$ 1.25 billion",
      "src": {
       "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
@@ -720,7 +637,7 @@
      [
       {
        "k": "figure",
-       "t": "$800M",
+       "t": "$800MM",
        "printed": "$ 800 million",
        "src": {
         "sentence": "4.375 % Notes due June 15, 2028 $ 800",
@@ -813,7 +730,7 @@
      [
       {
        "k": "figure",
-       "t": "$650M",
+       "t": "$650MM",
        "printed": "$ 650 million",
        "src": {
         "sentence": "3.875 % Notes due November 15, 2030 650",
@@ -906,7 +823,7 @@
      [
       {
        "k": "figure",
-       "t": "$850M",
+       "t": "$850MM",
        "printed": "$ 850 million",
        "src": {
         "sentence": "6.500 % Notes due February 15, 2031 850",
@@ -999,7 +916,7 @@
      [
       {
        "k": "figure",
-       "t": "$750M",
+       "t": "$750MM",
        "printed": "$ 750 million",
        "src": {
         "sentence": "3.875 % Notes due May 15, 2032 750",
@@ -1092,7 +1009,7 @@
      [
       {
        "k": "figure",
-       "t": "$750M",
+       "t": "$750MM",
        "printed": "$ 750 million",
        "src": {
         "sentence": "6.250 % Notes due January 15, 2033 750",
@@ -1205,7 +1122,7 @@
       },
       {
        "k": "figure",
-       "t": "$1.3B",
+       "t": "$1,250MM",
        "printed": "$ 1.25 billion",
        "src": {
         "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
@@ -1222,7 +1139,7 @@
       },
       {
        "k": "figure",
-       "t": "nil",
+       "t": "$0",
        "printed": "$ 0 million",
        "src": {
         "sentence": "As of June 30, 2026, no amount was outstanding under the Credit Agreement.",
@@ -1254,7 +1171,7 @@
       },
       {
        "k": "figure",
-       "t": "$1.3B",
+       "t": "$1,250MM",
        "printed": "$ 1.25 billion",
        "src": {
         "sentence": "As of June 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
@@ -1306,7 +1223,7 @@
     },
     {
      "k": "computed",
-     "t": "$3.8B",
+     "t": "$3,800MM",
      "usd": 3800000000,
      "parts": [
       {
@@ -1362,7 +1279,7 @@
     },
     {
      "k": "computed",
-     "t": "$3.8B",
+     "t": "$3,769MM",
      "usd": 3769000000,
      "parts": [
       {
@@ -1378,7 +1295,7 @@
     },
     {
      "k": "text",
-     "t": " within $0 (0.00%). The $31M between them is the note's own unamortized issuance costs and discounts."
+     "t": " within $0MM (0.00%). The $31MM between them is the note's own unamortized issuance costs and discounts."
     }
    ]
   ]
