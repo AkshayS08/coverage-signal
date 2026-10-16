@@ -28,7 +28,8 @@ import { extractFactTokens, factTokensMatch } from "../agent/factTokens";
 import { createTextLocator } from "../agent/verifyQuote";
 
 import type { Card, CardFacts, CardSection, Line, Segment, Source } from "./types";
-import { classLabels, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord } from "./labels";
+import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord } from "./labels";
+import { sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 
@@ -66,6 +67,9 @@ const WHY: Record<string, string> = {
 };
 
 const t = (text: string): Segment => ({ k: "text", t: text });
+
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MONTHS = MONTH_NAMES.join("|");
 
 /** A table line bridging face to carrying value: issue costs, discounts, premium. */
 const BRIDGE = /discount|premium|issu(?:e|ance) costs|financing costs/i;
@@ -318,6 +322,46 @@ export function buildCard(i: CardInputs): Card {
     return { ...group[0], amountParts: parts, note: `${group.length} portions of one instrument (short- and long-term sections), summed` };
   }));
   const allDebtItems = [...anchorItems.filter((x) => !x.isCapacity), ...rolledItems];
+
+  // ONE INSTRUMENT, ONE MATURITY (card_spec §3.4): the most precise maturity
+  // stated for it in the anchor or a later filing, linked to the sentence
+  // that states it. Every mention on the card reads this one value.
+  const maturityPool = [...new Set([anchor.url, ...(i.laterUrls ?? [])])].filter((u) => i.textByUrl.has(u)).flatMap(sentencesOf);
+  const yearOf = (it: Item) => it.maturity?.date.slice(0, 4) ?? (/\b(20\d\d)\b/.exec(it.name) ?? [])[1] ?? null;
+  for (const it of allDebtItems) {
+    const year = yearOf(it);
+    if (!year || it.maturity?.granularity === "day") continue;
+    const own = couponsIn(it.name)[0]?.rate ?? null;
+    // "the 2034 Notes" names an instrument only where one instrument of the card matures that year.
+    const aliasOk = allDebtItems.filter((x) => x !== it && yearOf(x) === year).length === 0;
+    let best: { date: string; granularity: DateGranularity; src: Source; rank: number } | null = null;
+    let conflict = false;
+    for (const s of maturityPool) {
+      const cs = couponsIn(s.sentence);
+      let stretch: string | null = null;
+      if (own !== null) {
+        const hit = cs.findIndex((c) => Math.abs(c.rate - own) < 1e-9);
+        if (hit >= 0) {
+          const next = cs.find((c, n) => n > hit && Math.abs(c.rate - own) > 1e-9);
+          stretch = s.sentence.slice(cs[hit].at, next ? next.at : undefined);
+        }
+      }
+      if (stretch === null && aliasOk && cs.every((c) => own !== null && Math.abs(c.rate - own) < 1e-9) && new RegExp(`\\bthe ${year} Notes\\b`, "i").test(s.sentence)) stretch = s.sentence;
+      if (stretch === null) continue;
+      for (const m of stretch.matchAll(new RegExp(`\\b(?:due|matur\\w*(?:\\s+on)?)\\s+(${MONTHS})(?:\\s+(\\d{1,2}),)?\\s+(${year})\\b`, "g"))) {
+        const mm = String(MONTH_NAMES.indexOf(m[1]) + 1).padStart(2, "0");
+        const granularity: DateGranularity = m[2] ? "day" : "month";
+        const date = m[2] ? `${year}-${mm}-${m[2].padStart(2, "0")}` : `${year}-${mm}-01`;
+        const rank = m[2] ? 2 : 1;
+        if (!sentenceSupportsMaturity(date, granularity, s.sentence)) continue;
+        if (best && rank === best.rank && best.date !== date) conflict = true;
+        if (!best || rank > best.rank) { best = { date, granularity, src: src(s.sentence, s.url), rank }; conflict = false; }
+      }
+    }
+    const current = it.maturity ? (it.maturity.granularity === "month" ? 1 : 0) : -1;
+    // Two sentences stating different dates at the same precision: neither is chosen.
+    if (best && best.rank > current && !conflict) it.maturity = { date: best.date, granularity: best.granularity, src: best.src };
+  }
 
   // ── an instrument line, in card_spec 3.2's wording ──
   const describe = (it: Item, opts: { withDate?: boolean } = { withDate: true }): Line => {

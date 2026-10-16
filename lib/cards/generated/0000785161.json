@@ -1089,11 +1089,11 @@
       },
       {
        "k": "date",
-       "t": "2034",
-       "date": "2034",
-       "granularity": "year",
+       "t": "June 1, 2034",
+       "date": "2034-06-01",
+       "granularity": "day",
        "src": {
-        "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+        "sentence": "The 2034 Notes mature on June 1, 2034 and interest is payable semiannually in arrears on June 1 and December 1 of each year.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }

@@ -128,7 +128,7 @@ export function headingClass(heading: string | null, headingSrc: Source | null):
 
 const FRACTION: Record<string, number> = { "⅛": 0.125, "¼": 0.25, "⅜": 0.375, "½": 0.5, "⅝": 0.625, "¾": 0.75, "⅞": 0.875 };
 /** Every coupon a span states, as a number: "5.125 %", "10 ⅞%", "6%". */
-function couponsIn(span: string): { rate: number; at: number }[] {
+export function couponsIn(span: string): { rate: number; at: number }[] {
   const out: { rate: number; at: number }[] = [];
   for (const m of span.matchAll(/(\d{1,2})(?:\.(\d+)|\s*([⅛¼⅜½⅝¾⅞]))?\s?%/g)) {
     const rate = Number(m[1]) + (m[2] ? Number(`0.${m[2]}`) : m[3] ? FRACTION[m[3]] : 0);
