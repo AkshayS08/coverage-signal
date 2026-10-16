@@ -22,7 +22,7 @@ import { createTextLocator } from "../../agent/verifyQuote";
 import { statementHead } from "../../events/instrumentClass";
 import { printedBefore, printedHeadings, type TableRow } from "../headings";
 
-const BRIEF = process.argv[2] ?? "2026-10-04";
+const BRIEF = process.argv[2] ?? "2026-10-15";
 const P = process.cwd();
 const OUT = join(P, "lib", "cards", "fixtures");
 const flat = (s: string) => s.replace(/[\s ]+/g, " ");

@@ -235,6 +235,41 @@ const T4_NOTSTATED: Test = {
   },
 };
 
+/**
+ * §3.4's PRECISION HALF, as an oracle independent of the builder: the most
+ * precise maturity stated for this instrument in the anchor or a later filing.
+ * The instrument is matched by coupon and year, or by a defined term ("the 2034
+ * Notes") that names exactly one row; a date counts only where the clause
+ * predicates maturity ("due", "mature on"), never an interest or redemption date.
+ */
+const MONTH = "January|February|March|April|May|June|July|August|September|October|November|December";
+function mostPreciseMaturity(f: any, label: string): { shown: string; precision: number } | null {
+  const snapPath = join(ROOT, "lib", "cards", "inputs", `${f.cik}.json`);
+  if (!existsSync(snapPath)) return null;
+  const snap = JSON.parse(readFileSync(snapPath, "utf-8"));
+  const year = (/\b(20\d\d)\b/.exec(label) ?? [])[1];
+  if (!year) return null;
+  const coupon = (/(\d+(?:\.\d+)?)\s?%/.exec(label) ?? [])[1] ?? (/(\d+)\s*([⅛¼⅜½⅝¾⅞])\s?%/.exec(label) ? (() => { const m = /(\d+)\s*([⅛¼⅜½⅝¾⅞])/.exec(label)!; return String(Number(m[1]) + ({ "⅛": .125, "¼": .25, "⅜": .375, "½": .5, "⅝": .625, "¾": .75, "⅞": .875 } as any)[m[2]]); })() : null);
+  const anchorUrl = snap.result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.url;
+  const urls = [anchorUrl, ...(snap.laterFilings ?? []).filter((x: any) => x.filingDate <= f.briefDate).map((x: any) => x.url)];
+  let best: { shown: string; precision: number } | null = /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*20\d\d/.test(label) ? null : { shown: year, precision: 0 };
+  const consider = (shown: string, precision: number) => { if (!best || precision > best.precision) best = { shown, precision }; };
+  for (const u of urls) {
+    const text = (snap.docs[u]?.text ?? "").replace(/\s+/g, " ");
+    for (const s of text.split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)/)) {
+      const couponHit = coupon && new RegExp(`\\b${coupon.replace(".", "\\.")}0*\\s?%`).test(s);
+      const aliasHit = new RegExp(`\\bthe ${year} Notes\\b`, "i").test(s);
+      if (!couponHit && !aliasHit) continue;
+      for (const m of s.matchAll(new RegExp(`\\b(?:due|matur\\w*(?:\\s+on)?)\\s+((${MONTH})(?:\\s+(\\d{1,2}),)?\\s+(${year}))\\b`, "g"))) {
+        consider(m[3] ? `${m[2]} ${Number(m[3])}, ${year}` : `${m[2]} ${year}`, m[3] ? 2 : 1);
+      }
+    }
+  }
+  const dayInLabel = new RegExp(`(${MONTH})\\s+(\\d{1,2}),\\s*(${year})`).exec(label);
+  if (dayInLabel) consider(`${dayInLabel[1]} ${Number(dayInLabel[2])}, ${year}`, 2);
+  return best;
+}
+
 const T5_ONEMATURITY: Test = {
   id: "5.5", name: "one maturity per instrument, everywhere on the card",
   run: (card, f) => {
@@ -245,6 +280,10 @@ const T5_ONEMATURITY: Test = {
     for (const label of labels) {
       const dates = new Set(all.filter((l) => represents(l, label)).flatMap((l) => l.filter((s) => s.k === "date").map((s) => s.t)));
       if (dates.size > 1) bad.push(`"${label}" shows ${[...dates].join(" and ")}`);
+      // The precision half: the one maturity shown is the most precise one stated.
+      const want = mostPreciseMaturity(f, label);
+      const shown = [...dates][0];
+      if (want && want.precision > 0 && shown !== undefined && shown !== want.shown) bad.push(`"${label}" shows ${shown}; the filings state ${want.shown}`);
     }
     return bad;
   },
@@ -376,6 +415,20 @@ function controls(): { id: string; failed: boolean; what: string }[] {
   { const c = clone(c0); const f = clone(f0); const line = linesOf(c).find((w) => w.line.some((s) => s.k === "notStated")) ?? linesOf(c).find((w) => w.section === "ladder" && w.line.some((s) => s.k === "label"))!; if (!line.line.some((s) => s.k === "notStated")) line.line.push({ k: "notStated", t: "seniority and security not stated, please refer to sources", src: { sentence: "x", url: "x", doc: "x" } }); const lbl = line.line.filter((s) => s.k === "label").pop()!.t; f.classSentences.push({ doc: "x", url: "x", sentence: `${lbl} are senior secured obligations.` }); f.table.rows.push({ label: lbl, amount: "$ 1 million" }); out.push({ id: "5.4", failed: T4_NOTSTATED.run(c, f).length > 0, what: "a sentence stating the class beside a \"not stated\" line" }); }
   // 5.5: one instrument shown with two maturities.
   { const c = clone(c0); const rowLabels = expectedRows(f0).map((e) => e.label); const l = linesOf(c).find((w) => w.section === "ladder" && w.line.some((s) => s.k === "date") && rowLabels.some((r) => represents(w.line, r)))!; const copy = clone(l.line); (copy.find((s) => s.k === "date") as any).t = "January 1, 2099"; c.headlines.due24.lines.push(copy); out.push({ id: "5.5", failed: T5_ONEMATURITY.run(c, f0).length > 0, what: "one instrument with two different maturities" }); }
+  // 5.5, the precision half: an instrument shown at year precision where a filing states its day.
+  {
+    const ehc = cards.find((c) => /encompass/i.test(c.company));
+    if (ehc) {
+      const c = clone(ehc), f = fixtureOf(ehc.cik);
+      const label = "5.875 % Senior Notes due 2034";
+      const line = linesOf(c).find((w) => represents(w.line, label))?.line ?? [];
+      const d = line.find((s) => s.k === "date") as any;
+      if (d) d.t = "2034";
+      else line.push({ k: "date", t: "2034", date: "2034", granularity: "year", src: { sentence: "due 2034", url: "x", doc: "x" } } as any);
+      if (!linesOf(c).some((w) => represents(w.line, label))) c.ladder.lines.push([{ k: "label", t: label, stated: label, src: { sentence: label, url: "x", doc: "x" } }, ...line]);
+      out.push({ id: "5.5 precision", failed: T5_ONEMATURITY.run(c, f).some((x) => /the filings state/.test(x)), what: "the 2034 notes at \"2034\" where the anchor says they mature on June 1, 2034" });
+    }
+  }
   // 5.6: a rounded figure.
   { const c = clone(c0); const s = linesOf(c).flatMap((w) => w.line).find((x) => x.k === "figure" && !isZeroValue((x as any).printed)) as any; s.t = "$1.5B"; s.printed = "$ 1,549 million"; out.push({ id: "5.6", failed: T6_PRECISION.run(c, f0).length > 0, what: "$1,549 million shown as $1.5B" }); }
   // 5.7: a schedule year the card does not reconcile.
