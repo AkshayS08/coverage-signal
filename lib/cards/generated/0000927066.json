@@ -741,6 +741,134 @@
     "heading": [
      {
       "k": "text",
+      "t": "2026"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "computed",
+       "t": "$62.3MM",
+       "usd": 62283000,
+       "parts": [
+        {
+         "printed": "$ 62,283 thousand",
+         "usd": 62283000,
+         "src": {
+          "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " other scheduled principal, per the filer's schedule for 2026 (remainder of the year)"
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2027"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "computed",
+       "t": "$114.0MM",
+       "usd": 114026000,
+       "parts": [
+        {
+         "printed": "$ 114,026 thousand",
+         "usd": 114026000,
+         "src": {
+          "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " other scheduled principal, per the filer's schedule"
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2028"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "computed",
+       "t": "$160.8MM",
+       "usd": 160808000,
+       "parts": [
+        {
+         "printed": "$ 160,808 thousand",
+         "usd": 160808000,
+         "src": {
+          "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " other scheduled principal, per the filer's schedule"
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2029"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "computed",
+       "t": "$144.6MM",
+       "usd": 144566000,
+       "parts": [
+        {
+         "printed": "$ 144,566 thousand",
+         "usd": 144566000,
+         "src": {
+          "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " other scheduled principal, per the filer's schedule"
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
       "t": "2030"
      }
     ],
@@ -967,6 +1095,79 @@
         "doc": "10-Q 2026-08-04"
        }
       }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "The filer's schedule shows "
+      },
+      {
+       "k": "computed",
+       "t": "$4,554.3MM",
+       "usd": 4554268000,
+       "parts": [
+        {
+         "printed": "$ 4,554,268 thousand",
+         "usd": 4554268000,
+         "src": {
+          "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " for 2030: "
+      },
+      {
+       "k": "computed",
+       "t": "$235.7MM",
+       "usd": 235732000,
+       "parts": [
+        {
+         "printed": "$ 1,975,000 thousand",
+         "usd": 1975000000,
+         "src": {
+          "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        },
+        {
+         "printed": "$ 65,000 thousand",
+         "usd": 65000000,
+         "src": {
+          "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        },
+        {
+         "printed": "$ 2,750,000 thousand",
+         "usd": 2750000000,
+         "src": {
+          "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        },
+        {
+         "printed": "$ 4,554,268 thousand",
+         "usd": -4554268000,
+         "src": {
+          "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " less than the lines above. That much of them is scheduled in other years."
+      }
      ]
     ]
    },
@@ -1129,6 +1330,70 @@
         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
         "doc": "10-Q 2026-08-04"
        }
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "The filer's schedule shows "
+      },
+      {
+       "k": "computed",
+       "t": "$3,764.2MM",
+       "usd": 3764157000,
+       "parts": [
+        {
+         "printed": "$ 3,764,157 thousand",
+         "usd": 3764157000,
+         "src": {
+          "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268 2031 $ 3,764,157",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " for 2031: "
+      },
+      {
+       "k": "computed",
+       "t": "$93.8MM",
+       "usd": 93753000,
+       "parts": [
+        {
+         "printed": "$ 2,357,910 thousand",
+         "usd": 2357910000,
+         "src": {
+          "sentence": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        },
+        {
+         "printed": "$ 1,500,000 thousand",
+         "usd": 1500000000,
+         "src": {
+          "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        },
+        {
+         "printed": "$ 3,764,157 thousand",
+         "usd": -3764157000,
+         "src": {
+          "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268 2031 $ 3,764,157",
+          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+          "doc": "10-Q 2026-08-04"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " less than the lines above. That much of them is scheduled in other years."
       }
      ]
     ]
@@ -1323,7 +1588,7 @@
     "heading": [
      {
       "k": "text",
-      "t": "No maturity stated"
+      "t": "Maturing over a range of years"
      }
     ],
     "lines": [
@@ -1355,7 +1620,17 @@
       },
       {
        "k": "text",
-       "t": ", no maturity stated"
+       "t": ", due "
+      },
+      {
+       "k": "label",
+       "t": "2026 to 2038",
+       "stated": "2026-2038",
+       "src": {
+        "sentence": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+        "doc": "10-Q 2026-08-04"
+       }
       },
       {
        "k": "text",
@@ -1399,7 +1674,17 @@
       },
       {
        "k": "text",
-       "t": ", no maturity stated"
+       "t": ", due "
+      },
+      {
+       "k": "label",
+       "t": "2027 to 2039",
+       "stated": "2027-2039",
+       "src": {
+        "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+        "doc": "10-Q 2026-08-04"
+       }
       },
       {
        "k": "text",

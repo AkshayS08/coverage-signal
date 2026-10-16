@@ -674,6 +674,70 @@
     "heading": [
      {
       "k": "text",
+      "t": "2026"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "computed",
+       "t": "$18.4MM",
+       "usd": 18400000,
+       "parts": [
+        {
+         "printed": "$ 18.4 million",
+         "usd": 18400000,
+         "src": {
+          "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+          "doc": "10-Q 2026-08-07"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " other scheduled principal, per the filer's schedule for July 1 through December 31, 2026"
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2027"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "computed",
+       "t": "$46.9MM",
+       "usd": 46900000,
+       "parts": [
+        {
+         "printed": "$ 46.9 million",
+         "usd": 46900000,
+         "src": {
+          "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+          "doc": "10-Q 2026-08-07"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " other scheduled principal, per the filer's schedule"
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
       "t": "2028"
      }
     ],
@@ -763,6 +827,64 @@
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "The filer's schedule shows "
+      },
+      {
+       "k": "computed",
+       "t": "$435.8MM",
+       "usd": 435800000,
+       "parts": [
+        {
+         "printed": "$ 435.8 million",
+         "usd": 435800000,
+         "src": {
+          "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+          "doc": "10-Q 2026-08-07"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " principal for 2028. Lines above at carrying value are not compared with it."
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2029"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "computed",
+       "t": "$44.9MM",
+       "usd": 44900000,
+       "parts": [
+        {
+         "printed": "$ 44.9 million",
+         "usd": 44900000,
+         "src": {
+          "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+          "doc": "10-Q 2026-08-07"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " other scheduled principal, per the filer's schedule"
       }
      ]
     ]
@@ -860,6 +982,32 @@
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "The filer's schedule shows "
+      },
+      {
+       "k": "computed",
+       "t": "$850.8MM",
+       "usd": 850800000,
+       "parts": [
+        {
+         "printed": "$ 850.8 million",
+         "usd": 850800000,
+         "src": {
+          "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+          "doc": "10-Q 2026-08-07"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " principal for 2030. Lines above at carrying value are not compared with it."
       }
      ]
     ]
@@ -1013,6 +1161,32 @@
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "The filer's schedule shows "
+      },
+      {
+       "k": "computed",
+       "t": "$640.1MM",
+       "usd": 640100000,
+       "parts": [
+        {
+         "printed": "$ 640.1 million",
+         "usd": 640100000,
+         "src": {
+          "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+          "doc": "10-Q 2026-08-07"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " principal for 2031. Lines above at carrying value are not compared with it."
       }
      ]
     ]

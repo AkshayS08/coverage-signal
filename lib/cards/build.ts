@@ -29,7 +29,7 @@ import { createTextLocator } from "../agent/verifyQuote";
 
 import type { Card, CardFacts, CardSection, Line, Segment, Source } from "./types";
 import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord } from "./labels";
-import { sentenceSupportsMaturity } from "../events/position";
+import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 
@@ -95,6 +95,8 @@ interface Item {
   basis: "face" | "carrying";
   /** The filer row this line stands for, where it is not the line's own name (a base row shown under its anchor twin). */
   rowLabel?: string;
+  /** A maturity stated as a range of years ("2026-2038"): a stated maturity, shown as the range (§2.5). */
+  range?: { from: string; to: string; stated: string; src: Source };
   /** The facility field the amount is, where it is one ("drawn"). */
   amountField?: string;
   note?: string;
@@ -238,6 +240,9 @@ export function buildCard(i: CardInputs): Card {
     }
     const printed = row.isCapacity ? f?.facilitySize?.value ?? row.amount : row.amount;
     const item: Item = { row, name: row.instrument, nameSrc, amountPrinted: printed, amountSrc, maturity, labels: { type: typeLabel(row, typeSrc), ...cls }, isCapacity: !!row.isCapacity, rolled: false, basis: "face" };
+    // A RANGE IS A STATED MATURITY (§2.5): "2026-2038" in the row's own line.
+    const range = !maturity && !row.isCapacity ? /\b(20\d\d)\s*(?:-|–|—|to|through)\s*(20\d\d)\b/.exec(amtSentence ?? "") : null;
+    if (range && range[1] < range[2]) item.range = { from: range[1], to: range[2], stated: range[0], src: amountSrc };
     // FACE FIRST. A row of a table with no bridge line is carrying value —
     // unless the facility it is drawn under states its drawn amount for the
     // position date, which is principal borrowed.
@@ -382,6 +387,7 @@ export function buildCard(i: CardInputs): Card {
     out.push(showName ? { k: "label", t: it.name, stated: it.name, src: it.nameSrc } : it.labels.type);
     if (opts.withDate !== false) {
       if (it.maturity) out.push(t(", due "), { k: "date", t: displayDate(it.maturity.date, it.maturity.granularity), date: it.maturity.date, granularity: it.maturity.granularity, src: it.maturity.src });
+      else if (it.range) out.push(t(", due "), { k: "label", t: `${it.range.from} to ${it.range.to}`, stated: it.range.stated, src: it.range.src });
       else if (it.row?.facilityMaturityNote) out.push(t(", maturity stated as a relative term, not a date"));
       else out.push(t(", no maturity stated"));
     }
@@ -454,15 +460,22 @@ export function buildCard(i: CardInputs): Card {
   const faceParts = faceGroups.flatMap((g) => g.parts);
   const carryingParts = carryingGroups.flatMap((g) => g.parts);
   // The filer's maturity schedule where the anchor itself prints it: principal by year, at the caption's scale (Rule 67).
-  const scheduleScale = (sentence: string) => (/in thousands/i.test(sentence) ? "thousand" : /in billions/i.test(sentence) ? "billion" : "million");
-  const scheduleParts: Part[] = rc.counts
-    ? []
-    : (i.facts?.schedule ?? [])
-        .filter((e) => e.amount.src.url === anchor.url)
-        .map((e) => {
-          const printed = `$ ${e.amount.value.replace(/[$\s]/g, "")} ${scheduleScale(e.amount.src.sentence)}`;
-          return { printed, usd: parseMoneyAmount(printed) ?? 0, src: src(e.amount.src.sentence, e.amount.src.url) };
-        });
+  // The scale is the caption's; where the schedule's sentence carries none, the note's table scale (Rule 67).
+  const tableScale = /thousand/i.test(rowEntries[0]?.amount ?? "") ? "thousand" : "million";
+  const scheduleScale = (sentence: string) => (/in thousands/i.test(sentence) ? "thousand" : /in billions/i.test(sentence) ? "billion" : /in millions/i.test(sentence) ? "million" : tableScale);
+  const scheduleUrl = rc.counts ? dm?.priorPeriodBase?.filingUrl ?? null : anchor.url;
+  const scheduleEntries = (i.facts?.schedule ?? [])
+    .filter((e) => e.amount.src.url === scheduleUrl)
+    .map((e) => {
+      const cell = `$ ${e.amount.value.replace(/[$\s]/g, "")}`;
+      const scaled = `${cell} ${scheduleScale(e.amount.src.sentence)}`;
+      const usd = parseMoneyAmount(scaled) ?? 0;
+      // A short cell whose scale is only in the caption ("$ 45" under "Dollars
+      // in Millions") is cited as the cell itself, its value scaled here.
+      const printed = amountSupportOf(scaled, e.amount.src.sentence).kind === "unsupported" ? cell : scaled;
+      return { period: e.period, part: { printed, usd, src: src(e.amount.src.sentence, e.amount.src.url) } as Part };
+    });
+  const scheduleParts: Part[] = rc.counts ? [] : scheduleEntries.map((e) => e.part);
   const faceFromSchedule = carryingParts.length > 0 && scheduleParts.length > 0;
   const faceTotalParts = faceFromSchedule ? scheduleParts : faceParts;
   const faceTotal = sum(faceTotalParts);
@@ -569,15 +582,52 @@ export function buildCard(i: CardInputs): Card {
   if (next) due.push([t("next: "), ...describe(next)]);
   if (allDebtItems.some((it) => /term loan/.test(it.labels.type.t))) due.push([t("Scheduled term-loan amortization: not read. Only final maturities are counted here.")]);
 
-  // ── 2.4 maturity ladder ──
-  const byYear = new Map<string, Line[]>();
+  // ── 2.5 maturity ladder: drawn debt by year, reconciled to the filer's schedule where printed ──
+  const RANGE = "Maturing over a range of years", NONE = "No maturity stated";
+  const byYear = new Map<string, Item[]>();
   for (const it of allDebtItems) {
-    const y = it.maturity ? it.maturity.date.slice(0, 4) : "No maturity stated";
-    const lines = byYear.get(y) ?? [];
-    lines.push(describe(it));
-    byYear.set(y, lines);
+    const y = it.maturity ? it.maturity.date.slice(0, 4) : it.range ? RANGE : NONE;
+    byYear.set(y, [...(byYear.get(y) ?? []), it]);
   }
-  const ladderBlocks = [...byYear.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([y, lines]) => ({ heading: [t(y)] as Line, lines }));
+  // Principal retired between a rolled base's date and the position date leaves the base's schedule for that year.
+  const retiredByYear = new Map<string, Part[]>();
+  if (rc.counts) for (const m of rc.movements.filter((x) => x.placement === "delta" && x.amountMillions < 0)) {
+    const y = (/\b(20\d\d)\b/.exec(`${m.instrument} ${m.sourceLine}`) ?? [])[1];
+    if (y) retiredByYear.set(y, [...(retiredByYear.get(y) ?? []), { printed: m.statedAs, usd: Math.abs(m.amountMillions) * 1e6, src: src(m.sourceLine, m.citedUrl) }]);
+  }
+  const scheduleByYear = new Map<string, { period: string; part: Part }>();
+  for (const e of scheduleEntries) {
+    const y = (/\b(20\d\d)\b/.exec(e.period) ?? [])[1];
+    if (y && !/thereafter|after/i.test(e.period)) scheduleByYear.set(y, e);
+  }
+  const years = [...new Set([...byYear.keys(), ...scheduleByYear.keys()])].sort((a, b) => (/^\d/.test(a) ? 0 : a === RANGE ? 1 : 2) - (/^\d/.test(b) ? 0 : b === RANGE ? 1 : 2) || a.localeCompare(b));
+  const neg = (ps: Part[]) => ps.map((p) => ({ ...p, usd: -p.usd }));
+  const ladderBlocks = years.map((y) => {
+    const items = byYear.get(y) ?? [];
+    const lines: Line[] = items.map((it) => describe(it));
+    const sch = scheduleByYear.get(y);
+    if (sch) {
+      const retired = retiredByYear.get(y) ?? [];
+      const faceItems = items.filter((it) => it.basis === "face");
+      const rowParts = faceItems.flatMap(partOf);
+      const period = /^20\d\d$/.test(sch.period.trim()) ? y : sch.period.trim();
+      const decimals = Math.max(dp([sch.part]), dp(rowParts));
+      const residual = sch.part.usd - sum(retired) - sum(rowParts);
+      const unit = 0.5 * 10 ** -decimals * 1e6;
+      const scheduleFig: Segment = { k: "computed", t: displayUsd(sch.part.usd, false, decimals), usd: sch.part.usd, parts: [sch.part] };
+      if (items.some((it) => it.basis === "carrying")) {
+        // Face and carrying are never netted: the schedule is shown, not compared.
+        lines.push([t("The filer's schedule shows "), scheduleFig, t(` principal for ${period}. Lines above at carrying value are not compared with it.`)]);
+      } else if (residual >= unit) {
+        const parts = [sch.part, ...neg(retired), ...neg(rowParts)];
+        lines.push([{ k: "computed", t: displayUsd(residual, false, decimals), usd: residual, parts }, t(` other scheduled principal, per the filer's schedule${period === y ? "" : ` for ${period}`}`)]);
+      } else if (residual <= -unit) {
+        const parts = [...rowParts, ...retired, ...neg([sch.part])];
+        lines.push([t("The filer's schedule shows "), scheduleFig, t(` for ${period}: `), { k: "computed", t: displayUsd(-residual, false, decimals), usd: -residual, parts }, t(" less than the lines above. That much of them is scheduled in other years.")]);
+      }
+    }
+    return { heading: [t(y)] as Line, lines };
+  });
   const ladderLines: Line[] = [];
   const capacity = anchorItems.filter((x) => x.isCapacity);
   if (capacity.length) ladderLines.push([t("Capacity, not debt:")], ...capacity.map((c) => describe(c)));
