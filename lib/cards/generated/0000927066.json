@@ -41,6 +41,80 @@
    ]
   ]
  },
+ "moves": {
+  "heading": "Recent debt moves",
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "During the period, Jan 1, 2026 to June 30, 2026: already in the position"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "label",
+       "t": "June 8, 2026",
+       "stated": "June 8, 2026",
+       "src": {
+        "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+        "doc": "10-Q 2026-08-04"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": Amended "
+      },
+      {
+       "k": "figure",
+       "t": "$500.0MM",
+       "printed": "$ 500,000 thousand",
+       "src": {
+        "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+        "doc": "10-Q 2026-08-04"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "Term Loan B-2",
+       "stated": "Term Loan B-2",
+       "src": {
+        "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+        "doc": "10-Q 2026-08-04"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "text",
+       "t": "used "
+      },
+      {
+       "k": "label",
+       "t": "to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees",
+       "stated": "to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees",
+       "src": {
+        "sentence": "The Company used the net proceeds from this transaction to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+        "doc": "10-Q 2026-08-04"
+       }
+      }
+     ]
+    ]
+   }
+  ]
+ },
  "headlines": {
   "totalDebt": {
    "heading": "Total debt",

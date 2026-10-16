@@ -92,6 +92,7 @@ export default function CardView({ card }: { card: Card }) {
         ))}
       </header>
       <Section s={card.thisWeek} />
+      {card.moves ? <Section s={card.moves} /> : null}
       <div className={styles.headlines}>
         <Section s={card.headlines.totalDebt} lead />
         <Section s={card.headlines.liquidity} lead />

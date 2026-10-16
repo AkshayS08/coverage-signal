@@ -97,6 +97,8 @@ interface Item {
   rowLabel?: string;
   /** A maturity stated as a range of years ("2026-2038"): a stated maturity, shown as the range (§2.5). */
   range?: { from: string; to: string; stated: string; src: Source };
+  /** What a stated debt move did to this instrument, linked (§2.3): shown on its own line. */
+  moveFlags?: Line;
   /** The facility field the amount is, where it is one ("drawn"). */
   amountField?: string;
   note?: string;
@@ -161,6 +163,8 @@ export function buildCard(i: CardInputs): Card {
   // (audit-spine instance 12).
   const anchorText = i.textByUrl.get(anchor.url) ?? "";
   const rowEntries: any[] = (dm?.scheduleSequence ?? []).filter((e: any) => e.kind === "row");
+  /** The scale the note's table prints its cells in (Rule 67). */
+  const tableScale = /thousand/i.test(rowEntries[0]?.amount ?? "") ? "thousand" : "million";
   const tableText = (() => {
     const loc = createTextLocator(anchorText);
     const at = rowEntries.map((e) => loc.find(e.sourceLine)).filter((x): x is number => x !== null);
@@ -393,6 +397,7 @@ export function buildCard(i: CardInputs): Card {
     }
     if (it.isCapacity) out.push(t(" · undrawn commitment, not debt"));
     if (it.rolled && rolledLabel) out.push(t(" · from the 10-K"));
+    if (it.moveFlags) out.push(...it.moveFlags);
     for (const f of opts.flags ?? []) out.push(t(` · ${f}`));
     const suffix = notStatedSuffix(it.labels.seniority, it.labels.security);
     if (suffix) out.push(t(" · "), { k: "notStated", t: suffix, src: it.amountSrc });
@@ -436,6 +441,234 @@ export function buildCard(i: CardInputs): Card {
     thisWeekLines.push(line);
   } else if (actionable.length > 0) thisWeekLines.push([t("No other filings this week.")]);
 
+
+  // ── 2.3 RECENT DEBT MOVES (card_spec v2.0 §2.3) ──
+  // Every debt transaction the filings state from the start of the anchor's
+  // fiscal year through the brief date, from the verified card facts (each
+  // copied with its sentence, checked in code, reproduced across three asks).
+  // Linked both ways: a move that funds or retires another names it, and an
+  // instrument a move touches carries that fact on its own ladder line.
+  type Move = {
+    when: string; sort: string; type: string; status: "completed" | "pending"; inPeriod: boolean;
+    dateSeg: Segment; instrument: string; instSeg: Segment; face: Segment | null; faceUsd: number | null;
+    sentence: string; url: string; funding: Line; use: Line; price: Segment | null; extra: Line;
+  };
+  const fyStart = `${periodEnd.slice(0, 4)}-01-01`;
+  // A fact's sentence is linked as the FILER printed it: the document's own
+  // sentence containing the copied text (typography aside), which also widens
+  // a copied fragment to its whole sentence.
+  const normQ = (x: string) => x.toLowerCase().replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[\s\u00a0]+/g, " ").replace(/ %/g, "%").trim();
+  const ownSentence = (fragment: string, url: string): Source | null => {
+    const want = normQ(fragment);
+    return sentencesOf(url).find((x) => normQ(x.sentence).includes(want)) ?? null;
+  };
+  /** The value as the filer's sentence prints it (quotes, spacing): what a label states is the filer's text. */
+  const filerSpan = (value: string, sentence: string): string => {
+    const SP = String.raw`[\s ]+`;
+    const parts: string[] = [];
+    for (const ch of value.trim().replace(/[\s ]+/g, " ").replace(/ %/g, "%")) {
+      if (/["“”]/.test(ch)) parts.push(`["“”]`);
+      else if (/['‘’]/.test(ch)) parts.push(`['‘’]`);
+      else if (ch === " ") parts.push(SP);
+      else if (ch === "%") parts.push(String.raw`[\s ]*%`);
+      else parts.push(ch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    }
+    const pat = parts.join("");
+    const m = new RegExp(pat, "i").exec(sentence);
+    return m ? m[0] : value;
+  };
+  const factLabel = (text: string, fact: { value: string; src: { sentence: string; url: string } }): Segment => {
+    const where = factSrc(fact);
+    return { k: "label", t: text, stated: filerSpan(fact.value, where.sentence), src: where };
+  };
+  const factSrc = (x: { src: { sentence: string; url: string } }) => ownSentence(x.src.sentence, x.src.url) ?? src(x.src.sentence, x.src.url);
+  const moveDocs = () => [...new Set([anchor.url, ...(i.laterUrls ?? [])])].filter((u) => i.textByUrl.has(u));
+  /** The instrument as a label linked to a sentence that prints it: its own sentence, else one in a filing that names it, else the longest end of the name that sentence does print. */
+  const instrumentSeg = (value: string, own: Source): Segment => {
+    if (containsWord(own.sentence, filerSpan(value, own.sentence))) return { k: "label", t: tidyCoupon(value), stated: filerSpan(value, own.sentence), src: own };
+    for (const u of [own.url, ...moveDocs()]) {
+      const hit = sentencesOf(u).find((x) => containsWord(x.sentence, value));
+      if (hit) return { k: "label", t: tidyCoupon(value), stated: value, src: hit };
+    }
+    const words = value.split(/\s+/);
+    for (let n = words.length - 1; n > 0; n--) {
+      for (const part of [words.slice(words.length - n).join(" "), words.slice(0, n).join(" ")]) if (containsWord(own.sentence, part)) return { k: "label", t: tidyCoupon(part), stated: part, src: own };
+    }
+    return t(tidyCoupon(value));
+  };
+  // A bare figure in a note printed "in thousands" carries the caption's scale (Rule 67).
+  const scaled = (value: string, url: string) => (url === anchor.url && !/thousand|million|billion/i.test(value) && /\d/.test(value) ? `${value.trim()} ${tableScale}` : value);
+  const moneyIn = (sentence: string) => extractFactTokens(sentence).filter((x) => x.kind === "money" && x.moneyValue !== undefined && x.moneyValue > 0);
+  const isoOfText = (v: string): { iso: string; g: DateGranularity } | null => {
+    const m = new RegExp(`(${MONTHS})(?:\\s+(\\d{1,2}),)?\\s+(20\\d\\d)`).exec(v);
+    if (!m) return null;
+    const mm = String(MONTH_NAMES.indexOf(m[1]) + 1).padStart(2, "0");
+    return { iso: `${m[3]}-${mm}-${(m[2] ?? "1").padStart(2, "0")}`, g: m[2] ? "day" : "month" };
+  };
+  /** Does `text` name the note `instrument`: its coupon, and its year where the instrument states one. */
+  const sameNote = (text: string, instrument: string) => {
+    const cb = couponsIn(instrument)[0]?.rate;
+    const yb = (/\b(20\d\d)\b/.exec(instrument.replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*/g, "")) ?? [])[1];
+    return cb !== undefined && couponsIn(text).some((c) => Math.abs(c.rate - cb) < 1e-9) && (!yb || text.includes(yb));
+  };
+  const RETIRES = new Set(["redemption", "special call", "tender or repurchase", "repayment at maturity", "paydown"]);
+  const TYPE_WORD: Record<string, [string, string]> = {
+    issuance: ["Issued", "Issuance announced"], redemption: ["Redeemed", "Redemption announced"], "special call": ["Special call redemption", "Special call announced"],
+    "tender or repurchase": ["Repurchased", "Repurchase announced"], "repayment at maturity": ["Repaid at maturity", "Repayment announced"],
+    "facility entry": ["Entered", "Entry announced"], "facility amendment": ["Amended", "Amendment announced"], "facility termination": ["Terminated", "Termination announced"],
+    refinancing: ["Refinanced", "Refinancing announced"], draw: ["Drew on", "Draw announced"], paydown: ["Repaid", "Repayment announced"], "incremental add-on": ["Incremental add-on", "Add-on announced"],
+  };
+  const movesAll: Move[] = [];
+  for (const m of i.facts?.moves ?? []) {
+    const url = m.date.src.url;
+    if (!(url === anchor.url || (i.laterUrls ?? []).includes(url))) continue;
+    const d = isoOfText(m.date.value);
+    if (!d || d.iso < fyStart || d.iso > briefDate) continue;
+    // A face the extraction did not return is read from the move's own sentence where it states exactly one amount.
+    const faceVal = m.face ? scaled(m.face.value, m.face.src.url) : null;
+    let face: Segment | null = m.face && faceVal ? { k: "figure", t: displayAmount(faceVal, m.face.src.sentence), printed: faceVal, src: factSrc(m.face) } : null;
+    if (!face) {
+      const one = moneyIn(m.instrument.src.sentence);
+      if (one.length === 1) face = { k: "figure", t: displayAmount(one[0].raw, m.instrument.src.sentence), printed: one[0].raw, src: factSrc(m.instrument) };
+    }
+    const instSrc = factSrc(m.instrument);
+    movesAll.push({
+      when: m.date.value, sort: d.iso, type: m.type, status: m.status, inPeriod: url === anchor.url,
+      dateSeg: factLabel(m.date.value, m.date),
+      instrument: m.instrument.value, instSeg: instrumentSeg(m.instrument.value, instSrc),
+      face, faceUsd: face && face.k === "figure" ? parseMoneyAmount(face.printed) : null,
+      sentence: instSrc.sentence, url,
+      funding: m.funding ? [t("funded by "), factLabel(m.funding.value, m.funding)] : [],
+      use: m.use ? [t("used "), factLabel(m.use.value, m.use)] : [],
+      price: m.price ? factLabel(`at ${m.price.value.replace(/\s+%/, "%")}`, m.price) : null,
+      extra: [],
+    });
+  }
+  // A pending redemption's size, from the cached answer's own redemption sentence for the same note.
+  for (const r of result.results.flatMap((x: any) => x.redeems ?? []) as { instrument: string; amount: string | null; sourceLine: string }[]) {
+    const mv = movesAll.find((m) => !m.face && RETIRES.has(m.type) && sameNote(m.instrument, r.instrument));
+    if (mv && r.amount && amountSupportOf(r.amount, r.sourceLine).kind !== "unsupported") {
+      mv.face = { k: "figure", t: displayAmount(r.amount, r.sourceLine), printed: r.amount, src: src(r.sourceLine, mv.url) };
+      mv.faceUsd = parseMoneyAmount(r.amount);
+    }
+  }
+  // FUNDED BY / USED TO, both ways. A retirement whose sentence spends "net
+  // proceeds" is funded by the issuance stated in its own document, where
+  // that document states exactly one; otherwise by the issuance whose stated
+  // use names the retired note.
+  for (const r of movesAll.filter((m) => RETIRES.has(m.type))) {
+    const linked = [r.sentence, r.instSeg.k === "label" ? r.instSeg.src.sentence : "", r.dateSeg.k === "label" ? r.dateSeg.src.sentence : ""];
+    if (!linked.some((x) => /net proceeds/i.test(x)) || r.funding.length) continue;
+    const issuances = movesAll.filter((m) => m.type === "issuance");
+    const sameDoc = issuances.filter((m) => m.url === r.url);
+    const by = (sameDoc.length === 1 ? sameDoc[0] : null) ?? issuances.find((m) => m.use.some((x) => x.k === "label" && sameNote(x.stated, r.instrument)));
+    if (!by) continue;
+    const spend = linked.find((x) => /net proceeds/i.test(x))!;
+    const spendSrc = [r.instSeg, r.dateSeg].map((x) => (x.k === "label" ? x.src : null)).find((x) => x && x.sentence === spend) ?? src(spend, r.url);
+    r.funding = [t("funded by the "), { k: "label", t: by.instSeg.t, stated: by.instSeg.k === "label" ? by.instSeg.stated : by.instrument, src: by.instSeg.k === "label" ? by.instSeg.src : spendSrc }, t(` issued ${by.when}`), ...(/cash on hand/i.test(spend) ? [t(", together with cash on hand")] : []), t(" ("), { k: "label", t: "use of proceeds", stated: "net proceeds", src: spendSrc }, t(")")];
+    if (!by.use.length) by.use = [t("used to "), { k: "label", t: `${r.type === "paydown" ? "repay" : "retire"} the ${tidyCoupon(r.instrument)}`, stated: r.instrument, src: src(r.sentence, r.url) }];
+  }
+  for (const is of movesAll.filter((m) => m.type === "issuance" && !m.use.length)) {
+    if (movesAll.filter((m) => m.type === "issuance" && m.url === is.url).length !== 1) continue;
+    const uses = sentencesOf(is.url).map((x) => ({ x, m: /\bused? the net proceeds\b.*?\bto\s+(.+?)\.?$/i.exec(x.sentence) })).filter((u) => u.m);
+    if (uses.length === 1) is.use = [t("used to "), { k: "label", t: uses[0].m![1], stated: uses[0].m![1], src: uses[0].x }];
+  }
+  // An issuance announced before it closed: the announcing sentences in later filings, linked on the same line.
+  for (const is of movesAll.filter((m) => m.type === "issuance" && !m.inPeriod)) {
+    const year = (/\b(20\d\d)\b/.exec(is.instrument) ?? [])[1];
+    for (const u of (i.laterUrls ?? []).filter((x) => x !== is.url && i.textByUrl.has(x))) {
+      for (const sx of sentencesOf(u)) {
+        if (!/\b(?:pricing|offering|upsize)\b/i.test(sx.sentence) || !year || !new RegExp(`notes due ${year}`, "i").test(sx.sentence)) continue;
+        const named = couponsIn(sx.sentence).length ? sameNote(sx.sentence, is.instrument) : movesAll.filter((m) => m.type === "issuance" && (/\b(20\d\d)\b/.exec(m.instrument) ?? [])[1] === year).length === 1;
+        const when = isoOfText(sx.sentence);
+        if (!named || !when) continue;
+        const what = /pricing/i.test(sx.sentence) ? "priced" : "offering launched";
+        is.extra.push(t(`; ${what} `), { k: "label", t: displayDate(when.iso, when.g), stated: (new RegExp(`(${MONTHS})(?:\\s+\\d{1,2},)?\\s+20\\d\\d`).exec(sx.sentence) ?? [""])[0], src: sx });
+      }
+    }
+  }
+  // An add-on: the further-issuance sentence and the price, from the same filing.
+  for (const is of movesAll.filter((m) => m.type === "issuance")) {
+    for (const sx of sentencesOf(is.url)) {
+      if (sx.sentence === is.sentence || !sameNote(sx.sentence, is.instrument) && !/additional notes/i.test(sx.sentence)) continue;
+      if (/further issuance/i.test(sx.sentence)) is.extra.push(t("; a "), { k: "label", t: "further issuance", stated: "further issuance", src: sx }, t(" of the existing notes"));
+      else if (!is.price && /purchase price|issue price|offering price/i.test(sx.sentence)) {
+        const pct = /\b\d{1,3}(?:\.\d+)?\s?%/.exec(sx.sentence);
+        if (pct) is.price = { k: "label", t: `at ${pct[0].replace(/\s+%/, "%")} of principal`, stated: pct[0], src: sx };
+      }
+    }
+  }
+  // Base events the facts do not state, kept rather than dropped.
+  for (const e of pos.tier2.events) {
+    if (movesAll.some((m) => sameNote(m.instrument, e.instrument) || containsWord(m.instrument, e.instrument))) continue;
+    const s0 = src(e.sourceLine, e.citedUrl);
+    movesAll.push({
+      when: e.date ?? "date not stated", sort: e.date ?? "", type: e.kind, status: e.nets === "unconfirmed" ? "pending" : "completed", inPeriod: false,
+      dateSeg: t(e.date ? displayDate(e.date, "day") : "Date not stated"), instrument: e.instrument, instSeg: { k: "label", t: tidyCoupon(e.instrument), stated: e.instrument, src: s0 },
+      face: e.effect !== null ? { k: "figure", t: displayAmount(`$${Math.abs(e.effect).toLocaleString("en-US")}`, e.sourceLine), printed: `$${Math.abs(e.effect).toLocaleString("en-US")}`, src: s0 } : null,
+      faceUsd: e.effect !== null ? Math.abs(e.effect) : null, sentence: e.sourceLine, url: e.citedUrl, funding: [], use: [], price: null, extra: [],
+    });
+  }
+  for (const w of pos.withinPeriodRepayments) {
+    if (movesAll.some((m) => sameNote(m.instrument, w.instrument) || containsWord(m.instrument, w.instrument))) continue;
+    const s0 = src(w.sourceLine, w.citedUrl);
+    movesAll.push({
+      when: "during the period", sort: periodEnd, type: "paydown", status: "completed", inPeriod: true,
+      dateSeg: t("During the period"), instrument: w.instrument, instSeg: { k: "label", t: tidyCoupon(w.instrument), stated: w.instrument, src: s0 },
+      face: { k: "figure", t: displayAmount(w.priorAmount, w.sourceLine), printed: w.priorAmount, src: s0 }, faceUsd: parseMoneyAmount(w.priorAmount),
+      sentence: w.sourceLine, url: w.citedUrl, funding: [], use: [], price: null, extra: [t(" (the prior balance; repaid inside the period)")],
+    });
+  }
+  for (const m of movesAll) {
+    const dateText = m.dateSeg.k === "label" ? m.dateSeg.stated : null;
+    if (!dateText || !couponsIn(m.instrument).length) continue;
+    const seen = new Set([m.sentence, m.dateSeg.k === "label" ? m.dateSeg.src.sentence : ""].map(normQ));
+    const again = moveDocs().flatMap(sentencesOf).filter((x) => !seen.has(normQ(x.sentence)) && containsWord(x.sentence, dateText) && sameNote(x.sentence, m.instrument) && !movesAll.some((o) => o !== m && sameNote(x.sentence, o.instrument) && o.when === m.when && o.type !== m.type));
+    if (again.length) m.extra.push(t(" ("), { k: "label", t: "also stated here", stated: dateText, src: again[0] }, t(")"));
+  }
+  const moveLine = (m: Move): Line => {
+    const [done, pending] = TYPE_WORD[m.type] ?? [m.type.charAt(0).toUpperCase() + m.type.slice(1), `${m.type} announced`];
+    const line: Line = [m.dateSeg, t(`: ${m.status === "pending" ? pending : done} `)];
+    if (m.face) line.push(m.face, t(" "));
+    line.push(m.instSeg);
+    for (const part of [m.funding, m.use]) if (part.length) line.push(t(", "), ...part);
+    if (m.price) line.push(t(", "), m.price);
+    line.push(...m.extra);
+    if (m.status === "pending") line.push(t(" · pending, not yet confirmed by a filing"));
+    return line;
+  };
+  const newestFirst = (a: Move, b: Move) => b.sort.localeCompare(a.sort);
+  const since = movesAll.filter((m) => !m.inPeriod).sort(newestFirst);
+  const during = movesAll.filter((m) => m.inPeriod).sort(newestFirst);
+  const moves: CardSection = {
+    heading: "Recent debt moves",
+    lines: movesAll.length ? [] : [[t(`No debt moves stated between ${shortDate(fyStart)} and ${shortDate(briefDate)}.`)]],
+    blocks: [
+      ...(since.length ? [{ heading: [t(`Since ${displayDate(periodEnd, "day")}: not yet in the position totals`)] as Line, lines: since.map(moveLine) }] : []),
+      ...(during.length ? [{ heading: [t(`During the period, ${shortDate(fyStart)} to ${shortDate(periodEnd)}: already in the position`)] as Line, lines: during.map(moveLine) }] : []),
+    ],
+  };
+  // ON THE INSTRUMENT'S OWN LINE: what a move did to it. A carrying-value line
+  // whose retirement sentence states the outstanding principal before it
+  // ("$400 million … of the $800 million in outstanding principal amount")
+  // shows its remaining face, computed from both.
+  for (const it of allDebtItems) {
+    for (const m of movesAll.filter((x) => RETIRES.has(x.type) && sameNote(x.instrument, it.name) && (!it.maturity || !/\b20\d\d\b/.test(x.instrument) || x.instrument.includes(it.maturity.date.slice(0, 4))))) {
+      const verb = (TYPE_WORD[m.type]?.[0] ?? m.type).toLowerCase();
+      if (m.status === "pending") { it.moveFlags = [...(it.moveFlags ?? []), t(" · "), ...(m.face ? [m.face, t(" ")] : []), { k: "label", t: "pending redemption", stated: m.instrument, src: m.instSeg.k === "label" ? m.instSeg.src : src(m.sentence, m.url) }, t(", not yet confirmed by a filing")]; continue; }
+      const prior = moneyIn(m.sentence).filter((x) => new RegExp(`${x.raw.replace(/[$.*+?^{}()|[\]\\]/g, "\\$&")}\\s+in\\s+outstanding principal`, "i").test(m.sentence));
+      if (it.basis === "carrying" && m.inPeriod && m.faceUsd && prior.length === 1) {
+        const before = { printed: prior[0].raw, usd: prior[0].moneyValue!, src: src(m.sentence, m.url) };
+        const retired = { printed: (m.face as any).printed, usd: -m.faceUsd, src: (m.face as any).src };
+        it.amountParts = [before, retired];
+        it.basis = "face";
+        it.moveFlags = [...(it.moveFlags ?? []), t(" · "), m.face!, t(" of "), { k: "figure", t: displayAmount(before.printed, m.sentence), printed: before.printed, src: before.src }, t(` ${verb} ${m.when}`)];
+      } else {
+        it.moveFlags = [...(it.moveFlags ?? []), t(" · "), ...(m.face ? [m.face, t(" ")] : []), { k: "label", t: verb, stated: m.instrument, src: m.instSeg.k === "label" ? m.instSeg.src : src(m.sentence, m.url) }, t(` ${m.when}${m.inPeriod ? "" : ", since the position date"}`)];
+      }
+    }
+  }
+
   // ── 2.3 total debt, at face (card_spec §3.2) ──
   // Every line is one basis. Face where every line states face; where some
   // lines state only carrying value, the face total is the filer's own
@@ -461,7 +694,6 @@ export function buildCard(i: CardInputs): Card {
   const carryingParts = carryingGroups.flatMap((g) => g.parts);
   // The filer's maturity schedule where the anchor itself prints it: principal by year, at the caption's scale (Rule 67).
   // The scale is the caption's; where the schedule's sentence carries none, the note's table scale (Rule 67).
-  const tableScale = /thousand/i.test(rowEntries[0]?.amount ?? "") ? "thousand" : "million";
   const scheduleScale = (sentence: string) => (/in thousands/i.test(sentence) ? "thousand" : /in billions/i.test(sentence) ? "billion" : /in millions/i.test(sentence) ? "million" : tableScale);
   const scheduleUrl = rc.counts ? dm?.priorPeriodBase?.filingUrl ?? null : anchor.url;
   const scheduleEntries = (i.facts?.schedule ?? [])
@@ -668,7 +900,7 @@ export function buildCard(i: CardInputs): Card {
     line.push(t(` (${e.kind}${e.nets ? `, ${e.nets === "unsized" ? "amount not stated in the confirming filing" : "not yet confirmed by a filing"}` : ""}) — not in the position-date total.`));
     events.push(line);
   }
-  if (events.length) ladderLines.push([t("Events:")], ...events);
+  void events;
   if (rolledLabel) ladderLines.push([t(`Lines marked "from the 10-K": ${rolledSentence(rolledLabel).replace(/^This list comes from/, "stated in")}`)]);
   if (rolledNil.length) ladderLines.push([t(`${rolledNil.length} line${rolledNil.length === 1 ? "" : "s"} the ${rolledFrom(rolledLabel ?? "")} 10-K states at $0, not debt: ${rolledNil.join("; ")}.`)]);
   if (dedupNotes.length) ladderLines.push([t(`${dedupNotes.length} note${dedupNotes.length === 1 ? " is" : "s are"} stated in both the ${anchor.form} and the 10-K; each is shown once, as the ${anchor.form} states it.`)]);
@@ -805,6 +1037,7 @@ export function buildCard(i: CardInputs): Card {
     previousBrief: i.previousBrief,
     header,
     thisWeek: { heading: "This week", lines: thisWeekLines },
+    moves,
     headlines: {
       totalDebt,
       liquidity: { heading: "Liquidity", lines: liqLines },

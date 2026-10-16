@@ -41,6 +41,284 @@
    ]
   ]
  },
+ "moves": {
+  "heading": "Recent debt moves",
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "Since June 30, 2026: not yet in the position totals"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "label",
+       "t": "September 23, 2026",
+       "stated": "September 23, 2026",
+       "src": {
+        "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes. The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": Redemption announced "
+      },
+      {
+       "k": "figure",
+       "t": "$1,500MM",
+       "printed": "$ 1.5 billion",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "5.125% senior secured first lien notes due November 2027",
+       "stated": "5.125% senior secured first lien notes due November 2027",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "text",
+       "t": "funded by the "
+      },
+      {
+       "k": "label",
+       "t": "6.250% senior notes due 2034",
+       "stated": "6.250% senior notes due 2034",
+       "src": {
+        "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " issued September 22, 2026"
+      },
+      {
+       "k": "text",
+       "t": ", together with cash on hand"
+      },
+      {
+       "k": "text",
+       "t": " ("
+      },
+      {
+       "k": "label",
+       "t": "use of proceeds",
+       "stated": "net proceeds",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ")"
+      },
+      {
+       "k": "text",
+       "t": " · pending, not yet confirmed by a filing"
+      }
+     ],
+     [
+      {
+       "k": "label",
+       "t": "September 23, 2026",
+       "stated": "September 23, 2026",
+       "src": {
+        "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes. The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": Redemption announced "
+      },
+      {
+       "k": "figure",
+       "t": "$500MM",
+       "printed": "$ 0.5 billion",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "6.125% senior notes due October 2028",
+       "stated": "6.125% senior notes due October 2028",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "text",
+       "t": "funded by the "
+      },
+      {
+       "k": "label",
+       "t": "6.250% senior notes due 2034",
+       "stated": "6.250% senior notes due 2034",
+       "src": {
+        "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " issued September 22, 2026"
+      },
+      {
+       "k": "text",
+       "t": ", together with cash on hand"
+      },
+      {
+       "k": "text",
+       "t": " ("
+      },
+      {
+       "k": "label",
+       "t": "use of proceeds",
+       "stated": "net proceeds",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ")"
+      },
+      {
+       "k": "text",
+       "t": " · pending, not yet confirmed by a filing"
+      }
+     ],
+     [
+      {
+       "k": "label",
+       "t": "September 22, 2026",
+       "stated": "September 22, 2026",
+       "src": {
+        "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": Issued "
+      },
+      {
+       "k": "figure",
+       "t": "$2,000MM",
+       "printed": "$2,000,000,000 in aggregate principal amount",
+       "src": {
+        "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "6.250% senior notes due 2034",
+       "stated": "6.250% senior notes due 2034",
+       "src": {
+        "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "text",
+       "t": "used "
+      },
+      {
+       "k": "label",
+       "t": "to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\")",
+       "stated": "to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”)",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": "; offering launched "
+      },
+      {
+       "k": "label",
+       "t": "September 8, 2026",
+       "stated": "September 8, 2026",
+       "src": {
+        "sentence": "On September 8, 2026 , Tenet Healthcare Corporation (the “Company”) issued a press release announcing the commencement of private placement offering of $1.5 billion in aggregate principal amount of its senior notes due 2034.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": "; priced "
+      },
+      {
+       "k": "label",
+       "t": "September 8, 2026",
+       "stated": "September 8, 2026",
+       "src": {
+        "sentence": "Additionally, on September 8, 2026 , the Company issued a press release announcing the upsize and pricing of $2.0 billion in aggregate principal amount of its 6.250% senior notes due 2034 (the “notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      }
+     ]
+    ]
+   }
+  ]
+ },
  "headlines": {
   "totalDebt": {
    "heading": "Total debt",
@@ -648,6 +926,38 @@
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
        "doc": "8-K 2026-09-22"
       }
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "$1,500MM",
+      "printed": "$ 1.5 billion",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "pending redemption",
+      "stated": "5.125% senior secured first lien notes due November 2027",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+       "doc": "thc-20260908.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", not yet confirmed by a filing"
      }
     ],
     [
@@ -823,6 +1133,38 @@
      },
      {
       "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "$500MM",
+      "printed": "$ 0.5 billion",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "pending redemption",
+      "stated": "6.125% senior notes due October 2028",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+       "doc": "thc-20260908.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", not yet confirmed by a filing"
+     },
+     {
+      "k": "text",
       "t": " · month only stated, may fall within 24 months, see source"
      }
     ],
@@ -912,6 +1254,38 @@
        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
        "doc": "8-K 2026-09-22"
       }
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "$1,500MM",
+      "printed": "$ 1.5 billion",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "pending redemption",
+      "stated": "5.125% senior secured first lien notes due November 2027",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+       "doc": "thc-20260908.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", not yet confirmed by a filing"
      }
     ]
    ]
@@ -970,86 +1344,6 @@
     {
      "k": "text",
      "t": " · undrawn commitment, not debt"
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "Events:"
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "Since June 30, 2026: "
-    },
-    {
-     "k": "label",
-     "t": "6.250% senior notes due 2034",
-     "stated": "6.250% senior notes due 2034",
-     "src": {
-      "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the \"Company\") issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the \"Notes\").",
-      "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
-      "doc": "8-K 2026-09-22"
-     }
-    },
-    {
-     "k": "text",
-     "t": ", "
-    },
-    {
-     "k": "figure",
-     "t": "$2,000MM",
-     "printed": "$2,000,000,000",
-     "src": {
-      "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the \"Company\") issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the \"Notes\").",
-      "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
-      "doc": "8-K 2026-09-22"
-     }
-    },
-    {
-     "k": "text",
-     "t": " (issuance) — not in the position-date total."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "Since June 30, 2026: "
-    },
-    {
-     "k": "label",
-     "t": "5.125% senior secured first lien notes due November 2027",
-     "stated": "5.125% senior secured first lien notes due November 2027",
-     "src": {
-      "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
-      "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
-      "doc": "8-K 2026-09-22"
-     }
-    },
-    {
-     "k": "text",
-     "t": " (pending, not yet confirmed by a filing) — not in the position-date total."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "Since June 30, 2026: "
-    },
-    {
-     "k": "label",
-     "t": "6.125% senior notes due October 2028",
-     "stated": "6.125% senior notes due October 2028",
-     "src": {
-      "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
-      "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
-      "doc": "8-K 2026-09-22"
-     }
-    },
-    {
-     "k": "text",
-     "t": " (pending, not yet confirmed by a filing) — not in the position-date total."
     }
    ]
   ],
@@ -1176,6 +1470,38 @@
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
         "doc": "8-K 2026-09-22"
        }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "figure",
+       "t": "$1,500MM",
+       "printed": "$ 1.5 billion",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "pending redemption",
+       "stated": "5.125% senior secured first lien notes due November 2027",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", not yet confirmed by a filing"
       }
      ],
      [
@@ -1385,6 +1711,38 @@
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
         "doc": "8-K 2026-09-22"
        }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "figure",
+       "t": "$500MM",
+       "printed": "$ 0.5 billion",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "pending redemption",
+       "stated": "6.125% senior notes due October 2028",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", not yet confirmed by a filing"
       }
      ],
      [

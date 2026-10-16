@@ -58,6 +58,62 @@
    ]
   ]
  },
+ "moves": {
+  "heading": "Recent debt moves",
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "During the period, Jan 1, 2026 to June 30, 2026: already in the position"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "label",
+       "t": "March 2026",
+       "stated": "March 2026",
+       "src": {
+        "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+        "doc": "10-Q 2026-07-30"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": Repaid at maturity "
+      },
+      {
+       "k": "figure",
+       "t": "$550MM",
+       "printed": "$ 550 million",
+       "src": {
+        "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+        "doc": "10-Q 2026-07-30"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "1.250% senior notes",
+       "stated": "1.250 % senior notes",
+       "src": {
+        "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+        "doc": "10-Q 2026-07-30"
+       }
+      }
+     ]
+    ]
+   }
+  ]
+ },
  "headlines": {
   "totalDebt": {
    "heading": "Total debt",
@@ -1468,32 +1524,6 @@
       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
       "doc": "10-Q 2026-07-30"
      }
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "Events:"
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "Repaid: "
-    },
-    {
-     "k": "figure",
-     "t": "$550MM",
-     "printed": "$ 550 million",
-     "src": {
-      "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
-      "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-      "doc": "10-Q 2026-07-30"
-     }
-    },
-    {
-     "k": "text",
-     "t": " 1.250% senior notes, between Dec 31, 2025 and June 30, 2026. Not on the ladder."
     }
    ],
    [

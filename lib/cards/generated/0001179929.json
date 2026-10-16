@@ -41,6 +41,48 @@
    ]
   ]
  },
+ "moves": {
+  "heading": "Recent debt moves",
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "During the period, Jan 1, 2026 to June 30, 2026: already in the position"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "label",
+       "t": "February 4, 2026",
+       "stated": "February 4, 2026",
+       "src": {
+        "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": Amended "
+      },
+      {
+       "k": "label",
+       "t": "Credit Agreement",
+       "stated": "Credit Agreement",
+       "src": {
+        "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      }
+     ]
+    ]
+   }
+  ]
+ },
  "headlines": {
   "totalDebt": {
    "heading": "Total debt",
