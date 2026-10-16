@@ -27,7 +27,7 @@ import { classifyInstrument, type NoteSeniorityStatement } from "../events/instr
 import { extractFactTokens, factTokensMatch } from "../agent/factTokens";
 import { createTextLocator } from "../agent/verifyQuote";
 
-import type { Card, CardSection, Line, Segment, Source } from "./types";
+import type { Card, CardFacts, CardSection, Line, Segment, Source } from "./types";
 import { classLabels, notStatedSuffix, statementReaches, typeLabel, containsWord } from "./labels";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, shortDate, weekRange } from "./format";
 
@@ -42,6 +42,8 @@ export interface CardInputs {
   textByUrl: Map<string, string>;
   /** The anchor's own sentence stating its period end (its cover line), for every "as of" date. */
   periodSentence: string | null;
+  /** Verified card facts (capture/facts.ts), where captured. */
+  facts?: CardFacts | null;
 }
 
 /** 8-K items that change, or could change, debt, liquidity or maturities (card_spec 2.2). */

@@ -45,6 +45,40 @@ export type Segment =
 
 export type Line = Segment[];
 
+/**
+ * CARD FACTS — the card-facts extraction's output AFTER verification
+ * (lib/cards/capture/facts.ts). Every value is copied by the model with the
+ * sentence that states it; code verified the sentence is in the document and
+ * states the value, and the fact reproduced identically across three asks.
+ * Anything that varied is not here: it is in `residual`, with the variation.
+ */
+export interface FactSource { sentence: string; url: string }
+export interface Fact<T = string> { value: T; src: FactSource }
+export interface CardFacts {
+  cik: string;
+  promptVersion: number;
+  asks: number;
+  costUsd: number;
+  schedule: { period: string; amount: Fact }[];
+  subFacilities: { facility: string; kind: string; amount: Fact }[];
+  uncommitted: { description: Fact; amount: Fact | null }[];
+  commercialPaper: { programSize: Fact | null; outstanding: Fact | null; averageRate: Fact | null; backedBy: Fact | null } | null;
+  cash: { label: Fact; amount: Fact }[];
+  faces: { instrument: string; face: Fact }[];
+  maturities: { instrument: string; maturity: Fact }[];
+  moves: {
+    date: Fact;
+    type: string;
+    status: "completed" | "pending";
+    instrument: Fact;
+    face: Fact | null;
+    funding: Fact | null;
+    use: Fact | null;
+    price: Fact | null;
+  }[];
+  residual: { fact: string; why: string; variation: string[] }[];
+}
+
 export interface CardSection {
   heading: string;
   /** Lines in reading order. An empty section still states why it is empty. */

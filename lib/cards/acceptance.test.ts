@@ -26,6 +26,9 @@ import { containsWord } from "./labels";
 import { buildCard } from "./build";
 import { kindOf } from "./headings";
 import type { Card, Line, Segment } from "./types";
+import { reachable as reach } from "./reach";
+const reachable = (entry: string, read?: (p: string) => string | null) => reach(entry, ROOT, read);
+const readDisk = undefined;
 
 const ROOT = process.cwd();
 const GEN = join(ROOT, "lib", "cards", "generated");
@@ -141,30 +144,6 @@ const T1_PURITY: Test = {
     }
   },
 };
-
-/** §5.1, the card page: nothing reachable from it may call a model, a cache, or the network. */
-const FORBIDDEN = [/lib[\\/]agent[\\/](?:loop|claude|proceedsUse|referencedNote)\.ts$/, /lib[\\/]cache[\\/]answerCache\.ts$/, /lib[\\/]fetch[\\/](?:http|filingText|filings|cache)\.ts$/];
-const FORBIDDEN_PKG = /^(?:@anthropic-ai\/sdk|@vercel\/blob)$/;
-function reachable(entry: string, read: (p: string) => string | null): string[] {
-  const seen = new Set<string>(), bad: string[] = [];
-  const walk = (file: string) => {
-    if (seen.has(file)) return;
-    seen.add(file);
-    if (FORBIDDEN.some((r) => r.test(file))) bad.push(file);
-    const src = read(file);
-    if (src === null) return;
-    for (const m of src.matchAll(/(?:import|export)[^'"]*?from\s+["']([^"']+)["']|import\(\s*["']([^"']+)["']\s*\)/g)) {
-      const spec = m[1] ?? m[2];
-      if (FORBIDDEN_PKG.test(spec)) { bad.push(`${file} → ${spec}`); continue; }
-      if (!spec.startsWith(".") && !spec.startsWith("@/")) continue;
-      const base = spec.startsWith("@/") ? join(ROOT, spec.slice(2)) : resolve(dirname(file), spec);
-      for (const cand of [base, `${base}.ts`, `${base}.tsx`, join(base, "index.ts")]) if (read(cand) !== null) { walk(cand); break; }
-    }
-  };
-  walk(entry);
-  return bad;
-}
-const readDisk = (p: string) => (existsSync(p) && !p.endsWith(".json") ? (() => { try { return readFileSync(p, "utf-8"); } catch { return null; } })() : existsSync(p) ? "" : null);
 
 const T2_LINKS: Test = {
   id: "5.2", name: "every figure, date and label links to a source containing it",
@@ -423,7 +402,7 @@ let totalFail = 0;
 // from billing on render; a generator that can run the extraction loop lets a
 // newly landed filing decide what a card shows.
 const pageBad = [...new Set(["page.tsx", "[cik]/page.tsx", "CardView.tsx"].flatMap((p) => reachable(join(ROOT, "app", "cards", p), readDisk)))];
-const genBad = [...new Set(reachable(join(ROOT, "lib", "cards", "generate.ts"), readDisk).filter((b) => /loop|claude|proceedsUse|referencedNote|anthropic/.test(b)))];
+const genBad = [...new Set(reachable(join(ROOT, "lib", "cards", "generate.ts"), readDisk))];
 for (const t of TESTS) {
   counts[t.id] = {};
   for (const { cik, card, f } of run) {
