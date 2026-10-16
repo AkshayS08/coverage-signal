@@ -1,0 +1,184 @@
+{
+ "cik": "0001739940",
+ "promptVersion": 1,
+ "asks": 3,
+ "costUsd": 0.096261,
+ "schedule": [
+  {
+   "period": "2026",
+   "amount": {
+    "value": "$ 550",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "2027",
+   "amount": {
+    "value": "$ 2,359",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "2028",
+   "amount": {
+    "value": "$ 3,800",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "2029",
+   "amount": {
+    "value": "$ 1,000",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800 2029 $ 1,000",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "2030",
+   "amount": {
+    "value": "$ 2,400",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800 2029 $ 1,000 2030 $ 2,400",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "Maturities after 2030",
+   "amount": {
+    "value": "$ 21,485",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800 2029 $ 1,000 2030 $ 2,400 Maturities after 2030 $ 21,485",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  }
+ ],
+ "subFacilities": [
+  {
+   "facility": "Credit Agreement",
+   "kind": "letter-of-credit",
+   "amount": {
+    "value": "$ 500 million",
+    "src": {
+     "sentence": "The Company can borrow up to $ 6.5 billion under the Credit Agreement for general corporate purposes, with up to $ 500 million available for issuance of letters of credit.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  }
+ ],
+ "uncommitted": [],
+ "commercialPaper": {
+  "programSize": {
+   "value": "$ 6.5 billion",
+   "src": {
+    "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
+    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+   }
+  },
+  "outstanding": {
+   "value": "$ 1.0 billion",
+   "src": {
+    "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+   }
+  },
+  "averageRate": {
+   "value": "3.92 %",
+   "src": {
+    "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+   }
+  },
+  "backedBy": {
+   "value": "revolving credit agreement",
+   "src": {
+    "sentence": "As of June 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are available for general corporate purposes, including providing liquidity support for our commercial paper program), $5.5 billion of remaining capacity under our commercial paper program, and $6.6 billion in cash and short-term investments, approximately $0.8 billion of which was held by the parent company or certain non-regulated subsidiaries.",
+    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+   }
+  }
+ },
+ "cash": [],
+ "faces": [
+  {
+   "instrument": "1.250 % senior notes",
+   "face": {
+    "value": "$ 550 million",
+    "src": {
+     "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+    }
+   }
+  }
+ ],
+ "maturities": [
+  {
+   "instrument": "1.250 % senior notes",
+   "maturity": {
+    "value": "March 2026",
+    "src": {
+     "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+    }
+   }
+  }
+ ],
+ "moves": [
+  {
+   "date": {
+    "value": "March 2026",
+    "src": {
+     "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+    }
+   },
+   "type": "repayment at maturity",
+   "status": "completed",
+   "instrument": {
+    "value": "1.250 % senior notes",
+    "src": {
+     "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+    }
+   },
+   "face": {
+    "value": "$ 550 million",
+    "src": {
+     "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+    }
+   },
+   "funding": null,
+   "use": null,
+   "price": null
+  }
+ ],
+ "residual": [
+  {
+   "fact": "uncommitted Accounts Receivable Factoring Facilities",
+   "why": "not verified: its sentence does not state description \"Accounts Receivable Factoring Facilities\"",
+   "variation": []
+  },
+  {
+   "fact": "uncommitted Commercial paper program incremental capacity",
+   "why": "not verified: its sentence does not state description \"Commercial paper program incremental capacity\"",
+   "variation": []
+  },
+  {
+   "fact": "cash cash and short-term investments held by the parent company or certain non-regulated subsidiaries",
+   "why": "not verified: its sentence does not state label \"cash and short-term investments held by the parent company or certain non-regulated subsidiaries\"",
+   "variation": []
+  }
+ ]
+}

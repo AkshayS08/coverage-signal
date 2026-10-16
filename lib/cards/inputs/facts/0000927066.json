@@ -1,0 +1,287 @@
+{
+ "cik": "0000927066",
+ "promptVersion": 1,
+ "asks": 3,
+ "costUsd": 0.087925,
+ "schedule": [
+  {
+   "period": "2026 (remainder of the year)",
+   "amount": {
+    "value": "$ 62,283",
+    "src": {
+     "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "period": "2027",
+   "amount": {
+    "value": "$ 114,026",
+    "src": {
+     "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "period": "2028",
+   "amount": {
+    "value": "$ 160,808",
+    "src": {
+     "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "period": "2029",
+   "amount": {
+    "value": "$ 144,566",
+    "src": {
+     "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "period": "2030",
+   "amount": {
+    "value": "$ 4,554,268",
+    "src": {
+     "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "period": "2031",
+   "amount": {
+    "value": "$ 3,764,157",
+    "src": {
+     "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268 2031 $ 3,764,157",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "period": "Thereafter",
+   "amount": {
+    "value": "$ 2,047,408",
+    "src": {
+     "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268 2031 $ 3,764,157 Thereafter $ 2,047,408",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  }
+ ],
+ "subFacilities": [],
+ "uncommitted": [],
+ "commercialPaper": null,
+ "cash": [],
+ "faces": [
+  {
+   "instrument": "Term Loan A-2",
+   "face": {
+    "value": "$ 1,975,000",
+    "src": {
+     "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "Term Loan B-2",
+   "face": {
+    "value": "$ 2,357,910",
+    "src": {
+     "sentence": "Term Loan B-2 2,357,910   1,868,559   5/9/2031",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "Revolving line of credit",
+   "face": {
+    "value": "$ 65,000",
+    "src": {
+     "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "4.625% Senior Notes",
+   "face": {
+    "value": "$ 2,750,000",
+    "src": {
+     "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "3.75% Senior Notes",
+   "face": {
+    "value": "$ 1,500,000",
+    "src": {
+     "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "6.875% Senior Notes",
+   "face": {
+    "value": "$ 1,000,000",
+    "src": {
+     "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "6.75% Senior Notes",
+   "face": {
+    "value": "$ 1,000,000",
+    "src": {
+     "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  }
+ ],
+ "maturities": [
+  {
+   "instrument": "Term Loan A-2",
+   "maturity": {
+    "value": "11/24/2030",
+    "src": {
+     "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "Term Loan B-2",
+   "maturity": {
+    "value": "5/9/2031",
+    "src": {
+     "sentence": "Term Loan B-2 2,357,910   1,868,559   5/9/2031",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "Revolving line of credit",
+   "maturity": {
+    "value": "11/24/2030",
+    "src": {
+     "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "4.625% Senior Notes",
+   "maturity": {
+    "value": "6/1/2030",
+    "src": {
+     "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "3.75% Senior Notes",
+   "maturity": {
+    "value": "2/15/2031",
+    "src": {
+     "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "6.875% Senior Notes",
+   "maturity": {
+    "value": "9/1/2032",
+    "src": {
+     "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  },
+  {
+   "instrument": "6.75% Senior Notes",
+   "maturity": {
+    "value": "7/15/2033",
+    "src": {
+     "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   }
+  }
+ ],
+ "moves": [
+  {
+   "date": {
+    "value": "June 8, 2026",
+    "src": {
+     "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   },
+   "type": "facility amendment",
+   "status": "completed",
+   "instrument": {
+    "value": "Term Loan B-2",
+    "src": {
+     "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   },
+   "face": {
+    "value": "$ 500,000",
+    "src": {
+     "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   },
+   "funding": null,
+   "use": {
+    "value": "to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees",
+    "src": {
+     "sentence": "The Company used the net proceeds from this transaction to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees.",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+    }
+   },
+   "price": null
+  }
+ ],
+ "residual": [
+  {
+   "fact": "sub-facility other $ 1,500,000",
+   "why": "not verified: its sentence does not name a sub-facility or sub-limit",
+   "variation": []
+  },
+  {
+   "fact": "sub-facility: letter-of-credit=188482",
+   "why": "stated in 1 of 3 asks",
+   "variation": [
+    "ask 1: absent",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "uncommitted: bilateralsecuredletterofcreditfacility=188482",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  }
+ ]
+}

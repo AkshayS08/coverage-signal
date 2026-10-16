@@ -1,0 +1,690 @@
+{
+ "keys": [
+  "answer/0001108109/card-facts/efe0d679a3d1e460ed09496c/cf-v1-ask1.json",
+  "answer/0001108109/card-facts/efe0d679a3d1e460ed09496c/cf-v1-ask2.json",
+  "answer/0001108109/card-facts/efe0d679a3d1e460ed09496c/cf-v1-ask3.json"
+ ],
+ "asks": [
+  {
+   "schedule": [
+    {
+     "period": "2028",
+     "amount": "$ 42",
+     "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2029",
+     "amount": "$ 644",
+     "sourceLine": "6 % Senior Secured Notes due 2029 644",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2030",
+     "amount": "$ 1,535",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2031",
+     "amount": "$ 689",
+     "sourceLine": "4 ¾% Senior Secured Notes due 2031 689",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2032",
+     "amount": "$ 1,549",
+     "sourceLine": "10 ⅛% Senior Secured Notes due 2032 1,549",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2033",
+     "amount": "$ 700",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2034",
+     "amount": "$ 1,790",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "subFacilities": [
+    {
+     "facility": "ABL Facility",
+     "kind": "letter-of-credit",
+     "amount": "$ 200 million",
+     "sourceLine": "The ABL Facility includes borrowing capacity available for letters of credit of $ 200 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "uncommitted": [],
+   "commercialPaper": null,
+   "cash": [
+    {
+     "label": "Cash and cash equivalents",
+     "amount": "$ 149",
+     "sourceLine": "Cash and cash equivalents $ 149 $ 149",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "faces": [
+    {
+     "instrument": "6 ⅞% Senior Notes due 2028",
+     "face": "$ 42",
+     "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42 $ 42",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 % Senior Secured Notes due 2029",
+     "face": "$ 644",
+     "sourceLine": "6 % Senior Secured Notes due 2029 644 644",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "5 ¼% Senior Secured Notes due 2030",
+     "face": "$ 1,535",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535 1,535",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "4 ¾% Senior Secured Notes due 2031",
+     "face": "$ 689",
+     "sourceLine": "Upon completion of the tender offer, approximately $ 689 million principal amount of the 4.750 % Senior Secured Notes due 2031 remained outstanding",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ⅞% Senior Secured Notes due 2032",
+     "face": "$ 1,549",
+     "sourceLine": "Upon completion of the tender offer, approximately $ 1.549 billion principal amount of the 10.875 % Senior Secured Notes due 2032 remained outstanding.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ¾% Senior Secured Notes due 2033",
+     "face": "$ 700",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033 700 700",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "9 ¾% Senior Secured Notes due 2034",
+     "face": "$ 1,790",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790 1,790",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "face": "$ 1,244",
+     "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244 1,244",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "face": "$ 1,227",
+     "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227 1,227",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "maturities": [
+    {
+     "instrument": "6 ⅞% Senior Notes due 2028",
+     "maturity": "2028",
+     "sourceLine": "6 ⅞% Senior Notes due 2028",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 % Senior Secured Notes due 2029",
+     "maturity": "2029",
+     "sourceLine": "6 % Senior Secured Notes due 2029",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "5 ¼% Senior Secured Notes due 2030",
+     "maturity": "2030",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "4 ¾% Senior Secured Notes due 2031",
+     "maturity": "2031",
+     "sourceLine": "4 ¾% Senior Secured Notes due 2031",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ⅞% Senior Secured Notes due 2032",
+     "maturity": "2032",
+     "sourceLine": "10 ⅛% Senior Secured Notes due 2032",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ¾% Senior Secured Notes due 2033",
+     "maturity": "2033",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "9 ¾% Senior Secured Notes due 2034",
+     "maturity": "2034",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "maturity": "2029",
+     "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "maturity": "2030",
+     "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "ABL Facility",
+     "maturity": "June 5, 2029",
+     "sourceLine": "Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "moves": [
+    {
+     "date": "February 2, 2026",
+     "type": "special call",
+     "status": "completed",
+     "instrument": "10.875 % Senior Secured Notes due 2032",
+     "face": "$ 223 million",
+     "price": {
+      "value": "103 % of the principal amount, plus accrued and unpaid interest",
+      "sourceLine": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "date": "April 22, 2026",
+     "type": "tender or repurchase",
+     "status": "completed",
+     "instrument": "4.750 % Senior Secured Notes due 2031",
+     "face": "$ 368 million",
+     "funding": {
+      "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+      "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "date": "April 22, 2026",
+     "type": "tender or repurchase",
+     "status": "completed",
+     "instrument": "10.875 % Senior Secured Notes due 2032",
+     "face": "$ 231 million",
+     "funding": {
+      "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+      "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ]
+  },
+  {
+   "schedule": [
+    {
+     "period": "2028",
+     "amount": "$ 42",
+     "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2029",
+     "amount": "$ 644",
+     "sourceLine": "6 % Senior Secured Notes due 2029 644",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2030",
+     "amount": "$ 1,535",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2031",
+     "amount": "$ 689",
+     "sourceLine": "4 ¾% Senior Secured Notes due 2031 689",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2032",
+     "amount": "$ 1,549",
+     "sourceLine": "10 ⅛% Senior Secured Notes due 2032 1,549",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2033",
+     "amount": "$ 700",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2034",
+     "amount": "$ 1,790",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "subFacilities": [
+    {
+     "facility": "ABL Facility",
+     "kind": "letter-of-credit",
+     "amount": "$ 200 million",
+     "sourceLine": "The ABL Facility includes borrowing capacity available for letters of credit of $ 200 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "uncommitted": [],
+   "commercialPaper": null,
+   "cash": [
+    {
+     "label": "Cash and cash equivalents",
+     "amount": "$ 149",
+     "sourceLine": "Cash and cash equivalents $ 149 $ 149",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "faces": [
+    {
+     "instrument": "6 ⅞% Senior Notes due 2028",
+     "face": "$ 42",
+     "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42 $ 42",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 % Senior Secured Notes due 2029",
+     "face": "$ 644",
+     "sourceLine": "6 % Senior Secured Notes due 2029 644 644",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "5 ¼% Senior Secured Notes due 2030",
+     "face": "$ 1,535",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535 1,535",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "4 ¾% Senior Secured Notes due 2031",
+     "face": "$ 689",
+     "sourceLine": "Upon completion of the tender offer, approximately $ 689 million principal amount of the 4.750 % Senior Secured Notes due 2031 remained outstanding",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ⅞% Senior Secured Notes due 2032",
+     "face": "$ 1,549",
+     "sourceLine": "Upon completion of the tender offer, approximately $ 1.549 billion principal amount of the 10.875 % Senior Secured Notes due 2032 remained outstanding.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ¾% Senior Secured Notes due 2033",
+     "face": "$ 700",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033 700 700",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "9 ¾% Senior Secured Notes due 2034",
+     "face": "$ 1,790",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790 1,790",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "face": "$ 1,244",
+     "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244 1,244",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "face": "$ 1,227",
+     "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227 1,227",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "maturities": [
+    {
+     "instrument": "6 ⅞% Senior Notes due 2028",
+     "maturity": "2028",
+     "sourceLine": "6 ⅞% Senior Notes due 2028",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 % Senior Secured Notes due 2029",
+     "maturity": "2029",
+     "sourceLine": "6 % Senior Secured Notes due 2029",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "5 ¼% Senior Secured Notes due 2030",
+     "maturity": "2030",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "4 ¾% Senior Secured Notes due 2031",
+     "maturity": "2031",
+     "sourceLine": "4 ¾% Senior Secured Notes due 2031",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ⅞% Senior Secured Notes due 2032",
+     "maturity": "2032",
+     "sourceLine": "10 ⅛% Senior Secured Notes due 2032",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ¾% Senior Secured Notes due 2033",
+     "maturity": "2033",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "9 ¾% Senior Secured Notes due 2034",
+     "maturity": "2034",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "maturity": "2029",
+     "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "maturity": "2030",
+     "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "ABL Facility",
+     "maturity": "June 5, 2029",
+     "sourceLine": "Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "moves": [
+    {
+     "date": "February 2, 2026",
+     "type": "special call",
+     "status": "completed",
+     "instrument": "10.875 % Senior Secured Notes due 2032",
+     "face": "$ 223 million",
+     "price": {
+      "value": "103 % of the principal amount, plus accrued and unpaid interest",
+      "sourceLine": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "date": "April 22, 2026",
+     "type": "tender or repurchase",
+     "status": "completed",
+     "instrument": "4.750 % Senior Secured Notes due 2031",
+     "face": "$ 368 million",
+     "funding": {
+      "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+      "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "date": "April 22, 2026",
+     "type": "tender or repurchase",
+     "status": "completed",
+     "instrument": "10.875 % Senior Secured Notes due 2032",
+     "face": "$ 231 million",
+     "funding": {
+      "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+      "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ]
+  },
+  {
+   "schedule": [
+    {
+     "period": "2028",
+     "amount": "$ 42",
+     "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2029",
+     "amount": "$ 644",
+     "sourceLine": "6 % Senior Secured Notes due 2029 644",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2030",
+     "amount": "$ 1,535",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2031",
+     "amount": "$ 689",
+     "sourceLine": "4 ¾% Senior Secured Notes due 2031 689",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2032",
+     "amount": "$ 1,549",
+     "sourceLine": "10 ⅛% Senior Secured Notes due 2032 1,549",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2033",
+     "amount": "$ 700",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "period": "2034",
+     "amount": "$ 1,790",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "subFacilities": [
+    {
+     "facility": "ABL Facility",
+     "kind": "letter-of-credit",
+     "amount": "$ 200 million",
+     "sourceLine": "The ABL Facility includes borrowing capacity available for letters of credit of $ 200 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "uncommitted": [],
+   "commercialPaper": null,
+   "cash": [
+    {
+     "label": "Cash and cash equivalents",
+     "amount": "$ 149",
+     "sourceLine": "Cash and cash equivalents $ 149 $ 149",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "faces": [
+    {
+     "instrument": "6 ⅞% Senior Notes due 2028",
+     "face": "$ 42",
+     "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42 $ 42",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 % Senior Secured Notes due 2029",
+     "face": "$ 644",
+     "sourceLine": "6 % Senior Secured Notes due 2029 644 644",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "5 ¼% Senior Secured Notes due 2030",
+     "face": "$ 1,535",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535 1,535",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "4 ¾% Senior Secured Notes due 2031",
+     "face": "$ 689",
+     "sourceLine": "Upon completion of the tender offer, approximately $ 689 million principal amount of the 4.750 % Senior Secured Notes due 2031 remained outstanding",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ⅞% Senior Secured Notes due 2032",
+     "face": "$ 1,549",
+     "sourceLine": "Upon completion of the tender offer, approximately $ 1.549 billion principal amount of the 10.875 % Senior Secured Notes due 2032 remained outstanding.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ¾% Senior Secured Notes due 2033",
+     "face": "$ 700",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033 700 700",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "9 ¾% Senior Secured Notes due 2034",
+     "face": "$ 1,790",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790 1,790",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "face": "$ 1,244",
+     "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244 1,244",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "face": "$ 1,227",
+     "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227 1,227",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "maturities": [
+    {
+     "instrument": "6 ⅞% Senior Notes due 2028",
+     "maturity": "2028",
+     "sourceLine": "6 ⅞% Senior Notes due 2028",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 % Senior Secured Notes due 2029",
+     "maturity": "2029",
+     "sourceLine": "6 % Senior Secured Notes due 2029",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "5 ¼% Senior Secured Notes due 2030",
+     "maturity": "2030",
+     "sourceLine": "5 ¼% Senior Secured Notes due 2030",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "4 ¾% Senior Secured Notes due 2031",
+     "maturity": "2031",
+     "sourceLine": "4 ¾% Senior Secured Notes due 2031",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ⅞% Senior Secured Notes due 2032",
+     "maturity": "2032",
+     "sourceLine": "10 ⅛% Senior Secured Notes due 2032",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "10 ¾% Senior Secured Notes due 2033",
+     "maturity": "2033",
+     "sourceLine": "10 ¾% Senior Secured Notes due 2033",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "9 ¾% Senior Secured Notes due 2034",
+     "maturity": "2034",
+     "sourceLine": "9 ¾% Senior Secured Notes due 2034",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "maturity": "2029",
+     "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "maturity": "2030",
+     "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "instrument": "ABL Facility",
+     "maturity": "June 5, 2029",
+     "sourceLine": "Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ],
+   "moves": [
+    {
+     "date": "February 2, 2026",
+     "type": "special call",
+     "status": "completed",
+     "instrument": "10.875 % Senior Secured Notes due 2032",
+     "face": "$ 223 million",
+     "price": {
+      "value": "103 % of the principal amount, plus accrued and unpaid interest",
+      "sourceLine": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "date": "April 22, 2026",
+     "type": "tender or repurchase",
+     "status": "completed",
+     "instrument": "4.750 % Senior Secured Notes due 2031",
+     "face": "$ 368 million",
+     "funding": {
+      "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+      "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    },
+    {
+     "date": "April 22, 2026",
+     "type": "tender or repurchase",
+     "status": "completed",
+     "instrument": "10.875 % Senior Secured Notes due 2032",
+     "face": "$ 231 million",
+     "funding": {
+      "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+      "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032",
+      "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+     },
+     "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+    }
+   ]
+  }
+ ]
+}

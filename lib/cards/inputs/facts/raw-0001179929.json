@@ -1,0 +1,444 @@
+{
+ "keys": [
+  "answer/0001179929/card-facts/0936f93360e85c47b18abdf2/cf-v1-ask1.json",
+  "answer/0001179929/card-facts/0936f93360e85c47b18abdf2/cf-v1-ask2.json",
+  "answer/0001179929/card-facts/0936f93360e85c47b18abdf2/cf-v1-ask3.json"
+ ],
+ "asks": [
+  {
+   "schedule": [
+    {
+     "period": "2028",
+     "amount": "$ 800",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2030",
+     "amount": "650",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2031",
+     "amount": "850",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2032",
+     "amount": "750",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2033",
+     "amount": "750",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "subFacilities": [
+    {
+     "facility": "Credit Agreement",
+     "kind": "swingline",
+     "amount": "$ 15 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "facility": "Credit Agreement",
+     "kind": "letter-of-credit",
+     "amount": "$ 100 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "uncommitted": [
+    {
+     "description": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+     "amount": "$ 800 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "commercialPaper": null,
+   "cash": [
+    {
+     "label": "available borrowing capacity under the Credit Facility",
+     "amount": "$1.25 billion",
+     "sourceLine": "As of June 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "faces": [
+    {
+     "instrument": "4.375 % Notes due June 15, 2028",
+     "face": "$ 800",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes due November 15, 2030",
+     "face": "650",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.500 % Notes due February 15, 2031",
+     "face": "850",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes due May 15, 2032",
+     "face": "750",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.250 % Notes due January 15, 2033",
+     "face": "750",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "maturities": [
+    {
+     "instrument": "4.375 % Notes",
+     "maturity": "June 15, 2028",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes",
+     "maturity": "November 15, 2030",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.500 % Notes",
+     "maturity": "February 15, 2031",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes",
+     "maturity": "May 15, 2032",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.250 % Notes",
+     "maturity": "January 15, 2033",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "moves": [
+    {
+     "date": "February 4, 2026",
+     "type": "facility amendment",
+     "status": "completed",
+     "instrument": "Credit Agreement",
+     "face": null,
+     "sourceLine": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+     "funding": null,
+     "use": null,
+     "price": null
+    }
+   ]
+  },
+  {
+   "schedule": [
+    {
+     "period": "2028",
+     "amount": "$ 800",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2030",
+     "amount": "650",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2031",
+     "amount": "850",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2032",
+     "amount": "750",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2033",
+     "amount": "750",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "subFacilities": [
+    {
+     "facility": "Credit Agreement",
+     "kind": "swingline",
+     "amount": "$ 15 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "facility": "Credit Agreement",
+     "kind": "letter-of-credit",
+     "amount": "$ 100 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "uncommitted": [
+    {
+     "description": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+     "amount": "$ 800 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "commercialPaper": null,
+   "cash": [
+    {
+     "label": "available borrowing capacity under the Credit Facility",
+     "amount": "$1.25 billion",
+     "sourceLine": "As of June 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "faces": [
+    {
+     "instrument": "4.375 % Notes due June 15, 2028",
+     "face": "$ 800",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes due November 15, 2030",
+     "face": "650",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.500 % Notes due February 15, 2031",
+     "face": "850",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes due May 15, 2032",
+     "face": "750",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.250 % Notes due January 15, 2033",
+     "face": "750",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "maturities": [
+    {
+     "instrument": "4.375 % Notes",
+     "maturity": "June 15, 2028",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes",
+     "maturity": "November 15, 2030",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.500 % Notes",
+     "maturity": "February 15, 2031",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes",
+     "maturity": "May 15, 2032",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.250 % Notes",
+     "maturity": "January 15, 2033",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "moves": [
+    {
+     "date": "February 4, 2026",
+     "type": "facility amendment",
+     "status": "completed",
+     "instrument": "Credit Agreement",
+     "face": null,
+     "sourceLine": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+     "funding": null,
+     "use": null,
+     "price": null
+    }
+   ]
+  },
+  {
+   "schedule": [
+    {
+     "period": "2028",
+     "amount": "$ 800",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2030",
+     "amount": "650",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2031",
+     "amount": "850",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2032",
+     "amount": "750",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "period": "2033",
+     "amount": "750",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "subFacilities": [
+    {
+     "facility": "Credit Agreement",
+     "kind": "swingline",
+     "amount": "$ 15 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "facility": "Credit Agreement",
+     "kind": "letter-of-credit",
+     "amount": "$ 100 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "uncommitted": [
+    {
+     "description": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+     "amount": "$ 800 million",
+     "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "commercialPaper": null,
+   "cash": [
+    {
+     "label": "available borrowing capacity under the Credit Facility",
+     "amount": "$1.25 billion",
+     "sourceLine": "As of June 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "faces": [
+    {
+     "instrument": "4.375 % Notes due June 15, 2028",
+     "face": "$ 800",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes due November 15, 2030",
+     "face": "650",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.500 % Notes due February 15, 2031",
+     "face": "850",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes due May 15, 2032",
+     "face": "750",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.250 % Notes due January 15, 2033",
+     "face": "750",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "maturities": [
+    {
+     "instrument": "4.375 % Notes",
+     "maturity": "June 15, 2028",
+     "sourceLine": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes",
+     "maturity": "November 15, 2030",
+     "sourceLine": "3.875 % Notes due November 15, 2030 650   650",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.500 % Notes",
+     "maturity": "February 15, 2031",
+     "sourceLine": "6.500 % Notes due February 15, 2031 850   850",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "3.875 % Notes",
+     "maturity": "May 15, 2032",
+     "sourceLine": "3.875 % Notes due May 15, 2032 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    },
+    {
+     "instrument": "6.250 % Notes",
+     "maturity": "January 15, 2033",
+     "sourceLine": "6.250 % Notes due January 15, 2033 750   750",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+    }
+   ],
+   "moves": [
+    {
+     "date": "February 4, 2026",
+     "type": "facility amendment",
+     "status": "completed",
+     "instrument": "Credit Agreement",
+     "face": null,
+     "sourceLine": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+     "documentUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+     "funding": null,
+     "use": null,
+     "price": null
+    }
+   ]
+  }
+ ]
+}

@@ -113,6 +113,20 @@ export async function cachedReferencedNote<T>(
   return getOrCompute(key, compute);
 }
 
+/**
+ * SESSION 26 — the card-facts extraction (lib/cards/capture/facts.ts). Its own
+ * key and its own prompt version, keyed on a hash of the exact input text it
+ * was asked over, so it can never orphan or overwrite a base answer, a
+ * referenced-note answer, or anything a golden was signed from. One key per
+ * ask: the three asks are three cached answers, not one answer read thrice.
+ */
+export function cardFactsKey(cik: string, inputHash: string, promptVersion: number, ask: number): string {
+  return `answer/${cik}/card-facts/${inputHash}/cf-v${promptVersion}-ask${ask}.json`;
+}
+export async function cachedCardFacts<T>(cik: string, inputHash: string, promptVersion: number, ask: number, compute: () => Promise<T>): Promise<{ data: T; hit: boolean }> {
+  return getOrCompute(cardFactsKey(cik, inputHash, promptVersion, ask), compute);
+}
+
 /** A single-trigger dig follow-up against one specific extra filing. */
 export async function cachedDigClassification<T>(
   cik: string,
