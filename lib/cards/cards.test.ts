@@ -17,7 +17,7 @@
  */
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
+import { amountSupportOf, parseMoneyAmount as parseMoneyAmountForTest, sentenceSupportsMaturity } from "../events/position";
 import { containsWord } from "./labels";
 import { isZeroValue, zeroSupportFor } from "../agent/statedZero";
 import { sentenceStatesFigure } from "../agent/verifyFacility";
@@ -98,8 +98,12 @@ for (const card of cards) {
   assert(srcless.length === 0, `[2:${name}] every source names both its sentence and its document`);
 
   // No bare amount: a line carrying an amount also says what it is.
-  const NAMED = /^(Total debt|Cash|Liquidity|Size|Drawn|Letters of credit|Available|Repaid|Ladder|Since |Repaid inside|next: )/;
-  const bare = lines.filter(({ line }) => line.some((s) => s.k === "figure" || s.k === "computed") && !line.some((s) => s.k === "label") && !NAMED.test(text(line)));
+  // v2.0 adds fields of its own: a CP program's size and outstanding (§2.6), a
+  // sub-facility (§2.6), the schedule's other principal (§2.5), the coverage
+  // footnote's face total and balance sheet (§2.8).
+  const NAMED = /^(Total debt|Cash|Liquidity|Size|Drawn|Letters of credit|Available|Repaid|Ladder|Since |Repaid inside|next: |Next|Face total|Program size|Outstanding|Average rate|The filer's schedule shows)/;
+  const NAMED_ANYWHERE = /other scheduled principal|sub-facility/;
+  const bare = lines.filter(({ line }) => line.some((s) => s.k === "figure" || s.k === "computed") && !line.some((s) => s.k === "label") && !NAMED.test(text(line)) && !NAMED_ANYWHERE.test(text(line)));
   assert(bare.length === 0, `[3:${name}] no bare amount — every amount line names its instrument type or the field it is${bare.length ? ": " + bare.slice(0, 3).map((b) => `"${text(b.line).slice(0, 80)}"`).join("; ") : ""}`);
 
   // Each instrument appears once on the ladder.
@@ -120,11 +124,16 @@ if (cigna) {
   // EXACTLY once — "at most once" passed with zero, because the lines once
   // carried no coupon at all. A check that cannot fail is not a check.
   for (const rate of ["4.500", "4.875", "5.250", "6.000"]) {
-    const n = ladder.filter((l) => new RegExp(`${rate.replace(".", "\\.")}\\s?%[^—]*Notes? due (20(30|32|36|56)|September 20(30|32)|January 20(36|56))`, "i").test(l)).length;
+    // v2.0 §3.7 line shape: "$1,000MM 4.500% senior notes, due September 15, 2030" — the coupon leads, no name after a dash.
+    const n = ladder.filter((l) => new RegExp(`${rate.replace(".", "\\.")}%[^·]*\\bnotes?, due [^·]*20(30|32|36|56)`, "i").test(l)).length;
     assert(n === 1, `[6a] Cigna's ${rate}% September 2025 note appears exactly once on the ladder, not also in the rolled base (found ${n})`);
   }
   const total = cigna.headlines.totalDebt.lines[0].find((s) => s.k === "computed") as Extract<Segment, { k: "computed" }>;
-  assert(!!total && Math.abs(total.usd - 31_913e6) < 1, `[6b] Cigna's total debt is the rolled 31,913M, so the four notes are not counted twice (got ${total?.usd})`);
+  // v2.0 §3.2: the total is at FACE, never mixed with carrying value. Each of the four notes is
+  // on the ladder once (6a), so the total equals the sum of the ladder's face lines exactly once.
+  const faceLines = cigna.ladder.blocks!.flatMap((b) => b.lines).filter((l) => !/carrying value|other scheduled principal|The filer's schedule shows/.test(text(l)));
+  const faceSum = faceLines.reduce((a, l) => { const x = l.find((s) => s.k === "figure" || s.k === "computed") as any; return a + (x ? (x.k === "computed" ? x.usd : (parseMoneyAmountForTest(x.printed) ?? 0)) : 0); }, 0);
+  assert(!!total && Math.abs(total.usd - faceSum) < 1, `[6b] Cigna's total debt is the face of its ladder lines, each counted once (total ${total?.usd}, ladder face ${faceSum})`);
   const liq = text(cigna.headlines.liquidity.lines.flat());
   assert(/commercial paper/i.test(liq) && /not counted/i.test(liq), "[6c] Cigna's commercial paper is named under liquidity as NOT counted");
 }
