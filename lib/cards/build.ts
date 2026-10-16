@@ -273,7 +273,7 @@ export function buildCard(i: CardInputs): Card {
         rolledEvents.push([
           t("Repaid: "),
           { k: "figure", t: displayAmount(m.statedAs, m.sourceLine), printed: m.statedAs, src: src(m.sourceLine, m.citedUrl) },
-          t(` ${m.instrument}, between the base date and the position date. Its base row is shown here, not on the ladder.`),
+          t(` ${tidyCoupon(m.instrument)}, between ${rolledFrom(rolledLabel ?? "")} and ${displayDate(periodEnd, "day")}. Not on the ladder.`),
         ]);
       }
     }
@@ -363,27 +363,31 @@ export function buildCard(i: CardInputs): Card {
     if (best && best.rank > current && !conflict) it.maturity = { date: best.date, granularity: best.granularity, src: best.src };
   }
 
-  // ── an instrument line, in card_spec 3.2's wording ──
-  const describe = (it: Item, opts: { withDate?: boolean } = { withDate: true }): Line => {
+  // ── an instrument line (card_spec §3.7): face amount, coupon, labels, type,
+  // maturity, then flags, then the "not stated" fallback last (§3.5). A note
+  // is told apart by its coupon; a line with no coupon carries the filer's
+  // full label in place of the type word (§3.6). The name never repeats.
+  const describe = (it: Item, opts: { withDate?: boolean; flags?: string[] } = {}): Line => {
     const out: Line = [];
     if (it.amountParts) {
       const usd = it.amountParts.reduce((a, p) => a + p.usd, 0);
       out.push({ k: "computed", t: displayUsd(usd, false, dp(it.amountParts)), usd, parts: it.amountParts, row: it.rowLabel ?? it.name }, t(" "));
     } else if (it.amountPrinted) out.push({ k: "figure", t: displayAmount(it.amountPrinted, it.amountSrc.sentence), printed: it.amountPrinted, src: it.amountSrc, row: it.rowLabel ?? it.name, ...(it.amountField ? { field: it.amountField } : {}) }, t(" "));
     if (it.basis === "carrying" && !it.isCapacity) out.push(t("(carrying value) "));
-    if (it.labels.seniority) out.push(it.labels.seniority, t(" "));
-    if (it.labels.security) out.push(it.labels.security, t(" "));
-    out.push(it.labels.type);
+    const coupon = couponOf(it.name);
+    if (coupon) out.push({ k: "label", t: coupon.shown, stated: coupon.printed, src: it.nameSrc }, t(" "));
+    const showName = !coupon && it.labels.type.t !== it.name;
+    // A label the shown name already states is not repeated beside it.
+    for (const l of [it.labels.seniority, it.labels.security]) if (l && !(showName && l.k === "label" && containsWord(it.name, l.stated))) out.push(l, t(" "));
+    out.push(showName ? { k: "label", t: it.name, stated: it.name, src: it.nameSrc } : it.labels.type);
     if (opts.withDate !== false) {
-      if (it.maturity) out.push(t(", "), { k: "date", t: displayDate(it.maturity.date, it.maturity.granularity), date: it.maturity.date, granularity: it.maturity.granularity, src: it.maturity.src });
+      if (it.maturity) out.push(t(", due "), { k: "date", t: displayDate(it.maturity.date, it.maturity.granularity), date: it.maturity.date, granularity: it.maturity.granularity, src: it.maturity.src });
       else if (it.row?.facilityMaturityNote) out.push(t(", maturity stated as a relative term, not a date"));
       else out.push(t(", no maturity stated"));
     }
     if (it.isCapacity) out.push(t(" · undrawn commitment, not debt"));
-    // Which instrument, in the filer's own name: two same-size notes due the
-    // same year are told apart only here.
-    out.push(t(" — "), { k: "label", t: it.name, stated: it.name, src: it.nameSrc });
-    // §3.5: the fallback goes at the end of the line, after the instrument and its date.
+    if (it.rolled && rolledLabel) out.push(t(" · from the 10-K"));
+    for (const f of opts.flags ?? []) out.push(t(` · ${f}`));
     const suffix = notStatedSuffix(it.labels.seniority, it.labels.security);
     if (suffix) out.push(t(" · "), { k: "notStated", t: suffix, src: it.amountSrc });
     return out;
@@ -396,7 +400,7 @@ export function buildCard(i: CardInputs): Card {
     [t(`Brief week: ${weekRange(weekFrom, briefDate)}${i.previousBrief ? "" : " (first brief for this name: the trailing seven days)"}`)],
     [t("Position from "), { k: "filing", t: `${anchor.form} for the ${anchor.form === "10-K" ? "year" : "quarter"} ended ${displayDate(periodEnd, "day")}, filed ${shortDate(anchor.date)}`, url: anchor.url }],
   ];
-  if (rolledLabel) header.push([t(`Rolled position: ${rolledLabelText(rolledLabel)}. Coverage rests on it because both ties hold.`)]);
+  if (rolledLabel) header.push([t(`This company's ${anchor.form} does not list its notes; it refers to its annual report. ${rolledSentence(rolledLabel)}`)]);
 
   // ── 2.2 this week ──
   const actionable: Line[] = [];
@@ -471,7 +475,7 @@ export function buildCard(i: CardInputs): Card {
   const totalLine: Line = [t("Total debt "), faceSeg(), t(" at face")];
   if (faceFromSchedule) totalLine.push(t(", per the filer's maturity schedule"));
   if (carryingSeg) totalLine.push(t(", plus "), carryingSeg, t(" stated only at carrying value"));
-  totalLine.push(t(" as of "), periodDate(), t(rc.counts ? ", using the rolled position" : ""));
+  totalLine.push(t(" as of "), periodDate(), t(rc.counts ? `, ${rolledPhrase(rolledLabel!)}` : ""));
   const totalDebt: CardSection = {
     heading: "Total debt",
     lines: [
@@ -550,13 +554,13 @@ export function buildCard(i: CardInputs): Card {
     const m = it.maturity!;
     const [start, end] = spanOf(m.date, m.granularity);
     if (end <= briefDate && start > periodEnd && !it.isCapacity) {
-      dueLines.push({ sort: start, line: [...describe(it), t(" · matured since the position date, repayment not yet confirmed in a filing")] });
+      dueLines.push({ sort: start, line: describe(it, { flags: ["matured since the position date, repayment not yet confirmed in a filing"] }) });
       continue;
     }
     if (end <= briefDate || start > windowEnd) continue;
     const partial = start <= briefDate || end > windowEnd;
     const flag = partial && m.granularity !== "day" ? ` · ${m.granularity === "year" ? "year" : "month"} only stated, may fall within 24 months, see source` : "";
-    dueLines.push({ sort: start, line: [...describe(it), ...(it.rolled ? [t(` · ${rolledLabelText(rolledLabel!)}`)] : []), ...(flag ? [t(flag)] : [])] });
+    dueLines.push({ sort: start, line: describe(it, { flags: flag ? [flag.replace(/^ · /, "")] : [] }) });
   }
   dueLines.sort((a, b) => a.sort.localeCompare(b.sort));
   const due: Line[] = dueLines.map((d) => d.line);
@@ -570,7 +574,7 @@ export function buildCard(i: CardInputs): Card {
   for (const it of allDebtItems) {
     const y = it.maturity ? it.maturity.date.slice(0, 4) : "No maturity stated";
     const lines = byYear.get(y) ?? [];
-    lines.push([...describe(it), ...(it.rolled ? [t(` · ${rolledLabelText(rolledLabel!)}`)] : [])]);
+    lines.push(describe(it));
     byYear.set(y, lines);
   }
   const ladderBlocks = [...byYear.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([y, lines]) => ({ heading: [t(y)] as Line, lines }));
@@ -580,15 +584,15 @@ export function buildCard(i: CardInputs): Card {
   const events: Line[] = [...rolledEvents];
   for (const w of pos.withinPeriodRepayments) events.push([t(`Repaid inside the period: ${w.instrument}, prior balance `), { k: "figure", t: displayAmount(w.priorAmount, w.sourceLine), printed: w.priorAmount, src: src(w.sourceLine, w.citedUrl) }, t(`. ${w.note}`)]);
   for (const e of pos.tier2.events) {
-    const line: Line = [t(`Since ${displayDate(periodEnd, "day")}: `), { k: "label", t: e.instrument, stated: e.instrument, src: src(e.sourceLine, e.citedUrl) }];
+    const line: Line = [t(`Since ${displayDate(periodEnd, "day")}: `), { k: "label", t: tidyCoupon(e.instrument), stated: e.instrument, src: src(e.sourceLine, e.citedUrl) }];
     if (e.effect !== null) line.push(t(", "), { k: "figure", t: displayAmount(`$${Math.abs(e.effect).toLocaleString("en-US")}`, e.sourceLine), printed: `$${Math.abs(e.effect).toLocaleString("en-US")}`, src: src(e.sourceLine, e.citedUrl) });
     line.push(t(` (${e.kind}${e.nets ? `, ${e.nets === "unsized" ? "amount not stated in the confirming filing" : "not yet confirmed by a filing"}` : ""}) — not in the position-date total.`));
     events.push(line);
   }
   if (events.length) ladderLines.push([t("Events:")], ...events);
-  if (rolledLabel) ladderLines.push([t(`Rows marked "${rolledLabelText(rolledLabel)}" come from the prior-period base, not from rows the anchor states.`)]);
-  if (rolledNil.length) ladderLines.push([t(`${rolledNil.length} base rows stated at nil at the base date, not debt: ${rolledNil.join("; ")}.`)]);
-  if (dedupNotes.length) ladderLines.push([t(`Shown once: ${dedupNotes.length} instrument${dedupNotes.length === 1 ? "" : "s"} appear both on the anchor's ladder and in the rolled base. The roll's arithmetic counts each once already.`)]);
+  if (rolledLabel) ladderLines.push([t(`Lines marked "from the 10-K": ${rolledSentence(rolledLabel).replace(/^This list comes from/, "stated in")}`)]);
+  if (rolledNil.length) ladderLines.push([t(`${rolledNil.length} line${rolledNil.length === 1 ? "" : "s"} the ${rolledFrom(rolledLabel ?? "")} 10-K states at $0, not debt: ${rolledNil.join("; ")}.`)]);
+  if (dedupNotes.length) ladderLines.push([t(`${dedupNotes.length} note${dedupNotes.length === 1 ? " is" : "s are"} stated in both the ${anchor.form} and the 10-K; each is shown once, as the ${anchor.form} states it.`)]);
 
   // ── 2.5 facilities ──
   const facBlocks = facilities.map((f) => {
@@ -607,7 +611,7 @@ export function buildCard(i: CardInputs): Card {
       lines.push([{ k: "label", t: "Borrowing-base limited", stated: bb.limitedBy, src: src(full, f.figureSources?.facilitySize ?? f.citedUrl) }, t(": stated availability is authoritative.")]);
     }
     const kind = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;
-    if (kind === "letter-of-credit") lines.push([t("Letters of credit only: capacity, not borrowed money (Rule 48).")]);
+    if (kind === "letter-of-credit") lines.push([t("Letters of credit only: capacity, not borrowed money.")]);
     if (f.category === "commercial-paper" || kind === "commercial-paper") lines.push([t("Issuance program, not a lender commitment: never counted as liquidity.")]);
     const pseudo = { instrument: f.name, classification: classifyInstrument({ headings: [], instrumentName: f.name }) };
     return { heading: [typeLabel(pseudo, own), t(` — ${f.name}`)] as Line, lines };
@@ -619,7 +623,7 @@ export function buildCard(i: CardInputs): Card {
   for (const r of dm?.facilityRejections ?? []) withheld.push([t(`${r.facility}, ${FIELD_NAMES[r.field] ?? r.field} ${displayAmount(r.value, "")}: withheld — ${r.reason}. `), { k: "notStated", t: "see the sentence offered", src: src(r.sourceLine ?? r.facility, anchor.url) }]);
   // A claimed date that a sourced one replaced is no longer withheld: the card shows the sourced date.
   for (const r of pos.rows) if (r.maturityWithheld && !r.maturityDate) withheld.push([t(`${r.instrument}: maturity ${r.maturityWithheld.claimed} withheld — ${r.maturityWithheld.why}.`)]);
-  if (rawStatement && !statement) withheld.push([t(`Seniority and security stated only outside the anchor, so not used for labels (prior 10-K, Rule 66 candidate): “${rawStatement.statement}”`)]);
+  if (rawStatement && !statement) withheld.push([t(`Seniority and security are stated only in an earlier annual report, which this card does not use for labels: “${rawStatement.statement}”`)]);
   if (i.cash.usd === null || !i.cash.printedLine) withheld.push([t(`Cash: ${i.cash.reason ?? "not stated for this date"}.`)]);
   const unread = actionable.length;
   if (unread) withheld.push([t(`${unread} filing${unread === 1 ? "" : "s"} this week affecting debt: text not read, so amount and instrument are not shown.`)]);
@@ -629,7 +633,7 @@ export function buildCard(i: CardInputs): Card {
   // is captured (the known misfire on tabulated facilities, BRD 13.2c item 9).
   const onCard = (c: string) => pos.rows.some((r) => (r.classification.instrumentType ?? "").startsWith(c.split("-")[0]) || (c === "revolver" && r.classification.instrumentType === "credit-facility"));
   for (const c of cov.categoriesMissing ?? []) if (!onCard(c)) withheld.push([t(`Stated in the note but not captured: ${c}.`)]);
-  if (rc.counts) for (const m of rc.movements.filter((x) => x.placement === "excluded-not-completed" || x.placement === "undated")) withheld.push([t(`Not counted in the roll: ${m.instrument} — ${m.placement === "undated" ? "no date stated" : "stated as an intention, not completed"}.`)]);
+  if (rc.counts) for (const m of rc.movements.filter((x) => x.placement === "excluded-not-completed" || x.placement === "undated")) withheld.push([t(`Not counted in the totals: ${m.instrument}, ${m.placement === "undated" ? "no date stated" : "stated as an intention, not completed"}.`)]);
   if (withheld.length === 0) withheld.push([t("Nothing withheld this week.")]);
 
   // ── 2.8 coverage footnote: all bridging between face and the balance sheet is here ──
@@ -724,11 +728,31 @@ function rolledFootnote(label: string): string {
   return m && to ? `Using the ${shortDate(m[1])} ${m[2]}, updated through ${displayDate(to[1], "day")}.` : `Using the rolled position: ${label}.`;
 }
 
-/** "as of 2025-12-31, per 10-K debt note, rolled to 2026-06-30" → "as of Dec 31, 2025, per 10-K, rolled to June 30, 2026". */
-function rolledLabelText(label: string): string {
-  const m = /as of (\d{4}-\d{2}-\d{2}), per (.+?), rolled to (\d{4}-\d{2}-\d{2})/.exec(label);
-  if (!m) return label;
-  return `as of ${shortDate(m[1])}, per ${m[2].replace(/ debt note$/, "")}, rolled to ${displayDate(m[3], "day")}`;
+/** "as of 2025-12-31, per 10-K debt note, rolled to 2026-06-30" → "Dec 31, 2025". */
+function rolledFrom(label: string): string {
+  const m = /as of (\d{4}-\d{2}-\d{2})/.exec(label);
+  return m ? shortDate(m[1]) : "the earlier";
+}
+/** "This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026." (card_spec §2.1) */
+function rolledSentence(label: string): string {
+  const to = /rolled to (\d{4}-\d{2}-\d{2})/.exec(label);
+  return `This list comes from the ${rolledFrom(label)} 10-K, updated for changes through ${to ? displayDate(to[1], "day") : "the position date"}.`;
+}
+/** "using the Dec 31, 2025 10-K, updated through June 30, 2026" */
+function rolledPhrase(label: string): string {
+  const to = /rolled to (\d{4}-\d{2}-\d{2})/.exec(label);
+  return `using the ${rolledFrom(label)} 10-K, updated through ${to ? displayDate(to[1], "day") : "the position date"}`;
+}
+
+/** No stray space inside a coupon in running text (§3.7): "1.250 % senior notes" → "1.250% senior notes". */
+function tidyCoupon(s: string): string {
+  return s.replace(/(\d)[\s ]+(?=[⅛¼⅜½⅝¾⅞]?%)/g, "$1").replace(/([⅛¼⅜½⅝¾⅞])[\s ]+%/g, "$1%");
+}
+
+/** A coupon as the filer printed it, and as the card shows it: no stray spaces ("5.125 %" → "5.125%", "10 ⅞%" → "10⅞%"). */
+function couponOf(name: string): { printed: string; shown: string } | null {
+  const m = /\b\d{1,2}(?:\.\d+|\s*[⅛¼⅜½⅝¾⅞])?\s?%/.exec(name);
+  return m ? { printed: m[0], shown: m[0].replace(/[\s\u00a0]+/g, "") } : null;
 }
 
 /**

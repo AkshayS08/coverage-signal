@@ -392,6 +392,20 @@
      },
      {
       "k": "label",
+      "t": "4.375%",
+      "stated": "4.375 %",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "senior",
       "stated": "senior",
       "src": {
@@ -430,27 +444,13 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
       "t": "June 15, 2028",
       "date": "2028-06-15",
       "granularity": "day",
-      "src": {
-       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
-       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " — "
-     },
-     {
-      "k": "label",
-      "t": "4.375 % Notes due June 15, 2028",
-      "stated": "4.375 % Notes due June 15, 2028",
       "src": {
        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
@@ -480,6 +480,20 @@
      },
      {
       "k": "label",
+      "t": "4.375%",
+      "stated": "4.375 %",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "senior",
       "stated": "senior",
       "src": {
@@ -518,27 +532,13 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
       "t": "June 15, 2028",
       "date": "2028-06-15",
       "granularity": "day",
-      "src": {
-       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
-       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " — "
-     },
-     {
-      "k": "label",
-      "t": "4.375 % Notes due June 15, 2028",
-      "stated": "4.375 % Notes due June 15, 2028",
       "src": {
        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
@@ -576,8 +576,8 @@
     },
     {
      "k": "label",
-     "t": "revolver",
-     "stated": "revolv",
+     "t": "revolving credit facility",
+     "stated": "revolving credit facility",
      "src": {
       "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
@@ -586,7 +586,7 @@
     },
     {
      "k": "text",
-     "t": ", "
+     "t": ", due "
     },
     {
      "k": "date",
@@ -602,20 +602,6 @@
     {
      "k": "text",
      "t": " · undrawn commitment, not debt"
-    },
-    {
-     "k": "text",
-     "t": " — "
-    },
-    {
-     "k": "label",
-     "t": "revolving credit facility",
-     "stated": "revolving credit facility",
-     "src": {
-      "sentence": "revolving credit facility (\"Credit Facility\") of $ 1.25 billion",
-      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-      "doc": "10-Q 2026-07-23"
-     }
     },
     {
      "k": "text",
@@ -659,6 +645,20 @@
       },
       {
        "k": "label",
+       "t": "4.375%",
+       "stated": "4.375 %",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "senior",
        "src": {
@@ -697,27 +697,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "June 15, 2028",
        "date": "2028-06-15",
        "granularity": "day",
-       "src": {
-        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
-        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "4.375 % Notes due June 15, 2028",
-       "stated": "4.375 % Notes due June 15, 2028",
        "src": {
         "sentence": "4.375 % Notes due June 15, 2028 $ 800",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
@@ -753,6 +739,20 @@
       },
       {
        "k": "label",
+       "t": "3.875%",
+       "stated": "3.875 %",
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "senior",
        "src": {
@@ -791,27 +791,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "November 15, 2030",
        "date": "2030-11-15",
        "granularity": "day",
-       "src": {
-        "sentence": "3.875 % Notes due November 15, 2030 650",
-        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "3.875 % Notes due November 15, 2030",
-       "stated": "3.875 % Notes due November 15, 2030",
        "src": {
         "sentence": "3.875 % Notes due November 15, 2030 650",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
@@ -847,6 +833,20 @@
       },
       {
        "k": "label",
+       "t": "6.500%",
+       "stated": "6.500 %",
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "senior",
        "src": {
@@ -885,27 +885,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "February 15, 2031",
        "date": "2031-02-15",
        "granularity": "day",
-       "src": {
-        "sentence": "6.500 % Notes due February 15, 2031 850",
-        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "6.500 % Notes due February 15, 2031",
-       "stated": "6.500 % Notes due February 15, 2031",
        "src": {
         "sentence": "6.500 % Notes due February 15, 2031 850",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
@@ -941,6 +927,20 @@
       },
       {
        "k": "label",
+       "t": "3.875%",
+       "stated": "3.875 %",
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "senior",
        "src": {
@@ -979,27 +979,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "May 15, 2032",
        "date": "2032-05-15",
        "granularity": "day",
-       "src": {
-        "sentence": "3.875 % Notes due May 15, 2032 750",
-        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "3.875 % Notes due May 15, 2032",
-       "stated": "3.875 % Notes due May 15, 2032",
        "src": {
         "sentence": "3.875 % Notes due May 15, 2032 750",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
@@ -1035,6 +1021,20 @@
       },
       {
        "k": "label",
+       "t": "6.250%",
+       "stated": "6.250 %",
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "senior",
        "src": {
@@ -1073,27 +1073,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "January 15, 2033",
        "date": "2033-01-15",
        "granularity": "day",
-       "src": {
-        "sentence": "6.250 % Notes due January 15, 2033 750",
-        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "6.250 % Notes due January 15, 2033",
-       "stated": "6.250 % Notes due January 15, 2033",
        "src": {
         "sentence": "6.250 % Notes due January 15, 2033 750",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",

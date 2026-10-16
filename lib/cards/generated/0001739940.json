@@ -32,7 +32,7 @@
   [
    {
     "k": "text",
-    "t": "Rolled position: as of Dec 31, 2025, per 10-K, rolled to June 30, 2026. Coverage rests on it because both ties hold."
+    "t": "This company's 10-Q does not list its notes; it refers to its annual report. This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026."
    }
   ]
  ],
@@ -380,7 +380,7 @@
      },
      {
       "k": "text",
-      "t": ", using the rolled position"
+      "t": ", using the Dec 31, 2025 10-K, updated through June 30, 2026"
      }
     ],
     [
@@ -976,6 +976,20 @@
      },
      {
       "k": "label",
+      "t": "3.400%",
+      "stated": "3.400%",
+      "src": {
+       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+       "doc": "10-K for 2025-12-31"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "Notes",
       "src": {
@@ -986,7 +1000,7 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
@@ -1001,17 +1015,7 @@
      },
      {
       "k": "text",
-      "t": " — "
-     },
-     {
-      "k": "label",
-      "t": "$1,500 million, 3.400% Notes due March 2027",
-      "stated": "$1,500 million, 3.400% Notes due March 2027",
-      "src": {
-       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
+      "t": " · from the 10-K"
      },
      {
       "k": "text",
@@ -1025,10 +1029,6 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
       }
-     },
-     {
-      "k": "text",
-      "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
      }
     ],
     [
@@ -1049,6 +1049,20 @@
      },
      {
       "k": "label",
+      "t": "7.875%",
+      "stated": "7.875%",
+      "src": {
+       "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+       "doc": "10-K for 2025-12-31"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "debentures",
       "stated": "Debentures",
       "src": {
@@ -1059,7 +1073,7 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
@@ -1074,17 +1088,7 @@
      },
      {
       "k": "text",
-      "t": " — "
-     },
-     {
-      "k": "label",
-      "t": "$259 million, 7.875% Debentures due May 2027",
-      "stated": "$259 million, 7.875% Debentures due May 2027",
-      "src": {
-       "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
+      "t": " · from the 10-K"
      },
      {
       "k": "text",
@@ -1098,10 +1102,6 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
       }
-     },
-     {
-      "k": "text",
-      "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
      }
     ],
     [
@@ -1122,6 +1122,20 @@
      },
      {
       "k": "label",
+      "t": "3.050%",
+      "stated": "3.050%",
+      "src": {
+       "sentence": "$600 million, 3.050 % Notes due October 2027 599",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+       "doc": "10-K for 2025-12-31"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "Notes",
       "src": {
@@ -1132,7 +1146,7 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
@@ -1147,17 +1161,7 @@
      },
      {
       "k": "text",
-      "t": " — "
-     },
-     {
-      "k": "label",
-      "t": "$600 million, 3.050% Notes due October 2027",
-      "stated": "$600 million, 3.050% Notes due October 2027",
-      "src": {
-       "sentence": "$600 million, 3.050 % Notes due October 2027 599",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
+      "t": " · from the 10-K"
      },
      {
       "k": "text",
@@ -1171,10 +1175,6 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
       }
-     },
-     {
-      "k": "text",
-      "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
      }
     ],
     [
@@ -1195,6 +1195,20 @@
      },
      {
       "k": "label",
+      "t": "4.375%",
+      "stated": "4.375%",
+      "src": {
+       "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+       "doc": "10-K for 2025-12-31"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "Notes",
       "src": {
@@ -1205,7 +1219,7 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
@@ -1220,17 +1234,11 @@
      },
      {
       "k": "text",
-      "t": " — "
+      "t": " · from the 10-K"
      },
      {
-      "k": "label",
-      "t": "$3,800 million, 4.375% Notes due October 2028",
-      "stated": "$3,800 million, 4.375% Notes due October 2028",
-      "src": {
-       "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
+      "k": "text",
+      "t": " · month only stated, may fall within 24 months, see source"
      },
      {
       "k": "text",
@@ -1244,14 +1252,6 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for 2025-12-31"
       }
-     },
-     {
-      "k": "text",
-      "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
-     },
-     {
-      "k": "text",
-      "t": " · month only stated, may fall within 24 months, see source"
      }
     ],
     [
@@ -1276,6 +1276,20 @@
      },
      {
       "k": "label",
+      "t": "3.400%",
+      "stated": "3.400%",
+      "src": {
+       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+       "doc": "10-K for 2025-12-31"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "Notes",
       "src": {
@@ -1286,7 +1300,7 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
@@ -1301,17 +1315,7 @@
      },
      {
       "k": "text",
-      "t": " — "
-     },
-     {
-      "k": "label",
-      "t": "$1,500 million, 3.400% Notes due March 2027",
-      "stated": "$1,500 million, 3.400% Notes due March 2027",
-      "src": {
-       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for 2025-12-31"
-      }
+      "t": " · from the 10-K"
      },
      {
       "k": "text",
@@ -1357,8 +1361,8 @@
     },
     {
      "k": "label",
-     "t": "revolver",
-     "stated": "revolv",
+     "t": "revolving credit and letter of credit agreement",
+     "stated": "revolving credit and letter of credit agreement",
      "src": {
       "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
@@ -1367,7 +1371,7 @@
     },
     {
      "k": "text",
-     "t": ", "
+     "t": ", due "
     },
     {
      "k": "date",
@@ -1383,20 +1387,6 @@
     {
      "k": "text",
      "t": " · undrawn commitment, not debt"
-    },
-    {
-     "k": "text",
-     "t": " — "
-    },
-    {
-     "k": "label",
-     "t": "revolving credit and letter of credit agreement",
-     "stated": "revolving credit and letter of credit agreement",
-     "src": {
-      "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
-      "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-      "doc": "10-Q 2026-07-30"
-     }
     },
     {
      "k": "text",
@@ -1435,25 +1425,25 @@
     },
     {
      "k": "text",
-     "t": " 1.250 % senior notes, between the base date and the position date. Its base row is shown here, not on the ladder."
+     "t": " 1.250% senior notes, between Dec 31, 2025 and June 30, 2026. Not on the ladder."
     }
    ],
    [
     {
      "k": "text",
-     "t": "Rows marked \"as of Dec 31, 2025, per 10-K, rolled to June 30, 2026\" come from the prior-period base, not from rows the anchor states."
+     "t": "Lines marked \"from the 10-K\": stated in the Dec 31, 2025 10-K, updated for changes through June 30, 2026."
     }
    ],
    [
     {
      "k": "text",
-     "t": "6 base rows stated at nil at the base date, not debt: Commercial paper; $900 million, 3.250% Notes due April 2025; $1,216 million, 4.125% Notes due November 2025; $1,284 million, 4.500% Notes due February 2026; $700 million, 5.685% Notes due March 2026; $550 million, 1.250% Notes due March 2026."
+     "t": "6 lines the Dec 31, 2025 10-K states at $0, not debt: Commercial paper; $900 million, 3.250% Notes due April 2025; $1,216 million, 4.125% Notes due November 2025; $1,284 million, 4.500% Notes due February 2026; $700 million, 5.685% Notes due March 2026; $550 million, 1.250% Notes due March 2026."
     }
    ],
    [
     {
      "k": "text",
-     "t": "Shown once: 4 instruments appear both on the anchor's ladder and in the rolled base. The roll's arithmetic counts each once already."
+     "t": "4 notes are stated in both the 10-Q and the 10-K; each is shown once, as the 10-Q states it."
     }
    ]
   ],
@@ -1484,6 +1474,20 @@
       },
       {
        "k": "label",
+       "t": "3.400%",
+       "stated": "3.400%",
+       "src": {
+        "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -1494,7 +1498,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -1509,17 +1513,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,500 million, 3.400% Notes due March 2027",
-       "stated": "$1,500 million, 3.400% Notes due March 2027",
-       "src": {
-        "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -1533,10 +1527,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ],
      [
@@ -1557,6 +1547,20 @@
       },
       {
        "k": "label",
+       "t": "7.875%",
+       "stated": "7.875%",
+       "src": {
+        "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "debentures",
        "stated": "Debentures",
        "src": {
@@ -1567,7 +1571,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -1582,17 +1586,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$259 million, 7.875% Debentures due May 2027",
-       "stated": "$259 million, 7.875% Debentures due May 2027",
-       "src": {
-        "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -1606,10 +1600,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ],
      [
@@ -1630,6 +1620,20 @@
       },
       {
        "k": "label",
+       "t": "3.050%",
+       "stated": "3.050%",
+       "src": {
+        "sentence": "$600 million, 3.050 % Notes due October 2027 599",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -1640,7 +1644,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -1655,17 +1659,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$600 million, 3.050% Notes due October 2027",
-       "stated": "$600 million, 3.050% Notes due October 2027",
-       "src": {
-        "sentence": "$600 million, 3.050 % Notes due October 2027 599",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -1679,10 +1673,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -1713,6 +1703,20 @@
       },
       {
        "k": "label",
+       "t": "4.375%",
+       "stated": "4.375%",
+       "src": {
+        "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -1723,7 +1727,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -1738,17 +1742,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$3,800 million, 4.375% Notes due October 2028",
-       "stated": "$3,800 million, 4.375% Notes due October 2028",
-       "src": {
-        "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -1762,10 +1756,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -1796,6 +1786,20 @@
       },
       {
        "k": "label",
+       "t": "5.000%",
+       "stated": "5.000%",
+       "src": {
+        "sentence": "$1,000 million, 5.000 % Notes due May 2029 996",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -1806,7 +1810,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -1821,17 +1825,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,000 million, 5.000% Notes due May 2029",
-       "stated": "$1,000 million, 5.000% Notes due May 2029",
-       "src": {
-        "sentence": "$1,000 million, 5.000 % Notes due May 2029 996",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -1845,10 +1839,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -1872,6 +1862,20 @@
         "doc": "8-K 2025-09-04"
        },
        "row": "$1,000 million, 4.500% Notes due September 2030"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "4.500%",
+       "stated": "4.500%",
+       "src": {
+        "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036 Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
       },
       {
        "k": "text",
@@ -1903,7 +1907,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -1912,20 +1916,6 @@
        "granularity": "day",
        "src": {
         "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-        "doc": "8-K 2025-09-04"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "4.500% Senior Notes due 2030",
-       "stated": "4.500% Senior Notes due 2030",
-       "src": {
-        "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036 Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
         "doc": "8-K 2025-09-04"
        }
@@ -1962,6 +1952,20 @@
       },
       {
        "k": "label",
+       "t": "2.400%",
+       "stated": "2.400%",
+       "src": {
+        "sentence": "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -1972,7 +1976,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -1987,17 +1991,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,400 million, 2.400% Notes due March 2030",
-       "stated": "$1,400 million, 2.400% Notes due March 2030",
-       "src": {
-        "sentence": "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2011,10 +2005,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -2045,6 +2035,20 @@
       },
       {
        "k": "label",
+       "t": "2.375%",
+       "stated": "2.375%",
+       "src": {
+        "sentence": "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2055,7 +2059,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2070,17 +2074,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,500 million, 2.375% Notes due March 2031",
-       "stated": "$1,500 million, 2.375% Notes due March 2031",
-       "src": {
-        "sentence": "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2094,10 +2088,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ],
      [
@@ -2118,6 +2108,20 @@
       },
       {
        "k": "label",
+       "t": "5.125%",
+       "stated": "5.125%",
+       "src": {
+        "sentence": "$750 million, 5.125 % Notes due May 2031 (1) 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2128,7 +2132,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2143,17 +2147,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$750 million, 5.125% Notes due May 2031",
-       "stated": "$750 million, 5.125% Notes due May 2031",
-       "src": {
-        "sentence": "$750 million, 5.125 % Notes due May 2031 (1) 750",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2167,10 +2161,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -2194,6 +2184,20 @@
         "doc": "8-K 2025-09-04"
        },
        "row": "$1,250 million, 4.875% Notes due September 2032"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "4.875%",
+       "stated": "4.875%",
+       "src": {
+        "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
       },
       {
        "k": "text",
@@ -2225,7 +2229,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2234,20 +2238,6 @@
        "granularity": "day",
        "src": {
         "sentence": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032.",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-        "doc": "8-K 2025-09-04"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "4.875% Senior Notes due 2032",
-       "stated": "4.875% Senior Notes due 2032",
-       "src": {
-        "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
         "doc": "8-K 2025-09-04"
        }
@@ -2294,6 +2284,20 @@
       },
       {
        "k": "label",
+       "t": "8.080%",
+       "stated": "8.080%",
+       "src": {
+        "sentence": "$45 million, 8.080 % Step Down Notes due January 2033 45",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2304,7 +2308,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2319,17 +2323,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$45 million, 8.080% Step Down Notes due January 2033",
-       "stated": "$45 million, 8.080% Step Down Notes due January 2033",
-       "src": {
-        "sentence": "$45 million, 8.080 % Step Down Notes due January 2033 45",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2343,10 +2337,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ],
      [
@@ -2367,6 +2357,20 @@
       },
       {
        "k": "label",
+       "t": "5.400%",
+       "stated": "5.400%",
+       "src": {
+        "sentence": "$800 million, 5.400 % Notes due March 2033 (1) 796",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2377,7 +2381,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2392,17 +2396,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$800 million, 5.400% Notes due March 2033",
-       "stated": "$800 million, 5.400% Notes due March 2033",
-       "src": {
-        "sentence": "$800 million, 5.400 % Notes due March 2033 (1) 796",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2416,10 +2410,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -2450,6 +2440,20 @@
       },
       {
        "k": "label",
+       "t": "5.250%",
+       "stated": "5.250%",
+       "src": {
+        "sentence": "$1,250 million, 5.250 % Notes due February 2034 (1) 1,250",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2460,7 +2464,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2475,17 +2479,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,250 million, 5.250% Notes due February 2034",
-       "stated": "$1,250 million, 5.250% Notes due February 2034",
-       "src": {
-        "sentence": "$1,250 million, 5.250 % Notes due February 2034 (1) 1,250",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2499,10 +2493,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -2526,6 +2516,20 @@
         "doc": "8-K 2025-09-04"
        },
        "row": "$1,500 million, 5.250% Notes due January 2036"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "5.250%",
+       "stated": "5.250%",
+       "src": {
+        "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
       },
       {
        "k": "text",
@@ -2557,7 +2561,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2566,20 +2570,6 @@
        "granularity": "day",
        "src": {
         "sentence": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036.",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-        "doc": "8-K 2025-09-04"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "5.250% Senior Notes due 2036",
-       "stated": "5.250% Senior Notes due 2036",
-       "src": {
-        "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
         "doc": "8-K 2025-09-04"
        }
@@ -2616,6 +2606,20 @@
       },
       {
        "k": "label",
+       "t": "6.150%",
+       "stated": "6.150%",
+       "src": {
+        "sentence": "$190 million, 6.150 % Notes due November 2036 190",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2626,7 +2630,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2641,17 +2645,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$190 million, 6.150% Notes due November 2036",
-       "stated": "$190 million, 6.150% Notes due November 2036",
-       "src": {
-        "sentence": "$190 million, 6.150 % Notes due November 2036 190",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2665,10 +2659,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -2699,6 +2689,20 @@
       },
       {
        "k": "label",
+       "t": "4.800%",
+       "stated": "4.800%",
+       "src": {
+        "sentence": "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2709,7 +2713,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2724,17 +2728,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$2,200 million, 4.800% Notes due August 2038",
-       "stated": "$2,200 million, 4.800% Notes due August 2038",
-       "src": {
-        "sentence": "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2748,10 +2742,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -2782,6 +2772,20 @@
       },
       {
        "k": "label",
+       "t": "3.200%",
+       "stated": "3.200%",
+       "src": {
+        "sentence": "$750 million, 3.200 % Notes due March 2040 748",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2792,7 +2796,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2807,17 +2811,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$750 million, 3.200% Notes due March 2040",
-       "stated": "$750 million, 3.200% Notes due March 2040",
-       "src": {
-        "sentence": "$750 million, 3.200 % Notes due March 2040 748",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2831,10 +2825,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -2865,6 +2855,20 @@
       },
       {
        "k": "label",
+       "t": "5.875%",
+       "stated": "5.875%",
+       "src": {
+        "sentence": "$121 million, 5.875 % Notes due March 2041 119",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2875,7 +2879,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2890,17 +2894,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$121 million, 5.875% Notes due March 2041",
-       "stated": "$121 million, 5.875% Notes due March 2041",
-       "src": {
-        "sentence": "$121 million, 5.875 % Notes due March 2041 119",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2914,10 +2908,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ],
      [
@@ -2938,6 +2928,20 @@
       },
       {
        "k": "label",
+       "t": "6.125%",
+       "stated": "6.125%",
+       "src": {
+        "sentence": "$448 million, 6.125 % Notes due November 2041 484",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -2948,7 +2952,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -2963,17 +2967,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$448 million, 6.125% Notes due November 2041",
-       "stated": "$448 million, 6.125% Notes due November 2041",
-       "src": {
-        "sentence": "$448 million, 6.125 % Notes due November 2041 484",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -2987,10 +2981,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -3021,6 +3011,20 @@
       },
       {
        "k": "label",
+       "t": "5.375%",
+       "stated": "5.375%",
+       "src": {
+        "sentence": "$317 million, 5.375 % Notes due February 2042 315",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -3031,7 +3035,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -3046,17 +3050,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$317 million, 5.375% Notes due February 2042",
-       "stated": "$317 million, 5.375% Notes due February 2042",
-       "src": {
-        "sentence": "$317 million, 5.375 % Notes due February 2042 315",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -3070,10 +3064,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -3104,6 +3094,20 @@
       },
       {
        "k": "label",
+       "t": "4.800%",
+       "stated": "4.800%",
+       "src": {
+        "sentence": "$1,500 million, 4.800 % Notes due July 2046 1,469",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -3114,7 +3118,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -3129,17 +3133,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,500 million, 4.800% Notes due July 2046",
-       "stated": "$1,500 million, 4.800% Notes due July 2046",
-       "src": {
-        "sentence": "$1,500 million, 4.800 % Notes due July 2046 1,469",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -3153,10 +3147,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -3187,6 +3177,20 @@
       },
       {
        "k": "label",
+       "t": "3.875%",
+       "stated": "3.875%",
+       "src": {
+        "sentence": "$1,000 million, 3.875 % Notes due October 2047 990",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -3197,7 +3201,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -3212,17 +3216,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,000 million, 3.875% Notes due October 2047",
-       "stated": "$1,000 million, 3.875% Notes due October 2047",
-       "src": {
-        "sentence": "$1,000 million, 3.875 % Notes due October 2047 990",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -3236,10 +3230,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -3270,6 +3260,20 @@
       },
       {
        "k": "label",
+       "t": "4.900%",
+       "stated": "4.900%",
+       "src": {
+        "sentence": "$3,000 million, 4.900 % Notes due December 2048 2,972",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -3280,7 +3284,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -3295,17 +3299,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$3,000 million, 4.900% Notes due December 2048",
-       "stated": "$3,000 million, 4.900% Notes due December 2048",
-       "src": {
-        "sentence": "$3,000 million, 4.900 % Notes due December 2048 2,972",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -3319,10 +3313,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -3353,6 +3343,20 @@
       },
       {
        "k": "label",
+       "t": "3.400%",
+       "stated": "3.400%",
+       "src": {
+        "sentence": "$1,184 million, 3.400 % Notes due March 2050 1,172",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -3363,7 +3367,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -3378,17 +3382,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,184 million, 3.400% Notes due March 2050",
-       "stated": "$1,184 million, 3.400% Notes due March 2050",
-       "src": {
-        "sentence": "$1,184 million, 3.400 % Notes due March 2050 1,172",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -3402,10 +3396,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -3436,6 +3426,20 @@
       },
       {
        "k": "label",
+       "t": "3.400%",
+       "stated": "3.400%",
+       "src": {
+        "sentence": "$1,429 million, 3.400 % Notes due March 2051 1,410",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -3446,7 +3450,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -3461,17 +3465,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,429 million, 3.400% Notes due March 2051",
-       "stated": "$1,429 million, 3.400% Notes due March 2051",
-       "src": {
-        "sentence": "$1,429 million, 3.400 % Notes due March 2051 1,410",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -3485,10 +3479,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -3519,6 +3509,20 @@
       },
       {
        "k": "label",
+       "t": "5.600%",
+       "stated": "5.600%",
+       "src": {
+        "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for 2025-12-31"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -3529,7 +3533,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -3544,17 +3548,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "$1,500 million, 5.600% Notes due February 2054",
-       "stated": "$1,500 million, 5.600% Notes due February 2054",
-       "src": {
-        "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -3568,10 +3562,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -3595,6 +3585,20 @@
         "doc": "8-K 2025-09-04"
        },
        "row": "$750 million, 6.000% Notes due January 2056"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "6.000%",
+       "stated": "6.000%",
+       "src": {
+        "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
       },
       {
        "k": "text",
@@ -3626,7 +3630,7 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
@@ -3635,20 +3639,6 @@
        "granularity": "day",
        "src": {
         "sentence": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056.",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-        "doc": "8-K 2025-09-04"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "6.000% Senior Notes due 2056",
-       "stated": "6.000% Senior Notes due 2056",
-       "src": {
-        "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
         "doc": "8-K 2025-09-04"
        }
@@ -3709,8 +3699,8 @@
       },
       {
        "k": "label",
-       "t": "commercial paper",
-       "stated": "commercial paper",
+       "t": "commercial paper program",
+       "stated": "commercial paper program",
        "src": {
         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
@@ -3720,20 +3710,6 @@
       {
        "k": "text",
        "t": ", no maturity stated"
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "commercial paper program",
-       "stated": "commercial paper program",
-       "src": {
-        "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-        "doc": "10-Q 2026-07-30"
-       }
       },
       {
        "k": "text",
@@ -3800,17 +3776,7 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "Other, including finance leases",
-       "stated": "Other, including finance leases",
-       "src": {
-        "sentence": "Other, including finance leases 43",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for 2025-12-31"
-       }
+       "t": " · from the 10-K"
       },
       {
        "k": "text",
@@ -3824,10 +3790,6 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for 2025-12-31"
        }
-      },
-      {
-       "k": "text",
-       "t": " · as of Dec 31, 2025, per 10-K, rolled to June 30, 2026"
       }
      ]
     ]
@@ -4054,7 +4016,7 @@
    [
     {
      "k": "text",
-     "t": "Not counted in the roll: Term Loan Facility — stated as an intention, not completed."
+     "t": "Not counted in the totals: Term Loan Facility, stated as an intention, not completed."
     }
    ]
   ]

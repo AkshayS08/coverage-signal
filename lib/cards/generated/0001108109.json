@@ -634,6 +634,20 @@
      },
      {
       "k": "label",
+      "t": "6⅞%",
+      "stated": "6 ⅞%",
+      "src": {
+       "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
+       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "senior",
       "stated": "Senior",
       "src": {
@@ -658,7 +672,7 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
@@ -673,17 +687,7 @@
      },
      {
       "k": "text",
-      "t": " — "
-     },
-     {
-      "k": "label",
-      "t": "6 ⅞% Senior Notes due 2028",
-      "stated": "6 ⅞% Senior Notes due 2028",
-      "src": {
-       "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
-       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
+      "t": " · year only stated, may fall within 24 months, see source"
      },
      {
       "k": "text",
@@ -697,10 +701,6 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
        "doc": "10-Q 2026-07-23"
       }
-     },
-     {
-      "k": "text",
-      "t": " · year only stated, may fall within 24 months, see source"
      }
     ],
     [
@@ -725,6 +725,20 @@
      },
      {
       "k": "label",
+      "t": "6⅞%",
+      "stated": "6 ⅞%",
+      "src": {
+       "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
+       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "senior",
       "stated": "Senior",
       "src": {
@@ -749,27 +763,13 @@
      },
      {
       "k": "text",
-      "t": ", "
+      "t": ", due "
      },
      {
       "k": "date",
       "t": "2028",
       "date": "2028",
       "granularity": "year",
-      "src": {
-       "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
-       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " — "
-     },
-     {
-      "k": "label",
-      "t": "6 ⅞% Senior Notes due 2028",
-      "stated": "6 ⅞% Senior Notes due 2028",
       "src": {
        "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -848,8 +848,8 @@
     },
     {
      "k": "label",
-     "t": "ABL",
-     "stated": "ABL",
+     "t": "ABL Facility",
+     "stated": "ABL Facility",
      "src": {
       "sentence": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\").",
       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -858,7 +858,7 @@
     },
     {
      "k": "text",
-     "t": ", "
+     "t": ", due "
     },
     {
      "k": "date",
@@ -874,20 +874,6 @@
     {
      "k": "text",
      "t": " · undrawn commitment, not debt"
-    },
-    {
-     "k": "text",
-     "t": " — "
-    },
-    {
-     "k": "label",
-     "t": "ABL Facility",
-     "stated": "ABL Facility",
-     "src": {
-      "sentence": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\").",
-      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-      "doc": "10-Q 2026-07-23"
-     }
     }
    ]
   ],
@@ -911,6 +897,20 @@
         "doc": "10-Q 2026-07-23"
        },
        "row": "6 ⅞% Senior Notes due 2028"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "6⅞%",
+       "stated": "6 ⅞%",
+       "src": {
+        "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
       },
       {
        "k": "text",
@@ -942,27 +942,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2028",
        "date": "2028",
        "granularity": "year",
-       "src": {
-        "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "6 ⅞% Senior Notes due 2028",
-       "stated": "6 ⅞% Senior Notes due 2028",
        "src": {
         "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1011,6 +997,20 @@
       },
       {
        "k": "label",
+       "t": "6⅞%",
+       "stated": "6 ⅞%",
+       "src": {
+        "sentence": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "junior-priority",
        "stated": "Junior-Priority",
        "src": {
@@ -1049,27 +1049,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2029",
        "date": "2029",
        "granularity": "year",
-       "src": {
-        "sentence": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "6 ⅞% Junior-Priority Secured Notes due 2029",
-       "stated": "6 ⅞% Junior-Priority Secured Notes due 2029",
        "src": {
         "sentence": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1088,6 +1074,20 @@
         "doc": "10-Q 2026-07-23"
        },
        "row": "6 % Senior Secured Notes due 2029"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "6%",
+       "stated": "6 %",
+       "src": {
+        "sentence": "6 % Senior Secured Notes due 2029 644",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
       },
       {
        "k": "text",
@@ -1133,27 +1133,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2029",
        "date": "2029",
        "granularity": "year",
-       "src": {
-        "sentence": "6 % Senior Secured Notes due 2029 644",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "6 % Senior Secured Notes due 2029",
-       "stated": "6 % Senior Secured Notes due 2029",
        "src": {
         "sentence": "6 % Senior Secured Notes due 2029 644",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1189,6 +1175,20 @@
       },
       {
        "k": "label",
+       "t": "6⅛%",
+       "stated": "6 ⅛%",
+       "src": {
+        "sentence": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "junior-priority",
        "stated": "Junior-Priority",
        "src": {
@@ -1227,27 +1227,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2030",
        "date": "2030",
        "granularity": "year",
-       "src": {
-        "sentence": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "6 ⅛% Junior-Priority Secured Notes due 2030",
-       "stated": "6 ⅛% Junior-Priority Secured Notes due 2030",
        "src": {
         "sentence": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1266,6 +1252,20 @@
         "doc": "10-Q 2026-07-23"
        },
        "row": "5 ¼% Senior Secured Notes due 2030"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "5¼%",
+       "stated": "5 ¼%",
+       "src": {
+        "sentence": "5 ¼% Senior Secured Notes due 2030 1,535",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
       },
       {
        "k": "text",
@@ -1311,27 +1311,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2030",
        "date": "2030",
        "granularity": "year",
-       "src": {
-        "sentence": "5 ¼% Senior Secured Notes due 2030 1,535",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "5 ¼% Senior Secured Notes due 2030",
-       "stated": "5 ¼% Senior Secured Notes due 2030",
        "src": {
         "sentence": "5 ¼% Senior Secured Notes due 2030 1,535",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1367,6 +1353,20 @@
       },
       {
        "k": "label",
+       "t": "4¾%",
+       "stated": "4 ¾%",
+       "src": {
+        "sentence": "4 ¾% Senior Secured Notes due 2031 689",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "Senior",
        "src": {
@@ -1405,27 +1405,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2031",
        "date": "2031",
        "granularity": "year",
-       "src": {
-        "sentence": "4 ¾% Senior Secured Notes due 2031 689",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "4 ¾% Senior Secured Notes due 2031",
-       "stated": "4 ¾% Senior Secured Notes due 2031",
        "src": {
         "sentence": "4 ¾% Senior Secured Notes due 2031 689",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1461,6 +1447,20 @@
       },
       {
        "k": "label",
+       "t": "10⅞%",
+       "stated": "10 ⅞%",
+       "src": {
+        "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "Senior",
        "src": {
@@ -1499,27 +1499,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2032",
        "date": "2032",
        "granularity": "year",
-       "src": {
-        "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "10 ⅞% Senior Secured Notes due 2032",
-       "stated": "10 ⅞% Senior Secured Notes due 2032",
        "src": {
         "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1555,6 +1541,20 @@
       },
       {
        "k": "label",
+       "t": "10¾%",
+       "stated": "10 ¾%",
+       "src": {
+        "sentence": "10 ¾% Senior Secured Notes due 2033 700",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "Senior",
        "src": {
@@ -1593,27 +1593,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2033",
        "date": "2033",
        "granularity": "year",
-       "src": {
-        "sentence": "10 ¾% Senior Secured Notes due 2033 700",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "10 ¾% Senior Secured Notes due 2033",
-       "stated": "10 ¾% Senior Secured Notes due 2033",
        "src": {
         "sentence": "10 ¾% Senior Secured Notes due 2033 700",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1649,6 +1635,20 @@
       },
       {
        "k": "label",
+       "t": "9¾%",
+       "stated": "9 ¾%",
+       "src": {
+        "sentence": "9 ¾% Senior Secured Notes due 2034 1,790",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "senior",
        "stated": "Senior",
        "src": {
@@ -1687,27 +1687,13 @@
       },
       {
        "k": "text",
-       "t": ", "
+       "t": ", due "
       },
       {
        "k": "date",
        "t": "2034",
        "date": "2034",
        "granularity": "year",
-       "src": {
-        "sentence": "9 ¾% Senior Secured Notes due 2034 1,790",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "9 ¾% Senior Secured Notes due 2034",
-       "stated": "9 ¾% Senior Secured Notes due 2034",
        "src": {
         "sentence": "9 ¾% Senior Secured Notes due 2034 1,790",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
@@ -1757,20 +1743,6 @@
       },
       {
        "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "Finance lease and financing obligations",
-       "stated": "Finance lease and financing obligations",
-       "src": {
-        "sentence": "Finance lease and financing obligations 298",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
-      },
-      {
-       "k": "text",
        "t": " · "
       },
       {
@@ -1812,20 +1784,6 @@
       {
        "k": "text",
        "t": ", no maturity stated"
-      },
-      {
-       "k": "text",
-       "t": " — "
-      },
-      {
-       "k": "label",
-       "t": "Other",
-       "stated": "Other",
-       "src": {
-        "sentence": "Other 52",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
       },
       {
        "k": "text",
