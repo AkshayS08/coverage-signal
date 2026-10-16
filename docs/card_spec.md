@@ -1,143 +1,202 @@
 # Coverage Signal card spec, Demo v1
 
-Version 1.2, Oct 4, 2026. Decisions by Akshay in Phase 1. v1.1: date display rule (3.3), CHS 9¾% item corrected (4). v1.2: year-only maturities in "due in 24 months" (2.3).
+Version 2.0, Oct 6, 2026. Rewritten after Akshay's review of all six cards (53 findings). Supersedes v1.2.
+
+Every rule here is a rule over the class. Company names appear only to show the shape of a case. A change that fixes a named company while the rule stays unimplemented does not count as done.
 
 ## 1. What the card is for
 
-An RM opening a card asks one question first: **what changed since last week?** The card answers that at the top, then shows the full debt position underneath, every week, whether or not anything changed.
+An RM opening a card asks first: **what changed since last week?** The card answers that at the top, then shows how the debt moved recently, then the full position. It does this every week, quiet or not.
 
 Scope for Demo v1:
 
-- Six names, all signed at v31: Tenet, Encompass, Molina, DaVita, CHS, Cigna.
+- Six signed names: Tenet, Encompass, Molina, DaVita, CHS, Cigna.
 - One card per name. No portfolio view.
-- The demo uses the real latest week, even if it is quiet.
-- Every card renders from the deterministic cache. Building and viewing cards bills nothing.
+- The demo uses the real latest week, even if quiet.
+- Cards render from the deterministic cache. Rendering bills nothing.
 
 ## 2. Card layout, top to bottom
 
 ### 2.1 Header
 
 - Company name.
-- Brief week as a date range ("Sept 26 to Oct 2, 2026").
-- The filing the position comes from, with its period and filing date ("10-Q for the quarter ended June 30, 2026, filed Aug 7, 2026"), linked.
+- Brief week as a date range.
+- The filing the position comes from, with its period and filing date, linked.
+- Where the position is rolled forward from an earlier filing (Rule 66 cases), one plain sentence saying so. The shape: "This company's 10-Q does not list its notes. This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026." No engine terms (3.8).
 
 ### 2.2 This week
 
-"Last week" means since the previous brief date for that name. For a name's first brief, the trailing seven days.
+"Last week" means since the previous logged brief for that name, or the trailing seven days for a first brief.
 
-**Actionable filings** are listed one per line. A filing is actionable when it changes, or could change, the debt amount, liquidity, or maturities. As a rule over the class:
+- **Actionable filings**, one per line. A filing is actionable when its form or 8-K item number signals a debt, liquidity or maturity change (a new 10-Q or 10-K; 8-K Items 1.01, 1.02, 2.03, 2.04; 2.01 where debt-financed), or when already-read text states such a change. Each line gives what happened, the date, the face amount, the instrument with its labels, one line on why it matters, and a link.
+- **Everything else** is counted in one line, grouped by form, with links one click deeper. The shape: "9 Form 4s (insider trades), none affecting debt."
+- **Quiet week:** "No new filings affecting debt since [date]."
 
-- A new 10-Q or 10-K, since it carries a new position.
-- 8-K Items 1.01 (material agreement entered or amended), 1.02 (agreement terminated), 2.03 (new direct financial obligation), 2.04 (event accelerating an obligation), and 2.01 where the acquisition is financed with debt.
-- Any filing whose text states a debt issuance, repayment, redemption, tender, facility draw or repayment, commitment change, maturity extension, waiver, or covenant amendment.
+### 2.3 Recent debt moves (new in v2.0)
 
-The item number is the first signal and the text the second. Neither alone decides it, the same "either signal" shape as the borrowing-base rule.
+Every debt transaction the filings state from the start of the anchor's fiscal year through the brief date, newest first, in two groups:
 
-Each actionable line shows what happened, the date, the amount, the instrument type with its labels (section 3.2), one line on why it matters, and a link to the sentence.
+- **Since the position date**, from later filings (8-Ks), marked "not yet in the position totals."
+- **During the period**, from the anchor filing, already reflected in the position.
 
-**Everything else** is counted in one line, with each filing linked, so nothing disappears: "2 other filings this week, none affecting debt: [8-K, Item 5.02] [DEF 14A]".
+Covered: issuance; redemption, full or partial, including special calls; tender or repurchase; repayment at maturity; facility entry, amendment, refinancing or termination; incremental add-ons; material draws or paydowns where stated.
 
-**Quiet week:** "No new filings affecting debt since [previous brief date]." The full position still follows.
+Each line carries:
 
-### 2.3 Headlines
+- Date, type, instrument with its labels, and face amount.
+- **How it was funded**, when stated ("funded by the $500MM 5.875% senior notes due 2034", "funded by ~$600MM of divestiture proceeds").
+- **What it was used for**, when stated ("used to redeem $400MM of the 4.50% senior notes due 2028").
+- Price, when stated ("at 103% of principal").
+- A link to the sentence for every figure.
 
-Three headlines. A fourth slot is reserved for the tranche mix once proper seniority and security tagging is built after the demo. Each headline is one total with its breakdown by instrument type underneath. A bare amount without its type is never shown.
+Linking rules:
 
-**Total debt**, as of the position date.
-- Breakdown lines by instrument type, drawn amounts only, each with its labels.
-- Example: "Senior unsecured notes $30.9B · Commercial paper ~$1.0B".
+- When a move funds or retires another instrument, both lines reference each other.
+- An instrument partly retired shows its remaining face and the retired portion on its own row elsewhere on the card ("$400MM remaining; $400MM of $800MM redeemed May 2026").
+- A pending transaction (announced, not confirmed complete) reads "pending, not yet confirmed by a filing" and never changes position totals.
+- A transaction completed before the period start never appears. A facility borrowed and repaid inside the window appears as two moves, never as an "intention."
+
+### 2.4 Headlines
+
+Three headlines. Slot 4 is reserved for the tranche mix after the demo. No headline amount ever appears without its instrument type.
+
+**Total debt**, at face, as of the position date.
+
+- Breakdown lines follow the filer's own table structure and order. One line per filer grouping, each with its seniority and security labels and the filer's full label.
 
 **Liquidity**, as of the position date.
-- Cash, as stated.
-- Undrawn capacity, one line per facility, with type, size, and maturity.
-- For a borrowing-base facility, stated availability is authoritative. Otherwise availability is size minus drawn minus letters of credit.
-- A commercial paper program is never counted as liquidity. It is an issuance program, not a lender commitment.
 
-**Due in 24 months**, from the brief date.
-- One line per instrument: type with labels, amount, date.
-- Underneath, the next maturity: "next: $1.5B senior unsecured notes, March 2027".
-- An instrument whose maturity falls after the position date but before the brief date, with no repayment yet in a filing, shows as "matured since the position date, repayment not yet confirmed in a filing". It is never silently dropped and never assumed repaid.
-- Scheduled term-loan amortization is included where the filing states a schedule. Otherwise only the final maturity counts.
-- A maturity stated as a year only is included when its year overlaps the window, flagged "year only stated, may fall within 24 months, see source". The year-end test applies only where an exact placement is needed (the ladder bucket, carding).
-- A maturity stated as a relative term ("364 days after funding") shows those words and is not placed in the window unless a date can be computed from stated facts.
+- Cash, labeled exactly as the filer states it ("consolidated cash and cash equivalents"). Where the filer also states a parent-company or unrestricted figure, it shows beside the consolidated one, linked. No industry-based assumption either way.
+- Undrawn committed capacity, one line per facility, with stated availability (BRD 8.12: never computed as size minus drawn). Where availability is not stated, show size, drawn and letters of credit, plus "availability not stated."
+- Uncommitted capacity (accordions, incremental options) is listed as "uncommitted, not counted in liquidity."
+- A commercial paper program is never liquidity. Where the filer states that a facility backs a CP program, both facts show side by side ("Revolver $6,500MM undrawn; backs ~$1,000MM CP outstanding"). No netted figure is computed.
 
-### 2.4 Maturity ladder
+**Potential refinance opportunities**, the next 18 months from the brief date.
 
-- Drawn debt by year, one row per instrument, with type and labels.
-- Undrawn facilities shown separately as capacity, never as $0 debt.
-- Instruments repaid or matured inside the period show as events, never as $0 rows (Rule 64).
-- Rolled rows (Cigna) sit under one label: "as of Dec 31, 2025, per 10-K, rolled to June 30, 2026". They are visibly separate from rows the anchor filing states.
-- **Each instrument appears once.** Where the same instrument appears in two sources, for example a note on the anchor ladder from an 8-K that also sits inside the rolled 10-K base, the card shows it once, under the anchor-dated source. Identity is stated-fact identity (Rule 49: rate, maturity, amount by value and unit). The roll arithmetic is unchanged.
+- One line per instrument maturing inside the window, plus scheduled principal from the filer's own maturity schedule where printed (2.5).
+- A maturity stated only to a year or month that overlaps the window is included and flagged "may fall within 18 months, see source."
+- Instruments with a pending or partial redemption carry that fact on the line, linked to the move in 2.3.
+- A **Next** line always shows, even when nothing falls in the window: "Nothing matures within 18 months. Next: …"
 
-### 2.5 Facilities
+### 2.5 Maturity ladder
 
-One block per facility:
+- Drawn debt by year, one row per instrument at face.
+- **The filer's maturity schedule is used where printed.** Instrument rows reconcile to it by year. Principal the schedule shows but no instrument row accounts for (amortization, leases, other notes) appears as "other scheduled principal, per the filer's schedule" for that year, linked. Never silently dropped. A year bucket partly inside a window is flagged, never pro-rated.
+- **Maturity ranges are stated maturities.** "2026 to 2038" shows as a range, never as "no maturity stated."
+- Undrawn facilities sit in a separate capacity group, never as $0 debt.
+- Instruments repaid inside the period show only in 2.3, never as $0 rows (Rule 64).
+- Rolled rows sit under one group label at the top of their section, with a small marker per row. The label never repeats per row.
+- Each instrument appears exactly once (stated-fact identity, Rule 49).
 
-- Size, drawn, letters of credit, available, maturity.
-- Borrowing-base flag where it applies, with the filer's **full sentence** behind it, not a fragment.
-- Letter-of-credit sub-facilities shown as capacity (Rule 48).
+### 2.6 Facilities
 
-### 2.6 What the tool did not show
+One block per facility, with seniority and security labels where stated:
 
-Every withheld figure with its reason ("not stated for this date", "sentence does not state this figure"). This is the trust section. It is never hidden when empty: "Nothing withheld this week."
+- Size, drawn, letters of credit outstanding, available, maturity.
+- **Stated sub-facilities and sub-limits are capacity** (Rule 48): letter-of-credit sub-facilities, swingline sub-facilities. Shown as capacity lines, never as drawn amounts.
+- **Letter-of-credit-only facilities** show letters of credit outstanding and, if stated, size. No "drawn" line, and no stack of "not stated" lines. At most one "facility size not stated."
+- **Commercial paper programs** show program size, amount outstanding, average rate if stated, and any backing facility. Never rendered with facility fields (drawn, LCs, available).
+- Borrowing-base facilities carry the flag with the filer's full sentence.
 
-### 2.7 Footnote: coverage
+### 2.7 What the tool did not show
 
-One line on whether the ladder ties to the balance-sheet debt total.
+Every withheld figure with its reason. Each reason must match the item's actual stated status. A reason that contradicts the filing (calling a completed, repaid facility an "intention") is a defect. "Nothing withheld this week" when empty.
 
-- Ties: "Ladder ties to balance-sheet debt of $31.878B within $35M (0.11%)."
-- Rolled: the same line, plus "using the rolled position".
-- Gap: "Ladder covers $X of $Y. $Z is not accounted for." with a link to the coverage detail.
+### 2.8 Footnote: coverage
+
+One line, plain language:
+
+- Ties: "Face total $13,333MM. Balance sheet $13,248MM, after $85MM of unamortized issue costs and discounts."
+- Rolled: the same, plus "using the Dec 31, 2025 10-K, updated through June 30, 2026."
+- Gap: "Face total $X. Balance sheet $Y. $Z is not accounted for," linked to detail.
+
+The two numbers in this line never render as the same string when their values differ.
 
 ## 3. Display rules
 
 ### 3.1 Sources
 
-Every amount, date, and label links to the exact sentence it came from, highlighted in the filing. That includes every "not stated" line, which links to the instrument's own sentence so the RM can read it and judge.
+Every amount, date and label links to the exact sentence, table row or heading it came from, highlighted. That includes every "not stated" line, which links to the instrument's own row.
 
-### 3.2 Instrument type, seniority, and security
+### 3.2 Face value first
 
-- **Type** comes from the filing: notes, term loan A, term loan B, other term loan, revolver, ABL, commercial paper, letters of credit.
-- **Seniority** (senior, subordinated) and **security** (secured, unsecured) are separate labels, each shown only where the filer states it. Never inferred.
-- Fallback wording, exact:
-  - Both stated: "$1.5B senior unsecured notes, March 2027"
-  - Security missing: "$1.5B senior notes, March 2027 · security not stated, please refer to sources"
-  - Seniority missing: "$1.5B secured notes, March 2027 · seniority not stated, please refer to sources"
-  - Both missing: "$1.5B notes, March 2027 · seniority and security not stated, please refer to sources"
+- Every amount is **face** (principal) where any permitted source states it: a table cell, the instrument's own name ("$1,500 million, 3.400% Notes due March 2027"), or a sentence.
+- Where only carrying value is stated, it shows labeled "carrying value."
+- The coverage footnote (2.8) does all bridging between face and the balance sheet. Face and carrying never mix inside one figure or one total.
 
-### 3.3 Numbers and dates
+### 3.3 Units and numbers
 
-- Figures and dates are checked exactly as printed and displayed in one standard form.
-- The unit word is the tool's canonical one ("million"), never the caption's inflection.
-- Where a table caption declares scale, the unit comes from the caption in code (Rule 67).
-- A date display never drops precision the filing printed. A bare year stays a bare year.
-- A displayed date never claims more precision than the sentence it links to. Year-only stays year-only, month-year stays month-year (Rules 76 to 78).
-- Approximate figures carry "~" where the filer hedged them ("approximately $1.0 billion").
+- All amounts in **$MM**, with thousands separators: $13,333MM, $1,450MM.
+- Decimals only where the source carries them, or where conversion from thousands needs one: $188.5MM. Never rounded beyond the source.
+- Billions in a source convert to $MM in code for display. Verification always runs against the printed form (Rules 39 and 67).
+- Hedges carry through exactly: "approximately" shows "~", "less than" shows "<". A hedge governs only the figure it qualifies.
+- "$0" replaces "nil" wherever a stated absence is shown.
+- No Σ or other unexplained symbols.
 
-## 4. Known render cases to handle
+### 3.4 Dates
 
-- **Cigna's four September 2025 notes** appear on the anchor ladder and inside the rolled base. Show them once (2.4). The page must not read $9B where there is $4.5B.
-- **CHS borrowing base**: full ABL sentence behind the flag, not the fragment "subject to borrowing base capacity".
-- CHS 9¾% notes display 2034, as the anchor states. The filed day (January 15, 2034) sits only in a pre-anchor 8-K; see the post-demo candidate.
-- **Undrawn revolvers** (Cigna $6.5B, CHS ABL $1.0B) show as capacity under liquidity and facilities, never as debt.
-- **Commercial paper** shows under total debt with "~" where hedged, never under liquidity.
+- A displayed date never claims more precision than its source (Rules 76 to 78).
+- **One instrument, one maturity, everywhere on the card.** It is the most precise maturity stated for that instrument in the anchor or a later filing. Every mention of the instrument (ladder, refinance window, moves) uses that one value.
+- A maturity stated in a different anchor sentence than the table row (a note sentence giving the exact day) is used, linked to that sentence.
+- Pre-anchor filings and prior-period annual reports supply days only where Rule 66 directs to them.
 
-## 5. Out of scope for Demo v1
+### 3.5 Instrument type, seniority, security
 
-- Portfolio view.
-- Leverage (needs EBITDA, not extracted).
-- Proper seniority and security tagging beyond stated labels. Post-demo, it fills headline slot 4 as the tranche mix.
+- **Type** is the filer's own type word: notes, debentures, term loan A, term loan B, revolver, ABL, commercial paper, letters of credit, finance lease and financing obligations, other.
+- **Seniority** (senior, junior-priority, subordinated) and **security** (secured, first lien, unsecured) are separate labels.
+- A label counts as stated when it appears in any of these, each linked:
+  - the instrument's own name or table-row label;
+  - **a table heading that names a single class and governs a contiguous block of rows** ("Senior secured first lien notes:", "Senior Secured Credit Facilities:"). A heading over mixed classes does not count;
+  - a sentence in a permitted source that names the instrument or its class and states the label ("secured by a perfected first-priority security interest", "short-term, unsecured commercial paper notes", "each of these notes are senior unsecured obligations").
+- Never inferred. Never borrowed from a filing Rule 66 does not permit.
+- Fallback wording goes **at the end of the line**, after the instrument and date:
+  - "· security not stated, please refer to sources"
+  - "· seniority not stated, please refer to sources"
+  - "· seniority and security not stated, please refer to sources"
+
+### 3.6 Labels
+
+The filer's full label, never shortened: "Finance lease and financing obligations", "Acquisition obligations and other notes payable", "Other, including finance leases", "Other notes payable".
+
+### 3.7 Line format
+
+One line per instrument, in this order: **face amount, coupon, labels, type, maturity**, then any flags at the end.
+
+The shape: "$1,549MM 10⅞% senior secured notes, due 2032". The coupon leads because it is a credit signal. No repeated name after a dash. No stray spaces inside coupons ("10⅞%", "5.125%").
+
+### 3.8 Plain language
+
+Card copy contains no rule numbers, no engine terms ("base row", "roll", "tie", "anchor", "identity", "fingerprint"), and no internal mechanics. Mechanics move to a detail view reachable from the footnote.
+
+## 4. Out of scope for Demo v1, logged for after
+
+The terms block, deferred by Akshay on Oct 6, 2026:
+
+- Covenants: thresholds, step schedules, amendments, compliance (Molina's February 2026 covenant relief, Cigna's leverage covenant).
+- Springing maturities and springing covenants (DaVita's TLA-2 and revolver, which come due March 2, 2030 if the 4.625% notes remain outstanding; CHS's springing FCCR).
+- Rates and hedging: floating exposure, caps, swaps, weighted rates.
+- Facility options: extension options.
+
+Also deferred:
+
+- Days from pre-anchor filings where Rule 66 does not direct.
+- Tranche tagging for headline slot 4.
+- Leverage (needs EBITDA).
 - UHS, HCA, Quest, Centene.
 
-## 6. Acceptance
+## 5. Acceptance
 
-A card passes when:
+Every check below is asserted as a test over all six cards. Inspection alone does not count.
 
-1. It renders from cache at $0, verified by preflight and assertFree.
-2. Every figure, date, and label links to a sentence containing it.
-3. No bare amount appears without its instrument type.
-4. All six signed goldens still reproduce through goldenThroughLoop.
-5. Akshay's read against the demo's three questions per company:
-   - Does the position tie, and does it say where it comes from?
-   - Is any call resting on an event, and is the event sourced?
-   - Where the tool refuses, does it say why?
+1. **Renders at $0**, verified by preflight and assertFree.
+2. **Every figure, date and label links to a source containing it.**
+3. **Table reconciliation.** Every row of the filer's debt table (for a rolled position, the referenced table plus stated changes) appears on the card exactly once, at face, with its filer label. The card's face total equals the sum of those rows.
+4. **No false "not stated."** For every "not stated" label, the test confirms no permitted source (row label, governing heading, permitted sentence) states it. If one does, the test fails.
+5. **One maturity per instrument.** No instrument shows two different maturity values anywhere on its card.
+6. **No precision loss.** No two instruments with different face amounts render the same amount string, and no amount is rounded beyond its source.
+7. **Schedule reconciliation.** Where the filer prints a maturity schedule, per-year amounts reconcile to it, with any remainder shown as "other scheduled principal."
+8. **Moves are complete.** Every debt transaction stated in the anchor for the period, and in later filings through the brief date, appears in 2.3 with funding and use of proceeds where stated.
+9. **Plain-language lint.** No card contains rule numbers or the engine terms in 3.8.
+10. **Hedges and labels.** Every hedge in a source survives to the card, and every label is the filer's full label.
+11. All six signed goldens still reproduce through goldenThroughLoop.
+12. Akshay's read against the demo's three questions per company.
