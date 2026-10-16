@@ -859,8 +859,18 @@
     ],
     [
      {
+      "k": "label",
+      "t": "Cash and cash equivalents",
+      "stated": "Cash and cash equivalents",
+      "src": {
+       "sentence": "Cash and cash equivalents $ 6,298 $ 7,676",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
       "k": "text",
-      "t": "Cash "
+      "t": " (balance sheet) "
      },
      {
       "k": "figure",
@@ -951,6 +961,64 @@
      {
       "k": "text",
       "t": "commercial paper program: not counted. Commercial paper is an issuance program, not a lender commitment."
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "figure",
+      "t": "$6,500MM",
+      "printed": "$ 6.5 billion",
+      "src": {
+       "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " undrawn; "
+     },
+     {
+      "k": "label",
+      "t": "backs",
+      "stated": "revolving credit agreement",
+      "src": {
+       "sentence": "As of June 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are available for general corporate purposes, including providing liquidity support for our commercial paper program), $5.5 billion of remaining capacity under our commercial paper program, and $6.6 billion in cash and short-term investments, approximately $0.8 billion of which was held by the parent company or certain non-regulated subsidiaries.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "figure",
+      "t": "~$1,000MM",
+      "printed": "$ 1.0 billion",
+      "src": {
+       "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " commercial paper outstanding. Shown side by side, not netted."
      }
     ]
    ]

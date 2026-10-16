@@ -281,8 +281,18 @@
     ],
     [
      {
+      "k": "label",
+      "t": "Cash and cash equivalents",
+      "stated": "Cash and cash equivalents",
+      "src": {
+       "sentence": "Cash and cash equivalents $ 4,985 $ 4,248",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
       "k": "text",
-      "t": "Cash "
+      "t": " (balance sheet) "
      },
      {
       "k": "figure",
@@ -367,6 +377,40 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
        "doc": "10-Q 2026-07-23"
       }
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "Uncommitted: "
+     },
+     {
+      "k": "label",
+      "t": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+      "stated": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+      "src": {
+       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", up to "
+     },
+     {
+      "k": "figure",
+      "t": "$800MM",
+      "printed": "$ 800 million",
+      "src": {
+       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
+      "k": "text",
+      "t": ". Uncommitted, not counted in liquidity."
      }
     ]
    ]

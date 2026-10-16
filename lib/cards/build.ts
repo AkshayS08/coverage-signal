@@ -512,16 +512,39 @@ export function buildCard(i: CardInputs): Card {
   if (i.cash.usd !== null && i.cash.printedLine && i.cash.printed) {
     const printed = i.cash.printed;
     const s = anchorSrc(i.cash.printedLine);
-    liqLines.push([t("Cash "), { k: "figure", t: displayAmount(printed, i.cash.printedLine), printed, src: s }, t(" as of "), periodDate()]);
+    // §2.4: cash labeled exactly as the filer states it, from its own balance-sheet line.
+    const filerLabel = (/^\s*([A-Za-z][A-Za-z ,&'’\-]*?[A-Za-z])\s*\$?\s*\(?\d/.exec(i.cash.printedLine) ?? [])[1];
+    const label: Segment = filerLabel ? { k: "label", t: filerLabel, stated: filerLabel, src: s } : t("Cash");
+    liqLines.push([label, t(" (balance sheet) "), { k: "figure", t: displayAmount(printed, i.cash.printedLine), printed, src: s }, t(" as of "), periodDate()]);
     liqParts.push({ printed, usd: i.cash.usd, src: s });
   } else {
     liqComputable = false;
     liqLines.push([t(`Cash: not shown — ${i.cash.reason ?? "no printed line states the tagged figure"}.`)]);
   }
+  const liqPermitted = (url: string) => url === anchor.url || (i.laterUrls ?? []).includes(url);
+  const liqFig = (fact: { value: string; src: { sentence: string; url: string } }): Segment => ({ k: "figure", t: displayAmount(fact.value, fact.src.sentence), printed: fact.value, src: src(fact.src.sentence, fact.src.url) });
+  // A parent-company or unrestricted figure the filer also states sits beside the consolidated one, not added to it.
+  for (const c of (i.facts?.cash ?? []).filter((x) => liqPermitted(x.amount.src.url))) {
+    liqLines.push([{ k: "label", t: c.label.value, stated: c.label.value, src: src(c.label.src.sentence, c.label.src.url) }, t(" "), liqFig(c.amount), t(", as the filer states it; shown beside the balance-sheet figure, not added to it")]);
+  }
+  const cp = i.facts?.commercialPaper ?? null;
+  const cpBacking = cp?.backedBy && cp.outstanding && liqPermitted(cp.backedBy.src.url) && liqPermitted(cp.outstanding.src.url) ? cp : null;
+  const lenderFacilities = facilities.filter((f) => !(f.category === "commercial-paper" || classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType === "commercial-paper"));
   for (const f of facilities) {
     const kind = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;
     if (f.category === "commercial-paper" || kind === "commercial-paper") {
       liqLines.push([t(`${f.name}: not counted. Commercial paper is an issuance program, not a lender commitment.`)]);
+      // §2.4: where the filer states a facility backs the program, both facts show side by side. Nothing is netted.
+      const backer = cpBacking ? lenderFacilities.find((x) => containsWord(x.name, cpBacking.backedBy!.value)) ?? (lenderFacilities.length === 1 ? lenderFacilities[0] : null) : null;
+      if (cpBacking && backer?.available) {
+        const av = backer.available;
+        liqLines.push([
+          typeLabel({ instrument: backer.name, classification: classifyInstrument({ headings: [], instrumentName: backer.name }) }, src(av.sourceLine, backer.figureSources?.available ?? backer.citedUrl)),
+          t(" "), { k: "figure", t: displayAmount(av.value, av.sourceLine), printed: av.value, src: src(av.sourceLine, backer.figureSources?.available ?? backer.citedUrl) },
+          t(" undrawn; "), { k: "label", t: "backs", stated: cpBacking.backedBy!.value, src: src(cpBacking.backedBy!.src.sentence, cpBacking.backedBy!.src.url) },
+          t(" "), liqFig(cpBacking.outstanding!), t(" commercial paper outstanding. Shown side by side, not netted."),
+        ]);
+      }
       continue;
     }
     if (kind === "letter-of-credit") continue; // capacity for letters of credit only; not cash a borrower can draw (Rule 48)
@@ -549,6 +572,12 @@ export function buildCard(i: CardInputs): Card {
     const m = facilityMaturityAtItsSentence(f);
     if (m.kind === "dated") line.push(t(", matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: fsrc("maturity", m.sentence) });
     else line.push(t(m.kind === "relative" ? ", maturity stated as a relative term, not a date" : ", no maturity stated"));
+    liqLines.push(line);
+  }
+  for (const u of (i.facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
+    const line: Line = [...(/^uncommitted/i.test(u.description.value) ? [] : [t("Uncommitted: ")]), { k: "label", t: u.description.value, stated: u.description.value, src: src(u.description.src.sentence, u.description.src.url) }];
+    if (u.amount && liqPermitted(u.amount.src.url)) line.push(t(", up to "), liqFig(u.amount));
+    line.push(t(". Uncommitted, not counted in liquidity."));
     liqLines.push(line);
   }
   const liqUsd = liqParts.reduce((a, p) => a + p.usd, 0);
