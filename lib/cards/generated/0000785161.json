@@ -2516,99 +2516,39 @@
     },
     {
      "k": "text",
-     "t": " "
+     "t": " The filer's schedule prints "
     },
     {
-     "k": "computed",
-     "t": "$29.7MM",
-     "usd": 29700000,
-     "parts": [
-      {
-       "printed": "$ 35.9 million",
-       "usd": -35900000,
-       "src": {
-        "sentence": "Current portion of long-term debt $ 35.9   $ 43.6",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "printed": "$ 2,598.1 million",
-       "usd": -2598100000,
-       "src": {
-        "sentence": "Long-term debt, net of current portion 2,598.1   2,447.2",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "printed": "$ 18.4 million",
-       "usd": 18400000,
-       "src": {
-        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "printed": "$ 46.9 million",
-       "usd": 46900000,
-       "src": {
-        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "printed": "$ 435.8 million",
-       "usd": 435800000,
-       "src": {
-        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "printed": "$ 44.9 million",
-       "usd": 44900000,
-       "src": {
-        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "printed": "$ 850.8 million",
-       "usd": 850800000,
-       "src": {
-        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "printed": "$ 640.1 million",
-       "usd": 640100000,
-       "src": {
-        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "printed": "$ 626.8 million",
-       "usd": 626800000,
-       "src": {
-        "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1 634.1 Thereafter 626.8",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      }
-     ]
+     "k": "figure",
+     "t": "$2,663.7MM",
+     "printed": "$ 2,663.7 million",
+     "src": {
+      "sentence": "Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1 634.1 Thereafter 626.8 617.8 Total $ 2,663.7 $ 2,634.0",
+      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+      "doc": "10-Q 2026-08-07"
+     }
     },
     {
      "k": "text",
-     "t": " is not accounted for."
+     "t": " face and "
+    },
+    {
+     "k": "figure",
+     "t": "$2,634.0MM",
+     "printed": "$ 2,634.0 million",
+     "src": {
+      "sentence": "Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1 634.1 Thereafter 626.8 617.8 Total $ 2,663.7 $ 2,634.0",
+      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+      "doc": "10-Q 2026-08-07"
+     }
+    },
+    {
+     "k": "text",
+     "t": " net, side by side"
+    },
+    {
+     "k": "text",
+     "t": "; the net figure is the balance sheet's."
     }
    ]
   ]

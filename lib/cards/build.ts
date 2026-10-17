@@ -1076,8 +1076,29 @@ export function buildCard(i: CardInputs): Card {
     const basisUrl = rc.counts ? dm?.priorPeriodBase?.filingUrl ?? anchor.url : anchor.url;
     const basisText = (i.textByUrl.get(basisUrl) ?? "").replace(/[\s\u00a0]+/g, " ");
     const basisHit = /[^.:]{0,200}\((net of [^)]{0,80}?(?:issuance costs|discounts?|premiums?)[^)]{0,40})\)[^.:]{0,200}:/i.exec(basisText) ?? /[^.:]{0,200}(net of (?:unamortized )?(?:debt )?(?:issuance costs|discounts?|premiums?)(?:(?:,| or| and) (?:unamortized )?(?:debt )?(?:issuance costs|discounts?|premiums?))*)[^.:]{0,200}:/i.exec(basisText);
-    const explained = Math.abs(residual) >= 0.5 * 10 ** -decimals * 1e6 && basisHit;
-    if (explained) {
+    // A filer table printing face and net side by side states the basis too
+    // (ruling, Oct 17): its face total must be the card's face total, and the
+    // net total is then the filer's own carrying figure.
+    const gap = Math.abs(residual) >= 0.5 * 10 ** -decimals * 1e6;
+    const sideBySide = (() => {
+      if (!gap) return null;
+      const re = /[^.:]{0,240}\b(?:face|principal)(?: amount| value)?s?\s+(?:net|carrying)(?: amount| value)?s?\b[\s\S]{0,900}?\bTotal\s+(\$?\s*\(?[\d,]+(?:\.\d+)?\)?)\s+(\$?\s*\(?[\d,]+(?:\.\d+)?\)?)/gi;
+      for (const m of basisText.matchAll(re)) {
+        const span = m[0].trim();
+        const scale = scheduleScale(span);
+        const facePrinted = `$ ${m[1].replace(/[$\s()]/g, "")} ${scale}`, netPrinted = `$ ${m[2].replace(/[$\s()]/g, "")} ${scale}`;
+        const faceUsd = parseMoneyAmount(facePrinted), netUsd = parseMoneyAmount(netPrinted);
+        if (faceUsd !== null && netUsd !== null && Math.abs(faceUsd - faceTotal) < 0.5 * 10 ** -decimals * 1e6 + 1) return { span, facePrinted, netPrinted, netUsd };
+      }
+      return null;
+    })();
+    if (sideBySide) {
+      const where = src(sideBySide.span, basisUrl);
+      line.push(t(" The filer's schedule prints "), { k: "figure", t: displayAmount(sideBySide.facePrinted, where.sentence), printed: sideBySide.facePrinted, src: where }, t(" face and "), { k: "figure", t: displayAmount(sideBySide.netPrinted, where.sentence), printed: sideBySide.netPrinted, src: where }, t(" net, side by side"));
+      line.push(t(Math.abs(sideBySide.netUsd - capSum) < 0.5 * 10 ** -decimals * 1e6 + 1 ? "; the net figure is the balance sheet's." : "."));
+    }
+    const explained = gap && (basisHit || sideBySide);
+    if (gap && basisHit && !sideBySide) {
       const where = src(basisHit![0].trim(), basisUrl);
       line.push(t(" The filer states its debt table is "), { k: "label", t: basisHit![1], stated: basisHit![1], src: where }, t("."));
       // The carrying-basis check: the lines as the table states them, against the balance sheet.
