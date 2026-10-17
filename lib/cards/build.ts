@@ -376,7 +376,9 @@ export function buildCard(i: CardInputs): Card {
   // maturity, then flags, then the "not stated" fallback last (§3.5). A note
   // is told apart by its coupon; a line with no coupon carries the filer's
   // full label in place of the type word (§3.6). The name never repeats.
-  const describe = (it: Item, opts: { withDate?: boolean; flags?: string[] } = {}): Line => {
+  /** Items whose "not stated" fallback is stated once for their group (v2.1 §2.5), not on their own line. */
+  const groupedFallback = new Set<Item>();
+  const describe = (it: Item, opts: { withDate?: boolean; flags?: string[]; fallback?: boolean } = {}): Line => {
     const out: Line = [];
     if (it.amountParts) {
       const usd = it.amountParts.reduce((a, p) => a + p.usd, 0);
@@ -399,7 +401,7 @@ export function buildCard(i: CardInputs): Card {
     if (it.rolled && rolledLabel) out.push(t(" · from the 10-K"));
     if (it.moveFlags) out.push(...it.moveFlags);
     for (const f of opts.flags ?? []) out.push(t(` · ${f}`));
-    const suffix = notStatedSuffix(it.labels.seniority, it.labels.security);
+    const suffix = opts.fallback === false || groupedFallback.has(it) ? null : notStatedSuffix(it.labels.seniority, it.labels.security);
     if (suffix) out.push(t(" · "), { k: "notStated", t: suffix, src: it.amountSrc });
     return out;
   };
@@ -879,9 +881,22 @@ export function buildCard(i: CardInputs): Card {
   }
   const years = [...new Set([...byYear.keys(), ...scheduleByYear.keys()])].sort((a, b) => (/^\d/.test(a) ? 0 : a === RANGE ? 1 : 2) - (/^\d/.test(b) ? 0 : b === RANGE ? 1 : 2) || a.localeCompare(b));
   const neg = (ps: Part[]) => ps.map((p) => ({ ...p, usd: -p.usd }));
+  // v2.1 §2.5 "NOT STATED" ONCE PER GROUP: a fallback every row of a group
+  // shares is stated once at the group's top, not on each row. The "from the
+  // 10-K" lines are one group; each ladder year is one group.
+  const fallbackOf = (it: Item) => notStatedSuffix(it.labels.seniority, it.labels.security);
+  const sharedFallback = (items: Item[]) => (items.length >= 2 && items.every((it) => fallbackOf(it) !== null && fallbackOf(it) === fallbackOf(items[0])) ? fallbackOf(items[0]) : null);
+  const rolledFallback = sharedFallback(allDebtItems.filter((it) => it.rolled));
+  if (rolledFallback) for (const it of allDebtItems.filter((x) => x.rolled)) groupedFallback.add(it);
   const ladderBlocks = years.map((y) => {
     const items = byYear.get(y) ?? [];
-    const lines: Line[] = items.map((it) => describe(it));
+    const blockFallback = sharedFallback(items.filter((it) => !groupedFallback.has(it)).length === items.length ? items : []);
+    const lines: Line[] = [];
+    if (blockFallback) {
+      lines.push([{ k: "notStated", t: `Every line in ${/^\d{4}$/.test(y) ? y : "this group"}: ${blockFallback}`, src: items[0].amountSrc }]);
+      for (const it of items) groupedFallback.add(it);
+    }
+    lines.push(...items.map((it) => describe(it)));
     const sch = scheduleByYear.get(y);
     if (sch) {
       const retired = retiredByYear.get(y) ?? [];
@@ -956,7 +971,10 @@ export function buildCard(i: CardInputs): Card {
     events.push(line);
   }
   void events;
-  if (rolledLabel) ladderLines.push([t(`Lines marked "from the 10-K": ${rolledSentence(rolledLabel).replace(/^This list comes from/, "stated in")}`)]);
+  if (rolledLabel) {
+    const firstRolled = allDebtItems.find((x) => x.rolled);
+    ladderLines.push([t(`Lines marked "from the 10-K": ${rolledSentence(rolledLabel).replace(/^This list comes from/, "stated in")}`), ...(rolledFallback && firstRolled ? [t(" For every one of them: "), { k: "notStated", t: rolledFallback, src: firstRolled.amountSrc } as Segment, t(".")] : [])]);
+  }
   // v2.1 §2.5: instruments the referenced filing states at $0 never appear, not
   // even as a list; how two filings' statements of one note were reconciled is
   // mechanics, not card copy. Both stay in the build (rolledNil, dedupNotes) for the detail view.

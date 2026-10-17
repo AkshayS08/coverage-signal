@@ -2147,6 +2147,17 @@
     "lines": [
      [
       {
+       "k": "notStated",
+       "t": "Every line in this group: seniority and security not stated, please refer to sources",
+       "src": {
+        "sentence": "Other notes payable 81.9   93.6",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ],
+     [
+      {
        "k": "figure",
        "t": "$81.9MM",
        "printed": "$ 81.9 million",
@@ -2178,19 +2189,6 @@
       {
        "k": "text",
        "t": ", no maturity stated"
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
-       "src": {
-        "sentence": "Other notes payable 81.9   93.6",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
       }
      ],
      [
@@ -2226,19 +2224,6 @@
       {
        "k": "text",
        "t": ", no maturity stated"
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
-       "src": {
-        "sentence": "Finance lease obligations 281.7   294.6",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
       }
      ]
     ]

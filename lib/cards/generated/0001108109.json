@@ -2009,6 +2009,17 @@
     "lines": [
      [
       {
+       "k": "notStated",
+       "t": "Every line in this group: seniority and security not stated, please refer to sources",
+       "src": {
+        "sentence": "Finance lease and financing obligations 298",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "doc": "10-Q 2026-07-23"
+       }
+      }
+     ],
+     [
+      {
        "k": "figure",
        "t": "$298MM",
        "printed": "$ 298 million",
@@ -2036,19 +2047,6 @@
       {
        "k": "text",
        "t": ", no maturity stated"
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
-       "src": {
-        "sentence": "Finance lease and financing obligations 298",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
       }
      ],
      [
@@ -2080,19 +2078,6 @@
       {
        "k": "text",
        "t": ", no maturity stated"
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
-       "src": {
-        "sentence": "Other 52",
-        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-        "doc": "10-Q 2026-07-23"
-       }
       }
      ]
     ]
