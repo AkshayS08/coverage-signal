@@ -936,8 +936,10 @@ export function buildCard(i: CardInputs): Card {
   }
   void events;
   if (rolledLabel) ladderLines.push([t(`Lines marked "from the 10-K": ${rolledSentence(rolledLabel).replace(/^This list comes from/, "stated in")}`)]);
-  if (rolledNil.length) ladderLines.push([t(`${rolledNil.length} line${rolledNil.length === 1 ? "" : "s"} the ${rolledFrom(rolledLabel ?? "")} 10-K states at $0, not debt: ${rolledNil.join("; ")}.`)]);
-  if (dedupNotes.length) ladderLines.push([t(`${dedupNotes.length} note${dedupNotes.length === 1 ? " is" : "s are"} stated in both the ${anchor.form} and the 10-K; each is shown once, as the ${anchor.form} states it.`)]);
+  // v2.1 §2.5: instruments the referenced filing states at $0 never appear, not
+  // even as a list; how two filings' statements of one note were reconciled is
+  // mechanics, not card copy. Both stay in the build (rolledNil, dedupNotes) for the detail view.
+  void rolledNil; void dedupNotes;
 
   // ── 2.6 facilities: one block per facility, in the fields its kind has (card_spec §2.6) ──
   // A fact is a source only where it is stated in the anchor or a later filing (Rule 66).
@@ -1037,8 +1039,9 @@ export function buildCard(i: CardInputs): Card {
     const done = m.placement === "excluded-not-completed"
       ? [...i.textByUrl.keys()].flatMap(sentencesOf).find((x) => containsWord(x.sentence, m.instrument) && /\b(?:were|was) used to repay|\b(?:was|were) repaid\b|\brepaid\b|\bredeemed\b|\bterminated\b/i.test(x.sentence) && !/\bintends?\b|\bwill\b|\bexpects?\b/i.test(x.sentence))
       : undefined;
-    if (done) withheld.push([t(`Not counted in the totals: ${m.instrument}. `), { k: "label", t: "Stated as done", stated: m.instrument, src: done }, t(` in the ${done.doc}, before ${rolledFrom(rolledLabel ?? "")}, so it is already outside the list the totals start from.`)]);
-    else withheld.push([t(`Not counted in the totals: ${m.instrument}, ${m.placement === "undated" ? "no date stated" : "stated as an intention, and no filing this card holds states it done"}.`)]);
+    // v2.1 §2.3/§2.5: repaid before the referenced period end, so it never appears on the card.
+    if (done) continue;
+    withheld.push([t(`Not counted in the totals: ${m.instrument}, ${m.placement === "undated" ? "no date stated" : "stated as an intention, and no filing this card holds states it done"}.`)]);
   }
   if (withheld.length === 0) withheld.push([t("Nothing withheld this week.")]);
 

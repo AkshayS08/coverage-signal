@@ -1458,18 +1458,6 @@
      "k": "text",
      "t": "Lines marked \"from the 10-K\": stated in the Dec 31, 2025 10-K, updated for changes through June 30, 2026."
     }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "6 lines the Dec 31, 2025 10-K states at $0, not debt: Commercial paper; $900 million, 3.250% Notes due April 2025; $1,216 million, 4.125% Notes due November 2025; $1,284 million, 4.500% Notes due February 2026; $700 million, 5.685% Notes due March 2026; $550 million, 1.250% Notes due March 2026."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "4 notes are stated in both the 10-Q and the 10-K; each is shown once, as the 10-Q states it."
-    }
    ]
   ],
   "blocks": [
@@ -4055,21 +4043,7 @@
    [
     {
      "k": "text",
-     "t": "Not counted in the totals: Term Loan Facility. "
-    },
-    {
-     "k": "label",
-     "t": "Stated as done",
-     "stated": "Term Loan Facility",
-     "src": {
-      "sentence": "The proceeds from this debt issuance were used to repay the $2.0 billion of loans outstanding under the Term Loan Facility, dated August 2025, the proceeds of which were used to partially fund an investment in Shields Health Solutions, a leading specialty pharmacy management company.",
-      "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-      "doc": "10-K for Dec 31, 2025"
-     }
-    },
-    {
-     "k": "text",
-     "t": " in the 10-K for Dec 31, 2025, before Dec 31, 2025, so it is already outside the list the totals start from."
+     "t": "Nothing withheld this week."
     }
    ]
   ]

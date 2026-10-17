@@ -513,7 +513,10 @@ const R8_PREPERIOD: Test = {
     const all = linesOf(card).map((w) => text(w.line));
     if (f.rolled) {
       const nil = f.rolled.rows.filter((r: any) => !r.amount || /^\$?\s*[—–-]\s*$/.test(r.amount)).map((r: any) => r.label);
-      for (const n of nil) if (all.some((t) => norm(t).includes(norm(n)))) bad.push(`a line stated at $0 in the referenced filing appears: "${n}"`);
+      // A $0 row of the referenced filing would surface as one of its own lines ("from the 10-K") or inside a
+      // list sentence (no amount of its own) — never as a current instrument line of the same kind.
+      const suspect = linesOf(card).filter((w) => /from the 10-K/.test(text(w.line)) || (!amountSeg(w.line) && ["ladder", "withheld", "refi"].includes(w.section) && !w.block)).map((w) => norm(text(w.line)));
+      for (const n of nil) if (suspect.some((t) => t.includes(norm(n)))) bad.push(`a line stated at $0 in the referenced filing appears: "${n}"`);
     }
     for (const t of all) if (/states at \$0|stated in both|each is shown once|stated as done in the|already outside the list/i.test(t)) bad.push(`mechanics or pre-period copy: "${t.slice(0, 70)}"`);
     return bad;
