@@ -466,7 +466,7 @@
       },
       {
        "k": "figure",
-       "t": "$250.0MM",
+       "t": "$250MM",
        "printed": "$ 250.0  million",
        "src": {
         "sentence": "During March 2026, we drew $ 250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement.",
@@ -672,7 +672,7 @@
      },
      {
       "k": "computed",
-      "t": "$200.0MM",
+      "t": "$200MM",
       "usd": 200000000,
       "parts": [
        {
@@ -1958,7 +1958,7 @@
      [
       {
        "k": "figure",
-       "t": "$200.0MM",
+       "t": "$200MM",
        "printed": "$ 200.0 million",
        "src": {
         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
@@ -2050,7 +2050,7 @@
      [
       {
        "k": "figure",
-       "t": "$491.0MM",
+       "t": "$491MM",
        "printed": "$ 491.0 million",
        "src": {
         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
@@ -2290,7 +2290,7 @@
       },
       {
        "k": "figure",
-       "t": "$200.0MM",
+       "t": "$200MM",
        "printed": "$ 200.0 million",
        "src": {
         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
@@ -2487,7 +2487,7 @@
     },
     {
      "k": "computed",
-     "t": "$2,634.0MM",
+     "t": "$2,634MM",
      "usd": 2634000000,
      "parts": [
       {
@@ -2534,7 +2534,7 @@
     },
     {
      "k": "figure",
-     "t": "$2,634.0MM",
+     "t": "$2,634MM",
      "printed": "$ 2,634.0 million",
      "src": {
       "sentence": "Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1 634.1 Thereafter 626.8 617.8 Total $ 2,663.7 $ 2,634.0",

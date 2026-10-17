@@ -47,7 +47,8 @@ export function mmDecimals(printed: string): number {
 }
 
 export function formatMM(usd: number, decimals = 0): string {
-  const body = (Math.abs(usd) / 1e6).toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  // v2.1 §3.3: a decimal shows only where it is non-zero — "$2,750MM", never "$2,750.0MM".
+  const body = (Math.abs(usd) / 1e6).toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
   return usd < 0 ? `($${body}MM)` : `$${body}MM`;
 }
 

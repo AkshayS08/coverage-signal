@@ -70,7 +70,7 @@
       },
       {
        "k": "figure",
-       "t": "$500.0MM",
+       "t": "$500MM",
        "printed": "$ 500,000 thousand",
        "src": {
         "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
@@ -267,7 +267,7 @@
      },
      {
       "k": "computed",
-      "t": "$6,250.0MM",
+      "t": "$6,250MM",
       "usd": 6250000000,
       "parts": [
        {
@@ -414,7 +414,7 @@
      },
      {
       "k": "computed",
-      "t": "$1,975.0MM",
+      "t": "$1,975MM",
       "usd": 1975000000,
       "parts": [
        {
@@ -506,7 +506,7 @@
      },
      {
       "k": "computed",
-      "t": "$65.0MM",
+      "t": "$65MM",
       "usd": 65000000,
       "parts": [
        {
@@ -565,7 +565,7 @@
      },
      {
       "k": "computed",
-      "t": "$2,104.0MM",
+      "t": "$2,104MM",
       "usd": 2103963000,
       "parts": [
        {
@@ -627,7 +627,7 @@
      },
      {
       "k": "figure",
-      "t": "$669.0MM",
+      "t": "$669MM",
       "printed": "$ 668,963 thousand",
       "src": {
        "sentence": "Cash and cash equivalents $ 668,963 $ 676,438",
@@ -668,7 +668,7 @@
      },
      {
       "k": "figure",
-      "t": "$1,500.0MM",
+      "t": "$1,500MM",
       "printed": "$ 1,500,000 thousand",
       "src": {
        "sentence": "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities.",
@@ -682,7 +682,7 @@
      },
      {
       "k": "figure",
-      "t": "$1,435.0MM",
+      "t": "$1,435MM",
       "printed": "$ 1,435,000 thousand",
       "src": {
        "sentence": "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities.",
@@ -860,7 +860,7 @@
     [
      {
       "k": "computed",
-      "t": "$114.0MM",
+      "t": "$114MM",
       "usd": 114026000,
       "parts": [
        {
@@ -912,7 +912,7 @@
      },
      {
       "k": "figure",
-      "t": "$2,750.0MM",
+      "t": "$2,750MM",
       "printed": "$ 2,750,000 thousand",
       "src": {
        "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
@@ -1042,7 +1042,7 @@
      [
       {
        "k": "computed",
-       "t": "$114.0MM",
+       "t": "$114MM",
        "usd": 114026000,
        "parts": [
         {
@@ -1138,7 +1138,7 @@
      [
       {
        "k": "figure",
-       "t": "$1,975.0MM",
+       "t": "$1,975MM",
        "printed": "$ 1,975,000 thousand",
        "src": {
         "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
@@ -1208,7 +1208,7 @@
      [
       {
        "k": "figure",
-       "t": "$65.0MM",
+       "t": "$65MM",
        "printed": "$ 65,000 thousand",
        "src": {
         "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
@@ -1278,7 +1278,7 @@
      [
       {
        "k": "figure",
-       "t": "$2,750.0MM",
+       "t": "$2,750MM",
        "printed": "$ 2,750,000 thousand",
        "src": {
         "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
@@ -1514,7 +1514,7 @@
      [
       {
        "k": "figure",
-       "t": "$1,500.0MM",
+       "t": "$1,500MM",
        "printed": "$ 1,500,000 thousand",
        "src": {
         "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %",
@@ -1671,7 +1671,7 @@
      [
       {
        "k": "figure",
-       "t": "$1,000.0MM",
+       "t": "$1,000MM",
        "printed": "$ 1,000,000 thousand",
        "src": {
         "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %",
@@ -1764,7 +1764,7 @@
      [
       {
        "k": "figure",
-       "t": "$1,000.0MM",
+       "t": "$1,000MM",
        "printed": "$ 1,000,000 thousand",
        "src": {
         "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %",
@@ -1995,7 +1995,7 @@
       },
       {
        "k": "figure",
-       "t": "$1,500.0MM",
+       "t": "$1,500MM",
        "printed": "$ 1,500,000 thousand",
        "src": {
         "sentence": "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities.",
@@ -2012,7 +2012,7 @@
       },
       {
        "k": "figure",
-       "t": "$65.0MM",
+       "t": "$65MM",
        "printed": "$ 65,000 thousand",
        "src": {
         "sentence": "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities.",
@@ -2046,7 +2046,7 @@
       },
       {
        "k": "figure",
-       "t": "$1,435.0MM",
+       "t": "$1,435MM",
        "printed": "$ 1,435,000 thousand",
        "src": {
         "sentence": "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities.",
@@ -2244,7 +2244,7 @@
     },
     {
      "k": "computed",
-     "t": "$10,781.0MM",
+     "t": "$10,781MM",
      "usd": 10781013000,
      "parts": [
       {

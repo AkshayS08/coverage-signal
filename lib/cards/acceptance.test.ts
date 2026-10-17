@@ -314,7 +314,8 @@ const T6_PRECISION: Test = {
       const owed = owedShape(s.printed);
       if (!owed) continue;
       const shown = s.t.replace(/^[~<]/, "");
-      const want = (owed.usd / 1e6).toLocaleString("en-US", { minimumFractionDigits: owed.decimals, maximumFractionDigits: owed.decimals });
+      // v2.1 §3.3: at the source's precision, with no trailing zero after the point.
+      const want = (owed.usd / 1e6).toLocaleString("en-US", { minimumFractionDigits: owed.decimals, maximumFractionDigits: owed.decimals }).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
       if (shown !== `$${want}MM`) bad.push(`${s.t} for "${s.printed.trim()}" (owed $${want}MM)`);
     }
     const ladder = linesOf(card).filter((w) => w.section === "ladder").map((w) => w.line);
@@ -411,7 +412,193 @@ const T10_HEDGES: Test = {
   },
 };
 
-const TESTS = [T1_PURITY, T2_LINKS, T3_TABLE, T4_NOTSTATED, T5_ONEMATURITY, T6_PRECISION, T7_SCHEDULE, T8_MOVES, T9_LINT, T10_HEDGES];
+
+// ── card_spec v2.1 (round 2): each rule asserted over all six cards ──────
+const CARDVIEW = readFileSync(join(ROOT, "app", "cards", "CardView.tsx"), "utf-8");
+const refiOf = (card: Card): Line[] => (card.headlines.refi ?? card.headlines.due24)?.lines ?? [];
+/** The box's parts: summary first, then rows, then the leftovers line, Next and the legend. */
+function boxParts(card: Card) {
+  const ls = refiOf(card);
+  const summary = ls[0] ?? [];
+  const rest = ls.slice(1);
+  const role = (l: Line) => (/^Plus /.test(text(l)) ? "plus" : /^Next/.test(text(l)) ? "next" : /^† /.test(text(l)) ? "legend" : "row");
+  return { summary, rows: rest.filter((l) => role(l) === "row"), plus: rest.filter((l) => role(l) === "plus"), next: rest.filter((l) => role(l) === "next"), legend: rest.filter((l) => role(l) === "legend"), all: ls };
+}
+
+/** A1 — the box follows This week, above moves and the headlines, in its own container. */
+function boxPlacement(view: string): string[] {
+  const at = (re: RegExp) => { const m = re.exec(view); return m ? m.index : -1; };
+  const week = at(/card\.thisWeek/), box = at(/className=\{styles\.refiBox\}/), moves = at(/card\.moves/), heads = at(/card\.headlines\.totalDebt/);
+  return week >= 0 && box > week && moves > box && heads > box ? [] : ["the refinance box is not rendered directly after This week, in its own container, above moves and the headlines"];
+}
+const R1_BOX: Test = { id: "A1", name: "refinance box: after This week, in its own container", run: (card) => [...boxPlacement(CARDVIEW), ...(refiOf(card).length ? [] : ["no refinance box"])] };
+
+const R2_SUMMARY: Test = {
+  id: "A2", name: "refinance box: a summary line first, from stated facts, every figure linked",
+  run: (card) => {
+    const { summary, rows } = boxParts(card);
+    const st = text(summary);
+    if (/^Nothing matures within 18 months\.?$/.test(st)) return rows.some((r) => !/commercial paper/i.test(text(r))) ? ["says nothing matures, but the box lists maturing rows"] : [];
+    const m = /^(\S+) across (\d+) (notes|instruments) in the next 18 months/.exec(st);
+    if (!m) return [`summary does not follow the template: "${st.slice(0, 80)}"`];
+    const bad: string[] = [];
+    const maturing = rows.filter((r) => !/commercial paper outstanding/i.test(text(r)));
+    const sumRows = maturing.reduce((a, r) => a + (shownUsd(amountSeg(r)?.t ?? "") ?? 0), 0);
+    const shown = shownUsd(m[1].replace(/†$/, "")) ?? -1;
+    if (Math.abs(shown - sumRows) > 0.5e6) bad.push(`summary ${m[1]} but the maturing rows sum to ${sumRows / 1e6}MM`);
+    if (Number(m[2]) !== maturing.length) bad.push(`summary counts ${m[2]} but the box lists ${maturing.length} maturing rows`);
+    if (/\$\d/.test(summary.filter((x) => x.k === "text").map((x) => x.t).join(""))) bad.push("a figure in the summary is plain text, not linked");
+    return bad;
+  },
+};
+
+const NAMED_TYPE = /\b(notes|debentures|term loan|revolver|ABL|credit (?:facility|agreement)|line of credit|commercial paper)\b/i;
+const R3_NAMED: Test = {
+  id: "A3", name: "refinance box: named instruments only, no \"not stated\" fallbacks",
+  run: (card) => {
+    const bad: string[] = [];
+    for (const r of boxParts(card).rows) {
+      const t = text(r);
+      if (/other scheduled principal|over a range of years|\bdue \d{4} to \d{4}\b/i.test(t) || !NAMED_TYPE.test(t)) bad.push(`not a named instrument: "${t.slice(0, 70)}"`);
+    }
+    for (const l of refiOf(card)) if (l.some((x) => x.k === "notStated")) bad.push(`a "not stated" fallback in the box: "${text(l).slice(0, 60)}"`);
+    return bad;
+  },
+};
+
+const R4_LEFTOVERS: Test = {
+  id: "A4", name: "refinance box: schedule leftovers and ranged items in one line",
+  run: (card) => {
+    const { plus, all } = boxParts(card);
+    const bad: string[] = [];
+    if (plus.length > 1) bad.push(`${plus.length} leftover lines`);
+    for (const l of plus) if (!/^Plus \S+ of scheduled amortization and other principal, per the filer's schedule \(see maturity ladder\)/.test(text(l))) bad.push(`leftover line off template: "${text(l).slice(0, 80)}"`);
+    const windowEnd = /\(to ([A-Z][a-z]+ \d+, \d{4})\)/.exec((card.headlines.refi ?? card.headlines.due24)?.heading ?? "")?.[1];
+    const endYear = windowEnd ? Number(windowEnd.slice(-4)) : 0;
+    const inWindowOther = (card.ladder.blocks ?? []).filter((b) => /^\d{4}$/.test(text(b.heading)) && Number(text(b.heading)) <= endYear).some((b) => b.lines.some((l) => /other scheduled principal/.test(text(l))));
+    if (inWindowOther && plus.length !== 1) bad.push("the ladder has other scheduled principal inside the window, but the box has no leftover line");
+    if (all.some((l) => /other scheduled principal, per the filer's schedule for/.test(text(l)))) bad.push("a schedule bucket has its own box row");
+    return bad;
+  },
+};
+
+const R5_MARKERS: Test = {
+  id: "A5", name: "refinance box: flags as a marker, with one legend line",
+  run: (card) => {
+    const { all, legend } = boxParts(card);
+    const bad: string[] = [];
+    for (const l of all) if (/year only stated|month only stated|may fall within 18 months, see source/.test(text(l)) && !/^† /.test(text(l))) bad.push(`a flag spelled out in a row: "${text(l).slice(0, 70)}"`);
+    const used = all.some((l) => !/^† /.test(text(l)) && text(l).includes("†"));
+    if (used && legend.length !== 1) bad.push(`marker used, ${legend.length} legend lines`);
+    if (!used && legend.length) bad.push("a legend with no marker");
+    return bad;
+  },
+};
+
+const R6_CP: Test = {
+  id: "A6", name: "refinance box: commercial paper outstanding is a row",
+  run: (card) => {
+    const cpOnCard = linesOf(card).some((w) => w.section === "ladder" && /commercial paper/i.test(text(w.line)) && !!amountSeg(w.line));
+    const row = boxParts(card).rows.find((r) => /commercial paper outstanding/i.test(text(r)));
+    return cpOnCard && !row ? ["commercial paper is outstanding but has no box row"] : [];
+  },
+};
+
+const R7_NEXT: Test = { id: "A7", name: "refinance box: a Next line after the rows", run: (card) => (boxParts(card).next.length === 1 ? [] : ["no single Next line"]) };
+
+const R8_PREPERIOD: Test = {
+  id: "B8", name: "no pre-period lines and no mechanics sentences",
+  run: (card, f) => {
+    const bad: string[] = [];
+    const all = linesOf(card).map((w) => text(w.line));
+    if (f.rolled) {
+      const nil = f.rolled.rows.filter((r: any) => !r.amount || /^\$?\s*[—–-]\s*$/.test(r.amount)).map((r: any) => r.label);
+      for (const n of nil) if (all.some((t) => norm(t).includes(norm(n)))) bad.push(`a line stated at $0 in the referenced filing appears: "${n}"`);
+    }
+    for (const t of all) if (/states at \$0|stated in both|each is shown once|stated as done in the|already outside the list/i.test(t)) bad.push(`mechanics or pre-period copy: "${t.slice(0, 70)}"`);
+    return bad;
+  },
+};
+
+const LABEL_WORD = /\b(senior|junior[- ]priority|subordinated|secured|unsecured|first[- ]lien)\b/gi;
+const typeOfLine = (t: string) => norm(t.replace(/\$[\d,.~<]+MM.*$/, "").replace(LABEL_WORD, "").replace(/\s+/g, " "));
+const R9_GROUPING: Test = {
+  id: "B9", name: "total debt: a type splits by label only when every row of it carries the label; one line per type",
+  run: (card) => {
+    const bad: string[] = [];
+    const lines = card.headlines.totalDebt.lines.slice(1).filter((l) => !!amountSeg(l) && !/^Lines marked/.test(text(l)));
+    const seen = new Map<string, number>();
+    for (const l of lines) { const k = typeOfLine(text(l)); seen.set(k, (seen.get(k) ?? 0) + 1); }
+    for (const [k, n] of seen) if (n > 1) bad.push(`type "${k}" shows as ${n} lines`);
+    for (const l of lines.filter((x) => /\(carrying value\)$/.test(text(x)))) { const k = typeOfLine(text(l)); if (lines.some((o) => o !== l && typeOfLine(text(o)) === k)) bad.push(`type "${k}" split by basis`); }
+    return bad;
+  },
+};
+
+const TIER = (t: string) => (/\b(?:finance|financing) lease|\bother\b|obligations|notes payable|mortgages/i.test(t) ? 3 : /\bunsecured\b/i.test(t) ? 1 : /\b(?:secured|first[- ]lien)\b/i.test(t) ? 0 : 2);
+const R14_ORDER: Test = {
+  id: "C14", name: "total debt: ordered secured, unsecured, unlabelled, then leases and other",
+  run: (card) => {
+    const lines = card.headlines.totalDebt.lines.slice(1).filter((l) => !!amountSeg(l) && !/^Lines marked/.test(text(l)));
+    const tiers = lines.map((l) => TIER(text(l).replace(/\$.*$/, "")));
+    return tiers.every((t, i) => i === 0 || t >= tiers[i - 1]) ? [] : [`order by tier is ${tiers.join(",")}: "${lines.map((l) => text(l).replace(/\s*\$.*$/, "")).join(" / ")}"`];
+  },
+};
+
+const R11_MOVEFORMAT: Test = {
+  id: "B11", name: "moves in card format: no filer prose, no defined terms, no agreement titles",
+  run: (card) => {
+    const bad: string[] = [];
+    for (const l of (card.moves?.blocks ?? []).flatMap((b) => b.lines)) {
+      const t = text(l);
+      if (/[“”"]|\(the |\bthe Company\b|\bwe\b|\bour\b|, dated |Amended and Restated|aggregate principal amount/i.test(t)) bad.push(`filer prose in a move: "${t.slice(0, 90)}"`);
+      for (const x of l) if (x.k === "label" && x.t.split(/\s+/).length > 9) bad.push(`a long phrase in a move: "${x.t.slice(0, 60)}"`);
+      if (/\$ \d|\d million|\d billion/.test(t)) bad.push(`an amount not in $MM: "${t.slice(0, 70)}"`);
+    }
+    return bad;
+  },
+};
+
+const R12_MERGE: Test = {
+  id: "B12", name: "related moves are one event: one line per date, and no part of a funded event on its own line",
+  run: (card) => {
+    const bad: string[] = [];
+    for (const b of card.moves?.blocks ?? []) {
+      const dates = b.lines.map((l) => (l[0]?.t ?? "").trim());
+      for (const d of new Set(dates)) if (dates.filter((x) => x === d).length > 1) bad.push(`${dates.filter((x) => x === d).length} move lines dated ${d}`);
+    }
+    return bad;
+  },
+};
+
+const R13_DECIMALS: Test = {
+  id: "C13", name: "no trailing \".0\" on any amount",
+  run: (card) => linesOf(card).flatMap((w) => w.line.filter((x) => (x.k === "figure" || x.k === "computed") && /\.\d*0MM/.test(x.t)).map((x) => `"${x.t}" in "${text(w.line).slice(0, 50)}"`)),
+};
+
+const R15_ONCE: Test = {
+  id: "C15", name: "\"not stated\" once per group when every row of the group shares it",
+  run: (card) => {
+    const bad: string[] = [];
+    for (const b of card.ladder.blocks ?? []) {
+      const rows = b.lines.filter((l) => l.some((x) => x.k === "label") && !!amountSeg(l));
+      const ns = rows.map((l) => l.find((x) => x.k === "notStated")?.t ?? null);
+      if (rows.length >= 2 && ns.every((x) => x !== null && x === ns[0])) bad.push(`${text(b.heading)}: every row repeats "${ns[0]}"`);
+    }
+    const rolled = (card.ladder.blocks ?? []).flatMap((b) => b.lines).filter((l) => /from the 10-K/.test(text(l)) && !!amountSeg(l));
+    const rns = rolled.map((l) => l.find((x) => x.k === "notStated")?.t ?? null);
+    if (rolled.length >= 2 && rns.every((x) => x !== null && x === rns[0])) bad.push(`every "from the 10-K" line repeats "${rns[0]}"`);
+    return bad;
+  },
+};
+
+const R16_TAGS: Test = {
+  id: "C16", name: "no cryptic tags",
+  run: (card) => linesOf(card).map((w) => text(w.line)).filter((t) => /\(also stated here\)|\(use of proceeds\)/.test(t)).map((t) => `"${t.slice(0, 70)}"`),
+};
+
+const TESTS = [T1_PURITY, T2_LINKS, T3_TABLE, T4_NOTSTATED, T5_ONEMATURITY, T6_PRECISION, T7_SCHEDULE, T8_MOVES, T9_LINT, T10_HEDGES,
+  R1_BOX, R2_SUMMARY, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS];
 
 // ── negative controls: a corrupted card or fixture each test MUST fail ──
 function clone<T>(x: T): T { return JSON.parse(JSON.stringify(x)); }
@@ -474,6 +661,27 @@ function controls(): { id: string; failed: boolean; what: string }[] {
   { const c = clone(c0); c.coverage.lines.push([{ k: "text", t: "Rule 58 applies to the base row." }]); out.push({ id: "5.9", failed: T9_LINT.run(c, f0).length > 0, what: "\"Rule 58\" and \"base row\" in card copy" }); }
   // 5.10: a dropped hedge.
   { const c = clone(c0); const s = linesOf(c).flatMap((w) => w.line).find((x) => x.k === "figure") as any; s.src.sentence = `There was approximately ${s.printed} outstanding.`; s.t = s.t.replace(/^~/, ""); out.push({ id: "5.10", failed: T10_HEDGES.run(c, f0).length > 0, what: "an \"approximately\" figure shown without \"~\"" }); }
+
+  // ── v2.1 negative controls: each corrupts one card and the test must fail ──
+  {
+    const pick = (re: RegExp) => cards.find((c) => re.test(c.company))!;
+    const tenet = pick(/tenet/i), cigna = pick(/cigna/i), ehc = pick(/encompass/i), chs = pick(/community/i), dva = pick(/davita/i);
+    out.push({ id: "A1", failed: boxPlacement(CARDVIEW.replace(/card\.thisWeek/, "XX").replace(/card\.moves/, "card.thisWeek")).length > 0, what: "a page rendering the box after the moves" });
+    { const c = clone(tenet); const s0 = c.headlines.refi!.lines[0]; const a = s0.find((x) => x.k === "figure" || x.k === "computed")!; a.t = "$9,999MM"; out.push({ id: "A2", failed: R2_SUMMARY.run(c, null).length > 0, what: "a summary whose total is not its rows' sum" }); }
+    { const c = clone(dva); c.headlines.refi!.lines.splice(1, 0, [{ k: "computed", t: "$62.3MM", usd: 62.3e6, parts: [] }, { k: "text", t: " other scheduled principal, per the filer's schedule for 2026" }]); out.push({ id: "A3", failed: R3_NAMED.run(c, null).length > 0, what: "a schedule bucket as its own box row" }); }
+    { const c = clone(dva); const pl = c.headlines.refi!.lines.find((l) => /^Plus /.test(text(l))); c.headlines.refi!.lines.push(pl ? clone(pl) : [{ k: "text", t: "Plus $1MM of scheduled amortization and other principal, per the filer's schedule (see maturity ladder)" }], [{ k: "text", t: "Plus $1MM of scheduled amortization and other principal, per the filer's schedule (see maturity ladder)" }]); out.push({ id: "A4", failed: R4_LEFTOVERS.run(c, null).length > 0, what: "two leftover lines" }); }
+    { const c = clone(tenet); c.headlines.refi!.lines = c.headlines.refi!.lines.filter((l) => !/^† /.test(text(l))); c.headlines.refi!.lines[1].push({ k: "text", t: " †" }); out.push({ id: "A5", failed: R5_MARKERS.run(c, null).length > 0, what: "a marker with no legend" }); }
+    { const c = clone(cigna); c.headlines.refi!.lines = c.headlines.refi!.lines.filter((l) => !/commercial paper outstanding/i.test(text(l))); out.push({ id: "A6", failed: R6_CP.run(c, null).length > 0, what: "commercial paper outstanding with no box row" }); }
+    { const c = clone(tenet); c.headlines.refi!.lines = c.headlines.refi!.lines.filter((l) => !/^Next/.test(text(l))); out.push({ id: "A7", failed: R7_NEXT.run(c, null).length > 0, what: "a box with no Next line" }); }
+    { const c = clone(cigna); c.ladder.lines.push([{ k: "text", t: "6 lines the Dec 31, 2025 10-K states at $0, not debt: Commercial paper." }]); out.push({ id: "B8", failed: R8_PREPERIOD.run(c, fixtureOf(cigna.cik)).length > 0, what: "a line listing instruments stated at $0" }); }
+    { const c = clone(ehc); const td = c.headlines.totalDebt.lines; const l = td.find((x, n) => n > 0 && !!amountSeg(x))!; td.push(clone(l)); out.push({ id: "B9", failed: R9_GROUPING.run(c, null).length > 0, what: "one type on two lines" }); }
+    { const c = clone(chs); const b = c.moves!.blocks![0]; b.lines[0].push({ k: "label", t: "the Company used approximately $ 600 million of cash on hand", stated: "x", src: { sentence: "x", url: "x", doc: "x" } }); out.push({ id: "B11", failed: R11_MOVEFORMAT.run(c, null).length > 0, what: "filer prose in a move line" }); }
+    { const c = clone(ehc); const b = c.moves!.blocks![c.moves!.blocks!.length - 1]; b.lines.push(clone(b.lines[0])); out.push({ id: "B12", failed: R12_MERGE.run(c, null).length > 0, what: "two move lines for one dated event" }); }
+    { const c = clone(dva); const a = c.headlines.totalDebt.lines[0].find((x) => x.k === "computed")!; a.t = "$10,847.0MM"; out.push({ id: "C13", failed: R13_DECIMALS.run(c, null).length > 0, what: "an amount with a trailing .0" }); }
+    { const c = clone(tenet); const td = c.headlines.totalDebt.lines; const body = td.slice(1).reverse(); c.headlines.totalDebt.lines = [td[0], ...body]; out.push({ id: "C14", failed: R14_ORDER.run(c, null).length > 0, what: "the breakdown in reverse priority" }); }
+    { const c = clone(cigna); const b = (c.ladder.blocks ?? []).find((x) => x.lines.filter((l) => !!amountSeg(l)).length >= 2)!; for (const l of b.lines) if (amountSeg(l)) l.push({ k: "notStated", t: "seniority and security not stated, please refer to sources", src: { sentence: "x", url: "x", doc: "x" } }); out.push({ id: "C15", failed: R15_ONCE.run(c, null).length > 0, what: "every row of a group repeating one fallback" }); }
+    { const c = clone(chs); c.moves!.blocks![0].lines[0].push({ k: "text", t: " (also stated here)" }); out.push({ id: "C16", failed: R16_TAGS.run(c, null).length > 0, what: "a cryptic tag" }); }
+  }
   return out;
 }
 
