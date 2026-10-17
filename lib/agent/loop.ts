@@ -59,6 +59,7 @@ import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "..
 import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isSelfDescribingAmount, scaleWordFromDeclaration } from "./moneyScale";
 import { detectDollarScaleAt, canonicalScaleWord } from "./scaleNormalize";
 import { createTextLocator } from "./verifyQuote";
+import { annotatePrintedHeadings } from "../events/printedHeadings";
 // A LAYERING INVERSION, STATED RATHER THAN HIDDEN. `amountSupportOf` answers
 // "does this line state this amount", and Rule 58's extension needs that
 // question at extraction time. There is NO runtime cycle — position.ts imports
@@ -529,6 +530,8 @@ export interface VerifiedSequenceEntry extends ScheduleSequenceEntry {
   maturitySourceLine?: string | null;
   /** The line the model cited, kept when Rule 58 re-selected an amount sentence in its place. */
   modelSourceLine?: string;
+  /** The recorded heading the anchor's table actually PRINTS before this row's block, or null (Oct 17, 2026). Classes are read from this alone. */
+  printedHeading?: string | null;
 }
 
 /** Same verification, for new-debt-issuance's issuedTranches (not part of the debt note's running-total walk, just rows to append to the ladder). */
@@ -1262,7 +1265,14 @@ export async function runAgentLoop(
     const annualGate = annualReportGate(anchorNoteShape, !!v.noteCrossReference);
     const isAnnualReportUrl = (url: string) => /10-K/i.test(citationLookup.get(url)?.form ?? "");
     const annualSplit = withholdAnnualReportRows(onAnchorSequence, isAnnualReportUrl, annualGate);
-    const scheduleSequence = annualSplit.kept;
+    // A HEADING COUNTS ONLY WHERE PRINTED (card_spec v2.0 §3.5, Oct 17 2026):
+    // each row records which of its recorded headings the anchor's table
+    // prints before its block. The position classes rows from that alone.
+    const anchorTextForHeadings = debtScheduleGuidance.base ? textByUrl.get(debtScheduleGuidance.base.url) ?? null : null;
+    const headingLocator = anchorTextForHeadings ? createTextLocator(anchorTextForHeadings) : null;
+    const scheduleSequence: VerifiedSequenceEntry[] = trigger.id === "debt-maturity"
+      ? annotatePrintedHeadings(annualSplit.kept, anchorTextForHeadings, (l) => headingLocator?.find(l) ?? null)
+      : annualSplit.kept;
     for (const w of annualSplit.withheld) {
       log(`  ⚠ ANNUAL-REPORT ROW WITHHELD for ${label} — "${String((w.entry as { label?: string | null }).label ?? "(unnamed row)")}" is cited to a prior-period annual report. ${w.reason}`);
     }

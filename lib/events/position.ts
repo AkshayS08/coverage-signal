@@ -46,6 +46,8 @@ export interface LadderRow {
    * string is for arithmetic, the class string is for display).
    */
   seniority: string | null;
+  /** The heading the anchor's table prints before this row's block, or null. The only heading a class is read from (Oct 17, 2026). */
+  printedHeading?: string | null;
   /**
    * SESSION 22, STAGE 2 — priority class and instrument type, normalized in
    * code from two already-verified strings: this row's section heading and
@@ -552,6 +554,7 @@ function ladderRowFromSequenceEntry(
     instrument,
     rate: entry.rate,
     seniority: entry.seniority,
+    printedHeading: entry.printedHeading,
     // ONE CONCEPT, ONE INPUT (Session 22, Stage 4). `section` and `seniority`
     // are both "the note's own section heading", and v29 put Tenet's class in
     // the first, CHS's in the second, and Encompass's location in one with its
@@ -559,7 +562,14 @@ function ladderRowFromSequenceEntry(
     // as one ordered list loses none, because a heading that names no class
     // costs nothing.
     classification: classifyInstrument({
-      headings: [entry.section, entry.seniority],
+      // PRINTED HEADINGS ONLY (Oct 17, 2026): the recorded `section` and
+      // `seniority` are what the model said; `printedHeading` is the one the
+      // table prints, recorded by the loop. A recorded heading the filer never
+      // printed classes nothing. An answer recorded BEFORE the field existed
+      // (a signed golden's stored result) is read as it was signed; s26resign8b
+      // re-derived 8b for every such golden from printed headings and
+      // re-signed the one whose 8b moved.
+      headings: entry.printedHeading !== undefined ? [entry.printedHeading] : [entry.section, entry.seniority],
       instrumentName: instrument,
       maturityDate: displayDate(entry.maturityDate),
       noteStatement,

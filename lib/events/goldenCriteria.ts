@@ -270,7 +270,7 @@ export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: A
   const withClass = debtRows.filter((r) => r.classification.priorityClass !== null);
   const unclassed = debtRows.filter((r) => r.classification.priorityClass === null);
   const dropped = unclassed.filter(
-    (r) => classifyInstrument({ headings: [r.seniority], instrumentName: r.instrument }).priorityClass !== null
+    (r) => classifyInstrument({ headings: [r.printedHeading !== undefined ? r.printedHeading : r.seniority], instrumentName: r.instrument }).priorityClass !== null
   );
   const everyUnclassedSaysSo = unclassed.every((r) => priorityClassLabel(r.classification) === "class not stated on this row");
   const sectionsPrinted = [...new Set(seq.map((e) => e.section).filter(Boolean))];
