@@ -7082,3 +7082,40 @@ The fix is option (c) from Checkpoint A: fingerprint only the filings
 extraction reads (Rule 65's position-only identity, one layer down). It
 orphans every cached answer once, so it is priced (~$3–4 with re-signing)
 and run as its own session.
+
+### Audit-spine instance 12, closed on the product path (Oct 17, 2026)
+
+The printed-heading rule now runs where the anchor's text exists: the loop
+records on every debt-note row the one recorded heading the anchor's table
+prints before the row's block (`printedHeading`, or null), and
+`assemblePosition` reads a class from that alone. The rule moved from
+`lib/cards/headings.ts` to `lib/events/printedHeadings.ts`, so the loop, the
+position and the card share one implementation (the card path re-exports it).
+Effect on the main page's ladder: CHS's eight rows under the unprinted
+"senior-priority secured" / "junior-priority secured" now take their class
+from their own names only (unchanged in value); DaVita's acquisition
+obligations and financing leases lose the "Senior Notes" class that heading
+never governed; Encompass's and Molina's unprinted "senior unsecured" no
+longer feed a class (Molina's comes from its printed note sentence instead).
+`lib/events/printedHeadings.test.ts` pins this on the committed snapshots,
+with a forged-heading negative control.
+
+An answer recorded before the field existed (a signed golden's stored
+result) is read as signed, and criterion 8b was re-derived for every golden
+from printed headings (`lib/cache/s26resign8b.ts`): DaVita's 8b moved and it
+was re-signed with the reason in its basis; Tenet, Encompass, CHS, Molina and
+Cigna read identically from printed sources and were left untouched; UHS
+records no table rows or headings. All at $0.
+
+### Footnote basis (Oct 17, 2026)
+
+A filer table printing face and net side by side, with totals, is a stated
+basis like a "net of issuance costs" caption. Encompass's footnote now cites
+its schedule's $2,663.7MM face and $2,634.0MM net; no card shows "not
+accounted for". Checked on all six.
+
+### LOGGED FOR AFTER THE DEMO: the two-digit-cell verifier limit
+
+`amountSupportOf` rejects a short cell whose scale is only in its caption
+("$ 45" under "Dollars in Millions"); the card cites the bare cell instead.
+The fix is a core-rule change, deferred by Akshay on Oct 16, 2026.

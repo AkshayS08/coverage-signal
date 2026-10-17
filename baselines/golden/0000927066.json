@@ -3,7 +3,7 @@
   "signature": {
     "signedBy": "Akshay Sahani",
     "signedOn": "2026-09-09",
-    "basis": "RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 24, and the position it pins is the one v29 pinned: nine rows, same instruments, same amounts, same maturities and classes. WHAT MOVED WAS OUR ABILITY TO SEE THAT. This name failed criterion 9b three times, and every failure was in this codebase rather than in the extraction. (1) The ladder returned 9, 17 and 9 rows across three runs whose every row-bearing field was IDENTICAL — same instruments, values, counts and period columns. The only difference was a date written \"11/24/2030\" instead of \"2030-11-24\", which made `debtRowDateToken` return null, which `rowsRepresentSameTranche` reported as \"not the same tranche\", which re-added seven prior entries beside their own live twins (Rule 61). An earlier diagnosis of mine blamed an off-anchor 10-K citation; that was wrong and is recorded as wrong — the citation was on `international-expansion` and never touched the ladder. (2) The same spelling then broke ROW IDENTITY, a second and independent path to the same question, reporting seven instruments as seven MISSING plus seven UNEXPECTED. (3) The answer's IDENTITY moved when that unrelated citation entered the fifteen-trigger filing set (Rule 65). Two extraction-side changes also land here and both are corrections rather than re-readings: five facility figures that alternated between \"$ 188,482 thousand\" and \"$ 188,482\" across runs — the bare form being dropped as indeterminate — now take their scale from the filing's own \"dollars and shares in thousands\" declaration in code; and maturity dates render canonically, while the extracted entry keeps what the filing printed. Nine rows, coverage unchanged, every facility figure identical across all three v31 runs. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.3834; re-read at $0 after each fix): 9 rows in every run, identical across all three under compareToGolden on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical; the cited position documents identical. Facility figures are NOT covered by 9b and were measured separately: identical across all three runs, labels included. THIS NAME FAILED 9b THREE TIMES BEFORE IT HELD, and each failure was ours rather than the model's — the ladder doubled to 17 rows when a date spelled \"11/24/2030\" made a comparison report identical tranches as different ones (Rule 61); the same spelling then broke ROW IDENTITY separately, reporting seven instruments as seven missing plus seven unexpected; and the identity of the answer itself moved when an `international-expansion` citation entered the filing set (Rule 65). The three runs behind this evidence are the same three extractions throughout: nothing was re-bought to make them agree. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
+    "basis": "Re-signed in Session 26 (Oct 17, 2026) for criterion 8b only. Reason: a row's priority class is now read only from a heading the anchor's table PRINTS before the row's block (card_spec v2.0 §3.5; Akshay's rulings of Oct 15 and Oct 17, 2026); the stored answer's recorded headings fed the class whether printed or not (audit-spine instance 12). Printed headings: \"Senior Secured Credit Facilities\"; \"Senior Notes\". Recorded but not printed, so no longer a class source: none. 8b was \"all 9 row(s) carry a class (Senior Secured Credit Facilities; Senior Notes)\"; now \"7 of 9 row(s) carry a class; the remaining 2 state \"class not stated on this row\" explicitly (Acquisition obligations and other notes payable; Financing lease obligations). Sections printed: Senior Secured Credit Facilities; Senior Notes\". The stored result gains one field per row, printedHeading, computed in code from the anchor's own text (the loop now records the same); nothing else in it changed. Position, coverage, filing set and every other criterion compared and UNCHANGED. Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 24, and the position it pins is the one v29 pinned: nine rows, same instruments, same amounts, same maturities and classes. WHAT MOVED WAS OUR ABILITY TO SEE THAT. This name failed criterion 9b three times, and every failure was in this codebase rather than in the extraction. (1) The ladder returned 9, 17 and 9 rows across three runs whose every row-bearing field was IDENTICAL — same instruments, values, counts and period columns. The only difference was a date written \"11/24/2030\" instead of \"2030-11-24\", which made `debtRowDateToken` return null, which `rowsRepresentSameTranche` reported as \"not the same tranche\", which re-added seven prior entries beside their own live twins (Rule 61). An earlier diagnosis of mine blamed an off-anchor 10-K citation; that was wrong and is recorded as wrong — the citation was on `international-expansion` and never touched the ladder. (2) The same spelling then broke ROW IDENTITY, a second and independent path to the same question, reporting seven instruments as seven MISSING plus seven UNEXPECTED. (3) The answer's IDENTITY moved when that unrelated citation entered the fifteen-trigger filing set (Rule 65). Two extraction-side changes also land here and both are corrections rather than re-readings: five facility figures that alternated between \"$ 188,482 thousand\" and \"$ 188,482\" across runs — the bare form being dropped as indeterminate — now take their scale from the filing's own \"dollars and shares in thousands\" declaration in code; and maturity dates render canonically, while the extracted entry keeps what the filing printed. Nine rows, coverage unchanged, every facility figure identical across all three v31 runs. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.3834; re-read at $0 after each fix): 9 rows in every run, identical across all three under compareToGolden on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical; the cited position documents identical. Facility figures are NOT covered by 9b and were measured separately: identical across all three runs, labels included. THIS NAME FAILED 9b THREE TIMES BEFORE IT HELD, and each failure was ours rather than the model's — the ladder doubled to 17 rows when a date spelled \"11/24/2030\" made a comparison report identical tranches as different ones (Rule 61); the same spelling then broke ROW IDENTITY separately, reporting seven instruments as seven missing plus seven unexpected; and the identity of the answer itself moved when an `international-expansion` citation entered the filing set (Rule 65). The three runs behind this evidence are the same three extractions throughout: nothing was re-bought to make them agree. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
   },
   "attestation": {
     "rowsCorrect": true,
@@ -82,7 +82,7 @@
       "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
       "kind": "computed",
       "pass": true,
-      "detail": "all 9 row(s) carry a class (Senior Secured Credit Facilities; Senior Notes)",
+      "detail": "7 of 9 row(s) carry a class; the remaining 2 state \"class not stated on this row\" explicitly (Acquisition obligations and other notes payable; Financing lease obligations). Sections printed: Senior Secured Credit Facilities; Senior Notes",
       "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
     },
     {
@@ -332,7 +332,8 @@
             "section": "Senior Secured Credit Facilities",
             "periodColumn": "June 30, 2026",
             "sourceLine": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": "Senior Secured Credit Facilities"
           },
           {
             "kind": "row",
@@ -345,7 +346,8 @@
             "section": "Senior Secured Credit Facilities",
             "periodColumn": "June 30, 2026",
             "sourceLine": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": "Senior Secured Credit Facilities"
           },
           {
             "kind": "row",
@@ -358,7 +360,8 @@
             "section": "Senior Secured Credit Facilities",
             "periodColumn": "June 30, 2026",
             "sourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": "Senior Secured Credit Facilities"
           },
           {
             "kind": "row",
@@ -371,7 +374,8 @@
             "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
             "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": "Senior Notes"
           },
           {
             "kind": "row",
@@ -384,7 +388,8 @@
             "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
             "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": "Senior Notes"
           },
           {
             "kind": "row",
@@ -397,7 +402,8 @@
             "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
             "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": "Senior Notes"
           },
           {
             "kind": "row",
@@ -410,7 +416,8 @@
             "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
             "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": "Senior Notes"
           },
           {
             "kind": "row",
@@ -423,7 +430,8 @@
             "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
             "sourceLine": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": null
           },
           {
             "kind": "row",
@@ -436,7 +444,8 @@
             "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
             "sourceLine": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "printedHeading": null
           },
           {
             "kind": "subtotal",
