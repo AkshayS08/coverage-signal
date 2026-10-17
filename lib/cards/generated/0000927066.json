@@ -66,7 +66,15 @@
       },
       {
        "k": "text",
-       "t": ": Amended "
+       "t": ": "
+      },
+      {
+       "k": "text",
+       "t": "Added an incremental"
+      },
+      {
+       "k": "text",
+       "t": " "
       },
       {
        "k": "figure",
@@ -94,16 +102,12 @@
       },
       {
        "k": "text",
-       "t": ", "
-      },
-      {
-       "k": "text",
-       "t": "used "
+       "t": ", used to "
       },
       {
        "k": "label",
-       "t": "to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees",
-       "stated": "to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees",
+       "t": "repay part of the revolver",
+       "stated": "repay",
        "src": {
         "sentence": "The Company used the net proceeds from this transaction to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees.",
         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",

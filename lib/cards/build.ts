@@ -27,7 +27,7 @@ import { classifyInstrument, type NoteSeniorityStatement } from "../events/instr
 import { extractFactTokens, factTokensMatch } from "../agent/factTokens";
 import { createTextLocator } from "../agent/verifyQuote";
 
-import type { Card, CardFacts, CardSection, Line, Segment, Source } from "./types";
+import type { Card, CardFacts, CardSection, Fact, Line, Segment, Source } from "./types";
 import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord } from "./labels";
 import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings } from "./headings";
@@ -460,6 +460,12 @@ export function buildCard(i: CardInputs): Card {
     when: string; sort: string; type: string; status: "completed" | "pending"; inPeriod: boolean;
     dateSeg: Segment; instrument: string; instSeg: Segment; face: Segment | null; faceUsd: number | null;
     sentence: string; url: string; funding: Line; use: Line; price: Segment | null; extra: Line;
+    /** v2.1: the raw facts, rendered by template, never as prose (§2.3). */
+    fundFact?: Fact; useFact?: Fact; priceFact?: Fact;
+    /** The issuance this retirement spends, and the retirements an issuance funds. */
+    fundedBy?: Move; retires: Move[]; spendSrc?: Source;
+    /** Another filing sentence stating the same move, linked from the move's verb. */
+    altSrc?: Source;
   };
   const fyStart = `${periodEnd.slice(0, 4)}-01-01`;
   // A fact's sentence is linked as the FILER printed it: the document's own
@@ -549,7 +555,8 @@ export function buildCard(i: CardInputs): Card {
       funding: m.funding ? [t("funded by "), factLabel(m.funding.value, m.funding)] : [],
       use: m.use ? [t("used "), factLabel(m.use.value, m.use)] : [],
       price: m.price ? factLabel(`at ${m.price.value.replace(/\s+%/, "%")}`, m.price) : null,
-      extra: [],
+      extra: [], retires: [],
+      fundFact: m.funding ?? undefined, useFact: m.use ?? undefined, priceFact: m.price ?? undefined,
     });
   }
   // A pending redemption's size, from the cached answer's own redemption sentence for the same note.
@@ -573,13 +580,14 @@ export function buildCard(i: CardInputs): Card {
     if (!by) continue;
     const spend = linked.find((x) => /net proceeds/i.test(x))!;
     const spendSrc = [r.instSeg, r.dateSeg].map((x) => (x.k === "label" ? x.src : null)).find((x) => x && x.sentence === spend) ?? src(spend, r.url);
-    r.funding = [t("funded by the "), { k: "label", t: by.instSeg.t, stated: by.instSeg.k === "label" ? by.instSeg.stated : by.instrument, src: by.instSeg.k === "label" ? by.instSeg.src : spendSrc }, t(` issued ${by.when}`), ...(/cash on hand/i.test(spend) ? [t(", together with cash on hand")] : []), t(" ("), { k: "label", t: "use of proceeds", stated: "net proceeds", src: spendSrc }, t(")")];
-    if (!by.use.length) by.use = [t("used to "), { k: "label", t: `${r.type === "paydown" ? "repay" : "retire"} the ${tidyCoupon(r.instrument)}`, stated: r.instrument, src: src(r.sentence, r.url) }];
+    r.fundedBy = by;
+    by.retires.push(r);
+    r.spendSrc = spendSrc;
   }
   for (const is of movesAll.filter((m) => m.type === "issuance" && !m.use.length)) {
     if (movesAll.filter((m) => m.type === "issuance" && m.url === is.url).length !== 1) continue;
     const uses = sentencesOf(is.url).map((x) => ({ x, m: /\bused? the net proceeds\b.*?\bto\s+(.+?)\.?$/i.exec(x.sentence) })).filter((u) => u.m);
-    if (uses.length === 1) is.use = [t("used to "), { k: "label", t: uses[0].m![1], stated: uses[0].m![1], src: uses[0].x }];
+    if (uses.length === 1) is.useFact = { value: uses[0].m![1], src: { sentence: uses[0].x.sentence, url: uses[0].x.url } };
   }
   // An issuance announced before it closed: the announcing sentences in later filings, linked on the same line.
   for (const is of movesAll.filter((m) => m.type === "issuance" && !m.inPeriod)) {
@@ -591,7 +599,7 @@ export function buildCard(i: CardInputs): Card {
         const when = isoOfText(sx.sentence);
         if (!named || !when) continue;
         const what = /pricing/i.test(sx.sentence) ? "priced" : "offering launched";
-        is.extra.push(t(`; ${what} `), { k: "label", t: displayDate(when.iso, when.g), stated: (new RegExp(`(${MONTHS})(?:\\s+\\d{1,2},)?\\s+20\\d\\d`).exec(sx.sentence) ?? [""])[0], src: sx });
+        is.extra.push(t(`, ${what} `), { k: "label", t: displayDate(when.iso, when.g), stated: (new RegExp(`(${MONTHS})(?:\\s+\\d{1,2},)?\\s+20\\d\\d`).exec(sx.sentence) ?? [""])[0], src: sx });
       }
     }
   }
@@ -599,7 +607,7 @@ export function buildCard(i: CardInputs): Card {
   for (const is of movesAll.filter((m) => m.type === "issuance")) {
     for (const sx of sentencesOf(is.url)) {
       if (sx.sentence === is.sentence || !sameNote(sx.sentence, is.instrument) && !/additional notes/i.test(sx.sentence)) continue;
-      if (/further issuance/i.test(sx.sentence)) is.extra.push(t("; a "), { k: "label", t: "further issuance", stated: "further issuance", src: sx }, t(" of the existing notes"));
+      if (/further issuance/i.test(sx.sentence)) is.extra.push(t(", "), { k: "label", t: "adding to the existing notes", stated: "further issuance", src: sx });
       else if (!is.price && /purchase price|issue price|offering price/i.test(sx.sentence)) {
         const pct = /\b\d{1,3}(?:\.\d+)?\s?%/.exec(sx.sentence);
         if (pct) is.price = { k: "label", t: `at ${pct[0].replace(/\s+%/, "%")} of principal`, stated: pct[0], src: sx };
@@ -614,7 +622,7 @@ export function buildCard(i: CardInputs): Card {
       when: e.date ?? "date not stated", sort: e.date ?? "", type: e.kind, status: e.nets === "unconfirmed" ? "pending" : "completed", inPeriod: false,
       dateSeg: t(e.date ? displayDate(e.date, "day") : "Date not stated"), instrument: e.instrument, instSeg: { k: "label", t: tidyCoupon(e.instrument), stated: e.instrument, src: s0 },
       face: e.effect !== null ? { k: "figure", t: displayAmount(`$${Math.abs(e.effect).toLocaleString("en-US")}`, e.sourceLine), printed: `$${Math.abs(e.effect).toLocaleString("en-US")}`, src: s0 } : null,
-      faceUsd: e.effect !== null ? Math.abs(e.effect) : null, sentence: e.sourceLine, url: e.citedUrl, funding: [], use: [], price: null, extra: [],
+      faceUsd: e.effect !== null ? Math.abs(e.effect) : null, sentence: e.sourceLine, url: e.citedUrl, funding: [], use: [], price: null, extra: [], retires: [],
     });
   }
   for (const w of pos.withinPeriodRepayments) {
@@ -624,7 +632,7 @@ export function buildCard(i: CardInputs): Card {
       when: "during the period", sort: periodEnd, type: "paydown", status: "completed", inPeriod: true,
       dateSeg: t("During the period"), instrument: w.instrument, instSeg: { k: "label", t: tidyCoupon(w.instrument), stated: w.instrument, src: s0 },
       face: { k: "figure", t: displayAmount(w.priorAmount, w.sourceLine), printed: w.priorAmount, src: s0 }, faceUsd: parseMoneyAmount(w.priorAmount),
-      sentence: w.sourceLine, url: w.citedUrl, funding: [], use: [], price: null, extra: [t(" (the prior balance; repaid inside the period)")],
+      sentence: w.sourceLine, url: w.citedUrl, funding: [], use: [], price: null, extra: [t(", the prior balance, repaid inside the period")], retires: [],
     });
   }
   for (const m of movesAll) {
@@ -632,28 +640,156 @@ export function buildCard(i: CardInputs): Card {
     if (!dateText || !couponsIn(m.instrument).length) continue;
     const seen = new Set([m.sentence, m.dateSeg.k === "label" ? m.dateSeg.src.sentence : ""].map(normQ));
     const again = moveDocs().flatMap(sentencesOf).filter((x) => !seen.has(normQ(x.sentence)) && containsWord(x.sentence, dateText) && sameNote(x.sentence, m.instrument) && !movesAll.some((o) => o !== m && sameNote(x.sentence, o.instrument) && o.when === m.when && o.type !== m.type));
-    if (again.length) m.extra.push(t(" ("), { k: "label", t: "also stated here", stated: dateText, src: again[0] }, t(")"));
+    if (again.length) m.altSrc = again[0];
   }
-  const moveLine = (m: Move): Line => {
-    const [done, pending] = TYPE_WORD[m.type] ?? [m.type.charAt(0).toUpperCase() + m.type.slice(1), `${m.type} announced`];
-    const line: Line = [m.dateSeg, t(`: ${m.status === "pending" ? pending : done} `)];
-    if (m.face) line.push(m.face, t(" "));
-    line.push(m.instSeg);
-    for (const part of [m.funding, m.use]) if (part.length) line.push(t(", "), ...part);
-    if (m.price) line.push(t(", "), m.price);
-    line.push(...m.extra);
-    if (m.status === "pending") line.push(t(" · pending, not yet confirmed by a filing"));
-    return line;
+  // v2.1 §2.3 CARD FORMAT: date, type, face in $MM, coupon, labels, instrument,
+  // then funding, use and price as short clauses. Never filer prose, defined
+  // terms or agreement titles; each figure and phrase links to its sentence.
+  const instPhrase = (m: Move, where?: Source): Segment => {
+    const own = where ?? (m.instSeg.k === "label" ? m.instSeg.src : null);
+    if (!own) return t(tidyCoupon(m.instrument));
+    const c = couponOf(m.instrument);
+    let shown: string, cands: string[];
+    if (c) {
+      const item = allDebtItems.find((it) => sameNote(`${it.name} ${it.maturity?.date.slice(0, 4) ?? ""}`, m.instrument));
+      const labels = item ? [item.labels.seniority?.t, item.labels.security?.t] : (m.instrument.match(/\b(senior|junior[- ]priority|subordinated|secured|unsecured|first[- ]lien)\b/gi) ?? []).map((x) => x.toLowerCase());
+      const type = item && couponOf(item.name) ? item.labels.type.t : /debenture/i.test(m.instrument) ? "debentures" : "notes";
+      const due = item?.maturity ? displayDate(item.maturity.date, item.maturity.granularity) : (new RegExp(`due ((?:(?:${MONTHS})\\s+(?:\\d{1,2},\\s*)?)?20\\d\\d)`, "i").exec(m.instrument) ?? [])[1];
+      shown = [c.shown, ...labels.filter(Boolean), type].join(" ") + (due ? ` due ${due}` : "");
+      cands = [filerSpan(c.printed, own.sentence), c.printed];
+    } else {
+      const year = (/dated\s+[A-Z][a-z]+\s+\d{1,2},\s*(20\d\d)/.exec(m.instrument) ?? /\b(20\d\d)\s+Credit Agreement/i.exec(m.instrument) ?? [])[1];
+      shown = /revolving|line of credit|credit facility/i.test(m.instrument) ? "revolver"
+        : /credit agreement/i.test(m.instrument) ? `${year ? `${year} ` : ""}credit agreement`
+        : /term loan/i.test(m.instrument) ? (/(term loan [a-z]-?\d?)/i.exec(m.instrument) ?? [m.instrument])[0]
+        : m.instrument.split(/\s+/).slice(0, 6).join(" ");
+      cands = [m.instSeg.k === "label" ? m.instSeg.stated : "", "revolving credit facility", "revolving line of credit", "credit agreement", "term loan", "commercial paper"];
+    }
+    const stated = cands.find((x) => x && containsWord(own.sentence, x));
+    return stated ? { k: "label", t: tidyCoupon(shown), stated, src: own } : t(tidyCoupon(shown));
   };
-  const newestFirst = (a: Move, b: Move) => b.sort.localeCompare(a.sort);
-  const since = movesAll.filter((m) => !m.inPeriod).sort(newestFirst);
-  const during = movesAll.filter((m) => m.inPeriod).sort(newestFirst);
+  const verbOf = (m: Move): Segment => {
+    const [done, pending] = TYPE_WORD[m.type] ?? [m.type.charAt(0).toUpperCase() + m.type.slice(1), `${m.type} announced`];
+    // An amendment that adds an incremental tranche says so.
+    const word = m.type === "facility amendment" && /\bincremental\b/i.test(m.sentence) && m.status !== "pending" ? "Added an incremental" : m.status === "pending" ? pending : done;
+    // The same move stated again in another sentence (a note and MD&A) is linked from its verb, not tagged.
+    const kw = m.altSrc ? ["special call", "repurchase", "redeem", "redemption", "repaid", "issued", "drew", "entered", "terminated"].find((x) => containsWord(m.altSrc!.sentence, x)) : undefined;
+    return kw ? { k: "label", t: word, stated: kw, src: m.altSrc! } : t(word);
+  };
+  // The source named in the funding clause: the most specific the filer states, in this order.
+  const KEYWORDS = [/divestiture proceeds/i, /proceeds of (?:the |our )?[a-z ]+?(?=,|$)/i, /borrowings under (?:the |our )?[a-z ]+?facility/i, /net proceeds/i, /cash on hand/i];
+  const fundClause = (m: Move): Line => {
+    if (m.fundedBy) {
+      const by = m.fundedBy;
+      const spend = m.spendSrc ?? (m.instSeg.k === "label" ? m.instSeg.src : null);
+      return [t(", "), spend ? { k: "label", t: "funded by", stated: "net proceeds", src: spend } : t("funded by"), t(" the "), instPhrase(by), t(` issued ${by.when}`), ...(spend && /cash on hand/i.test(spend.sentence) ? [t(" and cash on hand")] : [])];
+    }
+    if (!m.fundFact) return [];
+    const where = factSrc(m.fundFact);
+    const money = moneyIn(m.fundFact.value)[0];
+    const kw = KEYWORDS.map((re) => (re.exec(m.fundFact!.value) ?? [])[0]).find(Boolean);
+    const out: Line = [t(", funded by ")];
+    if (money) out.push({ k: "figure", t: displayAmount(money.raw, m.fundFact.value), printed: filerSpan(money.raw, where.sentence), src: where }, t(kw ? ` of ${kw.replace(/^cash on hand$/i, "cash on hand")}` : ""));
+    else out.push({ k: "label", t: kw ?? "a stated source", stated: kw ?? m.fundFact.value.split(/\s+/).slice(0, 3).join(" "), src: where });
+    return out;
+  };
+  const RETIRE_VERB: Record<string, string> = { redemption: "redeem", "special call": "redeem", "tender or repurchase": "repurchase", "repayment at maturity": "repay", paydown: "repay" };
+  const useClause = (m: Move): Line => {
+    if (m.retires.length) {
+      const rs = m.retires;
+      const allPending = rs.every((r) => r.status === "pending");
+      const out: Line = [t(allPending ? ", proceeds to be used to redeem " : ", used to ")];
+      rs.forEach((r, n) => {
+        if (n) out.push(t(" and "));
+        if (!allPending) out.push(t(`${RETIRE_VERB[r.type] ?? "retire"} `));
+        if (r.face) out.push(r.face, t(allPending ? " " : " of the "));
+        out.push(instPhrase(r));
+      });
+      if (allPending) out.push(t(`, set for ${rs[0].when}`));
+      return out;
+    }
+    if (!m.useFact) return [];
+    const where = factSrc(m.useFact);
+    const verb = /\b(repay|redeem|refinance|fund|finance|retire)\b/i.exec(m.useFact.value);
+    const obj = /revolving|line of credit|credit facility/i.test(m.useFact.value) ? "the revolver" : /term loan/i.test(m.useFact.value) ? "the term loan" : null;
+    if (!verb || !obj) return [t(", "), { k: "label", t: "use of the proceeds stated", stated: verb?.[0] ?? m.useFact.value.split(/\s+/).slice(0, 2).join(" "), src: where }];
+    const part = /a portion|partial|part of/i.test(m.useFact.value) ? "part of " : "";
+    return [t(", used to "), { k: "label", t: `${verb[1].toLowerCase()} ${part}${obj}`, stated: verb[0], src: where }];
+  };
+  const priceClause = (m: Move): Line => {
+    if (m.priceFact) {
+      const where = factSrc(m.priceFact);
+      const pct = /\d{1,3}(?:\.\d+)?\s?%/.exec(m.priceFact.value);
+      if (pct) return [t(", "), { k: "label", t: `at ${pct[0].replace(/\s+%/, "%")} of principal`, stated: filerSpan(pct[0], where.sentence), src: where }];
+    }
+    return m.price ? [t(", "), m.price] : [];
+  };
+  const one = (m: Move, withDate = true): Line => [
+    ...(withDate ? [m.dateSeg, t(": ")] : []), verbOf(m), t(" "), ...(m.face ? [m.face, t(" ")] : []), instPhrase(m),
+    ...fundClause(m), ...useClause(m), ...priceClause(m), ...m.extra,
+  ];
+  // v2.1 §2.3 RELATED MOVES ARE ONE EVENT: the same date, a retirement and the
+  // issuance it spends, or facility moves (entry, termination, draw, paydown)
+  // in the same month.
+  const isFacilityMove = (m: Move) => !couponOf(m.instrument) && ["facility entry", "facility termination", "draw", "paydown"].includes(m.type);
+  const parent = new Map<Move, Move>();
+  const root = (m: Move): Move => { let r = m; while (parent.get(r) && parent.get(r) !== r) r = parent.get(r)!; return r; };
+  const join = (a: Move, b: Move) => { if (a.inPeriod === b.inPeriod) parent.set(root(b), root(a)); };
+  for (const a of movesAll) for (const b of movesAll) {
+    if (a === b || a.inPeriod !== b.inPeriod) continue;
+    if (a.when === b.when || b.fundedBy === a || (isFacilityMove(a) && isFacilityMove(b) && a.sort.slice(0, 7) === b.sort.slice(0, 7))) join(a, b);
+  }
+  const moveEvents = new Map<Move, Move[]>();
+  for (const m of movesAll) moveEvents.set(root(m), [...(moveEvents.get(root(m)) ?? []), m]);
+  const eventLine = (ms: Move[]): Line => {
+    const issuance = ms.find((m) => m.type === "issuance");
+    const entry = ms.find((m) => m.type === "facility entry"), term = ms.find((m) => m.type === "facility termination");
+    const anyPending = ms.some((m) => m.status === "pending");
+    const tail: Line = anyPending ? [t(issuance && issuance.status !== "pending" ? " · redemption pending, not yet confirmed by a filing" : " · pending, not yet confirmed by a filing")] : [];
+    if (entry && term) {
+      // A refinanced facility: the new agreement, the one it replaced, and any draw used to retire it.
+      const lender = facilities.filter((f) => !/commercial paper|letter of credit/i.test(f.name));
+      const fac = lender.length === 1 ? lender[0] : null;
+      const draw = ms.find((m) => m.type === "draw");
+      const oldYear = (/dated\s+[A-Z][a-z]+\s+\d{1,2},\s*(20\d\d)/.exec(term.instrument) ?? /\b(20\d\d)\b/.exec(term.instrument) ?? [])[1];
+      const line: Line = [entry.dateSeg, t(`: Refinanced ${fac && /revolv/i.test(fac.name) ? "revolver" : "credit facility"}: new `)];
+      if (fac?.facilitySize) line.push({ k: "figure", t: displayAmount(fac.facilitySize.value, fac.facilitySize.sourceLine), printed: fac.facilitySize.value, src: src(fac.facilitySize.sourceLine, fac.figureSources?.facilitySize ?? fac.citedUrl) }, t(" "));
+      line.push(entry.instSeg.k === "label" ? { k: "label", t: "credit agreement", stated: containsWord(entry.instSeg.src.sentence, "credit agreement") ? "credit agreement" : entry.instSeg.stated, src: entry.instSeg.src } : t("credit agreement"));
+      line.push(t(" replaced the "), term.instSeg.k === "label" && oldYear ? { k: "label", t: `${oldYear} agreement`, stated: oldYear, src: term.instSeg.src } : t("earlier agreement"));
+      if (draw) line.push(t("; "), ...(draw.face ? [draw.face, t(" ")] : []), draw.instSeg.k === "label" ? { k: "label", t: "drawn to retire it", stated: "drew", src: draw.instSeg.src } : t("drawn to retire it"));
+      for (const other of ms.filter((m) => m !== entry && m !== term && m !== draw)) line.push(t("; "), ...one(other, false));
+      return [...line, ...tail];
+    }
+    if (issuance) {
+      const rest = ms.filter((m) => m !== issuance && !issuance.retires.includes(m));
+      const line = one(issuance);
+      for (const other of rest) line.push(t("; "), ...one(other, false));
+      return [...line, ...tail];
+    }
+    // Several moves of one dated event, each in card format, funding shared where it is the same.
+    const sorted = [...ms].sort((a, b) => a.sort.localeCompare(b.sort));
+    const line: Line = [sorted[0].dateSeg, t(": ")];
+    const sharedFund = sorted.every((m) => m.fundFact && m.fundFact.value === sorted[0].fundFact?.value);
+    sorted.forEach((m, n) => {
+      if (n) line.push(t(" and "));
+      const v = verbOf(m);
+      line.push(n && v.k === "text" ? t(v.t.toLowerCase()) : n ? { ...v, t: v.t.toLowerCase() } : v, t(" "), ...(m.face ? [m.face, t(" ")] : []), instPhrase(m));
+      if (!sharedFund) line.push(...fundClause(m));
+      line.push(...useClause(m), ...priceClause(m), ...m.extra);
+    });
+    if (sharedFund) line.push(...fundClause(sorted[0]));
+    return [...line, ...tail];
+  };
+  const eventSort = (ms: Move[]) => (ms.find((m) => m.type === "issuance") ?? ms.find((m) => m.type === "facility entry") ?? ms[0]).sort;
+  const evs = [...moveEvents.values()].sort((a, b) => eventSort(b).localeCompare(eventSort(a)));
+  const since = evs.filter((ms) => !ms[0].inPeriod);
+  const during = evs.filter((ms) => ms[0].inPeriod);
   const moves: CardSection = {
     heading: "Recent debt moves",
     lines: movesAll.length ? [] : [[t(`No debt moves stated between ${shortDate(fyStart)} and ${shortDate(briefDate)}.`)]],
     blocks: [
-      ...(since.length ? [{ heading: [t(`Since ${displayDate(periodEnd, "day")}: not yet in the position totals`)] as Line, lines: since.map(moveLine) }] : []),
-      ...(during.length ? [{ heading: [t(`During the period, ${shortDate(fyStart)} to ${shortDate(periodEnd)}: already in the position`)] as Line, lines: during.map(moveLine) }] : []),
+      ...(since.length ? [{ heading: [t(`Since ${displayDate(periodEnd, "day")}: not yet in the position totals`)] as Line, lines: since.map(eventLine) }] : []),
+      ...(during.length ? [{ heading: [t(`During the period, ${shortDate(fyStart)} to ${shortDate(periodEnd)}: already in the position`)] as Line, lines: during.map(eventLine) }] : []),
     ],
   };
   // ON THE INSTRUMENT'S OWN LINE: what a move did to it. A carrying-value line
@@ -663,7 +799,7 @@ export function buildCard(i: CardInputs): Card {
   for (const it of allDebtItems) {
     for (const m of movesAll.filter((x) => RETIRES.has(x.type) && sameNote(x.instrument, it.name) && (!it.maturity || !/\b20\d\d\b/.test(x.instrument) || x.instrument.includes(it.maturity.date.slice(0, 4))))) {
       const verb = (TYPE_WORD[m.type]?.[0] ?? m.type).toLowerCase();
-      if (m.status === "pending") { it.moveFlags = [...(it.moveFlags ?? []), t(" · "), ...(m.face ? [m.face, t(" ")] : []), { k: "label", t: "pending redemption", stated: m.instrument, src: m.instSeg.k === "label" ? m.instSeg.src : src(m.sentence, m.url) }, t(", not yet confirmed by a filing")]; continue; }
+      if (m.status === "pending") { it.moveFlags = [...(it.moveFlags ?? []), t(" · "), { k: "label", t: "pending redemption", stated: m.instSeg.k === "label" ? m.instSeg.stated : m.instrument, src: m.instSeg.k === "label" ? m.instSeg.src : src(m.sentence, m.url) }, ...(m.face ? [t(" "), m.face] : []), t(", not yet confirmed by a filing")]; continue; }
       const prior = moneyIn(m.sentence).filter((x) => new RegExp(`${x.raw.replace(/[$.*+?^{}()|[\]\\]/g, "\\$&")}\\s+in\\s+outstanding principal`, "i").test(m.sentence));
       if (it.basis === "carrying" && m.inPeriod && m.faceUsd && prior.length === 1) {
         const before = { printed: prior[0].raw, usd: prior[0].moneyValue!, src: src(m.sentence, m.url) };

@@ -66,11 +66,19 @@
       },
       {
        "k": "text",
-       "t": ": Amended "
+       "t": ": "
+      },
+      {
+       "k": "text",
+       "t": "Amended"
+      },
+      {
+       "k": "text",
+       "t": " "
       },
       {
        "k": "label",
-       "t": "Credit Agreement",
+       "t": "credit agreement",
        "stated": "Credit Agreement",
        "src": {
         "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",

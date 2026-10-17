@@ -87,7 +87,15 @@
       },
       {
        "k": "text",
-       "t": ": Repaid at maturity "
+       "t": ": "
+      },
+      {
+       "k": "text",
+       "t": "Repaid at maturity"
+      },
+      {
+       "k": "text",
+       "t": " "
       },
       {
        "k": "figure",
@@ -106,7 +114,7 @@
       {
        "k": "label",
        "t": "1.250% senior notes",
-       "stated": "1.250 % senior notes",
+       "stated": "1.250 %",
        "src": {
         "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
