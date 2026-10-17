@@ -631,8 +631,8 @@
      },
      {
       "k": "computed",
-      "t": "$400MM",
-      "usd": 400000000,
+      "t": "$2,073.5MM",
+      "usd": 2073500000,
       "parts": [
        {
         "printed": "$ 800 million",
@@ -651,70 +651,39 @@
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
-       }
-      ]
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "revolver",
-      "stated": "revolv",
-      "src": {
-       "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-       "doc": "10-Q 2026-08-07"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$200MM",
-      "usd": 200000000,
-      "parts": [
+       },
        {
-        "printed": "$ 200.0 million",
-        "usd": 200000000,
+        "printed": "$ 788.4 million",
+        "usd": 788400000,
         "src": {
-         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+         "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 394.1 million",
+        "usd": 394100000,
+        "src": {
+         "sentence": "4.625 % Senior Notes due 2031 394.1   393.6",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 491.0 million",
+        "usd": 491000000,
+        "src": {
+         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
        }
       ]
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "senior",
-      "stated": "Senior",
-      "src": {
-       "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-       "doc": "10-Q 2026-08-07"
-      }
      },
      {
       "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "notes",
-      "stated": "Notes",
-      "src": {
-       "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-       "doc": "10-Q 2026-08-07"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
+      "t": " (of which "
      },
      {
       "k": "computed",
@@ -752,6 +721,74 @@
      },
      {
       "k": "text",
+      "t": " at carrying value)"
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$200MM",
+      "usd": 200000000,
+      "parts": [
+       {
+        "printed": "$ 200.0 million",
+        "usd": 200000000,
+        "src": {
+         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "Other notes payable",
+      "stated": "Other notes payable",
+      "src": {
+       "sentence": "Other notes payable 81.9   93.6",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$81.9MM",
+      "usd": 81900000,
+      "parts": [
+       {
+        "printed": "$ 81.9 million",
+        "usd": 81900000,
+        "src": {
+         "sentence": "Other notes payable 81.9   93.6",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
       "t": " (carrying value)"
      }
     ],
@@ -780,42 +817,6 @@
         "usd": 281700000,
         "src": {
          "sentence": "Finance lease obligations 281.7   294.6",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-         "doc": "10-Q 2026-08-07"
-        }
-       }
-      ]
-     },
-     {
-      "k": "text",
-      "t": " (carrying value)"
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "Other notes payable",
-      "stated": "Other notes payable",
-      "src": {
-       "sentence": "Other notes payable 81.9   93.6",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-       "doc": "10-Q 2026-08-07"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$81.9MM",
-      "usd": 81900000,
-      "parts": [
-       {
-        "printed": "$ 81.9 million",
-        "usd": 81900000,
-        "src": {
-         "sentence": "Other notes payable 81.9   93.6",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }

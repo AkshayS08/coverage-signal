@@ -30,7 +30,7 @@ import { createTextLocator } from "../agent/verifyQuote";
 import type { Card, CardFacts, CardSection, Line, Segment, Source } from "./types";
 import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord } from "./labels";
 import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
-import { headingFor as printedHeadingFor, printedBefore, printedHeadings } from "./headings";
+import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 
 export interface CardInputs {
@@ -683,21 +683,28 @@ export function buildCard(i: CardInputs): Card {
   // added in.
   type Part = { printed: string; usd: number; src: Source };
   const partOf = (it: Item): Part[] => it.amountParts ?? [{ printed: it.amountPrinted!, usd: parseMoneyAmount(it.amountPrinted) ?? 0, src: it.amountSrc }];
-  const groups = new Map<string, { labels: Segment[]; basis: Item["basis"]; parts: Part[]; hedged: boolean }>();
-  for (const it of allDebtItems) {
-    const labels = [it.labels.seniority, it.labels.security, it.labels.type].filter((x): x is Segment => !!x);
-    const key = `${it.basis} ${labels.map((l) => l.t).join(" ")}`;
-    const g = groups.get(key) ?? { labels, basis: it.basis, parts: [], hedged: false };
-    for (const p of partOf(it)) {
-      g.parts.push(p);
-      g.hedged = g.hedged || hedgedIn(p.src.sentence, p.printed);
-    }
-    groups.set(key, g);
-  }
-  const faceGroups = [...groups.values()].filter((g) => g.basis === "face");
-  const carryingGroups = [...groups.values()].filter((g) => g.basis === "carrying");
-  const faceParts = faceGroups.flatMap((g) => g.parts);
-  const carryingParts = carryingGroups.flatMap((g) => g.parts);
+  // v2.1 §2.4: ONE LINE PER TYPE. A type splits by seniority or security only
+  // when every row of it carries the label; otherwise it groups by type alone
+  // and the labels stay per row in the ladder. Rows on different bases stay on
+  // their type's one line, with the carrying portion named inside it.
+  const hedgedPart = (p: Part) => hedgedIn(p.src.sentence, p.printed);
+  type Group = { type: Segment; items: Item[]; first: number };
+  const byType = new Map<string, Group>();
+  allDebtItems.forEach((it, n) => {
+    const key = it.labels.type.t.toLowerCase();
+    const g = byType.get(key) ?? { type: it.labels.type, items: [], first: n };
+    g.items.push(it);
+    byType.set(key, g);
+  });
+  // A label splits its type only where EVERY row of the type carries it.
+  const splitBy = (items: Item[], pick: (it: Item) => Segment | null): Item[][] => {
+    if (!items.every((it) => pick(it))) return [items];
+    const by = new Map<string, Item[]>();
+    for (const it of items) by.set(pick(it)!.t, [...(by.get(pick(it)!.t) ?? []), it]);
+    return [...by.values()];
+  };
+  const faceParts = allDebtItems.filter((it) => it.basis === "face").flatMap(partOf);
+  const carryingParts = allDebtItems.filter((it) => it.basis === "carrying").flatMap(partOf);
   // The filer's maturity schedule where the anchor itself prints it: principal by year, at the caption's scale (Rule 67).
   // The scale is the caption's; where the schedule's sentence carries none, the note's table scale (Rule 67).
   const scheduleScale = (sentence: string) => (/in thousands/i.test(sentence) ? "thousand" : /in billions/i.test(sentence) ? "billion" : /in millions/i.test(sentence) ? "million" : tableScale);
@@ -718,10 +725,10 @@ export function buildCard(i: CardInputs): Card {
   const faceTotalParts = faceFromSchedule ? scheduleParts : faceParts;
   const faceTotal = sum(faceTotalParts);
   const carryingBeside = faceFromSchedule ? [] : carryingParts;
-  const faceHedged = !faceFromSchedule && faceGroups.some((g) => g.hedged);
+  const faceHedged = !faceFromSchedule && faceParts.some(hedgedPart);
   const faceSeg = (decimals = dp(faceTotalParts)): Segment => ({ k: "computed", t: displayUsd(faceTotal, faceHedged, decimals), usd: faceTotal, parts: faceTotalParts });
   const carryingSeg: Segment | null = carryingBeside.length
-    ? { k: "computed", t: displayUsd(sum(carryingBeside), carryingGroups.some((g) => g.hedged), dp(carryingBeside)), usd: sum(carryingBeside), parts: carryingBeside }
+    ? { k: "computed", t: displayUsd(sum(carryingBeside), carryingBeside.some(hedgedPart), dp(carryingBeside)), usd: sum(carryingBeside), parts: carryingBeside }
     : null;
   const totalLine: Line = [t("Total debt "), faceSeg(), t(" at face")];
   if (faceFromSchedule) totalLine.push(t(", per the filer's maturity schedule"));
@@ -731,19 +738,33 @@ export function buildCard(i: CardInputs): Card {
     heading: "Total debt",
     lines: [
       totalLine,
-      ...[...groups.values()]
-        .sort((a, b) => (a.basis === b.basis ? sum(b.parts) - sum(a.parts) : a.basis === "face" ? -1 : 1))
-        .map((g): Line => {
+      // v2.1 §2.4 ORDER BY PRIORITY: secured, then unsecured, then types with no
+      // stated label, then leases and other obligations; within a tier, the
+      // filer's table order (the order the rows were stated in).
+      ...[...byType.values()]
+        .flatMap((g) => splitBy(g.items, (it) => it.labels.security).flatMap((a) => splitBy(a, (it) => it.labels.seniority)).map((items) => ({ ...g, items, first: allDebtItems.indexOf(items[0]) })))
+        .map((g) => {
+          const all = (pick: (it: Item) => Segment | null) => (g.items.every((it) => pick(it) && pick(it)!.t === pick(g.items[0])!.t) ? pick(g.items[0]) : null);
+          const sen = all((it) => it.labels.seniority), sec = all((it) => it.labels.security);
+          const kind = kindOf(g.items[0].name);
+          const tier = kind === "lease" || kind === "other" ? 3 : sec && /unsecured/i.test(sec.t) ? 1 : sec ? 0 : 2;
+          return { g, sen, sec, tier };
+        })
+        .sort((a, b) => a.tier - b.tier || a.g.first - b.g.first)
+        .map(({ g, sen, sec }): Line => {
           const line: Line = [];
-          g.labels.forEach((l, n) => line.push(...(n ? [t(" ")] : []), l));
-          line.push(t(" "), { k: "computed", t: displayUsd(sum(g.parts), g.hedged, dp(g.parts)), usd: sum(g.parts), parts: g.parts });
-          if (g.basis === "carrying") line.push(t(" (carrying value)"));
+          [sen, sec, g.type].filter((x): x is Segment => !!x).forEach((l, n) => line.push(...(n ? [t(" ")] : []), l));
+          const parts = g.items.flatMap(partOf);
+          const carrying = g.items.filter((it) => it.basis === "carrying").flatMap(partOf);
+          line.push(t(" "), { k: "computed", t: displayUsd(sum(parts), parts.some(hedgedPart), dp(parts)), usd: sum(parts), parts });
+          if (carrying.length === parts.length) line.push(t(" (carrying value)"));
+          else if (carrying.length) line.push(t(" (of which "), { k: "computed", t: displayUsd(sum(carrying), carrying.some(hedgedPart), dp(carrying)), usd: sum(carrying), parts: carrying }, t(" at carrying value)"));
           return line;
         }),
       // Where the face total and the lines shown are on different bases, the card says so, with the difference.
       ...(faceFromSchedule
         ? (() => {
-            const lineParts = [...groups.values()].flatMap((g) => g.parts);
+            const lineParts = allDebtItems.flatMap(partOf);
             const diff = faceTotal - sum(lineParts);
             const parts = [...faceTotalParts, ...lineParts.map((p) => ({ ...p, usd: -p.usd }))];
             const seg: Segment = { k: "computed", t: displayUsd(Math.abs(diff), false, Math.max(dp(faceTotalParts), dp(lineParts))), usd: Math.abs(diff), parts: diff < 0 ? parts.map((p) => ({ ...p, usd: -p.usd })) : parts };

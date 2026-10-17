@@ -530,10 +530,15 @@ const R9_GROUPING: Test = {
   run: (card) => {
     const bad: string[] = [];
     const lines = card.headlines.totalDebt.lines.slice(1).filter((l) => !!amountSeg(l) && !/^Lines marked/.test(text(l)));
+    // Never two lines with the same label (a type split by basis or by a label's source).
+    const labelOf = (l: Line) => norm(text(l).replace(/\s*[~<]?\$[\d,.]+MM.*$/, ""));
     const seen = new Map<string, number>();
-    for (const l of lines) { const k = typeOfLine(text(l)); seen.set(k, (seen.get(k) ?? 0) + 1); }
-    for (const [k, n] of seen) if (n > 1) bad.push(`type "${k}" shows as ${n} lines`);
-    for (const l of lines.filter((x) => /\(carrying value\)$/.test(text(x)))) { const k = typeOfLine(text(l)); if (lines.some((o) => o !== l && typeOfLine(text(o)) === k)) bad.push(`type "${k}" split by basis`); }
+    for (const l of lines) seen.set(labelOf(l), (seen.get(labelOf(l)) ?? 0) + 1);
+    for (const [k, n] of seen) if (n > 1) bad.push(`"${k}" shows as ${n} lines`);
+    // A type splits by a label only where every row carries one: a labelled and an unlabelled line of one type is the mixed-source case.
+    const byType = new Map<string, string[]>();
+    for (const l of lines) byType.set(typeOfLine(text(l)), [...(byType.get(typeOfLine(text(l))) ?? []), labelOf(l)]);
+    for (const [k, ls] of byType) if (ls.length > 1 && ls.some((x) => norm(x) === k)) bad.push(`type "${k}" shows both with and without a label`);
     return bad;
   },
 };

@@ -187,6 +187,15 @@
         }
        },
        {
+        "printed": "$259 million",
+        "usd": 259000000,
+        "src": {
+         "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+         "doc": "10-K for Dec 31, 2025"
+        }
+       },
+       {
         "printed": "$600 million",
         "usd": 600000000,
         "src": {
@@ -374,15 +383,6 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
          "doc": "10-K for Dec 31, 2025"
         }
-       },
-       {
-        "printed": "$259 million",
-        "usd": 259000000,
-        "src": {
-         "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-         "doc": "10-K for Dec 31, 2025"
-        }
        }
       ]
      },
@@ -446,12 +446,26 @@
     [
      {
       "k": "label",
-      "t": "notes",
-      "stated": "Notes",
+      "t": "unsecured",
+      "stated": "unsecured",
       "src": {
-       "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-       "doc": "10-K for Dec 31, 2025"
+       "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "commercial paper",
+      "stated": "commercial paper",
+      "src": {
+       "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
       }
      },
      {
@@ -460,9 +474,77 @@
      },
      {
       "k": "computed",
-      "t": "$26,284MM",
-      "usd": 26284000000,
+      "t": "~$1,000MM",
+      "usd": 1000000000,
       "parts": [
+       {
+        "printed": "$ 1.0 billion",
+        "usd": 1000000000,
+        "src": {
+         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+         "doc": "10-Q 2026-07-30"
+        }
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+       "doc": "8-K 2025-09-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$30,784MM",
+      "usd": 30784000000,
+      "parts": [
+       {
+        "printed": "$ 1,000 million",
+        "usd": 1000000000,
+        "src": {
+         "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
+       {
+        "printed": "$ 1,250 million",
+        "usd": 1250000000,
+        "src": {
+         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+         "doc": "8-K 2025-09-04"
+        }
+       },
        {
         "printed": "$1,500 million",
         "usd": 1500000000,
@@ -659,125 +741,6 @@
          "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
          "doc": "10-K for Dec 31, 2025"
-        }
-       }
-      ]
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "senior",
-      "stated": "Senior",
-      "src": {
-       "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036 Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-       "doc": "8-K 2025-09-04"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "notes",
-      "stated": "Notes",
-      "src": {
-       "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-       "doc": "8-K 2025-09-04"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$4,500MM",
-      "usd": 4500000000,
-      "parts": [
-       {
-        "printed": "$ 1,000 million",
-        "usd": 1000000000,
-        "src": {
-         "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-         "doc": "8-K 2025-09-04"
-        }
-       },
-       {
-        "printed": "$ 1,250 million",
-        "usd": 1250000000,
-        "src": {
-         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-         "doc": "8-K 2025-09-04"
-        }
-       },
-       {
-        "printed": "$ 1,500 million",
-        "usd": 1500000000,
-        "src": {
-         "sentence": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-         "doc": "8-K 2025-09-04"
-        }
-       },
-       {
-        "printed": "$ 750 million",
-        "usd": 750000000,
-        "src": {
-         "sentence": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
-         "doc": "8-K 2025-09-04"
-        }
-       }
-      ]
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "unsecured",
-      "stated": "unsecured",
-      "src": {
-       "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-       "doc": "10-Q 2026-07-30"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "commercial paper",
-      "stated": "commercial paper",
-      "src": {
-       "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-       "doc": "10-Q 2026-07-30"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "~$1,000MM",
-      "usd": 1000000000,
-      "parts": [
-       {
-        "printed": "$ 1.0 billion",
-        "usd": 1000000000,
-        "src": {
-         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-         "doc": "10-Q 2026-07-30"
         }
        }
       ]
@@ -4116,6 +4079,15 @@
        }
       },
       {
+       "printed": "$259 million",
+       "usd": 259000000,
+       "src": {
+        "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "doc": "10-K for Dec 31, 2025"
+       }
+      },
+      {
        "printed": "$600 million",
        "usd": 600000000,
        "src": {
@@ -4300,15 +4272,6 @@
        "usd": 1500000000,
        "src": {
         "sentence": "$1,500 million, 5.600 % Notes due February 2054 1,486",
-        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
-        "doc": "10-K for Dec 31, 2025"
-       }
-      },
-      {
-       "printed": "$259 million",
-       "usd": 259000000,
-       "src": {
-        "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for Dec 31, 2025"
        }

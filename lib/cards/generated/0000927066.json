@@ -242,7 +242,7 @@
       "t": "senior",
       "stated": "Senior",
       "src": {
-       "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
+       "sentence": "Senior Secured Credit Facilities",
        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
        "doc": "10-Q 2026-08-04"
       }
@@ -253,10 +253,24 @@
      },
      {
       "k": "label",
-      "t": "notes",
-      "stated": "Notes",
+      "t": "secured",
+      "stated": "Secured",
       "src": {
-       "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
+       "sentence": "Senior Secured Credit Facilities",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "term loan A",
+      "stated": "Term Loan A",
+      "src": {
+       "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
        "doc": "10-Q 2026-08-04"
       }
@@ -267,41 +281,74 @@
      },
      {
       "k": "computed",
-      "t": "$6,250MM",
-      "usd": 6250000000,
+      "t": "$1,975MM",
+      "usd": 1975000000,
       "parts": [
        {
-        "printed": "$ 2,750,000 thousand",
-        "usd": 2750000000,
+        "printed": "$ 1,975,000 thousand",
+        "usd": 1975000000,
         "src": {
-         "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
+         "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
          "doc": "10-Q 2026-08-04"
         }
-       },
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "Senior Secured Credit Facilities",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "secured",
+      "stated": "Secured",
+      "src": {
+       "sentence": "Senior Secured Credit Facilities",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "Revolv",
+      "src": {
+       "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$65MM",
+      "usd": 65000000,
+      "parts": [
        {
-        "printed": "$ 1,500,000 thousand",
-        "usd": 1500000000,
+        "printed": "$ 65,000 thousand",
+        "usd": 65000000,
         "src": {
-         "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %",
-         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-         "doc": "10-Q 2026-08-04"
-        }
-       },
-       {
-        "printed": "$ 1,000,000 thousand",
-        "usd": 1000000000,
-        "src": {
-         "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %",
-         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-         "doc": "10-Q 2026-08-04"
-        }
-       },
-       {
-        "printed": "$ 1,000,000 thousand",
-        "usd": 1000000000,
-        "src": {
-         "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %",
+         "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
          "doc": "10-Q 2026-08-04"
         }
@@ -375,7 +422,7 @@
       "t": "senior",
       "stated": "Senior",
       "src": {
-       "sentence": "Senior Secured Credit Facilities",
+       "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
        "doc": "10-Q 2026-08-04"
       }
@@ -386,24 +433,10 @@
      },
      {
       "k": "label",
-      "t": "secured",
-      "stated": "Secured",
+      "t": "notes",
+      "stated": "Notes",
       "src": {
-       "sentence": "Senior Secured Credit Facilities",
-       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-       "doc": "10-Q 2026-08-04"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "term loan A",
-      "stated": "Term Loan A",
-      "src": {
-       "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
+       "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
        "doc": "10-Q 2026-08-04"
       }
@@ -414,106 +447,41 @@
      },
      {
       "k": "computed",
-      "t": "$1,975MM",
-      "usd": 1975000000,
+      "t": "$6,250MM",
+      "usd": 6250000000,
       "parts": [
        {
-        "printed": "$ 1,975,000 thousand",
-        "usd": 1975000000,
+        "printed": "$ 2,750,000 thousand",
+        "usd": 2750000000,
         "src": {
-         "sentence": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
+         "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
          "doc": "10-Q 2026-08-04"
         }
-       }
-      ]
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "Financing lease obligations",
-      "stated": "Financing lease obligations",
-      "src": {
-       "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
-       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-       "doc": "10-Q 2026-08-04"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$160.1MM",
-      "usd": 160143000,
-      "parts": [
+       },
        {
-        "printed": "$ 160,143 thousand",
-        "usd": 160143000,
+        "printed": "$ 1,500,000 thousand",
+        "usd": 1500000000,
         "src": {
-         "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+         "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %",
          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
          "doc": "10-Q 2026-08-04"
         }
-       }
-      ]
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "senior",
-      "stated": "Senior",
-      "src": {
-       "sentence": "Senior Secured Credit Facilities",
-       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-       "doc": "10-Q 2026-08-04"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "secured",
-      "stated": "Secured",
-      "src": {
-       "sentence": "Senior Secured Credit Facilities",
-       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-       "doc": "10-Q 2026-08-04"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "revolver",
-      "stated": "Revolv",
-      "src": {
-       "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
-       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-       "doc": "10-Q 2026-08-04"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$65MM",
-      "usd": 65000000,
-      "parts": [
+       },
        {
-        "printed": "$ 65,000 thousand",
-        "usd": 65000000,
+        "printed": "$ 1,000,000 thousand",
+        "usd": 1000000000,
         "src": {
-         "sentence": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
+         "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %",
+         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+         "doc": "10-Q 2026-08-04"
+        }
+       },
+       {
+        "printed": "$ 1,000,000 thousand",
+        "usd": 1000000000,
+        "src": {
+         "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %",
          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
          "doc": "10-Q 2026-08-04"
         }
@@ -546,6 +514,38 @@
         "usd": 39463000,
         "src": {
          "sentence": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
+         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+         "doc": "10-Q 2026-08-04"
+        }
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "Financing lease obligations",
+      "stated": "Financing lease obligations",
+      "src": {
+       "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+       "doc": "10-Q 2026-08-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$160.1MM",
+      "usd": 160143000,
+      "parts": [
+       {
+        "printed": "$ 160,143 thousand",
+        "usd": 160143000,
+        "src": {
+         "sentence": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
          "doc": "10-Q 2026-08-04"
         }

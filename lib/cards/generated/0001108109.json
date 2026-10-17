@@ -423,111 +423,6 @@
     [
      {
       "k": "label",
-      "t": "senior",
-      "stated": "Senior",
-      "src": {
-       "sentence": "6 % Senior Secured Notes due 2029 644",
-       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "secured",
-      "stated": "Secured",
-      "src": {
-       "sentence": "6 % Senior Secured Notes due 2029 644",
-       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "notes",
-      "stated": "Notes",
-      "src": {
-       "sentence": "6 % Senior Secured Notes due 2029 644",
-       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$6,907MM",
-      "usd": 6907000000,
-      "parts": [
-       {
-        "printed": "$ 644 million",
-        "usd": 644000000,
-        "src": {
-         "sentence": "6 % Senior Secured Notes due 2029 644",
-         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-         "doc": "10-Q 2026-07-23"
-        }
-       },
-       {
-        "printed": "$ 1,535 million",
-        "usd": 1535000000,
-        "src": {
-         "sentence": "5 ¼% Senior Secured Notes due 2030 1,535",
-         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-         "doc": "10-Q 2026-07-23"
-        }
-       },
-       {
-        "printed": "$ 689 million",
-        "usd": 689000000,
-        "src": {
-         "sentence": "4 ¾% Senior Secured Notes due 2031 689",
-         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-         "doc": "10-Q 2026-07-23"
-        }
-       },
-       {
-        "printed": "$ 1,549 million",
-        "usd": 1549000000,
-        "src": {
-         "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
-         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-         "doc": "10-Q 2026-07-23"
-        }
-       },
-       {
-        "printed": "$ 700 million",
-        "usd": 700000000,
-        "src": {
-         "sentence": "10 ¾% Senior Secured Notes due 2033 700",
-         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-         "doc": "10-Q 2026-07-23"
-        }
-       },
-       {
-        "printed": "$ 1,790 million",
-        "usd": 1790000000,
-        "src": {
-         "sentence": "9 ¾% Senior Secured Notes due 2034 1,790",
-         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-         "doc": "10-Q 2026-07-23"
-        }
-       }
-      ]
-     }
-    ],
-    [
-     {
-      "k": "label",
       "t": "junior-priority",
       "stated": "Junior-Priority",
       "src": {
@@ -597,6 +492,106 @@
     [
      {
       "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "6 % Senior Secured Notes due 2029 644",
+       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
+       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+       "doc": "10-Q 2026-07-23"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$6,949MM",
+      "usd": 6949000000,
+      "parts": [
+       {
+        "printed": "$ 644 million",
+        "usd": 644000000,
+        "src": {
+         "sentence": "6 % Senior Secured Notes due 2029 644",
+         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+         "doc": "10-Q 2026-07-23"
+        }
+       },
+       {
+        "printed": "$ 1,535 million",
+        "usd": 1535000000,
+        "src": {
+         "sentence": "5 ¼% Senior Secured Notes due 2030 1,535",
+         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+         "doc": "10-Q 2026-07-23"
+        }
+       },
+       {
+        "printed": "$ 689 million",
+        "usd": 689000000,
+        "src": {
+         "sentence": "4 ¾% Senior Secured Notes due 2031 689",
+         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+         "doc": "10-Q 2026-07-23"
+        }
+       },
+       {
+        "printed": "$ 1,549 million",
+        "usd": 1549000000,
+        "src": {
+         "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
+         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+         "doc": "10-Q 2026-07-23"
+        }
+       },
+       {
+        "printed": "$ 700 million",
+        "usd": 700000000,
+        "src": {
+         "sentence": "10 ¾% Senior Secured Notes due 2033 700",
+         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+         "doc": "10-Q 2026-07-23"
+        }
+       },
+       {
+        "printed": "$ 1,790 million",
+        "usd": 1790000000,
+        "src": {
+         "sentence": "9 ¾% Senior Secured Notes due 2034 1,790",
+         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+         "doc": "10-Q 2026-07-23"
+        }
+       },
+       {
+        "printed": "$ 42 million",
+        "usd": 42000000,
+        "src": {
+         "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
+         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+         "doc": "10-Q 2026-07-23"
+        }
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
       "t": "Finance lease and financing obligations",
       "stated": "Finance lease and financing obligations",
       "src": {
@@ -651,52 +646,6 @@
         "usd": 52000000,
         "src": {
          "sentence": "Other 52",
-         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-         "doc": "10-Q 2026-07-23"
-        }
-       }
-      ]
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "senior",
-      "stated": "Senior",
-      "src": {
-       "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
-       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "label",
-      "t": "notes",
-      "stated": "Notes",
-      "src": {
-       "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
-       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$42MM",
-      "usd": 42000000,
-      "parts": [
-       {
-        "printed": "$ 42 million",
-        "usd": 42000000,
-        "src": {
-         "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
          "doc": "10-Q 2026-07-23"
         }
