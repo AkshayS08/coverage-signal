@@ -725,58 +725,105 @@
     [
      {
       "k": "computed",
-      "t": "$45MM",
-      "usd": 45000000,
+      "t": "$2,100MM",
+      "usd": 2100000000,
       "parts": [
-       {
-        "printed": "$ 45",
-        "usd": 45000000,
-        "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
-         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "doc": "10-Q 2026-07-29"
-        }
-       }
-      ]
-     },
-     {
-      "k": "text",
-      "t": " other scheduled principal, per the filer's schedule for 2026"
-     },
-     {
-      "k": "text",
-      "t": " · year bucket partly inside the window, not pro-rated, may fall within 18 months, see source"
-     }
-    ],
-    [
-     {
-      "k": "computed",
-      "t": "$143MM",
-      "usd": 143000000,
-      "parts": [
-       {
-        "printed": "$ 1,643 million",
-        "usd": 1643000000,
-        "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
-         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "doc": "10-Q 2026-07-29"
-        }
-       },
        {
         "printed": "$ 1,500 million",
-        "usd": -1500000000,
+        "usd": 1500000000,
         "src": {
          "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
          "doc": "10-Q 2026-07-29"
         }
+       },
+       {
+        "printed": "$ 600 million",
+        "usd": 600000000,
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
        }
       ]
      },
      {
       "k": "text",
-      "t": " other scheduled principal, per the filer's schedule for 2027"
+      "t": "†"
+     },
+     {
+      "k": "text",
+      "t": " across 2 notes in the next 18 months"
+     },
+     {
+      "k": "text",
+      "t": "; "
+     },
+     {
+      "k": "computed",
+      "t": "$2,000MM",
+      "usd": 2000000000,
+      "parts": [
+       {
+        "printed": "$ 1.5 billion",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       },
+       {
+        "printed": "$ 0.5 billion",
+        "usd": 500000000,
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " already being redeemed"
+     },
+     {
+      "k": "text",
+      "t": " with the "
+     },
+     {
+      "k": "figure",
+      "t": "$2,000MM",
+      "printed": "$2,000,000,000 in aggregate principal amount",
+      "src": {
+       "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "6.250% senior notes due 2034",
+      "stated": "6.250%",
+      "src": {
+       "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " issued September 22, 2026"
+     },
+     {
+      "k": "text",
+      "t": "."
      }
     ],
     [
@@ -980,15 +1027,46 @@
      },
      {
       "k": "text",
-      "t": " · year only stated, may fall within 18 months, see source"
+      "t": "†"
      }
     ],
     [
      {
+      "k": "text",
+      "t": "Plus "
+     },
+     {
       "k": "computed",
-      "t": "$72MM",
-      "usd": 72000000,
+      "t": "$260MM",
+      "usd": 260000000,
       "parts": [
+       {
+        "printed": "$ 45",
+        "usd": 45000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,643 million",
+        "usd": 1643000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,500 million",
+        "usd": -1500000000,
+        "src": {
+         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
        {
         "printed": "$ 2,422 million",
         "usd": 2422000000,
@@ -1020,11 +1098,11 @@
      },
      {
       "k": "text",
-      "t": " other scheduled principal, per the filer's schedule for 2028"
+      "t": "†"
      },
      {
       "k": "text",
-      "t": " · year bucket partly inside the window, not pro-rated, may fall within 18 months, see source"
+      "t": " of scheduled amortization and other principal, per the filer's schedule (see maturity ladder)."
      }
     ],
     [
@@ -1145,6 +1223,12 @@
      {
       "k": "text",
       "t": ", not yet confirmed by a filing"
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "† Stated only to a year or month, or a schedule year only partly inside the window: may fall within 18 months, see source."
      }
     ]
    ]

@@ -1060,41 +1060,104 @@ export function buildCard(i: CardInputs): Card {
     return { heading: [t(y)] as Line, lines };
   });
 
-  // ── 2.4 potential refinance opportunities: the next 18 months from the brief date ──
+  // ── 2.4 POTENTIAL REFINANCE OPPORTUNITIES (card_spec v2.1): the card's call to
+  // action, the next 18 months from the brief date. Summary first, from a
+  // template over stated facts; named instruments only; the schedule's
+  // leftovers in one line; flags as one marker with one legend; CP outstanding
+  // as a row; then Next. No "not stated" fallback appears in the box.
   const windowEnd = addMonths(briefDate, 18);
-  const refiLines: { sort: string; line: Line }[] = [];
-  const MAYBE = "may fall within 18 months, see source";
+  const MARK = "†";
+  let marked = false;
+  const kindOfItem = (it: Item) => kindOf(it.name);
+  const isCP = (it: Item) => /commercial paper/i.test(it.labels.type.t);
+  const boxRows: { sort: string; it: Item; maybe: boolean; flags: string[] }[] = [];
   for (const it of [...anchorItems, ...rolledItems]) {
-    if (it.maturity) {
-      const m = it.maturity;
-      const [start, end] = spanOf(m.date, m.granularity);
-      if (end <= briefDate && start > periodEnd && !it.isCapacity) {
-        refiLines.push({ sort: start, line: describe(it, { flags: ["matured since the position date, repayment not yet confirmed in a filing"] }) });
-        continue;
-      }
-      if (end <= briefDate || start > windowEnd) continue;
-      const partial = (start <= briefDate || end > windowEnd) && m.granularity !== "day";
-      refiLines.push({ sort: start, line: describe(it, { flags: partial ? [`${m.granularity} only stated, ${MAYBE}`] : [] }) });
-    } else if (it.range && it.range.from <= windowEnd.slice(0, 4) && it.range.to >= briefDate.slice(0, 4)) {
-      refiLines.push({ sort: `${it.range.from}-01-01`, line: describe(it, { flags: [`matures over a range of years, part ${MAYBE}`] }) });
-    }
+    if (!it.maturity || it.range || isCP(it) || kindOfItem(it) === "lease" || kindOfItem(it) === "other") continue;
+    const m = it.maturity;
+    const [start, end] = spanOf(m.date, m.granularity);
+    if (end <= briefDate && start > periodEnd && !it.isCapacity) { boxRows.push({ sort: start, it, maybe: false, flags: ["matured since the position date, repayment not yet confirmed in a filing"] }); continue; }
+    if (end <= briefDate || start > windowEnd) continue;
+    boxRows.push({ sort: start, it, maybe: (start <= briefDate || end > windowEnd) && m.granularity !== "day", flags: [] });
   }
-  // Scheduled principal from the filer's own schedule (§2.5) for each year bucket the window reaches. A bucket partly inside is flagged, never pro-rated.
+  boxRows.sort((x, y) => x.sort.localeCompare(y.sort));
+  const rowLine = (r: { it: Item; maybe: boolean; flags: string[] }): Line => {
+    const line = describe(r.it, { fallback: false, flags: r.flags });
+    if (r.maybe) {
+      marked = true;
+      // The marker sits on the date it qualifies.
+      const at = line.findIndex((x) => x.k === "date");
+      line.splice(at >= 0 ? at + 1 : line.length, 0, t(MARK));
+    }
+    return line;
+  };
+  const refi: Line[] = [];
+  // 1. The summary: named instruments maturing in the window, and what stated redemptions already cover.
+  const maturing = boxRows.filter((r) => !r.it.isCapacity);
+  if (maturing.length === 0) refi.push([t("Nothing matures within 18 months.")]);
+  else {
+    const parts = maturing.flatMap((r) => partOf(r.it));
+    const allNotes = maturing.every((r) => r.it.labels.type.t === "notes");
+    const summary: Line = [{ k: "computed", t: displayUsd(sum(parts), parts.some(hedgedPart), dp(parts)), usd: sum(parts), parts }];
+    if (maturing.some((r) => r.maybe)) { summary.push(t(MARK)); marked = true; }
+    summary.push(t(` across ${maturing.length} ${allNotes ? (maturing.length === 1 ? "note" : "notes") : maturing.length === 1 ? "instrument" : "instruments"} in the next 18 months`));
+    const redeeming = movesAll.filter((m) => !m.inPeriod && RETIRES.has(m.type) && m.face && m.faceUsd);
+    if (redeeming.length) {
+      const rparts = redeeming.map((m) => ({ printed: (m.face as any).printed as string, usd: m.faceUsd!, src: (m.face as any).src as Source }));
+      const pending = redeeming.every((m) => m.status === "pending");
+      summary.push(t("; "), { k: "computed", t: displayUsd(sum(rparts), rparts.some(hedgedPart), dp(rparts)), usd: sum(rparts), parts: rparts }, t(pending ? " already being redeemed" : " already redeemed since the position date"));
+      const by = redeeming[0].fundedBy;
+      if (by && redeeming.every((m) => m.fundedBy === by)) summary.push(t(" with the "), ...(by.face ? [by.face, t(" ")] : []), instPhrase(by), t(` issued ${by.when}`));
+    }
+    summary.push(t("."));
+    refi.push(summary);
+  }
+  // 2. Named instruments, one line each, with their status.
+  refi.push(...boxRows.map(rowLine));
+  // 3. Commercial paper outstanding, with what the filer states about it.
+  for (const it of anchorItems.filter((x) => isCP(x) && !x.isCapacity)) {
+    const line: Line = [];
+    if (it.amountPrinted) line.push({ k: "figure", t: displayAmount(it.amountPrinted, it.amountSrc.sentence), printed: it.amountPrinted, src: it.amountSrc }, t(" "));
+    if (it.labels.security) line.push(it.labels.security, t(" "));
+    line.push(it.labels.type, t(" outstanding"));
+    const shortTerm = [it.labels.security?.k === "label" ? it.labels.security.src : null, it.amountSrc].find((x) => x && /short-term/i.test(x.sentence));
+    if (shortTerm) line.push(t(", "), { k: "label", t: "short-term", stated: "short-term", src: shortTerm });
+    const cpb = i.facts?.commercialPaper?.backedBy;
+    const backer = cpb && (cpb.src.url === anchor.url || (i.laterUrls ?? []).includes(cpb.src.url)) ? facilities.find((f) => !/commercial paper/i.test(f.name) && f.facilitySize) : undefined;
+    if (cpb && backer?.facilitySize) line.push(t(", "), { k: "label", t: "backed by", stated: cpb.value, src: src(cpb.src.sentence, cpb.src.url) }, t(" the "), { k: "figure", t: displayAmount(backer.facilitySize.value, backer.facilitySize.sourceLine), printed: backer.facilitySize.value, src: src(backer.facilitySize.sourceLine, backer.figureSources?.facilitySize ?? backer.citedUrl) }, t(" "), typeLabel({ instrument: backer.name, classification: classifyInstrument({ headings: [], instrumentName: backer.name }) }, src(backer.facilitySize.sourceLine, backer.figureSources?.facilitySize ?? backer.citedUrl)));
+    refi.push(line);
+  }
+  // 4. Leftovers in one line: the schedule's other principal for every bucket the window reaches (ranged items and amortization are inside it).
+  const leftParts: Part[] = [];
+  let leftMaybe = false;
   for (const [y, o] of otherScheduled) {
     const [start, end] = [`${y}-01-01`, `${y}-12-31`];
     if (end < briefDate || start > windowEnd) continue;
-    const partial = start < briefDate || end > windowEnd;
-    refiLines.push({ sort: start, line: [o.seg, t(` other scheduled principal, per the filer's schedule for ${o.period}`), ...(partial ? [t(` · year bucket partly inside the window, not pro-rated, ${MAYBE}`)] : [])] });
+    if (start < briefDate || end > windowEnd) leftMaybe = true;
+    if (o.seg.k === "computed") leftParts.push({ printed: o.seg.t, usd: o.seg.usd, src: { sentence: `other scheduled principal, ${o.period}, maturity ladder`, url: "", doc: "this card" } });
   }
-  refiLines.sort((a, b) => a.sort.localeCompare(b.sort));
-  const refi: Line[] = refiLines.map((d) => d.line);
-  // A Next line always shows: the first maturity after the window.
+  const leftSegs = [...otherScheduled.entries()].filter(([y]) => `${y}-12-31` >= briefDate && `${y}-01-01` <= windowEnd).map(([, o]) => o.seg).filter((x): x is Extract<Segment, { k: "computed" }> => x.k === "computed");
+  if (leftSegs.length) {
+    const ps = leftSegs.flatMap((x) => x.parts);
+    const usd = leftSegs.reduce((a, x) => a + x.usd, 0);
+    refi.push([t("Plus "), { k: "computed", t: displayUsd(usd, false, Math.max(...leftSegs.map((x) => (/\.(\d+)MM/.exec(x.t)?.[1] ?? "").length))), usd, parts: ps }, ...(leftMaybe ? [t(MARK)] : []), t(" of scheduled amortization and other principal, per the filer's schedule (see maturity ladder).")]);
+    if (leftMaybe) marked = true;
+  } else {
+    // No schedule: ranged items reaching the window, which only may fall inside it.
+    const ranged = allDebtItems.filter((it) => it.range && it.range.from <= windowEnd.slice(0, 4) && it.range.to >= briefDate.slice(0, 4));
+    if (ranged.length) {
+      const ps = ranged.flatMap(partOf);
+      refi.push([t("Plus "), { k: "computed", t: displayUsd(sum(ps), false, dp(ps)), usd: sum(ps), parts: ps }, t(MARK), t(" of other principal stated over a range of years (see maturity ladder).")]);
+      marked = true;
+    }
+  }
+  void leftParts;
+  // 5. Next, after the window.
   const after = allDebtItems
     .filter((it) => it.maturity && spanOf(it.maturity.date, it.maturity.granularity)[0] > windowEnd)
     .sort((a, b) => a.maturity!.date.localeCompare(b.maturity!.date))[0];
-  if (refi.length === 0) refi.push([t("Nothing matures within 18 months."), ...(after ? [t(" Next: "), ...describe(after)] : [t(" No later maturity is stated.")])]);
-  else refi.push(after ? [t(`Next, after ${shortDate(windowEnd)}: `), ...describe(after)] : [t(`Nothing stated matures after ${shortDate(windowEnd)}.`)]);
-  if (!scheduleByYear.size && allDebtItems.some((it) => /term loan/i.test(it.labels.type.t))) refi.push([t("Scheduled term-loan amortization is not stated in a schedule, so only final maturities are counted here.")]);
+  refi.push(after ? [t(`Next, after ${shortDate(windowEnd)}: `), ...describe(after, { fallback: false })] : [t(`Next, after ${shortDate(windowEnd)}: no later maturity is stated.`)]);
+  // 6. One legend for the marker.
+  if (marked) refi.push([t(`${MARK} Stated only to a year or month, or a schedule year only partly inside the window: may fall within 18 months, see source.`)]);
   const ladderLines: Line[] = [];
   const capacity = anchorItems.filter((x) => x.isCapacity);
   if (capacity.length) ladderLines.push([t("Capacity, not debt:")], ...capacity.map((c) => describe(c)));

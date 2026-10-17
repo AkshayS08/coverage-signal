@@ -775,6 +775,36 @@
    "lines": [
     [
      {
+      "k": "computed",
+      "t": "$42MM",
+      "usd": 42000000,
+      "parts": [
+       {
+        "printed": "$ 42 million",
+        "usd": 42000000,
+        "src": {
+         "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
+         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+         "doc": "10-Q 2026-07-23"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": "†"
+     },
+     {
+      "k": "text",
+      "t": " across 1 note in the next 18 months"
+     },
+     {
+      "k": "text",
+      "t": "."
+     }
+    ],
+    [
+     {
       "k": "figure",
       "t": "$42MM",
       "printed": "$ 42 million",
@@ -844,20 +874,7 @@
      },
      {
       "k": "text",
-      "t": " · year only stated, may fall within 18 months, see source"
-     },
-     {
-      "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "notStated",
-      "t": "security not stated, please refer to sources",
-      "src": {
-       "sentence": "6 ⅞% Senior Notes due 2028 $ 42",
-       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-       "doc": "10-Q 2026-07-23"
-      }
+      "t": "†"
      }
     ],
     [
@@ -946,6 +963,12 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
        "doc": "10-Q 2026-07-23"
       }
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "† Stated only to a year or month, or a schedule year only partly inside the window: may fall within 18 months, see source."
      }
     ]
    ]

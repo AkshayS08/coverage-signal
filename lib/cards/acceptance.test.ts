@@ -439,7 +439,7 @@ const R2_SUMMARY: Test = {
     const { summary, rows } = boxParts(card);
     const st = text(summary);
     if (/^Nothing matures within 18 months\.?$/.test(st)) return rows.some((r) => !/commercial paper/i.test(text(r))) ? ["says nothing matures, but the box lists maturing rows"] : [];
-    const m = /^(\S+) across (\d+) (notes|instruments) in the next 18 months/.exec(st);
+    const m = /^(\S+) across (\d+) (notes?|instruments?) in the next 18 months/.exec(st);
     if (!m) return [`summary does not follow the template: "${st.slice(0, 80)}"`];
     const bad: string[] = [];
     const maturing = rows.filter((r) => !/commercial paper outstanding/i.test(text(r)));

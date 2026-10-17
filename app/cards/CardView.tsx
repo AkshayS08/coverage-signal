@@ -92,11 +92,16 @@ export default function CardView({ card }: { card: Card }) {
         ))}
       </header>
       <Section s={card.thisWeek} />
+      {/* v2.1 §2.4: the refinance box is the call to action, directly after This week, in its own container. */}
+      {card.headlines.refi ?? card.headlines.due24 ? (
+        <div className={styles.refiBox}>
+          <Section s={(card.headlines.refi ?? card.headlines.due24)!} />
+        </div>
+      ) : null}
       {card.moves ? <Section s={card.moves} /> : null}
       <div className={styles.headlines}>
         <Section s={card.headlines.totalDebt} lead />
         <Section s={card.headlines.liquidity} lead />
-        {card.headlines.refi ?? card.headlines.due24 ? <Section s={(card.headlines.refi ?? card.headlines.due24)!} /> : null}
       </div>
       <Section s={card.ladder} />
       <Section s={card.facilities} />

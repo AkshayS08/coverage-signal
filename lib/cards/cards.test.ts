@@ -102,7 +102,8 @@ for (const card of cards) {
   // sub-facility (§2.6), the schedule's other principal (§2.5), the coverage
   // footnote's face total and balance sheet (§2.8).
   const NAMED = /^(Total debt|Cash|Liquidity|Size|Drawn|Letters of credit|Available|Repaid|Ladder|Since |Repaid inside|next: |Next|Face total|Program size|Outstanding|Average rate|The filer's schedule shows|Lines marked carrying value)/;
-  const NAMED_ANYWHERE = /other scheduled principal|sub-facility/;
+  // v2.1 §2.4: the refinance box's summary and leftover line name what their amounts are.
+  const NAMED_ANYWHERE = /other scheduled principal|sub-facility|across \d+ (?:notes?|instruments?) in the next 18 months|scheduled amortization and other principal/;
   const bare = lines.filter(({ line }) => line.some((s) => s.k === "figure" || s.k === "computed") && !line.some((s) => s.k === "label") && !NAMED.test(text(line)) && !NAMED_ANYWHERE.test(text(line)));
   assert(bare.length === 0, `[3:${name}] no bare amount — every amount line names its instrument type or the field it is${bare.length ? ": " + bare.slice(0, 3).map((b) => `"${text(b.line).slice(0, 80)}"`).join("; ") : ""}`);
 
@@ -147,7 +148,8 @@ if (chs) {
 const ehc = cards.find((c) => /encompass/i.test(c.company));
 if (ehc) {
   const due = (ehc.headlines.refi ?? ehc.headlines.due24)!.lines.map(text);
-  assert(due.some((l) => l.includes("2028") && /year only stated, may fall within 18 months, see source/.test(l)), "[6f] Encompass's 4.50% notes due 2028 are in the 18-month refinance window, flagged year only (card_spec v2.0 §2.4)");
+  // v2.1 §2.4 rule 5: the flag is a marker on the date, with one legend line under the box.
+  assert(due.some((l) => /4\.50% senior notes, due 2028†/.test(l)) && due.some((l) => /^† .*may fall within 18 months, see source/.test(l)), "[6f] Encompass's 4.50% notes due 2028 are in the 18-month refinance window, marked † for year only, with the legend (card_spec v2.1 §2.4)");
 }
 for (const c of cards) {
   const cap = c.ladder.lines.map(text).join(" ");

@@ -1059,6 +1059,50 @@
    "lines": [
     [
      {
+      "k": "computed",
+      "t": "$2,359MM",
+      "usd": 2359000000,
+      "parts": [
+       {
+        "printed": "$1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "$1,500 million, 3.400 % Notes due March 2027 1,481",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+         "doc": "10-K for Dec 31, 2025"
+        }
+       },
+       {
+        "printed": "$259 million",
+        "usd": 259000000,
+        "src": {
+         "sentence": "$259 million, 7.875 % Debentures due May 2027 260",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+         "doc": "10-K for Dec 31, 2025"
+        }
+       },
+       {
+        "printed": "$600 million",
+        "usd": 600000000,
+        "src": {
+         "sentence": "$600 million, 3.050 % Notes due October 2027 599",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+         "doc": "10-K for Dec 31, 2025"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " across 3 instruments in the next 18 months"
+     },
+     {
+      "k": "text",
+      "t": "."
+     }
+    ],
+    [
+     {
       "k": "figure",
       "t": "$1,500MM",
       "printed": "$1,500 million",
@@ -1235,6 +1279,106 @@
      {
       "k": "text",
       "t": " · from the 10-K"
+     }
+    ],
+    [
+     {
+      "k": "figure",
+      "t": "~$1,000MM",
+      "printed": "$ 1.0 billion",
+      "src": {
+       "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "unsecured",
+      "stated": "unsecured",
+      "src": {
+       "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "commercial paper",
+      "stated": "commercial paper",
+      "src": {
+       "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " outstanding"
+     },
+     {
+      "k": "text",
+      "t": ", "
+     },
+     {
+      "k": "label",
+      "t": "short-term",
+      "stated": "short-term",
+      "src": {
+       "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", "
+     },
+     {
+      "k": "label",
+      "t": "backed by",
+      "stated": "revolving credit agreement",
+      "src": {
+       "sentence": "As of June 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are available for general corporate purposes, including providing liquidity support for our commercial paper program), $5.5 billion of remaining capacity under our commercial paper program, and $6.6 billion in cash and short-term investments, approximately $0.8 billion of which was held by the parent company or certain non-regulated subsidiaries.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " the "
+     },
+     {
+      "k": "figure",
+      "t": "$6,500MM",
+      "printed": "$ 6.5 billion",
+      "src": {
+       "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
      }
     ],
     [

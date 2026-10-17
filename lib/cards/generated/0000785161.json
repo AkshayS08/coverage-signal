@@ -1005,14 +1005,23 @@
     [
      {
       "k": "computed",
-      "t": "$18.4MM",
-      "usd": 18400000,
+      "t": "$400MM",
+      "usd": 400000000,
       "parts": [
        {
-        "printed": "$ 18.4 million",
-        "usd": 18400000,
+        "printed": "$ 800 million",
+        "usd": 800000000,
         "src": {
-         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4",
+         "sentence": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the “2028 Notes”), (ii) repay $ 100 million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 400  million in aggregate principal amount",
+        "usd": -400000000,
+        "src": {
+         "sentence": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the “2028 Notes”), (ii) repay $ 100 million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses.",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
@@ -1021,33 +1030,15 @@
      },
      {
       "k": "text",
-      "t": " other scheduled principal, per the filer's schedule for July 1 through December 31, 2026"
+      "t": "†"
      },
      {
       "k": "text",
-      "t": " · year bucket partly inside the window, not pro-rated, may fall within 18 months, see source"
-     }
-    ],
-    [
-     {
-      "k": "computed",
-      "t": "$46.9MM",
-      "usd": 46900000,
-      "parts": [
-       {
-        "printed": "$ 46.9 million",
-        "usd": 46900000,
-        "src": {
-         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-         "doc": "10-Q 2026-08-07"
-        }
-       }
-      ]
+      "t": " across 1 note in the next 18 months"
      },
      {
       "k": "text",
-      "t": " other scheduled principal, per the filer's schedule for 2027"
+      "t": "."
      }
     ],
     [
@@ -1136,6 +1127,10 @@
      },
      {
       "k": "text",
+      "t": "†"
+     },
+     {
+      "k": "text",
       "t": " · "
      },
      {
@@ -1165,31 +1160,36 @@
      {
       "k": "text",
       "t": " redeemed May 2026"
-     },
-     {
-      "k": "text",
-      "t": " · year only stated, may fall within 18 months, see source"
-     },
-     {
-      "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "notStated",
-      "t": "security not stated, please refer to sources",
-      "src": {
-       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-       "doc": "10-Q 2026-08-07"
-      }
      }
     ],
     [
      {
+      "k": "text",
+      "t": "Plus "
+     },
+     {
       "k": "computed",
-      "t": "$35.8MM",
-      "usd": 35800000,
+      "t": "$101.1MM",
+      "usd": 101100000,
       "parts": [
+       {
+        "printed": "$ 18.4 million",
+        "usd": 18400000,
+        "src": {
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "printed": "$ 46.9 million",
+        "usd": 46900000,
+        "src": {
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
        {
         "printed": "$ 435.8 million",
         "usd": 435800000,
@@ -1221,11 +1221,11 @@
      },
      {
       "k": "text",
-      "t": " other scheduled principal, per the filer's schedule for 2028"
+      "t": "†"
      },
      {
       "k": "text",
-      "t": " · year bucket partly inside the window, not pro-rated, may fall within 18 months, see source"
+      "t": " of scheduled amortization and other principal, per the filer's schedule (see maturity ladder)."
      }
     ],
     [
@@ -1304,19 +1304,12 @@
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
        "doc": "10-Q 2026-08-07"
       }
-     },
+     }
+    ],
+    [
      {
       "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "notStated",
-      "t": "security not stated, please refer to sources",
-      "src": {
-       "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-       "doc": "10-Q 2026-08-07"
-      }
+      "t": "† Stated only to a year or month, or a schedule year only partly inside the window: may fall within 18 months, see source."
      }
     ]
    ]
