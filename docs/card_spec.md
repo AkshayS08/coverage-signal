@@ -1,5 +1,7 @@
 # Coverage Signal card spec, Demo v1
 
+Version 2.2, Oct 18, 2026. One change: the refinance summary's two halves count the same instruments (2.4 rule 2), marked **(v2.2)**. Supersedes v2.1.
+
 Version 2.1, Oct 17, 2026. Round-2 review of the six v2.0 cards: the refinance box redesigned (2.4), five material fixes (2.3, 2.4, 2.5) and four consistency fixes (2.4, 2.5, 3.3, 3.8). Each change is marked **(v2.1)**. Supersedes v2.0 (Oct 6, 2026, rewritten after Akshay's review of all six cards, 53 findings), which superseded v1.2.
 
 Every rule here is a rule over the class. Company names appear only to show the shape of a case. A change that fixes a named company while the rule stays unimplemented does not count as done.
@@ -86,6 +88,7 @@ Three headlines. Slot 4 is reserved for the tranche mix after the demo. No headl
 
 1. **Placement and emphasis.** The box sits directly after "This week," above recent debt moves and the headlines, in a visually distinct container (border and tinted background), the same on every card.
 2. **Summary line first.** One sentence from a deterministic template over stated facts only, never model text. It gives the total face of named instruments maturing inside the window and how many there are; then the amount already subject to a stated pending or completed redemption, and what funds it where stated. The shape: "$2,100MM across 2 notes in the next 18 months; $2,000MM already being redeemed with the $2,000MM 6.250% notes issued Sept 22, 2026." When nothing matures in the window: "Nothing matures within 18 months." Every figure links to its source.
+   **(v2.2) Both halves count the same instruments.** The redemption figure counts only redemptions of instruments maturing inside the window. A redemption of an instrument outside the window is stated in its own clause ("which also fund $500MM of the 6.125% senior unsecured notes due October 2028") or left to recent debt moves, never added to the in-window figure. The shape: "$2,100MM across 2 notes in the next 18 months; $1,500MM already being redeemed with the $2,000MM 6.250% notes issued Sept 22, 2026, which also fund $500MM of the October 2028 notes."
 3. **Named instruments only.** Box rows are notes, debentures, term-loan final maturities, facility maturities and commercial paper outstanding. One line each in 3.7 format, plus a status where stated: "pending redemption $X, not yet confirmed by a filing", "$X of $Y redeemed [month year]".
 4. **Leftovers collapse to one line.** Scheduled amortization, other scheduled principal, ranged items (leases, other notes) and partly-overlapping year buckets get no rows of their own. They sum to one line: "Plus $XMM of scheduled amortization and other principal, per the filer's schedule (see maturity ladder)." The sum carries the flag marker if any component only may fall inside the window. The detail stays in the ladder, unchanged.
 5. **Flags as markers.** "Year only stated" and "may fall within 18 months" become a short marker ("†") with one legend line under the box. "Not stated" fallbacks do not appear in the box; they stay in the ladder.
@@ -216,5 +219,6 @@ Every check below is asserted as a test over all six cards. Inspection alone doe
 9. **Plain-language lint.** No card contains rule numbers or the engine terms in 3.8.
 10. **Hedges and labels.** Every hedge in a source survives to the card, and every label is the filer's full label.
 11. All six signed goldens still reproduce through goldenThroughLoop.
+14. **(v2.2) Summary scope:** the refinance summary's redemption figure equals the stated redemptions of the box's own in-window rows, with a negative control.
 13. **(v2.1) Round-2 rules**, each asserted over all six cards with a negative control: the refinance box (placement, summary, named rows only, leftovers in one line, markers with a legend, CP row, Next line); no pre-period or mechanics lines; total-debt grouping by label, one line per type, priority order; moves in card format and related moves merged; no trailing ".0"; "not stated" once per group; no cryptic tags.
 12. Akshay's read against the demo's three questions per company.
