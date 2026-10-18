@@ -452,6 +452,34 @@ const R2_SUMMARY: Test = {
   },
 };
 
+/**
+ * A2b (v2.2) — BOTH HALVES OF THE SUMMARY COUNT THE SAME INSTRUMENTS. The
+ * redemption figure equals the stated redemptions (pending, or completed
+ * since the position date) on the box's own in-window rows; a redemption of
+ * anything outside the window is a separate clause or is left to the moves.
+ */
+function summaryScope(card: Card): string[] {
+  const { summary, rows } = boxParts(card);
+  const st = text(summary);
+  const figs = summary.filter((x) => x.k === "figure" || x.k === "computed");
+  // The in-window redemption figure is the amount right before "already being redeemed" / "already redeemed".
+  const at = summary.findIndex((x, n) => x.k === "text" && /^ already (?:being )?redeemed/.test(x.t) && n > 0);
+  const claimed = at > 0 ? shownUsd(summary[at - 1].t) : null;
+  let owed = 0;
+  for (const r of rows) {
+    if (/commercial paper outstanding/i.test(text(r))) continue;
+    r.forEach((x, n) => {
+      if (x.k === "label" && x.t === "pending redemption") { const f = r.slice(n + 1).find((y) => y.k === "figure" || y.k === "computed"); if (f) owed += shownUsd(f.t) ?? 0; }
+      if ((x.k === "figure" || x.k === "computed") && /since the position date/.test(r.slice(n + 1, n + 4).map((y) => y.t).join(""))) owed += shownUsd(x.t) ?? 0;
+    });
+  }
+  if (claimed === null) return owed > 0 ? [`the box's rows carry $${owed / 1e6}MM of stated redemptions, but the summary states none`] : [];
+  if (Math.abs(claimed - owed) > 0.5e6) return [`summary says ${summary[at - 1].t} already being redeemed; the in-window rows carry ${owed / 1e6}MM ("${st.slice(0, 90)}")`];
+  void figs;
+  return [];
+}
+const R2B_SCOPE: Test = { id: "A2b", name: "refinance summary: both halves count the same in-window instruments", run: (card) => summaryScope(card) };
+
 const NAMED_TYPE = /\b(notes|debentures|term loan|revolver|ABL|credit (?:facility|agreement)|line of credit|commercial paper)\b/i;
 const R3_NAMED: Test = {
   id: "A3", name: "refinance box: named instruments only, no \"not stated\" fallbacks",
@@ -606,7 +634,7 @@ const R16_TAGS: Test = {
 };
 
 const TESTS = [T1_PURITY, T2_LINKS, T3_TABLE, T4_NOTSTATED, T5_ONEMATURITY, T6_PRECISION, T7_SCHEDULE, T8_MOVES, T9_LINT, T10_HEDGES,
-  R1_BOX, R2_SUMMARY, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS];
+  R1_BOX, R2_SUMMARY, R2B_SCOPE, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS];
 
 // ── negative controls: a corrupted card or fixture each test MUST fail ──
 function clone<T>(x: T): T { return JSON.parse(JSON.stringify(x)); }
@@ -676,6 +704,8 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     const tenet = pick(/tenet/i), cigna = pick(/cigna/i), ehc = pick(/encompass/i), chs = pick(/community/i), dva = pick(/davita/i);
     out.push({ id: "A1", failed: boxPlacement(CARDVIEW.replace(/card\.thisWeek/, "XX").replace(/card\.moves/, "card.thisWeek")).length > 0, what: "a page rendering the box after the moves" });
     { const c = clone(tenet); const s0 = c.headlines.refi!.lines[0]; const a = s0.find((x) => x.k === "figure" || x.k === "computed")!; a.t = "$9,999MM"; out.push({ id: "A2", failed: R2_SUMMARY.run(c, null).length > 0, what: "a summary whose total is not its rows' sum" }); }
+    // A2b: Tenet's v2.1 sentence — the redemption of its October 2028 notes, outside the window, added into the in-window figure.
+    { const c = clone(tenet); const s0 = c.headlines.refi!.lines[0]; const i = s0.findIndex((x, n) => x.k === "text" && /^ already being redeemed/.test(x.t) && n > 0); if (i > 0) (s0[i - 1] as any).t = "$2,000MM"; else s0.push({ k: "text", t: "; " }, { k: "computed", t: "$2,000MM", usd: 2e9, parts: [] }, { k: "text", t: " already being redeemed" }); out.push({ id: "A2b", failed: R2B_SCOPE.run(c, null).length > 0, what: "Tenet's v2.1 summary, counting the $500MM October 2028 redemption in the in-window figure" }); }
     { const c = clone(dva); c.headlines.refi!.lines.splice(1, 0, [{ k: "computed", t: "$62.3MM", usd: 62.3e6, parts: [] }, { k: "text", t: " other scheduled principal, per the filer's schedule for 2026" }]); out.push({ id: "A3", failed: R3_NAMED.run(c, null).length > 0, what: "a schedule bucket as its own box row" }); }
     { const c = clone(dva); const pl = c.headlines.refi!.lines.find((l) => /^Plus /.test(text(l))); c.headlines.refi!.lines.push(pl ? clone(pl) : [{ k: "text", t: "Plus $1MM of scheduled amortization and other principal, per the filer's schedule (see maturity ladder)" }], [{ k: "text", t: "Plus $1MM of scheduled amortization and other principal, per the filer's schedule (see maturity ladder)" }]); out.push({ id: "A4", failed: R4_LEFTOVERS.run(c, null).length > 0, what: "two leftover lines" }); }
     { const c = clone(tenet); c.headlines.refi!.lines = c.headlines.refi!.lines.filter((l) => !/^† /.test(text(l))); c.headlines.refi!.lines[1].push({ k: "text", t: " †" }); out.push({ id: "A5", failed: R5_MARKERS.run(c, null).length > 0, what: "a marker with no legend" }); }

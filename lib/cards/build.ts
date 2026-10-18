@@ -1100,13 +1100,24 @@ export function buildCard(i: CardInputs): Card {
     const summary: Line = [{ k: "computed", t: displayUsd(sum(parts), parts.some(hedgedPart), dp(parts)), usd: sum(parts), parts }];
     if (maturing.some((r) => r.maybe)) { summary.push(t(MARK)); marked = true; }
     summary.push(t(` across ${maturing.length} ${allNotes ? (maturing.length === 1 ? "note" : "notes") : maturing.length === 1 ? "instrument" : "instruments"} in the next 18 months`));
-    const redeeming = movesAll.filter((m) => !m.inPeriod && RETIRES.has(m.type) && m.face && m.faceUsd);
+    // v2.2 §2.4: BOTH HALVES COUNT THE SAME INSTRUMENTS. The redemption figure
+    // counts only stated redemptions (pending, or done since the position date)
+    // of the rows maturing in the window. One outside the window is its own
+    // clause where the same issuance funds it, or is left to the moves.
+    const stated = movesAll.filter((m) => !m.inPeriod && RETIRES.has(m.type) && m.face && m.faceUsd);
+    const inWindow = (m: Move) => maturing.some((r) => sameNote(`${r.it.name} ${r.it.maturity?.date.slice(0, 4) ?? ""}`, m.instrument));
+    const redeeming = stated.filter(inWindow);
+    const partOfMove = (m: Move): Part => ({ printed: (m.face as any).printed as string, usd: m.faceUsd!, src: (m.face as any).src as Source });
     if (redeeming.length) {
-      const rparts = redeeming.map((m) => ({ printed: (m.face as any).printed as string, usd: m.faceUsd!, src: (m.face as any).src as Source }));
+      const rparts = redeeming.map(partOfMove);
       const pending = redeeming.every((m) => m.status === "pending");
       summary.push(t("; "), { k: "computed", t: displayUsd(sum(rparts), rparts.some(hedgedPart), dp(rparts)), usd: sum(rparts), parts: rparts }, t(pending ? " already being redeemed" : " already redeemed since the position date"));
       const by = redeeming[0].fundedBy;
-      if (by && redeeming.every((m) => m.fundedBy === by)) summary.push(t(" with the "), ...(by.face ? [by.face, t(" ")] : []), instPhrase(by), t(` issued ${by.when}`));
+      if (by && redeeming.every((m) => m.fundedBy === by)) {
+        summary.push(t(" with the "), ...(by.face ? [by.face, t(" ")] : []), instPhrase(by), t(` issued ${by.when}`));
+        const alsoFunds = stated.filter((m) => !inWindow(m) && m.fundedBy === by);
+        alsoFunds.forEach((m, n) => summary.push(t(n === 0 ? ", which also fund " : " and "), m.face!, t(" of the "), instPhrase(m)));
+      }
     }
     summary.push(t("."));
     refi.push(summary);

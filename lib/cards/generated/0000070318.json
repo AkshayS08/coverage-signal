@@ -762,21 +762,12 @@
      },
      {
       "k": "computed",
-      "t": "$2,000MM",
-      "usd": 2000000000,
+      "t": "$1,500MM",
+      "usd": 1500000000,
       "parts": [
        {
         "printed": "$ 1.5 billion",
         "usd": 1500000000,
-        "src": {
-         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
-         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
-         "doc": "8-K 2026-09-22"
-        }
-       },
-       {
-        "printed": "$ 0.5 billion",
-        "usd": 500000000,
         "src": {
          "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
@@ -820,6 +811,34 @@
      {
       "k": "text",
       "t": " issued September 22, 2026"
+     },
+     {
+      "k": "text",
+      "t": ", which also fund "
+     },
+     {
+      "k": "figure",
+      "t": "$500MM",
+      "printed": "$ 0.5 billion",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " of the "
+     },
+     {
+      "k": "label",
+      "t": "6.125% senior unsecured notes due October 2028",
+      "stated": "6.125%",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+       "doc": "thc-20260908.htm"
+      }
      },
      {
       "k": "text",
