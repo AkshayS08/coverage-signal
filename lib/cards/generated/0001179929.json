@@ -1617,7 +1617,14 @@
     {
      "usd": 3800000000,
      "color": "#5C8DBF",
-     "title": "senior unsecured notes"
+     "title": "senior unsecured notes",
+     "rows": [
+      "4.375 % Notes due June 15, 2028",
+      "3.875 % Notes due November 15, 2030",
+      "6.500 % Notes due February 15, 2031",
+      "3.875 % Notes due May 15, 2032",
+      "6.250 % Notes due January 15, 2033"
+     ]
     }
    ],
    "legend": [
@@ -1921,7 +1928,10 @@
       {
        "usd": 800000000,
        "color": "#5C8DBF",
-       "title": "4.375 % Notes due June 15, 2028"
+       "title": "4.375 % Notes due June 15, 2028",
+       "rows": [
+        "4.375 % Notes due June 15, 2028"
+       ]
       }
      ],
      "source": "named",
@@ -1965,7 +1975,10 @@
       {
        "usd": 650000000,
        "color": "#5C8DBF",
-       "title": "3.875 % Notes due November 15, 2030"
+       "title": "3.875 % Notes due November 15, 2030",
+       "rows": [
+        "3.875 % Notes due November 15, 2030"
+       ]
       }
      ],
      "source": "named",
@@ -1995,7 +2008,10 @@
       {
        "usd": 850000000,
        "color": "#5C8DBF",
-       "title": "6.500 % Notes due February 15, 2031"
+       "title": "6.500 % Notes due February 15, 2031",
+       "rows": [
+        "6.500 % Notes due February 15, 2031"
+       ]
       }
      ],
      "source": "named",
@@ -2025,7 +2041,10 @@
       {
        "usd": 750000000,
        "color": "#5C8DBF",
-       "title": "3.875 % Notes due May 15, 2032"
+       "title": "3.875 % Notes due May 15, 2032",
+       "rows": [
+        "3.875 % Notes due May 15, 2032"
+       ]
       }
      ],
      "source": "named",
@@ -2055,7 +2074,10 @@
       {
        "usd": 750000000,
        "color": "#5C8DBF",
-       "title": "6.250 % Notes due January 15, 2033"
+       "title": "6.250 % Notes due January 15, 2033",
+       "rows": [
+        "6.250 % Notes due January 15, 2033"
+       ]
       }
      ],
      "source": "named",

@@ -601,6 +601,10 @@
      },
      {
       "k": "text",
+      "t": ", seniority not stated"
+     },
+     {
+      "k": "text",
       "t": " "
      },
      {
@@ -3210,17 +3214,30 @@
     {
      "usd": 400000000,
      "color": "#9AA3AD",
-     "title": "senior notes"
+     "title": "senior notes",
+     "rows": [
+      "4.50 % Senior Notes due 2028"
+     ]
     },
     {
      "usd": 200000000,
      "color": "#9AA3AD",
-     "title": "revolver"
+     "title": "revolver, seniority not stated",
+     "rows": [
+      "Advances under revolving credit facility"
+     ]
     },
     {
      "usd": 2063700000,
      "color": "#C9CED4",
-     "title": "face stated only in the filer's schedule"
+     "title": "Senior notes and other debt, face per the filer's schedule (individual face not stated)",
+     "rows": [
+      "4.75 % Senior Notes due 2030",
+      "4.625 % Senior Notes due 2031",
+      "5.875 % Senior Notes due 2034",
+      "Other notes payable",
+      "Finance lease obligations"
+     ]
     }
    ],
    "legend": [
@@ -3290,6 +3307,10 @@
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "doc": "10-Q 2026-08-07"
        }
+      },
+      {
+       "k": "text",
+       "t": ", seniority not stated"
       }
      ],
      "amount": {
@@ -3314,7 +3335,7 @@
      "label": [
       {
        "k": "text",
-       "t": "Face stated only in the filer's schedule"
+       "t": "Senior notes and other debt, face per the filer's schedule (individual face not stated)"
       }
      ],
      "amount": {
@@ -3694,7 +3715,8 @@
       {
        "usd": 18400000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3724,7 +3746,8 @@
       {
        "usd": 46900000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3754,12 +3777,16 @@
       {
        "usd": 400000000,
        "color": "#B4440C",
-       "title": "4.50 % Senior Notes due 2028, not yet refinanced"
+       "title": "4.50 % Senior Notes due 2028, not yet refinanced",
+       "rows": [
+        "4.50 % Senior Notes due 2028"
+       ]
       },
       {
        "usd": 35800000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3789,7 +3816,8 @@
       {
        "usd": 44900000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3819,7 +3847,10 @@
       {
        "usd": 850800000,
        "color": "#9AA3AD",
-       "title": "4.75 % Senior Notes due 2030: face only in the filer's schedule"
+       "title": "4.75 % Senior Notes due 2030: face only in the filer's schedule",
+       "rows": [
+        "4.75 % Senior Notes due 2030"
+       ]
       }
      ],
      "source": "schedule",
@@ -3849,7 +3880,10 @@
       {
        "usd": 640100000,
        "color": "#9AA3AD",
-       "title": "4.625 % Senior Notes due 2031: face only in the filer's schedule"
+       "title": "4.625 % Senior Notes due 2031: face only in the filer's schedule",
+       "rows": [
+        "4.625 % Senior Notes due 2031"
+       ]
       }
      ],
      "source": "schedule",
@@ -3907,7 +3941,10 @@
       {
        "usd": 491000000,
        "color": "#9AA3AD",
-       "title": "5.875 % Senior Notes due 2034"
+       "title": "5.875 % Senior Notes due 2034",
+       "rows": [
+        "5.875 % Senior Notes due 2034"
+       ]
       }
      ],
      "source": "named",

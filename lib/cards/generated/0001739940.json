@@ -500,6 +500,20 @@
     [
      {
       "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036 Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+       "doc": "8-K 2025-09-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "notes",
       "stated": "Notes",
       "src": {
@@ -514,8 +528,8 @@
      },
      {
       "k": "computed",
-      "t": "$30,784MM",
-      "usd": 30784000000,
+      "t": "$4,500MM",
+      "usd": 4500000000,
       "parts": [
        {
         "printed": "$ 1,000 million",
@@ -552,7 +566,34 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
          "doc": "8-K 2025-09-04"
         }
-       },
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+       "doc": "8-K 2025-09-04"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", seniority not stated"
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$26,284MM",
+      "usd": 26284000000,
+      "parts": [
        {
         "printed": "$1,500 million",
         "usd": 1500000000,
@@ -764,6 +805,10 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for Dec 31, 2025"
       }
+     },
+     {
+      "k": "text",
+      "t": ", seniority not stated"
      },
      {
       "k": "text",
@@ -5461,17 +5506,58 @@
     {
      "usd": 1000000000,
      "color": "#5C8DBF",
-     "title": "unsecured commercial paper"
+     "title": "unsecured commercial paper",
+     "rows": [
+      "commercial paper program"
+     ]
     },
     {
-     "usd": 30784000000,
+     "usd": 4500000000,
      "color": "#9AA3AD",
-     "title": "notes"
+     "title": "senior notes",
+     "rows": [
+      "$1,000 million, 4.500% Notes due September 2030",
+      "$1,250 million, 4.875% Notes due September 2032",
+      "$1,500 million, 5.250% Notes due January 2036",
+      "$750 million, 6.000% Notes due January 2056"
+     ]
+    },
+    {
+     "usd": 26284000000,
+     "color": "#9AA3AD",
+     "title": "notes, seniority not stated",
+     "rows": [
+      "$1,500 million, 3.400% Notes due March 2027",
+      "$600 million, 3.050% Notes due October 2027",
+      "$3,800 million, 4.375% Notes due October 2028",
+      "$1,000 million, 5.000% Notes due May 2029",
+      "$1,400 million, 2.400% Notes due March 2030",
+      "$1,500 million, 2.375% Notes due March 2031",
+      "$750 million, 5.125% Notes due May 2031",
+      "$45 million, 8.080% Step Down Notes due January 2033",
+      "$800 million, 5.400% Notes due March 2033",
+      "$1,250 million, 5.250% Notes due February 2034",
+      "$190 million, 6.150% Notes due November 2036",
+      "$2,200 million, 4.800% Notes due August 2038",
+      "$750 million, 3.200% Notes due March 2040",
+      "$121 million, 5.875% Notes due March 2041",
+      "$448 million, 6.125% Notes due November 2041",
+      "$317 million, 5.375% Notes due February 2042",
+      "$1,500 million, 4.800% Notes due July 2046",
+      "$1,000 million, 3.875% Notes due October 2047",
+      "$3,000 million, 4.900% Notes due December 2048",
+      "$1,184 million, 3.400% Notes due March 2050",
+      "$1,429 million, 3.400% Notes due March 2051",
+      "$1,500 million, 5.600% Notes due February 2054"
+     ]
     },
     {
      "usd": 259000000,
      "color": "#9AA3AD",
-     "title": "debentures"
+     "title": "debentures, seniority not stated",
+     "rows": [
+      "$259 million, 7.875% Debentures due May 2027"
+     ]
     }
    ],
    "legend": [
@@ -5525,6 +5611,20 @@
      "label": [
       {
        "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036 Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "notes",
        "stated": "Notes",
        "src": {
@@ -5536,8 +5636,8 @@
      ],
      "amount": {
       "k": "computed",
-      "t": "$30,784MM",
-      "usd": 30784000000,
+      "t": "$4,500MM",
+      "usd": 4500000000,
       "parts": [
        {
         "printed": "$ 1,000 million",
@@ -5574,7 +5674,33 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
          "doc": "8-K 2025-09-04"
         }
-       },
+       }
+      ]
+     }
+    },
+    {
+     "color": "#9AA3AD",
+     "label": [
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "doc": "8-K 2025-09-04"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", seniority not stated"
+      }
+     ],
+     "amount": {
+      "k": "computed",
+      "t": "$26,284MM",
+      "usd": 26284000000,
+      "parts": [
        {
         "printed": "$1,500 million",
         "usd": 1500000000,
@@ -5788,6 +5914,10 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
         "doc": "10-K for Dec 31, 2025"
        }
+      },
+      {
+       "k": "text",
+       "t": ", seniority not stated"
       }
      ],
      "amount": {
@@ -6084,7 +6214,12 @@
       {
        "usd": 2359000000,
        "color": "#B4440C",
-       "title": "$1,500 million, 3.400% Notes due March 2027, not yet refinanced"
+       "title": "$1,500 million, 3.400% Notes due March 2027, not yet refinanced",
+       "rows": [
+        "$1,500 million, 3.400% Notes due March 2027",
+        "$259 million, 7.875% Debentures due May 2027",
+        "$600 million, 3.050% Notes due October 2027"
+       ]
       }
      ],
      "source": "named",
@@ -6114,7 +6249,10 @@
       {
        "usd": 3800000000,
        "color": "#9AA3AD",
-       "title": "$3,800 million, 4.375% Notes due October 2028"
+       "title": "$3,800 million, 4.375% Notes due October 2028",
+       "rows": [
+        "$3,800 million, 4.375% Notes due October 2028"
+       ]
       }
      ],
      "source": "named",
@@ -6144,7 +6282,10 @@
       {
        "usd": 1000000000,
        "color": "#9AA3AD",
-       "title": "$1,000 million, 5.000% Notes due May 2029"
+       "title": "$1,000 million, 5.000% Notes due May 2029",
+       "rows": [
+        "$1,000 million, 5.000% Notes due May 2029"
+       ]
       }
      ],
      "source": "named",
@@ -6183,7 +6324,11 @@
       {
        "usd": 2400000000,
        "color": "#9AA3AD",
-       "title": "4.500% Senior Notes due 2030"
+       "title": "4.500% Senior Notes due 2030",
+       "rows": [
+        "$1,000 million, 4.500% Notes due September 2030",
+        "$1,400 million, 2.400% Notes due March 2030"
+       ]
       }
      ],
      "source": "named",
@@ -6222,7 +6367,11 @@
       {
        "usd": 2250000000,
        "color": "#9AA3AD",
-       "title": "$1,500 million, 2.375% Notes due March 2031"
+       "title": "$1,500 million, 2.375% Notes due March 2031",
+       "rows": [
+        "$1,500 million, 2.375% Notes due March 2031",
+        "$750 million, 5.125% Notes due May 2031"
+       ]
       }
      ],
      "source": "named",
@@ -6252,7 +6401,10 @@
       {
        "usd": 1250000000,
        "color": "#9AA3AD",
-       "title": "4.875% Senior Notes due 2032"
+       "title": "4.875% Senior Notes due 2032",
+       "rows": [
+        "$1,250 million, 4.875% Notes due September 2032"
+       ]
       }
      ],
      "source": "named",
@@ -6291,7 +6443,11 @@
       {
        "usd": 845000000,
        "color": "#9AA3AD",
-       "title": "$45 million, 8.080% Step Down Notes due January 2033"
+       "title": "$45 million, 8.080% Step Down Notes due January 2033",
+       "rows": [
+        "$45 million, 8.080% Step Down Notes due January 2033",
+        "$800 million, 5.400% Notes due March 2033"
+       ]
       }
      ],
      "source": "named",
@@ -6321,7 +6477,10 @@
       {
        "usd": 1250000000,
        "color": "#9AA3AD",
-       "title": "$1,250 million, 5.250% Notes due February 2034"
+       "title": "$1,250 million, 5.250% Notes due February 2034",
+       "rows": [
+        "$1,250 million, 5.250% Notes due February 2034"
+       ]
       }
      ],
      "source": "named",
@@ -6360,7 +6519,11 @@
       {
        "usd": 1690000000,
        "color": "#9AA3AD",
-       "title": "5.250% Senior Notes due 2036"
+       "title": "5.250% Senior Notes due 2036",
+       "rows": [
+        "$1,500 million, 5.250% Notes due January 2036",
+        "$190 million, 6.150% Notes due November 2036"
+       ]
       }
      ],
      "source": "named",
@@ -6489,7 +6652,21 @@
       {
        "usd": 14199000000,
        "color": "#9AA3AD",
-       "title": "$2,200 million, 4.800% Notes due August 2038"
+       "title": "$2,200 million, 4.800% Notes due August 2038",
+       "rows": [
+        "$2,200 million, 4.800% Notes due August 2038",
+        "$750 million, 3.200% Notes due March 2040",
+        "$121 million, 5.875% Notes due March 2041",
+        "$448 million, 6.125% Notes due November 2041",
+        "$317 million, 5.375% Notes due February 2042",
+        "$1,500 million, 4.800% Notes due July 2046",
+        "$1,000 million, 3.875% Notes due October 2047",
+        "$3,000 million, 4.900% Notes due December 2048",
+        "$1,184 million, 3.400% Notes due March 2050",
+        "$1,429 million, 3.400% Notes due March 2051",
+        "$1,500 million, 5.600% Notes due February 2054",
+        "$750 million, 6.000% Notes due January 2056"
+       ]
       }
      ],
      "source": "named",

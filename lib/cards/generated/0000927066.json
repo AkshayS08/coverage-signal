@@ -2475,32 +2475,53 @@
     {
      "usd": 1975000000,
      "color": "#1F4E79",
-     "title": "senior secured term loan A"
+     "title": "senior secured term loan A",
+     "rows": [
+      "Term Loan A-2"
+     ]
     },
     {
      "usd": 65000000,
      "color": "#1F4E79",
-     "title": "senior secured revolver"
+     "title": "senior secured revolver",
+     "rows": [
+      "Revolving line of credit"
+     ]
     },
     {
      "usd": 2357910000,
      "color": "#1F4E79",
-     "title": "senior secured term loan B"
+     "title": "senior secured term loan B",
+     "rows": [
+      "Term Loan B-2"
+     ]
     },
     {
      "usd": 6250000000,
      "color": "#9AA3AD",
-     "title": "senior notes"
+     "title": "senior notes",
+     "rows": [
+      "4.625% Senior Notes",
+      "3.75% Senior Notes",
+      "6.875% Senior Notes",
+      "6.75% Senior Notes"
+     ]
     },
     {
      "usd": 39463000,
      "color": "#9AA3AD",
-     "title": "Acquisition obligations and other notes payable"
+     "title": "Acquisition obligations and other notes payable",
+     "rows": [
+      "Acquisition obligations and other notes payable"
+     ]
     },
     {
      "usd": 160143000,
      "color": "#9AA3AD",
-     "title": "Financing lease obligations"
+     "title": "Financing lease obligations",
+     "rows": [
+      "Financing lease obligations"
+     ]
     }
    ],
    "legend": [
@@ -2953,7 +2974,8 @@
       {
        "usd": 62283000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -2983,7 +3005,8 @@
       {
        "usd": 114026000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3013,7 +3036,8 @@
       {
        "usd": 160808000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3043,7 +3067,8 @@
       {
        "usd": 144566000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3073,12 +3098,16 @@
       {
        "usd": 2750000000,
        "color": "#9AA3AD",
-       "title": "4.625% Senior Notes"
+       "title": "4.625% Senior Notes",
+       "rows": [
+        "4.625% Senior Notes"
+       ]
       },
       {
        "usd": 1804268000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3108,12 +3137,16 @@
       {
        "usd": 1500000000,
        "color": "#9AA3AD",
-       "title": "3.75% Senior Notes"
+       "title": "3.75% Senior Notes",
+       "rows": [
+        "3.75% Senior Notes"
+       ]
       },
       {
        "usd": 2264157000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -3143,7 +3176,10 @@
       {
        "usd": 1000000000,
        "color": "#9AA3AD",
-       "title": "6.875% Senior Notes"
+       "title": "6.875% Senior Notes",
+       "rows": [
+        "6.875% Senior Notes"
+       ]
       }
      ],
      "source": "named",
@@ -3173,7 +3209,10 @@
       {
        "usd": 1000000000,
        "color": "#9AA3AD",
-       "title": "6.75% Senior Notes"
+       "title": "6.75% Senior Notes",
+       "rows": [
+        "6.75% Senior Notes"
+       ]
       }
      ],
      "source": "named",

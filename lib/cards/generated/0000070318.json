@@ -3578,40 +3578,7 @@
       }
      ]
     ],
-    "detail": [
-     {
-      "k": "text",
-      "t": "Offering launched "
-     },
-     {
-      "k": "label",
-      "t": "September 8, 2026",
-      "stated": "September 8, 2026",
-      "src": {
-       "sentence": "On September 8, 2026 , Tenet Healthcare Corporation (the “Company”) issued a press release announcing the commencement of private placement offering of $1.5 billion in aggregate principal amount of its senior notes due 2034.",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
-       "doc": "thc-20260908.htm"
-      }
-     },
-     {
-      "k": "text",
-      "t": ", priced "
-     },
-     {
-      "k": "label",
-      "t": "September 8, 2026",
-      "stated": "September 8, 2026",
-      "src": {
-       "sentence": "Additionally, on September 8, 2026 , the Company issued a press release announcing the upsize and pricing of $2.0 billion in aggregate principal amount of its 6.250% senior notes due 2034 (the “notes”).",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
-       "doc": "thc-20260908.htm"
-      }
-     },
-     {
-      "k": "text",
-      "t": "."
-     }
-    ],
+    "detail": null,
     "retires": {
      "meta": [
       {
@@ -3801,17 +3768,34 @@
     {
      "usd": 9800000000,
      "color": "#1F4E79",
-     "title": "senior secured notes"
+     "title": "senior secured notes",
+     "rows": [
+      "5.125 % due 2027",
+      "4.625 % due 2028",
+      "4.250 % due 2029",
+      "4.375 % due 2030",
+      "6.125 % due 2030",
+      "6.750 % due 2031",
+      "5.500 % due 2032"
+     ]
     },
     {
      "usd": 2862000000,
      "color": "#5C8DBF",
-     "title": "senior unsecured notes"
+     "title": "senior unsecured notes",
+     "rows": [
+      "6.125 % due 2028",
+      "6.875 % due 2031",
+      "6.000 % due 2033"
+     ]
     },
     {
      "usd": 671000000,
      "color": "#9AA3AD",
-     "title": "Finance leases, mortgages and other notes"
+     "title": "Finance leases, mortgages and other notes",
+     "rows": [
+      "Finance leases, mortgages and other notes"
+     ]
     }
    ],
    "legend": [
@@ -4181,7 +4165,8 @@
       {
        "usd": 45000000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -4212,12 +4197,16 @@
        "usd": 1500000000,
        "color": "#1F4E79",
        "pattern": "stripes",
-       "title": "5.125 % due 2027, refinanced, redemption pending confirmation"
+       "title": "5.125 % due 2027, refinanced, redemption pending confirmation",
+       "rows": [
+        "5.125 % due 2027"
+       ]
       },
       {
        "usd": 143000000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -4247,23 +4236,33 @@
       {
        "usd": 600000000,
        "color": "#B4440C",
-       "title": "4.625 % due 2028, not yet refinanced"
+       "title": "4.625 % due 2028, not yet refinanced",
+       "rows": [
+        "4.625 % due 2028"
+       ]
       },
       {
        "usd": 1250000000,
        "color": "#5C8DBF",
-       "title": "6.125 % due 2028"
+       "title": "6.125 % due 2028",
+       "rows": [
+        "6.125 % due 2028"
+       ]
       },
       {
        "usd": 500000000,
        "color": "#5C8DBF",
        "pattern": "stripes",
-       "title": "6.125 % due 2028, refinanced, redemption pending confirmation"
+       "title": "6.125 % due 2028, refinanced, redemption pending confirmation",
+       "rows": [
+        "6.125 % due 2028"
+       ]
       },
       {
        "usd": 72000000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -4293,12 +4292,16 @@
       {
        "usd": 1400000000,
        "color": "#1F4E79",
-       "title": "4.250 % due 2029"
+       "title": "4.250 % due 2029",
+       "rows": [
+        "4.250 % due 2029"
+       ]
       },
       {
        "usd": 57000000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -4328,12 +4331,17 @@
       {
        "usd": 3450000000,
        "color": "#1F4E79",
-       "title": "4.375 % due 2030"
+       "title": "4.375 % due 2030",
+       "rows": [
+        "4.375 % due 2030",
+        "6.125 % due 2030"
+       ]
       },
       {
        "usd": 38000000,
        "color": "#C9CED4",
-       "title": "scheduled other principal"
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
      "source": "schedule",
@@ -4372,12 +4380,18 @@
       {
        "usd": 1350000000,
        "color": "#1F4E79",
-       "title": "6.750 % due 2031"
+       "title": "6.750 % due 2031",
+       "rows": [
+        "6.750 % due 2031"
+       ]
       },
       {
        "usd": 362000000,
        "color": "#5C8DBF",
-       "title": "6.875 % due 2031"
+       "title": "6.875 % due 2031",
+       "rows": [
+        "6.875 % due 2031"
+       ]
       }
      ],
      "source": "named",
@@ -4407,7 +4421,10 @@
       {
        "usd": 1500000000,
        "color": "#1F4E79",
-       "title": "5.500 % due 2032"
+       "title": "5.500 % due 2032",
+       "rows": [
+        "5.500 % due 2032"
+       ]
       }
      ],
      "source": "named",
@@ -4437,7 +4454,10 @@
       {
        "usd": 750000000,
        "color": "#5C8DBF",
-       "title": "6.000 % due 2033"
+       "title": "6.000 % due 2033",
+       "rows": [
+        "6.000 % due 2033"
+       ]
       }
      ],
      "source": "named",
@@ -5548,7 +5568,7 @@
      "name": "Finance leases, mortgages and other notes"
     }
    ],
-   "visible": 8,
+   "visible": 11,
    "schedule": [
     {
      "heading": [

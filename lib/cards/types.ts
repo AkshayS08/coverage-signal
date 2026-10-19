@@ -125,7 +125,7 @@ export type PaletteColor = (typeof PALETTE)[keyof typeof PALETTE];
 /** A status tag (§2.10). `tone` decides its look: refinanced, pending confirmation, not yet refinanced (orange), or neutral. */
 export interface Tag { text: Line; tone: "refinanced" | "pending" | "orange" | "neutral" }
 
-export interface BarSegment { usd: number; color: PaletteColor; pattern?: "stripes"; title: string }
+export interface BarSegment { usd: number; color: PaletteColor; pattern?: "stripes"; title: string; /** The filer rows this segment holds (v3.1: each shares the segment's labels). */ rows?: string[] }
 
 export interface ChartBar {
   /** "CP", "2028", or a collapsed range "2037–56". */

@@ -835,13 +835,17 @@ export function buildCard(i: CardInputs): Card {
     g.items.push(it);
     byType.set(key, g);
   });
-  // A label splits its type only where EVERY row of the type carries it.
+  // v3.1 §2.4: SEGMENTS BY EACH ROW'S OWN LABELS (replaces the v2.1 rule that
+  // split a type only where every row carried the label). Rows stating no
+  // label are their own group.
   const splitBy = (items: Item[], pick: (it: Item) => Segment | null): Item[][] => {
-    if (!items.every((it) => pick(it))) return [items];
     const by = new Map<string, Item[]>();
-    for (const it of items) by.set(pick(it)!.t, [...(by.get(pick(it)!.t) ?? []), it]);
+    for (const it of items) by.set(pick(it)?.t ?? "", [...(by.get(pick(it)?.t ?? "") ?? []), it]);
     return [...by.values()];
   };
+  /** "[type], seniority not stated" for a group stating no label, where the type is a type word (not a filer's full lease or other label). */
+  const unlabelled = (g: { type: Segment; items: Item[] }, sen: Segment | null, sec: Segment | null): Segment[] =>
+    !sen && !sec && kindOf(g.items[0].name) !== "lease" && kindOf(g.items[0].name) !== "other" ? [t(", seniority not stated")] : [];
   const faceParts = allDebtItems.filter((it) => it.basis === "face").flatMap(partOf);
   const carryingParts = allDebtItems.filter((it) => it.basis === "carrying").flatMap(partOf);
   // The filer's maturity schedule where the anchor itself prints it: principal by year, at the caption's scale (Rule 67).
@@ -893,6 +897,7 @@ export function buildCard(i: CardInputs): Card {
         .map(({ g, sen, sec }): Line => {
           const line: Line = [];
           [sen, sec, g.type].filter((x): x is Segment => !!x).forEach((l, n) => line.push(...(n ? [t(" ")] : []), l));
+          line.push(...unlabelled(g, sen, sec));
           const parts = g.items.flatMap(partOf);
           const carrying = g.items.filter((it) => it.basis === "carrying").flatMap(partOf);
           line.push(t(" "), { k: "computed", t: displayUsd(sum(parts), parts.some(hedgedPart), dp(parts)), usd: sum(parts), parts });
@@ -1580,7 +1585,8 @@ export function buildCard(i: CardInputs): Card {
     }
     if (issuance) {
       const left: CardV3["moves"][number] = { meta: [dateOf(issuance), t(` · Issued, confirmed by ${formOfUrl(issuance.url)}`)], title: [faceInst(issuance)], detail: null, retires: null };
-      const extras: Line = [...priceClause(issuance), ...issuance.extra];
+      // v3.1: the card shows the move's own date only — no offering launch or pricing dates.
+      const extras: Line = [...priceClause(issuance), ...issuance.extra].filter((x, n, all) => !(x.k === "text" && /^, (?:offering launched|priced) $/.test(x.t)) && !(n > 0 && all[n - 1].k === "text" && /^, (?:offering launched|priced) $/.test(all[n - 1].t)));
       if (issuance.retires.length) {
         const pending = issuance.retires.some((r) => r.status === "pending");
         const r0 = issuance.retires[0];
@@ -1637,6 +1643,7 @@ export function buildCard(i: CardInputs): Card {
       const sen = all((it) => it.labels.seniority), sec = all((it) => it.labels.security);
       const kind = kindOf(g.items[0].name);
       const junior = !!sec && /junior|second/i.test(`${sen?.t ?? ""}`);
+      // Color follows the stated security label only (v3.1): a group without one is grey.
       const tier = kind === "lease" || kind === "other" ? 4 : sec && /unsecured/i.test(sec.t) ? 2 : sec ? (junior ? 1 : 0) : 3;
       const color: PaletteColor = tier === 0 ? PALETTE.seniorSecured : tier === 1 ? PALETTE.juniorSecured : tier === 2 ? PALETTE.unsecured : PALETTE.notStated;
       return { g, sen, sec, tier, color };
@@ -1650,18 +1657,25 @@ export function buildCard(i: CardInputs): Card {
     const carryIt = g.items.filter((it) => it.basis === "carrying");
     const label: Line = [];
     [sen, sec, g.type].filter((x): x is Segment => !!x).forEach((l, n) => label.push(...(n ? [t(" ")] : []), l));
+    label.push(...unlabelled(g, sen, sec));
     if (faceIt.length) {
       const ps = faceIt.flatMap(partOf);
-      tdSegments.push({ usd: sum(ps), color, title: label.map((x) => x.t).join("") });
+      tdSegments.push({ usd: sum(ps), color, title: label.map((x) => x.t).join(""), rows: faceIt.map((it) => it.rowLabel ?? it.name) });
       tdLegend.push({ color, label, amount: usdSeg(ps) });
     }
     if (carryIt.length) carryNotes.push(...(carryNotes.length ? [t("; ")] : []), ...label, t(" "), usdSeg(carryIt.flatMap(partOf)));
   }
   const unattributed = faceTotal - tdSegments.reduce((a, x) => a + x.usd, 0);
   if (faceFromSchedule && unattributed > 0.5e6) {
-    tdSegments.push({ usd: unattributed, color: PALETTE.scheduledOther, title: "face stated only in the filer's schedule" });
+    // v3.1: labelled by what it holds, the carrying rows whose face only the schedule states.
+    const carryGroups = tdGroups.filter((x) => x.g.items.some((it) => it.basis === "carrying"));
+    const first = carryGroups[0];
+    const firstLabel = first ? [first.sen, first.sec, first.g.type].filter((x): x is Segment => !!x).map((x) => x.t).join(" ") : "debt";
+    const what = `${firstLabel.charAt(0).toUpperCase()}${firstLabel.slice(1)}${carryGroups.length > 1 ? " and other debt" : ""}, face per the filer's schedule (individual face not stated)`;
+    const carryRows = allDebtItems.filter((it) => it.basis === "carrying").map((it) => it.rowLabel ?? it.name);
+    tdSegments.push({ usd: unattributed, color: PALETTE.scheduledOther, title: what, rows: carryRows });
     const parts = [...faceTotalParts, ...tdLegend.flatMap((l) => (l.amount.k === "computed" ? l.amount.parts.map((p) => ({ ...p, usd: -p.usd })) : []))];
-    tdLegend.push({ color: PALETTE.scheduledOther, label: [t("Face stated only in the filer's schedule")], amount: { k: "computed", t: displayUsd(unattributed, false, dp(faceTotalParts)), usd: unattributed, parts } });
+    tdLegend.push({ color: PALETTE.scheduledOther, label: [t(what)], amount: { k: "computed", t: displayUsd(unattributed, false, dp(faceTotalParts)), usd: unattributed, parts } });
   }
   const tdNotes: Line[] = carryNotes.length ? [[t(faceFromSchedule ? "At carrying value, not in the bar: " : "Plus, at carrying value and not in the bar: "), ...carryNotes, t(".")]] : [];
 
@@ -1695,7 +1709,7 @@ export function buildCard(i: CardInputs): Card {
   if (!liqFigure) liqNotes.unshift([t("No liquidity total: cash and every facility's availability are not all stated as of the position date.")]);
 
   // ── 2.5 the maturity chart ──
-  type Contrib = { usd: number; color: PaletteColor; pattern?: "stripes"; title: string; parts: Part[] };
+  type Contrib = { usd: number; color: PaletteColor; pattern?: "stripes"; title: string; parts: Part[]; rows?: string[] };
   const anchorSchedule = !rc.counts && scheduleByYear.size > 0;
   const isBond = (it: Item) => !!couponOf(it.name) || kindOf(it.name) === "bond";
   const contribOf = (it: Item): Contrib[] => {
@@ -1704,9 +1718,10 @@ export function buildCard(i: CardInputs): Card {
     const face = sum(ps);
     const refi = refinancedOf(it);
     const out: Contrib[] = [];
-    if (inWindowItem(it) && face - refi > 0.5e6) out.push({ usd: face - refi, color: PALETTE.notRefinanced, title: `${it.name}, not yet refinanced`, parts: ps });
-    else if (face - refi > 0.5e6) out.push({ usd: face - refi, color: base, title: it.name, parts: ps });
-    if (refi > 0.5e6) out.push({ usd: refi, color: base, pattern: "stripes", title: `${it.name}, refinanced, redemption pending confirmation`, parts: [] });
+    const rows = [it.rowLabel ?? it.name];
+    if (inWindowItem(it) && face - refi > 0.5e6) out.push({ usd: face - refi, color: PALETTE.notRefinanced, title: `${it.name}, not yet refinanced`, parts: ps, rows });
+    else if (face - refi > 0.5e6) out.push({ usd: face - refi, color: base, title: it.name, parts: ps, rows });
+    if (refi > 0.5e6) out.push({ usd: refi, color: base, pattern: "stripes", title: `${it.name}, refinanced, redemption pending confirmation`, parts: [], rows });
     return out;
   };
   const dated = allDebtItems.filter((it) => it.maturity && !isCP(it));
@@ -1721,7 +1736,7 @@ export function buildCard(i: CardInputs): Card {
       const bonds = items.filter((it) => isBond(it) && it.basis === "face");
       const carryingBonds = items.filter((it) => isBond(it) && it.basis === "carrying");
       const contribs = bonds.flatMap(contribOf);
-      if (carryingBonds.length) contribs.push({ usd: Math.max(0, sch.part.usd - sum(retired) - contribs.reduce((a, c) => a + c.usd, 0)), color: colorOf(carryingBonds[0]), title: `${carryingBonds.map((x) => x.name).join(", ")}: face only in the filer's schedule`, parts: [sch.part] });
+      if (carryingBonds.length) contribs.push({ usd: Math.max(0, sch.part.usd - sum(retired) - contribs.reduce((a, c) => a + c.usd, 0)), color: colorOf(carryingBonds[0]), title: `${carryingBonds.map((x) => x.name).join(", ")}: face only in the filer's schedule`, parts: [sch.part], rows: carryingBonds.map((x) => x.rowLabel ?? x.name) });
       else {
         const rest = sch.part.usd - sum(retired) - contribs.reduce((a, c) => a + c.usd, 0);
         if (rest > 0.5e6) contribs.push({ usd: rest, color: PALETTE.scheduledOther, title: "scheduled other principal", parts: [] });
@@ -1739,7 +1754,7 @@ export function buildCard(i: CardInputs): Card {
     const out: BarSegment[] = [];
     for (const c of cs) {
       const prev = out.find((o) => o.color === c.color && o.pattern === c.pattern);
-      if (prev) prev.usd += c.usd; else out.push({ usd: c.usd, color: c.color, ...(c.pattern ? { pattern: c.pattern } : {}), title: c.title });
+      if (prev) { prev.usd += c.usd; prev.rows = [...(prev.rows ?? []), ...(c.rows ?? [])]; } else out.push({ usd: c.usd, color: c.color, ...(c.pattern ? { pattern: c.pattern } : {}), title: c.title, rows: [...(c.rows ?? [])] });
     }
     // Bottom to top: not yet refinanced, then the seniority shades, then stripes, then scheduled other.
     const rank = (s: BarSegment) => (s.color === PALETTE.notRefinanced ? 0 : s.color === PALETTE.scheduledOther ? 3 : s.pattern ? 2 : 1);
@@ -1807,7 +1822,8 @@ export function buildCard(i: CardInputs): Card {
     };
   });
   const lastWindow = tableRows.reduce((a, r, n) => (r.inWindow ? n : a), -1);
-  const visible = tableRows.length > 10 ? Math.max(8, lastWindow + 1) : tableRows.length;
+  // v3.1: the table is cut only above 12 rows.
+  const visible = tableRows.length > 12 ? Math.max(8, lastWindow + 1) : tableRows.length;
 
   // ── 2.7 facilities, 2.8 not shown, 2.9 footnote ──
   const facLines: CardV3["facilities"] = [];
