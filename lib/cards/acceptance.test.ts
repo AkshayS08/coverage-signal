@@ -25,7 +25,7 @@ import { sentenceStatesFigure } from "../agent/verifyFacility";
 import { containsWord } from "./labels";
 import { buildCard } from "./build";
 import { kindOf } from "./headings";
-import type { Card, Line, Segment } from "./types";
+import type { BarSegment, Card, Line, Segment } from "./types";
 import { reachable as reach } from "./reach";
 const reachable = (entry: string, read?: (p: string) => string | null) => reach(entry, ROOT, read);
 const readDisk = undefined;
@@ -642,8 +642,9 @@ const V7_TABLE: Test = {
     const tb = card.v3.table;
     const bad: string[] = [];
     tb.rows.forEach((r, i) => { if (r.inWindow && i >= tb.visible) bad.push(`in-window row ${i + 1} ("${text(r.instrument)}") is behind the cut at ${tb.visible}`); });
-    if (tb.rows.length > 10 && tb.visible > Math.max(8, tb.rows.reduce((a, r, i) => (r.inWindow ? i + 1 : a), 0))) bad.push(`${tb.rows.length} rows, ${tb.visible} shown before the cut`);
-    if (tb.rows.length <= 10 && tb.visible !== tb.rows.length) bad.push("10 rows or fewer, but some are cut");
+    // v3.1: cut only above 12 rows.
+    if (tb.rows.length > 12 && tb.visible > Math.max(8, tb.rows.reduce((a, r, i) => (r.inWindow ? i + 1 : a), 0))) bad.push(`${tb.rows.length} rows, ${tb.visible} shown before the cut`);
+    if (tb.rows.length <= 12 && tb.visible !== tb.rows.length) bad.push("12 rows or fewer, but some are cut");
     for (const e of expectedRows(f)) {
       // An undrawn facility row is capacity, not debt (§2.5): it is in Facilities, never a $0 table row.
       if (e.faceUsd === 0 && e.kind === "facility") continue;
@@ -684,6 +685,31 @@ const V9_NEXT: Test = {
     return new RegExp(`^${months} months? away`).test(nt.away ?? "") ? [] : [`"${nt.away}", but ${months} months from the brief date`];
   },
 };
+
+/**
+ * G1 (v3.1) — SEGMENTS BY EACH ROW'S OWN LABELS. Color follows the stated
+ * security label: a row whose own line states one (secured, unsecured, first
+ * lien) is never in a grey segment, and every row of a colored segment states
+ * one. Read from the table's own instrument lines.
+ */
+function ownLabels(card: Card): string[] {
+  const v = card.v3!;
+  const secOf = new Map(v.table.rows.map((r) => [norm(r.name), /\b(?:secured|unsecured|first[- ]lien)\b/i.test(text(r.instrument))]));
+  const bad: string[] = [];
+  const check = (where: string, segs: BarSegment[]) => {
+    for (const sg of segs) for (const row of sg.rows ?? []) {
+      const stated = secOf.get(norm(row));
+      if (stated === undefined) continue;
+      if (stated && sg.color === "#9AA3AD") bad.push(`${where}: "${row}" states its security but is in a grey segment`);
+      if (!stated && ["#1F4E79", "#2E8B8B", "#5C8DBF"].includes(sg.color)) bad.push(`${where}: "${row}" states no security but is colored ${sg.color}`);
+    }
+  };
+  check("total debt", v.totalDebt.segments);
+  for (const b of v.chart.bars) check(`chart ${b.label}`, b.segments);
+  if (!v.totalDebt.segments.some((s) => s.rows?.length)) bad.push("total-debt segments carry no rows");
+  return bad;
+}
+const G1_OWNLABELS: Test = { id: "G1", name: "segments by each row's own labels: no stated-security row is ever grey", run: (card) => (card.v3 ? ownLabels(card) : ["no v3 card"]) };
 
 const NAMED_TYPE = /\b(notes|debentures|term loan|revolver|ABL|credit (?:facility|agreement)|line of credit|commercial paper)\b/i;
 const R3_NAMED: Test = {
@@ -759,7 +785,7 @@ const R8_PREPERIOD: Test = {
 const LABEL_WORD = /\b(senior|junior[- ]priority|subordinated|secured|unsecured|first[- ]lien)\b/gi;
 const typeOfLine = (t: string) => norm(t.replace(/\$[\d,.~<]+MM.*$/, "").replace(LABEL_WORD, "").replace(/\s+/g, " "));
 const R9_GROUPING: Test = {
-  id: "B9", name: "total debt: a type splits by label only when every row of it carries the label; one line per type",
+  id: "B9", name: "total debt: never two lines with the same label (v3.1: segments by each row's own labels)",
   run: (card) => {
     const bad: string[] = [];
     const lines = card.headlines.totalDebt.lines.slice(1).filter((l) => !!amountSeg(l) && !/^Lines marked/.test(text(l)));
@@ -768,10 +794,7 @@ const R9_GROUPING: Test = {
     const seen = new Map<string, number>();
     for (const l of lines) seen.set(labelOf(l), (seen.get(labelOf(l)) ?? 0) + 1);
     for (const [k, n] of seen) if (n > 1) bad.push(`"${k}" shows as ${n} lines`);
-    // A type splits by a label only where every row carries one: a labelled and an unlabelled line of one type is the mixed-source case.
-    const byType = new Map<string, string[]>();
-    for (const l of lines) byType.set(typeOfLine(text(l)), [...(byType.get(typeOfLine(text(l))) ?? []), labelOf(l)]);
-    for (const [k, ls] of byType) if (ls.length > 1 && ls.some((x) => norm(x) === k)) bad.push(`type "${k}" shows both with and without a label`);
+    // v3.1 replaces the v2.1 "split only when every row carries the label" rule: a labelled and an unlabelled line of one type are now the rule.
     return bad;
   },
 };
@@ -840,7 +863,7 @@ const R16_TAGS: Test = {
 
 const TESTS = [T1_PURITY, T2_LINKS, T3_TABLE, T4_NOTSTATED, T5_ONEMATURITY, T6_PRECISION, T7_SCHEDULE, T8_MOVES, T9_LINT, T10_HEDGES,
   R1_BOX, R2_SUMMARY, R2B_SCOPE, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS,
-  V1_LAYOUT, V2_CASE, V3_TILES, V4_VOCAB, V5_LEGEND, V6_BARS, V7_TABLE, V8_HEADBARS, V9_NEXT];
+  V1_LAYOUT, V2_CASE, V3_TILES, V4_VOCAB, V5_LEGEND, V6_BARS, V7_TABLE, V8_HEADBARS, V9_NEXT, G1_OWNLABELS];
 
 // ── negative controls: a corrupted card or fixture each test MUST fail ──
 function clone<T>(x: T): T { return JSON.parse(JSON.stringify(x)); }
@@ -941,6 +964,8 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     }
     if (cigna.v3) { const c = clone(cigna); c.v3!.table.visible = 2; out.push({ id: "V7", failed: V7_TABLE.run(c, fixtureOf(cigna.cik)).length > 0, what: "an in-window row behind the Show all cut" }); }
     if (cigna.v3) { const c = clone(cigna); c.v3!.liquidity.segments.push({ usd: 1000e6, color: "#9CCBBE", title: "commercial paper outstanding" }); out.push({ id: "V8", failed: V8_HEADBARS.run(c, null).length > 0, what: "commercial paper in the liquidity bar" }); }
+    // G1: CHS's senior secured notes painted grey must fail.
+    { const chs = pick(/community/i); if (chs.v3) { const c = clone(chs); for (const sg of c.v3!.totalDebt.segments) if (sg.color === "#1F4E79") sg.color = "#9AA3AD"; out.push({ id: "G1", failed: G1_OWNLABELS.run(c, null).length > 0, what: "stated-security rows in a grey segment" }); } }
     if (molina.v3) { const c = clone(molina); c.v3!.call.nextTile!.away = "3 months away"; out.push({ id: "V9", failed: V9_NEXT.run(c, null).length > 0, what: "a wrong month count" }); }
     void dva;
   }
