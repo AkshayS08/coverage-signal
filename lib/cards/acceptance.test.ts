@@ -384,18 +384,62 @@ const T7_SCHEDULE: Test = {
   },
 };
 
+/**
+ * 5.8, AS THE CARD NOW SHOWS IT (Oct 19, 2026). Every debt move the filings
+ * state is on a move card: its date, its move word, its face, its instrument,
+ * and its funding or use where stated. Checked against the card's own
+ * content, not against the text of an earlier version: each move amount the
+ * sentence states is a figure on a move card, and a sentence that spends
+ * proceeds or cash has its funding or use on that card. An offering
+ * announcement is the issuance it announces, covered by that issuance's card
+ * (an offering can be upsized between announcement and close). A balance "as
+ * of" a date, the prior principal "in outstanding principal amount" and a
+ * net-proceeds figure are not moves.
+ */
+const MOVE_MONEY = /(?:approximately\s+)?\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/gi;
+function moveAmounts(sentence: string, scale: number): number[] {
+  const out: number[] = [];
+  for (const m of sentence.matchAll(MOVE_MONEY)) {
+    const at = m.index ?? 0;
+    const before = sentence.slice(Math.max(0, at - 60), at), after = sentence.slice(at + m[0].length, at + m[0].length + 45);
+    if (/\bAs of [A-Z][a-z]+ \d{1,2}, \d{4},?\s*$/i.test(before) || /^\s*(?:million|billion)?\s*in (?:outstanding principal|net proceeds)/i.test(after) || /net proceeds(?: to the Company)? of\s*(?:approximately\s*)?$/i.test(before)) continue;
+    const v = parseMoneyAmount(m[0].replace(/approximately\s+/i, "")) ?? 0;
+    // A unitless figure already in the millions is dollars ("$2,000,000,000"); a smaller one is in the table's scale.
+    out.push(/million|billion|thousand/i.test(m[0]) || v >= 1e6 ? v : v * scale);
+  }
+  return out.filter((v) => v >= 1e6);
+}
 const T8_MOVES: Test = {
-  id: "5.8", name: "moves are complete — every stated debt move appears in Recent debt moves, with funding and use",
+  id: "5.8", name: "moves are complete — every stated debt move is on a move card: date, word, face, instrument, funding or use",
   run: (card, f) => {
     const bad: string[] = [];
-    const moveLines = (card.moves?.lines ?? []).concat((card.moves?.blocks ?? []).flatMap((b) => b.lines));
+    const v = card.v3;
+    if (!v) return ["no v3 card"];
+    const cards = v.moves.map((m) => ({ m, lines: [m.meta, ...m.title, ...(m.detail ? [m.detail] : []), ...(m.retires ? [m.retires.meta, ...m.retires.items] : [])] }));
+    const figuresOf = (ls: Line[]) => ls.flatMap((l) => l.filter((x) => x.k === "figure" || x.k === "computed").map((x) => (x.k === "computed" ? x.usd : parseMoneyAmount((x as any).printed) ?? 0)));
+    // Every card shows a date, a move word and an instrument.
+    for (const { m } of cards) {
+      if (!m.meta.some((x) => x.k === "label" || x.k === "date")) bad.push(`a move card with no linked date: "${text(m.meta)}"`);
+      if (!m.title.some((l) => l.some((x) => x.k === "label"))) bad.push(`a move card with no instrument: "${text(m.title[0] ?? [])}"`);
+    }
+    const scale = f.table.scale === "thousand" ? 1e3 : 1e6;
     const groups = new Map<string, any[]>();
     for (const m of f.moveSentences ?? []) groups.set(squash(m.sentence).slice(0, 120), [...(groups.get(squash(m.sentence).slice(0, 120)) ?? []), m]);
     for (const [, ms] of groups) {
-      const keys = ms.map((m) => squash(m.sentence));
-      const line = moveLines.find((l) => l.some((s) => "src" in s && keys.some((k) => k.includes(squash(s.src.sentence)) || squash(s.src.sentence).includes(k.slice(0, 120)))));
-      if (!line) { bad.push(`not on the card: "${ms[0].sentence.slice(0, 90)}"`); continue; }
-      if (/net proceeds|cash on hand|proceeds from/i.test(ms[0].sentence) && !/funded by|used to|use of proceeds/i.test(text(line))) bad.push(`funding or use not shown: "${ms[0].sentence.slice(0, 70)}"`);
+      const s0: string = ms[0].sentence;
+      if (/press release announcing|commencement of|pricing of|upsize/i.test(s0)) {
+        const years = s0.match(/notes due (20\d\d)/gi) ?? [];
+        const covered = cards.some(({ m, lines }) => /Issued/.test(text(m.meta)) && years.some((y) => text(lines.flat()).includes(y.replace(/^notes /i, ""))));
+        if (!covered) bad.push(`an announced offering with no issuance card: "${s0.slice(0, 80)}"`);
+        continue;
+      }
+      const amounts = moveAmounts(s0, scale);
+      for (const amt of amounts) {
+        const hit = cards.find(({ lines }) => figuresOf(lines).some((x) => Math.abs(x - amt) <= Math.max(0.6e6, amt * 0.005)));
+        if (!hit) { bad.push(`not on a move card: $${amt / 1e6}MM in "${s0.slice(0, 80)}"`); continue; }
+        if (/net proceeds|cash on hand|proceeds from/i.test(s0) && !hit.m.retires && !(hit.m.detail && /^(?:With |Used |Funded |At )|used to|, with /i.test(text(hit.m.detail)))) bad.push(`funding or use not shown for $${amt / 1e6}MM: "${s0.slice(0, 70)}"`);
+      }
+      if (!amounts.length && !cards.some(({ lines }) => /amended|credit agreement|revolver/i.test(text(lines.flat())))) bad.push(`not on a move card: "${s0.slice(0, 80)}"`);
     }
     return bad;
   },
@@ -922,6 +966,8 @@ function controls(): { id: string; failed: boolean; what: string }[] {
   }
   // 5.8: a stated move missing from the card.
   { const f = clone(f0); f.moveSentences.push({ doc: "x", url: "x", sentence: "In May 2026, we issued $999 million of 9.999% Phantom Notes due 2099." }); out.push({ id: "5.8", failed: T8_MOVES.run(c0, f).length > 0, what: "a stated move the card omits" }); }
+  // 5.8: a card that drops its funding must fail.
+  { const chs = cards.find((c) => /community/i.test(c.company)); if (chs?.v3) { const c = clone(chs); for (const m of c.v3!.moves) m.detail = null; out.push({ id: "5.8", failed: T8_MOVES.run(c, fixtureOf(chs.cik)).length > 0, what: "a move card with its stated funding removed" }); } }
   // 5.9: an engine term.
   { const c = clone(c0); c.coverage.lines.push([{ k: "text", t: "Rule 58 applies to the base row." }]); out.push({ id: "5.9", failed: T9_LINT.run(c, f0).length > 0, what: "\"Rule 58\" and \"base row\" in card copy" }); }
   // 5.10: a dropped hedge.
