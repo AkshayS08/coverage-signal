@@ -1,5 +1,7 @@
 # Coverage Signal card spec, Demo v1
 
+Version 3.1, Oct 19, 2026. Four changes after Akshay's read of the v3.0 cards, each marked **(v3.1)**: segments split by each row's own labels (2.4, 2.5), the schedule-only segment's label (2.4), the table cut (2.6) and move-card detail (2.3), and hover-only underlines on chart and table links (3.1). Supersedes v3.0.
+
 Version 3.0, Oct 19, 2026. The card redesign Akshay approved on three mockups (Tenet: debt due, partly refinanced; Molina: nothing due in the window; Cigna: rolled position, long ladder; saved in sessions/26/mockups/). A presentation change: layout, hierarchy, charts, tables and wording. Every v2.2 content rule is kept and restated below; it adds no new data. Supersedes v2.2.
 
 Known difference from the mockups: the card shows each company's registered EDGAR name ("TENET HEALTHCARE CORP"), not a display name ("Tenet Healthcare"). Display names come with the name-lookup work in Session 27 (Akshay, Oct 19, 2026).
@@ -73,7 +75,7 @@ Every debt transaction the filings state from the start of the anchor's fiscal y
 
 Covered: issuance; redemption, full or partial, including special calls; tender or repurchase; repayment at maturity; facility entry, amendment, refinancing or termination; incremental add-ons; material draws or paydowns where stated.
 
-**Each move is a small card:** date and move word (2.10) on a grey line; face and instrument in bold, in 3.7 format; funding or use as one short line ("with ~$600MM of divestiture proceeds", "at 103% of principal", "funding source not stated"). No raw filer prose, no defined terms ("the '2027 Notes'"), no legal agreement titles; the full source sentence is one click away through the link.
+**Each move is a small card:** date and move word (2.10) on a grey line; face and instrument in bold, in 3.7 format; funding or use as one short line ("with ~$600MM of divestiture proceeds", "at 103% of principal", "funding source not stated"). **(v3.1)** No offering launch or pricing dates on the card; the move's own date is the one shown. No raw filer prose, no defined terms ("the '2027 Notes'"), no legal agreement titles; the full source sentence is one click away through the link.
 
 - **A move that funds others renders as a pair:** the new debt on the left, an arrow, and what it retires on the right, each retired instrument with its face. Both sides link to their sentences.
 - **Related moves merge into one event:** the same date, or a stated causal link (a new agreement entered, an old one terminated, a draw used to retire it). "Refinanced revolver: new $1,000MM credit agreement replaced the 2022 agreement; $250MM drawn to retire it." Each component figure keeps its own link.
@@ -86,9 +88,9 @@ Each is one large figure, then a single stacked bar, then a legend list with amo
 
 **Total debt**, at face, as of the position date.
 
-- **Grouping by label.** A type splits by seniority or security only when every row of that type carries the label; otherwise its rows group by type alone, and the labels stay per row in the ladder. A type never appears as two lines because some rows got a label from a different source. Never two lines with the same label.
+- **(v3.1) Segments by each row's own labels** (replaces the v2.1 grouping rule). Total-debt and ladder segments split by each row's own stated seniority and security labels: one segment per type and stated label set ("senior secured notes", "junior-priority secured notes", "senior notes"). Rows with no stated label form their own segment, "[type], seniority not stated". Color follows the stated security label (3.9): secured, junior or second-lien secured, unsecured; a row whose security is not stated is grey, in its own labelled segment. **A row with a stated security label is never grey.** Never two lines with the same label.
 - **Order by priority:** secured, then junior or second-lien secured, then unsecured, then types without a stated label, then leases and other obligations. Within a tier, the filer's table order.
-- Bar segments follow the same groups, colored per 3.9. **Carrying-value amounts sit in a note line under the list, never in the bar.** Where the face total comes from the filer's maturity schedule because some rows are stated only at carrying value, the part of the face total no row states at face is one segment, "face stated only in the filer's schedule".
+- Bar segments follow the same groups, colored per 3.9. **Carrying-value amounts sit in a note line under the list, never in the bar.** Where the face total comes from the filer's maturity schedule because some rows are stated only at carrying value, the part of the face total no row states at face is one segment, labelled by what it holds: **(v3.1)** "[the carrying rows' label] and other debt, face per the filer's schedule (individual face not stated)", for example "Senior notes and other debt, face per the filer's schedule (individual face not stated)", linked to the schedule.
 
 **Liquidity**, as of the position date.
 
@@ -113,7 +115,7 @@ Each is one large figure, then a single stacked bar, then a legend list with amo
 - **Columns:** Matures, Instrument (coupon, labels, type, source tag), Face ($MM, right-aligned, tabular figures), Status.
 - One row per instrument, zebra-striped, ordered by maturity. Commercial paper first where outstanding. Ranged and undated items last, with their range or "Various". Each instrument appears exactly once (Rule 49), at face where stated, labeled "carrying value" where only carrying value is stated.
 - Maturity ranges are stated maturities: "2026 to 2038" shows as a range, never as "no maturity stated."
-- **More than 10 rows:** the first 8 show, then a "Show all N" control. Every in-window row is within the rows shown.
+- **(v3.1) More than 12 rows:** the first 8 show, then a "Show all N" control. Every in-window row is within the rows shown. Twelve rows or fewer all show.
 - **The status column uses only the 2.10 vocabulary.** A not-stated label shows in the status column as a short phrase ("Seniority not stated"), not as a sentence; where it applies to most rows, it shows once in the chart caption instead (the v2.1 "once per group" rule).
 - **Pre-period lines never appear:** for a rolled position, an instrument the referenced filing states at $0, or as repaid before its period end, never appears, and neither does any line listing them. Mechanics (how two filings' statements of one note were reconciled) are not card copy.
 - The filer's maturity schedule, where printed, stays reachable by year ("Show scheduled amortization by year"), with any remainder as "other scheduled principal, per the filer's schedule", linked; a year a schedule shows that lines exceed is stated as such, never silently dropped.
@@ -164,7 +166,7 @@ Also: "Short-term" for commercial paper outstanding, "Backed by revolver" where 
 
 ### 3.1 Sources
 
-Every amount, date and label links to the exact sentence, table row or heading it came from, highlighted. **That includes every figure inside a chart, tile, bar label and table cell**, and every "not stated" phrase, which links to the instrument's own row.
+Every amount, date and label links to the exact sentence, table row or heading it came from, highlighted. **That includes every figure inside a chart, tile, bar label and table cell**, and every "not stated" phrase, which links to the instrument's own row. **(v3.1)** Links on chart value labels and in table cells are underlined on hover only; headline figures (call box, tiles, total debt, liquidity) keep the dotted underline.
 
 ### 3.2 Face value first
 
@@ -248,5 +250,6 @@ Every check below is asserted as a test over all six cards. Inspection alone doe
 11. All six signed goldens still reproduce through goldenThroughLoop.
 14. **(v2.2) Summary scope:** the refinance summary's redemption figure equals the stated redemptions of the box's own in-window rows, with a negative control.
 13. **(v2.1) Round-2 rules**, each asserted over all six cards with a negative control: the refinance box (placement, summary, named rows only, leftovers in one line, markers with a legend, CP row, Next line); no pre-period or mechanics lines; total-debt grouping by label, one line per type, priority order; moves in card format and related moves merged; no trailing ".0"; "not stated" once per group; no cryptic tags.
+16. **(v3.1)** No row with a stated security label is ever grey, in the total-debt bar or the chart; each segment's rows share its labels. With a negative control.
 15. **(v3.0) The redesign**, each asserted over all six cards with a negative control: the layout order; the call-box case (A to D) matches its rule; the tiles sum (due = refinanced + not yet refinanced), in-window only, with commercial paper never counted; the next-maturity tile's months; every status word from the 2.10 list, and "redeemed" only with a confirming filing; every chart color and pattern has a legend entry and nothing else; each bar's total equals its source (the schedule, or named instruments); the total-debt and liquidity bars sum to their figures with carrying and uncommitted amounts kept out; the table carries every filer row once and shows every in-window row before any "Show all" cut; every figure in a tile, chart, bar label and table cell links to its sentence.
 12. Akshay's read against the demo's three questions per company.
