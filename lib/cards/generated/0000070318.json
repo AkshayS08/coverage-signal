@@ -2909,5 +2909,4240 @@
     }
    ]
   ]
+ },
+ "v3": {
+  "header": {
+   "label": "Weekly coverage brief · Oct 5 to Oct 15, 2026",
+   "company": "TENET HEALTHCARE CORP",
+   "position": [
+    {
+     "k": "text",
+     "t": "Position as of "
+    },
+    {
+     "k": "date",
+     "t": "June 30, 2026",
+     "date": "2026-06-30",
+     "granularity": "day",
+     "src": {
+      "sentence": "for the quarterly period ended June 30, 2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+      "doc": "10-Q 2026-07-29"
+     }
+    }
+   ],
+   "filing": {
+    "k": "filing",
+    "t": "10-Q filed July 29, 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+   },
+   "status": [
+    {
+     "k": "text",
+     "t": "No new debt filings this week"
+    }
+   ],
+   "actionable": []
+  },
+  "rolledNote": null,
+  "call": {
+   "label": "The call · next 18 months, to Apr 15, 2028",
+   "case": "A",
+   "headline": [
+    {
+     "k": "computed",
+     "t": "$600MM",
+     "usd": 600000000,
+     "parts": [
+      {
+       "printed": "$ 600 million",
+       "usd": 600000000,
+       "src": {
+        "sentence": "4.625 % due 2028 $ 600   $ 600",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ]
+    },
+    {
+     "k": "text",
+     "t": " of 4.625% senior secured notes due 2028 are not yet refinanced."
+    },
+    {
+     "k": "text",
+     "t": " The 2027 notes are already refinanced."
+    }
+   ],
+   "tiles": [
+    {
+     "key": "due",
+     "label": "Due in window",
+     "value": {
+      "k": "computed",
+      "t": "$2,100MM",
+      "usd": 2100000000,
+      "parts": [
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 600 million",
+        "usd": 600000000,
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "usd": 2100000000,
+     "sub": [
+      {
+       "k": "text",
+       "t": "2 note issues"
+      }
+     ]
+    },
+    {
+     "key": "refinanced",
+     "label": "Refinanced",
+     "value": {
+      "k": "computed",
+      "t": "$1,500MM",
+      "usd": 1500000000,
+      "parts": [
+       {
+        "printed": "$ 1.5 billion",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       }
+      ]
+     },
+     "usd": 1500000000,
+     "sub": [
+      {
+       "k": "text",
+       "t": "With the Sept 22 notes"
+      },
+      {
+       "k": "text",
+       "t": " · redemption awaiting confirmation"
+      }
+     ]
+    },
+    {
+     "key": "notYet",
+     "label": "Not yet refinanced",
+     "value": {
+      "k": "computed",
+      "t": "$600MM",
+      "usd": 600000000,
+      "parts": [
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 600 million",
+        "usd": 600000000,
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1.5 billion",
+        "usd": -1500000000,
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       }
+      ]
+     },
+     "usd": 600000000,
+     "sub": [
+      {
+       "k": "text",
+       "t": "The refinancing conversation"
+      }
+     ]
+    }
+   ],
+   "nextTile": null,
+   "rows": [
+    {
+     "when": [
+      {
+       "k": "date",
+       "t": "Nov 2027",
+       "date": "2027-11-01",
+       "granularity": "month",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      }
+     ],
+     "body": [
+      {
+       "k": "computed",
+       "t": "$1,500MM",
+       "usd": 1500000000,
+       "parts": [
+        {
+         "printed": "$ 1,500 million",
+         "usd": 1500000000,
+         "src": {
+          "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+          "doc": "10-Q 2026-07-29"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "5.125%",
+       "stated": "5.125 %",
+       "src": {
+        "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "tag": {
+      "text": [
+       {
+        "k": "text",
+        "t": "Refinanced · "
+       },
+       {
+        "k": "label",
+        "t": "redemption set for Sept 23",
+        "stated": "September 23, 2026",
+        "src": {
+         "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes. The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+         "doc": "thc-20260908.htm"
+        }
+       }
+      ],
+      "tone": "pending"
+     },
+     "usd": 1500000000,
+     "isCP": false
+    },
+    {
+     "when": [
+      {
+       "k": "date",
+       "t": "2028",
+       "date": "2028",
+       "granularity": "year",
+       "src": {
+        "sentence": "4.625 % due 2028 $ 600   $ 600",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " †"
+      }
+     ],
+     "body": [
+      {
+       "k": "computed",
+       "t": "$600MM",
+       "usd": 600000000,
+       "parts": [
+        {
+         "printed": "$ 600 million",
+         "usd": 600000000,
+         "src": {
+          "sentence": "4.625 % due 2028 $ 600   $ 600",
+          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+          "doc": "10-Q 2026-07-29"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "4.625%",
+       "stated": "4.625 %",
+       "src": {
+        "sentence": "4.625 % due 2028 $ 600   $ 600",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "tag": {
+      "text": [
+       {
+        "k": "text",
+        "t": "Not yet refinanced"
+       }
+      ],
+      "tone": "orange"
+     },
+     "usd": 600000000,
+     "isCP": false
+    }
+   ],
+   "notes": [
+    [
+     {
+      "k": "text",
+      "t": "Also in window: "
+     },
+     {
+      "k": "computed",
+      "t": "$260MM",
+      "usd": 260000000,
+      "parts": [
+       {
+        "printed": "$ 45",
+        "usd": 45000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,643 million",
+        "usd": 1643000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,500 million",
+        "usd": -1500000000,
+        "src": {
+         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 2,422 million",
+        "usd": 2422000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 600 million",
+        "usd": -600000000,
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,750 million",
+        "usd": -1750000000,
+        "src": {
+         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": "†"
+     },
+     {
+      "k": "text",
+      "t": " of scheduled amortization and other principal."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "Next after the window: "
+     },
+     {
+      "k": "computed",
+      "t": "$1,750MM",
+      "usd": 1750000000,
+      "parts": [
+       {
+        "printed": "$ 1,750 million",
+        "usd": 1750000000,
+        "src": {
+         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "6.125%",
+      "stated": "6.125 %",
+      "src": {
+       "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "Senior",
+      "src": {
+       "sentence": "Senior unsecured notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "unsecured",
+      "stated": "unsecured",
+      "src": {
+       "sentence": "Senior unsecured notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "notes",
+      "src": {
+       "sentence": "Senior unsecured notes",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", "
+     },
+     {
+      "k": "date",
+      "t": "October 2028",
+      "date": "2028-10-01",
+      "granularity": "month",
+      "src": {
+       "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", of which "
+     },
+     {
+      "k": "computed",
+      "t": "$500MM",
+      "usd": 500000000,
+      "parts": [
+       {
+        "printed": "$ 0.5 billion",
+        "usd": 500000000,
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " is refinanced, leaving "
+     },
+     {
+      "k": "computed",
+      "t": "$1,250MM",
+      "usd": 1250000000,
+      "parts": [
+       {
+        "printed": "$ 1,750 million",
+        "usd": 1750000000,
+        "src": {
+         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 0.5 billion",
+        "usd": -500000000,
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": "."
+     }
+    ]
+   ],
+   "legend": "† Year only stated; may fall inside the window."
+  },
+  "moves": [
+   {
+    "meta": [
+     {
+      "k": "label",
+      "t": "Sept 22, 2026",
+      "stated": "September 22, 2026",
+      "src": {
+       "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · Issued, confirmed by 8-K"
+     }
+    ],
+    "title": [
+     [
+      {
+       "k": "figure",
+       "t": "$2,000MM",
+       "printed": "$2,000,000,000 in aggregate principal amount",
+       "src": {
+        "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "6.250% senior notes due 2034",
+       "stated": "6.250%",
+       "src": {
+        "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      }
+     ]
+    ],
+    "detail": [
+     {
+      "k": "text",
+      "t": "Offering launched "
+     },
+     {
+      "k": "label",
+      "t": "September 8, 2026",
+      "stated": "September 8, 2026",
+      "src": {
+       "sentence": "On September 8, 2026 , Tenet Healthcare Corporation (the “Company”) issued a press release announcing the commencement of private placement offering of $1.5 billion in aggregate principal amount of its senior notes due 2034.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+       "doc": "thc-20260908.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", priced "
+     },
+     {
+      "k": "label",
+      "t": "September 8, 2026",
+      "stated": "September 8, 2026",
+      "src": {
+       "sentence": "Additionally, on September 8, 2026 , the Company issued a press release announcing the upsize and pricing of $2.0 billion in aggregate principal amount of its 6.250% senior notes due 2034 (the “notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+       "doc": "thc-20260908.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": "."
+     }
+    ],
+    "retires": {
+     "meta": [
+      {
+       "k": "text",
+       "t": "Refinanced · "
+      },
+      {
+       "k": "label",
+       "t": "redemption set for Sept 23, 2026",
+       "stated": "September 23, 2026",
+       "src": {
+        "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes. The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", awaiting confirmation in a filing"
+      }
+     ],
+     "items": [
+      [
+       {
+        "k": "figure",
+        "t": "$1,500MM",
+        "printed": "$ 1.5 billion",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "5.125% senior secured notes due November 2027",
+        "stated": "5.125%",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+         "doc": "thc-20260908.htm"
+        }
+       }
+      ],
+      [
+       {
+        "k": "figure",
+        "t": "$500MM",
+        "printed": "$ 0.5 billion",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "6.125% senior unsecured notes due October 2028",
+        "stated": "6.125%",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+         "doc": "thc-20260908.htm"
+        }
+       }
+      ]
+     ]
+    }
+   }
+  ],
+  "totalDebt": {
+   "figure": {
+    "k": "computed",
+    "t": "$13,333MM",
+    "usd": 13333000000,
+    "parts": [
+     {
+      "printed": "$ 1,500 million",
+      "usd": 1500000000,
+      "src": {
+       "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 600 million",
+      "usd": 600000000,
+      "src": {
+       "sentence": "4.625 % due 2028 $ 600   $ 600",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,400 million",
+      "usd": 1400000000,
+      "src": {
+       "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,450 million",
+      "usd": 1450000000,
+      "src": {
+       "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 2,000 million",
+      "usd": 2000000000,
+      "src": {
+       "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,350 million",
+      "usd": 1350000000,
+      "src": {
+       "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,500 million",
+      "usd": 1500000000,
+      "src": {
+       "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,750 million",
+      "usd": 1750000000,
+      "src": {
+       "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 362 million",
+      "usd": 362000000,
+      "src": {
+       "sentence": "6.875 % due 2031 $ 362   $ 362",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 750 million",
+      "usd": 750000000,
+      "src": {
+       "sentence": "6.000 % due 2033 $ 750   $ —",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 671 million",
+      "usd": 671000000,
+      "src": {
+       "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     }
+    ]
+   },
+   "segments": [
+    {
+     "usd": 9800000000,
+     "color": "#1F4E79",
+     "title": "senior secured notes"
+    },
+    {
+     "usd": 2862000000,
+     "color": "#5C8DBF",
+     "title": "senior unsecured notes"
+    },
+    {
+     "usd": 671000000,
+     "color": "#9AA3AD",
+     "title": "Finance leases, mortgages and other notes"
+    }
+   ],
+   "legend": [
+    {
+     "color": "#1F4E79",
+     "label": [
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "amount": {
+      "k": "computed",
+      "t": "$9,800MM",
+      "usd": 9800000000,
+      "parts": [
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 600 million",
+        "usd": 600000000,
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,400 million",
+        "usd": 1400000000,
+        "src": {
+         "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,450 million",
+        "usd": 1450000000,
+        "src": {
+         "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 2,000 million",
+        "usd": 2000000000,
+        "src": {
+         "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,350 million",
+        "usd": 1350000000,
+        "src": {
+         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     }
+    },
+    {
+     "color": "#5C8DBF",
+     "label": [
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "amount": {
+      "k": "computed",
+      "t": "$2,862MM",
+      "usd": 2862000000,
+      "parts": [
+       {
+        "printed": "$ 1,750 million",
+        "usd": 1750000000,
+        "src": {
+         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 362 million",
+        "usd": 362000000,
+        "src": {
+         "sentence": "6.875 % due 2031 $ 362   $ 362",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "6.000 % due 2033 $ 750   $ —",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     }
+    },
+    {
+     "color": "#9AA3AD",
+     "label": [
+      {
+       "k": "label",
+       "t": "Finance leases, mortgages and other notes",
+       "stated": "Finance leases, mortgages and other notes",
+       "src": {
+        "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "amount": {
+      "k": "computed",
+      "t": "$671MM",
+      "usd": 671000000,
+      "parts": [
+       {
+        "printed": "$ 671 million",
+        "usd": 671000000,
+        "src": {
+         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "notes": []
+  },
+  "liquidity": {
+   "figure": {
+    "k": "computed",
+    "t": "$4,070MM",
+    "usd": 4070000000,
+    "parts": [
+     {
+      "printed": "$ 2,170 million",
+      "usd": 2170000000,
+      "src": {
+       "sentence": "Cash and cash equivalents $ 2,170 $ 2,883",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1.900 billion",
+      "usd": 1900000000,
+      "src": {
+       "sentence": "Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible accounts receivable, eligible inventory and Medicaid supplemental payments, was $ 1.900  billion at June 30, 2026.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     }
+    ]
+   },
+   "segments": [
+    {
+     "usd": 2170000000,
+     "color": "#2E7D6B",
+     "title": "Cash and cash equivalents"
+    },
+    {
+     "usd": 1900000000,
+     "color": "#9CCBBE",
+     "title": "senior secured revolving credit facility"
+    }
+   ],
+   "legend": [
+    {
+     "color": "#2E7D6B",
+     "label": [
+      {
+       "k": "label",
+       "t": "Cash and cash equivalents",
+       "stated": "Cash and cash equivalents",
+       "src": {
+        "sentence": "Cash and cash equivalents $ 2,170 $ 2,883",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "amount": {
+      "k": "figure",
+      "t": "$2,170MM",
+      "printed": "$ 2,170 million",
+      "src": {
+       "sentence": "Cash and cash equivalents $ 2,170 $ 2,883",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     }
+    },
+    {
+     "color": "#9CCBBE",
+     "label": [
+      {
+       "k": "text",
+       "t": "Undrawn "
+      },
+      {
+       "k": "label",
+       "t": "revolver",
+       "stated": "revolv",
+       "src": {
+        "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", matures "
+      },
+      {
+       "k": "date",
+       "t": "November 4, 2030",
+       "date": "2030-11-04",
+       "granularity": "day",
+       "src": {
+        "sentence": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
+        "doc": "thc-20251231.htm"
+       }
+      }
+     ],
+     "amount": {
+      "k": "figure",
+      "t": "$1,900MM",
+      "printed": "$ 1.900 billion",
+      "src": {
+       "sentence": "Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible accounts receivable, eligible inventory and Medicaid supplemental payments, was $ 1.900  billion at June 30, 2026.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     }
+    }
+   ],
+   "notes": [
+    [
+     {
+      "k": "text",
+      "t": "Borrowing-base limited; stated availability shown."
+     }
+    ]
+   ]
+  },
+  "chart": {
+   "bars": [
+    {
+     "label": "2026",
+     "total": {
+      "k": "computed",
+      "t": "45",
+      "usd": 45000000,
+      "parts": [
+       {
+        "printed": "$ 45",
+        "usd": 45000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 45000000,
+       "color": "#C9CED4",
+       "title": "scheduled other principal"
+      }
+     ],
+     "source": "schedule",
+     "broken": false,
+     "drawUsd": 45000000,
+     "instruments": 0
+    },
+    {
+     "label": "2027",
+     "total": {
+      "k": "computed",
+      "t": "1,643",
+      "usd": 1643000000,
+      "parts": [
+       {
+        "printed": "$ 1,643 million",
+        "usd": 1643000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 1500000000,
+       "color": "#1F4E79",
+       "pattern": "stripes",
+       "title": "5.125 % due 2027, refinanced, redemption pending confirmation"
+      },
+      {
+       "usd": 143000000,
+       "color": "#C9CED4",
+       "title": "scheduled other principal"
+      }
+     ],
+     "source": "schedule",
+     "broken": false,
+     "drawUsd": 1643000000,
+     "instruments": 1
+    },
+    {
+     "label": "2028",
+     "total": {
+      "k": "computed",
+      "t": "2,422",
+      "usd": 2422000000,
+      "parts": [
+       {
+        "printed": "$ 2,422 million",
+        "usd": 2422000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 600000000,
+       "color": "#B4440C",
+       "title": "4.625 % due 2028, not yet refinanced"
+      },
+      {
+       "usd": 1250000000,
+       "color": "#5C8DBF",
+       "title": "6.125 % due 2028"
+      },
+      {
+       "usd": 500000000,
+       "color": "#5C8DBF",
+       "pattern": "stripes",
+       "title": "6.125 % due 2028, refinanced, redemption pending confirmation"
+      },
+      {
+       "usd": 72000000,
+       "color": "#C9CED4",
+       "title": "scheduled other principal"
+      }
+     ],
+     "source": "schedule",
+     "broken": false,
+     "drawUsd": 2422000000,
+     "instruments": 2
+    },
+    {
+     "label": "2029",
+     "total": {
+      "k": "computed",
+      "t": "1,457",
+      "usd": 1457000000,
+      "parts": [
+       {
+        "printed": "$ 1,457 million",
+        "usd": 1457000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 1400000000,
+       "color": "#1F4E79",
+       "title": "4.250 % due 2029"
+      },
+      {
+       "usd": 57000000,
+       "color": "#C9CED4",
+       "title": "scheduled other principal"
+      }
+     ],
+     "source": "schedule",
+     "broken": false,
+     "drawUsd": 1457000000,
+     "instruments": 1
+    },
+    {
+     "label": "2030",
+     "total": {
+      "k": "computed",
+      "t": "3,488",
+      "usd": 3488000000,
+      "parts": [
+       {
+        "printed": "$ 3,488 million",
+        "usd": 3488000000,
+        "src": {
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 3450000000,
+       "color": "#1F4E79",
+       "title": "4.375 % due 2030"
+      },
+      {
+       "usd": 38000000,
+       "color": "#C9CED4",
+       "title": "scheduled other principal"
+      }
+     ],
+     "source": "schedule",
+     "broken": false,
+     "drawUsd": 3488000000,
+     "instruments": 2
+    },
+    {
+     "label": "2031",
+     "total": {
+      "k": "computed",
+      "t": "1,712",
+      "usd": 1712000000,
+      "parts": [
+       {
+        "printed": "$ 1,350 million",
+        "usd": 1350000000,
+        "src": {
+         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "printed": "$ 362 million",
+        "usd": 362000000,
+        "src": {
+         "sentence": "6.875 % due 2031 $ 362   $ 362",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 1350000000,
+       "color": "#1F4E79",
+       "title": "6.750 % due 2031"
+      },
+      {
+       "usd": 362000000,
+       "color": "#5C8DBF",
+       "title": "6.875 % due 2031"
+      }
+     ],
+     "source": "named",
+     "broken": false,
+     "drawUsd": 1712000000,
+     "instruments": 2
+    },
+    {
+     "label": "2032",
+     "total": {
+      "k": "computed",
+      "t": "1,500",
+      "usd": 1500000000,
+      "parts": [
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 1500000000,
+       "color": "#1F4E79",
+       "title": "5.500 % due 2032"
+      }
+     ],
+     "source": "named",
+     "broken": false,
+     "drawUsd": 1500000000,
+     "instruments": 1
+    },
+    {
+     "label": "2033",
+     "total": {
+      "k": "computed",
+      "t": "750",
+      "usd": 750000000,
+      "parts": [
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "6.000 % due 2033 $ 750   $ —",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 750000000,
+       "color": "#5C8DBF",
+       "title": "6.000 % due 2033"
+      }
+     ],
+     "source": "named",
+     "broken": false,
+     "drawUsd": 750000000,
+     "instruments": 1
+    }
+   ],
+   "window": {
+    "endIndex": 2,
+    "endFraction": 0.2903225806451613,
+    "label": "18-month window"
+   },
+   "legend": [
+    {
+     "color": "#1F4E79",
+     "label": "Secured"
+    },
+    {
+     "color": "#5C8DBF",
+     "label": "Unsecured"
+    },
+    {
+     "color": "#C9CED4",
+     "label": "Scheduled other"
+    },
+    {
+     "color": "#1F4E79",
+     "pattern": "stripes",
+     "label": "Refinanced, redemption pending confirmation"
+    },
+    {
+     "color": "#B4440C",
+     "label": "Due in window, not yet refinanced"
+    }
+   ],
+   "captions": [
+    [
+     {
+      "k": "text",
+      "t": "Color shows seniority. Stripes show debt refinanced with new notes, whose redemption a filing has yet to confirm. Orange shows debt due inside the window that is not yet refinanced. Where the filer prints a maturity schedule, each bar is the schedule's figure for its year: notes at full face, and term loans, leases and other amortizing debt in the scheduled other principal."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "Not shown on the chart, with no single maturity: "
+     },
+     {
+      "k": "computed",
+      "t": "$671MM",
+      "usd": 671000000,
+      "parts": [
+       {
+        "printed": "$ 671 million",
+        "usd": 671000000,
+        "src": {
+         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "Finance leases, mortgages and other notes",
+      "stated": "Finance leases, mortgages and other notes",
+      "src": {
+       "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": "."
+     }
+    ]
+   ]
+  },
+  "table": {
+   "rows": [
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "Nov 2027",
+       "date": "2027-11-01",
+       "granularity": "month",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "5.125%",
+       "stated": "5.125 %",
+       "src": {
+        "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "1,500",
+      "usd": 1500000000,
+      "parts": [
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": {
+      "text": [
+       {
+        "k": "text",
+        "t": "Refinanced · "
+       },
+       {
+        "k": "label",
+        "t": "redemption set for Sept 23",
+        "stated": "September 23, 2026",
+        "src": {
+         "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes. The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+         "doc": "thc-20260908.htm"
+        }
+       }
+      ],
+      "tone": "pending"
+     },
+     "inWindow": true,
+     "name": "5.125 % due 2027"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "2028",
+       "date": "2028",
+       "granularity": "year",
+       "src": {
+        "sentence": "4.625 % due 2028 $ 600   $ 600",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "4.625%",
+       "stated": "4.625 %",
+       "src": {
+        "sentence": "4.625 % due 2028 $ 600   $ 600",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "600",
+      "usd": 600000000,
+      "parts": [
+       {
+        "printed": "$ 600 million",
+        "usd": 600000000,
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": {
+      "text": [
+       {
+        "k": "text",
+        "t": "Not yet refinanced"
+       }
+      ],
+      "tone": "orange"
+     },
+     "inWindow": true,
+     "name": "4.625 % due 2028"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "Oct 2028",
+       "date": "2028-10-01",
+       "granularity": "month",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "6.125%",
+       "stated": "6.125 %",
+       "src": {
+        "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "1,750",
+      "usd": 1750000000,
+      "parts": [
+       {
+        "printed": "$ 1,750 million",
+        "usd": 1750000000,
+        "src": {
+         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": {
+      "text": [
+       {
+        "k": "computed",
+        "t": "$500MM",
+        "usd": 500000000,
+        "parts": [
+         {
+          "printed": "$ 0.5 billion",
+          "usd": 500000000,
+          "src": {
+           "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+           "doc": "8-K 2026-09-22"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " refinanced · "
+       },
+       {
+        "k": "computed",
+        "t": "$1,250MM",
+        "usd": 1250000000,
+        "parts": [
+         {
+          "printed": "$ 1,750 million",
+          "usd": 1750000000,
+          "src": {
+           "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         },
+         {
+          "printed": "$ 0.5 billion",
+          "usd": -500000000,
+          "src": {
+           "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+           "doc": "8-K 2026-09-22"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " remains"
+       }
+      ],
+      "tone": "pending"
+     },
+     "inWindow": false,
+     "name": "6.125 % due 2028"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "2029",
+       "date": "2029",
+       "granularity": "year",
+       "src": {
+        "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "4.250%",
+       "stated": "4.250 %",
+       "src": {
+        "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "1,400",
+      "usd": 1400000000,
+      "parts": [
+       {
+        "printed": "$ 1,400 million",
+        "usd": 1400000000,
+        "src": {
+         "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "4.250 % due 2029"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "2030",
+       "date": "2030",
+       "granularity": "year",
+       "src": {
+        "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "4.375%",
+       "stated": "4.375 %",
+       "src": {
+        "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "1,450",
+      "usd": 1450000000,
+      "parts": [
+       {
+        "printed": "$ 1,450 million",
+        "usd": 1450000000,
+        "src": {
+         "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "4.375 % due 2030"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "2030",
+       "date": "2030",
+       "granularity": "year",
+       "src": {
+        "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "6.125%",
+       "stated": "6.125 %",
+       "src": {
+        "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "2,000",
+      "usd": 2000000000,
+      "parts": [
+       {
+        "printed": "$ 2,000 million",
+        "usd": 2000000000,
+        "src": {
+         "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "6.125 % due 2030"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "2031",
+       "date": "2031",
+       "granularity": "year",
+       "src": {
+        "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "6.750%",
+       "stated": "6.750 %",
+       "src": {
+        "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "1,350",
+      "usd": 1350000000,
+      "parts": [
+       {
+        "printed": "$ 1,350 million",
+        "usd": 1350000000,
+        "src": {
+         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "6.750 % due 2031"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "2031",
+       "date": "2031",
+       "granularity": "year",
+       "src": {
+        "sentence": "6.875 % due 2031 $ 362   $ 362",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "6.875%",
+       "stated": "6.875 %",
+       "src": {
+        "sentence": "6.875 % due 2031 $ 362   $ 362",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "362",
+      "usd": 362000000,
+      "parts": [
+       {
+        "printed": "$ 362 million",
+        "usd": 362000000,
+        "src": {
+         "sentence": "6.875 % due 2031 $ 362   $ 362",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "6.875 % due 2031"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "2032",
+       "date": "2032",
+       "granularity": "year",
+       "src": {
+        "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "5.500%",
+       "stated": "5.500 %",
+       "src": {
+        "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "secured",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior secured first lien notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "1,500",
+      "usd": 1500000000,
+      "parts": [
+       {
+        "printed": "$ 1,500 million",
+        "usd": 1500000000,
+        "src": {
+         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "5.500 % due 2032"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "2033",
+       "date": "2033",
+       "granularity": "year",
+       "src": {
+        "sentence": "6.000 % due 2033 $ 750   $ —",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "6.000%",
+       "stated": "6.000 %",
+       "src": {
+        "sentence": "6.000 % due 2033 $ 750   $ —",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "Senior",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "notes",
+       "src": {
+        "sentence": "Senior unsecured notes",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "750",
+      "usd": 750000000,
+      "parts": [
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "6.000 % due 2033 $ 750   $ —",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "6.000 % due 2033"
+    },
+    {
+     "matures": [
+      {
+       "k": "text",
+       "t": "Various"
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "Finance leases, mortgages and other notes",
+       "stated": "Finance leases, mortgages and other notes",
+       "src": {
+        "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "671",
+      "usd": 671000000,
+      "parts": [
+       {
+        "printed": "$ 671 million",
+        "usd": 671000000,
+        "src": {
+         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     },
+     "status": {
+      "text": [
+       {
+        "k": "notStated",
+        "t": "Seniority not stated",
+        "src": {
+         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ],
+      "tone": "neutral"
+     },
+     "inWindow": false,
+     "name": "Finance leases, mortgages and other notes"
+    }
+   ],
+   "visible": 8,
+   "schedule": [
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "2026"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "computed",
+        "t": "$45MM",
+        "usd": 45000000,
+        "parts": [
+         {
+          "printed": "$ 45",
+          "usd": 45000000,
+          "src": {
+           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " other scheduled principal, per the filer's schedule"
+       }
+      ]
+     ]
+    },
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "2027"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "figure",
+        "t": "$1,500MM",
+        "printed": "$ 1,500 million",
+        "src": {
+         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "5.125 % due 2027"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "5.125%",
+        "stated": "5.125 %",
+        "src": {
+         "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "secured",
+        "stated": "secured",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "November 2027",
+        "date": "2027-11-01",
+        "granularity": "month",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       },
+       {
+        "k": "text",
+        "t": " · "
+       },
+       {
+        "k": "label",
+        "t": "pending redemption",
+        "stated": "5.125% senior secured first lien notes due November 2027",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+         "doc": "thc-20260908.htm"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "figure",
+        "t": "$1,500MM",
+        "printed": "$ 1.5 billion",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", not yet confirmed by a filing"
+       }
+      ],
+      [
+       {
+        "k": "computed",
+        "t": "$143MM",
+        "usd": 143000000,
+        "parts": [
+         {
+          "printed": "$ 1,643 million",
+          "usd": 1643000000,
+          "src": {
+           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         },
+         {
+          "printed": "$ 1,500 million",
+          "usd": -1500000000,
+          "src": {
+           "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " other scheduled principal, per the filer's schedule"
+       }
+      ]
+     ]
+    },
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "2028"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "figure",
+        "t": "$600MM",
+        "printed": "$ 600 million",
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "4.625 % due 2028"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "4.625%",
+        "stated": "4.625 %",
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "secured",
+        "stated": "secured",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "2028",
+        "date": "2028",
+        "granularity": "year",
+        "src": {
+         "sentence": "4.625 % due 2028 $ 600   $ 600",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ],
+      [
+       {
+        "k": "figure",
+        "t": "$1,750MM",
+        "printed": "$ 1,750 million",
+        "src": {
+         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "6.125 % due 2028"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "6.125%",
+        "stated": "6.125 %",
+        "src": {
+         "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "unsecured",
+        "stated": "unsecured",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "October 2028",
+        "date": "2028-10-01",
+        "granularity": "month",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       },
+       {
+        "k": "text",
+        "t": " · "
+       },
+       {
+        "k": "label",
+        "t": "pending redemption",
+        "stated": "6.125% senior notes due October 2028",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+         "doc": "thc-20260908.htm"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "figure",
+        "t": "$500MM",
+        "printed": "$ 0.5 billion",
+        "src": {
+         "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+         "doc": "8-K 2026-09-22"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", not yet confirmed by a filing"
+       }
+      ],
+      [
+       {
+        "k": "computed",
+        "t": "$72MM",
+        "usd": 72000000,
+        "parts": [
+         {
+          "printed": "$ 2,422 million",
+          "usd": 2422000000,
+          "src": {
+           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         },
+         {
+          "printed": "$ 600 million",
+          "usd": -600000000,
+          "src": {
+           "sentence": "4.625 % due 2028 $ 600   $ 600",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         },
+         {
+          "printed": "$ 1,750 million",
+          "usd": -1750000000,
+          "src": {
+           "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " other scheduled principal, per the filer's schedule"
+       }
+      ]
+     ]
+    },
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "2029"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "figure",
+        "t": "$1,400MM",
+        "printed": "$ 1,400 million",
+        "src": {
+         "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "4.250 % due 2029"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "4.250%",
+        "stated": "4.250 %",
+        "src": {
+         "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "secured",
+        "stated": "secured",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "2029",
+        "date": "2029",
+        "granularity": "year",
+        "src": {
+         "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ],
+      [
+       {
+        "k": "computed",
+        "t": "$57MM",
+        "usd": 57000000,
+        "parts": [
+         {
+          "printed": "$ 1,457 million",
+          "usd": 1457000000,
+          "src": {
+           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         },
+         {
+          "printed": "$ 1,400 million",
+          "usd": -1400000000,
+          "src": {
+           "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " other scheduled principal, per the filer's schedule"
+       }
+      ]
+     ]
+    },
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "2030"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "figure",
+        "t": "$1,450MM",
+        "printed": "$ 1,450 million",
+        "src": {
+         "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "4.375 % due 2030"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "4.375%",
+        "stated": "4.375 %",
+        "src": {
+         "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "secured",
+        "stated": "secured",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "2030",
+        "date": "2030",
+        "granularity": "year",
+        "src": {
+         "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ],
+      [
+       {
+        "k": "figure",
+        "t": "$2,000MM",
+        "printed": "$ 2,000 million",
+        "src": {
+         "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "6.125 % due 2030"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "6.125%",
+        "stated": "6.125 %",
+        "src": {
+         "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "secured",
+        "stated": "secured",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "2030",
+        "date": "2030",
+        "granularity": "year",
+        "src": {
+         "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ],
+      [
+       {
+        "k": "computed",
+        "t": "$38MM",
+        "usd": 38000000,
+        "parts": [
+         {
+          "printed": "$ 3,488 million",
+          "usd": 3488000000,
+          "src": {
+           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         },
+         {
+          "printed": "$ 1,450 million",
+          "usd": -1450000000,
+          "src": {
+           "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         },
+         {
+          "printed": "$ 2,000 million",
+          "usd": -2000000000,
+          "src": {
+           "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " other scheduled principal, per the filer's schedule"
+       }
+      ]
+     ]
+    },
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "2031"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "figure",
+        "t": "$1,350MM",
+        "printed": "$ 1,350 million",
+        "src": {
+         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "6.750 % due 2031"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "6.750%",
+        "stated": "6.750 %",
+        "src": {
+         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "secured",
+        "stated": "secured",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "2031",
+        "date": "2031",
+        "granularity": "year",
+        "src": {
+         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ],
+      [
+       {
+        "k": "figure",
+        "t": "$362MM",
+        "printed": "$ 362 million",
+        "src": {
+         "sentence": "6.875 % due 2031 $ 362   $ 362",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "6.875 % due 2031"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "6.875%",
+        "stated": "6.875 %",
+        "src": {
+         "sentence": "6.875 % due 2031 $ 362   $ 362",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "unsecured",
+        "stated": "unsecured",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "2031",
+        "date": "2031",
+        "granularity": "year",
+        "src": {
+         "sentence": "6.875 % due 2031 $ 362   $ 362",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     ]
+    },
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "2032"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "figure",
+        "t": "$1,500MM",
+        "printed": "$ 1,500 million",
+        "src": {
+         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "5.500 % due 2032"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "5.500%",
+        "stated": "5.500 %",
+        "src": {
+         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "secured",
+        "stated": "secured",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior secured first lien notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "2032",
+        "date": "2032",
+        "granularity": "year",
+        "src": {
+         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     ]
+    },
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "2033"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "figure",
+        "t": "$750MM",
+        "printed": "$ 750 million",
+        "src": {
+         "sentence": "6.000 % due 2033 $ 750   $ —",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "6.000 % due 2033"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "6.000%",
+        "stated": "6.000 %",
+        "src": {
+         "sentence": "6.000 % due 2033 $ 750   $ —",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "senior",
+        "stated": "Senior",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "unsecured",
+        "stated": "unsecured",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "notes",
+        "stated": "notes",
+        "src": {
+         "sentence": "Senior unsecured notes",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", due "
+       },
+       {
+        "k": "date",
+        "t": "2033",
+        "date": "2033",
+        "granularity": "year",
+        "src": {
+         "sentence": "6.000 % due 2033 $ 750   $ —",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     ]
+    },
+    {
+     "heading": [
+      {
+       "k": "text",
+       "t": "No maturity stated"
+      }
+     ],
+     "lines": [
+      [
+       {
+        "k": "figure",
+        "t": "$671MM",
+        "printed": "$ 671 million",
+        "src": {
+         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        },
+        "row": "Finance leases, mortgages and other notes"
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "Finance leases, mortgages and other notes",
+        "stated": "Finance leases, mortgages and other notes",
+        "src": {
+         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", no maturity stated"
+       },
+       {
+        "k": "text",
+        "t": " · "
+       },
+       {
+        "k": "notStated",
+        "t": "seniority and security not stated, please refer to sources",
+        "src": {
+         "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "doc": "10-Q 2026-07-29"
+        }
+       }
+      ]
+     ]
+    }
+   ]
+  },
+  "facilities": [
+   {
+    "bold": [
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "senior",
+      "src": {
+       "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "secured",
+      "stated": "secured",
+      "src": {
+       "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "$1,900MM",
+      "printed": "$ 1.900 billion",
+      "src": {
+       "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      },
+      "field": "facilitySize"
+     },
+     {
+      "k": "text",
+      "t": " size"
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "$0",
+      "printed": "$0",
+      "src": {
+       "sentence": "On that date, we had no cash borrowings and less than $ 1  million of standby letters of credit outstanding under the Credit Agreement.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      },
+      "field": "drawn"
+     },
+     {
+      "k": "text",
+      "t": " drawn"
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "<$1MM",
+      "printed": "less than $ 1 million",
+      "src": {
+       "sentence": "On that date, we had no cash borrowings and less than $ 1  million of standby letters of credit outstanding under the Credit Agreement.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      },
+      "field": "lettersOfCredit"
+     },
+     {
+      "k": "text",
+      "t": " letters of credit"
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "text",
+      "t": "matures "
+     },
+     {
+      "k": "date",
+      "t": "November 4, 2030",
+      "date": "2030-11-04",
+      "granularity": "day",
+      "src": {
+       "sentence": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
+       "doc": "thc-20251231.htm"
+      }
+     }
+    ],
+    "sub": [
+     {
+      "k": "text",
+      "t": "Letter-of-credit sub-facility "
+     },
+     {
+      "k": "figure",
+      "t": "$200MM",
+      "printed": "$ 200 million",
+      "src": {
+       "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", capacity only."
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "Borrowing-base limited",
+      "stated": "borrowing base",
+      "src": {
+       "sentence": "Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible accounts receivable, eligible inventory and Medicaid supplemental payments, was $ 1.900  billion at June 30, 2026.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": "; stated availability shown."
+     }
+    ]
+   },
+   {
+    "bold": [
+     {
+      "k": "text",
+      "t": "letter of credit facility"
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "$105MM",
+      "printed": "$ 105 million",
+      "src": {
+       "sentence": "At June 30, 2026, we had $ 105 million of standby letters of credit outstanding under the LC Facility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      },
+      "field": "lettersOfCredit"
+     },
+     {
+      "k": "text",
+      "t": " letters of credit outstanding"
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "$200MM",
+      "printed": "$ 200 million",
+      "src": {
+       "sentence": "We have a letter of credit facility (as amended to date, the \"LC Facility\") that provides for the issuance, from time to time, of standby and documentary letters of credit in an aggregate principal amount of up to $ 200  million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      },
+      "field": "facilitySize"
+     },
+     {
+      "k": "text",
+      "t": " size"
+     }
+    ],
+    "sub": null
+   }
+  ],
+  "notShown": [
+   [
+    {
+     "k": "text",
+     "t": "Nothing withheld this week."
+    }
+   ]
+  ],
+  "footnote": [
+   {
+    "k": "text",
+    "t": "Face total "
+   },
+   {
+    "k": "computed",
+    "t": "$13,333MM",
+    "usd": 13333000000,
+    "parts": [
+     {
+      "printed": "$ 1,500 million",
+      "usd": 1500000000,
+      "src": {
+       "sentence": "5.125 % due 2027 $ 1,500   $ 1,500",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 600 million",
+      "usd": 600000000,
+      "src": {
+       "sentence": "4.625 % due 2028 $ 600   $ 600",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,400 million",
+      "usd": 1400000000,
+      "src": {
+       "sentence": "4.250 % due 2029 $ 1,400   $ 1,400",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,450 million",
+      "usd": 1450000000,
+      "src": {
+       "sentence": "4.375 % due 2030 $ 1,450   $ 1,450",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 2,000 million",
+      "usd": 2000000000,
+      "src": {
+       "sentence": "6.125 % due 2030 $ 2,000   $ 2,000",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,350 million",
+      "usd": 1350000000,
+      "src": {
+       "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,500 million",
+      "usd": 1500000000,
+      "src": {
+       "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 1,750 million",
+      "usd": 1750000000,
+      "src": {
+       "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 362 million",
+      "usd": 362000000,
+      "src": {
+       "sentence": "6.875 % due 2031 $ 362   $ 362",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 750 million",
+      "usd": 750000000,
+      "src": {
+       "sentence": "6.000 % due 2033 $ 750   $ —",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 671 million",
+      "usd": 671000000,
+      "src": {
+       "sentence": "Finance leases, mortgages and other notes $ 671   $ 603",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     }
+    ]
+   },
+   {
+    "k": "text",
+    "t": ". Balance sheet "
+   },
+   {
+    "k": "computed",
+    "t": "$13,248MM",
+    "usd": 13248000000,
+    "parts": [
+     {
+      "printed": "$ 160 million",
+      "usd": 160000000,
+      "src": {
+       "sentence": "Current portion of long-term debt $ 160   $ 79",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     },
+     {
+      "printed": "$ 13,088 million",
+      "usd": 13088000000,
+      "src": {
+       "sentence": "Long-term debt, net of current portion $ 13,088   $ 13,092",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+       "doc": "10-Q 2026-07-29"
+      }
+     }
+    ]
+   },
+   {
+    "k": "text",
+    "t": ", after "
+   },
+   {
+    "k": "figure",
+    "t": "$85MM",
+    "printed": "$ 85 million",
+    "src": {
+     "sentence": "Unamortized issue costs and note discounts ( 85 ) ( 94 )",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+     "doc": "10-Q 2026-07-29"
+    }
+   },
+   {
+    "k": "text",
+    "t": " of "
+   },
+   {
+    "k": "label",
+    "t": "unamortized issue costs and note discounts",
+    "stated": "Unamortized issue costs and note discounts",
+    "src": {
+     "sentence": "Unamortized issue costs and note discounts ( 85 ) ( 94 )",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+     "doc": "10-Q 2026-07-29"
+    }
+   },
+   {
+    "k": "text",
+    "t": "."
+   },
+   {
+    "k": "text",
+    "t": " Every figure links to the sentence it came from."
+   }
+  ]
  }
 }

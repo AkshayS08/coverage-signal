@@ -27,7 +27,8 @@ import { classifyInstrument, type NoteSeniorityStatement } from "../events/instr
 import { extractFactTokens, factTokensMatch } from "../agent/factTokens";
 import { createTextLocator } from "../agent/verifyQuote";
 
-import type { Card, CardFacts, CardSection, Fact, Line, Segment, Source } from "./types";
+import type { BarSegment, Card, CardFacts, CardSection, CardV3, ChartBar, Fact, Line, PaletteColor, Segment, Source, Tag } from "./types";
+import { PALETTE } from "./types";
 import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord } from "./labels";
 import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings } from "./headings";
@@ -1373,6 +1374,491 @@ export function buildCard(i: CardInputs): Card {
     coverageLines.push(line);
   }
 
+
+  // ════════════════════════════════════════════════════════════════════════
+  // CARD_SPEC v3.0 — THE REDESIGNED CARD, built from the same items, moves and
+  // schedule as the v2.2 sections above. Presentation only: no new data. Every
+  // figure is a linked Segment; a chart label or table cell is a computed
+  // figure whose parts are the source figures.
+  // ════════════════════════════════════════════════════════════════════════
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+  /** A move's date as the card shows it: "Sept 22, 2026" where a day is stated, "May 2026" where only a month is. */
+  const whenShort = (m: Move): string => (/\d{1,2},\s*\d{4}/.test(m.when) ? shortDate(m.sort) : /^[A-Z][a-z]+ \d{4}$/.test(m.when) ? `${MON[Number(m.sort.slice(5, 7)) - 1]} ${m.sort.slice(0, 4)}` : m.when);
+  const dateOf = (m: Move, text?: string): Segment => (m.dateSeg.k === "label" ? { ...m.dateSeg, t: text ?? whenShort(m) } : t(text ?? whenShort(m)));
+  /** First letter up, for display only: what a label states is unchanged. */
+  const capFirst = (l: Line): Line => l.map((x, n) => (n === 0 ? { ...x, t: x.t.replace(/^[,;\s]+/, "").replace(/^./, (c) => c.toUpperCase()) } : x));
+  const whenOf = (m: Item["maturity"]): string => (!m ? "Various" : m.granularity === "year" ? m.date.slice(0, 4) : m.granularity === "month" ? `${MON[Number(m.date.slice(5, 7)) - 1]} ${m.date.slice(0, 4)}` : shortDate(m.date));
+  const usdSeg = (parts: Part[], opts: { bare?: boolean; hedged?: boolean } = {}): Segment => {
+    const usd = sum(parts);
+    const shown = displayUsd(usd, opts.hedged ?? parts.some(hedgedPart), dp(parts));
+    return { k: "computed", t: opts.bare ? shown.replace(/\$/, "").replace(/MM$/, "") : shown, usd, parts };
+  };
+  const nounPlural = (type: string) => /s$/.test(type);
+  /** Coupon, labels, type: the instrument's own words, in §3.7 order, with no amount and no date. */
+  const instrumentWords = (it: Item): Line => {
+    const out: Line = [];
+    const c = couponOf(it.name);
+    if (c) out.push({ k: "label", t: c.shown, stated: c.printed, src: it.nameSrc }, t(" "));
+    const showName = !c && !isCP(it) && it.labels.type.t !== it.name;
+    for (const l of [it.labels.seniority, it.labels.security]) if (l && !(showName && l.k === "label" && containsWord(it.name, l.stated))) out.push(l, t(" "));
+    out.push(showName ? { k: "label", t: it.name, stated: it.name, src: it.nameSrc } : it.labels.type);
+    if (it.basis === "carrying") out.push(t(" (carrying value)"));
+    return out;
+  };
+  const colorOf = (it: Item): PaletteColor => {
+    const sec = it.labels.security?.t ?? "";
+    if (/unsecured/i.test(sec)) return PALETTE.unsecured;
+    if (/secured|lien/i.test(sec)) return /junior|second/i.test(`${it.labels.seniority?.t ?? ""} ${it.name}`) ? PALETTE.juniorSecured : PALETTE.seniorSecured;
+    return PALETTE.notStated;
+  };
+
+  // ── what each instrument's stated moves did to it (§2.10) ──
+  const retirementsOf = (it: Item) => movesAll.filter((x) => RETIRES.has(x.type) && x.faceUsd && sameNote(x.instrument, it.name) && (!it.maturity || !/\b20\d\d\b/.test(x.instrument) || x.instrument.includes(it.maturity.date.slice(0, 4))));
+  const faceUsdOf = (it: Item) => sum(partOf(it));
+  const inWindowItem = (it: Item) => boxRows.some((r) => r.it === it && !r.it.isCapacity);
+  /** Face of the instrument set to be retired, or retired since the position date, with the stated proceeds of new debt. */
+  const refinancedOf = (it: Item) => retirementsOf(it).filter((m) => m.fundedBy && !m.inPeriod).reduce((a, m) => a + m.faceUsd!, 0);
+  const remainsUsd = (it: Item, retired: Move[]) => faceUsdOf(it) - retired.filter((m) => !m.inPeriod).reduce((a, m) => a + m.faceUsd!, 0);
+  const statusOf = (it: Item): Tag | null => {
+    if (isCP(it)) {
+      const cpb = i.facts?.commercialPaper?.backedBy;
+      return cpb && (cpb.src.url === anchor.url || (i.laterUrls ?? []).includes(cpb.src.url)) ? { text: [{ k: "label", t: "Backed by revolver", stated: cpb.value, src: src(cpb.src.sentence, cpb.src.url) }], tone: "neutral" } : { text: [t("Short-term")], tone: "neutral" };
+    }
+    const rs = retirementsOf(it);
+    const refi = refinancedOf(it);
+    if (inWindowItem(it) && faceUsdOf(it) - refi > 0.5e6) return { text: [t("Not yet refinanced")], tone: "orange" };
+    if (!rs.length) return null;
+    const funded = rs.every((m) => m.fundedBy);
+    const retired = rs.reduce((a, m) => a + m.faceUsd!, 0);
+    const remains = remainsUsd(it, rs);
+    const fig = (usd: number, ms: Move[]): Segment => ({ k: "computed", t: displayUsd(usd, ms.some((m) => /~/.test(m.face?.t ?? "")), 0), usd, parts: ms.map((m) => ({ printed: (m.face as any).printed, usd: m.faceUsd!, src: (m.face as any).src })) });
+    if (funded && remains < 0.5e6) {
+      const pending = rs.some((m) => m.status === "pending");
+      const m0 = rs[0];
+      return pending
+        ? { text: [t("Refinanced · "), dateOf(m0, `redemption set for ${whenShort(m0).replace(/, \d{4}$/, "")}`)], tone: "pending" }
+        : { text: [t("Refinanced · "), dateOf(m0, `redeemed ${monthYear(m0.sort)}`)], tone: "refinanced" };
+    }
+    const remainFig: Segment = { k: "computed", t: displayUsd(remains, false, dp(partOf(it))), usd: remains, parts: [...partOf(it), ...rs.filter((m) => !m.inPeriod).map((m) => ({ printed: (m.face as any).printed, usd: -m.faceUsd!, src: (m.face as any).src }))] };
+    const word = funded ? "refinanced" : rs.every((m) => m.type === "tender or repurchase") ? `repurchased in ${rs[0].sort.slice(0, 4)}` : `retired in ${rs[0].sort.slice(0, 4)}`;
+    return { text: [fig(retired, rs), t(` ${word} · `), remainFig, t(" remains")], tone: funded ? "pending" : "neutral" };
+  };
+  const notStatedPhrase = (it: Item) => (!it.labels.seniority && !it.labels.security ? "Seniority not stated" : !it.labels.security ? "Security not stated" : !it.labels.seniority ? "Seniority not stated" : null);
+
+  // ── 2.1 header and the rolled-position note ──
+  const otherCount = other.length;
+  const v3header: CardV3["header"] = {
+    label: `Weekly coverage brief · ${weekRange(weekFrom, briefDate)}`,
+    company: result.company,
+    position: [t("Position as of "), periodDate()],
+    filing: { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url },
+    status: actionable.length
+      ? [t(`${actionable.length} filing${actionable.length === 1 ? "" : "s"} this week may affect debt`)]
+      : otherCount
+        ? [t(`${otherCount} filing${otherCount === 1 ? "" : "s"} this week, none affecting debt: `), ...other.flatMap((f, n) => [...(n ? [t(" ")] : []), { k: "filing", t: `${formName(f.form)} ${shortDate(f.filingDate)}`, url: f.primaryDocUrl } as Segment])]
+        : [t("No new debt filings this week")],
+    actionable,
+  };
+  const baseUrl = dm?.priorPeriodBase?.filingUrl as string | undefined;
+  const rolledNote: Line | null = rolledLabel && baseUrl
+    ? [t(`This company's ${anchor.form} does not list its notes. This list comes from the `), { k: "filing", t: `${rolledFrom(rolledLabel)} 10-K`, url: baseUrl }, t(`, updated for changes through ${displayDate(periodEnd, "day")}. Rows from the 10-K carry a 10-K tag.`)]
+    : null;
+
+  // ── 2.2 the call box ──
+  const named = maturing.map((r) => r.it);
+  const cpItems = anchorItems.filter((x) => isCP(x) && !x.isCapacity);
+  const dueParts = named.flatMap(partOf);
+  const refiItems = named.filter((it) => refinancedOf(it) > 0.5e6);
+  const refiParts: Part[] = named.flatMap((it) => retirementsOf(it).filter((m) => m.fundedBy && !m.inPeriod).map((m) => ({ printed: (m.face as any).printed as string, usd: m.faceUsd!, src: (m.face as any).src as Source })));
+  const notYetItems = named.filter((it) => faceUsdOf(it) - refinancedOf(it) > 0.5e6);
+  const notYetUsd = sum(dueParts) - sum(refiParts);
+  const leftoverSegs = [...otherScheduled.entries()].filter(([y]) => `${y}-12-31` >= briefDate && `${y}-01-01` <= windowEnd).map(([, o]) => o.seg).filter((x): x is Extract<Segment, { k: "computed" }> => x.k === "computed");
+  const leftoverMaybe = [...otherScheduled.keys()].some((y) => `${y}-12-31` >= briefDate && `${y}-01-01` <= windowEnd && (`${y}-01-01` < briefDate || `${y}-12-31` > windowEnd));
+  const callCase: CardV3["call"]["case"] = named.length ? (notYetItems.length ? "A" : "B") : leftoverSegs.length ? "C" : "D";
+  let daggerUsed = false;
+  const phraseFor = (its: Item[]): string => {
+    if (its.length === 1) {
+      const it = its[0];
+      const words = instrumentWords(it).filter((x) => x.t.trim()).map((x) => x.t).join(" ").replace(/\s+/g, " ").replace(/ \(carrying value\)/, "");
+      return `${words} due ${it.maturity ? (it.maturity.granularity === "day" ? displayDate(it.maturity.date, "day") : it.maturity.granularity === "month" ? displayDate(it.maturity.date, "month") : it.maturity.date.slice(0, 4)) : "in the window"}`;
+    }
+    const types = [...new Set(its.map((x) => x.labels.type.t))];
+    const typeText = types.length === 1 ? types[0] : `${types.slice(0, -1).join(", ")} and ${types[types.length - 1]}`;
+    const years = [...new Set(its.map((x) => x.maturity?.date.slice(0, 4)))];
+    return `${typeText} due ${years.length === 1 && years[0] ? `in ${years[0]}` : `by ${shortDate(windowEnd)}`}`;
+  };
+  const verbFor = (its: Item[]) => (its.length > 1 || nounPlural(its[0].labels.type.t) ? "are" : "is");
+  const headline: Line = [];
+  if (callCase === "A") {
+    const nyParts: Part[] = [...notYetItems.flatMap(partOf), ...refiParts.filter((p) => notYetItems.some((it) => retirementsOf(it).some((m) => (m.face as any)?.src === p.src))).map((p) => ({ ...p, usd: -p.usd }))];
+    headline.push(usdSeg(nyParts), t(` of ${phraseFor(notYetItems)} ${verbFor(notYetItems)} not yet refinanced.`));
+    const done = refiItems.filter((it) => !notYetItems.includes(it));
+    if (done.length) headline.push(t(` ${done.length === 1 ? `The ${done[0].maturity?.date.slice(0, 4) ?? ""} ${done[0].labels.type.t}`.replace(/\s+/g, " ") : `The other ${done.length} instruments`} ${verbFor(done)} already refinanced.`));
+  } else if (callCase === "B") headline.push(t("Everything due in the next 18 months is refinanced."));
+  else if (callCase === "C") {
+    const ps = leftoverSegs.flatMap((x) => x.parts);
+    headline.push(t("No notes or loans mature in the next 18 months. "), { k: "computed", t: displayUsd(leftoverSegs.reduce((a, x) => a + x.usd, 0), false, Math.max(0, ...leftoverSegs.map((x) => (/\.(\d+)MM/.exec(x.t)?.[1] ?? "").length))), usd: leftoverSegs.reduce((a, x) => a + x.usd, 0), parts: ps }, ...(leftoverMaybe ? [t(MARK)] : []), t(" of scheduled amortization."));
+    if (leftoverMaybe) daggerUsed = true;
+  } else headline.push(t("Nothing matures in the next 18 months."));
+  const cpb = i.facts?.commercialPaper?.backedBy;
+  const cpBacker = cpb && (cpb.src.url === anchor.url || (i.laterUrls ?? []).includes(cpb.src.url)) ? facilities.find((f) => !/commercial paper/i.test(f.name) && f.facilitySize) : undefined;
+  for (const cp of cpItems) {
+    const parts = partOf(cp);
+    headline.push(t(" About "), { k: "computed", t: displayUsd(sum(parts), false, dp(parts)), usd: sum(parts), parts }, t(" of commercial paper is also outstanding"));
+    if (cpBacker?.facilitySize) headline.push(t(", "), { k: "label", t: "backed by", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(" the "), { k: "figure", t: displayAmount(cpBacker.facilitySize.value, cpBacker.facilitySize.sourceLine), printed: cpBacker.facilitySize.value, src: src(cpBacker.facilitySize.sourceLine, cpBacker.figureSources?.facilitySize ?? cpBacker.citedUrl) }, t(" revolver"));
+    headline.push(t("."));
+  }
+  const tiles: CardV3["call"]["tiles"] = [];
+  if (callCase === "A" || callCase === "B") {
+    const years = [...new Set(named.map((x) => x.maturity?.date.slice(0, 4)))];
+    tiles.push({ key: "due", label: "Due in window", value: usdSeg(dueParts), usd: sum(dueParts), sub: [t(`${named.length} ${named.every((x) => x.labels.type.t === "notes") ? "note issue" : "issue"}${named.length === 1 ? "" : "s"}${years.length === 1 && years[0] ? `, all in ${years[0]}` : ""}`)] });
+    const by = named.flatMap(retirementsOf).find((m) => m.fundedBy)?.fundedBy;
+    tiles.push(refiParts.length
+      ? { key: "refinanced", label: "Refinanced", value: usdSeg(refiParts), usd: sum(refiParts), sub: [t(by ? `With the ${whenShort(by).replace(/, \d{4}$/, "")} notes` : "With stated proceeds of new debt"), t(named.flatMap(retirementsOf).some((m) => m.status === "pending") ? " · redemption awaiting confirmation" : "")] }
+      : { key: "refinanced", label: "Refinanced", value: { k: "computed", t: "$0", usd: 0, parts: [] }, usd: 0, sub: [t("None stated in any filing")] });
+    if (notYetUsd > 0.5e6) tiles.push({ key: "notYet", label: "Not yet refinanced", value: { k: "computed", t: displayUsd(notYetUsd, false, Math.max(dp(dueParts), dp(refiParts))), usd: notYetUsd, parts: [...dueParts, ...refiParts.map((p) => ({ ...p, usd: -p.usd }))] }, usd: notYetUsd, sub: [t("The refinancing conversation")] });
+  }
+  const afterItem = allDebtItems.filter((it) => it.maturity && spanOf(it.maturity.date, it.maturity.granularity)[0] > windowEnd).sort((a, b) => a.maturity!.date.localeCompare(b.maturity!.date))[0];
+  const monthsFrom = (from: string, to: string) => (Number(to.slice(0, 4)) - Number(from.slice(0, 4))) * 12 + Number(to.slice(5, 7)) - Number(from.slice(5, 7)) - (Number(to.slice(8, 10)) < Number(from.slice(8, 10)) ? 1 : 0);
+  const nextTile: CardV3["call"]["nextTile"] = (callCase === "C" || callCase === "D") && afterItem
+    ? {
+        value: usdSeg(partOf(afterItem)),
+        instrument: instrumentWords(afterItem),
+        date: { k: "date", t: displayDate(afterItem.maturity!.date, afterItem.maturity!.granularity), date: afterItem.maturity!.date, granularity: afterItem.maturity!.granularity, src: afterItem.maturity!.src },
+        away: afterItem.maturity!.granularity === "year" ? null : (() => {
+          const end = afterItem.maturity!.granularity === "month" ? `${afterItem.maturity!.date.slice(0, 8)}01` : afterItem.maturity!.date;
+          const n = monthsFrom(briefDate, end), past = monthsFrom(windowEnd, end);
+          return `${n} month${n === 1 ? "" : "s"} away${past > 0 ? ` · ${past} month${past === 1 ? "" : "s"} past the window` : ""}`;
+        })(),
+      }
+    : null;
+  const callRows: CardV3["call"]["rows"] = [];
+  for (const cp of cpItems) {
+    const body: Line = [usdSeg(partOf(cp)), t(" "), ...(cp.labels.security ? [cp.labels.security, t(" ")] : []), cp.labels.type];
+    const rate = i.facts?.commercialPaper?.averageRate;
+    if (rate && (rate.src.url === anchor.url || (i.laterUrls ?? []).includes(rate.src.url))) body.push(t(", "), { k: "label", t: `${rate.value.replace(/\s+%/, "%")} average rate`, stated: rate.value, src: src(rate.src.sentence, rate.src.url) });
+    callRows.push({ when: [t("Short-term")], body, tenK: false, tag: statusOf(cp), usd: null, isCP: true });
+  }
+  for (const r of boxRows) {
+    const when: Line = [r.it.maturity ? { k: "date", t: whenOf(r.it.maturity), date: r.it.maturity.date, granularity: r.it.maturity.granularity, src: r.it.maturity.src } : t("—")];
+    if (r.maybe) { when.push(t(` ${MARK}`)); daggerUsed = true; }
+    callRows.push({ when, body: [usdSeg(partOf(r.it)), t(" "), ...instrumentWords(r.it)], tenK: r.it.rolled, tag: statusOf(r.it), usd: faceUsdOf(r.it), isCP: false });
+  }
+  const callNotes: Line[] = [];
+  if ((callCase === "A" || callCase === "B") && leftoverSegs.length) {
+    callNotes.push([t("Also in window: "), { k: "computed", t: displayUsd(leftoverSegs.reduce((a, x) => a + x.usd, 0), false, Math.max(0, ...leftoverSegs.map((x) => (/\.(\d+)MM/.exec(x.t)?.[1] ?? "").length))), usd: leftoverSegs.reduce((a, x) => a + x.usd, 0), parts: leftoverSegs.flatMap((x) => x.parts) }, ...(leftoverMaybe ? [t(MARK)] : []), t(" of scheduled amortization and other principal.")]);
+    if (leftoverMaybe) daggerUsed = true;
+  }
+  if ((callCase === "A" || callCase === "B") && afterItem) {
+    const nx: Line = [t("Next after the window: "), usdSeg(partOf(afterItem)), t(" "), ...instrumentWords(afterItem), t(", "), { k: "date", t: displayDate(afterItem.maturity!.date, afterItem.maturity!.granularity), date: afterItem.maturity!.date, granularity: afterItem.maturity!.granularity, src: afterItem.maturity!.src }];
+    const rf = refinancedOf(afterItem);
+    if (rf > 0.5e6) {
+      const rs = retirementsOf(afterItem).filter((m) => m.fundedBy && !m.inPeriod);
+      nx.push(t(", of which "), { k: "computed", t: displayUsd(rf, false, 0), usd: rf, parts: rs.map((m) => ({ printed: (m.face as any).printed, usd: m.faceUsd!, src: (m.face as any).src })) }, t(" is refinanced, leaving "), { k: "computed", t: displayUsd(faceUsdOf(afterItem) - rf, false, 0), usd: faceUsdOf(afterItem) - rf, parts: [...partOf(afterItem), ...rs.map((m) => ({ printed: (m.face as any).printed, usd: -m.faceUsd!, src: (m.face as any).src }))] });
+    }
+    nx.push(t("."));
+    callNotes.push(nx);
+  }
+
+  // ── 2.3 move cards ──
+  const formOfUrl = (url: string) => (docs.get(url) ?? "").split(" ")[0] || "filing";
+  const moveCards: CardV3["moves"] = [];
+  for (const ms of evs) {
+    const issuance = ms.find((m) => m.type === "issuance");
+    const entry = ms.find((m) => m.type === "facility entry"), term = ms.find((m) => m.type === "facility termination");
+    const faceInst = (m: Move): Line => [...(m.face ? [m.face, t(" ")] : []), instPhrase(m)];
+    if (entry && term) {
+      const lender = facilities.filter((f) => !/commercial paper|letter of credit/i.test(f.name));
+      const fac = lender.length === 1 ? lender[0] : null;
+      const draw = ms.find((m) => m.type === "draw");
+      const oldYear = (/dated\s+[A-Z][a-z]+\s+\d{1,2},\s*(20\d\d)/.exec(term.instrument) ?? /\b(20\d\d)\b/.exec(term.instrument) ?? [])[1];
+      const title: Line = [t(`${fac && /revolv/i.test(fac.name) ? "Revolver" : "Credit facility"}: new `)];
+      if (fac?.facilitySize) title.push({ k: "figure", t: displayAmount(fac.facilitySize.value, fac.facilitySize.sourceLine), printed: fac.facilitySize.value, src: src(fac.facilitySize.sourceLine, fac.figureSources?.facilitySize ?? fac.citedUrl) }, t(" "));
+      title.push(entry.instSeg.k === "label" ? { k: "label", t: "credit agreement", stated: containsWord(entry.instSeg.src.sentence, "credit agreement") ? "credit agreement" : entry.instSeg.stated, src: entry.instSeg.src } : t("credit agreement"), t(" replaced the "), term.instSeg.k === "label" && oldYear ? { k: "label", t: `${oldYear} agreement`, stated: oldYear, src: term.instSeg.src } : t("earlier agreement"));
+      moveCards.push({ meta: [dateOf(entry), t(" · Refinanced")], title: [title], detail: draw ? [...(draw.face ? [draw.face, t(" ")] : []), draw.instSeg.k === "label" ? { k: "label", t: "drawn to retire it", stated: "drew", src: draw.instSeg.src } : t("drawn to retire it"), t(".")] : null, retires: null });
+      continue;
+    }
+    if (issuance) {
+      const left: CardV3["moves"][number] = { meta: [dateOf(issuance), t(` · Issued, confirmed by ${formOfUrl(issuance.url)}`)], title: [faceInst(issuance)], detail: null, retires: null };
+      const extras: Line = [...priceClause(issuance), ...issuance.extra];
+      if (issuance.retires.length) {
+        const pending = issuance.retires.some((r) => r.status === "pending");
+        const r0 = issuance.retires[0];
+        left.retires = {
+          meta: pending ? [t("Refinanced · "), dateOf(r0, `redemption set for ${whenShort(r0)}`), t(", awaiting confirmation in a filing")] : [t("Refinanced · "), dateOf(r0, `redeemed ${monthYear(r0.sort)}`)],
+          items: issuance.retires.map((r) => (r.type === "paydown" ? [...(r.face ? [r.face, t(" ")] : []), t("of the "), instPhrase(r), t(", repaid")] : faceInst(r))),
+        };
+        const use = issuance.retires.length ? [] : useClause(issuance);
+        if (extras.length || use.length) left.detail = [...capFirst([...use, ...extras]), t(".")];
+      } else {
+        const use = useClause(issuance);
+        const d = [...use, ...extras];
+        if (d.length) left.detail = [...capFirst(d), t(".")];
+      }
+      moveCards.push(left);
+      for (const o of ms.filter((m) => m !== issuance && !issuance.retires.includes(m))) moveCards.push({ meta: [dateOf(o), t(` · ${vocab(o)}`)], title: [faceInst(o)], detail: detailOf(o), retires: null });
+      continue;
+    }
+    const sorted = [...ms].sort((a, b) => a.sort.localeCompare(b.sort));
+    const shared = sorted.every((m) => m.fundFact && m.fundFact.value === sorted[0].fundFact?.value);
+    moveCards.push({ meta: [dateOf(sorted[0]), t(` · ${vocab(sorted[0])}`)], title: sorted.map((m) => faceInstOrName(m)), detail: shared || sorted.length === 1 ? detailOf(sorted[0]) : null, retires: null });
+  }
+  function vocab(m: Move): string {
+    if (m.type === "facility amendment") return "Amended";
+    if (m.type === "repayment at maturity") return "Repaid at maturity";
+    if (m.type === "paydown") return "Repaid";
+    if (m.type === "tender or repurchase") return "Repurchased";
+    if (m.type === "special call" || m.type === "redemption") return m.fundedBy ? "Refinanced" : m.status === "pending" ? "Redemption announced, awaiting confirmation in a filing" : "Redeemed";
+    if (m.type === "issuance") return `Issued, confirmed by ${formOfUrl(m.url)}`;
+    if (m.type === "draw") return "Drew";
+    return (TYPE_WORD[m.type]?.[0] ?? m.type).replace(/^./, (c) => c.toUpperCase());
+  }
+  function faceInstOrName(m: Move): Line {
+    if (m.type === "facility amendment") {
+      const incr = /\bincremental\b/i.test(m.sentence);
+      return incr ? [t("Added an incremental "), ...(m.face ? [m.face, t(" ")] : []), instPhrase(m)] : [instPhrase(m), t(" amended")].map((x, n) => (n === 0 && x.k === "label" ? { ...x, t: x.t.replace(/^./, (c) => c.toUpperCase()) } : x));
+    }
+    return [...(m.face ? [m.face, t(" ")] : []), instPhrase(m)];
+  }
+  function detailOf(m: Move): Line | null {
+    const parts = [...fundClause(m), ...useClause(m), ...priceClause(m), ...m.extra];
+    if (m.type === "facility amendment" && !parts.length && !/\bincremental\b/i.test(m.sentence)) return [t("Terms of the amendment are not covered in this version.")];
+    if (!parts.length) return m.type === "repayment at maturity" || m.type === "paydown" ? [t("Funding source not stated.")] : null;
+    const out = capFirst(parts.map((x, n) => (n === 0 && x.k === "text" ? { ...x, t: x.t.replace(/^,\s*funded by/, "with") } : x)));
+    out.push(t("."));
+    return out;
+  }
+
+  // ── 2.4 total debt and liquidity bars ──
+  const tdGroups = [...byType.values()]
+    .flatMap((g) => splitBy(g.items, (it) => it.labels.security).flatMap((a) => splitBy(a, (it) => it.labels.seniority)).map((items) => ({ ...g, items, first: allDebtItems.indexOf(items[0]) })))
+    .map((g) => {
+      const all = (pick: (it: Item) => Segment | null) => (g.items.every((it) => pick(it) && pick(it)!.t === pick(g.items[0])!.t) ? pick(g.items[0]) : null);
+      const sen = all((it) => it.labels.seniority), sec = all((it) => it.labels.security);
+      const kind = kindOf(g.items[0].name);
+      const junior = !!sec && /junior|second/i.test(`${sen?.t ?? ""}`);
+      const tier = kind === "lease" || kind === "other" ? 4 : sec && /unsecured/i.test(sec.t) ? 2 : sec ? (junior ? 1 : 0) : 3;
+      const color: PaletteColor = tier === 0 ? PALETTE.seniorSecured : tier === 1 ? PALETTE.juniorSecured : tier === 2 ? PALETTE.unsecured : PALETTE.notStated;
+      return { g, sen, sec, tier, color };
+    })
+    .sort((a, b) => a.tier - b.tier || a.g.first - b.g.first);
+  const tdSegments: BarSegment[] = [];
+  const tdLegend: CardV3["totalDebt"]["legend"] = [];
+  const carryNotes: Line = [];
+  for (const { g, sen, sec, color } of tdGroups) {
+    const faceIt = g.items.filter((it) => it.basis === "face");
+    const carryIt = g.items.filter((it) => it.basis === "carrying");
+    const label: Line = [];
+    [sen, sec, g.type].filter((x): x is Segment => !!x).forEach((l, n) => label.push(...(n ? [t(" ")] : []), l));
+    if (faceIt.length) {
+      const ps = faceIt.flatMap(partOf);
+      tdSegments.push({ usd: sum(ps), color, title: label.map((x) => x.t).join("") });
+      tdLegend.push({ color, label, amount: usdSeg(ps) });
+    }
+    if (carryIt.length) carryNotes.push(...(carryNotes.length ? [t("; ")] : []), ...label, t(" "), usdSeg(carryIt.flatMap(partOf)));
+  }
+  const unattributed = faceTotal - tdSegments.reduce((a, x) => a + x.usd, 0);
+  if (faceFromSchedule && unattributed > 0.5e6) {
+    tdSegments.push({ usd: unattributed, color: PALETTE.scheduledOther, title: "face stated only in the filer's schedule" });
+    const parts = [...faceTotalParts, ...tdLegend.flatMap((l) => (l.amount.k === "computed" ? l.amount.parts.map((p) => ({ ...p, usd: -p.usd })) : []))];
+    tdLegend.push({ color: PALETTE.scheduledOther, label: [t("Face stated only in the filer's schedule")], amount: { k: "computed", t: displayUsd(unattributed, false, dp(faceTotalParts)), usd: unattributed, parts } });
+  }
+  const tdNotes: Line[] = carryNotes.length ? [[t(faceFromSchedule ? "At carrying value, not in the bar: " : "Plus, at carrying value and not in the bar: "), ...carryNotes, t(".")]] : [];
+
+  const liqSegments: BarSegment[] = [];
+  const liqLegend: CardV3["liquidity"]["legend"] = [];
+  const liqNotes: Line[] = [];
+  if (i.cash.usd !== null && i.cash.printedLine && i.cash.printed) {
+    const s0 = anchorSrc(i.cash.printedLine);
+    const filerLabel = (/^\s*([A-Za-z][A-Za-z ,&'’\-]*?[A-Za-z])\s*\$?\s*\(?\d/.exec(i.cash.printedLine) ?? [])[1] ?? "Cash";
+    liqSegments.push({ usd: i.cash.usd, color: PALETTE.cash, title: filerLabel });
+    liqLegend.push({ color: PALETTE.cash, label: [{ k: "label", t: filerLabel, stated: filerLabel, src: s0 }], amount: { k: "figure", t: displayAmount(i.cash.printed, i.cash.printedLine), printed: i.cash.printed, src: s0 } });
+  }
+  for (const f of lenders) {
+    if (!f.available) continue;
+    const fsrc = src(f.available.sourceLine, f.figureSources?.available ?? f.citedUrl);
+    const usd = parseMoneyAmount(f.available.value) ?? 0;
+    const m = facilityMaturityAtItsSentence(f);
+    // The type word links to a sentence of the facility's own that names it.
+    const typeWord = classifyInstrument({ headings: [], instrumentName: f.name });
+    const typeSrc = [fsrc, ...[f.facilitySize, f.drawn, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => src(x.sourceLine, f.figureSources?.facilitySize ?? f.citedUrl))].find((x) => containsWord(x.sentence, typeWord.instrumentTypeStatedAs ?? f.name) || containsWord(x.sentence, f.name));
+    const type: Segment = typeSrc ? typeLabel({ instrument: f.name, classification: typeWord }, typeSrc) : t(typeLabel({ instrument: f.name, classification: typeWord }, fsrc).t);
+    liqSegments.push({ usd, color: PALETTE.undrawn, title: f.name });
+    liqLegend.push({ color: PALETTE.undrawn, label: [t("Undrawn "), type, ...(m.kind === "dated" ? [t(", matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: src(m.sentence, f.figureSources?.maturity ?? f.citedUrl) } as Segment] : [])], amount: { k: "figure", t: displayAmount(f.available.value, f.available.sourceLine), printed: f.available.value, src: fsrc } });
+    if (borrowingBaseOf(f)) liqNotes.push([t("Borrowing-base limited; stated availability shown.")]);
+  }
+  for (const u of (i.facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
+    liqNotes.push([t("Not counted: "), ...(u.amount && liqPermitted(u.amount.src.url) ? [t("up to "), liqFig(u.amount), t(" of ")] : []), { k: "label", t: u.description.value.replace(/^uncommitted capacity to incur /i, "uncommitted "), stated: u.description.value, src: src(u.description.src.sentence, u.description.src.url) }, t(".")]);
+  }
+  if (cpItems.length && cpBacker?.available) liqNotes.push([t("The revolver also "), { k: "label", t: "backs", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(" "), usdSeg(partOf(cpItems[0])), t(" of commercial paper outstanding. Commercial paper itself is not counted as liquidity.")]);
+  const liqFigure: Segment | null = liqComputable && liqParts.length ? { k: "computed", t: displayUsd(liqUsd, false, dp(liqParts)), usd: liqUsd, parts: liqParts } : null;
+  if (!liqFigure) liqNotes.unshift([t("No liquidity total: cash and every facility's availability are not all stated as of the position date.")]);
+
+  // ── 2.5 the maturity chart ──
+  type Contrib = { usd: number; color: PaletteColor; pattern?: "stripes"; title: string; parts: Part[] };
+  const anchorSchedule = !rc.counts && scheduleByYear.size > 0;
+  const isBond = (it: Item) => !!couponOf(it.name) || kindOf(it.name) === "bond";
+  const contribOf = (it: Item): Contrib[] => {
+    const base = colorOf(it);
+    const ps = partOf(it);
+    const face = sum(ps);
+    const refi = refinancedOf(it);
+    const out: Contrib[] = [];
+    if (inWindowItem(it) && face - refi > 0.5e6) out.push({ usd: face - refi, color: PALETTE.notRefinanced, title: `${it.name}, not yet refinanced`, parts: ps });
+    else if (face - refi > 0.5e6) out.push({ usd: face - refi, color: base, title: it.name, parts: ps });
+    if (refi > 0.5e6) out.push({ usd: refi, color: base, pattern: "stripes", title: `${it.name}, refinanced, redemption pending confirmation`, parts: [] });
+    return out;
+  };
+  const dated = allDebtItems.filter((it) => it.maturity && !isCP(it));
+  const lastYear = Math.max(Number(briefDate.slice(0, 4)), ...dated.map((it) => Number(it.maturity!.date.slice(0, 4))), ...(anchorSchedule ? [...scheduleByYear.keys()].map(Number) : []));
+  type YearCol = { year: number; items: Item[]; contribs: Contrib[]; totalParts: Part[]; source: "schedule" | "named"; carryingBonds: Item[] };
+  const cols: YearCol[] = [];
+  for (let y = Number(briefDate.slice(0, 4)); y <= lastYear; y++) {
+    const items = dated.filter((it) => it.maturity!.date.startsWith(String(y)));
+    const sch = anchorSchedule ? scheduleByYear.get(String(y)) : undefined;
+    const retired = retiredByYear.get(String(y)) ?? [];
+    if (sch) {
+      const bonds = items.filter((it) => isBond(it) && it.basis === "face");
+      const carryingBonds = items.filter((it) => isBond(it) && it.basis === "carrying");
+      const contribs = bonds.flatMap(contribOf);
+      if (carryingBonds.length) contribs.push({ usd: Math.max(0, sch.part.usd - sum(retired) - contribs.reduce((a, c) => a + c.usd, 0)), color: colorOf(carryingBonds[0]), title: `${carryingBonds.map((x) => x.name).join(", ")}: face only in the filer's schedule`, parts: [sch.part] });
+      else {
+        const rest = sch.part.usd - sum(retired) - contribs.reduce((a, c) => a + c.usd, 0);
+        if (rest > 0.5e6) contribs.push({ usd: rest, color: PALETTE.scheduledOther, title: "scheduled other principal", parts: [] });
+      }
+      cols.push({ year: y, items, contribs, totalParts: [sch.part, ...retired.map((p) => ({ ...p, usd: -p.usd }))], source: "schedule", carryingBonds });
+    } else {
+      cols.push({ year: y, items, contribs: items.flatMap(contribOf), totalParts: items.flatMap(partOf), source: "named", carryingBonds: [] });
+    }
+  }
+  let shown = cols;
+  if (shown.length > 10) shown = shown.filter((c) => c.contribs.length > 0 || c.totalParts.some((p) => p.usd));
+  const bars: ChartBar[] = [];
+  for (const cp of cpItems) bars.push({ label: "CP", total: usdSeg(partOf(cp), { bare: true }), segments: [{ usd: faceUsdOf(cp), color: colorOf(cp), title: "commercial paper outstanding" }], source: "cp", broken: false, drawUsd: faceUsdOf(cp), instruments: 1 });
+  const merge = (cs: Contrib[]): BarSegment[] => {
+    const out: BarSegment[] = [];
+    for (const c of cs) {
+      const prev = out.find((o) => o.color === c.color && o.pattern === c.pattern);
+      if (prev) prev.usd += c.usd; else out.push({ usd: c.usd, color: c.color, ...(c.pattern ? { pattern: c.pattern } : {}), title: c.title });
+    }
+    // Bottom to top: not yet refinanced, then the seniority shades, then stripes, then scheduled other.
+    const rank = (s: BarSegment) => (s.color === PALETTE.notRefinanced ? 0 : s.color === PALETTE.scheduledOther ? 3 : s.pattern ? 2 : 1);
+    return out.sort((a, b) => rank(a) - rank(b));
+  };
+  const head = shown.length > 10 ? shown.slice(0, 9) : shown;
+  const tail = shown.length > 10 ? shown.slice(9) : [];
+  for (const c of head) bars.push({ label: String(c.year), total: usdSeg(c.totalParts, { bare: true }), segments: merge(c.contribs), source: c.source, broken: false, drawUsd: sum(c.totalParts), instruments: c.items.length });
+  if (tail.length) {
+    const ps = tail.flatMap((c) => c.totalParts);
+    bars.push({ label: `${tail[0].year}–${String(tail[tail.length - 1].year).slice(2)}`, total: usdSeg(ps, { bare: true }), segments: merge(tail.flatMap((c) => c.contribs)), source: tail.every((c) => c.source === "schedule") ? "schedule" : "named", broken: false, drawUsd: sum(ps), instruments: tail.reduce((a, c) => a + c.items.length, 0) });
+  }
+  const heights = bars.map((b) => b.drawUsd).sort((a, b) => b - a);
+  const captions: Line[] = [];
+  if (heights.length > 1 && heights[0] > 2 * heights[1]) {
+    const big = bars.find((b) => b.drawUsd === heights[0])!;
+    const second = bars.find((b) => b.drawUsd === heights[1])!;
+    big.broken = true;
+    big.drawUsd = heights[1] * 1.15;
+    captions.push([t(`The ${big.label} bar${big.instruments > 1 ? ` holds ${big.instruments} instruments and` : ""} is cut to fit; its full height would be about ${(heights[0] / heights[1]).toFixed(1)} times the ${second.label} bar.`)]);
+  }
+  const wy = Number(windowEnd.slice(0, 4));
+  let endIndex = bars.findIndex((b) => b.label === String(wy));
+  let endFraction = (Number(windowEnd.slice(5, 7)) - 1 + Number(windowEnd.slice(8, 10)) / 31) / 12;
+  if (endIndex < 0) { endIndex = bars.findIndex((b) => /^\d{4}$/.test(b.label) && Number(b.label) > wy); endFraction = 0; if (endIndex < 0) { endIndex = bars.length - 1; endFraction = 1; } }
+  const usedColors = new Set(bars.flatMap((b) => b.segments.map((s) => `${s.color}${s.pattern ? "|stripes" : ""}`)));
+  const LEGEND: [string, CardV3["chart"]["legend"][number]][] = [
+    [PALETTE.seniorSecured, { color: PALETTE.seniorSecured, label: "Secured" }],
+    [PALETTE.juniorSecured, { color: PALETTE.juniorSecured, label: "Junior-priority secured" }],
+    [PALETTE.unsecured, { color: PALETTE.unsecured, label: "Unsecured" }],
+    [PALETTE.notStated, { color: PALETTE.notStated, label: "Seniority not stated" }],
+    [PALETTE.scheduledOther, { color: PALETTE.scheduledOther, label: "Scheduled other" }],
+  ];
+  const chartLegend: CardV3["chart"]["legend"] = LEGEND.filter(([c]) => usedColors.has(c)).map(([, e]) => e);
+  const striped = [...usedColors].filter((k) => k.endsWith("|stripes"));
+  if (striped.length) chartLegend.push({ color: striped[0].split("|")[0] as PaletteColor, pattern: "stripes", label: "Refinanced, redemption pending confirmation" });
+  if (usedColors.has(PALETTE.notRefinanced)) chartLegend.push({ color: PALETTE.notRefinanced, label: "Due in window, not yet refinanced" });
+  const enc: string[] = ["Color shows seniority."];
+  if (striped.length) enc.push("Stripes show debt refinanced with new notes, whose redemption a filing has yet to confirm.");
+  if (usedColors.has(PALETTE.notRefinanced)) enc.push("Orange shows debt due inside the window that is not yet refinanced.");
+  if (usedColors.has(PALETTE.scheduledOther)) enc.push(anchorSchedule ? "Where the filer prints a maturity schedule, each bar is the schedule's figure for its year: notes at full face, and term loans, leases and other amortizing debt in the scheduled other principal." : "");
+  captions.unshift([t(enc.filter(Boolean).join(" "))]);
+  const undated = allDebtItems.filter((it) => !it.maturity && !isCP(it));
+  if (undated.length) captions.push([t("Not shown on the chart, with no single maturity: "), ...undated.flatMap((it, n) => [...(n ? [t("; ")] : []), usdSeg(partOf(it)), t(" "), ...instrumentWords(it), ...(it.range ? [t(`, ${it.range.from} to ${it.range.to}`)] : [])]), t(".")]);
+  const carryingYears = cols.filter((c) => c.carryingBonds.length);
+  if (carryingYears.length) captions.push([t(`The ${carryingYears.map((c) => c.year).join(" and ")} bar${carryingYears.length === 1 ? "" : "s"} show the filer's schedule total; the ${carryingYears.flatMap((c) => c.carryingBonds).map((it) => `${couponOf(it.name)?.shown ?? ""} ${it.labels.type.t}`.trim()).join(" and ")} in ${carryingYears.length === 1 ? "it are" : "them are"} stated only at carrying value.`)]);
+  const greyShare = bars.reduce((a, b) => a + b.segments.filter((s) => s.color === PALETTE.notStated).reduce((x, s) => x + s.usd, 0), 0) / Math.max(1, bars.reduce((a, b) => a + b.segments.reduce((x, s) => x + s.usd, 0), 0));
+  const notStatedRows = allDebtItems.filter((it) => notStatedPhrase(it));
+  const mostlyNotStated = notStatedRows.length > allDebtItems.length / 2;
+  if (greyShare > 0.5 || mostlyNotStated) captions.push([{ k: "notStated", t: `This company's filings state seniority or security for few of these instruments, so most ${greyShare > 0.5 ? "bars are grey" : "rows carry no label"}.`, src: notStatedRows[0]?.amountSrc ?? anchorSrc(anchor.form) }]);
+
+  // ── 2.6 the table ──
+  const tableItems = [...cpItems, ...allDebtItems.filter((it) => it.maturity && !isCP(it)).sort((a, b) => a.maturity!.date.localeCompare(b.maturity!.date)), ...allDebtItems.filter((it) => !it.maturity && !isCP(it)).sort((a, b) => (a.range ? 0 : 1) - (b.range ? 0 : 1))];
+  const tableRows: CardV3["table"]["rows"] = tableItems.map((it) => {
+    const st = statusOf(it);
+    const ns = !st && !mostlyNotStated ? notStatedPhrase(it) : null;
+    return {
+      matures: isCP(it) ? [t("Short-term")] : it.maturity ? [{ k: "date", t: whenOf(it.maturity), date: it.maturity.date, granularity: it.maturity.granularity, src: it.maturity.src }] : it.range ? [{ k: "label", t: `${it.range.from}–${it.range.to}`, stated: it.range.stated, src: it.range.src }] : [t("Various")],
+      instrument: instrumentWords(it),
+      tenK: it.rolled,
+      face: usdSeg(partOf(it), { bare: true }),
+      status: st ?? (ns ? { text: [{ k: "notStated", t: ns, src: it.amountSrc }], tone: "neutral" } : null),
+      inWindow: inWindowItem(it) || isCP(it),
+      name: it.rowLabel ?? it.name,
+    };
+  });
+  const lastWindow = tableRows.reduce((a, r, n) => (r.inWindow ? n : a), -1);
+  const visible = tableRows.length > 10 ? Math.max(8, lastWindow + 1) : tableRows.length;
+
+  // ── 2.7 facilities, 2.8 not shown, 2.9 footnote ──
+  const facLines: CardV3["facilities"] = [];
+  for (const f of facilities) {
+    const own = src(f.facilitySize?.sourceLine ?? f.name, f.figureSources?.facilitySize ?? f.citedUrl);
+    const fig = (field: "facilitySize" | "drawn" | "lettersOfCredit" | "available", word: string): Line => { const v = f[field]; return v ? [{ k: "figure", t: displayAmount(v.value, v.sourceLine), printed: v.value, src: src(v.sourceLine, f.figureSources?.[field] ?? f.citedUrl), field }, t(` ${word}`)] : []; };
+    const kind = kindOfFacility(f);
+    const type = typeLabel({ instrument: f.name, classification: classifyInstrument({ headings: [], instrumentName: f.name }) }, own);
+    const labels = classLabels(f.name, own, null);
+    const nameLine: Line = [...[labels.seniority, labels.security].filter((x): x is Segment => !!x).flatMap((l) => [l, t(" ")]), kind === "cp" ? t("commercial paper program") : kind === "lc" ? t("letter of credit facility") : type];
+    const facts: Line[] = [];
+    const m = facilityMaturityAtItsSentence(f);
+    if (kind === "cp") {
+      if (cpFacts?.programSize && permitted(cpFacts.programSize.src.url)) facts.push([factFig(cpFacts.programSize), t(" size")]); else if (f.facilitySize) facts.push(fig("facilitySize", "size"));
+      if (cpFacts?.outstanding && permitted(cpFacts.outstanding.src.url)) facts.push([factFig(cpFacts.outstanding), t(" outstanding")]); else if (f.drawn) facts.push(fig("drawn", "outstanding"));
+      if (cpFacts?.averageRate && permitted(cpFacts.averageRate.src.url)) facts.push([{ k: "label", t: `${cpFacts.averageRate.value.replace(/\s+%/, "%")} average rate`, stated: cpFacts.averageRate.value, src: src(cpFacts.averageRate.src.sentence, cpFacts.averageRate.src.url) }]);
+    } else if (kind === "lc") {
+      if (f.lettersOfCredit) facts.push(fig("lettersOfCredit", "letters of credit outstanding"));
+      facts.push(f.facilitySize ? fig("facilitySize", "size") : [{ k: "notStated", t: "facility size not stated", src: own }]);
+    } else {
+      for (const [field, word] of [["facilitySize", "size"], ["drawn", "drawn"], ["lettersOfCredit", "letters of credit"]] as const) if (f[field]) facts.push(fig(field, word));
+      if (m.kind === "dated") facts.push([t("matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: src(m.sentence, f.figureSources?.maturity ?? f.citedUrl) }]);
+    }
+    const bold: Line = [...nameLine];
+    for (const fl of facts) bold.push(t(" · "), ...fl);
+    const sub: Line = [];
+    for (const sf of subsFor.get(f) ?? []) { const note = directedNote(sf.amount.src.url); sub.push(...(sub.length ? [t(" ")] : []), t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`} `), factFig(sf.amount), t(`, capacity only${note ? `, ${note}` : ""}.`)); }
+    if (kind === "facility" && !f.lettersOfCredit) sub.push(...(sub.length ? [t(" ")] : []), { k: "notStated", t: "Letters of credit outstanding not stated.", src: own });
+    if (kind === "facility" && !f.available) sub.push(...(sub.length ? [t(" ")] : []), { k: "notStated", t: "Availability not stated.", src: own });
+    const bb = borrowingBaseOf(f);
+    if (bb) sub.push(...(sub.length ? [t(" ")] : []), { k: "label", t: "Borrowing-base limited", stated: bb.limitedBy, src: src(widen(bb.statement, [f.facilitySize, f.drawn, f.lettersOfCredit, f.available, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => x.sourceLine)), f.figureSources?.facilitySize ?? f.citedUrl) }, t("; stated availability shown."));
+    facLines.push({ bold, sub: sub.length ? sub : null });
+  }
+  for (const sf of orphanSubs) facLines.push({ bold: [t(`Sub-facility of the ${sf.facility}`)], sub: [subLine(sf)].flat() });
+  const notShown = withheld.filter((l) => !/^Nothing withheld/.test(l.map((x) => x.t).join("")));
+  const footnote: Line = [...(coverageLines[0] ?? []), t(" Every figure links to the sentence it came from.")];
+
+  const v3: CardV3 = {
+    header: v3header,
+    rolledNote,
+    call: { label: `The call · next 18 months, to ${shortDate(windowEnd)}`, case: callCase, headline, tiles, nextTile, rows: callRows, notes: callNotes, legend: daggerUsed ? `${MARK} Year only stated; may fall inside the window.` : null },
+    moves: moveCards,
+    totalDebt: { figure: faceSeg(), segments: tdSegments, legend: tdLegend, notes: tdNotes },
+    liquidity: { figure: liqFigure, segments: liqSegments, legend: liqLegend, notes: liqNotes },
+    chart: { bars, window: { endIndex, endFraction, label: `18-month window${callCase === "D" ? " · nothing due" : ""}` }, legend: chartLegend, captions },
+    table: { rows: tableRows, visible, schedule: anchorSchedule ? ladderBlocks : null },
+    facilities: facLines,
+    notShown: notShown.length ? notShown : [[t("Nothing withheld this week.")]],
+    footnote,
+  };
+
   return {
     cik: result.cik,
     company: result.company,
@@ -1392,6 +1878,7 @@ export function buildCard(i: CardInputs): Card {
     facilities: { heading: "Facilities", lines: facBlocks.length ? [] : [[t("No facility stated.")]], blocks: facBlocks },
     withheld: { heading: "What the tool did not show", lines: withheld },
     coverage: { heading: "Coverage", lines: coverageLines },
+    v3,
   };
 }
 
@@ -1442,6 +1929,11 @@ function rolledSentence(label: string): string {
 function rolledPhrase(label: string): string {
   const to = /rolled to (\d{4}-\d{2}-\d{2})/.exec(label);
   return `using the ${rolledFrom(label)} 10-K, updated through ${to ? displayDate(to[1], "day") : "the position date"}`;
+}
+
+/** "2026-05-01" → "May 2026". */
+function monthYear(iso: string): string {
+  return `${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][Number(iso.slice(5, 7)) - 1]} ${iso.slice(0, 4)}`;
 }
 
 /** No stray space inside a coupon in running text (§3.7): "1.250 % senior notes" → "1.250% senior notes". */

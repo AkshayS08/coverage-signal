@@ -105,4 +105,73 @@ export interface Card {
   facilities: CardSection;
   withheld: CardSection;
   coverage: CardSection;
+  /** card_spec v3.0 — the redesigned card, built from the same items. The v2.2 sections above stay as its detail and are what §5.1–§5.14 test. */
+  v3?: CardV3;
+}
+
+/** card_spec v3.0 §3.9 — the one color set for all six cards. */
+export const PALETTE = {
+  seniorSecured: "#1F4E79",
+  juniorSecured: "#2E8B8B",
+  unsecured: "#5C8DBF",
+  notStated: "#9AA3AD",
+  scheduledOther: "#C9CED4",
+  notRefinanced: "#B4440C",
+  cash: "#2E7D6B",
+  undrawn: "#9CCBBE",
+} as const;
+export type PaletteColor = (typeof PALETTE)[keyof typeof PALETTE];
+
+/** A status tag (§2.10). `tone` decides its look: refinanced, pending confirmation, not yet refinanced (orange), or neutral. */
+export interface Tag { text: Line; tone: "refinanced" | "pending" | "orange" | "neutral" }
+
+export interface BarSegment { usd: number; color: PaletteColor; pattern?: "stripes"; title: string }
+
+export interface ChartBar {
+  /** "CP", "2028", or a collapsed range "2037–56". */
+  label: string;
+  /** The value label above the bar: a computed figure whose parts are the source figures. */
+  total: Segment;
+  segments: BarSegment[];
+  /** What the bar's total equals (§5.15): the filer's schedule for the year, the named instruments, or the CP outstanding. */
+  source: "schedule" | "named" | "cp";
+  /** A bar more than twice the next-tallest is cut to fit, with a break mark (§2.5). */
+  broken: boolean;
+  /** The height the bar is drawn at, $; equals the total unless broken. */
+  drawUsd: number;
+  instruments: number;
+}
+
+export interface CardV3 {
+  header: { label: string; company: string; position: Line; filing: Segment; status: Line; actionable: Line[] };
+  rolledNote: Line | null;
+  call: {
+    label: string;
+    case: "A" | "B" | "C" | "D";
+    headline: Line;
+    tiles: { key: "due" | "refinanced" | "notYet"; label: string; value: Segment; sub: Line; usd: number }[];
+    nextTile: { value: Segment | null; instrument: Line; date: Segment | null; away: string | null } | null;
+    rows: { when: Line; body: Line; tenK: boolean; tag: Tag | null; usd: number | null; isCP: boolean }[];
+    notes: Line[];
+    legend: string | null;
+  };
+  moves: { meta: Line; title: Line[]; detail: Line | null; retires: { meta: Line; items: Line[] } | null }[];
+  totalDebt: { figure: Segment; segments: BarSegment[]; legend: { color: PaletteColor; label: Line; amount: Segment }[]; notes: Line[] };
+  liquidity: { figure: Segment | null; segments: BarSegment[]; legend: { color: PaletteColor; label: Line; amount: Segment }[]; notes: Line[] };
+  chart: {
+    bars: ChartBar[];
+    /** The 18-month band: it runs from the left edge to `endFraction` of the way through bar `endIndex`. */
+    window: { endIndex: number; endFraction: number; label: string };
+    legend: { color: PaletteColor; pattern?: "stripes"; label: string }[];
+    captions: Line[];
+  };
+  table: {
+    rows: { matures: Line; instrument: Line; tenK: boolean; face: Segment | null; status: Tag | null; inWindow: boolean; name: string }[];
+    visible: number;
+    /** The filer's schedule by year, kept reachable (§2.6): the v2.2 ladder blocks. */
+    schedule: { heading: Line; lines: Line[] }[] | null;
+  };
+  facilities: { bold: Line; sub: Line | null }[];
+  notShown: Line[];
+  footnote: Line;
 }
