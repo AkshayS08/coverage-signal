@@ -33,7 +33,7 @@ const readDisk = undefined;
 const ROOT = process.cwd();
 const GEN = join(ROOT, "lib", "cards", "generated");
 const FIX = join(ROOT, "lib", "cards", "fixtures");
-const cards: Card[] = JSON.parse(readFileSync(join(GEN, "all.json"), "utf-8"));
+const cards: Card[] = JSON.parse(readFileSync(process.env.CARDS_JSON ?? join(GEN, "all.json"), "utf-8"));
 const fixtureOf = (cik: string) => JSON.parse(readFileSync(join(FIX, `${cik}.json`), "utf-8"));
 
 // ── reading a card ──────────────────────────────────────────────────────
@@ -59,6 +59,23 @@ function linesOf(card: Card): Where[] {
   sec("facilities", card.facilities);
   sec("withheld", card.withheld);
   sec("coverage", card.coverage);
+  for (const l of v3Lines(card)) out.push({ section: "v3", line: l });
+  return out;
+}
+/** card_spec v3.0: every line of the redesigned card, so the link, lint, precision and hedge checks reach every tile, bar label and cell. */
+function v3Lines(card: Card): Line[] {
+  const v = card.v3;
+  if (!v) return [];
+  const out: Line[] = [v.header.position, [v.header.filing], v.header.status, ...v.header.actionable];
+  if (v.rolledNote) out.push(v.rolledNote);
+  out.push(v.call.headline, ...v.call.tiles.flatMap((x) => [[x.value], x.sub]), ...v.call.rows.flatMap((r) => [r.when, r.body, ...(r.tag ? [r.tag.text] : [])]), ...v.call.notes);
+  if (v.call.nextTile) out.push([...(v.call.nextTile.value ? [v.call.nextTile.value] : []), ...(v.call.nextTile.date ? [v.call.nextTile.date] : [])], v.call.nextTile.instrument);
+  for (const m of v.moves) out.push(m.meta, ...m.title, ...(m.detail ? [m.detail] : []), ...(m.retires ? [m.retires.meta, ...m.retires.items] : []));
+  for (const d of [v.totalDebt, v.liquidity]) out.push(...(d.figure ? [[d.figure]] : []), ...d.legend.flatMap((l) => [l.label, [l.amount]]), ...d.notes);
+  out.push(...v.chart.bars.map((b) => [b.total]), ...v.chart.captions);
+  for (const r of v.table.rows) out.push(r.matures, r.instrument, ...(r.face ? [[r.face]] : []), ...(r.status ? [r.status.text] : []));
+  for (const f of v.facilities) out.push(f.bold, ...(f.sub ? [f.sub] : []));
+  out.push(...v.notShown, v.footnote);
   return out;
 }
 const text = (l: Line) => l.map((s) => s.t).join("");
@@ -120,7 +137,8 @@ function expectedRows(f: any): Expected[] {
 
 /** Two builds agree on everything a new filing must not touch: all but This week and its count in the trust section. */
 function sameOutsideThisWeek(a: Card, b: Card): boolean {
-  const strip = (c: Card) => JSON.stringify({ ...c, thisWeek: null, withheld: null });
+  // v3.0: the week's status in the header, its actionable list and "Not shown" are This week and the trust section, redesigned.
+  const strip = (c: Card) => JSON.stringify({ ...c, thisWeek: null, withheld: null, v3: c.v3 ? { ...c.v3, header: { ...c.v3.header, status: null, actionable: null }, notShown: null } : null });
   return strip(a) === strip(b);
 }
 
@@ -480,6 +498,193 @@ function summaryScope(card: Card): string[] {
 }
 const R2B_SCOPE: Test = { id: "A2b", name: "refinance summary: both halves count the same in-window instruments", run: (card) => summaryScope(card) };
 
+
+// ── card_spec v3.0: the redesign, each rule over all six cards ───────────
+const V3VIEW = readFileSync(join(ROOT, "app", "cards", "CardV3View.tsx"), "utf-8");
+const noV3 = (card: Card) => (card.v3 ? null : ["no v3 card"]);
+const num = (x: Segment | null | undefined) => (x && (x.k === "computed" ? x.usd : x.k === "figure" ? parseMoneyAmount(x.printed) : null)) ?? null;
+
+/** §2 layout order, read from the page itself. */
+function layoutOrder(view: string): string[] {
+  const marks = ["1. Header", "2. Rolled-position note", "3. The call box", "4. Recent debt moves", "5. Total debt and liquidity", "6. Maturity ladder: chart, then table", "7. Facilities, and what was not shown", "8. Footnote"];
+  const at = marks.map((m) => view.indexOf(`{/* ${m}`));
+  return at.every((x, i) => x >= 0 && (i === 0 || x > at[i - 1])) ? [] : [`layout out of order: ${marks.filter((_, i) => at[i] < 0 || (i > 0 && at[i] < at[i - 1])).join("; ")}`];
+}
+const V1_LAYOUT: Test = { id: "V1", name: "v3 layout: header, note, call box, moves, debt and liquidity, ladder, facilities, footnote", run: (card) => noV3(card) ?? layoutOrder(V3VIEW) };
+
+/** §2.2 the case follows its rule, from the table's own rows (named, in window) and the ladder's schedule leftovers. */
+function expectedCase(card: Card): "A" | "B" | "C" | "D" {
+  const named = card.v3!.table.rows.filter((r) => r.inWindow && !/^Short-term$/.test(text(r.matures)));
+  if (named.length) return named.some((r) => r.status?.tone === "orange") ? "A" : "B";
+  const leftovers = refiOf(card).some((l) => /^Plus /.test(text(l)));
+  return leftovers ? "C" : "D";
+}
+const HEADLINE: Record<string, RegExp> = {
+  A: /^~?\$[\d,.]+MM of .+ (?:is|are) not yet refinanced\./,
+  B: /^Everything due in the next 18 months is refinanced\./,
+  C: /^No notes or loans mature in the next 18 months\. \$[\d,.]+MM†? of scheduled amortization\./,
+  D: /^Nothing matures in the next 18 months\./,
+};
+const V2_CASE: Test = {
+  id: "V2", name: "call box: the case (A to D) matches its rule, with its template",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const want = expectedCase(card), got = card.v3.call.case;
+    const bad: string[] = [];
+    if (want !== got) bad.push(`case ${got}, rule says ${want}`);
+    if (!HEADLINE[got].test(text(card.v3.call.headline))) bad.push(`case ${got} headline off template: "${text(card.v3.call.headline).slice(0, 80)}"`);
+    if ((got === "C" || got === "D") && (card.v3.call.tiles.length || !card.v3.call.nextTile)) bad.push("cases C and D show the Next maturity tile, not the three tiles");
+    if ((got === "A" || got === "B") && !card.v3.call.tiles.length) bad.push("cases A and B show three tiles");
+    return bad;
+  },
+};
+
+const V3_TILES: Test = {
+  id: "V3", name: "tiles: due = refinanced + not yet refinanced, in-window named instruments only, never commercial paper",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const tl = card.v3.call.tiles;
+    if (!tl.length) return [];
+    const due = tl.find((x) => x.key === "due"), refi = tl.find((x) => x.key === "refinanced"), ny = tl.find((x) => x.key === "notYet");
+    const bad: string[] = [];
+    if (!due || !refi) return ["missing a tile"];
+    const nyUsd = ny?.usd ?? 0;
+    if (Math.abs(due.usd - refi.usd - nyUsd) > 0.5e6) bad.push(`due ${due.usd / 1e6} ≠ refinanced ${refi.usd / 1e6} + not yet ${nyUsd / 1e6}`);
+    if (ny && ny.usd <= 0.5e6) bad.push("the orange tile shows at zero");
+    if (!ny && due.usd - refi.usd > 0.5e6) bad.push("not yet refinanced is above zero but has no tile");
+    if (refi.usd === 0 && !/none stated in any filing/i.test(text(refi.sub))) bad.push('refinanced is $0 without "none stated in any filing"');
+    const inWindow = card.v3.table.rows.filter((r) => r.inWindow && !/^Short-term$/.test(text(r.matures))).reduce((a, r) => a + (num(r.face) ?? 0), 0);
+    if (Math.abs(inWindow - due.usd) > 0.5e6) bad.push(`due ${due.usd / 1e6} but the in-window table rows sum to ${inWindow / 1e6} (commercial paper is never counted)`);
+    if (tl.some((x) => x.value.k === "computed" && x.value.parts.some((p) => /commercial paper/i.test(p.src.sentence) && !/notes/i.test(p.src.sentence)))) bad.push("a tile counts commercial paper");
+    return bad;
+  },
+};
+
+const VOCAB = /^(?:Refinanced(?: · (?:redemption set for .+|redeemed [A-Z][a-z]+ \d{4}))?|Not yet refinanced|Backed by revolver|Short-term|~?\$[\d,.]+MM (?:refinanced|repurchased in \d{4}|retired in \d{4}) · ~?\$[\d,.]+MM remains|(?:Seniority|Security|Seniority and security) not stated)$/;
+const MOVE_WORD = /· (?:Issued, confirmed by \S+|Refinanced|Repaid(?: at maturity)?|Repurchased|Redeemed|Amended|Drew|Redemption announced, awaiting confirmation in a filing)$/;
+const V4_VOCAB: Test = {
+  id: "V4", name: "status and move words only from the §2.10 list; \"redeemed\" only with a confirming filing",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const bad: string[] = [];
+    const tags = [...card.v3.call.rows.map((r) => r.tag), ...card.v3.table.rows.map((r) => r.status)].filter((x): x is NonNullable<typeof x> => !!x);
+    for (const tg of tags) {
+      const tt = text(tg.text);
+      if (!VOCAB.test(tt)) bad.push(`status "${tt}" is not in the vocabulary`);
+      if (/\bredeemed\b/i.test(tt)) {
+        const d = tg.text.find((x) => x.k === "label" && /redeemed/.test(x.t));
+        if (!d || d.k !== "label" || /\bintends?\b|\bwill be\b|\bexpected to be\b|\bnotice of\b/i.test(d.src.sentence)) bad.push(`"${tt}" without a confirming sentence`);
+      }
+    }
+    for (const m of card.v3.moves) {
+      const meta = text(m.meta);
+      if (!MOVE_WORD.test(meta)) bad.push(`move word in "${meta}" is not in the vocabulary`);
+      const r = m.retires ? text(m.retires.meta) : "";
+      if (r && !/^Refinanced · (?:redemption set for .+, awaiting confirmation in a filing|redeemed [A-Z][a-z]+ \d{4})$/.test(r)) bad.push(`retire line "${r}" off vocabulary`);
+      if (/\bredeemed\b/.test(r) && m.retires!.meta.some((x) => x.k === "label" && /\bintends?\b|\bwill be\b|\bexpected to be\b|\bnotice of\b/i.test(x.src.sentence))) bad.push(`"${r}" without a confirming sentence`);
+    }
+    return bad;
+  },
+};
+
+const PALETTE_SET = new Set(["#1F4E79", "#2E8B8B", "#5C8DBF", "#9AA3AD", "#C9CED4", "#B4440C", "#2E7D6B", "#9CCBBE"]);
+const V5_LEGEND: Test = {
+  id: "V5", name: "every chart color and pattern has a legend entry, and nothing else; a caption explains it",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const ch = card.v3.chart;
+    // Stripes are one pattern over whichever shade they cover: one legend entry for the pattern.
+    const key = (c: string, p?: string) => (p ? `|${p}` : c);
+    const used = new Set(ch.bars.filter((b) => b.source !== "cp").flatMap((b) => b.segments.map((x) => key(x.color, x.pattern))));
+    // The CP bar's shade is a seniority shade; it needs an entry too.
+    for (const b of ch.bars.filter((b) => b.source === "cp")) for (const x of b.segments) used.add(key(x.color, x.pattern));
+    const legend = new Set(ch.legend.map((l) => key(l.color, l.pattern)));
+    const bad: string[] = [];
+    for (const u of used) if (!legend.has(u)) bad.push(`color ${u} shown with no legend entry`);
+    for (const l of legend) if (!used.has(l)) bad.push(`legend entry ${l} for a color not shown`);
+    for (const b of ch.bars) for (const x of b.segments) if (!PALETTE_SET.has(x.color)) bad.push(`color ${x.color} is not in the palette`);
+    for (const d of [card.v3.totalDebt, card.v3.liquidity]) for (const x of d.segments) if (!PALETTE_SET.has(x.color)) bad.push(`bar color ${x.color} is not in the palette`);
+    if (!ch.captions.length || !/^Color shows/.test(text(ch.captions[0]))) bad.push("no caption explaining the encoding");
+    return bad;
+  },
+};
+
+const V6_BARS: Test = {
+  id: "V6", name: "each bar's total equals its source: the filer's schedule, or the named instruments",
+  run: (card, f) => {
+    if (!card.v3) return ["no v3 card"];
+    const bad: string[] = [];
+    const scale = f.table.scale === "thousand" ? 1e3 : 1e6;
+    const rows = card.v3.table.rows;
+    const rowYear = (r: (typeof rows)[number]) => (/(20\d\d)/.exec(text(r.matures)) ?? [])[1];
+    for (const b of card.v3.chart.bars) {
+      const total = num(b.total) ?? NaN;
+      const segSum = b.segments.reduce((a, x) => a + x.usd, 0);
+      if (Math.abs(segSum - total) > 0.5e6) bad.push(`${b.label}: segments sum to ${segSum / 1e6}, label says ${total / 1e6}`);
+      if (b.source === "cp") { const cp = rows.find((r) => /^Short-term$/.test(text(r.matures))); if (!cp || Math.abs((num(cp.face) ?? 0) - total) > 0.5e6) bad.push("CP bar is not the CP outstanding"); continue; }
+      const years = /^\d{4}$/.test(b.label) ? [b.label] : (() => { const m = /^(\d{4})–(\d{2})$/.exec(b.label)!; const out: string[] = []; for (let y = Number(m[1]); y <= Number(m[1].slice(0, 2) + m[2]); y++) out.push(String(y)); return out; })();
+      if (b.source === "schedule") {
+        const want = years.reduce((a, y) => a + (f.schedule?.entries ?? []).filter((e: any) => !/thereafter/i.test(e.period) && (/(20\d\d)/.exec(e.period) ?? [])[1] === y).reduce((x: number, e: any) => x + Number(e.amount.replace(/[$,\s]/g, "")) * scale, 0), 0);
+        if (Math.abs(want - total) > 0.05e6 * (scale === 1e3 ? 10 : 1)) bad.push(`${b.label}: bar ${total / 1e6}, the filer's schedule ${want / 1e6}`);
+      } else {
+        const want = rows.filter((r) => years.includes(rowYear(r) ?? "") && !/^Short-term$/.test(text(r.matures)) && !/–/.test(text(r.matures))).reduce((a, r) => a + (num(r.face) ?? 0), 0);
+        if (Math.abs(want - total) > 0.5e6) bad.push(`${b.label}: bar ${total / 1e6}, the named instruments ${want / 1e6}`);
+      }
+    }
+    return bad;
+  },
+};
+
+const V7_TABLE: Test = {
+  id: "V7", name: "table: every filer row once; every in-window row before any \"Show all\" cut",
+  run: (card, f) => {
+    if (!card.v3) return ["no v3 card"];
+    const tb = card.v3.table;
+    const bad: string[] = [];
+    tb.rows.forEach((r, i) => { if (r.inWindow && i >= tb.visible) bad.push(`in-window row ${i + 1} ("${text(r.instrument)}") is behind the cut at ${tb.visible}`); });
+    if (tb.rows.length > 10 && tb.visible > Math.max(8, tb.rows.reduce((a, r, i) => (r.inWindow ? i + 1 : a), 0))) bad.push(`${tb.rows.length} rows, ${tb.visible} shown before the cut`);
+    if (tb.rows.length <= 10 && tb.visible !== tb.rows.length) bad.push("10 rows or fewer, but some are cut");
+    for (const e of expectedRows(f)) {
+      // An undrawn facility row is capacity, not debt (§2.5): it is in Facilities, never a $0 table row.
+      if (e.faceUsd === 0 && e.kind === "facility") continue;
+      const n = tb.rows.filter((r) => norm(r.name) === norm(e.label)).length;
+      if (n !== 1) bad.push(`"${e.label}" appears ${n} times in the table`);
+    }
+    return bad;
+  },
+};
+
+const V8_HEADBARS: Test = {
+  id: "V8", name: "total-debt and liquidity bars sum to their figures; carrying and uncommitted amounts stay out",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const bad: string[] = [];
+    const td = card.v3.totalDebt;
+    const tdSum = td.segments.reduce((a, x) => a + x.usd, 0);
+    if (Math.abs(tdSum - (num(td.figure) ?? 0)) > 0.5e6) bad.push(`total-debt bar ${tdSum / 1e6} ≠ figure ${td.figure.t}`);
+    if (td.segments.some((x) => /carrying/i.test(x.title))) bad.push("a carrying-value segment in the total-debt bar");
+    const lq = card.v3.liquidity;
+    if (lq.figure) { const s = lq.segments.reduce((a, x) => a + x.usd, 0); if (Math.abs(s - (num(lq.figure) ?? 0)) > 0.5e6) bad.push(`liquidity bar ${s / 1e6} ≠ figure ${lq.figure.t}`); }
+    if (lq.segments.some((x) => /commercial paper|uncommitted|incremental/i.test(x.title))) bad.push("commercial paper or uncommitted capacity in the liquidity bar");
+    return bad;
+  },
+};
+
+const V9_NEXT: Test = {
+  id: "V9", name: "next-maturity tile: months away counted from the brief date, never for a year-only date",
+  run: (card) => {
+    const nt = card.v3?.call.nextTile;
+    if (!card.v3) return ["no v3 card"];
+    if (!nt) return [];
+    const d = nt.date;
+    if (!d || d.k !== "date") return ["next tile has no linked date"];
+    if (d.granularity === "year") return nt.away ? ["months shown for a year-only date"] : [];
+    const end = d.granularity === "month" ? `${d.date.slice(0, 8)}01` : d.date, b = card.briefDate;
+    const months = (Number(end.slice(0, 4)) - Number(b.slice(0, 4))) * 12 + Number(end.slice(5, 7)) - Number(b.slice(5, 7)) - (Number(end.slice(8, 10)) < Number(b.slice(8, 10)) ? 1 : 0);
+    return new RegExp(`^${months} months? away`).test(nt.away ?? "") ? [] : [`"${nt.away}", but ${months} months from the brief date`];
+  },
+};
+
 const NAMED_TYPE = /\b(notes|debentures|term loan|revolver|ABL|credit (?:facility|agreement)|line of credit|commercial paper)\b/i;
 const R3_NAMED: Test = {
   id: "A3", name: "refinance box: named instruments only, no \"not stated\" fallbacks",
@@ -634,7 +839,8 @@ const R16_TAGS: Test = {
 };
 
 const TESTS = [T1_PURITY, T2_LINKS, T3_TABLE, T4_NOTSTATED, T5_ONEMATURITY, T6_PRECISION, T7_SCHEDULE, T8_MOVES, T9_LINT, T10_HEDGES,
-  R1_BOX, R2_SUMMARY, R2B_SCOPE, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS];
+  R1_BOX, R2_SUMMARY, R2B_SCOPE, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS,
+  V1_LAYOUT, V2_CASE, V3_TILES, V4_VOCAB, V5_LEGEND, V6_BARS, V7_TABLE, V8_HEADBARS, V9_NEXT];
 
 // ── negative controls: a corrupted card or fixture each test MUST fail ──
 function clone<T>(x: T): T { return JSON.parse(JSON.stringify(x)); }
@@ -719,6 +925,24 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     { const c = clone(tenet); const td = c.headlines.totalDebt.lines; const body = td.slice(1).reverse(); c.headlines.totalDebt.lines = [td[0], ...body]; out.push({ id: "C14", failed: R14_ORDER.run(c, null).length > 0, what: "the breakdown in reverse priority" }); }
     { const c = clone(cigna); const b = (c.ladder.blocks ?? []).find((x) => x.lines.filter((l) => !!amountSeg(l)).length >= 2)!; for (const l of b.lines) if (amountSeg(l)) l.push({ k: "notStated", t: "seniority and security not stated, please refer to sources", src: { sentence: "x", url: "x", doc: "x" } }); out.push({ id: "C15", failed: R15_ONCE.run(c, null).length > 0, what: "every row of a group repeating one fallback" }); }
     { const c = clone(chs); c.moves!.blocks![0].lines[0].push({ k: "text", t: " (also stated here)" }); out.push({ id: "C16", failed: R16_TAGS.run(c, null).length > 0, what: "a cryptic tag" }); }
+  }
+
+  // ── v3.0 negative controls ──
+  {
+    const pick = (re: RegExp) => cards.find((c) => re.test(c.company))!;
+    const tenet = pick(/tenet/i), cigna = pick(/cigna/i), molina = pick(/molina/i), dva = pick(/davita/i);
+    if (tenet.v3) {
+      out.push({ id: "V1", failed: layoutOrder(V3VIEW.replace("{/* 3. The call box", "{/* X").replace("{/* 4. Recent debt moves", "{/* 3. The call box")).length > 0, what: "a page with the call box after the moves" });
+      { const c = clone(tenet); c.v3!.call.case = "B"; out.push({ id: "V2", failed: V2_CASE.run(c, null).length > 0, what: "Tenet called case B with debt not yet refinanced" }); }
+      { const c = clone(tenet); const r = c.v3!.call.tiles.find((x) => x.key === "refinanced")!; r.usd += 100e6; out.push({ id: "V3", failed: V3_TILES.run(c, null).length > 0, what: "tiles that do not sum" }); }
+      { const c = clone(tenet); c.v3!.call.rows[0].tag = { text: [{ k: "text", t: "Refinanced · redeemed September 2026" }], tone: "refinanced" }; out.push({ id: "V4", failed: V4_VOCAB.run(c, null).length > 0, what: "\"redeemed\" for a redemption no filing confirms" }); }
+      { const c = clone(tenet); c.v3!.chart.legend = c.v3!.chart.legend.slice(1); out.push({ id: "V5", failed: V5_LEGEND.run(c, null).length > 0, what: "a chart color with no legend entry" }); }
+      { const c = clone(tenet); const b = c.v3!.chart.bars.find((x) => x.source === "schedule")!; (b.total as any).usd += 50e6; b.segments[0].usd += 50e6; out.push({ id: "V6", failed: V6_BARS.run(c, fixtureOf(tenet.cik)).length > 0, what: "a bar that does not equal the filer's schedule" }); }
+    }
+    if (cigna.v3) { const c = clone(cigna); c.v3!.table.visible = 2; out.push({ id: "V7", failed: V7_TABLE.run(c, fixtureOf(cigna.cik)).length > 0, what: "an in-window row behind the Show all cut" }); }
+    if (cigna.v3) { const c = clone(cigna); c.v3!.liquidity.segments.push({ usd: 1000e6, color: "#9CCBBE", title: "commercial paper outstanding" }); out.push({ id: "V8", failed: V8_HEADBARS.run(c, null).length > 0, what: "commercial paper in the liquidity bar" }); }
+    if (molina.v3) { const c = clone(molina); c.v3!.call.nextTile!.away = "3 months away"; out.push({ id: "V9", failed: V9_NEXT.run(c, null).length > 0, what: "a wrong month count" }); }
+    void dva;
   }
   return out;
 }
