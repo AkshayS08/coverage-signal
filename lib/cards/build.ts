@@ -590,20 +590,7 @@ export function buildCard(i: CardInputs): Card {
     const uses = sentencesOf(is.url).map((x) => ({ x, m: /\bused? the net proceeds\b.*?\bto\s+(.+?)\.?$/i.exec(x.sentence) })).filter((u) => u.m);
     if (uses.length === 1) is.useFact = { value: uses[0].m![1], src: { sentence: uses[0].x.sentence, url: uses[0].x.url } };
   }
-  // An issuance announced before it closed: the announcing sentences in later filings, linked on the same line.
-  for (const is of movesAll.filter((m) => m.type === "issuance" && !m.inPeriod)) {
-    const year = (/\b(20\d\d)\b/.exec(is.instrument) ?? [])[1];
-    for (const u of (i.laterUrls ?? []).filter((x) => x !== is.url && i.textByUrl.has(x))) {
-      for (const sx of sentencesOf(u)) {
-        if (!/\b(?:pricing|offering|upsize)\b/i.test(sx.sentence) || !year || !new RegExp(`notes due ${year}`, "i").test(sx.sentence)) continue;
-        const named = couponsIn(sx.sentence).length ? sameNote(sx.sentence, is.instrument) : movesAll.filter((m) => m.type === "issuance" && (/\b(20\d\d)\b/.exec(m.instrument) ?? [])[1] === year).length === 1;
-        const when = isoOfText(sx.sentence);
-        if (!named || !when) continue;
-        const what = /pricing/i.test(sx.sentence) ? "priced" : "offering launched";
-        is.extra.push(t(`, ${what} `), { k: "label", t: displayDate(when.iso, when.g), stated: (new RegExp(`(${MONTHS})(?:\\s+\\d{1,2},)?\\s+20\\d\\d`).exec(sx.sentence) ?? [""])[0], src: sx });
-      }
-    }
-  }
+  // (Oct 19, 2026) An offering's launch and pricing dates appear nowhere on the card; the move's own date is the one shown.
   // An add-on: the further-issuance sentence and the price, from the same filing.
   for (const is of movesAll.filter((m) => m.type === "issuance")) {
     for (const sx of sentencesOf(is.url)) {
@@ -1585,8 +1572,7 @@ export function buildCard(i: CardInputs): Card {
     }
     if (issuance) {
       const left: CardV3["moves"][number] = { meta: [dateOf(issuance), t(` · Issued, confirmed by ${formOfUrl(issuance.url)}`)], title: [faceInst(issuance)], detail: null, retires: null };
-      // v3.1: the card shows the move's own date only — no offering launch or pricing dates.
-      const extras: Line = [...priceClause(issuance), ...issuance.extra].filter((x, n, all) => !(x.k === "text" && /^, (?:offering launched|priced) $/.test(x.t)) && !(n > 0 && all[n - 1].k === "text" && /^, (?:offering launched|priced) $/.test(all[n - 1].t)));
+      const extras: Line = [...priceClause(issuance), ...issuance.extra];
       if (issuance.retires.length) {
         const pending = issuance.retires.some((r) => r.status === "pending");
         const r0 = issuance.retires[0];

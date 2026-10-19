@@ -162,34 +162,6 @@
       },
       {
        "k": "text",
-       "t": ", offering launched "
-      },
-      {
-       "k": "label",
-       "t": "September 8, 2026",
-       "stated": "September 8, 2026",
-       "src": {
-        "sentence": "On September 8, 2026 , Tenet Healthcare Corporation (the “Company”) issued a press release announcing the commencement of private placement offering of $1.5 billion in aggregate principal amount of its senior notes due 2034.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
-        "doc": "thc-20260908.htm"
-       }
-      },
-      {
-       "k": "text",
-       "t": ", priced "
-      },
-      {
-       "k": "label",
-       "t": "September 8, 2026",
-       "stated": "September 8, 2026",
-       "src": {
-        "sentence": "Additionally, on September 8, 2026 , the Company issued a press release announcing the upsize and pricing of $2.0 billion in aggregate principal amount of its 6.250% senior notes due 2034 (the “notes”).",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
-        "doc": "thc-20260908.htm"
-       }
-      },
-      {
-       "k": "text",
        "t": " · redemption pending, not yet confirmed by a filing"
       }
      ]
