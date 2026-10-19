@@ -7119,3 +7119,25 @@ accounted for". Checked on all six.
 `amountSupportOf` rejects a short cell whose scale is only in its caption
 ("$ 45" under "Dollars in Millions"); the card cites the bare cell instead.
 The fix is a core-rule change, deferred by Akshay on Oct 16, 2026.
+
+### RULE: the test follows the product, never the reverse (Akshay, Oct 19, 2026)
+
+When the product changes on purpose, the test changes with it. The product
+never keeps text to satisfy a test.
+
+The instance: v3.1 removed offering launch and pricing dates from the move
+cards, but the older move lines kept them, because acceptance 5.8 matched
+move sentences by the sentences each line linked and the Tenet announcement
+sentences were reachable only through those dates. That is a card carrying
+copy its reader was meant not to see, kept alive by a check. The dates are
+now gone from every card, and 5.8 checks what the card shows: every stated
+move amount is a figure on a move card with its date, move word and
+instrument, a sentence spending proceeds or cash has its funding or use on
+that card, and an offering announcement is covered by the issuance it
+announces. 5.8 still fails on DaVita's ruled residual ($65MM of revolver
+draws stated, not on any card), so the rewrite did not loosen it.
+
+How to apply: when a rule removes or rewords card copy, rewrite the tests
+that read that copy in the same change, so they check the new content
+against the filings. A test that only passes because old text survives is
+a test of the old card.
