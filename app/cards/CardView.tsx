@@ -1,6 +1,7 @@
 import type { Card, CardSection, Line, Segment } from "@/lib/cards/types";
 import { sentenceUrl } from "@/lib/cards/format";
 import styles from "./cards.module.css";
+import CardV3View from "./CardV3View";
 
 /**
  * One card, rendered from its generated JSON. Every figure, date and label is
@@ -8,7 +9,7 @@ import styles from "./cards.module.css";
  * the sentence and its document. A computed figure opens to the figures it
  * was computed from, each linked the same way.
  */
-function Seg({ s }: { s: Segment }) {
+export function Seg({ s }: { s: Segment }) {
   switch (s.k) {
     case "text":
       return <>{s.t}</>;
@@ -52,7 +53,7 @@ function Seg({ s }: { s: Segment }) {
   }
 }
 
-function LineView({ line, className }: { line: Line; className?: string }) {
+export function LineView({ line, className }: { line: Line; className?: string }) {
   return (
     <div className={className ?? styles.line}>
       {line.map((s, n) => (
@@ -82,6 +83,8 @@ function Section({ s, lead }: { s: CardSection; lead?: boolean }) {
 }
 
 export default function CardView({ card }: { card: Card }) {
+  // card_spec v3.0: the redesigned card wherever the build produced it.
+  if (card.v3) return <CardV3View card={card} />;
   const [name, ...rest] = card.header;
   return (
     <article className={styles.card} id={`card-${card.cik}`}>

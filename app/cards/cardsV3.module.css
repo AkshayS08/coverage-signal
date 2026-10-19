@@ -1,0 +1,156 @@
+/* card_spec v3.0 — the redesigned card. One look for all six cards; the chart
+   colors come from PALETTE in lib/cards/types.ts (§3.9) as inline styles. */
+.card {
+  --ink: #16202b;
+  --muted: #55606c;
+  --faint: #6b7682;
+  --line: #e2e7ec;
+  --panel: #ffffff;
+  --wash: #f4f6f9;
+  --accent: #1f4e79;
+  --tint: #f2f6fb;
+  --orange: #b4440c;
+  --orangeTint: #fdf3ec;
+  max-width: 1040px;
+  margin: 0 auto 32px;
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+@media (prefers-color-scheme: dark) {
+  .card {
+    --ink: #e6ebf0;
+    --muted: #a8b3be;
+    --faint: #94a0ac;
+    --line: #2a333d;
+    --panel: #151b22;
+    --wash: #10151b;
+    --accent: #8cc0ea;
+    --tint: #18222d;
+    --orange: #f08a52;
+    --orangeTint: #2a1d16;
+  }
+}
+.inline { display: inline; }
+.inline::first-letter { text-transform: uppercase; }
+.muted { color: var(--muted); }
+
+/* 1. header */
+.header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding: 24px 28px 18px; border-bottom: 1px solid var(--line); }
+.kicker { font-size: 11px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.company { font-size: 24px; font-weight: 700; margin: 2px 0 0; letter-spacing: -0.01em; }
+.headerRight { text-align: right; color: var(--muted); font-size: 13px; }
+.actionable { padding: 10px 28px; border-bottom: 1px solid var(--line); }
+.actionLine { padding: 2px 0; }
+.rolledNote { margin: 12px 28px 4px; padding: 10px 14px; background: var(--wash); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
+
+/* 3. the call box */
+.call { background: var(--tint); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 20px 28px 18px; }
+.callLabel { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.callHeadline { font-size: 19px; line-height: 1.45; margin: 8px 0 14px; max-width: 820px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+@media (max-width: 720px) { .tiles { grid-template-columns: 1fr; } }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.tileOrange { background: var(--orangeTint); border-color: #f0c9b0; }
+.tileOrange .tileLabel, .tileOrange .tileValue { color: var(--orange); }
+.tileLabel { font-size: 12px; color: var(--muted); font-weight: 600; }
+.tileValue { font-size: 26px; font-weight: 700; line-height: 1.2; margin: 2px 0; }
+.tileRefi { color: var(--accent); }
+.tileSub { font-size: 12px; color: var(--muted); display: block; }
+.nextTile { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; }
+.nextRight { text-align: right; }
+.nextDate { font-size: 22px; font-weight: 700; }
+.callRow { display: flex; align-items: center; gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 9px 14px; margin: 6px 0; }
+.callRowOrange { border-color: #f0c9b0; }
+.callWhen { display: inline-block; min-width: 92px; font-weight: 650; }
+.callBody { flex: 1; }
+.callNote { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+/* tags (§2.10) */
+.tag { display: inline-block; font-size: 12px; font-weight: 650; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.tag_refinanced { background: #e3edf7; color: #1f4e79; }
+.tag_pending { background: #e3edf7; color: #1f4e79; }
+.tag_orange { background: var(--orangeTint); color: var(--orange); }
+.tag_neutral { background: var(--wash); color: var(--muted); }
+.tenK { display: inline-block; margin-left: 8px; font-size: 10.5px; font-weight: 650; padding: 0 5px; border-radius: 4px; background: var(--wash); color: var(--muted); border: 1px solid var(--line); vertical-align: 1px; }
+
+/* sections */
+.section { padding: 18px 28px; border-bottom: 1px solid var(--line); }
+.sectionHead { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 0 36px; }
+@media (max-width: 720px) { .split { grid-template-columns: 1fr; gap: 18px; } }
+.small { font-size: 13px; }
+
+/* 4. moves */
+.moves { display: flex; flex-direction: column; gap: 10px; }
+.moveSingle { display: grid; grid-template-columns: minmax(0, 560px); }
+.movePair { display: grid; grid-template-columns: 1fr 28px 1fr; align-items: stretch; }
+@media (max-width: 720px) { .movePair { grid-template-columns: 1fr; } .arrow { transform: rotate(90deg); } }
+.arrow { display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 18px; }
+.moveCard { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: var(--panel); }
+.moveMeta { font-size: 12.5px; color: var(--muted); }
+.moveTitle { font-weight: 650; font-size: 15px; }
+.moveDetail { font-size: 12.5px; color: var(--muted); }
+
+/* 5. total debt and liquidity */
+.bigFigure { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+.stack { display: flex; height: 14px; border-radius: 4px; overflow: hidden; background: var(--wash); margin-bottom: 10px; }
+.stack > span { display: block; height: 100%; }
+.legendList { list-style: none; margin: 0; padding: 0; }
+.legendList li { display: flex; align-items: baseline; gap: 8px; padding: 2px 0; }
+.legendLabel { flex: 1; }
+.legendAmount { font-variant-numeric: tabular-nums; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.note { font-size: 12.5px; color: var(--muted); margin-top: 4px; display: block; }
+
+/* 6. the chart */
+.chart { margin: 0 0 14px; }
+.chartLegend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 14px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.legendItem { display: inline-flex; align-items: center; gap: 6px; }
+.plot { position: relative; display: flex; gap: 6px; height: 240px; padding-top: 22px; }
+.band { position: absolute; left: 0; top: 0; bottom: 22px; background: var(--orangeTint); border-right: 2px dashed #d99a72; pointer-events: none; }
+.quiet { background: var(--tint); border-right-color: #9fb6cc; }
+.quiet .bandLabel { color: var(--accent); }
+.bandLabel { position: absolute; left: 6px; top: 2px; font-size: 11px; font-weight: 700; color: var(--orange); }
+.col { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; }
+.colInner { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.value { font-size: 11.5px; text-align: center; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
+.bar { display: flex; flex-direction: column; position: relative; min-height: 1px; }
+.bar > span { display: block; width: 100%; min-height: 1px; }
+.breakMark { position: absolute; left: -2px; right: -2px; top: 18%; height: 7px; background: var(--panel); transform: skewY(-8deg); z-index: 2; }
+.year { text-align: center; font-size: 12px; font-weight: 650; height: 22px; line-height: 22px; white-space: nowrap; }
+.caption { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+.captionLine { display: block; }
+
+/* 6. the table */
+.tableWrap { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.table { width: 100%; border-collapse: collapse; }
+.table th { text-align: left; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--wash); padding: 8px 12px; }
+.table td { padding: 7px 12px; vertical-align: top; }
+.table tbody tr:nth-child(odd) { background: var(--wash); }
+.table .face { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; width: 90px; }
+.matures { white-space: nowrap; width: 120px; }
+.status { width: 240px; }
+.status .tag { white-space: normal; }
+.more { padding: 6px 12px 8px; border-top: 1px solid var(--line); }
+.more > summary { cursor: pointer; color: var(--accent); font-size: 13px; }
+.schedule { padding: 6px 0; font-size: 13px; }
+.scheduleHead { display: block; font-weight: 650; margin-top: 6px; }
+.scheduleLine { display: block; }
+
+/* 7–8 */
+.facility { margin-bottom: 8px; }
+.facBold { display: block; font-weight: 650; }
+.facSub { display: block; color: var(--muted); font-size: 12.5px; }
+.footnote { background: var(--wash); padding: 12px 28px; font-size: 12px; color: var(--muted); }
+
+/* Labels that open a line read with a capital, for display only (what a label states is unchanged). */
+.facBold::first-letter,
+.legendLabel::first-letter,
+.moveTitle::first-letter,
+.moveDetail::first-letter { text-transform: uppercase; }
+.legendLabel { display: block; }
