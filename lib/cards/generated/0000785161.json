@@ -4184,7 +4184,7 @@
      },
      {
       "k": "text",
-      "t": " is included in scheduled other principal."
+      "t": " are included in scheduled other principal."
      }
     ],
     [
@@ -4195,10 +4195,16 @@
     ],
     [
      {
+      "k": "text",
+      "t": "The revolver appears as scheduled principal: the filer's schedule doesn't split it by instrument."
+     }
+    ],
+    [
+     {
       "k": "notStated",
-      "t": "This company's filings state seniority or security for few of these instruments, so most bars are grey.",
+      "t": "The senior notes' security is not stated.",
       "src": {
-       "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
+       "sentence": "4.75 % Senior Notes due 2030 788.4   787.0",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
        "doc": "10-Q 2026-08-07"
       }

@@ -6763,11 +6763,33 @@
     [
      {
       "k": "notStated",
-      "t": "This company's filings state seniority or security for few of these instruments, so most bars are grey.",
+      "t": "The senior notes' security is not stated.",
       "src": {
        "sentence": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
        "doc": "8-K 2025-09-04"
+      }
+     }
+    ],
+    [
+     {
+      "k": "notStated",
+      "t": "For the notes, seniority and security are not stated.",
+      "src": {
+       "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+       "doc": "10-K for Dec 31, 2025"
+      }
+     }
+    ],
+    [
+     {
+      "k": "notStated",
+      "t": "This company's filings state labels for few of these instruments.",
+      "src": {
+       "sentence": "$3,800 million, 4.375 % Notes due October 2028 3,792",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+       "doc": "10-K for Dec 31, 2025"
       }
      }
     ]

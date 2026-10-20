@@ -880,7 +880,7 @@ function greyCauses(card: Card): string[] {
   const caps = v.chart.captions.map(text).join(" ");
   const bad: string[] = [];
   const want = (cond: boolean, re: RegExp, what: string) => { if (cond && !re.test(caps)) bad.push(`missing cause: ${what}`); if (!cond && re.test(caps)) bad.push(`cause stated but not present: ${what}`); };
-  want(absorbed, /appear as scheduled principal: the filer's schedule doesn't split them by instrument/, "debt carried only in the schedule's yearly totals");
+  want(absorbed, /appears? as scheduled principal: the filer's schedule doesn't split (?:them|it) by instrument/, "debt carried only in the schedule's yearly totals");
   want(securityOnly.length > 0, /security is not stated/, "grey rows whose security is not stated");
   want(neither.length > 0, /seniority and security are not stated/, "grey rows stating neither label");
   const neitherFace = neither.reduce((a, x) => a + x.usd, 0);

@@ -3296,13 +3296,19 @@
      },
      {
       "k": "text",
-      "t": " is included in scheduled other principal."
+      "t": " are included in scheduled other principal."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "Term loans and the revolver appear as scheduled principal: the filer's schedule doesn't split them by instrument."
      }
     ],
     [
      {
       "k": "notStated",
-      "t": "This company's filings state seniority or security for few of these instruments, so most bars are grey.",
+      "t": "The senior notes' security is not stated.",
       "src": {
        "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",

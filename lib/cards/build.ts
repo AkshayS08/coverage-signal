@@ -1884,7 +1884,7 @@ export function buildCard(i: CardInputs): Card {
   const scheduleTotal = anchorSchedule ? sum(scheduleEntries.map((e) => e.part)) : null;
   const scheduleTies = scheduleTotal !== null && Math.abs(scheduleTotal - faceTotal) < 0.5e6;
   const itemList = (its: Item[]): Line => its.flatMap((it, n) => [...(n ? [t("; ")] : []), usdSeg(partOf(it)), t(" "), ...instrumentWords(it).filter((x) => !(x.k === "text" && /carrying value/.test(x.t))), ...(it.range ? [t(`, ${it.range.from} to ${it.range.to}`)] : [])]);
-  if (undated.length && scheduleTies) captions.push([t("The principal of "), ...itemList(undated), t(" is included in scheduled other principal.")]);
+  if (undated.length && scheduleTies) captions.push([t("The principal of "), ...itemList(undated), t(` ${undated.length === 1 ? "is" : "are"} included in scheduled other principal.`)]);
   else if (undated.length) {
     const face = undated.filter((it) => it.basis === "face"), carrying = undated.filter((it) => it.basis === "carrying");
     if (face.length) captions.push([t("Not shown on the chart, with no single maturity: "), ...itemList(face), t(".")]);
@@ -1892,10 +1892,43 @@ export function buildCard(i: CardInputs): Card {
   }
   const carryingYears = cols.filter((c) => c.carryingBonds.length);
   if (carryingYears.length) captions.push([t(`The ${carryingYears.map((c) => c.label ?? c.year).join(" and ")} bar${carryingYears.length === 1 ? "" : "s"} show the filer's schedule total; the ${carryingYears.flatMap((c) => c.carryingBonds).map((it) => `${couponOf(it.name)?.shown ?? ""} ${it.labels.type.t}`.trim()).join(" and ")} in ${carryingYears.length === 1 ? "it are" : "them are"} stated only at carrying value.`)]);
-  const greyShare = bars.reduce((a, b) => a + b.segments.filter((s) => s.color === PALETTE.notStated).reduce((x, s) => x + s.usd, 0), 0) / Math.max(1, bars.reduce((a, b) => a + b.segments.reduce((x, s) => x + s.usd, 0), 0));
   const notStatedRows = allDebtItems.filter((it) => notStatedPhrase(it));
   const mostlyNotStated = notStatedRows.length > allDebtItems.length / 2;
-  if (greyShare > 0.5 || mostlyNotStated) captions.push([{ k: "notStated", t: `This company's filings state seniority or security for few of these instruments, so most ${greyShare > 0.5 ? "bars are grey" : "rows carry no label"}.`, src: notStatedRows[0]?.amountSrc ?? anchorSrc(anchor.form) }]);
+  // v3.2 §2.5: THE GREY CAPTION STATES ITS CAUSES, computed from the charted
+  // face by cause, naming only the causes present.
+  const byRow = new Map(allDebtItems.map((it) => [it.rowLabel ?? it.name, it]));
+  const charted = bars.reduce((a, b) => a + b.segments.reduce((x, sg) => x + sg.usd, 0), 0);
+  const greyItems = new Map<Item, number>();
+  for (const b of bars) for (const sg of b.segments.filter((x) => x.color === PALETTE.notStated)) for (const n of sg.rows ?? []) { const it = byRow.get(n); if (it) greyItems.set(it, (greyItems.get(it) ?? 0) + sg.usd / Math.max(1, (sg.rows ?? []).length)); }
+  const securityOnly = [...greyItems.keys()].filter((it) => it.labels.seniority && !it.labels.security);
+  const neither = [...greyItems.keys()].filter((it) => !it.labels.seniority && !it.labels.security);
+  const typesOf = (its: Item[]) => [...new Set(its.map((it) => it.labels.type.t))];
+  const joinTypes = (ts: string[]) => (ts.length === 1 ? ts[0] : `${ts.slice(0, -1).join(", ")} and ${ts[ts.length - 1]}`);
+  const chartedRows = new Set(bars.flatMap((b) => b.segments.flatMap((sg) => sg.rows ?? [])));
+  const absorbed = anchorSchedule ? allDebtItems.filter((it) => it.maturity && !isCP(it) && !isBond(it) && !chartedRows.has(it.rowLabel ?? it.name)) : [];
+  const causeLines: Line[] = [];
+  if (absorbed.length) {
+    const loans = absorbed.filter((it) => /term loan/i.test(it.labels.type.t)).length, revolvers = absorbed.filter((it) => /revolv|line of credit|ABL/i.test(`${it.labels.type.t} ${it.name}`)).length;
+    const others = absorbed.length - loans - revolvers;
+    const parts: string[] = [];
+    if (loans) parts.push(loans === 1 ? "The term loan" : "Term loans");
+    if (revolvers) parts.push(parts.length ? "the revolver" : "The revolver");
+    if (others) parts.push(parts.length ? "other amortizing debt" : "Other amortizing debt");
+    const plural = absorbed.length > 1;
+    causeLines.push([t(`${joinTypes(parts)} ${plural ? "appear" : "appears"} as scheduled principal: the filer's schedule doesn't split ${plural ? "them" : "it"} by instrument.`)]);
+  }
+  if (securityOnly.length) {
+    // Told apart from unlabelled notes by the label they do state: "the senior notes".
+    const ts = [...new Set(securityOnly.map((it) => `${it.labels.seniority!.t} ${it.labels.type.t}`))];
+    causeLines.push([{ k: "notStated", t: ts.length === 1 ? `The ${ts[0]}' security is not stated.` : `For the ${joinTypes(ts)}, security is not stated.`, src: securityOnly[0].amountSrc }]);
+  }
+  if (neither.length) {
+    const ts = typesOf(neither);
+    causeLines.push([{ k: "notStated", t: ts.length === 1 ? `For the ${ts[0]}, seniority and security are not stated.` : `For the ${joinTypes(ts)}, seniority and security are not stated.`, src: neither[0].amountSrc }]);
+    const neitherFace = neither.reduce((a, it) => a + (greyItems.get(it) ?? 0), 0);
+    if (neitherFace > charted / 2) causeLines.push([{ k: "notStated", t: "This company's filings state labels for few of these instruments.", src: neither[0].amountSrc }]);
+  }
+  captions.push(...causeLines);
 
   // ── 2.6 the table ──
   const tableItems = [...cpItems, ...allDebtItems.filter((it) => it.maturity && !isCP(it)).sort((a, b) => a.maturity!.date.localeCompare(b.maturity!.date)), ...allDebtItems.filter((it) => !it.maturity && !isCP(it)).sort((a, b) => (a.range ? 0 : 1) - (b.range ? 0 : 1))];
