@@ -197,7 +197,7 @@ const T3_TABLE: Test = {
         const dec = ((/\.(\d+)MM/.exec(a?.t ?? "") ?? [])[1] ?? "").length;
         const tol = Math.max(1, 0.5 * 10 ** -dec * 1e6 + 1);
         if (shown === null || Math.abs(shown - e.faceUsd) > tol) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"}, face is ${e.faceUsd}`);
-      } else if (!/carrying value/i.test(text(reps[0])) && !(a && a.k === "computed" && a.parts.length > 0 && a.parts.every((p) => /principal|face amount/i.test(p.src.sentence))) && !(a && a.k === "figure" && (/principal|face amount/i.test(a.src.sentence) || (a.field === "drawn" && /\bdrawn\b|borrowings? outstanding/i.test(a.src.sentence))))) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"} with no face source and no "carrying value" label`);
+      } else if (!/carrying value/i.test(text(reps[0])) && !(a && a.k === "computed" && a.parts.length > 0 && a.parts.every((p) => /principal|face amount/i.test(p.src.sentence))) && !(a && a.k === "figure" && (/principal|face amount|\bwe issued \$/i.test(a.src.sentence) || (a.field === "drawn" && /\bdrawn\b|borrowings? outstanding/i.test(a.src.sentence))))) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"} with no face source and no "carrying value" label`);
     }
     const faceTotal = exp.every((e) => e.faceUsd !== null)
       ? exp.reduce((s, e) => s + (e.faceUsd ?? 0), 0)
@@ -564,7 +564,7 @@ function expectedCase(card: Card): "A" | "B" | "C" | "D" {
   return leftovers ? "C" : "D";
 }
 const HEADLINE: Record<string, RegExp> = {
-  A: /^~?\$[\d,.]+MM of .+ (?:is|are) not yet refinanced\./,
+  A: /^~?\$[\d,.]+MM of .+ (?:is|are) not yet refinanced[.;]/,
   B: /^Everything due in the next 18 months is refinanced\./,
   C: /^No notes or loans mature in the next 18 months\. \$[\d,.]+MM†? of scheduled amortization\./,
   D: /^Nothing matures in the next 18 months\./,
@@ -604,7 +604,7 @@ const V3_TILES: Test = {
   },
 };
 
-const VOCAB = /^(?:Refinanced(?: · (?:redemption set for .+|redeemed [A-Z][a-z]+ \d{4}))?|Not yet refinanced|Backed by revolver|Short-term|~?\$[\d,.]+MM (?:refinanced|repurchased in \d{4}|retired in \d{4}) · ~?\$[\d,.]+MM remains|(?:Seniority|Security|Seniority and security) not stated)$/;
+const VOCAB = /^(?:Refinanced(?: · (?:redemption set for .+|redeemed [A-Z][a-z]+ \d{4}))?|Not yet refinanced|Backed by revolver|Short-term|~?\$[\d,.]+MM (?:refinanced|repurchased in \d{4}|retired in \d{4}) · ~?\$[\d,.]+MM remains(?:, not yet refinanced)?|(?:Seniority|Security|Seniority and security) not stated)$/;
 const MOVE_WORD = /· (?:Issued, confirmed by \S+|Refinanced|Repaid(?: at maturity)?|Repurchased|Redeemed|Amended|Drew|Redemption announced, awaiting confirmation in a filing)$/;
 const V4_VOCAB: Test = {
   id: "V4", name: "status and move words only from the §2.10 list; \"redeemed\" only with a confirming filing",

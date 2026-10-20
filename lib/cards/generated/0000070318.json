@@ -2939,7 +2939,11 @@
     },
     {
      "k": "text",
-     "t": " of 4.625% senior secured notes due 2028 are not yet refinanced."
+     "t": " of 4.625% senior secured notes due 2028 are not yet refinanced"
+    },
+    {
+     "k": "text",
+     "t": "."
     },
     {
      "k": "text",
@@ -3623,6 +3627,39 @@
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
          "doc": "thc-20260908.htm"
         }
+       },
+       {
+        "k": "text",
+        "t": " · "
+       },
+       {
+        "k": "computed",
+        "t": "$1,250MM",
+        "usd": 1250000000,
+        "parts": [
+         {
+          "printed": "$ 1,750 million",
+          "usd": 1750000000,
+          "src": {
+           "sentence": "6.125 % due 2028 $ 1,750   $ 1,750",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+           "doc": "10-Q 2026-07-29"
+          }
+         },
+         {
+          "printed": "$ 0.5 billion",
+          "usd": -500000000,
+          "src": {
+           "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+           "doc": "8-K 2026-09-22"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " remains"
        }
       ]
      ]

@@ -801,6 +801,19 @@ export function buildCard(i: CardInputs): Card {
     }
   }
 
+  // v3.2 §2.6: FACE WHERE IT IS STATED. A row stated only at carrying value
+  // takes its face from an issuance of the same notes inside the period ("we
+  // issued $500 million of 5.875% Senior Notes due 2034 … at par"), where no
+  // retirement of them in the period is stated.
+  for (const it of allDebtItems.filter((x) => x.basis === "carrying" && couponOf(x.name))) {
+    const iss = movesAll.find((m) => m.type === "issuance" && m.inPeriod && m.face && m.face.k === "figure" && m.faceUsd && sameNote(m.instrument, it.name));
+    if (!iss || movesAll.some((m) => RETIRES.has(m.type) && m.inPeriod && sameNote(m.instrument, it.name))) continue;
+    it.amountPrinted = (iss.face as any).printed;
+    it.amountSrc = (iss.face as any).src;
+    it.amountParts = undefined;
+    it.basis = "face";
+  }
+
   // ── 2.3 total debt, at face (card_spec §3.2) ──
   // Every line is one basis. Face where every line states face; where some
   // lines state only carrying value, the face total is the filer's own
@@ -1418,12 +1431,20 @@ export function buildCard(i: CardInputs): Card {
     }
     const rs = retirementsOf(it);
     const refi = refinancedOf(it);
-    if (inWindowItem(it) && faceUsdOf(it) - refi > 0.5e6) return { text: [t("Not yet refinanced")], tone: "orange" };
+    const fig = (usd: number, ms: Move[]): Segment => ({ k: "computed", t: displayUsd(usd, ms.some((m) => /~/.test(m.face?.t ?? "")), 0), usd, parts: ms.map((m) => ({ printed: (m.face as any).printed, usd: m.faceUsd!, src: (m.face as any).src })) });
+    if (inWindowItem(it) && faceUsdOf(it) - refi > 0.5e6) {
+      // v3.2: a partial retirement inside the period shows what it retired and what remains, still not refinanced.
+      const past = rs.filter((m) => m.inPeriod);
+      if (past.length) {
+        const word = past.every((m) => m.fundedBy) ? "refinanced" : past.every((m) => m.type === "tender or repurchase") ? `repurchased in ${past[0].sort.slice(0, 4)}` : `retired in ${past[0].sort.slice(0, 4)}`;
+        return { text: [fig(past.reduce((a, m) => a + m.faceUsd!, 0), past), t(` ${word} · `), { k: "computed", t: displayUsd(faceUsdOf(it), false, dp(partOf(it))), usd: faceUsdOf(it), parts: partOf(it) }, t(" remains, not yet refinanced")], tone: "orange" };
+      }
+      return { text: [t("Not yet refinanced")], tone: "orange" };
+    }
     if (!rs.length) return null;
     const funded = rs.every((m) => m.fundedBy);
     const retired = rs.reduce((a, m) => a + m.faceUsd!, 0);
     const remains = remainsUsd(it, rs);
-    const fig = (usd: number, ms: Move[]): Segment => ({ k: "computed", t: displayUsd(usd, ms.some((m) => /~/.test(m.face?.t ?? "")), 0), usd, parts: ms.map((m) => ({ printed: (m.face as any).printed, usd: m.faceUsd!, src: (m.face as any).src })) });
     if (funded && remains < 0.5e6) {
       const pending = rs.some((m) => m.status === "pending");
       const m0 = rs[0];
@@ -1483,7 +1504,15 @@ export function buildCard(i: CardInputs): Card {
   const headline: Line = [];
   if (callCase === "A") {
     const nyParts: Part[] = [...notYetItems.flatMap(partOf), ...refiParts.filter((p) => notYetItems.some((it) => retirementsOf(it).some((m) => (m.face as any)?.src === p.src))).map((p) => ({ ...p, usd: -p.usd }))];
-    headline.push(usdSeg(nyParts), t(` of ${phraseFor(notYetItems)} ${verbFor(notYetItems)} not yet refinanced.`));
+    headline.push(usdSeg(nyParts), t(` of ${phraseFor(notYetItems)} ${verbFor(notYetItems)} not yet refinanced`));
+    // v3.2: one clause naming an earlier partial retirement of the instrument the headline names.
+    const earlier = notYetItems.length === 1 ? retirementsOf(notYetItems[0]).filter((m) => m.inPeriod) : [];
+    if (earlier.length) {
+      const usd = earlier.reduce((a, m) => a + m.faceUsd!, 0);
+      const word = earlier.every((m) => m.fundedBy) ? "refinanced" : earlier.every((m) => m.type === "tender or repurchase") ? "repurchased" : "retired";
+      headline.push(t("; the other "), { k: "computed", t: displayUsd(usd, false, 0), usd, parts: earlier.map((m) => ({ printed: (m.face as any).printed, usd: m.faceUsd!, src: (m.face as any).src })) }, t(` ${earlier.length === 1 && usd > 0 ? "was" : "were"} ${word} in ${monthYear(earlier[0].sort)}`));
+    }
+    headline.push(t("."));
     const done = refiItems.filter((it) => !notYetItems.includes(it));
     if (done.length) headline.push(t(` ${done.length === 1 ? `The ${done[0].maturity?.date.slice(0, 4) ?? ""} ${done[0].labels.type.t}`.replace(/\s+/g, " ") : `The other ${done.length} instruments`} ${verbFor(done)} already refinanced.`));
   } else if (callCase === "B") headline.push(t("Everything due in the next 18 months is refinanced."));
@@ -1553,6 +1582,16 @@ export function buildCard(i: CardInputs): Card {
   }
 
   // ── 2.3 move cards ──
+  // v3.2: a retirement of part of an instrument still on the card states what remains, matched by instrument identity.
+  const remainsClause = (m: Move): Line => {
+    if (!RETIRES.has(m.type) || !m.faceUsd) return [];
+    const item = allDebtItems.find((it) => retirementsOf(it).includes(m));
+    if (!item) return [];
+    const usd = m.inPeriod ? faceUsdOf(item) : faceUsdOf(item) - m.faceUsd;
+    if (usd <= 0.5e6) return [];
+    const parts = m.inPeriod ? partOf(item) : [...partOf(item), { printed: (m.face as any).printed, usd: -m.faceUsd, src: (m.face as any).src }];
+    return [t(" · "), { k: "computed", t: displayUsd(usd, false, dp(parts)), usd, parts }, t(" remains")];
+  };
   const formOfUrl = (url: string) => (docs.get(url) ?? "").split(" ")[0] || "filing";
   const moveCards: CardV3["moves"] = [];
   for (const ms of evs) {
@@ -1578,7 +1617,7 @@ export function buildCard(i: CardInputs): Card {
         const r0 = issuance.retires[0];
         left.retires = {
           meta: pending ? [t("Refinanced · "), dateOf(r0, `redemption set for ${whenShort(r0)}`), t(", awaiting confirmation in a filing")] : [t("Refinanced · "), dateOf(r0, `redeemed ${monthYear(r0.sort)}`)],
-          items: issuance.retires.map((r) => (r.type === "paydown" ? [...(r.face ? [r.face, t(" ")] : []), t("of the "), instPhrase(r), t(", repaid")] : faceInst(r))),
+          items: issuance.retires.map((r) => (r.type === "paydown" ? [...(r.face ? [r.face, t(" ")] : []), t("of the "), instPhrase(r), t(", repaid")] : [...faceInst(r), ...remainsClause(r)])),
         };
         const use = issuance.retires.length ? [] : useClause(issuance);
         if (extras.length || use.length) left.detail = [...capFirst([...use, ...extras]), t(".")];
@@ -1593,7 +1632,7 @@ export function buildCard(i: CardInputs): Card {
     }
     const sorted = [...ms].sort((a, b) => a.sort.localeCompare(b.sort));
     const shared = sorted.every((m) => m.fundFact && m.fundFact.value === sorted[0].fundFact?.value);
-    moveCards.push({ meta: [dateOf(sorted[0]), t(` · ${vocab(sorted[0])}`)], title: sorted.map((m) => faceInstOrName(m)), detail: shared || sorted.length === 1 ? detailOf(sorted[0]) : null, retires: null });
+    moveCards.push({ meta: [dateOf(sorted[0]), t(` · ${vocab(sorted[0])}`)], title: sorted.map((m) => [...faceInstOrName(m), ...remainsClause(m)]), detail: shared || sorted.length === 1 ? detailOf(sorted[0]) : null, retires: null });
   }
   function vocab(m: Move): string {
     if (m.type === "facility amendment") return "Amended";
@@ -1830,7 +1869,7 @@ export function buildCard(i: CardInputs): Card {
       matures: isCP(it) ? [t("Short-term")] : it.maturity ? [{ k: "date", t: whenOf(it.maturity), date: it.maturity.date, granularity: it.maturity.granularity, src: it.maturity.src }] : it.range ? [{ k: "label", t: `${it.range.from}–${it.range.to}`, stated: it.range.stated, src: it.range.src }] : [t("Various")],
       instrument: instrumentWords(it),
       tenK: it.rolled,
-      face: usdSeg(partOf(it), { bare: true }),
+      face: it.basis === "carrying" ? (() => { const f0 = usdSeg(partOf(it), { bare: true }); return { ...f0, t: `${f0.t} (carrying value)` }; })() : usdSeg(partOf(it), { bare: true }),
       status: st ?? (ns ? { text: [{ k: "notStated", t: ns, src: it.amountSrc }], tone: "neutral" } : null),
       inWindow: inWindowItem(it) || isCP(it),
       name: it.rowLabel ?? it.name,

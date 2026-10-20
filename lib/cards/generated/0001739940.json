@@ -4634,7 +4634,11 @@
     },
     {
      "k": "text",
-     "t": " of notes and debentures due in 2027 are not yet refinanced."
+     "t": " of notes and debentures due in 2027 are not yet refinanced"
+    },
+    {
+     "k": "text",
+     "t": "."
     },
     {
      "k": "text",
@@ -8592,7 +8596,7 @@
      "tenK": true,
      "face": {
       "k": "computed",
-      "t": "111",
+      "t": "111 (carrying value)",
       "usd": 111000000,
       "parts": [
        {

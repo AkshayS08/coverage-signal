@@ -2509,7 +2509,11 @@
     },
     {
      "k": "text",
-     "t": " of 6⅞% senior notes due 2028 are not yet refinanced."
+     "t": " of 6⅞% senior notes due 2028 are not yet refinanced"
+    },
+    {
+     "k": "text",
+     "t": "."
     }
    ],
    "tiles": [
@@ -2823,6 +2827,30 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
         "doc": "10-Q 2026-07-23"
        }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "computed",
+       "t": "$689MM",
+       "usd": 689000000,
+       "parts": [
+        {
+         "printed": "$ 689 million",
+         "usd": 689000000,
+         "src": {
+          "sentence": "4 ¾% Senior Secured Notes due 2031 689",
+          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+          "doc": "10-Q 2026-07-23"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " remains"
       }
      ],
      [
@@ -2849,6 +2877,30 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
         "doc": "10-Q 2026-07-23"
        }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "computed",
+       "t": "$1,549MM",
+       "usd": 1549000000,
+       "parts": [
+        {
+         "printed": "$ 1,549 million",
+         "usd": 1549000000,
+         "src": {
+          "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
+          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+          "doc": "10-Q 2026-07-23"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " remains"
       }
      ]
     ],
@@ -2920,6 +2972,30 @@
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
         "doc": "10-Q 2026-07-23"
        }
+      },
+      {
+       "k": "text",
+       "t": " · "
+      },
+      {
+       "k": "computed",
+       "t": "$1,549MM",
+       "usd": 1549000000,
+       "parts": [
+        {
+         "printed": "$ 1,549 million",
+         "usd": 1549000000,
+         "src": {
+          "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
+          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+          "doc": "10-Q 2026-07-23"
+         }
+        }
+       ]
+      },
+      {
+       "k": "text",
+       "t": " remains"
       }
      ]
     ],
