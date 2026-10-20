@@ -755,6 +755,171 @@ function ownLabels(card: Card): string[] {
 }
 const G1_OWNLABELS: Test = { id: "G1", name: "segments by each row's own labels: no stated-security row is ever grey", run: (card) => (card.v3 ? ownLabels(card) : ["no v3 card"]) };
 
+
+// ── card_spec v3.2 (round 3): each rule over all six cards ───────────────
+const segUsd = (x: Segment) => (x.k === "computed" ? x.usd : x.k === "figure" ? parseMoneyAmount(x.printed) ?? 0 : 0);
+const notShownLine = (card: Card) => card.v3!.chart.captions.find((l) => /^Not shown on the chart/.test(text(l))) ?? null;
+
+/** W1 — every dollar of face in exactly one place: a bar, or the not-shown list. */
+function ladderEquation(card: Card): string[] {
+  const v = card.v3!;
+  const bars = v.chart.bars.reduce((a, b) => a + b.segments.reduce((x, sg) => x + sg.usd, 0), 0);
+  const ns = notShownLine(card);
+  const notShown = ns ? ns.filter((x) => x.k === "computed" || x.k === "figure").reduce((a, x) => a + segUsd(x), 0) : 0;
+  const face = segUsd(v.totalDebt.figure);
+  const bad: string[] = [];
+  if (Math.abs(bars + notShown - face) > 0.5e6) bad.push(`bars ${Math.round(bars / 1e5) / 10} + not shown ${Math.round(notShown / 1e5) / 10} = ${Math.round((bars + notShown) / 1e5) / 10}, face total ${Math.round(face / 1e5) / 10}`);
+  if (ns && /carrying value/i.test(text(ns))) bad.push("a carrying-value item counted among the not-shown face");
+  const inBars = new Set(v.chart.bars.flatMap((b) => b.segments.flatMap((sg) => sg.rows ?? [])).map(norm));
+  if (ns) for (const r of v.table.rows) if (text(ns).includes(text(r.instrument).replace(/ \(carrying value\)/, "")) && inBars.has(norm(r.name))) bad.push(`"${r.name}" is both in the bars and in the not-shown list`);
+  const included = v.chart.captions.find((l) => /included in scheduled other principal/.test(text(l)));
+  if (ns && included) for (const x of ns.filter((y) => y.k === "label")) if (text(included).includes(x.t)) bad.push(`"${x.t}" is listed as not shown and as included in scheduled other principal`);
+  return bad;
+}
+const W1_LADDER: Test = { id: "W1", name: "ladder reconciles: bars + not shown = face total; nothing both charted and listed", run: (card) => (card.v3 ? ladderEquation(card) : ["no v3 card"]) };
+
+/** W2 — a move retiring part of an instrument and the instrument's row show the same remainder. */
+const couponYear = (t0: string) => { const c = (/(\d{1,2}(?:\.\d+|[⅛¼⅜½⅝¾⅞])?%)/.exec(t0) ?? [])[1]; const y = (/\b(20\d\d)\b/.exec(t0.replace(/\b(?:Jan|Feb|Mar|Apr|May|June|July|Aug|Sept|Oct|Nov|Dec)[a-z]* \d{1,2}, \d{4}/g, "")) ?? [])[1]; return c && y ? `${c} ${y}` : null; };
+function remainsIn(l: Line): number | null { const i = l.findIndex((x, n) => x.k === "text" && /^ remains/.test(x.t) && n > 0); return i > 0 ? segUsd(l[i - 1]) : null; }
+function moveRowAgree(card: Card): string[] {
+  const v = card.v3!;
+  const bad: string[] = [];
+  const rows = v.table.rows.map((r) => ({ r, key: couponYear(`${text(r.instrument)} ${text(r.matures)}`) }));
+  for (const m of v.moves) {
+    const retiring: Line[] = m.retires ? m.retires.items : /Refinanced|Repurchased|Redeemed|Repaid/.test(text(m.meta)) ? m.title : [];
+    const pending = /redemption set for|awaiting confirmation/.test(text(m.retires?.meta ?? m.meta));
+    for (const it of retiring) {
+      const key = couponYear(text(it));
+      const row = key ? rows.find((x) => x.key === key) : undefined;
+      if (!row) continue;
+      // Partial only: a confirmed retirement whose instrument still has a row, or a pending one smaller than the row's face.
+      const retired = segUsd(it.find((x) => x.k === "figure" || x.k === "computed") ?? ({ k: "text", t: "" } as Segment));
+      if (pending && retired >= segUsd(row.r.face!) - 0.5e6) continue;
+      const rowRemains = row.r.status ? remainsIn(row.r.status.text) : null;
+      const moveRemains = remainsIn(it);
+      if (rowRemains === null) bad.push(`"${text(row.r.instrument)}" (${key}) is retired in part by a move, but its row states no remainder`);
+      if (moveRemains === null) bad.push(`the move retiring ${key} states no remainder`);
+      if (rowRemains !== null && moveRemains !== null && Math.abs(rowRemains - moveRemains) > 0.5e6) bad.push(`${key}: the move says $${moveRemains / 1e6}MM remains, the row $${rowRemains / 1e6}MM`);
+    }
+  }
+  return bad;
+}
+const W2_MOVEROW: Test = { id: "W2", name: "a move and its row agree on what remains", run: (card) => (card.v3 ? moveRowAgree(card) : ["no v3 card"]) };
+
+const W3_FACECELL: Test = {
+  id: "W3", name: "no Face cell holds a carrying value without its tag",
+  run: (card) => (card.v3 ? card.v3.table.rows.filter((r) => /carrying value/i.test(text(r.instrument)) && !(r.face && /carrying value/i.test(r.face.t))).map((r) => `"${r.name}": Face cell ${r.face?.t} is a carrying value without its tag`) : ["no v3 card"]),
+};
+
+/** W4 — no figure in "Not shown" is an input to any displayed computation. */
+const W4_WITHHELD: Test = {
+  id: "W4", name: "a withheld figure never enters any displayed computation",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const withheld = card.v3.notShown.flatMap((l) => [...text(l).matchAll(/\$([\d,]+(?:\.\d+)?)MM/g)].map((m) => Number(m[1].replace(/,/g, "")) * 1e6));
+    const bad: string[] = [];
+    for (const { line } of linesOf(card)) for (const x of line) if (x.k === "computed") for (const p of x.parts) if (withheld.some((w) => Math.abs(Math.abs(p.usd) - w) < 0.05e6)) bad.push(`withheld $${Math.abs(p.usd) / 1e6}MM is an input to ${x.t}`);
+    return bad;
+  },
+};
+
+/** W5 — nothing labelled "not stated" is named with that attribute in a cited sentence or in the card's own text. */
+const W5_NOTSTATED: Test = {
+  id: "W5", name: "no \"not stated\" for an attribute a cited sentence or the card itself names; withheld is never \"not stated\"",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const v = card.v3;
+    const bad: string[] = [];
+    const cited = [...new Set(linesOf(card).flatMap((w) => w.line.flatMap((x) => ("src" in x ? [x.src.sentence] : []))))];
+    const cardText = v3Lines(card).map(text).join(" \n ");
+    // Every "not stated" claim about a row's seniority or security, wherever the card makes it.
+    const claims: { name: string; words: string[] }[] = [];
+    for (const r of v.table.rows) {
+      const st = r.status ? text(r.status.text) : "";
+      if (/Seniority and security not stated/.test(st)) claims.push({ name: r.name, words: ["senior", "secured"] });
+      else if (/Seniority not stated/.test(st)) claims.push({ name: r.name, words: ["senior"] });
+      else if (/Security not stated/.test(st)) claims.push({ name: r.name, words: ["secured"] });
+    }
+    v.totalDebt.segments.forEach((sg, i) => { if (/seniority not stated/i.test(text(v.totalDebt.legend[i]?.label ?? []))) for (const n of sg.rows ?? []) claims.push({ name: n, words: ["senior", "secured"] }); });
+    for (const { name, words } of claims) {
+      const isFacility = kindOf(name) === "facility";
+      const cy = couponYear(name);
+      const namesIt = (sn: string) => (isFacility ? /credit agreement|revolving credit facility|revolver/i.test(sn) : cy ? sn.includes(cy.split(" ")[0].replace("%", "")) && sn.includes(cy.split(" ")[1]) : containsWord(sn, name));
+      for (const word of words) {
+        const re = word === "senior" ? /\bsenior secured (?:borrowing|obligations|capacity|credit|revolving|loans|notes|facilit)|\bare (?:senior)\b/i : /\bobligations under [^.]{0,60}\bare secured\b|\b(?:senior )?secured (?:borrowing|obligations|capacity|credit|revolving|loans|notes|facilit)|\bare (?:senior )?(?:secured|unsecured)\b/i;
+        const named = cited.find((sn) => namesIt(sn) && re.test(sn));
+        const self = isFacility && /\bsenior secured revolv/i.test(cardText);
+        if (named || self) bad.push(`"${name}": ${word === "senior" ? "seniority" : "security"} shown as not stated, but ${named ? `a cited sentence states it: "${named.slice(0, 70)}"` : "the card itself names it senior secured"}`);
+      }
+    }
+    // Withheld is never "not stated".
+    const withheldLC = v.notShown.some((l) => /letters of credit/i.test(text(l)));
+    if (withheldLC && v.facilities.some((f) => /letters of credit outstanding not stated/i.test(text(f.sub ?? [])))) bad.push('letters of credit are withheld (Not shown) but Facilities calls them "not stated"');
+    return [...new Set(bad)];
+  },
+};
+
+/** W6 — the grey-bar caption names exactly the causes present in the grey face. */
+function greyCauses(card: Card): string[] {
+  const v = card.v3!;
+  const rowsByName = new Map(v.table.rows.map((r) => [norm(r.name), r]));
+  const charted = v.chart.bars.reduce((a, b) => a + b.segments.reduce((x, sg) => x + sg.usd, 0), 0);
+  const greyRows = v.chart.bars.flatMap((b) => b.segments.filter((sg) => sg.color === "#9AA3AD").flatMap((sg) => (sg.rows ?? []).map((n) => ({ n, usd: sg.usd / Math.max(1, (sg.rows ?? []).length) }))));
+  const securityOnly = greyRows.filter(({ n }) => /\bsenior\b|junior/i.test(text(rowsByName.get(norm(n))?.instrument ?? [])));
+  const neither = greyRows.filter(({ n }) => !/\bsenior\b|junior|secured|unsecured/i.test(text(rowsByName.get(norm(n))?.instrument ?? [])));
+  const inBars = new Set(v.chart.bars.flatMap((b) => b.segments.flatMap((sg) => sg.rows ?? [])).map(norm));
+  const scheduleBars = v.chart.bars.some((b) => b.source === "schedule");
+  const absorbed = scheduleBars && v.table.rows.some((r) => !inBars.has(norm(r.name)) && /term loan|revolv|line of credit|advances/i.test(r.name));
+  const caps = v.chart.captions.map(text).join(" ");
+  const bad: string[] = [];
+  const want = (cond: boolean, re: RegExp, what: string) => { if (cond && !re.test(caps)) bad.push(`missing cause: ${what}`); if (!cond && re.test(caps)) bad.push(`cause stated but not present: ${what}`); };
+  want(absorbed, /appear as scheduled principal: the filer's schedule doesn't split them by instrument/, "debt carried only in the schedule's yearly totals");
+  want(securityOnly.length > 0, /security is not stated/, "grey rows whose security is not stated");
+  want(neither.length > 0, /seniority and security are not stated/, "grey rows stating neither label");
+  const neitherFace = neither.reduce((a, x) => a + x.usd, 0);
+  want(neitherFace > charted / 2, /state (?:seniority or security|labels) for few/i, "most charted face states neither label");
+  return bad;
+}
+const W6_GREY: Test = { id: "W6", name: "the grey-bar caption states the causes the grey face actually has", run: (card) => (card.v3 ? greyCauses(card) : ["no v3 card"]) };
+
+/** W7 — commercial paper a facility backs is netted from that facility's undrawn capacity in liquidity. */
+const W7_CPNET: Test = {
+  id: "W7", name: "liquidity nets the commercial paper a facility backs",
+  run: (card) => {
+    const v = card.v3;
+    if (!v) return ["no v3 card"];
+    const cp = v.table.rows.find((r) => /^Short-term$/.test(text(r.matures)) && r.status && /Backed by revolver/.test(text(r.status.text)));
+    if (!cp) return [];
+    const cpUsd = segUsd(cp.face!);
+    const bad: string[] = [];
+    const rev = v.liquidity.legend.find((l) => /Undrawn/.test(text(l.label)));
+    if (!rev || rev.amount.k !== "computed" || !rev.amount.parts.some((p) => p.usd < 0 && Math.abs(Math.abs(p.usd) - cpUsd) < 0.5e6)) bad.push("the backing facility's undrawn capacity is not shown net of the commercial paper it backs");
+    const sum = v.liquidity.legend.reduce((a, l) => a + segUsd(l.amount), 0);
+    if (!v.liquidity.figure || Math.abs(segUsd(v.liquidity.figure) - sum) > 0.5e6) bad.push("liquidity total is not cash plus net undrawn capacity");
+    if (!v.liquidity.notes.some((l) => /shown net of .+ commercial paper it backs/.test(text(l)))) bad.push('no "shown net of … commercial paper it backs" note');
+    return bad;
+  },
+};
+
+/** W8 — one coupon format per card: a rate printed as a fraction in the table is never a decimal elsewhere. */
+const FRAC: Record<string, string> = { "⅛": ".125", "¼": ".25", "⅜": ".375", "½": ".5", "⅝": ".625", "¾": ".75", "⅞": ".875" };
+const W8_COUPON: Test = {
+  id: "W8", name: "one coupon format per card",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const fr = new Map<string, string>();
+    for (const r of card.v3.table.rows) for (const m of text(r.instrument).matchAll(/(\d{1,2})([⅛¼⅜½⅝¾⅞])%/g)) fr.set(String(Number(`${m[1]}${FRAC[m[2]]}`)), m[0]);
+    const bad: string[] = [];
+    for (const { line } of linesOf(card).filter((w) => w.section === "v3")) for (const m of text(line).matchAll(/(\d{1,2}\.\d+)%/g)) if (fr.has(String(Number(m[1])))) bad.push(`${m[0]} beside the table's ${fr.get(String(Number(m[1])))}`);
+    return [...new Set(bad)];
+  },
+};
+const W9_NAME: Test = { id: "W9", name: "company name in one form (registered name, capitals)", run: (card) => (card.v3 && card.v3.header.company === card.v3.header.company.toUpperCase() ? [] : [`"${card.v3?.header.company}" is not in the one form`]) };
+const W10_PRICE: Test = {
+  id: "W10", name: "a price phrase attaches to the issuance or redemption it describes",
+  run: (card) => (card.v3 ? card.v3.moves.flatMap((m) => (m.detail && /\bat \d{1,3}(?:\.\d+)?% of principal/.test(text(m.detail)) && !/^(?:Issued|Redeemed|Repurchased) at \d/.test(text(m.detail)) ? [`price detached: "${text(m.detail).slice(0, 80)}"`] : [])) : ["no v3 card"]),
+};
+
 const NAMED_TYPE = /\b(notes|debentures|term loan|revolver|ABL|credit (?:facility|agreement)|line of credit|commercial paper)\b/i;
 const R3_NAMED: Test = {
   id: "A3", name: "refinance box: named instruments only, no \"not stated\" fallbacks",
@@ -907,7 +1072,8 @@ const R16_TAGS: Test = {
 
 const TESTS = [T1_PURITY, T2_LINKS, T3_TABLE, T4_NOTSTATED, T5_ONEMATURITY, T6_PRECISION, T7_SCHEDULE, T8_MOVES, T9_LINT, T10_HEDGES,
   R1_BOX, R2_SUMMARY, R2B_SCOPE, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS,
-  V1_LAYOUT, V2_CASE, V3_TILES, V4_VOCAB, V5_LEGEND, V6_BARS, V7_TABLE, V8_HEADBARS, V9_NEXT, G1_OWNLABELS];
+  V1_LAYOUT, V2_CASE, V3_TILES, V4_VOCAB, V5_LEGEND, V6_BARS, V7_TABLE, V8_HEADBARS, V9_NEXT, G1_OWNLABELS,
+  W1_LADDER, W2_MOVEROW, W3_FACECELL, W4_WITHHELD, W5_NOTSTATED, W6_GREY, W7_CPNET, W8_COUPON, W9_NAME, W10_PRICE];
 
 // ── negative controls: a corrupted card or fixture each test MUST fail ──
 function clone<T>(x: T): T { return JSON.parse(JSON.stringify(x)); }
@@ -1014,6 +1180,27 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     { const chs = pick(/community/i); if (chs.v3) { const c = clone(chs); for (const sg of c.v3!.totalDebt.segments) if (sg.color === "#1F4E79") sg.color = "#9AA3AD"; out.push({ id: "G1", failed: G1_OWNLABELS.run(c, null).length > 0, what: "stated-security rows in a grey segment" }); } }
     if (molina.v3) { const c = clone(molina); c.v3!.call.nextTile!.away = "3 months away"; out.push({ id: "V9", failed: V9_NEXT.run(c, null).length > 0, what: "a wrong month count" }); }
     void dva;
+  }
+
+  // ── v3.2 negative controls ──
+  {
+    const pick = (re: RegExp) => cards.find((c) => re.test(c.company))!;
+    const tenet = pick(/tenet/i), ehc = pick(/encompass/i), dva = pick(/davita/i), chs = pick(/community/i), cigna = pick(/cigna/i);
+    if (tenet.v3) {
+      { const c = clone(tenet); c.v3!.chart.bars.pop(); out.push({ id: "W1", failed: W1_LADDER.run(c, null).length > 0, what: "the thereafter bar removed" }); }
+      { const c = clone(tenet); const r = c.v3!.table.rows.find((x) => /Finance leases/.test(x.name))!; c.v3!.chart.captions.push([{ k: "text", t: "Not shown on the chart, with no single maturity: " }, r.face!, { k: "text", t: " " }, ...r.instrument]); out.push({ id: "W1", failed: W1_LADDER.run(c, null).length > 0, what: "a caption re-listing scheduled principal" }); }
+      { const c = clone(tenet); const r = c.v3!.table.rows.find((x) => /5\.500/.test(text(x.instrument)))!; r.status = { text: [{ k: "notStated", t: "Seniority not stated", src: { sentence: "x", url: "x", doc: "x" } }], tone: "neutral" }; c.v3!.chart.captions.push([{ k: "label", t: "senior", stated: "senior", src: { sentence: "The 5.500% senior secured first lien notes due 2032 are senior secured obligations.", url: "x", doc: "x" } }]); r.name = "5.500% senior secured notes due 2032"; out.push({ id: "W5", failed: W5_NOTSTATED.run(c, null).length > 0, what: "\"not stated\" for an attribute a cited sentence states" }); }
+    }
+    if (ehc.v3) {
+      { const c = clone(ehc); const strip = (l: Line) => { const i = l.findIndex((x) => x.k === "text" && /·/.test(x.t)); return i > 0 ? l.slice(0, i) : l; }; for (const m of c.v3!.moves) { if (m.retires) m.retires.items = m.retires.items.map(strip); } for (const r of c.v3!.table.rows) if (r.status && / remains/.test(text(r.status.text))) r.status = { text: [{ k: "text", t: "Not yet refinanced" }], tone: "orange" }; out.push({ id: "W2", failed: W2_MOVEROW.run(c, null).length > 0, what: "the partial note stripped" }); }
+      { const c = clone(ehc); for (const r of c.v3!.table.rows) if (r.face) r.face = { ...r.face, t: r.face.t.replace(/ \(carrying value\)/, "") }; for (const r of c.v3!.table.rows) if (!/carrying value/.test(text(r.instrument))) { r.instrument = [...r.instrument, { k: "text", t: " (carrying value)" }]; break; } out.push({ id: "W3", failed: W3_FACECELL.run(c, null).length > 0, what: "an untagged carrying value in the Face column" }); }
+      { const c = clone(ehc); const lf = c.v3!.liquidity.figure as any; if (lf && lf.k === "computed") lf.parts = [...lf.parts, { printed: "$ 53.6 million", usd: -53.6e6, src: { sentence: "x", url: "x", doc: "x" } }]; c.v3!.notShown = [[{ k: "text", t: "Senior secured revolver letters of credit, $53.6MM: withheld." }]]; out.push({ id: "W4", failed: W4_WITHHELD.run(c, null).length > 0, what: "a withheld figure used in liquidity" }); }
+      { const c = clone(ehc); const m = c.v3!.moves.find((x) => /Aug 13/.test(text(x.meta))); if (m) m.detail = [{ k: "text", t: "Used to repay part of the revolver, at 98.75% of principal, adding to the existing notes." }]; out.push({ id: "W10", failed: W10_PRICE.run(c, null).length > 0, what: "the price on the use clause" }); }
+    }
+    if (dva.v3) { const c = clone(dva); c.v3!.chart.captions = [c.v3!.chart.captions[0], [{ k: "text", t: "This company's filings state seniority or security for few of these instruments, so most bars are grey." }]]; out.push({ id: "W6", failed: W6_GREY.run(c, null).length > 0, what: "DaVita with the old grey sentence" }); }
+    if (cigna.v3) { const c = clone(cigna); const l = c.v3!.liquidity.legend.find((x) => /Undrawn/.test(text(x.label)))!; l.amount = { k: "figure", t: "$6,500MM", printed: "$ 6.5 billion", src: { sentence: "x", url: "x", doc: "x" } }; out.push({ id: "W7", failed: W7_CPNET.run(c, null).length > 0, what: "the revolver counted gross of the CP it backs" }); }
+    if (chs.v3) { const c = clone(chs); c.v3!.moves[0].title.push([{ k: "text", t: "~$231MM 10.875% senior secured notes due 2032" }]); out.push({ id: "W8", failed: W8_COUPON.run(c, null).length > 0, what: "10.875% beside the table's 10⅞%" }); }
+    if (cigna.v3) { const c = clone(cigna); c.v3!.header.company = "Cigna Group"; out.push({ id: "W9", failed: W9_NAME.run(c, null).length > 0, what: "a mixed-case name" }); }
   }
   return out;
 }
