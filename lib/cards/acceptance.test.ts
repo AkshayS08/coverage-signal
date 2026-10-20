@@ -666,6 +666,13 @@ const V6_BARS: Test = {
       const segSum = b.segments.reduce((a, x) => a + x.usd, 0);
       if (Math.abs(segSum - total) > 0.5e6) bad.push(`${b.label}: segments sum to ${segSum / 1e6}, label says ${total / 1e6}`);
       if (b.source === "cp") { const cp = rows.find((r) => /^Short-term$/.test(text(r.matures))); if (!cp || Math.abs((num(cp.face) ?? 0) - total) > 0.5e6) bad.push("CP bar is not the CP outstanding"); continue; }
+      // v3.2: the schedule's thereafter is a final "YYYY+" bar, equal to the schedule's thereafter amount.
+      if (/^\d{4}\+$/.test(b.label)) {
+        const th = (f.schedule?.entries ?? []).find((e: any) => /thereafter/i.test(e.period));
+        const want = th ? Number(th.amount.replace(/[$,\s]/g, "")) * scale : NaN;
+        if (!(Math.abs(want - total) <= 0.05e6 * (scale === 1e3 ? 10 : 1))) bad.push(`${b.label}: bar ${total / 1e6}, the schedule's thereafter ${want / 1e6}`);
+        continue;
+      }
       const years = /^\d{4}$/.test(b.label) ? [b.label] : (() => { const m = /^(\d{4})–(\d{2})$/.exec(b.label)!; const out: string[] = []; for (let y = Number(m[1]); y <= Number(m[1].slice(0, 2) + m[2]); y++) out.push(String(y)); return out; })();
       if (b.source === "schedule") {
         const want = years.reduce((a, y) => a + (f.schedule?.entries ?? []).filter((e: any) => !/thereafter/i.test(e.period) && (/(20\d\d)/.exec(e.period) ?? [])[1] === y).reduce((x: number, e: any) => x + Number(e.amount.replace(/[$,\s]/g, "")) * scale, 0), 0);

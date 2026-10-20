@@ -3892,45 +3892,17 @@
      "instruments": 2
     },
     {
-     "label": "2032",
+     "label": "2032+",
      "total": {
       "k": "computed",
-      "t": "0",
-      "usd": 0,
-      "parts": []
-     },
-     "segments": [],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 0,
-     "instruments": 0
-    },
-    {
-     "label": "2033",
-     "total": {
-      "k": "computed",
-      "t": "0",
-      "usd": 0,
-      "parts": []
-     },
-     "segments": [],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 0,
-     "instruments": 0
-    },
-    {
-     "label": "2034",
-     "total": {
-      "k": "computed",
-      "t": "491",
-      "usd": 491000000,
+      "t": "626.8",
+      "usd": 626800000,
       "parts": [
        {
-        "printed": "$ 491.0 million",
-        "usd": 491000000,
+        "printed": "$ 626.8 million",
+        "usd": 626800000,
         "src": {
-         "sentence": "5.875 % Senior Notes due 2034 491.0   —",
+         "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount July 1 through December 31, 2026 $ 18.4 $ 18.4 2027 46.9 46.9 2028 435.8 432.7 2029 44.9 44.9 2030 850.8 839.2 2031 640.1 634.1 Thereafter 626.8",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
@@ -3939,17 +3911,17 @@
      },
      "segments": [
       {
-       "usd": 491000000,
+       "usd": 626800000,
        "color": "#9AA3AD",
-       "title": "5.875 % Senior Notes due 2034",
+       "title": "5.875 % Senior Notes due 2034: face only in the filer's schedule",
        "rows": [
         "5.875 % Senior Notes due 2034"
        ]
       }
      ],
-     "source": "named",
+     "source": "schedule",
      "broken": false,
-     "drawUsd": 491000000,
+     "drawUsd": 626800000,
      "instruments": 1
     }
    ],
@@ -3982,7 +3954,7 @@
     [
      {
       "k": "text",
-      "t": "Not shown on the chart, with no single maturity: "
+      "t": "The principal of "
      },
      {
       "k": "computed",
@@ -4013,10 +3985,6 @@
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
        "doc": "10-Q 2026-08-07"
       }
-     },
-     {
-      "k": "text",
-      "t": " (carrying value)"
      },
      {
       "k": "text",
@@ -4054,17 +4022,13 @@
      },
      {
       "k": "text",
-      "t": " (carrying value)"
-     },
-     {
-      "k": "text",
-      "t": "."
+      "t": " is included in scheduled other principal."
      }
     ],
     [
      {
       "k": "text",
-      "t": "The 2030 and 2031 bars show the filer's schedule total; the 4.75% notes and 4.625% notes in them are stated only at carrying value."
+      "t": "The 2030 and 2031 and 2032+ bars show the filer's schedule total; the 4.75% notes and 4.625% notes and 5.875% notes in them are stated only at carrying value."
      }
     ],
     [

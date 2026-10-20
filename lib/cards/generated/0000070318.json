@@ -4322,26 +4322,17 @@
      "instruments": 2
     },
     {
-     "label": "2031",
+     "label": "2031+",
      "total": {
       "k": "computed",
-      "t": "1,712",
-      "usd": 1712000000,
+      "t": "4,278",
+      "usd": 4278000000,
       "parts": [
        {
-        "printed": "$ 1,350 million",
-        "usd": 1350000000,
+        "printed": "$ 4,278 million",
+        "usd": 4278000000,
         "src": {
-         "sentence": "6.750 % due 2031 $ 1,350   $ 1,350",
-         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "doc": "10-Q 2026-07-29"
-        }
-       },
-       {
-        "printed": "$ 362 million",
-        "usd": 362000000,
-        "src": {
-         "sentence": "6.875 % due 2031 $ 362   $ 362",
+         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 45 $ 1,643 $ 2,422 $ 1,457 $ 3,488 $ 4,278",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
          "doc": "10-Q 2026-07-29"
         }
@@ -4350,92 +4341,34 @@
      },
      "segments": [
       {
-       "usd": 1350000000,
+       "usd": 2850000000,
        "color": "#1F4E79",
        "title": "6.750 % due 2031",
        "rows": [
-        "6.750 % due 2031"
+        "6.750 % due 2031",
+        "5.500 % due 2032"
        ]
       },
       {
-       "usd": 362000000,
+       "usd": 1112000000,
        "color": "#5C8DBF",
        "title": "6.875 % due 2031",
        "rows": [
-        "6.875 % due 2031"
-       ]
-      }
-     ],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 1712000000,
-     "instruments": 2
-    },
-    {
-     "label": "2032",
-     "total": {
-      "k": "computed",
-      "t": "1,500",
-      "usd": 1500000000,
-      "parts": [
-       {
-        "printed": "$ 1,500 million",
-        "usd": 1500000000,
-        "src": {
-         "sentence": "5.500 % due 2032 $ 1,500   $ 1,500",
-         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "doc": "10-Q 2026-07-29"
-        }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 1500000000,
-       "color": "#1F4E79",
-       "title": "5.500 % due 2032",
-       "rows": [
-        "5.500 % due 2032"
-       ]
-      }
-     ],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 1500000000,
-     "instruments": 1
-    },
-    {
-     "label": "2033",
-     "total": {
-      "k": "computed",
-      "t": "750",
-      "usd": 750000000,
-      "parts": [
-       {
-        "printed": "$ 750 million",
-        "usd": 750000000,
-        "src": {
-         "sentence": "6.000 % due 2033 $ 750   $ —",
-         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "doc": "10-Q 2026-07-29"
-        }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 750000000,
-       "color": "#5C8DBF",
-       "title": "6.000 % due 2033",
-       "rows": [
+        "6.875 % due 2031",
         "6.000 % due 2033"
        ]
+      },
+      {
+       "usd": 316000000,
+       "color": "#C9CED4",
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
-     "source": "named",
+     "source": "schedule",
      "broken": false,
-     "drawUsd": 750000000,
-     "instruments": 1
+     "drawUsd": 4278000000,
+     "instruments": 4
     }
    ],
    "window": {
@@ -4476,7 +4409,7 @@
     [
      {
       "k": "text",
-      "t": "Not shown on the chart, with no single maturity: "
+      "t": "The principal of "
      },
      {
       "k": "computed",
@@ -4510,7 +4443,7 @@
      },
      {
       "k": "text",
-      "t": "."
+      "t": " is included in scheduled other principal."
      }
     ]
    ]

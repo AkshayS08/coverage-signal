@@ -3155,17 +3155,17 @@
      "instruments": 2
     },
     {
-     "label": "2032",
+     "label": "2032+",
      "total": {
       "k": "computed",
-      "t": "1,000",
-      "usd": 1000000000,
+      "t": "2,047.4",
+      "usd": 2047408000,
       "parts": [
        {
-        "printed": "$ 1,000,000 thousand",
-        "usd": 1000000000,
+        "printed": "$ 2,047,408 thousand",
+        "usd": 2047408000,
         "src": {
-         "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %",
+         "sentence": " Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026 2028 $ 160,808 2029 $ 144,566 2030 $ 4,554,268 2031 $ 3,764,157 Thereafter $ 2,047,408",
          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
          "doc": "10-Q 2026-08-04"
         }
@@ -3174,51 +3174,25 @@
      },
      "segments": [
       {
-       "usd": 1000000000,
+       "usd": 2000000000,
        "color": "#9AA3AD",
        "title": "6.875% Senior Notes",
        "rows": [
-        "6.875% Senior Notes"
-       ]
-      }
-     ],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 1000000000,
-     "instruments": 1
-    },
-    {
-     "label": "2033",
-     "total": {
-      "k": "computed",
-      "t": "1,000",
-      "usd": 1000000000,
-      "parts": [
-       {
-        "printed": "$ 1,000,000 thousand",
-        "usd": 1000000000,
-        "src": {
-         "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %",
-         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
-         "doc": "10-Q 2026-08-04"
-        }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 1000000000,
-       "color": "#9AA3AD",
-       "title": "6.75% Senior Notes",
-       "rows": [
+        "6.875% Senior Notes",
         "6.75% Senior Notes"
        ]
+      },
+      {
+       "usd": 47408000,
+       "color": "#C9CED4",
+       "title": "scheduled other principal",
+       "rows": []
       }
      ],
-     "source": "named",
+     "source": "schedule",
      "broken": false,
-     "drawUsd": 1000000000,
-     "instruments": 1
+     "drawUsd": 2047408000,
+     "instruments": 2
     }
    ],
    "window": {
@@ -3246,7 +3220,7 @@
     [
      {
       "k": "text",
-      "t": "Not shown on the chart, with no single maturity: "
+      "t": "The principal of "
      },
      {
       "k": "computed",
@@ -3322,7 +3296,7 @@
      },
      {
       "k": "text",
-      "t": "."
+      "t": " is included in scheduled other principal."
      }
     ],
     [

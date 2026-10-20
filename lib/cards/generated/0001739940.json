@@ -6710,7 +6710,7 @@
     [
      {
       "k": "text",
-      "t": "Not shown on the chart, with no single maturity: "
+      "t": "At carrying value, not counted in the chart: "
      },
      {
       "k": "computed",
@@ -6750,10 +6750,6 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
        "doc": "10-K for Dec 31, 2025"
       }
-     },
-     {
-      "k": "text",
-      "t": " (carrying value)"
      },
      {
       "k": "text",
