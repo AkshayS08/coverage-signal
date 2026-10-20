@@ -667,7 +667,9 @@ export function buildCard(i: CardInputs): Card {
       const labels = item ? [item.labels.seniority?.t, item.labels.security?.t] : (m.instrument.match(/\b(senior|junior[- ]priority|subordinated|secured|unsecured|first[- ]lien)\b/gi) ?? []).map((x) => x.toLowerCase());
       const type = item && couponOf(item.name) ? item.labels.type.t : /debenture/i.test(m.instrument) ? "debentures" : "notes";
       const due = item?.maturity ? displayDate(item.maturity.date, item.maturity.granularity) : (new RegExp(`due ((?:(?:${MONTHS})\\s+(?:\\d{1,2},\\s*)?)?20\\d\\d)`, "i").exec(m.instrument) ?? [])[1];
-      shown = [c.shown, ...labels.filter(Boolean), type].join(" ") + (due ? ` due ${due}` : "");
+      // v3.2 §3.7: one coupon format per card, the anchor's own (the row's "10⅞%", never the 8-K's "10.875%").
+      const rowCoupon = item ? couponOf(item.name)?.shown : undefined;
+      shown = [rowCoupon ?? c.shown, ...labels.filter(Boolean), type].join(" ") + (due ? ` due ${due}` : "");
       cands = [filerSpan(c.printed, own.sentence), c.printed];
     } else {
       const year = (/dated\s+[A-Z][a-z]+\s+\d{1,2},\s*(20\d\d)/.exec(m.instrument) ?? /\b(20\d\d)\s+Credit Agreement/i.exec(m.instrument) ?? [])[1];
@@ -1499,7 +1501,8 @@ export function buildCard(i: CardInputs): Card {
   const otherCount = other.length;
   const v3header: CardV3["header"] = {
     label: `Weekly coverage brief · ${weekRange(weekFrom, briefDate)}`,
-    company: result.company,
+    // v3.2 §2.1: one form on every card, the registered EDGAR name in capitals; no name is re-spelled.
+    company: result.company.toUpperCase(),
     position: [t("Position as of "), periodDate()],
     filing: { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url },
     status: actionable.length
@@ -1648,7 +1651,10 @@ export function buildCard(i: CardInputs): Card {
     }
     if (issuance) {
       const left: CardV3["moves"][number] = { meta: [dateOf(issuance), t(` · Issued, confirmed by ${formOfUrl(issuance.url)}`)], title: [faceInst(issuance)], detail: null, retires: null };
-      const extras: Line = [...priceClause(issuance), ...issuance.extra];
+      // v3.2 §2.3: a price attaches to the issuance it describes, in its own sentence: "Issued at 98.75% of principal, adding to the existing notes."
+      const pr = priceClause(issuance).filter((x) => !(x.k === "text" && x.t === ", "));
+      const issuedLine: Line = pr.length ? [t("Issued "), ...pr, ...issuance.extra, t(".")] : [];
+      const extras: Line = pr.length ? [] : [...issuance.extra];
       if (issuance.retires.length) {
         const pending = issuance.retires.some((r) => r.status === "pending");
         const r0 = issuance.retires[0];
@@ -1657,11 +1663,11 @@ export function buildCard(i: CardInputs): Card {
           items: issuance.retires.map((r) => (r.type === "paydown" ? [...(r.face ? [r.face, t(" ")] : []), t("of the "), instPhrase(r), t(", repaid")] : [...faceInst(r), ...remainsClause(r)])),
         };
         const use = issuance.retires.length ? [] : useClause(issuance);
-        if (extras.length || use.length) left.detail = [...capFirst([...use, ...extras]), t(".")];
+        if (issuedLine.length || extras.length || use.length) left.detail = [...issuedLine, ...(use.length || extras.length ? [...(issuedLine.length ? [t(" ")] : []), ...capFirst([...use, ...extras]), t(".")] : [])];
       } else {
         const use = useClause(issuance);
         const d = [...use, ...extras];
-        if (d.length) left.detail = [...capFirst(d), t(".")];
+        if (issuedLine.length || d.length) left.detail = [...issuedLine, ...(d.length ? [...(issuedLine.length ? [t(" ")] : []), ...capFirst(d), t(".")] : [])];
       }
       moveCards.push(left);
       for (const o of ms.filter((m) => m !== issuance && !issuance.retires.includes(m))) moveCards.push({ meta: [dateOf(o), t(` · ${vocab(o)}`)], title: [faceInst(o)], detail: detailOf(o), retires: null });
@@ -1689,6 +1695,13 @@ export function buildCard(i: CardInputs): Card {
     return [...(m.face ? [m.face, t(" ")] : []), instPhrase(m)];
   }
   function detailOf(m: Move): Line | null {
+    // v3.2 §2.3: a price attaches to the redemption or repurchase it describes: "Redeemed at 103% of principal."
+    const pr = priceClause(m).filter((x) => !(x.k === "text" && x.t === ", "));
+    if (pr.length) {
+      const rest = [...fundClause(m), ...useClause(m), ...m.extra];
+      const verb = m.type === "tender or repurchase" ? "Repurchased" : m.type === "issuance" ? "Issued" : "Redeemed";
+      return [t(`${verb} `), ...pr, t("."), ...(rest.length ? [t(" "), ...capFirst(rest.map((x, n) => (n === 0 && x.k === "text" ? { ...x, t: x.t.replace(/^,\s*funded by/, "with") } : x))), t(".")] : [])];
+    }
     const parts = [...fundClause(m), ...useClause(m), ...priceClause(m), ...m.extra];
     if (m.type === "facility amendment" && !parts.length && !/\bincremental\b/i.test(m.sentence)) return [t("Terms of the amendment are not covered in this version.")];
     if (!parts.length) return m.type === "repayment at maturity" || m.type === "paydown" ? [t("Funding source not stated.")] : null;

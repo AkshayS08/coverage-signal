@@ -18,7 +18,7 @@ export default function CardsPage() {
         <span className={styles.navTitle}>Coverage Signal · weekly brief</span>
         {cards.map((c) => (
           <Link key={c.cik} href={`/cards/${c.cik}`} className={styles.navLink}>
-            {c.company}
+            {c.company.toUpperCase()}
           </Link>
         ))}
       </nav>

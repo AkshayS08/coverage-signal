@@ -2420,7 +2420,7 @@
  "v3": {
   "header": {
    "label": "Weekly coverage brief · Oct 5 to Oct 15, 2026",
-   "company": "Encompass Health Corp",
+   "company": "ENCOMPASS HEALTH CORP",
    "position": [
     {
      "k": "text",
@@ -2959,21 +2959,7 @@
     "detail": [
      {
       "k": "text",
-      "t": "Used to "
-     },
-     {
-      "k": "label",
-      "t": "repay part of the revolver",
-      "stated": "repay",
-      "src": {
-       "sentence": "The Company used the net proceeds from the sale of the Additional Notes, together with cash on hand, to repay a portion of the outstanding amounts under the Company’s revolving credit facility.",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm",
-       "doc": "8-K 2026-08-13"
-      }
-     },
-     {
-      "k": "text",
-      "t": ", "
+      "t": "Issued "
      },
      {
       "k": "label",
@@ -2995,6 +2981,28 @@
       "stated": "further issuance",
       "src": {
        "sentence": "The Additional Notes represent a further issuance of the Company’s 5.875% Senior Notes due 2034, of which $500,000,000 aggregate principal amount was issued on May 29, 2026 (the “Existing Notes”) under the Indenture.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm",
+       "doc": "8-K 2026-08-13"
+      }
+     },
+     {
+      "k": "text",
+      "t": "."
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "text",
+      "t": "Used to "
+     },
+     {
+      "k": "label",
+      "t": "repay part of the revolver",
+      "stated": "repay",
+      "src": {
+       "sentence": "The Company used the net proceeds from the sale of the Additional Notes, together with cash on hand, to repay a portion of the outstanding amounts under the Company’s revolving credit facility.",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm",
        "doc": "8-K 2026-08-13"
       }
