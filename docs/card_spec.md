@@ -1,5 +1,7 @@
 # Coverage Signal card spec, Demo v1
 
+Version 3.2, Oct 19, 2026. Akshay's round-3 review of the v3.1 cards (Molina, CHS and Cigna clean): the ladder reconciles to the face total (2.5), a move and its row agree (2.3, 2.6), no false "not stated" and no withheld figure in any arithmetic (2.4, 2.7, 2.8, 3.5), the grey-bar caption states its causes (2.5), small fixes (2.3, 3.7, 2.1), and commercial paper a facility backs reduces liquidity (2.4, Akshay's ruling). Each change is marked **(v3.2)**. Supersedes v3.1.
+
 Version 3.1, Oct 19, 2026. Four changes after Akshay's read of the v3.0 cards, each marked **(v3.1)**: segments split by each row's own labels (2.4, 2.5), the schedule-only segment's label (2.4), the table cut (2.6) and move-card detail (2.3), and hover-only underlines on chart and table links (3.1). Supersedes v3.0.
 
 Version 3.0, Oct 19, 2026. The card redesign Akshay approved on three mockups (Tenet: debt due, partly refinanced; Molina: nothing due in the window; Cigna: rolled position, long ladder; saved in sessions/26/mockups/). A presentation change: layout, hierarchy, charts, tables and wording. Every v2.2 content rule is kept and restated below; it adds no new data. Supersedes v2.2.
@@ -38,7 +40,7 @@ One order on every card:
 
 ### 2.1 Header and rolled-position note
 
-- A label "Weekly coverage brief · [brief week as a date range]", then the company name, large. "Last week" means since the previous logged brief for that name, or the trailing seven days for a first brief.
+- A label "Weekly coverage brief · [brief week as a date range]", then the company name, large. **(v3.2)** One form on every card: the registered EDGAR name in capitals ("CIGNA GROUP", "DAVITA INC."), so no name is re-spelled; display names come with Session 27. "Last week" means since the previous logged brief for that name, or the trailing seven days for a first brief.
 - On the right: "Position as of [period end]", the filing the position comes from (form and filing date, linked), and a one-phrase this-week status: "No new debt filings this week", or "N filing(s) this week, none affecting debt".
 - **Actionable filings this week**, where present, render as a short list directly under the header. A filing is actionable when its form or 8-K item number signals a debt, liquidity or maturity change (a new 10-Q or 10-K; 8-K Items 1.01, 1.02, 2.03, 2.04; 2.01 where debt-financed), or when already-read text states such a change. Each line gives what happened, the date, the face amount, the instrument with its labels, why it matters, and a link. Everything else is counted in the status phrase, grouped by form, each filing one click deeper.
 - **Rolled-position note** (Rule 66 cases): one plain sentence in a light box under the header, naming the earlier filing (linked): "This company's 10-Q does not list its notes. This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026. Rows from the 10-K carry a 10-K tag." Each row from that filing carries the tag; the explanation never repeats per row.
@@ -81,6 +83,8 @@ Covered: issuance; redemption, full or partial, including special calls; tender 
 - **Related moves merge into one event:** the same date, or a stated causal link (a new agreement entered, an old one terminated, a draw used to retire it). "Refinanced revolver: new $1,000MM credit agreement replaced the 2022 agreement; $250MM drawn to retire it." Each component figure keeps its own link.
 - A transaction completed before the period start never appears. A facility borrowed and repaid inside the period appears as two moves, never as an "intention."
 - An amended agreement with no other detail on the card says plainly that its terms are not covered in this version.
+- **(v3.2) A move and its row agree.** When a move retires part of an instrument that still appears on the card, the move card states what remains: "$400MM redeemed · $400MM remains" (for a pending retirement, the face less the retirement; for one inside the period, the row's face at the position date). The row's status carries the same partial note (2.10), and where the call box headlines that instrument, it adds one clause naming the earlier partial retirement. A move matches its row by instrument identity (coupon, labels, maturity year), never by the exact date string: a year-only row matches a move dated to the month.
+- **(v3.2) A price phrase attaches to the issuance or redemption it describes:** "Issued at 98.75% of principal, adding to the existing notes. Used to repay part of the revolver." "Redeemed at 103% of principal."
 
 ### 2.4 Total debt and Liquidity
 
@@ -96,7 +100,9 @@ Each is one large figure, then a single stacked bar, then a legend list with amo
 
 - Cash, labeled exactly as the filer states it. Where the filer also states a parent-company or unrestricted figure, it shows beside the consolidated one, linked, never added.
 - Undrawn committed capacity, per facility, with stated availability (BRD 8.12: never computed as size minus drawn). Where availability is not stated, size, drawn and letters of credit show, and "availability not stated".
-- The bar holds cash and undrawn committed capacity, two greens. **Uncommitted capacity** (accordions, incremental options) and **commercial paper a facility backs** go in a note line, never in the bar or the total. A commercial paper program is never liquidity.
+- The bar holds cash and undrawn committed capacity, two greens. **Uncommitted capacity** (accordions, incremental options) goes in a note line, never in the bar or the total. A commercial paper program is never liquidity.
+- **(v3.2, Akshay's ruling) Commercial paper a facility backs reduces liquidity.** Where a filing states that a facility backs commercial paper, that capacity is spoken for: the facility's undrawn capacity counted in liquidity is its stated availability less the commercial paper outstanding it backs, and the total follows ("Undrawn revolver ~$5,500MM", liquidity ~$11,798MM). The note line says "Undrawn revolver shown net of ~$1,000MM commercial paper it backs." This replaces the v2.0 rule that no netted figure is computed.
+- **(v3.2) A withheld figure never enters any arithmetic on the card.** Where availability is stated in a sentence, that figure shows, linked, hedged only where the source says "approximately". Where it is not stated, undrawn is size less drawn, with a note that letters of credit are withheld, never less a withheld figure.
 
 ### 2.5 Maturity ladder chart
 
@@ -106,14 +112,17 @@ Each is one large figure, then a single stacked bar, then a legend list with amo
 - **Amortizing debt.** Where the anchor prints a maturity schedule, each bar's total equals the schedule's figure for that year. Bonds (a single repayment at maturity) sit at full face in their year, and term loans, leases and other amortizing debt fill the remainder of the bar as scheduled other principal. Where no schedule exists, bars show named instruments only. A bond stated only at carrying value is not drawn at a face it does not have: its year's bar is the schedule's figure, and the caption says so.
 - **Status overlays** (3.9): debt refinanced but not yet confirmed by a filing is striped over its seniority shade; debt due inside the window and not yet refinanced is solid orange.
 - **Long ladders:** when more than 10 year-columns would show, years with nothing due are left out first; then the years after the ninth collapse into one range bar ("2037–56"). A bar more than twice the next-tallest is cut with a visible break mark, and the caption states its true size.
-- **Instruments with no single maturity** (ranges, leases with no date) stay out of the chart and are named in the caption.
-- **Where most bars are grey**, one caption line says why ("[Company]'s filings state seniority for few of these notes").
+- **(v3.2) The ladder reconciles to the face total.** Every dollar of face sits in exactly one place: a bar, or the caption's "not shown" list, never both. Chart bars plus the caption's not-shown items equal the face total exactly. Carrying-value-only items are listed separately, labelled carrying value, and never counted in that equation.
+- **(v3.2) The schedule's thereafter is a bar.** Where the anchor prints a maturity schedule, each of its years is a bar, and its amount after the last year column ("thereafter") is a final bar ("2031+", or the range form when the long-ladder rule applies), never dropped. Notes maturing in those years sit inside it at face; the rest is scheduled other principal.
+- **Instruments with no single maturity** (ranges, leases with no date) stay out of the bars. **(v3.2)** Where the filer's schedule already places an item's principal year by year (the schedule totals the face total), the caption says that item's principal is "included in scheduled other principal" and does not list it as not shown; only principal the schedule does not place is listed as not shown.
+- **(v3.2) The grey-bar caption states its causes**, computed from the charted face by cause, naming only the causes present: "Term loans appear as scheduled principal: the filer's schedule doesn't split them by instrument." (for debt the schedule carries only in its yearly totals); "The notes' security is not stated." (for grey bars of notes whose seniority is stated); "The notes' seniority and security are not stated." The sentence that the filings state labels for few instruments appears only when face stating neither label is the majority of the charted face.
 - Instruments repaid inside the period never appear as $0 bars or rows (Rule 64). Undrawn facilities are capacity, never debt.
 
 ### 2.6 Maturity ladder table
 
 - **Columns:** Matures, Instrument (coupon, labels, type, source tag), Face ($MM, right-aligned, tabular figures), Status.
 - One row per instrument, zebra-striped, ordered by maturity. Commercial paper first where outstanding. Ranged and undated items last, with their range or "Various". Each instrument appears exactly once (Rule 49), at face where stated, labeled "carrying value" where only carrying value is stated.
+- **(v3.2) A figure in the Face column is face.** A carrying value is labelled "(carrying value)" everywhere it appears, including the Face cell and bar labels. Face is shown wherever a filing states it, including an issuance in the period of the same notes with no later retirement stated ("we issued $500 million of 5.875% Senior Notes due 2034 at par").
 - Maturity ranges are stated maturities: "2026 to 2038" shows as a range, never as "no maturity stated."
 - **(v3.1) More than 12 rows:** the first 8 show, then a "Show all N" control. Every in-window row is within the rows shown. Twelve rows or fewer all show.
 - **The status column uses only the 2.10 vocabulary.** A not-stated label shows in the status column as a short phrase ("Seniority not stated"), not as a sentence; where it applies to most rows, it shows once in the chart caption instead (the v2.1 "once per group" rule).
@@ -128,10 +137,11 @@ Each is one large figure, then a single stacked bar, then a legend list with amo
 - **Commercial paper programs** get their own line: size · outstanding · average rate, and any backing facility. Never facility fields (drawn, LCs, available).
 - Borrowing-base facilities carry the flag, linked to the filer's full sentence.
 - A fact stated only in a 10-K note the anchor directs to is labelled "as of [date], per 10-K [note]".
+- **(v3.2) Withheld is not "not stated".** A figure that was found but withheld is never described as "not stated" anywhere on the card; Facilities says "withheld, see Not shown".
 
 ### 2.8 Not shown, and why
 
-Every withheld figure with its reason. Each reason matches the item's actual stated status; a reason that contradicts the filing is a defect. "Nothing withheld this week" when empty.
+Every withheld figure with its reason. Each reason matches the item's actual stated status; a reason that contradicts the filing is a defect. "Nothing withheld this week" when empty. **(v3.2)** Each entry starts with a capital and names the item in the card's own vocabulary ("Senior secured revolver letters of credit, $53.6MM: withheld…").
 
 ### 2.9 Footnote
 
@@ -193,7 +203,7 @@ Every amount, date and label links to the exact sentence, table row or heading i
 
 - **Type** is the filer's own type word: notes, debentures, term loan A, term loan B, revolver, ABL, commercial paper, letters of credit, finance lease and financing obligations, other.
 - **Seniority** (senior, junior-priority, subordinated) and **security** (secured, first lien, unsecured) are separate labels.
-- A label counts as stated when it appears in any of these, each linked: the instrument's own name or table-row label; **a printed table heading that names a single class and governs a contiguous block of rows**; a sentence in a permitted source that names the instrument or its class and states the label.
+- A label counts as stated when it appears in any of these, each linked: the instrument's own name or table-row label; **a printed table heading that names a single class and governs a contiguous block of rows**; a sentence in a permitted source that names the instrument or its class and states the label. **(v3.2)** A row drawn under a facility is also named by a sentence naming the credit agreement that governs it, where that sentence states the label of the agreement's borrowings or obligations ("Our obligations under the 2026 Credit Agreement are secured…", "our senior secured borrowing capacity"). No item is ever labelled "not stated" while a cited sentence names that attribute for it.
 - Never inferred. Never borrowed from a filing Rule 66 does not permit.
 - Where a label is not stated: "Seniority not stated", "Security not stated", or "Seniority and security not stated", in the status column or a caption, linked.
 
@@ -203,7 +213,7 @@ The filer's full label, never shortened: "Finance lease and financing obligation
 
 ### 3.7 Line format
 
-An instrument reads, in this order: **face amount, coupon, labels, type, maturity**, then any flags. "$1,549MM 10⅞% senior secured notes, due 2032". The coupon leads because it is a credit signal. No stray spaces inside coupons ("10⅞%", "5.125%"). In the table the same order runs across the columns.
+An instrument reads, in this order: **face amount, coupon, labels, type, maturity**, then any flags. "$1,549MM 10⅞% senior secured notes, due 2032". The coupon leads because it is a credit signal. No stray spaces inside coupons ("10⅞%", "5.125%"). In the table the same order runs across the columns. **(v3.2) One coupon format per card:** the anchor filing's own format ("10⅞%" where its table prints fractions), everywhere on the card, moves included.
 
 ### 3.8 Plain language
 
@@ -250,6 +260,7 @@ Every check below is asserted as a test over all six cards. Inspection alone doe
 11. All six signed goldens still reproduce through goldenThroughLoop.
 14. **(v2.2) Summary scope:** the refinance summary's redemption figure equals the stated redemptions of the box's own in-window rows, with a negative control.
 13. **(v2.1) Round-2 rules**, each asserted over all six cards with a negative control: the refinance box (placement, summary, named rows only, leftovers in one line, markers with a legend, CP row, Next line); no pre-period or mechanics lines; total-debt grouping by label, one line per type, priority order; moves in card format and related moves merged; no trailing ".0"; "not stated" once per group; no cryptic tags.
+17. **(v3.2) Round 3**, each over all six cards with a negative control: bars plus not-shown equal the face total, and no item is both in the bars and the caption; a partly retired instrument shows the same remainder on its move and its row; no Face cell holds an untagged carrying value; no withheld figure is an input to any displayed computation; nothing labelled "not stated" is named with that attribute in a cited sentence; the grey-bar caption's causes match the grey face; liquidity nets commercial paper a facility backs.
 16. **(v3.1)** No row with a stated security label is ever grey, in the total-debt bar or the chart; each segment's rows share its labels. With a negative control.
 15. **(v3.0) The redesign**, each asserted over all six cards with a negative control: the layout order; the call-box case (A to D) matches its rule; the tiles sum (due = refinanced + not yet refinanced), in-window only, with commercial paper never counted; the next-maturity tile's months; every status word from the 2.10 list, and "redeemed" only with a confirming filing; every chart color and pattern has a legend entry and nothing else; each bar's total equals its source (the schedule, or named instruments); the total-debt and liquidity bars sum to their figures with carrying and uncommitted amounts kept out; the table carries every filer row once and shows every in-window row before any "Show all" cut; every figure in a tile, chart, bar label and table cell links to its sentence.
 12. Akshay's read against the demo's three questions per company.
