@@ -188,6 +188,25 @@ export function buildCard(i: CardInputs): Card {
     return sentencePools.get(url)!;
   };
   const labelSentences = (ownUrl: string | null): Source[] => [...new Set([anchor.url, ...(i.laterUrls ?? []), ...(ownUrl ? [ownUrl] : [])])].filter((u) => i.textByUrl.has(u)).flatMap(sentencesOf);
+  /**
+   * v3.2 §3.5: A FACILITY ROW IS NAMED BY ITS CREDIT AGREEMENT. A sentence in
+   * the anchor or a later filing naming the credit agreement states the label
+   * of the borrowings or obligations under it: "Our obligations under the 2026
+   * Credit Agreement are secured…", "our senior secured borrowing capacity".
+   * Only where the label qualifies borrowings or obligations: a "senior
+   * secured leverage ratio" names a covenant, not the debt.
+   */
+  const agreementLabels = (): { seniority: Segment | null; security: Segment | null } => {
+    let seniority: Segment | null = null, security: Segment | null = null;
+    for (const sx of labelSentences(null)) {
+      if (!/credit agreement/i.test(sx.sentence)) continue;
+      const sm = /\bsenior secured (?:borrowing|obligations|capacity|credit facilit|revolving|loans)/i.exec(sx.sentence);
+      if (!seniority && sm) seniority = { k: "label", t: "senior", stated: sm[0], src: sx };
+      const cm = /\bobligations under [^.]{0,60}\bare secured\b/i.exec(sx.sentence) ?? /\bsecured (?:borrowing|obligations|capacity|credit facilit|revolving|loans)/i.exec(sx.sentence);
+      if (!security && cm) security = { k: "label", t: "secured", stated: cm[0], src: sx };
+    }
+    return { seniority, security };
+  };
   /** Name, then printed heading, then a naming sentence, then the note's statement: the first that states each label. */
   const withSources = (name: string, base: { seniority: Segment | null; security: Segment | null }, ownUrl: string | null) => {
     const h = headingFor(name);
@@ -242,6 +261,11 @@ export function buildCard(i: CardInputs): Card {
         cls.seniority = cls.seniority ?? fcls.seniority;
         cls.security = cls.security ?? fcls.security;
       }
+    }
+    if ((fac || isFacilityType(row)) && !row.isCapacity && (!cls.seniority || !cls.security)) {
+      const ag = agreementLabels();
+      cls.seniority = cls.seniority ?? ag.seniority;
+      cls.security = cls.security ?? ag.security;
     }
     const printed = row.isCapacity ? f?.facilitySize?.value ?? row.amount : row.amount;
     const item: Item = { row, name: row.instrument, nameSrc, amountPrinted: printed, amountSrc, maturity, labels: { type: typeLabel(row, typeSrc), ...cls }, isCapacity: !!row.isCapacity, rolled: false, basis: "face" };
@@ -1233,7 +1257,9 @@ export function buildCard(i: CardInputs): Card {
     const own = fsrc("facilitySize", f.facilitySize?.sourceLine ?? f.name);
     const fig = (label: string, field: "facilitySize" | "drawn" | "lettersOfCredit" | "available"): Line => {
       const v = f[field];
-      return v ? [t(`${label} `), { k: "figure", t: displayAmount(v.value, v.sourceLine), printed: v.value, src: fsrc(field, v.sourceLine), field }] : [t(`${label} `), { k: "notStated", t: "not stated", src: own }];
+      // v3.2: a figure found but withheld is never "not stated".
+      const withheldHere = (dm?.facilityRejections ?? []).some((r: any) => r.facility === f.name && r.field === field);
+      return v ? [t(`${label} `), { k: "figure", t: displayAmount(v.value, v.sourceLine), printed: v.value, src: fsrc(field, v.sourceLine), field }] : withheldHere ? [t(`${label} withheld, see what the tool did not show`)] : [t(`${label} `), { k: "notStated", t: "not stated", src: own }];
     };
     const m = facilityMaturityAtItsSentence(f);
     const maturityLine = (): Line => (m.kind === "dated" ? [t("Maturity "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: fsrc("maturity", m.sentence) }] : [t("Maturity "), { k: "notStated", t: m.kind === "relative" ? "stated as a relative term, not a date" : "not stated", src: own }]);
@@ -1272,7 +1298,18 @@ export function buildCard(i: CardInputs): Card {
   // ── 2.6 what the tool did not show ──
   const withheld: Line[] = [];
   const FIELD_NAMES: Record<string, string> = { facilitySize: "size", drawn: "drawn", lettersOfCredit: "letters of credit", available: "available", maturity: "maturity" };
-  for (const r of dm?.facilityRejections ?? []) withheld.push([t(`${r.facility}, ${FIELD_NAMES[r.field] ?? r.field} ${displayAmount(r.value, "")}: withheld: ${r.reason}. `), { k: "notStated", t: "See the sentence offered", src: src(r.sourceLine ?? r.facility, anchor.url) }, t(".")]);
+  // v3.2 §2.8: each entry starts with a capital and names the item as the card does ("Senior secured revolver").
+  const cardNameOf = (facility: string): string => {
+    const fx = facilities.find((x) => x.name === facility);
+    if (!fx) return facility;
+    const own = src(fx.facilitySize?.sourceLine ?? fx.name, fx.figureSources?.facilitySize ?? fx.citedUrl);
+    const labels = classLabels(fx.name, own, null);
+    if (!labels.seniority || !labels.security) { const ag = agreementLabels(); labels.seniority = labels.seniority ?? ag.seniority; labels.security = labels.security ?? ag.security; }
+    const type = typeLabel({ instrument: fx.name, classification: classifyInstrument({ headings: [], instrumentName: fx.name }) }, own).t;
+    const words = [labels.seniority?.t, labels.security?.t, type].filter(Boolean).join(" ");
+    return words.charAt(0).toUpperCase() + words.slice(1);
+  };
+  for (const r of dm?.facilityRejections ?? []) withheld.push([t(`${cardNameOf(r.facility)} ${FIELD_NAMES[r.field] ?? r.field}, ${displayAmount(r.value, "")}: withheld. ${String(r.reason).charAt(0).toUpperCase()}${String(r.reason).slice(1)}. `), { k: "notStated", t: "See the sentence offered", src: src(r.sourceLine ?? r.facility, anchor.url) }, t(".")]);
   // A claimed date that a sourced one replaced is no longer withheld: the card shows the sourced date.
   for (const r of pos.rows) if (r.maturityWithheld && !r.maturityDate) withheld.push([t(`${r.instrument}: maturity ${r.maturityWithheld.claimed} withheld — ${r.maturityWithheld.why}.`)]);
   if (rawStatement && !statement) withheld.push([t(`Seniority and security are stated only in an earlier annual report, which this card does not use for labels: “${rawStatement.statement}”`)]);
@@ -1887,6 +1924,7 @@ export function buildCard(i: CardInputs): Card {
     const kind = kindOfFacility(f);
     const type = typeLabel({ instrument: f.name, classification: classifyInstrument({ headings: [], instrumentName: f.name }) }, own);
     const labels = classLabels(f.name, own, null);
+    if (kind === "facility" && (!labels.seniority || !labels.security)) { const ag = agreementLabels(); labels.seniority = labels.seniority ?? ag.seniority; labels.security = labels.security ?? ag.security; }
     const nameLine: Line = [...[labels.seniority, labels.security].filter((x): x is Segment => !!x).flatMap((l) => [l, t(" ")]), kind === "cp" ? t("commercial paper program") : kind === "lc" ? t("letter of credit facility") : type];
     const facts: Line[] = [];
     const m = facilityMaturityAtItsSentence(f);
@@ -1905,7 +1943,8 @@ export function buildCard(i: CardInputs): Card {
     for (const fl of facts) bold.push(t(" · "), ...fl);
     const sub: Line = [];
     for (const sf of subsFor.get(f) ?? []) { const note = directedNote(sf.amount.src.url); sub.push(...(sub.length ? [t(" ")] : []), t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`} `), factFig(sf.amount), t(`, capacity only${note ? `, ${note}` : ""}.`)); }
-    if (kind === "facility" && !f.lettersOfCredit) sub.push(...(sub.length ? [t(" ")] : []), { k: "notStated", t: "Letters of credit outstanding not stated.", src: own });
+    const lcWithheld = (dm?.facilityRejections ?? []).some((r: any) => r.facility === f.name && r.field === "lettersOfCredit");
+    if (kind === "facility" && !f.lettersOfCredit) sub.push(...(sub.length ? [t(" ")] : []), lcWithheld ? t("Letters of credit withheld, see Not shown.") : { k: "notStated", t: "Letters of credit outstanding not stated.", src: own });
     if (kind === "facility" && !f.available) sub.push(...(sub.length ? [t(" ")] : []), { k: "notStated", t: "Availability not stated.", src: own });
     const bb = borrowingBaseOf(f);
     if (bb) sub.push(...(sub.length ? [t(" ")] : []), { k: "label", t: "Borrowing-base limited", stated: bb.limitedBy, src: src(widen(bb.statement, [f.facilitySize, f.drawn, f.lettersOfCredit, f.available, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => x.sourceLine)), f.figureSources?.facilitySize ?? f.citedUrl) }, t("; stated availability shown."));

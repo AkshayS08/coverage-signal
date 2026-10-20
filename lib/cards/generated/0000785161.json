@@ -468,6 +468,66 @@
      {
       "k": "label",
       "t": "senior",
+      "stated": "senior secured borrowing",
+      "src": {
+       "sentence": "Our credit agreement governs our senior secured borrowing capacity and contains a leverage 28 ratio and an interest coverage ratio as financial covenants.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "secured",
+      "stated": "obligations under the 2026 Credit Agreement are secured",
+      "src": {
+       "sentence": "Our obligations under the 2026 Credit Agreement are secured by the current and future personal property of the Company and its subsidiary guarantors.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$200MM",
+      "usd": 200000000,
+      "parts": [
+       {
+        "printed": "$ 200.0 million",
+        "usd": 200000000,
+        "src": {
+         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "senior",
       "stated": "Senior",
       "src": {
        "sentence": "4.50 % Senior Notes due 2028 396.9   792.0",
@@ -577,42 +637,6 @@
      {
       "k": "text",
       "t": " at carrying value)"
-     }
-    ],
-    [
-     {
-      "k": "label",
-      "t": "revolver",
-      "stated": "revolv",
-      "src": {
-       "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-       "doc": "10-Q 2026-08-07"
-      }
-     },
-     {
-      "k": "text",
-      "t": ", seniority not stated"
-     },
-     {
-      "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "$200MM",
-      "usd": 200000000,
-      "parts": [
-       {
-        "printed": "$ 200.0 million",
-        "usd": 200000000,
-        "src": {
-         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-         "doc": "10-Q 2026-08-07"
-        }
-       }
-      ]
      }
     ],
     [
@@ -1827,6 +1851,34 @@
       },
       {
        "k": "label",
+       "t": "senior",
+       "stated": "senior secured borrowing",
+       "src": {
+        "sentence": "Our credit agreement governs our senior secured borrowing capacity and contains a leverage 28 ratio and an interest coverage ratio as financial covenants.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "obligations under the 2026 Credit Agreement are secured",
+       "src": {
+        "sentence": "Our obligations under the 2026 Credit Agreement are secured by the current and future personal property of the Company and its subsidiary guarantors.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "Advances under revolving credit facility",
        "stated": "Advances under revolving credit facility",
        "src": {
@@ -1848,19 +1900,6 @@
         "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
         "doc": "ehc-20260309.htm"
-       }
-      },
-      {
-       "k": "text",
-       "t": " · "
-      },
-      {
-       "k": "notStated",
-       "t": "seniority and security not stated, please refer to sources",
-       "src": {
-        "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
        }
       }
      ],
@@ -2137,16 +2176,7 @@
      [
       {
        "k": "text",
-       "t": "Letters of credit "
-      },
-      {
-       "k": "notStated",
-       "t": "not stated",
-       "src": {
-        "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-        "doc": "ehc-20260309.htm"
-       }
+       "t": "Letters of credit withheld, see what the tool did not show"
       }
      ],
      [
@@ -2213,7 +2243,7 @@
    [
     {
      "k": "text",
-     "t": "senior secured revolving credit facility, letters of credit $53.6MM: withheld: sentence does not state this figure. "
+     "t": "Senior secured revolver letters of credit, $53.6MM: withheld. Sentence does not state this figure. "
     },
     {
      "k": "notStated",
@@ -3305,20 +3335,20 @@
    },
    "segments": [
     {
+     "usd": 200000000,
+     "color": "#1F4E79",
+     "title": "senior secured revolver",
+     "rows": [
+      "Advances under revolving credit facility"
+     ]
+    },
+    {
      "usd": 900000000,
      "color": "#9AA3AD",
      "title": "senior notes",
      "rows": [
       "4.50 % Senior Notes due 2028",
       "5.875 % Senior Notes due 2034"
-     ]
-    },
-    {
-     "usd": 200000000,
-     "color": "#9AA3AD",
-     "title": "revolver, seniority not stated",
-     "rows": [
-      "Advances under revolving credit facility"
      ]
     },
     {
@@ -3334,6 +3364,65 @@
     }
    ],
    "legend": [
+    {
+     "color": "#1F4E79",
+     "label": [
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior secured borrowing",
+       "src": {
+        "sentence": "Our credit agreement governs our senior secured borrowing capacity and contains a leverage 28 ratio and an interest coverage ratio as financial covenants.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "obligations under the 2026 Credit Agreement are secured",
+       "src": {
+        "sentence": "Our obligations under the 2026 Credit Agreement are secured by the current and future personal property of the Company and its subsidiary guarantors.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "revolver",
+       "stated": "revolv",
+       "src": {
+        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      }
+     ],
+     "amount": {
+      "k": "computed",
+      "t": "$200MM",
+      "usd": 200000000,
+      "parts": [
+       {
+        "printed": "$ 200.0 million",
+        "usd": 200000000,
+        "src": {
+         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       }
+      ]
+     }
+    },
     {
      "color": "#9AA3AD",
      "label": [
@@ -3390,41 +3479,6 @@
         "usd": 500000000,
         "src": {
          "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-         "doc": "10-Q 2026-08-07"
-        }
-       }
-      ]
-     }
-    },
-    {
-     "color": "#9AA3AD",
-     "label": [
-      {
-       "k": "label",
-       "t": "revolver",
-       "stated": "revolv",
-       "src": {
-        "sentence": "Advances under revolving credit facility $ 200.0   $ 130.0",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-        "doc": "10-Q 2026-08-07"
-       }
-      },
-      {
-       "k": "text",
-       "t": ", seniority not stated"
-      }
-     ],
-     "amount": {
-      "k": "computed",
-      "t": "$200MM",
-      "usd": 200000000,
-      "parts": [
-       {
-        "printed": "$ 200.0 million",
-        "usd": 200000000,
-        "src": {
-         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
@@ -3509,6 +3563,15 @@
         }
        },
        {
+        "printed": "$ 200.0 million",
+        "usd": -200000000,
+        "src": {
+         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
         "printed": "$ 800 million",
         "usd": -800000000,
         "src": {
@@ -3531,15 +3594,6 @@
         "usd": -500000000,
         "src": {
          "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-         "doc": "10-Q 2026-08-07"
-        }
-       },
-       {
-        "printed": "$ 200.0 million",
-        "usd": -200000000,
-        "src": {
-         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
@@ -4466,6 +4520,34 @@
      "instrument": [
       {
        "k": "label",
+       "t": "senior",
+       "stated": "senior secured borrowing",
+       "src": {
+        "sentence": "Our credit agreement governs our senior secured borrowing capacity and contains a leverage 28 ratio and an interest coverage ratio as financial covenants.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "secured",
+       "stated": "obligations under the 2026 Credit Agreement are secured",
+       "src": {
+        "sentence": "Our obligations under the 2026 Credit Agreement are secured by the current and future personal property of the Company and its subsidiary guarantors.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
        "t": "Advances under revolving credit facility",
        "stated": "Advances under revolving credit facility",
        "src": {
@@ -5175,6 +5257,34 @@
        },
        {
         "k": "label",
+        "t": "senior",
+        "stated": "senior secured borrowing",
+        "src": {
+         "sentence": "Our credit agreement governs our senior secured borrowing capacity and contains a leverage 28 ratio and an interest coverage ratio as financial covenants.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "secured",
+        "stated": "obligations under the 2026 Credit Agreement are secured",
+        "src": {
+         "sentence": "Our obligations under the 2026 Credit Agreement are secured by the current and future personal property of the Company and its subsidiary guarantors.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
         "t": "Advances under revolving credit facility",
         "stated": "Advances under revolving credit facility",
         "src": {
@@ -5196,19 +5306,6 @@
          "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
          "doc": "ehc-20260309.htm"
-        }
-       },
-       {
-        "k": "text",
-        "t": " · "
-       },
-       {
-        "k": "notStated",
-        "t": "seniority and security not stated, please refer to sources",
-        "src": {
-         "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-         "doc": "10-Q 2026-08-07"
         }
        }
       ],
@@ -5431,6 +5528,34 @@
     "bold": [
      {
       "k": "label",
+      "t": "senior",
+      "stated": "senior secured borrowing",
+      "src": {
+       "sentence": "Our credit agreement governs our senior secured borrowing capacity and contains a leverage 28 ratio and an interest coverage ratio as financial covenants.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "secured",
+      "stated": "obligations under the 2026 Credit Agreement are secured",
+      "src": {
+       "sentence": "Our obligations under the 2026 Credit Agreement are secured by the current and future personal property of the Company and its subsidiary guarantors.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
       "t": "revolver",
       "stated": "revolv",
       "src": {
@@ -5521,13 +5646,8 @@
       "t": " "
      },
      {
-      "k": "notStated",
-      "t": "Letters of credit outstanding not stated.",
-      "src": {
-       "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-       "doc": "ehc-20260309.htm"
-      }
+      "k": "text",
+      "t": "Letters of credit withheld, see Not shown."
      }
     ]
    }
@@ -5536,7 +5656,7 @@
    [
     {
      "k": "text",
-     "t": "senior secured revolving credit facility, letters of credit $53.6MM: withheld: sentence does not state this figure. "
+     "t": "Senior secured revolver letters of credit, $53.6MM: withheld. Sentence does not state this figure. "
     },
     {
      "k": "notStated",
