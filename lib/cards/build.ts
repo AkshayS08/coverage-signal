@@ -1813,12 +1813,14 @@ export function buildCard(i: CardInputs): Card {
   const lastYear = Math.max(Number(briefDate.slice(0, 4)), ...dated.map((it) => Number(it.maturity!.date.slice(0, 4))), ...(anchorSchedule ? [...scheduleByYear.keys()].map(Number) : []));
   type YearCol = { year: number; label?: string; items: Item[]; contribs: Contrib[]; totalParts: Part[]; source: "schedule" | "named"; carryingBonds: Item[] };
   const cols: YearCol[] = [];
-  // v3.2 §2.5: where the anchor prints a schedule, its years are the bars, and
-  // its amount after the last year column ("thereafter") is a final bar.
-  const lastScheduleYear = anchorSchedule ? Math.max(...[...scheduleByYear.keys()].map(Number)) : null;
+  // v3.3 §2.5: ONE FIXED HORIZON FOR EVERY CARD. A bar per year for the brief
+  // year through brief year + 4, then one final "[brief year + 5]+" bar holding
+  // all face maturing from then on: named instruments, any schedule columns
+  // past the horizon, the schedule's thereafter. The horizon moves with the
+  // brief year, never with a filer's schedule.
+  const y0 = Number(briefDate.slice(0, 4)), y5 = y0 + 5;
   const thereafter = anchorSchedule ? scheduleEntries.find((e) => /thereafter|after/i.test(e.period)) : undefined;
-  const lastColYear = lastScheduleYear !== null && thereafter ? lastScheduleYear : lastYear;
-  for (let y = Number(briefDate.slice(0, 4)); y <= lastColYear; y++) {
+  for (let y = y0; y < y5; y++) {
     const items = dated.filter((it) => it.maturity!.date.startsWith(String(y)));
     const sch = anchorSchedule ? scheduleByYear.get(String(y)) : undefined;
     const retired = retiredByYear.get(String(y)) ?? [];
@@ -1836,18 +1838,23 @@ export function buildCard(i: CardInputs): Card {
       cols.push({ year: y, items, contribs: items.flatMap(contribOf), totalParts: items.flatMap(partOf), source: "named", carryingBonds: [] });
     }
   }
-  if (lastScheduleYear !== null && thereafter) {
-    const items = dated.filter((it) => Number(it.maturity!.date.slice(0, 4)) > lastScheduleYear);
-    const bonds = items.filter((it) => isBond(it) && it.basis === "face");
-    const carryingBonds = items.filter((it) => isBond(it) && it.basis === "carrying");
-    const contribs = bonds.flatMap(contribOf);
-    const rest = thereafter.part.usd - contribs.reduce((a, c) => a + c.usd, 0);
-    if (carryingBonds.length && rest > 0.5e6) contribs.push({ usd: rest, color: colorOf(carryingBonds[0]), title: `${carryingBonds.map((x) => x.name).join(", ")}: face only in the filer's schedule`, parts: [thereafter.part], rows: carryingBonds.map((x) => x.rowLabel ?? x.name) });
-    else if (rest > 0.5e6) contribs.push({ usd: rest, color: PALETTE.scheduledOther, title: "scheduled other principal", parts: [] });
-    cols.push({ year: lastScheduleYear + 1, label: `${lastScheduleYear + 1}+`, items, contribs, totalParts: [thereafter.part], source: "schedule", carryingBonds });
+  {
+    const items = dated.filter((it) => Number(it.maturity!.date.slice(0, 4)) >= y5);
+    if (anchorSchedule) {
+      const schParts = [...[...scheduleByYear.entries()].filter(([y]) => Number(y) >= y5).map(([, e]) => e.part), ...(thereafter ? [thereafter.part] : [])];
+      const retired = [...retiredByYear.entries()].filter(([y]) => Number(y) >= y5).flatMap(([, ps]) => ps);
+      const total = sum(schParts) - sum(retired);
+      const bonds = items.filter((it) => isBond(it) && it.basis === "face");
+      // A note stated only at carrying value is not drawn at a face it does not have: its principal is in the scheduled other principal here.
+      const carryingBonds = items.filter((it) => isBond(it) && it.basis === "carrying");
+      const contribs = bonds.flatMap(contribOf);
+      const rest = total - contribs.reduce((a, c) => a + c.usd, 0);
+      if (rest > 0.5e6) contribs.push({ usd: rest, color: PALETTE.scheduledOther, title: "scheduled other principal", parts: [], rows: carryingBonds.map((x) => x.rowLabel ?? x.name) });
+      cols.push({ year: y5, label: `${y5}+`, items, contribs, totalParts: [...schParts, ...retired.map((p) => ({ ...p, usd: -p.usd }))], source: "schedule", carryingBonds: [] });
+    } else {
+      cols.push({ year: y5, label: `${y5}+`, items, contribs: items.flatMap(contribOf), totalParts: items.flatMap(partOf), source: "named", carryingBonds: [] });
+    }
   }
-  let shown = cols;
-  if (shown.length > 10) shown = shown.filter((c) => c.contribs.length > 0 || c.totalParts.some((p) => p.usd));
   const bars: ChartBar[] = [];
   for (const cp of cpItems) bars.push({ label: "CP", total: usdSeg(partOf(cp), { bare: true }), segments: [{ usd: faceUsdOf(cp), color: colorOf(cp), title: "commercial paper outstanding" }], source: "cp", broken: false, drawUsd: faceUsdOf(cp), instruments: 1 });
   const merge = (cs: Contrib[]): BarSegment[] => {
@@ -1860,13 +1867,7 @@ export function buildCard(i: CardInputs): Card {
     const rank = (s: BarSegment) => (s.color === PALETTE.notRefinanced ? 0 : s.color === PALETTE.scheduledOther ? 3 : s.pattern ? 2 : 1);
     return out.sort((a, b) => rank(a) - rank(b));
   };
-  const head = shown.length > 10 ? shown.slice(0, 9) : shown;
-  const tail = shown.length > 10 ? shown.slice(9) : [];
-  for (const c of head) bars.push({ label: c.label ?? String(c.year), total: usdSeg(c.totalParts, { bare: true }), segments: merge(c.contribs), source: c.source, broken: false, drawUsd: sum(c.totalParts), instruments: c.items.length });
-  if (tail.length) {
-    const ps = tail.flatMap((c) => c.totalParts);
-    bars.push({ label: `${tail[0].year}–${String(tail[tail.length - 1].year).slice(2)}`, total: usdSeg(ps, { bare: true }), segments: merge(tail.flatMap((c) => c.contribs)), source: tail.every((c) => c.source === "schedule") ? "schedule" : "named", broken: false, drawUsd: sum(ps), instruments: tail.reduce((a, c) => a + c.items.length, 0) });
-  }
+  for (const c of cols) bars.push({ label: c.label ?? String(c.year), total: usdSeg(c.totalParts, { bare: true }), segments: merge(c.contribs), source: c.source, broken: false, drawUsd: sum(c.totalParts), instruments: c.items.length });
   const heights = bars.map((b) => b.drawUsd).sort((a, b) => b - a);
   const captions: Line[] = [];
   if (heights.length > 1 && heights[0] > 2 * heights[1]) {
@@ -1897,6 +1898,7 @@ export function buildCard(i: CardInputs): Card {
   if (usedColors.has(PALETTE.notRefinanced)) enc.push("Orange shows debt due inside the window that is not yet refinanced.");
   if (usedColors.has(PALETTE.scheduledOther)) enc.push(anchorSchedule ? "Where the filer prints a maturity schedule, each bar is the schedule's figure for its year: notes at full face, and term loans, leases and other amortizing debt in the scheduled other principal." : "");
   captions.unshift([t(enc.filter(Boolean).join(" "))]);
+  captions.splice(1, 0, [t(`${y5}+ combines every maturity from ${y5} on; the table below lists each.`)]);
   // v3.2 §2.5: EVERY DOLLAR OF FACE IN ONE PLACE. Where the schedule places
   // all face year by year (it totals the face total), an item with no single
   // maturity is already inside the bars' scheduled other principal: the

@@ -3116,11 +3116,11 @@
      "instruments": 3
     },
     {
-     "label": "2031",
+     "label": "2031+",
      "total": {
       "k": "computed",
-      "t": "3,764.2",
-      "usd": 3764157000,
+      "t": "5,811.6",
+      "usd": 5811565000,
       "parts": [
        {
         "printed": "$ 3,764,157 thousand",
@@ -3130,37 +3130,7 @@
          "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
          "doc": "10-Q 2026-08-04"
         }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 1500000000,
-       "color": "#9AA3AD",
-       "title": "3.75% Senior Notes",
-       "rows": [
-        "3.75% Senior Notes"
-       ]
-      },
-      {
-       "usd": 2264157000,
-       "color": "#C9CED4",
-       "title": "scheduled other principal",
-       "rows": []
-      }
-     ],
-     "source": "schedule",
-     "broken": false,
-     "drawUsd": 3764157000,
-     "instruments": 2
-    },
-    {
-     "label": "2032+",
-     "total": {
-      "k": "computed",
-      "t": "2,047.4",
-      "usd": 2047408000,
-      "parts": [
+       },
        {
         "printed": "$ 2,047,408 thousand",
         "usd": 2047408000,
@@ -3174,16 +3144,17 @@
      },
      "segments": [
       {
-       "usd": 2000000000,
+       "usd": 3500000000,
        "color": "#9AA3AD",
-       "title": "6.875% Senior Notes",
+       "title": "3.75% Senior Notes",
        "rows": [
+        "3.75% Senior Notes",
         "6.875% Senior Notes",
         "6.75% Senior Notes"
        ]
       },
       {
-       "usd": 47408000,
+       "usd": 2311565000,
        "color": "#C9CED4",
        "title": "scheduled other principal",
        "rows": []
@@ -3191,8 +3162,8 @@
      ],
      "source": "schedule",
      "broken": false,
-     "drawUsd": 2047408000,
-     "instruments": 2
+     "drawUsd": 5811565000,
+     "instruments": 4
     }
    ],
    "window": {
@@ -3215,6 +3186,12 @@
      {
       "k": "text",
       "t": "Color shows seniority. Where the filer prints a maturity schedule, each bar is the schedule's figure for its year: notes at full face, and term loans, leases and other amortizing debt in the scheduled other principal."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "2031+ combines every maturity from 2031 on; the table below lists each."
      }
     ],
     [

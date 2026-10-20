@@ -4023,11 +4023,11 @@
      "instruments": 1
     },
     {
-     "label": "2031",
+     "label": "2031+",
      "total": {
       "k": "computed",
-      "t": "640.1",
-      "usd": 640100000,
+      "t": "1,266.9",
+      "usd": 1266900000,
       "parts": [
        {
         "printed": "$ 640.1 million",
@@ -4037,31 +4037,7 @@
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
          "doc": "10-Q 2026-08-07"
         }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 640100000,
-       "color": "#9AA3AD",
-       "title": "4.625 % Senior Notes due 2031: face only in the filer's schedule",
-       "rows": [
-        "4.625 % Senior Notes due 2031"
-       ]
-      }
-     ],
-     "source": "schedule",
-     "broken": false,
-     "drawUsd": 640100000,
-     "instruments": 2
-    },
-    {
-     "label": "2032+",
-     "total": {
-      "k": "computed",
-      "t": "626.8",
-      "usd": 626800000,
-      "parts": [
+       },
        {
         "printed": "$ 626.8 million",
         "usd": 626800000,
@@ -4083,16 +4059,18 @@
        ]
       },
       {
-       "usd": 126800000,
+       "usd": 766900000,
        "color": "#C9CED4",
        "title": "scheduled other principal",
-       "rows": []
+       "rows": [
+        "4.625 % Senior Notes due 2031"
+       ]
       }
      ],
      "source": "schedule",
      "broken": false,
-     "drawUsd": 626800000,
-     "instruments": 1
+     "drawUsd": 1266900000,
+     "instruments": 3
     }
    ],
    "window": {
@@ -4119,6 +4097,12 @@
      {
       "k": "text",
       "t": "Color shows seniority. Orange shows debt due inside the window that is not yet refinanced. Where the filer prints a maturity schedule, each bar is the schedule's figure for its year: notes at full face, and term loans, leases and other amortizing debt in the scheduled other principal."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "2031+ combines every maturity from 2031 on; the table below lists each."
      }
     ],
     [
@@ -4198,7 +4182,7 @@
     [
      {
       "k": "text",
-      "t": "The 2030 and 2031 bars show the filer's schedule total; the 4.75% notes and 4.625% notes in them are stated only at carrying value."
+      "t": "The 2030 bar show the filer's schedule total; the 4.75% notes in it are stated only at carrying value."
      }
     ],
     [

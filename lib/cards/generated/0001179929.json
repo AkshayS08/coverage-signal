@@ -1987,11 +1987,11 @@
      "instruments": 1
     },
     {
-     "label": "2031",
+     "label": "2031+",
      "total": {
       "k": "computed",
-      "t": "850",
-      "usd": 850000000,
+      "t": "2,350",
+      "usd": 2350000000,
       "parts": [
        {
         "printed": "$ 850 million",
@@ -2001,31 +2001,7 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
          "doc": "10-Q 2026-07-23"
         }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 850000000,
-       "color": "#5C8DBF",
-       "title": "6.500 % Notes due February 15, 2031",
-       "rows": [
-        "6.500 % Notes due February 15, 2031"
-       ]
-      }
-     ],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 850000000,
-     "instruments": 1
-    },
-    {
-     "label": "2032",
-     "total": {
-      "k": "computed",
-      "t": "750",
-      "usd": 750000000,
-      "parts": [
+       },
        {
         "printed": "$ 750 million",
         "usd": 750000000,
@@ -2034,31 +2010,7 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
          "doc": "10-Q 2026-07-23"
         }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 750000000,
-       "color": "#5C8DBF",
-       "title": "3.875 % Notes due May 15, 2032",
-       "rows": [
-        "3.875 % Notes due May 15, 2032"
-       ]
-      }
-     ],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 750000000,
-     "instruments": 1
-    },
-    {
-     "label": "2033",
-     "total": {
-      "k": "computed",
-      "t": "750",
-      "usd": 750000000,
-      "parts": [
+       },
        {
         "printed": "$ 750 million",
         "usd": 750000000,
@@ -2072,18 +2024,20 @@
      },
      "segments": [
       {
-       "usd": 750000000,
+       "usd": 2350000000,
        "color": "#5C8DBF",
-       "title": "6.250 % Notes due January 15, 2033",
+       "title": "6.500 % Notes due February 15, 2031",
        "rows": [
+        "6.500 % Notes due February 15, 2031",
+        "3.875 % Notes due May 15, 2032",
         "6.250 % Notes due January 15, 2033"
        ]
       }
      ],
      "source": "named",
-     "broken": false,
-     "drawUsd": 750000000,
-     "instruments": 1
+     "broken": true,
+     "drawUsd": 919999999.9999999,
+     "instruments": 3
     }
    ],
    "window": {
@@ -2102,6 +2056,18 @@
      {
       "k": "text",
       "t": "Color shows seniority."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "2031+ combines every maturity from 2031 on; the table below lists each."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "The 2031+ bar holds 3 instruments and is cut to fit; its full height would be about 2.9 times the 2028 bar."
      }
     ]
    ]

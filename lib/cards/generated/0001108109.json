@@ -3742,11 +3742,11 @@
      "instruments": 2
     },
     {
-     "label": "2031",
+     "label": "2031+",
      "total": {
       "k": "computed",
-      "t": "689",
-      "usd": 689000000,
+      "t": "4,728",
+      "usd": 4728000000,
       "parts": [
        {
         "printed": "$ 689 million",
@@ -3756,31 +3756,7 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
          "doc": "10-Q 2026-07-23"
         }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 689000000,
-       "color": "#1F4E79",
-       "title": "4 ¾% Senior Secured Notes due 2031",
-       "rows": [
-        "4 ¾% Senior Secured Notes due 2031"
-       ]
-      }
-     ],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 689000000,
-     "instruments": 1
-    },
-    {
-     "label": "2032",
-     "total": {
-      "k": "computed",
-      "t": "1,549",
-      "usd": 1549000000,
-      "parts": [
+       },
        {
         "printed": "$ 1,549 million",
         "usd": 1549000000,
@@ -3789,31 +3765,7 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
          "doc": "10-Q 2026-07-23"
         }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 1549000000,
-       "color": "#1F4E79",
-       "title": "10 ⅞% Senior Secured Notes due 2032",
-       "rows": [
-        "10 ⅞% Senior Secured Notes due 2032"
-       ]
-      }
-     ],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 1549000000,
-     "instruments": 1
-    },
-    {
-     "label": "2033",
-     "total": {
-      "k": "computed",
-      "t": "700",
-      "usd": 700000000,
-      "parts": [
+       },
        {
         "printed": "$ 700 million",
         "usd": 700000000,
@@ -3822,31 +3774,7 @@
          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
          "doc": "10-Q 2026-07-23"
         }
-       }
-      ]
-     },
-     "segments": [
-      {
-       "usd": 700000000,
-       "color": "#1F4E79",
-       "title": "10 ¾% Senior Secured Notes due 2033",
-       "rows": [
-        "10 ¾% Senior Secured Notes due 2033"
-       ]
-      }
-     ],
-     "source": "named",
-     "broken": false,
-     "drawUsd": 700000000,
-     "instruments": 1
-    },
-    {
-     "label": "2034",
-     "total": {
-      "k": "computed",
-      "t": "1,790",
-      "usd": 1790000000,
-      "parts": [
+       },
        {
         "printed": "$ 1,790 million",
         "usd": 1790000000,
@@ -3860,18 +3788,21 @@
      },
      "segments": [
       {
-       "usd": 1790000000,
+       "usd": 4728000000,
        "color": "#1F4E79",
-       "title": "9 ¾% Senior Secured Notes due 2034",
+       "title": "4 ¾% Senior Secured Notes due 2031",
        "rows": [
+        "4 ¾% Senior Secured Notes due 2031",
+        "10 ⅞% Senior Secured Notes due 2032",
+        "10 ¾% Senior Secured Notes due 2033",
         "9 ¾% Senior Secured Notes due 2034"
        ]
       }
      ],
      "source": "named",
      "broken": false,
-     "drawUsd": 1790000000,
-     "instruments": 1
+     "drawUsd": 4728000000,
+     "instruments": 4
     }
    ],
    "window": {
@@ -3898,6 +3829,12 @@
      {
       "k": "text",
       "t": "Color shows seniority. Orange shows debt due inside the window that is not yet refinanced."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "2031+ combines every maturity from 2031 on; the table below lists each."
      }
     ],
     [
