@@ -927,6 +927,38 @@ const W10_PRICE: Test = {
   run: (card) => (card.v3 ? card.v3.moves.flatMap((m) => (m.detail && /\bat \d{1,3}(?:\.\d+)?% of principal/.test(text(m.detail)) && !/^(?:Issued|Redeemed|Repurchased) at \d/.test(text(m.detail)) ? [`price detached: "${text(m.detail).slice(0, 80)}"`] : [])) : ["no v3 card"]),
 };
 
+
+// ── card_spec v3.3: one fixed horizon ─────────────────────────────────────
+const yearBars = (card: Card) => card.v3!.chart.bars.filter((b) => b.source !== "cp");
+const H1_HORIZON: Test = {
+  id: "H1", name: "fixed horizon: five year bars (brief year to brief year + 4) and one \"[brief year + 5]+\" bar, the same on every card",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    const y0 = Number(card.briefDate.slice(0, 4));
+    const want = [0, 1, 2, 3, 4].map((k) => String(y0 + k)).concat(`${y0 + 5}+`);
+    const got = yearBars(card).map((b) => b.label);
+    return got.join(",") === want.join(",") ? [] : [`bars ${got.join(", ")}, the horizon is ${want.join(", ")}`];
+  },
+};
+const H2_FINAL: Test = {
+  id: "H2", name: "the final bar equals the face maturing after brief year + 4",
+  run: (card, f) => {
+    if (!card.v3) return ["no v3 card"];
+    const y5 = Number(card.briefDate.slice(0, 4)) + 5;
+    const fin = yearBars(card).find((b) => b.label === `${y5}+`);
+    if (!fin) return [`no ${y5}+ bar`];
+    const scale = f.table.scale === "thousand" ? 1e3 : 1e6;
+    let want: number;
+    if (f.schedule && !f.rolled) {
+      want = (f.schedule.entries ?? []).filter((e: any) => /thereafter/i.test(e.period) || Number((/(20\d\d)/.exec(e.period) ?? [])[1]) >= y5).reduce((a: number, e: any) => a + Number(e.amount.replace(/[$,\s]/g, "")) * scale, 0);
+    } else {
+      want = card.v3.table.rows.filter((r) => { const y = Number((/(20\d\d)/.exec(text(r.matures)) ?? [])[1]); return y >= y5 && !/–/.test(text(r.matures)); }).reduce((a, r) => a + (r.face ? (r.face.k === "computed" ? r.face.usd : 0) : 0), 0);
+    }
+    const got = fin.total.k === "computed" ? fin.total.usd : NaN;
+    return Math.abs(got - want) <= 0.05e6 * (scale === 1e3 ? 10 : 1) ? [] : [`${fin.label} is ${got / 1e6}, face maturing from ${y5} on is ${want / 1e6}`];
+  },
+};
+
 const NAMED_TYPE = /\b(notes|debentures|term loan|revolver|ABL|credit (?:facility|agreement)|line of credit|commercial paper)\b/i;
 const R3_NAMED: Test = {
   id: "A3", name: "refinance box: named instruments only, no \"not stated\" fallbacks",
@@ -1080,7 +1112,8 @@ const R16_TAGS: Test = {
 const TESTS = [T1_PURITY, T2_LINKS, T3_TABLE, T4_NOTSTATED, T5_ONEMATURITY, T6_PRECISION, T7_SCHEDULE, T8_MOVES, T9_LINT, T10_HEDGES,
   R1_BOX, R2_SUMMARY, R2B_SCOPE, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS,
   V1_LAYOUT, V2_CASE, V3_TILES, V4_VOCAB, V5_LEGEND, V6_BARS, V7_TABLE, V8_HEADBARS, V9_NEXT, G1_OWNLABELS,
-  W1_LADDER, W2_MOVEROW, W3_FACECELL, W4_WITHHELD, W5_NOTSTATED, W6_GREY, W7_CPNET, W8_COUPON, W9_NAME, W10_PRICE];
+  W1_LADDER, W2_MOVEROW, W3_FACECELL, W4_WITHHELD, W5_NOTSTATED, W6_GREY, W7_CPNET, W8_COUPON, W9_NAME, W10_PRICE,
+  H1_HORIZON, H2_FINAL];
 
 // ── negative controls: a corrupted card or fixture each test MUST fail ──
 function clone<T>(x: T): T { return JSON.parse(JSON.stringify(x)); }
@@ -1208,6 +1241,15 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     if (cigna.v3) { const c = clone(cigna); const l = c.v3!.liquidity.legend.find((x) => /Undrawn/.test(text(x.label)))!; l.amount = { k: "figure", t: "$6,500MM", printed: "$ 6.5 billion", src: { sentence: "x", url: "x", doc: "x" } }; out.push({ id: "W7", failed: W7_CPNET.run(c, null).length > 0, what: "the revolver counted gross of the CP it backs" }); }
     if (chs.v3) { const c = clone(chs); c.v3!.moves[0].title.push([{ k: "text", t: "~$231MM 10.875% senior secured notes due 2032" }]); out.push({ id: "W8", failed: W8_COUPON.run(c, null).length > 0, what: "10.875% beside the table's 10⅞%" }); }
     if (cigna.v3) { const c = clone(cigna); c.v3!.header.company = "Cigna Group"; out.push({ id: "W9", failed: W9_NAME.run(c, null).length > 0, what: "a mixed-case name" }); }
+  }
+
+  // ── v3.3 negative controls ──
+  {
+    const pick = (re: RegExp) => cards.find((c) => re.test(c.company))!;
+    const dva = pick(/davita/i), cigna = pick(/cigna/i);
+    if (dva.v3) { const c = clone(dva); const yb = c.v3!.chart.bars.filter((b) => b.source !== "cp"); const last = yb[yb.length - 1]; last.label = "2032+"; out.push({ id: "H1", failed: H1_HORIZON.run(c, null).length > 0, what: "DaVita at 2032+" }); }
+    if (cigna.v3) { const c = clone(cigna); const yb = c.v3!.chart.bars.filter((b) => b.source !== "cp"); yb[yb.length - 1].label = "2038–56"; out.push({ id: "H1", failed: H1_HORIZON.run(c, null).length > 0, what: "Cigna with its 2038–56 range bar" }); }
+    if (cigna.v3) { const c = clone(cigna); const yb = c.v3!.chart.bars.filter((b) => b.source !== "cp"); const fin = yb[yb.length - 1]; (fin.total as any).usd -= 1450e6; fin.label = `${Number(c.briefDate.slice(0, 4)) + 5}+`; out.push({ id: "H2", failed: H2_FINAL.run(c, fixtureOf(cigna.cik)).length > 0, what: "a final bar missing face" }); }
   }
   return out;
 }
