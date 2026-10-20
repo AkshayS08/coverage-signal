@@ -969,6 +969,8 @@ export function buildCard(i: CardInputs): Card {
   const cp = i.facts?.commercialPaper ?? null;
   const cpBacking = cp?.backedBy && cp.outstanding && liqPermitted(cp.backedBy.src.url) && liqPermitted(cp.outstanding.src.url) ? cp : null;
   const lenderFacilities = facilities.filter((f) => !(f.category === "commercial-paper" || classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType === "commercial-paper"));
+  /** The facility a filing states backs the commercial paper: named by the backing sentence, or the only lender facility. */
+  const cpBackerOf = () => (cpBacking ? lenderFacilities.find((x) => containsWord(x.name, cpBacking.backedBy!.value)) ?? (lenderFacilities.length === 1 ? lenderFacilities[0] : null) : null);
   for (const f of facilities) {
     const kind = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;
     if (f.category === "commercial-paper" || kind === "commercial-paper") {
@@ -997,6 +999,11 @@ export function buildCard(i: CardInputs): Card {
       const usd = parseMoneyAmount(f.available.value) ?? 0;
       line.push({ k: "figure", t: displayAmount(f.available.value, f.available.sourceLine), printed: f.available.value, src: fsrc("available", f.available.sourceLine) }, t(bb ? " available as stated (borrowing-base limited)" : " available as stated"));
       liqParts.push({ printed: f.available.value, usd, src: fsrc("available", f.available.sourceLine) });
+      // v3.2 §2.4 (Akshay's ruling): commercial paper a facility backs has spoken for that capacity.
+      if (cpBacking && cpBackerOf() === f) {
+        const o = cpBacking.outstanding!;
+        liqParts.push({ printed: o.value, usd: -(parseMoneyAmount(o.value) ?? 0), src: src(o.src.sentence, o.src.url) });
+      }
       if (f.asOfDate !== periodEnd) liqComputable = false;
     } else if (f.facilitySize && !bb) {
       const parts = [{ printed: f.facilitySize.value, usd: parseMoneyAmount(f.facilitySize.value) ?? 0, src: fsrc("facilitySize", f.facilitySize.sourceLine) }];
@@ -1022,7 +1029,7 @@ export function buildCard(i: CardInputs): Card {
   const liqUsd = liqParts.reduce((a, p) => a + p.usd, 0);
   liqLines.unshift(
     liqComputable && liqParts.length > 0
-      ? [t("Liquidity "), { k: "computed", t: displayUsd(liqUsd, false, dp(liqParts)), usd: liqUsd, parts: liqParts }, t(" as of "), periodDate()]
+      ? [t("Liquidity "), { k: "computed", t: displayUsd(liqUsd, liqParts.some((p) => hedgedIn(p.src.sentence, p.printed)), dp(liqParts)), usd: liqUsd, parts: liqParts }, t(" as of "), periodDate()]
       : [t("No liquidity total: cash and every facility's availability are not all stated as of the position date.")]
   );
   if (liqComputable && liqParts.length > 0) liqLines.splice(1, 0, [t("Cash plus stated availability, both stated as of the position date.")]);
@@ -1772,15 +1779,18 @@ export function buildCard(i: CardInputs): Card {
     const typeWord = classifyInstrument({ headings: [], instrumentName: f.name });
     const typeSrc = [fsrc, ...[f.facilitySize, f.drawn, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => src(x.sourceLine, f.figureSources?.facilitySize ?? f.citedUrl))].find((x) => containsWord(x.sentence, typeWord.instrumentTypeStatedAs ?? f.name) || containsWord(x.sentence, f.name));
     const type: Segment = typeSrc ? typeLabel({ instrument: f.name, classification: typeWord }, typeSrc) : t(typeLabel({ instrument: f.name, classification: typeWord }, fsrc).t);
-    liqSegments.push({ usd, color: PALETTE.undrawn, title: f.name });
-    liqLegend.push({ color: PALETTE.undrawn, label: [t("Undrawn "), type, ...(m.kind === "dated" ? [t(", matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: src(m.sentence, f.figureSources?.maturity ?? f.citedUrl) } as Segment] : [])], amount: { k: "figure", t: displayAmount(f.available.value, f.available.sourceLine), printed: f.available.value, src: fsrc } });
+    const backsCp = cpBacking && cpBackerOf() === f ? cpBacking.outstanding! : null;
+    const net = backsCp ? usd - (parseMoneyAmount(backsCp.value) ?? 0) : usd;
+    const netParts: Part[] = backsCp ? [{ printed: f.available.value, usd, src: fsrc }, { printed: backsCp.value, usd: -(parseMoneyAmount(backsCp.value) ?? 0), src: src(backsCp.src.sentence, backsCp.src.url) }] : [];
+    liqSegments.push({ usd: net, color: PALETTE.undrawn, title: f.name });
+    liqLegend.push({ color: PALETTE.undrawn, label: [t("Undrawn "), type, ...(m.kind === "dated" ? [t(", matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: src(m.sentence, f.figureSources?.maturity ?? f.citedUrl) } as Segment] : [])], amount: backsCp ? { k: "computed", t: displayUsd(net, netParts.some(hedgedPart), dp(netParts)), usd: net, parts: netParts } : { k: "figure", t: displayAmount(f.available.value, f.available.sourceLine), printed: f.available.value, src: fsrc } });
+    if (backsCp) liqNotes.push([t(`Undrawn ${type.t} shown net of `), { k: "figure", t: displayAmount(backsCp.value, backsCp.src.sentence), printed: backsCp.value, src: src(backsCp.src.sentence, backsCp.src.url) }, t(" commercial paper it "), { k: "label", t: "backs", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(". Commercial paper itself is not counted as liquidity.")]);
     if (borrowingBaseOf(f)) liqNotes.push([t("Borrowing-base limited; stated availability shown.")]);
   }
   for (const u of (i.facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
     liqNotes.push([t("Not counted: "), ...(u.amount && liqPermitted(u.amount.src.url) ? [t("up to "), liqFig(u.amount), t(" of ")] : []), { k: "label", t: u.description.value.replace(/^uncommitted capacity to incur /i, "uncommitted "), stated: u.description.value, src: src(u.description.src.sentence, u.description.src.url) }, t(".")]);
   }
-  if (cpItems.length && cpBacker?.available) liqNotes.push([t("The revolver also "), { k: "label", t: "backs", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(" "), usdSeg(partOf(cpItems[0])), t(" of commercial paper outstanding. Commercial paper itself is not counted as liquidity.")]);
-  const liqFigure: Segment | null = liqComputable && liqParts.length ? { k: "computed", t: displayUsd(liqUsd, false, dp(liqParts)), usd: liqUsd, parts: liqParts } : null;
+  const liqFigure: Segment | null = liqComputable && liqParts.length ? { k: "computed", t: displayUsd(liqUsd, liqParts.some(hedgedPart), dp(liqParts)), usd: liqUsd, parts: liqParts } : null;
   if (!liqFigure) liqNotes.unshift([t("No liquidity total: cash and every facility's availability are not all stated as of the position date.")]);
 
   // ── 2.5 the maturity chart ──

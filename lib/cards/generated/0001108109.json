@@ -674,7 +674,7 @@
      },
      {
       "k": "computed",
-      "t": "$900MM",
+      "t": "~$900MM",
       "usd": 900000000,
       "parts": [
        {
@@ -3463,7 +3463,7 @@
   "liquidity": {
    "figure": {
     "k": "computed",
-    "t": "$900MM",
+    "t": "~$900MM",
     "usd": 900000000,
     "parts": [
      {

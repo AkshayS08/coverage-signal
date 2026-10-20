@@ -888,8 +888,8 @@
      },
      {
       "k": "computed",
-      "t": "$12,798MM",
-      "usd": 12798000000,
+      "t": "~$11,798MM",
+      "usd": 11798000000,
       "parts": [
        {
         "printed": "$ 6,298 million",
@@ -905,6 +905,15 @@
         "usd": 6500000000,
         "src": {
          "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+         "doc": "10-Q 2026-07-30"
+        }
+       },
+       {
+        "printed": "$ 1.0 billion",
+        "usd": -1000000000,
+        "src": {
+         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
          "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
          "doc": "10-Q 2026-07-30"
         }
@@ -5997,8 +6006,8 @@
   "liquidity": {
    "figure": {
     "k": "computed",
-    "t": "$12,798MM",
-    "usd": 12798000000,
+    "t": "~$11,798MM",
+    "usd": 11798000000,
     "parts": [
      {
       "printed": "$ 6,298 million",
@@ -6017,6 +6026,15 @@
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
        "doc": "10-Q 2026-07-30"
       }
+     },
+     {
+      "printed": "$ 1.0 billion",
+      "usd": -1000000000,
+      "src": {
+       "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
      }
     ]
    },
@@ -6027,7 +6045,7 @@
      "title": "Cash and cash equivalents"
     },
     {
-     "usd": 6500000000,
+     "usd": 5500000000,
      "color": "#9CCBBE",
      "title": "revolving credit and letter of credit agreement"
     }
@@ -6092,14 +6110,29 @@
       }
      ],
      "amount": {
-      "k": "figure",
-      "t": "$6,500MM",
-      "printed": "$ 6.5 billion",
-      "src": {
-       "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
-       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-       "doc": "10-Q 2026-07-30"
-      }
+      "k": "computed",
+      "t": "~$5,500MM",
+      "usd": 5500000000,
+      "parts": [
+       {
+        "printed": "$ 6.5 billion",
+        "usd": 6500000000,
+        "src": {
+         "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+         "doc": "10-Q 2026-07-30"
+        }
+       },
+       {
+        "printed": "$ 1.0 billion",
+        "usd": -1000000000,
+        "src": {
+         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+         "doc": "10-Q 2026-07-30"
+        }
+       }
+      ]
      }
     }
    ],
@@ -6107,7 +6140,21 @@
     [
      {
       "k": "text",
-      "t": "The revolver also "
+      "t": "Undrawn revolver shown net of "
+     },
+     {
+      "k": "figure",
+      "t": "~$1,000MM",
+      "printed": "$ 1.0 billion",
+      "src": {
+       "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " commercial paper it "
      },
      {
       "k": "label",
@@ -6121,27 +6168,7 @@
      },
      {
       "k": "text",
-      "t": " "
-     },
-     {
-      "k": "computed",
-      "t": "~$1,000MM",
-      "usd": 1000000000,
-      "parts": [
-       {
-        "printed": "$ 1.0 billion",
-        "usd": 1000000000,
-        "src": {
-         "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
-         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-         "doc": "10-Q 2026-07-30"
-        }
-       }
-      ]
-     },
-     {
-      "k": "text",
-      "t": " of commercial paper outstanding. Commercial paper itself is not counted as liquidity."
+      "t": ". Commercial paper itself is not counted as liquidity."
      }
     ]
    ]
