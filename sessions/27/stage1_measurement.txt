@@ -1,0 +1,343 @@
+
+================ TENET HEALTHCARE CORP (CIK 0000070318) ================
+feed cached 2026-10-21T04:09:01.415Z; recent block 1000 filings of all forms, 2015-02-11 to 2026-09-22; 1471 older on 1 page(s)
+READ SET today (9 documents; 231 filings in the catalog the prompt lists):
+  10-Q 2026-07-29                              0000070318-26-000037
+  10-Q 2026-04-30                              0000070318-26-000026
+  10-K 2026-02-17                              0000070318-26-000012
+  8-K 2026-09-22 (Items 1.01,2.03,9.01)        0001193125-26-397901
+  8-K 2026-09-08 (Items 7.01,8.01,9.01)        0000070318-26-000040
+  8-K 2026-02-02 (Items 2.02,7.01,8.01,9.01)   0000070318-26-000003
+  8-K 2025-11-18 (Items 1.01,2.03,9.01)        0001193125-25-286146
+  8-K 2025-11-05 (Items 1.01,2.03,9.01)        0001193125-25-266885
+  8-K 2025-11-03 (Items 7.01,8.01,9.01)        0000070318-25-000048
+  + XBRL company facts (debt total at the anchor's period end: bounds the debt-note excerpt), the catalog listing itself (231 lines in the prompt), the registered name "TENET HEALTHCARE CORP"
+EMULATION CHECK: 23 of 33 observed fingerprints reproduced by the replay
+  2026-08-16 8b0d3c39 stored answer v1       NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-21 8b0d3c39 stored answer v2       NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-21 8b0d3c39 stored answer v3       NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-22 8b0d3c39 stored answer v11      NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-23 8b0d3c39 stored answer v12      NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-23 8b0d3c39 stored answer v13      NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-23 8b0d3c39 stored answer v14      NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-23 8b0d3c39 stored answer v15      NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-23 8b0d3c39 stored answer v16      NOT reproduced (the catalog of 2026-08-06 to 2026-08-13 produces it)
+  2026-08-25 2ffc4282 stored answer v16      reproduced
+  2026-08-28 2ffc4282 stored answer v1       reproduced
+  2026-08-28 2ffc4282 stored answer v17      reproduced
+  2026-08-30 2ffc4282 stored answer v18      reproduced
+  2026-08-30 2ffc4282 stored answer v19      reproduced
+  2026-08-31 2ffc4282 stored answer v20      reproduced
+  2026-08-31 2ffc4282 stored answer v21      reproduced
+  2026-08-31 2ffc4282 stored answer v22      reproduced
+  2026-08-31 2ffc4282 stored answer v23      reproduced
+  2026-09-01 2ffc4282 stored answer v24      reproduced
+  2026-09-01 2ffc4282 stored answer v25      reproduced
+  2026-09-02 2ffc4282 stored answer v26      reproduced
+  2026-09-02 2ffc4282 stored answer v27      reproduced
+  2026-09-03 2ffc4282 stored answer v28      reproduced
+  2026-09-04 c33ba580 stored answer v28      reproduced
+  2026-09-09 0c61da84 stored answer v28      NOT reproduced (no day within 90 before to 30 after produces it)
+  2026-09-10 c5f47d03 stored answer v28      reproduced
+  2026-09-10 c5f47d03 stored answer v29      reproduced
+  2026-09-16 b9409e53 stored answer v29      reproduced
+  2026-09-17 b9409e53 stored answer v28      reproduced
+  2026-09-20 b9409e53 stored answer v30      reproduced
+  2026-09-24 bfa02dc2 stored answer v31      reproduced
+  2026-10-15 bfa02dc2 snapshot 0c6166a       reproduced
+  2026-10-17 bfa02dc2 snapshot 2a9b6ef       reproduced
+REPLAY 2026-07-23 to 2026-10-21:
+  2026-07-24  old key MOVES | read-set key stays
+      entered the catalog: 8-K 2026-07-23 (Items 2.02,9.01)
+  2026-07-29  old key MOVES | read-set key MOVES
+      entered the catalog: 10-Q 2026-07-29
+      read set: + 10-Q 2026-07-29  − 10-Q 2025-10-28
+  2026-08-06  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 2 other filing(s) that day: 144, SCHEDULE 13G/A): 8-K 2014-09-29 (Items 1.01,2.03,9.01); 8-K 2014-09-24 (Items 8.01,9.01)
+  2026-08-14  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 1 other filing(s) that day: SCHEDULE 13G/A): 8-K 2014-11-03 (Items 2.02,9.01)
+  2026-08-24  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 2 other filing(s) that day: 144): 10-Q 2014-11-03
+  2026-09-03  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 1 other filing(s) that day: 4): 8-K 2014-12-04 (Items 5.02,9.01)
+  2026-09-08  old key MOVES | read-set key MOVES
+      entered the catalog: 8-K 2026-09-08 (Items 7.01,8.01,9.01)
+      left the catalog (pushed out of EDGAR's recent block): 8-K 2014-12-24 (Items 5.02)
+      read set: + 8-K 2026-09-08 (Items 7.01,8.01,9.01)  − 8-K 2024-04-01 (Items 8.01,9.01)
+  2026-09-14  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 2 other filing(s) that day: 4, 144): 8-K 2015-01-12 (Items 2.02,9.01)
+  2026-09-22  old key MOVES | read-set key MOVES
+      entered the catalog: 8-K 2026-09-22 (Items 1.01,2.03,9.01)
+      read set: + 8-K 2026-09-22 (Items 1.01,2.03,9.01)  − 8-K 2024-08-05 (Items 7.01,8.01,9.01)
+SUMMARY TENET HEALTHCARE CORP: old key moved 9 time(s) in 90 days; read-set key moved 3 time(s).
+
+================ Encompass Health Corp (CIK 0000785161) ================
+feed cached 2026-10-21T04:09:49.706Z; recent block 1002 filings of all forms, 2018-07-18 to 2026-10-19; 1840 older on 1 page(s)
+READ SET today (9 documents; 148 filings in the catalog the prompt lists):
+  10-Q 2026-08-07                              0000785161-26-000186
+  10-Q 2026-05-01                              0000785161-26-000130
+  10-K 2026-02-26                              0000785161-26-000081
+  8-K 2026-08-13 (Items 8.01)                  0000785161-26-000195
+  8-K 2026-08-05 (Items 2.02,7.01,9.01)        0000785161-26-000183
+  8-K 2026-06-01 (Items 1.01,2.03,9.01)        0000785161-26-000161
+  8-K 2026-05-15 (Items 1.01,8.01,9.01)        0000785161-26-000156
+  8-K 2026-04-30 (Items 2.02,7.01,9.01)        0000785161-26-000128
+  8-K 2026-03-10 (Items 1.01,1.02,2.03,9.01)   0000785161-26-000100
+  + XBRL company facts (debt total at the anchor's period end: bounds the debt-note excerpt), the catalog listing itself (148 lines in the prompt), the registered name "Encompass Health Corp"
+EMULATION CHECK: 26 of 26 observed fingerprints reproduced by the replay
+  2026-08-16 1dbb3df7 stored answer v1       reproduced
+  2026-08-21 1dbb3df7 stored answer v2       reproduced
+  2026-08-21 1dbb3df7 stored answer v3       reproduced
+  2026-08-22 1dbb3df7 stored answer v11      reproduced
+  2026-08-23 1dbb3df7 stored answer v12      reproduced
+  2026-08-23 1dbb3df7 stored answer v13      reproduced
+  2026-08-23 1dbb3df7 stored answer v15      reproduced
+  2026-08-23 1dbb3df7 stored answer v16      reproduced
+  2026-08-28 1dbb3df7 stored answer v17      reproduced
+  2026-08-30 1dbb3df7 stored answer v18      reproduced
+  2026-08-30 1dbb3df7 stored answer v19      reproduced
+  2026-08-31 1dbb3df7 stored answer v20      reproduced
+  2026-08-31 1dbb3df7 stored answer v21      reproduced
+  2026-08-31 1dbb3df7 stored answer v22      reproduced
+  2026-09-01 1dbb3df7 stored answer v23      reproduced
+  2026-09-01 1dbb3df7 stored answer v24      reproduced
+  2026-09-01 1dbb3df7 stored answer v25      reproduced
+  2026-09-02 1dbb3df7 stored answer v26      reproduced
+  2026-09-02 1dbb3df7 stored answer v27      reproduced
+  2026-09-03 1dbb3df7 stored answer v28      reproduced
+  2026-09-09 1dbb3df7 stored answer v29      reproduced
+  2026-09-20 1dbb3df7 stored answer v30      reproduced
+  2026-09-24 1dbb3df7 stored answer v31      reproduced
+  2026-10-15 1dbb3df7 snapshot 0c6166a       reproduced
+  2026-10-17 1dbb3df7 snapshot 2a9b6ef       reproduced
+  2026-10-21 d3118bf7 snapshot aa24903       reproduced
+REPLAY 2026-07-23 to 2026-10-21:
+  2026-08-05  old key MOVES | read-set key MOVES
+      entered the catalog: 8-K 2026-08-05 (Items 2.02,7.01,9.01)
+      read set: + 8-K 2026-08-05 (Items 2.02,7.01,9.01)  − 8-K 2025-12-01 (Items 7.01)
+  2026-08-07  old key MOVES | read-set key MOVES
+      entered the catalog: 10-Q 2026-08-07
+      read set: + 10-Q 2026-08-07  − 10-Q 2025-10-31
+  2026-08-10  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 3 other filing(s) that day: 144): 8-K 2018-04-26 (Items 2.02,7.01,9.01)
+  2026-08-11  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 3 other filing(s) that day: 4): 10-Q 2018-05-02
+  2026-08-13  old key MOVES | read-set key MOVES
+      entered the catalog: 8-K 2026-08-13 (Items 8.01)
+      read set: + 8-K 2026-08-13 (Items 8.01)  − 8-K 2026-02-05 (Items 2.02,7.01,9.01)
+  2026-10-19  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 9 other filing(s) that day: 4): 8-K 2018-06-11 (Items 7.01,9.01); 8-K 2018-05-15 (Items 7.01,9.01); 8-K 2018-05-08 (Items 5.07)
+SUMMARY Encompass Health Corp: old key moved 6 time(s) in 90 days; read-set key moved 3 time(s).
+
+================ DAVITA INC. (CIK 0000927066) ================
+feed cached 2026-10-21T04:09:06.457Z; recent block 1000 filings of all forms, 2016-06-23 to 2026-09-24; 2292 older on 2 page(s)
+READ SET today (9 documents; 166 filings in the catalog the prompt lists):
+  10-Q 2026-08-04                              0000927066-26-000108
+  10-Q 2026-05-05                              0000927066-26-000062
+  10-K 2026-02-11                              0000927066-26-000012
+  8-K 2026-06-08 (Items 1.01,2.03,5.07,9.01)   0001206774-26-000316
+  8-K 2025-11-25 (Items 1.01,2.03,9.01)        0001206774-25-000750
+  8-K 2025-08-20 (Items 8.01)                  0000927066-25-000154
+  8-K 2025-07-17 (Items 1.01,2.03,9.01)        0001193125-25-160501
+  8-K 2025-05-23 (Items 1.01,2.03,9.01)        0001206774-25-000378
+  8-K 2025-05-20 (Items 8.01,9.01)             0001206774-25-000369
+  + XBRL company facts (debt total at the anchor's period end: bounds the debt-note excerpt), the catalog listing itself (166 lines in the prompt), the registered name "DAVITA INC."
+EMULATION CHECK: 33 of 33 observed fingerprints reproduced by the replay
+  2026-08-16 5a46f9bb stored answer v1       reproduced
+  2026-08-21 5a46f9bb stored answer v2       reproduced
+  2026-08-21 5a46f9bb stored answer v3       reproduced
+  2026-08-21 5a46f9bb stored answer v4       reproduced
+  2026-08-21 5a46f9bb stored answer v5       reproduced
+  2026-08-22 5a46f9bb stored answer v10      reproduced
+  2026-08-22 5a46f9bb stored answer v11      reproduced
+  2026-08-22 5a46f9bb stored answer v6       reproduced
+  2026-08-22 5a46f9bb stored answer v7       reproduced
+  2026-08-22 5a46f9bb stored answer v8       reproduced
+  2026-08-22 5a46f9bb stored answer v9       reproduced
+  2026-08-23 5a46f9bb stored answer v12      reproduced
+  2026-08-23 5a46f9bb stored answer v13      reproduced
+  2026-08-23 5a46f9bb stored answer v14      reproduced
+  2026-08-23 5a46f9bb stored answer v15      reproduced
+  2026-08-23 5a46f9bb stored answer v16      reproduced
+  2026-08-28 5a46f9bb stored answer v17      reproduced
+  2026-08-30 5a46f9bb stored answer v18      reproduced
+  2026-08-30 5a46f9bb stored answer v19      reproduced
+  2026-08-31 5a46f9bb stored answer v20      reproduced
+  2026-08-31 5a46f9bb stored answer v21      reproduced
+  2026-08-31 5a46f9bb stored answer v22      reproduced
+  2026-08-31 5a46f9bb stored answer v23      reproduced
+  2026-09-01 5a46f9bb stored answer v24      reproduced
+  2026-09-01 5a46f9bb stored answer v25      reproduced
+  2026-09-02 5a46f9bb stored answer v26      reproduced
+  2026-09-02 5a46f9bb stored answer v27      reproduced
+  2026-09-03 5a46f9bb stored answer v28      reproduced
+  2026-09-10 5a46f9bb stored answer v29      reproduced
+  2026-09-20 5a46f9bb stored answer v30      reproduced
+  2026-09-24 5a46f9bb stored answer v31      reproduced
+  2026-10-15 5a46f9bb snapshot 0c6166a       reproduced
+  2026-10-17 5a46f9bb snapshot 2a9b6ef       reproduced
+REPLAY 2026-07-23 to 2026-10-21:
+  2026-08-04  old key MOVES | read-set key MOVES
+      entered the catalog: 10-Q 2026-08-04; 8-K 2026-08-04 (Items 2.02,9.01)
+      read set: + 10-Q 2026-08-04  − 10-Q 2025-10-29
+SUMMARY DAVITA INC.: old key moved 1 time(s) in 90 days; read-set key moved 1 time(s).
+
+================ COMMUNITY HEALTH SYSTEMS INC (CIK 0001108109) ================
+feed cached 2026-10-21T04:09:14.650Z; recent block 1000 filings of all forms, 2014-01-27 to 2026-08-25; 1000 older on 1 page(s)
+READ SET today (9 documents; 293 filings in the catalog the prompt lists):
+  10-Q 2026-07-23                              0001193125-26-314196
+  10-Q 2026-04-22                              0001193125-26-170557
+  10-K 2026-02-19                              0001193125-26-059509
+  8-K 2026-07-22 (Items 2.02,7.01,9.01)        0001193125-26-312454
+  8-K 2026-06-01 (Items 2.01,8.01,9.01)        0001193125-26-251540
+  8-K 2026-05-06 (Items 8.01,9.01)             0001193125-26-208926
+  8-K 2026-04-23 (Items 8.01,9.01)             0001193125-26-171305
+  8-K 2026-04-21 (Items 2.02,7.01,9.01)        0001193125-26-167000
+  8-K 2026-04-01 (Items 2.01,8.01,9.01)        0001193125-26-138026
+  + XBRL company facts (debt total at the anchor's period end: bounds the debt-note excerpt), the catalog listing itself (293 lines in the prompt), the registered name "COMMUNITY HEALTH SYSTEMS INC"
+EMULATION CHECK: 27 of 27 observed fingerprints reproduced by the replay
+  2026-08-16 90d30b61 stored answer v1       reproduced
+  2026-08-21 90d30b61 stored answer v2       reproduced
+  2026-08-21 90d30b61 stored answer v3       reproduced
+  2026-08-22 90d30b61 stored answer v11      reproduced
+  2026-08-23 90d30b61 stored answer v12      reproduced
+  2026-08-23 90d30b61 stored answer v13      reproduced
+  2026-08-23 90d30b61 stored answer v15      reproduced
+  2026-08-23 90d30b61 stored answer v16      reproduced
+  2026-08-27 2b1a61a3 stored answer v16      reproduced
+  2026-08-28 2b1a61a3 stored answer v1       reproduced
+  2026-08-28 2b1a61a3 stored answer v17      reproduced
+  2026-08-30 2b1a61a3 stored answer v18      reproduced
+  2026-08-30 2b1a61a3 stored answer v19      reproduced
+  2026-08-31 2b1a61a3 stored answer v20      reproduced
+  2026-08-31 2b1a61a3 stored answer v21      reproduced
+  2026-08-31 2b1a61a3 stored answer v22      reproduced
+  2026-09-01 2b1a61a3 stored answer v23      reproduced
+  2026-09-01 2b1a61a3 stored answer v24      reproduced
+  2026-09-01 2b1a61a3 stored answer v25      reproduced
+  2026-09-02 2b1a61a3 stored answer v26      reproduced
+  2026-09-02 2b1a61a3 stored answer v27      reproduced
+  2026-09-03 2b1a61a3 stored answer v28      reproduced
+  2026-09-10 2b1a61a3 stored answer v29      reproduced
+  2026-09-20 2b1a61a3 stored answer v30      reproduced
+  2026-09-24 2b1a61a3 stored answer v31      reproduced
+  2026-10-15 2b1a61a3 snapshot 0c6166a       reproduced
+  2026-10-17 2b1a61a3 snapshot 2a9b6ef       reproduced
+REPLAY 2026-07-23 to 2026-10-21:
+  2026-07-24  old key MOVES | read-set key MOVES
+      entered the catalog: 10-Q 2026-07-23
+      read set: + 10-Q 2026-07-23  − 10-Q 2025-10-24
+  2026-08-10  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 1 other filing(s) that day: SCHEDULE 13G/A): 8-K 2014-01-07 (Items 8.01,9.01)
+  2026-08-25  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 2 other filing(s) that day: 4, 144): 8-K 2014-01-23 (Items 8.01,9.01); 8-K 2014-01-10 (Items 7.01,8.01,9.01)
+SUMMARY COMMUNITY HEALTH SYSTEMS INC: old key moved 3 time(s) in 90 days; read-set key moved 1 time(s).
+
+================ MOLINA HEALTHCARE, INC. (CIK 0001179929) ================
+feed cached 2026-10-21T04:09:12.383Z; recent block 1006 filings of all forms, 2017-04-04 to 2026-10-02; 1675 older on 1 page(s)
+READ SET today (9 documents; 202 filings in the catalog the prompt lists):
+  10-Q 2026-07-23                              0001179929-26-000039
+  10-Q 2026-04-23                              0001179929-26-000023
+  10-K 2026-02-10                              0001179929-26-000005
+  8-K 2026-06-10 (Items 7.01,9.01)             0001437749-26-020160
+  8-K 2026-05-08 (Items 7.01,9.01)             0001437749-26-015766
+  8-K 2026-02-26 (Items 7.01)                  0001437749-26-005871
+  8-K 2026-02-06 (Items 1.01,2.03,2.06,9.01)   0001437749-26-003384
+  8-K 2025-11-20 (Items 1.01,2.03,8.01,9.01)   0001437749-25-035866
+  8-K 2025-11-18 (Items 7.01,9.01)             0001437749-25-035490
+  + XBRL company facts (debt total at the anchor's period end: bounds the debt-note excerpt), the catalog listing itself (202 lines in the prompt), the registered name "MOLINA HEALTHCARE, INC."
+EMULATION CHECK: 25 of 25 observed fingerprints reproduced by the replay
+  2026-08-16 1710014c stored answer v1       reproduced
+  2026-08-21 1710014c stored answer v2       reproduced
+  2026-08-21 1710014c stored answer v3       reproduced
+  2026-08-22 1710014c stored answer v11      reproduced
+  2026-08-23 1710014c stored answer v12      reproduced
+  2026-08-23 1710014c stored answer v13      reproduced
+  2026-08-23 1710014c stored answer v15      reproduced
+  2026-08-23 1710014c stored answer v16      reproduced
+  2026-08-28 1710014c stored answer v17      reproduced
+  2026-08-30 1710014c stored answer v18      reproduced
+  2026-08-30 1710014c stored answer v19      reproduced
+  2026-08-31 1710014c stored answer v20      reproduced
+  2026-08-31 1710014c stored answer v21      reproduced
+  2026-08-31 1710014c stored answer v22      reproduced
+  2026-09-01 1710014c stored answer v23      reproduced
+  2026-09-01 1710014c stored answer v24      reproduced
+  2026-09-01 1710014c stored answer v25      reproduced
+  2026-09-02 1710014c stored answer v26      reproduced
+  2026-09-02 1710014c stored answer v27      reproduced
+  2026-09-03 1710014c stored answer v28      reproduced
+  2026-09-10 1710014c stored answer v29      reproduced
+  2026-09-21 1710014c stored answer v30      reproduced
+  2026-09-24 1710014c stored answer v31      reproduced
+  2026-10-15 1710014c snapshot 0c6166a       reproduced
+  2026-10-17 1710014c snapshot 2a9b6ef       reproduced
+REPLAY 2026-07-23 to 2026-10-21:
+  2026-07-24  old key MOVES | read-set key MOVES
+      entered the catalog: 10-Q 2026-07-23
+      read set: + 10-Q 2026-07-23  − 10-Q 2025-10-23
+SUMMARY MOLINA HEALTHCARE, INC.: old key moved 1 time(s) in 90 days; read-set key moved 1 time(s).
+
+================ Cigna Group (CIK 0001739940) ================
+feed cached 2026-10-21T04:09:10.237Z; recent block 1000 filings of all forms, 2018-12-26 to 2026-10-09; 20 older on 1 page(s)
+READ SET today (9 documents; 160 filings in the catalog the prompt lists):
+  10-Q 2026-07-30                              0001739940-26-000065
+  10-Q 2026-04-30                              0001739940-26-000043
+  10-K 2026-02-26                              0001739940-26-000006
+  8-K 2026-09-30 (Items 7.01,9.01)             0001140361-26-038056
+  8-K 2026-05-13 (Items 7.01)                  0001140361-26-020906
+  8-K 2026-03-03 (Items 5.02,7.01,9.01)        0001140361-26-007450
+  8-K 2026-02-27 (Items 7.01)                  0001140361-26-007049
+  8-K 2025-11-18 (Items 8.01)                  0001140361-25-042597
+  8-K 2025-09-04 (Items 1.01,2.03,8.01,9.01)   0001140361-25-033986
+  + XBRL company facts (debt total at the anchor's period end: bounds the debt-note excerpt), the catalog listing itself (160 lines in the prompt), the registered name "Cigna Group"
+EMULATION CHECK: 23 of 27 observed fingerprints reproduced by the replay
+  2026-08-16 14a9ac9c stored answer v1       reproduced
+  2026-08-21 14a9ac9c stored answer v2       reproduced
+  2026-08-21 14a9ac9c stored answer v3       reproduced
+  2026-08-22 14a9ac9c stored answer v11      reproduced
+  2026-08-23 14a9ac9c stored answer v12      reproduced
+  2026-08-23 14a9ac9c stored answer v13      reproduced
+  2026-08-23 14a9ac9c stored answer v15      reproduced
+  2026-08-23 14a9ac9c stored answer v16      reproduced
+  2026-08-28 14a9ac9c stored answer v17      reproduced
+  2026-08-30 14a9ac9c stored answer v18      reproduced
+  2026-08-30 14a9ac9c stored answer v19      reproduced
+  2026-08-31 14a9ac9c stored answer v20      reproduced
+  2026-08-31 14a9ac9c stored answer v21      reproduced
+  2026-08-31 14a9ac9c stored answer v22      reproduced
+  2026-09-01 14a9ac9c stored answer v23      reproduced
+  2026-09-01 14a9ac9c stored answer v24      reproduced
+  2026-09-01 14a9ac9c stored answer v25      reproduced
+  2026-09-02 14a9ac9c stored answer v26      reproduced
+  2026-09-02 14a9ac9c stored answer v27      reproduced
+  2026-09-03 14a9ac9c stored answer v28      reproduced
+  2026-09-04 813c7d6b stored answer v28      reproduced
+  2026-09-10 813c7d6b stored answer v29      NOT reproduced (the catalog of 2026-09-03 to 2026-09-07 produces it)
+  2026-09-20 813c7d6b stored answer v30      NOT reproduced (the catalog of 2026-09-03 to 2026-09-07 produces it)
+  2026-09-24 813c7d6b stored answer v31      NOT reproduced (the catalog of 2026-09-03 to 2026-09-07 produces it)
+  2026-09-30 f1237506 stored answer v31      NOT reproduced (no day within 90 before to 30 after produces it)
+  2026-10-15 baca1fcf snapshot 0c6166a       reproduced
+  2026-10-17 baca1fcf snapshot 2a9b6ef       reproduced
+REPLAY 2026-07-23 to 2026-10-21:
+  2026-07-30  old key MOVES | read-set key MOVES
+      entered the catalog: 10-Q 2026-07-30; 8-K 2026-07-30 (Items 2.02,9.01)
+      read set: + 10-Q 2026-07-30  − 10-Q 2025-10-30
+  2026-09-03  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 2 other filing(s) that day: 4, 144): 8-K 2018-09-21 (Items 1.01,2.03,9.01)
+  2026-09-08  old key MOVES | read-set key stays
+      left the catalog (pushed out of EDGAR's recent block by 1 other filing(s) that day: 4): 8-K 2018-12-20 (Items 5.05)
+  2026-09-30  old key MOVES | read-set key MOVES
+      entered the catalog: 8-K 2026-09-30 (Items 7.01,9.01)
+      read set: + 8-K 2026-09-30 (Items 7.01,9.01)  − 8-K 2025-09-02 (Items 7.01)
+  2026-10-09  old key MOVES | read-set key stays
+      entered the catalog: 8-K 2026-10-09 (Items 5.02)
+SUMMARY Cigna Group: old key moved 5 time(s) in 90 days; read-set key moved 2 time(s).
+
+================ TOTALS over 90 days ================
+TENET HEALTHCARE CORP          old  9   read-set  3
+Encompass Health Corp          old  6   read-set  3
+DAVITA INC.                    old  1   read-set  1
+COMMUNITY HEALTH SYSTEMS INC   old  3   read-set  1
+MOLINA HEALTHCARE, INC.        old  1   read-set  1
+Cigna Group                    old  5   read-set  2
