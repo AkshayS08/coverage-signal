@@ -27,6 +27,7 @@
  * either: the tag choice is the answer, and it is the company's.
  */
 import { cachedFetch } from "./cache";
+import { ReadFailedError } from "./readError";
 import { secFetchJson } from "./http";
 
 interface XbrlFact {
@@ -118,31 +119,24 @@ function firstTagged(facts: CompanyFacts, tags: string[], asOf: string): XbrlTag
  * endpoint "returned nothing for this filer", when three retries a minute
  * later read $31.878B without trouble.
  *
- * So the cached read is retried once against the network directly, which
- * turns a blip into a non-event, and a genuine failure is reported as OUR
- * failure with the model-read fallback labelled accordingly.
+ * SESSION 27 — AND "WE COULD NOT READ IT" NO LONGER RETURNS AT ALL. It used
+ * to come back as an empty result labelled as our failure, after a second
+ * read straight to EDGAR in place of the failed cached one. Both were
+ * fallbacks: the empty total let the debt-note boundary abstain (a different
+ * excerpt, so a different prompt and a cache miss) and the denominator fall
+ * to the model-read captions. A failed read now throws ReadFailedError
+ * ("xbrl") and the build stops. The cached read itself retries the same read
+ * at most twice (readCache); no other source is tried in its place. The
+ * filer's own absence of a tag is still a value, not an error.
  */
-type FactsOutcome =
-  | { kind: "ok"; facts: CompanyFacts }
-  | { kind: "unreadable"; detail: string };
-
-async function companyFacts(cik: string): Promise<FactsOutcome> {
+async function companyFacts(cik: string): Promise<CompanyFacts> {
   const padded = String(cik).replace(/\D/g, "").padStart(10, "0");
   const url = `https://data.sec.gov/api/xbrl/companyfacts/CIK${padded}.json`;
   try {
     const { data } = await cachedFetch<CompanyFacts>(`edgar/companyfacts/CIK${padded}.json`, () => secFetchJson<CompanyFacts>(url));
-    return { kind: "ok", facts: data };
-  } catch (first) {
-    // Once more, straight to the source — the cache layer is the part that
-    // flakes, and skipping it is both the diagnosis and the fix.
-    try {
-      return { kind: "ok", facts: await secFetchJson<CompanyFacts>(url) };
-    } catch (second) {
-      return {
-        kind: "unreadable",
-        detail: `the company-facts endpoint could not be read (cached: ${first instanceof Error ? first.message.slice(0, 70) : String(first)}; direct: ${second instanceof Error ? second.message.slice(0, 70) : String(second)})`,
-      };
-    }
+    return data;
+  } catch (err) {
+    throw new ReadFailedError("xbrl", `company facts for CIK ${padded}`, err);
   }
 }
 
@@ -150,11 +144,7 @@ async function companyFacts(cik: string): Promise<FactsOutcome> {
 export async function fetchXbrlDebtTotal(cik: string, asOf: string): Promise<XbrlDebtTotal> {
   const empty = (reason: string): XbrlDebtTotal => ({ total: null, asOf, parts: [], separateLeases: [], unavailableReason: reason });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) return empty("the anchor filing states no period end to look up");
-  const outcome = await companyFacts(cik);
-  // OURS, not the filer's — said in those words, because a reader deciding
-  // whether to trust a denominator needs to know which of the two happened.
-  if (outcome.kind === "unreadable") return empty(`WE could not read this filer's XBRL — ${outcome.detail}. This is our failure, not an absence of tagging`);
-  const facts = outcome.facts;
+  const facts = await companyFacts(cik);
 
   const current = firstTagged(facts, CURRENT_TAGS, asOf);
   const noncurrent = firstTagged(facts, NONCURRENT_TAGS, asOf);
@@ -195,9 +185,7 @@ const CASH_TAGS = ["CashAndCashEquivalentsAtCarryingValue"];
 
 export async function fetchXbrlCash(cik: string, asOf: string): Promise<XbrlCash> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) return { value: null, tag: null, asOf, unavailableReason: "the anchor filing states no period end to look up" };
-  const outcome = await companyFacts(cik);
-  if (outcome.kind === "unreadable") return { value: null, tag: null, asOf, unavailableReason: `WE could not read this filer's XBRL — ${outcome.detail}` };
-  const hit = firstTagged(outcome.facts, CASH_TAGS, asOf);
+  const hit = firstTagged(await companyFacts(cik), CASH_TAGS, asOf);
   return hit
     ? { value: hit.value, tag: hit.tag, asOf, unavailableReason: null }
     : { value: null, tag: null, asOf, unavailableReason: `this filer reports no ${CASH_TAGS.join(" / ")} tag at ${asOf}` };
@@ -206,9 +194,7 @@ export async function fetchXbrlCash(cik: string, asOf: string): Promise<XbrlCash
 /** 2d — the filer's own contractual maturity ladder, where it tags one. */
 export async function fetchXbrlMaturityBuckets(cik: string, asOf: string): Promise<XbrlMaturityBuckets> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) return { buckets: [], asOf };
-  const outcome = await companyFacts(cik);
-  if (outcome.kind === "unreadable") return { buckets: [], asOf };
-  const facts = outcome.facts;
+  const facts = await companyFacts(cik);
   const buckets = BUCKET_TAGS.map(([label, tag]) => {
     const value = factAt(facts, tag, asOf);
     return value === null ? null : { label, tag, value };

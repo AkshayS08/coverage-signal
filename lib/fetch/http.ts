@@ -1,3 +1,5 @@
+import { ReadFailedError, retryRead } from "./readError";
+
 const SEC_USER_AGENT =
   process.env.SEC_USER_AGENT || "CoverageSignal akshaysahani23@gmail.com";
 
@@ -23,29 +25,41 @@ function throttle(): Promise<void> {
 
 /** Fetches JSON from a SEC EDGAR endpoint, throttled and with a real User-Agent. */
 export async function secFetchJson<T>(url: string): Promise<T> {
-  await throttle();
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": SEC_USER_AGENT,
-      Accept: "application/json",
-    },
-  });
-  if (!res.ok) {
-    throw new Error(`SEC request failed (${res.status} ${res.statusText}): ${url}`);
+  try {
+    return await retryRead(async () => {
+      await throttle();
+      const res = await fetch(url, {
+        headers: {
+          "User-Agent": SEC_USER_AGENT,
+          Accept: "application/json",
+        },
+      });
+      if (!res.ok) {
+        throw new Error(`SEC request failed (${res.status} ${res.statusText}): ${url}`);
+      }
+      return (await res.json()) as T;
+    });
+  } catch (err) {
+    throw new ReadFailedError("edgar", url, err);
   }
-  return (await res.json()) as T;
 }
 
 /** Fetches raw text (HTML/plain) from a SEC EDGAR document URL, throttled and with a real User-Agent. */
 export async function secFetchText(url: string): Promise<string> {
-  await throttle();
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": SEC_USER_AGENT,
-    },
-  });
-  if (!res.ok) {
-    throw new Error(`SEC request failed (${res.status} ${res.statusText}): ${url}`);
+  try {
+    return await retryRead(async () => {
+      await throttle();
+      const res = await fetch(url, {
+        headers: {
+          "User-Agent": SEC_USER_AGENT,
+        },
+      });
+      if (!res.ok) {
+        throw new Error(`SEC request failed (${res.status} ${res.statusText}): ${url}`);
+      }
+      return await res.text();
+    });
+  } catch (err) {
+    throw new ReadFailedError("edgar", url, err);
   }
-  return await res.text();
 }

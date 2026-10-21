@@ -29,7 +29,8 @@
  * scope. `assertFree` throws before a single call is made; `spendTracker`
  * accumulates per-run and cannot report a total it did not observe.
  */
-import { head } from "@vercel/blob";
+import { head, BlobNotFoundError } from "@vercel/blob";
+import { ReadFailedError, READ_RETRIES } from "../fetch/readError";
 import { getRecentFilings } from "../fetch";
 import { corpusFingerprint, baseAnswerKey } from "./answerCache";
 import { currentCompanySpend } from "../agent/costMeter";
@@ -56,14 +57,32 @@ export async function checkFree(company: string, bust?: string | null): Promise<
   // report "cached" about a key nothing reads.
   const base = baseAnswerKey(f.cik, fp);
   const key = bust ? base.replace(/\/v(\d+)\.json$/, `-bust${bust}/v$1.json`) : base;
-  let cached = false;
+  return { company, fingerprint: fp, key, cached: await answerExists(key) };
+}
+
+/**
+ * SESSION 27: does the answer exist? Only a 404 says no. An unreachable store
+ * used to read as "not cached", which reported a miss that had not happened
+ * (and, to a caller acting on it, a re-extraction nobody asked for). The same
+ * HEAD is retried at most twice, then it is a named error.
+ */
+export async function answerExists(key: string): Promise<boolean> {
+  // The blob client retries an API call on its own, up to 10 times by default
+  // (VERCEL_BLOB_RETRIES: about 17 minutes of backoff before a failure
+  // surfaces). This read is the HEAD and at most two retries, so the client's
+  // retries are capped at READ_RETRIES for this call and none are added here.
+  const prev = process.env.VERCEL_BLOB_RETRIES;
+  process.env.VERCEL_BLOB_RETRIES = String(READ_RETRIES);
   try {
     await head(key, { token: process.env.BLOB_READ_WRITE_TOKEN });
-    cached = true;
-  } catch {
-    cached = false;
+    return true;
+  } catch (e) {
+    if (e instanceof BlobNotFoundError) return false;
+    throw new ReadFailedError("blob", `the answer-key HEAD of "${key}"`, e);
+  } finally {
+    if (prev === undefined) delete process.env.VERCEL_BLOB_RETRIES;
+    else process.env.VERCEL_BLOB_RETRIES = prev;
   }
-  return { company, fingerprint: fp, key, cached };
 }
 
 /**

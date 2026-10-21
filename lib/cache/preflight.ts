@@ -26,13 +26,12 @@
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
-import { head } from "@vercel/blob";
+import { answerExists } from "./freeRun";
 import { getRecentFilings } from "../fetch";
 import { corpusFingerprint, baseAnswerKey } from "./answerCache";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 const ALL=["DaVita","HCA Healthcare","Tenet Healthcare","Universal Health Services","Encompass Health","Community Health Systems","Quest Diagnostics","Centene Corporation","Cigna Group","Molina Healthcare"];
 async function main(){
-  const token=process.env.BLOB_READ_WRITE_TOKEN;
   console.log("company                       filings  fingerprint               base answer");
   let missing=0;
   for(const c of ALL){
@@ -42,8 +41,8 @@ async function main(){
     // hand-copied key here would let preflight report "cached" about a key
     // nothing reads, which is the one thing preflight must never do.
     const key=baseAnswerKey(f.cik,fp);
-    let present=false;
-    try{ await head(key,{token}); present=true; }catch{ present=false; }
+    // Session 27: only a 404 is "not cached"; an unreachable store is a named error, not a miss.
+    const present=await answerExists(key);
     if(!present) missing++;
     console.log(`${c.padEnd(28)}  ${String(f.filings.length).padStart(6)}  ${fp}  ${present?"cached":"WOULD RE-BILL"}`);
   }

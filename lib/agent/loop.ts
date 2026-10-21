@@ -75,6 +75,7 @@ import { corroborateRedemptionStatus } from "./redemptionStatus";
 import { annualReportGate, withholdAnnualReportRows } from "./annualReportSource";
 import { transcribeReferencedNote, REFERENCED_NOTE_PROMPT_VERSION, type ReferencedNoteResult } from "./referencedNote";
 import { cachedReferencedNote } from "../cache/answerCache";
+import { isReadFailed } from "../fetch/readError";
 import { rolledRowLabel } from "../events/rolledPosition";
 
 /** The transcribed prior-period note, plus the one label every row of it renders under. */
@@ -1899,6 +1900,8 @@ export async function runAgentLoop(
       log(`  answer cache ${proceedsHit ? "HIT" : "MISS"} (proceedsUse)`);
       log(`  proceeds-use classified (Sonnet): ${proceedsUse}`);
     } catch (err) {
+      // SESSION 27: a failed READ stops the build; it is not a null proceedsUse.
+      if (isReadFailed(err)) throw err;
       log(
         `  ⚠ PROCEEDS-USE CLASSIFICATION FAILED for ${companyName} — new-debt-issuance: ${err instanceof Error ? err.message : String(err)}; proceedsUse left null`
       );

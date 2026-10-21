@@ -1,4 +1,5 @@
 import { get, put } from "@vercel/blob";
+import { ReadFailedError, retryRead } from "./readError";
 
 /**
  * Generic Blob-backed key/value cache. Used by the document cache (this
@@ -70,18 +71,20 @@ export async function readCache<T>(
 ): Promise<T | null> {
   const token = requireBlobToken();
 
-  let result;
+  // SESSION 27: a 404 is the only miss. Any other failure, including a body
+  // that cannot be read in full, is the same read retried at most twice and
+  // then a named error: never a miss, so never a re-fetch or a model call.
+  let envelope: CacheEnvelope<T> | null;
   try {
-    result = await get(relPath, { access: "public", token });
+    envelope = await retryRead(async () => {
+      const result = await get(relPath, { access: "public", token });
+      if (!result) return null;
+      return JSON.parse(await new Response(result.stream).text()) as CacheEnvelope<T>;
+    });
   } catch (err) {
-    throw new Error(
-      `Blob cache read failed for "${relPath}": ${err instanceof Error ? err.message : String(err)}`
-    );
+    throw new ReadFailedError("blob", `the cached read of "${relPath}"`, err);
   }
-  if (!result) return null;
-
-  const raw = await new Response(result.stream).text();
-  const envelope = JSON.parse(raw) as CacheEnvelope<T>;
+  if (envelope === null) return null;
 
   if (ttlMs !== null) {
     const age = Date.now() - new Date(envelope.cachedAt).getTime();
