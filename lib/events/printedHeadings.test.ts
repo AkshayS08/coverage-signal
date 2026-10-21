@@ -8,7 +8,7 @@
  *
  * Run: npx tsx lib/events/printedHeadings.test.ts
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { assemblePosition } from "./position";
 import { annotatePrintedHeadings } from "./printedHeadings";
@@ -21,7 +21,18 @@ const rowsOf = (cik: string) => assemblePosition(snap(cik).result, ASOF).rows;
 const row = (cik: string, name: string) => rowsOf(cik).find((r) => r.instrument === name);
 
 console.log("\n=== every loop-derived row records its printed heading ===");
-for (const cik of ["0000070318", "0000785161", "0000927066", "0001108109", "0001179929"]) {
+// Chosen by each snapshot's own recorded source, never by name: a name whose
+// corpus moved renders from its signed golden's stored result (Cigna, and
+// Encompass since Oct 21), which predates the field and keeps its recorded
+// headings. Only a loop-derived snapshot is the loop's output.
+const ALL = readdirSync(join(process.cwd(), "lib", "cards", "inputs")).filter((f) => /^\d{10}\.json$/.test(f)).map((f) => f.slice(0, 10));
+const loopDerived = ALL.filter((cik) => /^re-derived through the loop/.test(snap(cik).source));
+assert(loopDerived.length > 0, `[1] ${loopDerived.length} of ${ALL.length} snapshots are loop-derived (by their recorded source)`);
+const carries = (cik: string) => { const rows = snap(cik).result.results.find((r: any) => r.triggerId === "debt-maturity").scheduleSequence.filter((e: any) => e.kind === "row"); return rows.length > 0 && rows.every((e: any) => e.printedHeading !== undefined); };
+// Negative control: a golden-derived snapshot predates the field, so it would fail [1]; the selection is what keeps it out.
+const goldenDerived = ALL.filter((cik) => !loopDerived.includes(cik));
+assert(goldenDerived.length === 0 || goldenDerived.some((cik) => !carries(cik)), `[1 control] a golden-derived snapshot (${goldenDerived.map((c) => snap(c).company).join(", ")}) would fail the check, so choosing by source matters`);
+for (const cik of loopDerived) {
   const dm = snap(cik).result.results.find((r: any) => r.triggerId === "debt-maturity");
   const rows = dm.scheduleSequence.filter((e: any) => e.kind === "row");
   assert(rows.length > 0 && rows.every((e: any) => e.printedHeading !== undefined), `[1:${snap(cik).company}] all ${rows.length} rows carry printedHeading (a heading or an explicit null)`);
