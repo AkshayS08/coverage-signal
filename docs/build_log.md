@@ -7141,3 +7141,20 @@ How to apply: when a rule removes or rewords card copy, rewrite the tests
 that read that copy in the same change, so they check the new content
 against the filings. A test that only passes because old text survives is
 a test of the old card.
+
+### FOR SESSION 27, NO FIX NOW: two cache findings (Oct 21, 2026)
+
+1. **The cache re-reads a blob right after overwriting it.** Preflight
+   refreshed the expired 24-hour `edgar/company_tickers.json` at
+   04:09:03Z; goldenThroughLoop read it seconds later and got a 403 from
+   the store, though the token was valid and the same read succeeded
+   minutes later. When the cache writes an entry, it should use the bytes
+   it just wrote, not read them back from the store.
+
+2. **Encompass's fingerprint moved with no filing extraction reads.** Nine
+   Form 4s filed 2026-10-19 entered EDGAR's count-capped `filings.recent`
+   block and pushed its oldest (July 2018) entries out, which changed the
+   8-K/10-Q/10-K set the fingerprint hashes (1dbb3df7 to d3118bf7). The
+   anchor 10-Q and every later filing were unchanged. This is the
+   strongest case for Stage 1's read-set key: fingerprint what extraction
+   reads, not the window EDGAR happens to return.
