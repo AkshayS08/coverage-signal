@@ -7158,3 +7158,39 @@ a test of the old card.
    anchor 10-Q and every later filing were unchanged. This is the
    strongest case for Stage 1's read-set key: fingerprint what extraction
    reads, not the window EDGAR happens to return.
+
+## SESSION 27, STAGE 1: THE CACHE IS KEYED ON WHAT EXTRACTION READ (Oct 21, 2026)
+
+Full checkpoint: sessions/27/stage1_checkpoint1.md.
+
+**The old key had to hash the whole catalog, because the prompt listed it.**
+The base call's prompt carried every 8-K/10-Q/10-K in EDGAR's recent block
+(148 to 293 lines), so every filing EDGAR returned was an input, and a
+Form 4 pushing a 2018 filing out of the window was, strictly, a different
+prompt. A read-set key over an unchanged prompt would have served answers
+for prompts that differed. v32 lists the read set alone; the key covers the
+read documents (full-text and excerpt hashes), the XBRL bound, the name and
+both versions, under `answer/<cik>/base-rs/`.
+
+Measured over 90 days on the six: the old key moved 25 times and the read
+set 11, every one a new 10-Q or a new high-signal 8-K.
+
+**RULE: a failed read is an error, never a fallback.** Every read the
+extraction depends on throws ReadFailedError (blob, edgar, xbrl) after at
+most two retries of the same read. It never switches source, is never a
+cache miss, and never leads to a model call. Six paths closed, including
+the XBRL one behind Tenet's "expected xbrl, got model-read": a failed read
+returned an empty total, the debt-note boundary abstained, and the excerpt
+changed under a key that did not cover it, so four names were served an
+answer computed from a different excerpt and two reached the model.
+
+**Rule 68 on the throwing path.** The loop wrote its spend only on success;
+a read failing after a billed call would have left it off the ledger. It
+now persists on a throw, under its own scope only.
+
+**Logged, not fixed:** per-form filing lists are cached apart from the
+submissions feed with their own TTLs, so one catalog can mix days (likely
+the two keys the replay could not reproduce); the read window includes
+Item 7.01/8.01 8-Ks, a selection question for Akshay; the blob client
+retries API calls up to 10 times (about 17 minutes), capped at two only
+for the answer-key HEAD.
