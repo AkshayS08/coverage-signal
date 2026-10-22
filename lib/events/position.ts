@@ -107,6 +107,8 @@ export interface LadderRow {
    * describes. Distinct from retiredBy, which means the row is gone.
    */
   retiredByNote?: { evidence: string; citedUrl: string };
+  /** Session 27, rule (b): a retirement of less than the row carries. The row stays live; this states what was retired and what remains. */
+  partialRetirement?: { amountUsd: number; remainderUsd: number; evidence: string; citedUrl: string };
   /**
    * Item 8 (stage-2 review) — WHICH SOURCE THIS ROW CAME FROM.
    *
@@ -204,6 +206,17 @@ export interface WithinPeriodRepayment {
   note: string;
 }
 
+/** Session 27, rule (a): a retirement already inside the position's balance. An event, never subtracted again. */
+export interface PriorRetirement {
+  instrument: string;
+  amount: string | null;
+  /** The filing date of the document stating it as done: on or before the position date. */
+  knownBy: string;
+  sourceLine: string;
+  citedUrl: string;
+  note: string;
+}
+
 export interface CompanyPosition {
   /** Sorted by maturity date. Built from the base filing's scheduleSequence "row" entries, adjusted for redemptions/new issuance/unconfirmed drops. */
   rows: LadderRow[];
@@ -242,7 +255,9 @@ export interface CompanyPosition {
    * They still render: for a filer with no ladder rows at all, a stated
    * intention is the only instrument-level signal there is.
    */
-  statedIntentions: { instrument: string; amount: string | null; date: string | null; sourceLine: string; citedUrl: string; postAnchor: boolean }[];
+  statedIntentions: { instrument: string; amount: string | null; date: string | null; sourceLine: string; citedUrl: string; postAnchor: boolean; setFor?: string | null }[];
+  /** Session 27, rule (a): completed retirements stated by a filing dated on or before the position date. Already in the balance. */
+  priorRetirements?: PriorRetirement[];
   /** The base filing's "adjustment" entries (discount/issuance costs, current portion, etc.) — for display; see portfolioTable.ts. Not summed here; Check 1 (computeWalkChecksum) does that from the raw TriggerResult directly. */
   /**
    * SESSION 21, STAGE 4 — rows the note's own subtotals never count. Empty
@@ -1343,6 +1358,100 @@ function rowMatchesRedemptionText(row: DebtRowLike, redeemsText: string, opts?: 
  */
 const PARTIAL_REDEMPTION_RE = /\b(?:partial(?:ly)?|portion|in part)\b/i;
 
+const MONTH_NAMES = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+/**
+ * The latest date a sentence states for the event itself, as ISO: every
+ * "Month D, YYYY" that is not a maturity ("due ...", "maturing ...").
+ * A closed grammatical class, like PARTIAL_REDEMPTION_RE: it reads how a
+ * date is introduced, never what instrument or company it is about.
+ */
+function eventDatesIn(sentence: string): string[] {
+  const out: string[] = [];
+  for (const m of sentence.matchAll(/(\b(?:due|maturing|matures|maturity)\s+(?:on\s+|in\s+)?)?\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s+(\d{4})/gi)) {
+    if (m[1]) continue;
+    const mm = String(MONTH_NAMES.indexOf(m[2].toLowerCase()) + 1).padStart(2, "0");
+    out.push(`${m[4]}-${mm}-${m[3].padStart(2, "0")}`);
+  }
+  return out;
+}
+
+type RedeemsClaimLike = { instrument: string; amount: string | null; status: string | null; sourceLine: string | null; verified: boolean; foundIn?: { url: string; filingDate: string } };
+export interface ClassifiedRedeems<C extends RedeemsClaimLike> {
+  /** Rule (a): stated as done by a filing dated on or before the position date. Already in the balance. */
+  prior: { claim: C; knownBy: string; citedUrl: string }[];
+  /** Done, and stated by a filing after the position date: these may move the position. */
+  current: { claim: C; knownBy: string; citedUrl: string }[];
+  /** Rule (c): intended, or "completed" but set for a date after the filing that states it. Moves nothing. */
+  pending: { claim: C; knownBy: string; citedUrl: string; setFor: string | null }[];
+}
+
+/**
+ * Rule (b): the one claim done since the position date that names this row
+ * and states less than the row carries, or null. Matching is the identity
+ * rule redemptions already use (rate, maturity), never the amount.
+ */
+function partialClaimFor<C extends RedeemsClaimLike>(row: LadderRow, current: { claim: C; citedUrl: string }[]): { claim: C; citedUrl: string; stated: number; carried: number } | null {
+  const named = current.filter((x) => redemptionRetiresRow(row, [x.claim.instrument, x.claim.sourceLine ?? ""].join(" ")) || rowMatchesRedemptionText(row, [x.claim.instrument, x.claim.sourceLine ?? ""].join(" ")));
+  if (named.length !== 1) return null;
+  const stated = named[0].claim.amount ? parseMoneyAmount(named[0].claim.amount) : null;
+  const carried = parseMoneyAmount(row.amount);
+  if (stated === null || carried === null || stated <= 0 || stated >= carried - 0.5e6) return null;
+  return { ...named[0], stated, carried };
+}
+
+/** Rule (b), over the assembled rows: a partial retirement states what was retired and what remains, and the row stays live. */
+function applyPartialRetirements<C extends RedeemsClaimLike>(rows: LadderRow[], current: { claim: C; citedUrl: string }[]): LadderRow[] {
+  if (current.length === 0) return rows;
+  return rows.map((row) => {
+    if (row.isCapacity || (row.status !== "live" && row.status !== "retired")) return row;
+    const p = partialClaimFor(row, current);
+    if (!p) return row;
+    return { ...row, status: "live" as const, retiredBy: undefined, partialRetirement: { amountUsd: p.stated, remainderUsd: p.carried - p.stated, evidence: p.claim.sourceLine ?? p.claim.instrument, citedUrl: p.citedUrl } };
+  });
+}
+
+/**
+ * SESSION 27 — ONE DECISION FOR EVERY REDEMPTION CLAIM (Akshay, Oct 22, 2026).
+ *
+ * The position, Tier 2 and the refinancing-pattern line all read this, so no
+ * two of them can disagree about whether a retirement has happened, or when.
+ *
+ * A claim's date is the filing date of the document whose text states it
+ * (`foundIn`, recorded by the loop). Before Session 27 every claim took the
+ * trigger's FIRST citation instead: Tenet's v33 answer listed its November
+ * 2025 redemptions, stated in its 2025 10-K, under a September 2026
+ * issuance, and they were subtracted from a June 30 balance that already
+ * reflected them. A legacy claim without `foundIn` keeps the old date.
+ *
+ *   (a) done, and stated by a filing dated on or before the position date:
+ *       already in that balance. An event; nothing is subtracted, no row moves.
+ *   (c) intended, or "completed" in the model's word while its own sentence
+ *       sets a date after the filing that states it: pending, "redemption
+ *       set for [date], awaiting confirmation", until a filing dated after
+ *       that date states it done.
+ *   otherwise current: done since the position date, and may move it
+ *   (rule (b) then limits a partial to its stated amount).
+ */
+export function classifyRedeemsClaims<C extends RedeemsClaimLike>(
+  debtMaturity: { debtScheduleSourceFiling?: { reportDate?: string | null } | null } | undefined,
+  newDebtIssuance: { redeems?: C[]; citations: { url: string; date: string }[] } | undefined
+): ClassifiedRedeems<C> {
+  const positionDate = debtMaturity?.debtScheduleSourceFiling?.reportDate ?? "";
+  const first = newDebtIssuance?.citations[0];
+  const out: ClassifiedRedeems<C> = { prior: [], current: [], pending: [] };
+  const iso = (d: string) => /^\d{4}-\d{2}-\d{2}$/.test(d);
+  for (const claim of (newDebtIssuance?.redeems ?? []).filter((c) => c.verified)) {
+    const knownBy = claim.foundIn?.filingDate || first?.date || "";
+    const citedUrl = claim.foundIn?.url || first?.url || "";
+    const later = iso(knownBy) ? eventDatesIn(claim.sourceLine ?? "").filter((d) => d > knownBy).sort() : [];
+    const setFor = later.length ? later[later.length - 1] : null;
+    if (claim.status !== "completed" || setFor) { out.pending.push({ claim, knownBy, citedUrl, setFor }); continue; }
+    if (iso(knownBy) && iso(positionDate) && knownBy <= positionDate) out.prior.push({ claim, knownBy, citedUrl });
+    else out.current.push({ claim, knownBy, citedUrl });
+  }
+  return out;
+}
+
 function redemptionClauseFor(row: DebtRowLike, redeemsText: string): string | null {
   const clauses = redeemsText.split(/\s+and\s+the\s+|\s*;\s*|\s+and\s+/i).filter((c) => c.trim().length > 0);
   const maturityToken = debtRowDateToken(row);
@@ -1615,14 +1724,27 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // opposite answers: UHS's August 8-K repays a revolver (completed,
   // verified) and names its 2026 notes in a ranking clause (no retirement at
   // all).
-  const allClaims = newDebtIssuance?.redeems ?? [];
-  const actionableClaims = allClaims.filter((c) => c.verified && c.status === "completed");
-  const statedIntentions = allClaims.filter((c) => c.verified && c.status === "intended");
+  // SESSION 27: rules (a)-(c), decided once (classifyRedeemsClaims).
+  const classified = classifyRedeemsClaims(debtMaturity, newDebtIssuance);
+  const actionableClaims = classified.current.map((x) => x.claim);
+  const statedIntentions = classified.pending;
+  const priorRetirements: PriorRetirement[] = classified.prior.map((x) => ({
+    instrument: x.claim.instrument,
+    amount: x.claim.amount,
+    knownBy: x.knownBy,
+    sourceLine: x.claim.sourceLine ?? x.claim.instrument,
+    citedUrl: x.citedUrl,
+    note: `stated as done by a filing dated ${x.knownBy}, on or before the position date, so it is already in that balance: an event, and nothing is subtracted again`,
+  }));
   if (newDebtIssuance?.fired && actionableClaims.length > 0) {
     const redeemsText = actionableClaims.map((c) => [c.instrument, c.sourceLine ?? ""].join(" ")).join(" ;; ");
     const retiredByEvidence = { evidence: actionableClaims.map((c) => c.sourceLine ?? c.instrument).join("; "), citedUrl: newDebtIssuance.citations[0]?.url ?? "" };
     rows = rows.map((row) => {
       if (row.status !== "live" || !redemptionRetiresRow(row, redeemsText)) return row;
+      // SESSION 27, RULE (b): a partial retirement never retires the whole
+      // issue. The row stays live here; applyPartialRetirements, once every
+      // row is assembled, states what was retired and what remains.
+      if (partialClaimFor(row, classified.current)) return row;
       // THE NOTE IS THE POSITION (found live, stage-2 review). An 8-K
       // describes an ACTION; the note states the RESULT, at the filing's own
       // period end. Where the two disagree, the note wins — the same rule
@@ -2049,6 +2171,10 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   rows = collapseSameFacilityRows(rows, debtMaturity);
 
   rows = rows.concat(facilityOnlyRows(rows, debtMaturity));
+  // Session 27, rule (b), over every row however it arrived (note, pricing
+  // 8-K, facility): a partial retirement since the position date states its
+  // amount and the remainder; the row stays live.
+  rows = applyPartialRetirements(rows, classified.current);
 
   // RULE 58 — every row, one pass, before anything sorts or renders.
   noteUnsupportedAmounts(rows);
@@ -2105,23 +2231,29 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // anywhere: corroborated COMPLETED status and a verified sourceLine.
   const eventIsPostAnchor =
     !!newDebtIssuance?.fired && isPostAnchorSource(newDebtIssuance.citations[0]?.url, newDebtIssuance.citations[0]?.date, anchorRef);
-  const confirmedRepayments = eventIsPostAnchor
-    ? actionableClaims.map((c) => ({
-        instrument: c.instrument,
-        amount: c.amount ? parseMoneyAmount(c.amount) : null,
-        date: newDebtIssuance?.citations[0]?.date ?? null,
-        sourceLine: c.sourceLine ?? c.instrument,
-        citedUrl: newDebtIssuance?.citations[0]?.url ?? "",
-      }))
-    : [];
+  // Session 27: each claim on its own document (rule (a) has already held
+  // back the ones inside the balance). A legacy claim without `foundIn`
+  // falls back to the trigger's first citation, as before.
+  const confirmedRepayments = !newDebtIssuance?.fired
+    ? []
+    : classified.current
+        .filter((x) => (x.claim.foundIn ? isPostAnchorSource(x.citedUrl, x.knownBy, anchorRef) : eventIsPostAnchor))
+        .map((x) => ({
+          instrument: x.claim.instrument,
+          amount: x.claim.amount ? parseMoneyAmount(x.claim.amount) : null,
+          date: x.knownBy || null,
+          sourceLine: x.claim.sourceLine ?? x.claim.instrument,
+          citedUrl: x.citedUrl,
+        }));
 
-  const intentions = statedIntentions.map((c) => ({
-    instrument: c.instrument,
-    amount: c.amount,
-    date: newDebtIssuance?.citations[0]?.date ?? null,
-    sourceLine: c.sourceLine ?? c.instrument,
-    citedUrl: newDebtIssuance?.citations[0]?.url ?? "",
-    postAnchor: eventIsPostAnchor,
+  const intentions = statedIntentions.map((x) => ({
+    instrument: x.claim.instrument,
+    amount: x.claim.amount,
+    date: x.knownBy || null,
+    sourceLine: x.claim.sourceLine ?? x.claim.instrument,
+    citedUrl: x.citedUrl,
+    postAnchor: x.claim.foundIn ? isPostAnchorSource(x.citedUrl, x.knownBy, anchorRef) : eventIsPostAnchor,
+    setFor: x.setFor,
   }));
 
   const tier2 = buildTier2({
@@ -2142,6 +2274,7 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     tier2,
     withinPeriodRepayments,
     statedIntentions: intentions,
+    priorRetirements,
     rowsOutsideSubtotal: rowsOutsideSubtotal(debtMaturity?.scheduleSequence),
     issuancesInsideAggregate,
     adjustments,

@@ -135,7 +135,7 @@ export function buildTier2(params: {
   maturedUnconfirmed: LadderRow[];
   confirmedRepayments: { instrument: string; amount: number | null; date: string | null; sourceLine: string; citedUrl: string }[];
   /** Intentions stated by a filing that post-dates the anchor. They subtract nothing — an intention is not a completion — and they render so a reader knows one exists. */
-  pendingIntentions?: { instrument: string; amount: string | null; date: string | null; sourceLine: string; citedUrl: string }[];
+  pendingIntentions?: { instrument: string; amount: string | null; date: string | null; sourceLine: string; citedUrl: string; setFor?: string | null }[];
   parseAmount: (raw: string) => number | null;
 }): Tier2 {
   const { anchor, anchorCapturedFace, postAnchorIssuances, maturedUnconfirmed, confirmedRepayments, parseAmount } = params;
@@ -191,7 +191,10 @@ export function buildTier2(params: {
       instrument: i.instrument,
       sourceLine: i.sourceLine,
       citedUrl: i.citedUrl,
-      note: `PENDING — the filing states an INTENTION to repay${i.amount ? ` ${i.amount}` : ""}, not a repayment. Nothing is subtracted; it moves only when a filing says it happened${i.amount ? "" : `. And amount not stated in the confirming filing, so there is no figure to move even once it is confirmed`}`,
+      // Session 27, rule (c): a redemption with a set date says so, and stays pending until a filing after that date states it done.
+      note: i.setFor
+        ? `PENDING — redemption set for ${i.setFor}, awaiting confirmation${i.amount ? ` (${i.amount})` : ""}. Nothing is subtracted until a filing dated after ${i.setFor} states it done${i.amount ? "" : `. And amount not stated in the confirming filing`}`
+        : `PENDING — the filing states an INTENTION to repay${i.amount ? ` ${i.amount}` : ""}, not a repayment. Nothing is subtracted; it moves only when a filing says it happened${i.amount ? "" : `. And amount not stated in the confirming filing, so there is no figure to move even once it is confirmed`}`,
     });
   }
 

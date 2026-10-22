@@ -47,7 +47,7 @@
  */
 import type { FlashCard } from "./buildEvents";
 import type { CompanyPosition, LadderRow } from "./position";
-import { parseMoneyAmount } from "./position";
+import { parseMoneyAmount, classifyRedeemsClaims } from "./position";
 import type { TriggerResult } from "../agent";
 import { monthsBetween, isValidIsoDate, monthsLabel } from "./eventTiming";
 import { extractFactTokens } from "../agent/factTokens";
@@ -203,7 +203,10 @@ function refiPattern(
   asOf: Date
 ): DerivedLine {
   const label = "Refinancing pattern";
-  const claims = (newDebtIssuance?.redeems ?? []).filter((c) => c.verified && c.status === "completed");
+  // Session 27: only a retirement done SINCE the position date is this
+  // issuance's pattern; one already in the balance (rule (a)) or still
+  // pending (rule (c)) is not (classifyRedeemsClaims, shared with the position).
+  const claims = classifyRedeemsClaims({ debtScheduleSourceFiling: position.baseFiling }, newDebtIssuance).current.map((x) => x.claim);
 
   if (claims.length === 0) {
     // SESSION 22, STAGE 5 — A RETIREMENT STATED IN A USE OF PROCEEDS IS STILL

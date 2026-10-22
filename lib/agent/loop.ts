@@ -557,6 +557,13 @@ export interface VerifiedProseInstrument extends ProseInstrumentRow {
 /** A redemption claim after both gates: its status corrected by corroboration, and whether its sourceLine was found. */
 export interface VerifiedRedeemsClaim extends RedeemsClaim {
   verified: boolean;
+  /**
+   * Session 27: the fetched filing whose text states this claim's sentence,
+   * and that filing's date. A claim's date is its own document's, never the
+   * trigger's first citation: a redemption a 2025 10-K describes is not an
+   * event of the 2026 8-K the issuance cites first (position.ts, rule (a)).
+   */
+  foundIn?: { url: string; filingDate: string };
 }
 
 /**
@@ -1603,7 +1610,8 @@ async function runAgentLoopInner(
           `  redemption for ${label} is stated as ${JSON.stringify(check.status)} rather than completed — "${claim.instrument}" stays on the ladder; an intent is not a retirement`
         );
       }
-      return { ...claim, status: check.status, verified };
+      const foundIn = verified && hit?.outcome === "present" ? { url: hit.url, filingDate: citationLookup.get(hit.url)?.date ?? "" } : undefined;
+      return { ...claim, status: check.status, verified, ...(foundIn ? { foundIn } : {}) };
     });
     if (verifiedRedeems.length > 1) {
       log(
@@ -2747,7 +2755,10 @@ function finalize(
     baseRowsExtracted: rowAccounting.baseRowsExtracted,
     columnReadFailure,
     scheduleCompleteness,
-    redeems: normalizeRedeems(v.redeems).map((c, i) => ({ ...c, verified: (v.redeems as VerifiedRedeemsClaim[])[i]?.verified ?? false })),
+    redeems: normalizeRedeems(v.redeems).map((c, i) => {
+      const vc = (v.redeems as VerifiedRedeemsClaim[])[i];
+      return { ...c, verified: vc?.verified ?? false, ...(vc?.foundIn ? { foundIn: vc.foundIn } : {}) };
+    }),
     proceedsUses: trigger.id === "new-debt-issuance" ? (v.proceedsUses ?? []) : [],
     issuedTranches: debtFields.issuedTranches,
     eventInstances: debtFields.eventInstances,
