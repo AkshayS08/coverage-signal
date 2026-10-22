@@ -7194,3 +7194,34 @@ the two keys the replay could not reproduce); the read window includes
 Item 7.01/8.01 8-Ks, a selection question for Akshay; the blob client
 retries API calls up to 10 times (about 17 minutes), capped at two only
 for the answer-key HEAD.
+
+### Session 27, Stage 1 follow-up: the dig, F2, F3, the release checklist (Oct 22, 2026)
+
+Full account: sessions/27/stage1_checkpoint1b.md.
+
+**The dig, under the read-set rule (v33).** What the model may ask to read
+next is decided from the filing list alone, by the read set's helpers: the
+latest 10-K, the 10-Qs since it, the trigger-item 8-Ks since it. The list is
+in the key and in the prompt; the loop opens only a listed filing and
+records what it opens, with its content hash. At v31 the dig was asked five
+times (DaVita's signed answer three times, an earlier Cigna answer twice),
+every time for a filing already excerpted, so it opened nothing and billed
+nothing. Checkpoint 1 said it fired on none of the six; that was a probe
+reading a re-taste copy, corrected.
+
+**F2 ruling recorded (BRD 4.0a):** 8-K Items 7.01 and 8.01 stay in the read
+set.
+
+**F3: a hang is a failed read.** Every read is the read and at most two
+retries, each attempt cut off at 60 seconds; blob reads turn the client's
+own ten retries off. Before, a read that never answered held the build
+forever (0 of 30 hang cases stopped inside 30 seconds); after, 30 of 30
+stop with their named error in three attempts.
+
+**RULE: no push without the release checklist.** `npm run release` runs
+preflight, goldenThroughLoop, the offline suite and failClosed at $0, then
+pushes and checks /api/health. A pre-push hook refuses any commit it did
+not clear. The offline suite was not run before the Oct 21 release, which
+shipped a failing printedHeadings test (fixed in f10862a by choosing
+snapshots by recorded source) and DaVita's acceptance 5.7 failures, which
+are still open and now block the next release until ruled on.

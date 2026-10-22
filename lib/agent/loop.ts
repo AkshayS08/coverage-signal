@@ -967,13 +967,12 @@ async function runAgentLoopInner(
   await searchNews(companyName);
 
   // Session 14: the answer cache. A filing's content never changes once
-  // filed, so the fingerprint of "which filings exist for this company"
-  // (corpusFingerprint, over the FULL catalog — see its doc comment) is a
-  // stable key for "what Haiku was actually asked." A hit means Haiku is
-  // never re-asked; a miss (new filing entered the catalog, or this
-  // company/corpus has never been seen) is exactly one Haiku call, same as
-  // before this session — this call was already batched over the whole
-  // corpus, never split per filing.
+  // filed, so a fingerprint of what Haiku was asked is a stable key for its
+  // answer. Since Session 27 that fingerprint is the READ SET's
+  // (lib/cache/readSet.ts: the documents read, their content and excerpts,
+  // the dig's candidates, both versions), not the whole catalog's, so a
+  // filing the extraction never reads cannot orphan the answer. A hit means
+  // Haiku is never re-asked; a miss is exactly one Haiku call.
   // CACHE_BUST is a MEASUREMENT lever, inert unless explicitly set. It exists
   // so identical-input runs can be forced to actually re-ask the model —
   // the only way to measure the extraction variance floor, i.e. how much

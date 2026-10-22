@@ -31,15 +31,20 @@ import { writeFileSync } from "node:fs";
 import { runAgentLoop } from "../agent";
 import { checkFree, spendTracker } from "./freeRun";
 
-/** Per name, from the ledger: the last v31 extraction (Haiku base + Sonnet proceeds-use), Sept 24-30. */
-export const DECLARED: { company: string; usd: number; retasteExtra: number }[] = [
-  { company: "TENET HEALTHCARE CORP", usd: 0.2246, retasteExtra: 0 },
-  { company: "Encompass Health Corp", usd: 0.1949, retasteExtra: 0 },
-  { company: "DAVITA INC.", usd: 0.1923, retasteExtra: 0 },
-  { company: "COMMUNITY HEALTH SYSTEMS INC", usd: 0.1428, retasteExtra: 0 },
-  { company: "MOLINA HEALTHCARE, INC.", usd: 0.2063, retasteExtra: 0 },
+/**
+ * Per name, from the ledger: the last v31 extraction (Haiku base + Sonnet
+ * proceeds-use), Sept 24-30, at v33. `dig` is the most the dig can add: only
+ * CHS has a candidate not excerpted (an 8-K of ~2,300 tokens), so at most
+ * MAX_DIG_STEPS = 5 one-trigger Haiku calls of ~9k tokens in, ~$0.02 each.
+ */
+export const DECLARED: { company: string; usd: number; dig: number; retasteExtra: number }[] = [
+  { company: "TENET HEALTHCARE CORP", usd: 0.2246, dig: 0, retasteExtra: 0 },
+  { company: "Encompass Health Corp", usd: 0.1949, dig: 0, retasteExtra: 0 },
+  { company: "DAVITA INC.", usd: 0.1923, dig: 0, retasteExtra: 0 },
+  { company: "COMMUNITY HEALTH SYSTEMS INC", usd: 0.1428, dig: 0.1, retasteExtra: 0 },
+  { company: "MOLINA HEALTHCARE, INC.", usd: 0.2063, dig: 0, retasteExtra: 0 },
   // A re-taste busts the referenced-note transcription too ($0.0188 at rn-v1, Sept 29).
-  { company: "Cigna Group", usd: 0.2001, retasteExtra: 0.0188 },
+  { company: "Cigna Group", usd: 0.2001, dig: 0, retasteExtra: 0.0188 },
 ];
 const PER_NAME_CEILING = 1.5;
 const BUSTS = ["s27-retaste-1", "s27-retaste-2"];
@@ -50,7 +55,7 @@ const BUSTS = ["s27-retaste-1", "s27-retaste-2"];
   if (process.env.S27_APPROVED !== phase) { console.error(`REFUSING: this phase bills. Set S27_APPROVED=${phase} only after Akshay's written approval.`); process.exit(1); }
   if (!process.env.ANTHROPIC_API_KEY) { console.error("REFUSING: no API key, so nothing could be extracted; a run without one only proves the gate."); process.exit(1); }
 
-  const runs = DECLARED.flatMap((d) => (phase === "canonical" ? [{ ...d, bust: null as string | null, ceiling: d.usd }] : BUSTS.map((b) => ({ ...d, bust: b, ceiling: d.usd + d.retasteExtra }))));
+  const runs = DECLARED.flatMap((d) => (phase === "canonical" ? [{ ...d, bust: null as string | null, ceiling: d.usd + d.dig }] : BUSTS.map((b) => ({ ...d, bust: b, ceiling: d.usd + d.dig + d.retasteExtra }))));
   const declaredTotal = runs.reduce((a, r) => a + r.ceiling, 0);
 
   // BEFORE: the forced misses are exactly the declared runs.

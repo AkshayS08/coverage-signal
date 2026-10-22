@@ -122,12 +122,16 @@ Session 27's measurement showed four of the eleven read-set key moves in 90 days
 |---|---|---|---|
 | Document (filing list) | CIK + form type | 24h | Companies file weekly. A stale list hid a real card (Concentra's 98% QoQ cash build) for weeks. |
 | Document (filing text) | filing URL | permanent | Content at a URL never changes. |
-| Answer | company + corpus fingerprint + promptVersion | permanent | A filing's content never changes, so the answer about it never should. This is the determinism fix. |
+| Answer | company + **read set** + promptVersion (Session 27) | permanent | A filing's content never changes, so the answer about it never should. This is the determinism fix. The read set is what the extraction reads and nothing else: each read document's content and excerpt hashes, the XBRL bound, the dig's candidate list, the prompt and locator versions (`lib/cache/readSet.ts`). Until Session 27 it was the whole EDGAR catalog, so a filing never read (an officer change, a Form 4) orphaned every answer. |
 | Wording | hash of the gated-fact context Sonnet sees | permanent | Same event, same card sentence, every run. Never caches a failure. |
 
 `promptVersion` in every key is the escape hatch. A cached wrong answer is otherwise permanently wrong. Decision pending Session 17: split into an extraction version and a wording version, so a narration change does not invalidate the facts.
 
 Missing blob token or any read/write failure throws. No disk, tmp, or in-memory fallback exists. Silent degradation is the failure mode that hid the Session 13 bug for three sessions.
+
+**A failed read is an error, never a fallback (Session 27).** Every read the build depends on (blob, EDGAR, XBRL) is the read and at most two retries, each attempt cut off after 60 seconds, and then a named `ReadFailedError`. It never switches source, is never a cache miss, and never leads to a model call. The dig may open only a filing on its candidate list (the latest 10-K, the 10-Qs since it, the trigger-item 8-Ks since it), and what it opens is recorded beside the read set.
+
+**Release (Session 27).** `npm run release` is the only push path: preflight, goldenThroughLoop, the offline suite and failClosed, all at $0, then the push and a check that `/api/health` serves the pushed SHA. A pre-push hook refuses any commit the checklist did not clear.
 
 ---
 
