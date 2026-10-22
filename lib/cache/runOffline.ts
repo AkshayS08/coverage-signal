@@ -25,6 +25,7 @@ import { spawnSync } from "node:child_process";
 const NOT_OFFLINE: Record<string, string> = {
   "lib/cache/acceptance.test.ts": "determinism run — reads the live blob cache and replays both books",
   "lib/cache/liveAcceptance.test.ts": "hits the deployed site",
+  "lib/cache/failClosed.test.ts": "fails each read the build depends on at the network, under the real blob and EDGAR paths; free, not offline. A required release check of its own (lib/cache/release.ts)",
   // THE PRIMARY GOLDEN VERIFICATION, and it cannot be offline BY DESIGN.
   //
   // `golden.test.ts` replays the CompanyResult stored inside each golden file,

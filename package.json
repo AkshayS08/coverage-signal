@@ -21,6 +21,7 @@
     "test:determinism": "tsx lib/cache/determinism.test.ts",
     "test:live-markers": "tsx lib/cache/liveMarkerScan.test.ts",
     "preflight": "tsx lib/cache/preflight.ts",
+    "release": "tsx lib/cache/release.ts",
     "test:report": "tsx lib/events/extractionReport.test.ts",
     "test:offline": "tsx lib/cache/runOffline.ts",
     "test:pass-harness": "tsx lib/cache/passHarness.test.ts",

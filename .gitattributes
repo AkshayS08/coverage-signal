@@ -1,0 +1,2 @@
+# The pre-push hook runs under sh; CRLF would break it.
+.githooks/* text eol=lf
