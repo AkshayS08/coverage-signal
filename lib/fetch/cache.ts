@@ -1,5 +1,5 @@
 import { get, put } from "@vercel/blob";
-import { ReadFailedError, retryRead } from "./readError";
+import { ReadFailedError, blobRead } from "./readError";
 
 /**
  * Generic Blob-backed key/value cache. Used by the document cache (this
@@ -76,8 +76,8 @@ export async function readCache<T>(
   // then a named error: never a miss, so never a re-fetch or a model call.
   let envelope: CacheEnvelope<T> | null;
   try {
-    envelope = await retryRead(async () => {
-      const result = await get(relPath, { access: "public", token });
+    envelope = await blobRead(async (abortSignal) => {
+      const result = await get(relPath, { access: "public", token, abortSignal });
       if (!result) return null;
       return JSON.parse(await new Response(result.stream).text()) as CacheEnvelope<T>;
     });

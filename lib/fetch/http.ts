@@ -26,13 +26,14 @@ function throttle(): Promise<void> {
 /** Fetches JSON from a SEC EDGAR endpoint, throttled and with a real User-Agent. */
 export async function secFetchJson<T>(url: string): Promise<T> {
   try {
-    return await retryRead(async () => {
+    return await retryRead(async (signal) => {
       await throttle();
       const res = await fetch(url, {
         headers: {
           "User-Agent": SEC_USER_AGENT,
           Accept: "application/json",
         },
+        signal,
       });
       if (!res.ok) {
         throw new Error(`SEC request failed (${res.status} ${res.statusText}): ${url}`);
@@ -47,12 +48,13 @@ export async function secFetchJson<T>(url: string): Promise<T> {
 /** Fetches raw text (HTML/plain) from a SEC EDGAR document URL, throttled and with a real User-Agent. */
 export async function secFetchText(url: string): Promise<string> {
   try {
-    return await retryRead(async () => {
+    return await retryRead(async (signal) => {
       await throttle();
       const res = await fetch(url, {
         headers: {
           "User-Agent": SEC_USER_AGENT,
         },
+        signal,
       });
       if (!res.ok) {
         throw new Error(`SEC request failed (${res.status} ${res.statusText}): ${url}`);

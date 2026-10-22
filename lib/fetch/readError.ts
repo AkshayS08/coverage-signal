@@ -31,17 +31,61 @@ export class ReadFailedError extends Error {
 
 export const isReadFailed = (e: unknown): e is ReadFailedError => e instanceof ReadFailedError;
 
-/** The read and at most two retries of the SAME read, with a short pause between. */
+/**
+ * The read and at most two retries of the SAME read, with a short pause
+ * between. A read that never answers is a failed read too: each attempt is
+ * cut off after `readTimeoutMs()` (its AbortSignal fires and the attempt is
+ * abandoned even if the transport ignores the signal), so a hang costs at
+ * most three timeouts and then names its source, rather than holding the
+ * build forever.
+ */
 export const READ_RETRIES = 2;
-export async function retryRead<T>(read: () => Promise<T>, retries = READ_RETRIES): Promise<T> {
+const DEFAULT_READ_TIMEOUT_MS = 60_000;
+/** Per attempt. 60s by default (the largest read, a filer's company facts, is ~10MB); READ_TIMEOUT_MS overrides it. */
+export function readTimeoutMs(): number {
+  const n = Number(process.env.READ_TIMEOUT_MS);
+  return Number.isFinite(n) && n > 0 ? n : DEFAULT_READ_TIMEOUT_MS;
+}
+export async function retryRead<T>(read: (signal: AbortSignal) => Promise<T>, retries = READ_RETRIES): Promise<T> {
   let last: unknown;
   for (let n = 0; n <= retries; n++) {
+    const ms = readTimeoutMs();
+    const ac = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timedOut = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => {
+        const e = new Error(`no answer within ${ms / 1000}s`);
+        ac.abort(e);
+        reject(e);
+      }, ms);
+    });
     try {
-      return await read();
+      return await Promise.race([read(ac.signal), timedOut]);
     } catch (e) {
       last = e;
-      if (n < retries) await new Promise((r) => setTimeout(r, 400 * (n + 1)));
+    } finally {
+      clearTimeout(timer);
     }
+    if (n < retries) await new Promise((r) => setTimeout(r, 400 * (n + 1)));
   }
   throw last;
+}
+
+/**
+ * A blob read the build depends on. The blob client retries its API calls
+ * on its own (VERCEL_BLOB_RETRIES, 10 by default: about 17 minutes of backoff
+ * before a failure surfaces), which would multiply with ours. Every blob read
+ * is therefore the read and at most two retries, all of them here: the
+ * client's own are set to zero for the call. (Only API calls such as `head`
+ * read that setting; `get` fetches the blob directly and never retried.)
+ */
+export async function blobRead<T>(read: (signal: AbortSignal) => Promise<T>): Promise<T> {
+  const prev = process.env.VERCEL_BLOB_RETRIES;
+  process.env.VERCEL_BLOB_RETRIES = "0";
+  try {
+    return await retryRead(read);
+  } finally {
+    if (prev === undefined) delete process.env.VERCEL_BLOB_RETRIES;
+    else process.env.VERCEL_BLOB_RETRIES = prev;
+  }
 }

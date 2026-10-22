@@ -30,7 +30,7 @@
  * accumulates per-run and cannot report a total it did not observe.
  */
 import { head, BlobNotFoundError } from "@vercel/blob";
-import { ReadFailedError, READ_RETRIES } from "../fetch/readError";
+import { ReadFailedError, blobRead } from "../fetch/readError";
 import { baseAnswerKey } from "./answerCache";
 import { resolveReadSet } from "./readSet";
 import { currentCompanySpend } from "../agent/costMeter";
@@ -71,21 +71,21 @@ export async function checkFree(company: string, bust?: string | null): Promise<
  * HEAD is retried at most twice, then it is a named error.
  */
 export async function answerExists(key: string): Promise<boolean> {
-  // The blob client retries an API call on its own, up to 10 times by default
-  // (VERCEL_BLOB_RETRIES: about 17 minutes of backoff before a failure
-  // surfaces). This read is the HEAD and at most two retries, so the client's
-  // retries are capped at READ_RETRIES for this call and none are added here.
-  const prev = process.env.VERCEL_BLOB_RETRIES;
-  process.env.VERCEL_BLOB_RETRIES = String(READ_RETRIES);
+  // Like every blob read the build depends on (blobRead): the HEAD and at most
+  // two retries, each cut off by the read timeout, with the client's own
+  // retries off.
   try {
-    await head(key, { token: process.env.BLOB_READ_WRITE_TOKEN });
-    return true;
-  } catch (e) {
-    if (e instanceof BlobNotFoundError) return false;
-    throw new ReadFailedError("blob", `the answer-key HEAD of "${key}"`, e);
-  } finally {
-    if (prev === undefined) delete process.env.VERCEL_BLOB_RETRIES;
-    else process.env.VERCEL_BLOB_RETRIES = prev;
+    return await blobRead(async (abortSignal) => {
+      try {
+        await head(key, { token: process.env.BLOB_READ_WRITE_TOKEN, abortSignal });
+        return true;
+      } catch (e) {
+        if (e instanceof BlobNotFoundError) return false;
+        throw e;
+      }
+    });
+  } catch (err) {
+    throw new ReadFailedError("blob", `the answer-key HEAD of "${key}"`, err);
   }
 }
 
