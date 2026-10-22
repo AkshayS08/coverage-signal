@@ -376,8 +376,27 @@ const T7_SCHEDULE: Test = {
         else NOT_COMPARABLE.push(`5.7 ${card.company.split(/\s/)[0]} ${y}: not comparable at face — ${named.replace(/^.*Not comparable at face, /, "")}`);
         continue;
       }
-      const got = b ? blockSum(b) : 0;
-      if (Math.abs(got - want) > 0.05e6 * (f.table.scale === "thousand" ? 10 : 1)) bad.push(`${y}: card ${got / 1e6}MM, schedule ${want / 1e6}MM`);
+      // Oct 22, 2026 (the test follows the product): where the named instruments
+      // maturing in a year exceed the filer's schedule for it, the card lists
+      // them at face and closes the year with "The filer's schedule shows $S
+      // for Y: $D less than the lines above." That sentence is a statement
+      // ABOUT the lines, not a line; summing its first figure as another
+      // amount is what produced DaVita's $9,344.3MM (2,750 + 1,975 + 65 +
+      // 4,554.3) and $7,622.1MM (1,500 + 2,357.9 + 3,764.2), which no card
+      // surface ever showed. The year ties when the stated schedule figure is
+      // the filer's, and the lines less the stated difference are too.
+      const tol = 0.05e6 * (f.table.scale === "thousand" ? 10 : 1);
+      const isRecon = (l: Line) => /^The filer's schedule shows /.test(text(l)) && / less than the lines above\./.test(text(l));
+      const recon = b ? b.lines.find(isRecon) : undefined;
+      const got = b ? blockSum({ lines: b.lines.filter((l) => !isRecon(l)) }) : 0;
+      if (recon) {
+        const figs = recon.filter((x) => x.k === "computed" || x.k === "figure");
+        const stated = figs[0] ? shownUsd(figs[0].t) : null, diff = figs[1] ? shownUsd(figs[1].t) : null;
+        if (stated === null || Math.abs(stated - want) > tol) bad.push(`${y}: the card states the schedule as ${figs[0]?.t ?? "nothing"}, the schedule says ${want / 1e6}MM`);
+        if (diff === null || Math.abs(got - diff - want) > tol) bad.push(`${y}: lines ${got / 1e6}MM less the stated ${figs[1]?.t ?? "nothing"} is ${diff === null ? "—" : (got - diff) / 1e6}MM, schedule ${want / 1e6}MM`);
+        continue;
+      }
+      if (Math.abs(got - want) > tol) bad.push(`${y}: card ${got / 1e6}MM, schedule ${want / 1e6}MM`);
       if (b && Math.abs(got - want) <= 0.5e6 && want - b.lines.filter((l) => !/other scheduled principal/i.test(text(l))).reduce((s, l) => { const a = amountSeg(l); return s + ((a && shownUsd(a.t)) ?? 0); }, 0) > 0.5e6 && !b.lines.some((l) => /other scheduled principal/i.test(text(l)))) bad.push(`${y}: remainder not shown as "other scheduled principal"`);
     }
     return bad;
