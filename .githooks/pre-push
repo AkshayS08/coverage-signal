@@ -1,0 +1,23 @@
+#!/bin/sh
+# Refuses a push to main of any commit the release checklist did not clear.
+# The checklist is `npm run release` (lib/cache/release.ts): preflight,
+# goldenThroughLoop, the offline suite and failClosed, all at $0. It records
+# the commit it cleared in .git/release-checked. The one commit allowed on top
+# of a cleared one is the release's own ledger commit, which may touch only
+# baselines/cost-log.jsonl.
+checked_file="$(git rev-parse --git-dir)/release-checked"
+checked=""
+[ -f "$checked_file" ] && checked=$(head -n 1 "$checked_file")
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$remote_ref" = "refs/heads/main" ] || continue
+  case "$local_sha" in 0000000000000000000000000000000000000000) continue ;; esac
+  [ -n "$checked" ] && [ "$local_sha" = "$checked" ] && continue
+  if [ -n "$checked" ] && [ "$(git rev-parse "$local_sha^" 2>/dev/null)" = "$checked" ] \
+     && [ "$(git diff --name-only "$checked" "$local_sha")" = "baselines/cost-log.jsonl" ]; then
+    continue
+  fi
+  echo "pre-push: refusing to push $local_sha to main: the release checklist has not cleared it." >&2
+  echo "pre-push: run 'npm run release' (preflight, goldenThroughLoop, offline suite, failClosed)." >&2
+  exit 1
+done
+exit 0

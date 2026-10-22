@@ -13,6 +13,12 @@
  *     line, under its own company, so a run that billed before a later read
  *     failed is never off the books.
  *
+ * HANGS (H1-H5): a read that never answers is a failed read too. Each is cut
+ * off by the per-attempt timeout (READ_TIMEOUT_MS, set short here), retried
+ * at most twice, and then stops the build with its named error, well inside
+ * the test's own deadline. Without a timeout the build waits forever, which
+ * the deadline reports as a hang.
+ *
  * Negative control: the same assertion over a run with NO injected failure
  * must fail (the run does not stop with a ReadFailedError), so the check
  * cannot pass vacuously. The before-fix run of this file is the second
@@ -31,7 +37,10 @@ import { runAgentLoop } from "../agent";
 import { checkFree } from "./freeRun";
 import { Messages } from "@anthropic-ai/sdk/resources/messages";
 
-type Fault = "error" | "404";
+type Fault = "error" | "404" | "hang";
+// Short enough to keep the suite quick; production's default is 60s. Set before any read runs.
+process.env.READ_TIMEOUT_MS = "1500";
+const DEADLINE_MS = 30_000;
 type Rule = (origin: string, path: string) => Fault | null;
 const stats = { model: 0, attempts: new Map<string, number>(), requests: [] as string[] };
 let rule: Rule = () => null;
@@ -50,6 +59,7 @@ class FaultInjector extends Agent {
     if (f) {
       const k = `${origin}${path.split("?")[0]}`;
       stats.attempts.set(k, (stats.attempts.get(k) ?? 0) + 1);
+      if (f === "hang") return true; // never answers
       queueMicrotask(() => {
         if (f === "error") return handler.onError(new Error("injected read failure"));
         handler.onConnect?.(() => {});
@@ -78,6 +88,11 @@ const CASES: Case[] = [
   { id: "R4", name: "xbrl: company facts fail in the cache and at EDGAR", source: "xbrl", run: "loop", rule: () => either(onPublic(/^\/edgar\/companyfacts\//, "error"), onSec(/^\/api\/xbrl\//)) },
   { id: "R5", name: "xbrl: the cached company-facts read fails while EDGAR is up (no source switch)", source: "xbrl", run: "loop", rule: () => onPublic(/^\/edgar\/companyfacts\//, "error"), noRequest: /data\.sec\.gov\/api\/xbrl\// },
   { id: "R6", name: "blob: the answer-key HEAD fails (preflight, checkFree)", source: "blob", run: "checkFree", rule: (cik) => (o, p) => (/vercel\.com$/.test(o) && p.startsWith("/api/blob") && p.includes(encodeURIComponent(`answer/${cik}/`)) ? "error" : null) },
+  { id: "H1", name: "hang: a read filing's cached text never answers", source: "blob", run: "loop", rule: () => onPublic(/^\/edgar\/filing-text-v2\//, "hang") },
+  { id: "H2", name: "hang: the cached answer read never answers", source: "blob", run: "loop", rule: (cik) => onPublic(new RegExp(`^/answer/${cik}/base`), "hang") },
+  { id: "H3", name: "hang: the answer-key HEAD never answers (preflight, checkFree)", source: "blob", run: "checkFree", rule: (cik) => (o, p) => (/vercel\.com$/.test(o) && p.startsWith("/api/blob") && p.includes(encodeURIComponent(`answer/${cik}/`)) ? "hang" : null) },
+  { id: "H4", name: "hang: the filing list is not cached and EDGAR never answers", source: "edgar", run: "loop", rule: () => (o, p) => (PUBLIC.test(o) && /^\/edgar\/(submissions|filings)\//.test(p) ? "404" : /data\.sec\.gov/.test(o) && /^\/submissions\//.test(p) ? "hang" : null) },
+  { id: "H5", name: "hang: the cached company-facts read never answers", source: "xbrl", run: "loop", rule: () => onPublic(/^\/edgar\/companyfacts\//, "hang") },
 ];
 
 interface Outcome { threw: boolean; name: string; source?: string; message: string; model: number; maxAttempts: number; forbidden: number; ledgerLines: number; ledgerLabel: string }
@@ -91,8 +106,11 @@ async function attempt(company: string, cik: string, c: Case | null): Promise<Ou
   const warn = console.warn; console.warn = () => {};
   let out: Outcome;
   try {
-    if (!c || c.run === "loop") await runAgentLoop(company); else await checkFree(company);
-    out = { threw: false, name: "", message: "completed", model: 0, maxAttempts: 0, forbidden: 0, ledgerLines: 0, ledgerLabel: "" };
+    const run = !c || c.run === "loop" ? runAgentLoop(company) : checkFree(company);
+    let timer: NodeJS.Timeout | undefined;
+    const hung = await Promise.race([run.then(() => false), new Promise<boolean>((r) => { timer = setTimeout(() => r(true), DEADLINE_MS); })]);
+    clearTimeout(timer);
+    out = { threw: false, name: "", message: hung ? `hung: still waiting after ${DEADLINE_MS / 1000}s` : "completed", model: 0, maxAttempts: 0, forbidden: 0, ledgerLines: 0, ledgerLabel: "" };
   } catch (e: any) {
     const cause = e?.cause ? ` [cause: ${e.cause?.message ?? e.cause}${e.cause?.cause ? ` / ${e.cause.cause?.code ?? e.cause.cause?.message}` : ""}]` : "";
     out = { threw: true, name: e?.name ?? "", source: e?.source, message: String(e?.message ?? e).slice(0, 160) + cause, model: 0, maxAttempts: 0, forbidden: 0, ledgerLines: 0, ledgerLabel: "" };
@@ -108,7 +126,7 @@ async function attempt(company: string, cik: string, c: Case | null): Promise<Ou
 const verdict = (c: Case, o: Outcome, company = ""): string[] => {
   const f: string[] = [];
   if (c.run === "loop" && (o.ledgerLines !== 1 || o.ledgerLabel !== company)) f.push(`ledger: ${o.ledgerLines} line(s) written${o.ledgerLabel ? ` under "${o.ledgerLabel}"` : ""}, expected exactly 1 under "${company}" (Rule 68 on the throwing path)`);
-  if (!o.threw) f.push("the build did not stop");
+  if (!o.threw) f.push(o.message.startsWith("hung") ? `the build ${o.message}` : "the build did not stop");
   else if (o.name !== "ReadFailedError") f.push(`stopped with ${o.name || "an unnamed error"} ("${o.message}"), not a ReadFailedError`);
   else if (o.source !== c.source) f.push(`ReadFailedError names source ${o.source}, expected ${c.source}`);
   if (o.model > 0) f.push(`${o.model} model call(s) attempted`);
