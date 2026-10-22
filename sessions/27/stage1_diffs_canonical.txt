@@ -1,0 +1,32 @@
+
+TENET HEALTHCARE CORP ($0.2326): POSITION CHANGED — a finding to explain before any signing
+    rows["6.125 % due 2028"].status: expected "live", got "retired"
+    tier2.count: expected 3, got 5
+    tier2[1].kind: expected "pending", got "repayment"
+    tier2[1].effect: expected —, got -1500000000
+    tier2[1].nets: expected "unconfirmed", got —
+    tier2[1].instrument: expected "5.125% senior secured first lien notes due November 2027", got "6.250% senior secured second lien notes due February 2027"
+    tier2[2].kind: expected "pending", got "repayment"
+    tier2[2].effect: expected —, got -750000000
+    tier2[2].nets: expected "unconfirmed", got —
+    cards[0].derived["months-to-maturity"].inputs: expected 5.125 % due 2027 $ 1,500   $ 1,500, got Senior secured first lien notes:     5.125 % due 2027 1,500
+    cards[0].derived["refi-pattern"].text: expected "No verified, corroborated-completed redemption in this corpus, so no refinancing pattern is computed. An unverified or merely intended retirement is not a pattern.", got "Last refinanced 0 months ago — an issuance dated 2026-09-22 whose proceeds retired 6.250% senior secured second lien notes due February 2027. The retired tranche carries no structured maturity in this corpus, so how far ahead of maturity the refinancing came is not computed."
+    cards[0].derived["refi-pattern"].computed: expected —, got "0 months"
+    cards[0].derived["refi-pattern"].inputs: expected , got We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to finance the redemption of all $ 1.500 billion aggregate principal amount outstanding of our 6.250 % senior secured second lien notes due February 2027 (the "February 2027 Senior Secured Second Lien Notes") and the redemption of $ 750 million aggregate principal amount of the then $ 2.500 billion aggregate principal amount outstanding of our 6.125 % senior notes due October 2028 (the "October 2028 Senior Unsecured Notes"), in each case in advance of their maturity dates.,On September 22, 2026, Tenet Healthcare Corporation (the "Company") issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the "Notes").
+    cards[0].derived["refi-pattern"].fieldInputs: expected , got [object Object]
+    cards[0].derived["next-tranche"].inputs: expected 5.125 % due 2027 $ 1,500   $ 1,500,4.625 % due 2028 $ 600   $ 600, got Senior secured first lien notes:     5.125 % due 2027 1,500,4.625 % due 2028 600
+
+Encompass Health Corp ($0.1866): ZERO POSITION CHANGE against the signed v31 golden
+
+DAVITA INC. ($0.1855): ZERO POSITION CHANGE against the signed v31 golden
+
+COMMUNITY HEALTH SYSTEMS INC ($0.1238): POSITION CHANGED — a finding to explain before any signing
+    rows["ABL Facility"].provenance: expected "note", got "note-narrative"
+
+MOLINA HEALTHCARE, INC. ($0.1512): ZERO POSITION CHANGE against the signed v31 golden
+
+Cigna Group ($0.1910): POSITION CHANGED — a finding to explain before any signing
+    not applicable: the filing set moved: 1 document(s) added, 0 removed. This golden file pins an answer to a corpus that is no longer the one on EDGAR; it must be re-signed against the new one, not compared against it.
+    position identity: signed on ny20054607x5_8k.htm, ci-20260630.htm; now ny20054607x5_8k.htm, ci-20251231.htm, ci-20260630.htm
+
+3 of 6 with zero position change.
