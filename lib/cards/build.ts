@@ -19,7 +19,7 @@ import type { CompanyResult } from "../agent";
 import type { FilingEntry } from "../fetch/filings";
 import type { DateGranularity } from "../agent/claude";
 import type { VerifiedFacility } from "../agent/verifyFacility";
-import { assemblePosition, amountProvenanceFor, facilityMaturityAtItsSentence, matchFacility, parseMoneyAmount, type LadderRow } from "../events/position";
+import { assemblePosition, amountProvenanceFor, classifyRedeemsClaims, facilityMaturityAtItsSentence, matchFacility, parseMoneyAmount, type ClassifiedRedeems, type LadderRow } from "../events/position";
 import { computeCoverage } from "../events/coverage";
 import { rolledCoverageFor } from "../events/rolledCoverage";
 import { borrowingBaseOf } from "../agent/borrowingBase";
@@ -105,6 +105,28 @@ interface Item {
   note?: string;
   /** Set when one instrument is stated in two rows (a current and a long-term portion): the amount shown is their sum. */
   amountParts?: { printed: string; usd: number; src: Source }[];
+}
+
+/** The same note: its coupon, and its year where it states one. */
+export function sameNoteOf(text: string, instrument: string): boolean {
+  const cb = couponsIn(instrument)[0]?.rate;
+  const yb = (/\b(20\d\d)\b/.exec(instrument.replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*/g, "")) ?? [])[1];
+  return cb !== undefined && couponsIn(text).some((c) => Math.abs(c.rate - cb) < 1e-9) && (!yb || text.includes(yb));
+}
+
+/**
+ * SESSION 27 — the claim that sizes a retirement move with no stated face.
+ * From the same classification as the move (classifyRedeemsClaims, shared
+ * with the position): a pending move by a pending claim, a completed one by
+ * a claim done since the position date; never by a retirement already in
+ * the balance (rule (a)). A claim stated in the move's own document first.
+ */
+export function claimSizingMove<C extends { instrument: string; amount: string | null; sourceLine: string | null; foundIn?: { url: string; filingDate: string } }>(
+  move: { instrument: string; status: string; url: string },
+  classified: ClassifiedRedeems<C & { status: string | null; verified: boolean }>
+): (C & { status: string | null; verified: boolean }) | null {
+  const pool = (move.status === "pending" ? classified.pending : classified.current).map((x) => x.claim).filter((c) => sameNoteOf(move.instrument, c.instrument));
+  return pool.find((c) => c.foundIn?.url === move.url) ?? pool[0] ?? null;
 }
 
 export function buildCard(i: CardInputs): Card {
@@ -545,11 +567,7 @@ export function buildCard(i: CardInputs): Card {
     return { iso: `${m[3]}-${mm}-${(m[2] ?? "1").padStart(2, "0")}`, g: m[2] ? "day" : "month" };
   };
   /** Does `text` name the note `instrument`: its coupon, and its year where the instrument states one. */
-  const sameNote = (text: string, instrument: string) => {
-    const cb = couponsIn(instrument)[0]?.rate;
-    const yb = (/\b(20\d\d)\b/.exec(instrument.replace(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*/g, "")) ?? [])[1];
-    return cb !== undefined && couponsIn(text).some((c) => Math.abs(c.rate - cb) < 1e-9) && (!yb || text.includes(yb));
-  };
+  const sameNote = sameNoteOf;
   const RETIRES = new Set(["redemption", "special call", "tender or repurchase", "repayment at maturity", "paydown"]);
   const TYPE_WORD: Record<string, [string, string]> = {
     issuance: ["Issued", "Issuance announced"], redemption: ["Redeemed", "Redemption announced"], "special call": ["Special call redemption", "Special call announced"],
@@ -584,10 +602,14 @@ export function buildCard(i: CardInputs): Card {
       fundFact: m.funding ?? undefined, useFact: m.use ?? undefined, priceFact: m.price ?? undefined,
     });
   }
-  // A pending redemption's size, from the cached answer's own redemption sentence for the same note.
-  for (const r of result.results.flatMap((x: any) => x.redeems ?? []) as { instrument: string; amount: string | null; sourceLine: string }[]) {
-    const mv = movesAll.find((m) => !m.face && RETIRES.has(m.type) && sameNote(m.instrument, r.instrument));
-    if (mv && r.amount && amountSupportOf(r.amount, r.sourceLine).kind !== "unsupported") {
+  // A retirement move's size, where its facts state none, from the cached
+  // answer's own redemption sentence for the same note: chosen by the
+  // position's own decision (Session 27), so a pending move is sized by a
+  // pending claim and never by a retirement already in the balance.
+  const classifiedRedeems = classifyRedeemsClaims(dm, result.results.find((r) => r.triggerId === "new-debt-issuance") as any);
+  for (const mv of movesAll.filter((m) => !m.face && RETIRES.has(m.type))) {
+    const r = claimSizingMove(mv, classifiedRedeems);
+    if (r && r.amount && r.sourceLine && amountSupportOf(r.amount, r.sourceLine).kind !== "unsupported") {
       mv.face = { k: "figure", t: displayAmount(r.amount, r.sourceLine), printed: r.amount, src: src(r.sourceLine, mv.url) };
       mv.faceUsd = parseMoneyAmount(r.amount);
     }
