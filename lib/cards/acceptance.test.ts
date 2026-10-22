@@ -1238,6 +1238,19 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     if (cigna.v3) { const c = clone(cigna); c.v3!.header.company = "Cigna Group"; out.push({ id: "W9", failed: W9_NAME.run(c, null).length > 0, what: "a mixed-case name" }); }
   }
 
+  // ── Oct 22, 2026: 5.7 reconciliation sentences, and the ruled 5.8 residual ──
+  {
+    const dva = cards.find((c) => /davita/i.test(c.company))!, fd = fixtureOf(dva.cik);
+    const reconOf = (c: Card) => (c.ladder.blocks ?? []).find((b) => text(b.heading).startsWith("2030"))?.lines.find((l) => / less than the lines above\./.test(text(l)));
+    { const c = clone(dva); const r = reconOf(c); const segs = r?.filter((x) => x.k === "computed" || x.k === "figure") as any[] | undefined; if (segs?.[1]) segs[1].t = "$100MM"; out.push({ id: "5.7", failed: !!segs?.[1] && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 stating a difference that does not close the year" }); }
+    { const c = clone(dva); const r = reconOf(c); const segs = r?.filter((x) => x.k === "computed" || x.k === "figure") as any[] | undefined; if (segs?.[0]) segs[0].t = "$4,000MM"; out.push({ id: "5.7", failed: !!segs?.[0] && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 stating a schedule figure the filer does not print" }); }
+    { const c = clone(dva); const b = (c.ladder.blocks ?? []).find((x) => text(x.heading).startsWith("2030")); if (b) b.lines = b.lines.filter((l) => !/ less than the lines above\./.test(text(l))); out.push({ id: "5.7", failed: !!b && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 with its reconciliation sentence removed" }); }
+    const real = T8_MOVES.run(dva, fd);
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, []).counted.length > 0, what: "the ruled $65MM residual no longer failing" });
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, real.map((x) => x.replace("$65MM", "$66MM"))).counted.length > 0, what: "the ruled residual with its amount moved to $66MM" });
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, [...real, ...real]).counted.length > 0, what: "the ruled residual failing twice" });
+  }
+
   // ── v3.3 negative controls ──
   {
     const pick = (re: RegExp) => cards.find((c) => re.test(c.company))!;
@@ -1249,11 +1262,37 @@ function controls(): { id: string; failed: boolean; what: string }[] {
   return out;
 }
 
+/**
+ * RULED RESIDUALS (Oct 22, 2026). A failure Akshay has ruled on stays in the
+ * suite as an EXPECTED failure: it is reported, not counted, and only while
+ * it fails exactly as ruled. If it stops failing, fails more than once, or its
+ * amount moves, it is counted again, loudly, because the ruling was about
+ * that failure and no other. Never deleted.
+ */
+const RULED: { id: string; cik: string; failure: RegExp; amount: string; ruling: string }[] = [
+  {
+    id: "5.8",
+    cik: "0000927066",
+    failure: /^not on a move card: \$65MM in "Significant sources of cash during the period included the incurrence/,
+    amount: "$65MM",
+    ruling: "Akshay's ruling, Session 26 (\"DaVita's ruled residuals\", sessions/26/prompt_card_review_2.md), re-confirmed Oct 22, 2026: the $65MM of revolver draws DaVita's 10-Q states as a source of cash is not shown on a move card",
+  },
+];
+function applyRuled(id: string, cik: string, fails: string[]): { counted: string[]; ruled: string[] } {
+  const r = RULED.find((x) => x.id === id && x.cik === cik);
+  if (!r) return { counted: fails, ruled: [] };
+  const hits = fails.filter((x) => r.failure.test(x));
+  const counted = fails.filter((x) => !r.failure.test(x));
+  if (hits.length !== 1) counted.push(`RULED RESIDUAL ${hits.length === 0 ? "NO LONGER FAILS AS RULED" : `FAILS ${hits.length} TIMES`}: ${id} expected exactly one ${r.amount} failure (${r.ruling}). ${hits.length === 0 ? "It now passes, or its amount moved: the ruling must be revisited before this is green." : ""}`);
+  return { counted, ruled: hits.length === 1 ? hits.map((h) => `${id} ${h} — ${r.ruling}`) : [] };
+}
+
 // ── run ──────────────────────────────────────────────────────────────────
 const order = ["0000070318", "0000785161", "0001179929", "0000927066", "0001108109", "0001739940"];
 const short: Record<string, string> = { "0000070318": "Tenet", "0000785161": "Encompass", "0001179929": "Molina", "0000927066": "DaVita", "0001108109": "CHS", "0001739940": "Cigna" };
 const run = order.map((cik) => ({ cik, card: cards.find((c) => c.cik === cik)!, f: fixtureOf(cik) }));
 const counts: Record<string, Record<string, number>> = {};
+const RULED_SEEN: string[] = [];
 const details: string[] = [];
 let totalFail = 0;
 
@@ -1266,7 +1305,8 @@ const genBad = [...new Set(reachable(join(ROOT, "lib", "cards", "generate.ts"), 
 for (const t of TESTS) {
   counts[t.id] = {};
   for (const { cik, card, f } of run) {
-    const fails = t.run(card, f);
+    const { counted: fails, ruled } = applyRuled(t.id, cik, t.run(card, f));
+    RULED_SEEN.push(...ruled.map((r) => `${short[cik].padEnd(9)} ${r}`));
     counts[t.id][cik] = fails.length;
     totalFail += fails.length;
     for (const x of fails.slice(0, 4)) details.push(`  ${t.id} ${short[cik].padEnd(9)} ${x}`);
@@ -1290,6 +1330,7 @@ genBad.slice(0, 4).forEach((b) => console.log(`             ${b.replace(ROOT, ""
 totalFail += pageBad.length + genBad.length;
 console.log("\nFirst failures:\n" + details.join("\n"));
 if (reported.length) console.log("\nReported, not failed (ruling, Oct 16):\n" + reported.map((r) => `  ${r}`).join("\n"));
+if (RULED_SEEN.length) console.log("\nRuled residuals, failing exactly as ruled (expected, not counted):\n" + RULED_SEEN.map((r) => `  ${r.slice(0, 260)}`).join("\n"));
 const broken = ctl.filter((c) => !c.failed);
 for (const c of broken) console.log(`\n  ✗ NEGATIVE CONTROL ${c.id} DID NOT FAIL — ${c.what}: this test cannot fail as written`);
 console.log(`\n${TESTS.length * run.length - Object.values(counts).reduce((a, o) => a + Object.values(o).filter((n) => n > 0).length, 0)} passed, ${Object.values(counts).reduce((a, o) => a + Object.values(o).filter((n) => n > 0).length, 0) + broken.length} failed.`);
