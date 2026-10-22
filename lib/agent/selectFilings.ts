@@ -20,7 +20,8 @@ const HIGH_SIGNAL_ITEMS = new Set([
   "8.01",
 ]);
 
-function has8KSignal(filing: FilingEntry): boolean {
+/** An 8-K carrying an item the triggers read. Shared by the read set and the dig's candidate list (lib/cache/readSet.ts). */
+export function has8KSignal(filing: FilingEntry): boolean {
   if (filing.form !== "8-K" || !filing.items) return false;
   return filing.items.split(",").some((code) => HIGH_SIGNAL_ITEMS.has(code.trim()));
 }

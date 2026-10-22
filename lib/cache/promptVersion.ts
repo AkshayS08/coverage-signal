@@ -632,7 +632,17 @@
  * could only target a catalog filing not excerpted, has nothing left to
  * target; it fired on none of the six signed answers.
  */
-export const EXTRACTION_PROMPT_VERSION = 32;
+/**
+ * v33 (Session 27, Stage 1) — THE DIG, UNDER THE READ-SET RULE.
+ *
+ * v32 listed only the read set, which left the dig nothing to name. v33
+ * lists two groups: the filings excerpted (the read set) and the filings the
+ * dig may open (the latest 10-K, the 10-Qs since it, the trigger-item 8-Ks
+ * since it, less those already excerpted). Both come from the filing list
+ * alone (lib/cache/readSet.ts) and both are in the key. v32 was never
+ * extracted, so nothing is orphaned twice.
+ */
+export const EXTRACTION_PROMPT_VERSION = 33;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

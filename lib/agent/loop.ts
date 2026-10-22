@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { TRIGGERS, type TriggerDef } from "./triggers";
-import { resolveReadSet } from "../cache/readSet";
+import { resolveReadSet, recordedReadSet } from "../cache/readSet";
 import { readFiling, searchNews } from "./tools";
 import { quoteAppearsIn } from "./verifyQuote";
 import { verifyFacilities, retargetAnnualReportFigures, type VerifiedFacility, type FigureRejection } from "./verifyFacility";
@@ -757,6 +757,8 @@ export interface CompanyResult {
   results: TriggerResult[];
   verdict: "CALL" | "NO ACTIONABLE TRIGGER";
   relationshipFlags: TriggerResult[];
+  /** Session 27: every document this build read, the read set and anything the dig opened, with content hashes. */
+  recordedReadSet?: ReturnType<typeof recordedReadSet>;
 }
 
 const FORM_ORDER = ["10-Q", "10-K", "8-K"];
@@ -838,15 +840,18 @@ async function runAgentLoopInner(
   const filingsResult = readSet.filingsResult;
   const baseline = readSet.readSet;
 
-  // v32: the prompt's catalog is the read set. A filing the extraction does
-  // not read is not listed to the model either, so it cannot shape the answer
-  // and cannot move the key (it used to list all ~150-290 filings).
-  const catalog: FilingCatalogEntry[] = baseline.map((f) => ({
-    form: f.form,
-    filingDate: f.filingDate,
-    items: f.items,
-    url: f.primaryDocUrl,
-  }));
+  // v33: the prompt's catalog is the read set (excerpted) and the dig's
+  // candidates (not excerpted), both decided from the filing list in
+  // readSet.ts and both in the key. Nothing else is listed (it used to list
+  // all ~150-290 filings), so no other filing can shape the answer.
+  const readUrls = new Set(baseline.map((f) => f.primaryDocUrl));
+  const digCandidates = readSet.digCandidates;
+  const catalog: FilingCatalogEntry[] = [
+    ...baseline.map((f) => ({ form: f.form, filingDate: f.filingDate, items: f.items, url: f.primaryDocUrl, excerpted: true })),
+    ...digCandidates.filter((f) => !readUrls.has(f.primaryDocUrl)).map((f) => ({ form: f.form, filingDate: f.filingDate, items: f.items, url: f.primaryDocUrl, excerpted: false })),
+  ];
+  // What the dig opens joins the recorded read set.
+  const dugDocs: { url: string; text: string; filing: (typeof baseline)[number] }[] = [];
 
   // reportDate rides along with form/filingDate because a periodic report's
   // PERIOD OF REPORT is the only thing that says what a 10-Q is allowed to
@@ -1737,9 +1742,10 @@ async function runAgentLoopInner(
     }
 
     if (v.needsDig && digBudget > 0 && v.digHint) {
-      const digFiling = filingsResult.filings.find((f) => f.primaryDocUrl === v.digHint);
+      // Session 27: only a listed candidate may be opened, never any filing EDGAR returned.
+      const digFiling = digCandidates.find((f) => f.primaryDocUrl === v.digHint);
       if (!digFiling) {
-        log(`${label} unclear, but the follow-up filing wasn't found — ${describeVerdict(trigger, v)}.`);
+        log(`${label} unclear, but the follow-up filing is not one the dig may open — ${describeVerdict(trigger, v)}.`);
         results.push(finalizeVerified(trigger, v, label));
         continue;
       }
@@ -1747,6 +1753,7 @@ async function runAgentLoopInner(
       log(`${label} unclear → digging into the ${digFiling.form}...`);
       const { text: digFullText } = await readFiling(digFiling.primaryDocUrl);
       textByUrl.set(digFiling.primaryDocUrl, digFullText);
+      dugDocs.push({ url: digFiling.primaryDocUrl, text: digFullText, filing: digFiling });
       // Same bounded-excerpt treatment as the main corpus (see above) —
       // getFilingText no longer truncates at fetch time, so a dig target
       // needs its own cap here or a large 10-K would send its full ~500k+
@@ -1758,6 +1765,7 @@ async function runAgentLoopInner(
         fingerprint,
         trigger.id,
         digFiling.primaryDocUrl,
+        createHash("sha256").update(digFullText).digest("hex"),
         () =>
           classifyOneTrigger({
             companyName: filingsResult.company,
@@ -1958,6 +1966,7 @@ async function runAgentLoopInner(
     results,
     verdict,
     relationshipFlags,
+    recordedReadSet: recordedReadSet(baseline.map((f) => ({ url: f.primaryDocUrl, text: readSet.docs.get(f.primaryDocUrl)!.fullText, filing: f })), dugDocs),
   };
 }
 

@@ -15,6 +15,8 @@ export interface FilingCatalogEntry {
   filingDate: string;
   items: string;
   url: string;
+  /** v33: excerpted below (the read set), or listed only as a filing the dig may open. */
+  excerpted?: boolean;
 }
 
 export interface CorpusDoc {
@@ -1081,9 +1083,15 @@ function formatTriggers(triggers: TriggerDef[]): string {
 }
 
 function formatCatalog(catalog: FilingCatalogEntry[]): string {
-  return catalog
-    .map((f) => `${f.form} | ${f.filingDate} | items=${f.items || "-"} | ${f.url}`)
-    .join("\n");
+  const line = (f: FilingCatalogEntry) => `${f.form} | ${f.filingDate} | items=${f.items || "-"} | ${f.url}`;
+  const dig = catalog.filter((f) => f.excerpted === false);
+  return [
+    `### Excerpted below`,
+    ...catalog.filter((f) => f.excerpted !== false).map(line),
+    ``,
+    `### Not excerpted: the only filings a digHint may name`,
+    ...(dig.length ? dig.map(line) : [`(none)`]),
+  ].join("\n");
 }
 
 function formatCorpus(docs: CorpusDoc[]): string {
@@ -1550,7 +1558,7 @@ The one thing that would be wrong is transcribing a table NO sentence in the anc
 
 And regardless: any instrument the ANCHOR itself states in sentences is a proseInstruments entry, and any facility the anchor describes belongs in facilities. If the anchor states none, returning none is the complete and correct answer.`,
     ``,
-    `## Filing catalog (the filings excerpted below)`,
+    `## Filing catalog`,
     formatCatalog(catalog),
     ``,
     `## Filing excerpts`,

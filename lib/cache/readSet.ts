@@ -21,14 +21,24 @@
  *     shown (which also covers the locator's code and the XBRL bound);
  *   - the XBRL stated total that bounds the debt-note excerpt;
  *   - the extraction prompt version and the note-locator version.
- * The prompt's filing catalog is the read set itself (v32), so no filing
- * outside it reaches the model either.
+ *   - the dig's candidate list (v33), by form, date, items, accession, URL.
+ * The prompt's catalog lists the read set and the dig candidates, and nothing
+ * else, so no other filing reaches the model.
+ *
+ * THE DIG (v33). The model may ask to read one more filing when the excerpts
+ * leave a trigger ambiguous. What it may ask for is decided here, from the
+ * filing list alone, by the same helpers as the read set: the latest 10-K,
+ * the 10-Qs filed since it, and the 8-Ks filed since it that carry a trigger
+ * item (the read window). The list is in the key, so an unrelated filing
+ * moves neither; a new 10-K moves both. A document the dig opens is recorded
+ * beside the read set with its content hash (`recordedReadSet`), and the dig
+ * answer's own key carries that hash.
  */
 import { createHash } from "node:crypto";
 import { getRecentFilings, getFilingText, type FilingEntry, type RecentFilingsResult } from "../fetch";
 import { fetchXbrlDebtTotal, type XbrlDebtTotal } from "../fetch/xbrlDebt";
 import { buildExtractionText, NOTE_LOCATOR_VERSION, type FilingExtractionResult } from "../fetch/noteLocation";
-import { selectBaselineFilings } from "../agent/selectFilings";
+import { selectBaselineFilings, has8KSignal } from "../agent/selectFilings";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 
 const sha = (s: string, n = 24) => createHash("sha256").update(s).digest("hex").slice(0, n);
@@ -47,6 +57,35 @@ export function readSetOf(filings: FilingEntry[]): FilingEntry[] {
 /** The anchor: the most recent 10-Q or 10-K in the read set. */
 export function anchorOf(readSet: FilingEntry[]): FilingEntry | undefined {
   return [...readSet].filter((f) => f.form === "10-Q" || f.form === "10-K").sort(newestFirst)[0];
+}
+
+/**
+ * What the dig may open, from the filing list alone: the latest 10-K, the
+ * 10-Qs filed since it, and the trigger-item 8-Ks filed since it. With no
+ * 10-K, nothing beyond the read set.
+ */
+export function digCandidatesOf(filings: FilingEntry[]): FilingEntry[] {
+  const sorted = [...filings].sort(newestFirst);
+  const tenK = sorted.find((f) => f.form === "10-K");
+  if (!tenK) return readSetOf(filings);
+  const since = sorted.filter((f) => f.filingDate >= tenK.filingDate);
+  return [tenK, ...since.filter((f) => f.form === "10-Q"), ...since.filter((f) => f.form === "8-K" && has8KSignal(f))].sort(newestFirst);
+}
+
+export interface RecordedRead {
+  url: string;
+  form: string;
+  filingDate: string;
+  accessionNumber: string;
+  /** sha256 of the full text read. */
+  contentHash: string;
+  via: "base" | "dig";
+}
+
+/** Every document the build read, the read set and anything the dig opened, each with its content hash. */
+export function recordedReadSet(base: { url: string; text: string; filing: FilingEntry }[], dug: { url: string; text: string; filing: FilingEntry }[]): RecordedRead[] {
+  const rec = (d: { url: string; text: string; filing: FilingEntry }, via: RecordedRead["via"]): RecordedRead => ({ url: d.url, form: d.filing.form, filingDate: d.filing.filingDate, accessionNumber: d.filing.accessionNumber, contentHash: createHash("sha256").update(d.text).digest("hex"), via });
+  return [...base.map((d) => rec(d, "base")), ...dug.filter((d) => !base.some((b) => b.url === d.url)).map((d) => rec(d, "dig"))];
 }
 
 /** Would going from one filing list to another change what the extraction reads? */
@@ -79,6 +118,7 @@ export function readSetKeyMaterial(i: ReadSetKeyInputs): string {
     `note locator v${i.locatorVersion}`,
     `xbrl stated total ${i.xbrlDebtTotal ?? "none"}`,
     ...readSetOf(i.filings).map((f) => `read ${f.form}|${f.filingDate}|${f.reportDate}|${f.items}|${f.accessionNumber}|${f.primaryDocUrl}|text ${i.contentHash(f.primaryDocUrl)}|excerpt ${ex(f.primaryDocUrl)}`),
+    ...digCandidatesOf(i.filings).map((f) => `dig candidate ${f.form}|${f.filingDate}|${f.reportDate}|${f.items}|${f.accessionNumber}|${f.primaryDocUrl}`),
   ].join("\n");
 }
 
@@ -89,6 +129,8 @@ export function readSetFingerprint(i: ReadSetKeyInputs): string {
 export interface ResolvedReadSet {
   filingsResult: RecentFilingsResult;
   readSet: FilingEntry[];
+  /** What the dig may open (in the key); those not in the read set are listed to the model as not excerpted. */
+  digCandidates: FilingEntry[];
   anchor: FilingEntry | undefined;
   /** The XBRL stated total at the anchor's period end; bounds the debt-note excerpt. */
   anchorXbrl: XbrlDebtTotal | null;
@@ -123,5 +165,5 @@ export async function resolveReadSet(company: string): Promise<ResolvedReadSet> 
     promptVersion: EXTRACTION_PROMPT_VERSION,
     locatorVersion: NOTE_LOCATOR_VERSION,
   };
-  return { filingsResult, readSet, anchor, anchorXbrl, docs, fingerprint: readSetFingerprint(inputs), material: readSetKeyMaterial(inputs) };
+  return { filingsResult, readSet, digCandidates: digCandidatesOf(filingsResult.filings), anchor, anchorXbrl, docs, fingerprint: readSetFingerprint(inputs), material: readSetKeyMaterial(inputs) };
 }

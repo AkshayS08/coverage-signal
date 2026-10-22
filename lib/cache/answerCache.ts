@@ -143,9 +143,11 @@ export async function cachedDigClassification<T>(
   fingerprint: string,
   triggerId: string,
   digUrl: string,
+  /** Session 27: sha256 of the dug document's full text, so the key covers what the dig read. */
+  docHash: string,
   compute: () => Promise<T>
 ): Promise<{ data: T; hit: boolean }> {
-  const key = `answer/${cik}/dig/${fingerprint}/${triggerId}/${sha256(digUrl)}/v${EXTRACTION_PROMPT_VERSION}.json`;
+  const key = `answer/${cik}/dig/${fingerprint}/${triggerId}/${sha256(digUrl)}-${docHash.slice(0, 24)}/v${EXTRACTION_PROMPT_VERSION}.json`;
   return getOrCompute(key, compute);
 }
 
