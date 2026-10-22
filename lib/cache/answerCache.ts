@@ -8,6 +8,10 @@ function sha256(input: string): string {
 }
 
 /**
+ * SUPERSEDED IN SESSION 27 as a cache key (see lib/cache/readSet.ts): kept
+ * for the measurement and for reading the v31 keys the goldens were signed
+ * under. No cache key is built from it.
+ *
  * Stable fingerprint of exactly what Haiku was asked about: the full
  * filing catalog (form, filingDate, item codes, url) for this company —
  * not just the subset read into the baseline corpus, since the catalog's
@@ -70,8 +74,14 @@ async function getOrCompute<T>(key: string, compute: () => Promise<T>): Promise<
  *      exposed" is not a namespace. The version is now its own path segment,
  *      "nar-v", and cannot collide with any number the old constant reached.
  */
-export function baseAnswerKey(cik: string, fingerprint: string): string {
-  return `answer/${cik}/base/${fingerprint}/v${EXTRACTION_PROMPT_VERSION}.json`;
+/**
+ * SESSION 27: keyed on the READ SET (lib/cache/readSet.ts), not the whole
+ * catalog, in its own namespace "base-rs" so no read-set hash can ever be
+ * read as a whole-catalog one. Answers under "base/" are left in place,
+ * unread: they are what the v31 goldens were signed from.
+ */
+export function baseAnswerKey(cik: string, readSetFingerprint: string): string {
+  return `answer/${cik}/base-rs/${readSetFingerprint}/v${EXTRACTION_PROMPT_VERSION}.json`;
 }
 
 export async function cachedBaseClassification<T>(

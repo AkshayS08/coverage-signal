@@ -31,8 +31,8 @@
  */
 import { head, BlobNotFoundError } from "@vercel/blob";
 import { ReadFailedError, READ_RETRIES } from "../fetch/readError";
-import { getRecentFilings } from "../fetch";
-import { corpusFingerprint, baseAnswerKey } from "./answerCache";
+import { baseAnswerKey } from "./answerCache";
+import { resolveReadSet } from "./readSet";
 import { currentCompanySpend } from "../agent/costMeter";
 
 export interface FreeVerdict {
@@ -51,8 +51,12 @@ export interface FreeVerdict {
  * question about a different file.
  */
 export async function checkFree(company: string, bust?: string | null): Promise<FreeVerdict> {
-  const f = await getRecentFilings(company, ["8-K", "10-Q", "10-K"]);
-  const fp = corpusFingerprint(f.filings);
+  // Session 27: the same resolver the loop reads through, so "would this run
+  // hit" is asked about the key the run will build (Rule 12), and a filing
+  // the extraction does not read cannot make it say no.
+  const rs = await resolveReadSet(company);
+  const f = { cik: rs.filingsResult.cik };
+  const fp = rs.fingerprint;
   // The SAME builder the loop uses (Rule 12): a hand-copied key here would
   // report "cached" about a key nothing reads.
   const base = baseAnswerKey(f.cik, fp);

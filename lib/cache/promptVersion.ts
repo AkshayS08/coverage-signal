@@ -619,7 +619,20 @@
  *            $751M stated against a $1.0B facility is a borrowing base
  *            smaller than the commitment, which is what an ABL IS.
  */
-export const EXTRACTION_PROMPT_VERSION = 31;
+/**
+ * v32 (Session 27, Stage 1) — THE CATALOG IS THE READ SET.
+ *
+ * The prompt listed the company's whole 8-K/10-Q/10-K catalog (148 to 293
+ * filings on the six signed names), so every filing EDGAR returned shaped
+ * the answer, and the cache key had to cover all of them: a 5.02 officer
+ * change or a Form 4 pushing a 2018 filing out of EDGAR's window orphaned
+ * every answer. The catalog section now lists exactly the documents
+ * excerpted (the read set, lib/cache/readSet.ts), and the base answer is
+ * keyed on that set. Nothing else in the prompt changes. The dig, which
+ * could only target a catalog filing not excerpted, has nothing left to
+ * target; it fired on none of the six signed answers.
+ */
+export const EXTRACTION_PROMPT_VERSION = 32;
 
 /**
  * sonnetEventBriefing.ts's card-narration prompt + schema.

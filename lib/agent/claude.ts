@@ -1550,7 +1550,7 @@ The one thing that would be wrong is transcribing a table NO sentence in the anc
 
 And regardless: any instrument the ANCHOR itself states in sentences is a proseInstruments entry, and any facility the anchor describes belongs in facilities. If the anchor states none, returning none is the complete and correct answer.`,
     ``,
-    `## Full filing catalog (available for digging; not all are excerpted below)`,
+    `## Filing catalog (the filings excerpted below)`,
     formatCatalog(catalog),
     ``,
     `## Filing excerpts`,

@@ -26,25 +26,20 @@
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
-import { answerExists } from "./freeRun";
-import { getRecentFilings } from "../fetch";
-import { corpusFingerprint, baseAnswerKey } from "./answerCache";
+import { checkFree } from "./freeRun";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 const ALL=["DaVita","HCA Healthcare","Tenet Healthcare","Universal Health Services","Encompass Health","Community Health Systems","Quest Diagnostics","Centene Corporation","Cigna Group","Molina Healthcare"];
 async function main(){
-  console.log("company                       filings  fingerprint               base answer");
+  console.log("company                       read set                  base answer");
   let missing=0;
   for(const c of ALL){
-    const f=await getRecentFilings(c,["8-K","10-Q","10-K"]);
-    const fp=corpusFingerprint(f.filings);
-    // Rule 12 audit: the SAME builder cachedBaseClassification uses. A
-    // hand-copied key here would let preflight report "cached" about a key
-    // nothing reads, which is the one thing preflight must never do.
-    const key=baseAnswerKey(f.cik,fp);
-    // Session 27: only a 404 is "not cached"; an unreachable store is a named error, not a miss.
-    const present=await answerExists(key);
-    if(!present) missing++;
-    console.log(`${c.padEnd(28)}  ${String(f.filings.length).padStart(6)}  ${fp}  ${present?"cached":"WOULD RE-BILL"}`);
+    // Rule 12 audit, Session 27: checkFree resolves the read set and builds
+    // the key exactly as the loop does (lib/cache/readSet.ts). A hand-copied
+    // key here would let preflight report "cached" about a key nothing reads.
+    // Only a 404 is "not cached"; an unreachable store is a named error.
+    const v=await checkFree(c);
+    if(!v.cached) missing++;
+    console.log(`${c.padEnd(28)}  ${v.fingerprint}  ${v.cached?"cached":"WOULD RE-BILL"}`);
   }
   console.log("");
   console.log(`${missing} of ${ALL.length} would re-extract on the next run.`);

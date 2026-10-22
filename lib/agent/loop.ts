@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { TRIGGERS, type TriggerDef } from "./triggers";
-import { selectBaselineFilings } from "./selectFilings";
-import { getRecentFilings, readFiling, searchNews } from "./tools";
+import { resolveReadSet } from "../cache/readSet";
+import { readFiling, searchNews } from "./tools";
 import { quoteAppearsIn } from "./verifyQuote";
 import { verifyFacilities, retargetAnnualReportFigures, type VerifiedFacility, type FigureRejection } from "./verifyFacility";
 import { locatorFor, tableCellMillions } from "./tableScale";
@@ -52,7 +52,7 @@ import { boundProceedsFilingText } from "./proceedsUseInput";
 import { extractFactTokens, factTokensMatch, statedDatePrecision, datePrecisionOf, morePrecise, clampDateToken, type DatePrecision, type FactToken } from "./factTokens";
 import { textOutsideInstrumentLabel, splitIssueSizeFromName } from "./issueSize";
 import { assertBlobConfigured } from "../fetch/cache";
-import { corpusFingerprint, cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
+import { cachedBaseClassification, cachedDigClassification, cachedProceedsUse } from "../cache/answerCache";
 import { LEAD_CHARS, buildExtractionText, assertCompanyHasLocatableDebtNote, type DebtNoteFilingStatus, NOTE_LOCATOR_VERSION } from "../fetch/noteLocation";
 import { fetchXbrlDebtTotal, fetchXbrlMaturityBuckets, type XbrlDebtTotal, type XbrlMaturityBuckets } from "../fetch/xbrlDebt";
 import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "../fetch/scheduleCompleteness";
@@ -815,9 +815,17 @@ export async function runAgentLoop(
   // changes.
   beginCompanyCostScope(companyName);
 
-  const filingsResult = await getRecentFilings(companyName, ["8-K", "10-Q", "10-K"]);
+  // SESSION 27: what is read, and the key it is cached under, come from ONE
+  // place (lib/cache/readSet.ts), shared with checkFree and preflight. Every
+  // read in it fails closed.
+  const readSet = await resolveReadSet(companyName);
+  const filingsResult = readSet.filingsResult;
+  const baseline = readSet.readSet;
 
-  const catalog: FilingCatalogEntry[] = filingsResult.filings.map((f) => ({
+  // v32: the prompt's catalog is the read set. A filing the extraction does
+  // not read is not listed to the model either, so it cannot shape the answer
+  // and cannot move the key (it used to list all ~150-290 filings).
+  const catalog: FilingCatalogEntry[] = baseline.map((f) => ({
     form: f.form,
     filingDate: f.filingDate,
     items: f.items,
@@ -832,7 +840,6 @@ export async function runAgentLoop(
     filingsResult.filings.map((f) => [f.primaryDocUrl, { form: f.form, date: f.filingDate, reportDate: f.reportDate }])
   );
 
-  const baseline = selectBaselineFilings(filingsResult.filings);
   const baselineUrls = new Set(baseline.map((f) => f.primaryDocUrl));
 
   log(`${companyName} → reading recent filings (${describeBaseline(baseline)})...`);
@@ -861,17 +868,11 @@ export async function runAgentLoop(
   // filings have one; an 8-K has no note to locate.
   const noteSpanByUrl = new Map<string, { start: number; end: number }>();
   // SESSION 21 — the debt-note BOUNDARY needs the filer's own stated total,
-  // and it runs while the corpus is built, so the XBRL read moves ahead of
-  // classification. One cached HTTP call, at the newest periodic filing's own
-  // period end; absent, the boundary abstains and cuts nothing.
-  const newestPeriodic = [...baseline]
-    .filter((f) => f.form === "10-Q" || f.form === "10-K")
-    .sort((a, b) => b.filingDate.localeCompare(a.filingDate))[0];
-  const anchorXbrl = newestPeriodic ? await fetchXbrlDebtTotal(filingsResult.cik, newestPeriodic.reportDate) : null;
-
+  // at the newest periodic filing's own period end; absent (the filer tags
+  // none), the boundary abstains and cuts nothing. Session 27: read, and the
+  // excerpts built, once in resolveReadSet, where the key is built from them.
   for (const filing of baseline) {
-    const { text: fullText } = await readFiling(filing.primaryDocUrl);
-    const extraction = buildExtractionText({ form: filing.form, url: filing.primaryDocUrl, fullText, xbrlStatedTotal: anchorXbrl?.total ?? null });
+    const { fullText, extraction } = readSet.docs.get(filing.primaryDocUrl)!;
     corpus.push({ form: filing.form, filingDate: filing.filingDate, url: filing.primaryDocUrl, text: extraction.text });
     textByUrl.set(filing.primaryDocUrl, fullText);
     if (extraction.noteSpan) noteSpanByUrl.set(filing.primaryDocUrl, extraction.noteSpan);
@@ -962,7 +963,7 @@ export async function runAgentLoop(
   // companies' cached answers and change what the model is asked, which is
   // the opposite of the controlled comparison this is for.
   const cacheBust = process.env.CACHE_BUST;
-  const fingerprint = corpusFingerprint(filingsResult.filings) + (cacheBust ? `-bust${cacheBust}` : "");
+  const fingerprint = readSet.fingerprint + (cacheBust ? `-bust${cacheBust}` : "");
   if (cacheBust) log(`  ⚠ CACHE_BUST=${cacheBust} — answer cache deliberately bypassed; this run BILLS. Measurement only.`);
   log(`checking all 15 triggers...`);
   // FIX 5 — COMPUTED ONCE, PASSED IN, AND RECORDED ON THE RESULT. It used to
@@ -990,7 +991,7 @@ export async function runAgentLoop(
         anchorNoteShape,
       })
   );
-  log(`  answer cache ${baseHit ? "HIT" : "MISS"} (base classification, fingerprint ${fingerprint.slice(0, 8)})`);
+  log(`  answer cache ${baseHit ? "HIT" : "MISS"} (base classification, read set ${fingerprint.slice(0, 8)}: ${baseline.length} documents)`);
   // Session 18: classifyAllTriggers applies withFieldDefaults to a FRESH
   // response, but a cache HIT returns whatever was stored in Blob at
   // classification time — for any answer cached before this session, that's
