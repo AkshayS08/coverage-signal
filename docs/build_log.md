@@ -7225,3 +7225,25 @@ not clear. The offline suite was not run before the Oct 21 release, which
 shipped a failing printedHeadings test (fixed in f10862a by choosing
 snapshots by recorded source) and DaVita's acceptance 5.7 failures, which
 are still open and now block the next release until ruled on.
+
+### Session 27, Stage 1: the canonical re-extraction, and two test changes (Oct 22, 2026)
+
+Full account: sessions/27/stage1_checkpoint2_canonical.md. Six names at v33
+for $1.0707 of $1.2610 declared. Encompass, DaVita and Molina show zero
+position change against their signed goldens. Tenet, CHS and Cigna changed,
+so the re-tastes are held.
+
+**Acceptance 5.7 followed the product.** DaVita's "card $9,344.3MM" was the
+test adding the first figure of the year's closing sentence ("The filer's
+schedule shows $4,554.3MM for 2030: $235.7MM less than the lines above") to
+the instrument lines. No card surface showed it. A year now ties when the
+stated schedule figure is the filer's and the lines less the stated
+difference equal it, with three controls.
+
+**Acceptance 5.8 carries a ruled residual.** DaVita's $65MM is reported,
+not counted, only while it fails exactly as ruled; if it stops failing, fails
+twice or its amount moves, it is counted again.
+
+**Finding, not fixed: a failed write after a paid call is swallowed.**
+Tenet's proceeds-use answer billed, its blob write failed on a network drop,
+and the catch-all left it null. Step 4 closed that catch for reads only.
