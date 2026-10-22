@@ -6,6 +6,11 @@ import type { FilingEntry } from "../fetch";
 // 1.03 Bankruptcy, 3.02 Unregistered Equity Sale, 7.01/8.01 press releases).
 // Everything else (5.02 officer changes, 5.07 vote results, 9.01 exhibits
 // only, ...) is routine noise we don't spend a read on by default.
+//
+// RULING (Akshay, Oct 21, 2026; BRD 4.0a): 7.01 and 8.01 STAY. They also
+// carry earnings releases and investor presentations, and so move the
+// read-set key more often than the rest, but debt offerings, add-ons and
+// redemption notices are filed under them.
 const HIGH_SIGNAL_ITEMS = new Set([
   "1.01",
   "1.02",

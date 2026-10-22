@@ -93,6 +93,7 @@ Company names typed in
   → fetch filings                                [document cache, full text]
       2 most recent 10-Q, 1 most recent 10-K, up to 6 high-signal 8-Ks
       8-K item filter: 1.01 1.02 1.03 2.01 2.03 2.04 2.05 2.06 3.02 7.01 8.01
+      (7.01 and 8.01 stay in: Akshay's ruling, Oct 21, 2026 — see 4.0a)
   → corpus build: first 40k of every filing (LEAD_CHARS), plus a spliced
       excerpt around the located debt note when the filing runs longer
   → per company: Haiku reads corpus, 15 triggers [answer cache, permanent]
@@ -108,6 +109,10 @@ Company names typed in
   → number guard audits every figure              [deterministic]
   → render: cards above portfolio table
 ```
+
+### 4.0a Ruling: 8-K Items 7.01 and 8.01 stay in the read set (Akshay, Oct 21, 2026)
+
+Session 27's measurement showed four of the eleven read-set key moves in 90 days came from 8-Ks carrying Items 7.01 or 8.01, which are also where earnings releases and investor presentations land. They stay in the read set: debt offerings, add-ons and redemption notices are filed under those items, and dropping them would drop the moves the card exists to show. A key move on such an 8-K is the key doing its job, since the extraction reads it.
 
 ### 4.1 The three caches
 
