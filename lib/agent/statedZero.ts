@@ -161,7 +161,10 @@ export function zeroSupportFor(sentence: string, field: string): ZeroSupport {
 
 /** True where the value is a zero in any of the forms the schema may carry it. */
 export function isZeroValue(value: string): boolean {
-  const t = value.trim();
+  // Session 27, Rule 53 over every printed form: "$ —", "$—", "—", "$ 0
+  // million", "0". The currency sign, the scale word and the spacing are not
+  // the figure; a dash or a zero left after them is.
+  const t = value.trim().replace(/^\$\s*/, "").replace(/\s*(?:thousand|million|billion)\s*$/i, "").trim();
   if (/^[—–-]$/.test(t)) return true;
   const digits = t.replace(/[^\d.]/g, "");
   return digits.length > 0 && Number(digits) === 0;
