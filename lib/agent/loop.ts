@@ -795,15 +795,14 @@ function describeVerdict(trigger: TriggerDef, v: TriggerVerdict): string {
     : "no public signal (not disclosed in these filings)";
 }
 
-export async function runAgentLoop(
-  companyName: string,
-  onTrace?: TraceHandler
-): Promise<CompanyResult> {
-  function log(line: string) {
-    console.log(line);
-    onTrace?.(line);
-  }
-
+/**
+ * SESSION 27 — RULE 68 ON THE THROWING PATH. The loop persists its spend at
+ * its end; a run that billed and then threw never reached the ledger. Since a
+ * failed read now stops the build (ReadFailedError), a read after the model
+ * call (the XBRL total, proceeds-use) can throw on a run that has already
+ * billed, so the throw persists the scope's spend before it propagates.
+ */
+export async function runAgentLoop(companyName: string, onTrace?: TraceHandler): Promise<CompanyResult> {
   // Fail fast and loud, before any work starts, if the answer/wording cache
   // has no way to persist — see lib/fetch/cache.ts's doc comment for why a
   // missing token must never silently degrade into an uncached run.
@@ -812,8 +811,25 @@ export async function runAgentLoop(
   // Session 18: every API call from here on bills into this company's own
   // scope. Safe as a module-level scope only because companies run
   // sequentially — see costMeter.ts's doc comment for what breaks if that
-  // changes.
+  // changes. Opened HERE so the catch below persists this run's scope and
+  // never a previous one.
   beginCompanyCostScope(companyName);
+  try {
+    return await runAgentLoopInner(companyName, onTrace);
+  } catch (e) {
+    persistCompanySpend();
+    throw e;
+  }
+}
+
+async function runAgentLoopInner(
+  companyName: string,
+  onTrace?: TraceHandler
+): Promise<CompanyResult> {
+  function log(line: string) {
+    console.log(line);
+    onTrace?.(line);
+  }
 
   // SESSION 27: what is read, and the key it is cached under, come from ONE
   // place (lib/cache/readSet.ts), shared with checkFree and preflight. Every

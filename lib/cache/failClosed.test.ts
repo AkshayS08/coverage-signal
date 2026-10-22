@@ -8,7 +8,10 @@
  *   - stop with a ReadFailedError naming the source (blob, edgar, xbrl);
  *   - make zero model calls (every request to the model API is refused and counted);
  *   - never switch source (a failed cached XBRL read is not replaced by a direct EDGAR read);
- *   - retry the same read at most twice (at most 3 attempts on the failed path).
+ *   - retry the same read at most twice (at most 3 attempts on the failed path);
+ *   - reach the ledger (Rule 68): a loop run that throws persists exactly one
+ *     line, under its own company, so a run that billed before a later read
+ *     failed is never off the books.
  *
  * Negative control: the same assertion over a run with NO injected failure
  * must fail (the run does not stop with a ReadFailedError), so the check
@@ -77,27 +80,34 @@ const CASES: Case[] = [
   { id: "R6", name: "blob: the answer-key HEAD fails (preflight, checkFree)", source: "blob", run: "checkFree", rule: (cik) => (o, p) => (/vercel\.com$/.test(o) && p.startsWith("/api/blob") && p.includes(encodeURIComponent(`answer/${cik}/`)) ? "error" : null) },
 ];
 
-interface Outcome { threw: boolean; name: string; source?: string; message: string; model: number; maxAttempts: number; forbidden: number }
+interface Outcome { threw: boolean; name: string; source?: string; message: string; model: number; maxAttempts: number; forbidden: number; ledgerLines: number; ledgerLabel: string }
+const LEDGER = "baselines/cost-log.jsonl";
+const ledger = () => readFileSync(LEDGER, "utf-8").trim().split("\n");
 async function attempt(company: string, cik: string, c: Case | null): Promise<Outcome> {
   rule = c ? c.rule(cik) : () => null;
   stats.model = 0; stats.attempts.clear(); stats.requests = [];
+  const linesBefore = ledger().length;
   const quiet = console.log; console.log = () => {};
   const warn = console.warn; console.warn = () => {};
   let out: Outcome;
   try {
     if (!c || c.run === "loop") await runAgentLoop(company); else await checkFree(company);
-    out = { threw: false, name: "", message: "completed", model: 0, maxAttempts: 0, forbidden: 0 };
+    out = { threw: false, name: "", message: "completed", model: 0, maxAttempts: 0, forbidden: 0, ledgerLines: 0, ledgerLabel: "" };
   } catch (e: any) {
     const cause = e?.cause ? ` [cause: ${e.cause?.message ?? e.cause}${e.cause?.cause ? ` / ${e.cause.cause?.code ?? e.cause.cause?.message}` : ""}]` : "";
-    out = { threw: true, name: e?.name ?? "", source: e?.source, message: String(e?.message ?? e).slice(0, 160) + cause, model: 0, maxAttempts: 0, forbidden: 0 };
+    out = { threw: true, name: e?.name ?? "", source: e?.source, message: String(e?.message ?? e).slice(0, 160) + cause, model: 0, maxAttempts: 0, forbidden: 0, ledgerLines: 0, ledgerLabel: "" };
   } finally { console.log = quiet; console.warn = warn; rule = () => null; }
   out.model = stats.model;
   out.maxAttempts = Math.max(0, ...stats.attempts.values());
+  const after = ledger();
+  out.ledgerLines = after.length - linesBefore;
+  out.ledgerLabel = out.ledgerLines > 0 ? JSON.parse(after[after.length - 1]).company : "";
   out.forbidden = c?.noRequest ? stats.requests.filter((r) => c.noRequest!.test(r)).length : 0;
   return out;
 }
-const verdict = (c: Case, o: Outcome): string[] => {
+const verdict = (c: Case, o: Outcome, company = ""): string[] => {
   const f: string[] = [];
+  if (c.run === "loop" && (o.ledgerLines !== 1 || o.ledgerLabel !== company)) f.push(`ledger: ${o.ledgerLines} line(s) written${o.ledgerLabel ? ` under "${o.ledgerLabel}"` : ""}, expected exactly 1 under "${company}" (Rule 68 on the throwing path)`);
   if (!o.threw) f.push("the build did not stop");
   else if (o.name !== "ReadFailedError") f.push(`stopped with ${o.name || "an unnamed error"} ("${o.message}"), not a ReadFailedError`);
   else if (o.source !== c.source) f.push(`ReadFailedError names source ${o.source}, expected ${c.source}`);
@@ -118,7 +128,7 @@ const verdict = (c: Case, o: Outcome): string[] => {
     console.log(`\n${c.id} — ${c.name}`);
     for (const n of names) {
       const o = await attempt(n.company, n.cik, c);
-      const f = verdict(c, o);
+      const f = verdict(c, o, n.company);
       if (f.length === 0) { passed++; console.log(`  ✓ ${n.company}: stopped with ReadFailedError (${o.source}), 0 model calls, ${o.maxAttempts} attempt(s)`); }
       else { failed++; failures.push(`${c.id} ${n.company}: ${f.join("; ")}`); console.log(`  ✗ ${n.company}: ${f.join("; ")}`); }
     }
@@ -128,7 +138,7 @@ const verdict = (c: Case, o: Outcome): string[] => {
   for (const n of !only || only.includes("CONTROL") ? names.slice(0, 2) : []) {
     const o = await attempt(n.company, n.cik, null);
     controls++;
-    const f = verdict({ ...CASES[0], source: "blob" }, o);
+    const f = verdict({ ...CASES[0], source: "blob" }, o, n.company);
     if (f.length > 0) { controlsFailedAsRequired++; console.log(`  ✓ control fails as required on ${n.company}: ${f[0]}`); }
     else console.log(`  ✗ CONTROL PASSED on ${n.company}: the check cannot tell a stopped build from a completed one`);
   }
