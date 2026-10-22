@@ -18,6 +18,17 @@
  *   K6  filings aging out of EDGAR's recent window (the Encompass Form 4 case:
  *       the oldest 8-K/10-Q/10-K drop off the catalog) do not move it
  *       control: the whole-catalog fingerprint
+ *   D1  an unrelated filing (an Item 5.02 8-K; EDGAR's window aging out)
+ *       moves neither the dig's candidate list nor the key
+ *       control: candidates over every filing since the latest 10-K
+ *   D2  a new 10-K moves both the candidate list and the key
+ *       control: candidates over the 8-Ks alone
+ *   D3  a change to the candidate list alone (a 10-Q since the 10-K that
+ *       does not enter the read set) moves the key: the list is in the key
+ *       control: a key over the read set alone
+ *   D4  a document the dig opens joins the recorded read set, with its
+ *       content hash; the loop records it
+ *       control: a record that leaves the dug document out
  *   K7  one deciding function: the loop, checkFree and preflight all decide
  *       what is read through readSetOf and build the key through
  *       readSetFingerprint; none selects filings or hashes the catalog itself
@@ -89,6 +100,74 @@ type KeyFn = (i: KeyInputs) => string;
     }
   }
 
+
+  // ── the dig, under the read-set rule ──
+  const candidatesOf: (f: FilingEntry[]) => FilingEntry[] = mod?.digCandidatesOf ?? (() => []);
+  if (!mod?.digCandidatesOf) console.log("\n(digCandidatesOf does not exist yet: the candidate list is empty and outside the key — the before count)");
+  const ids = (fs: FilingEntry[]) => fs.map((f) => f.accessionNumber).join(",");
+  const latest10K = (fs: FilingEntry[]) => [...fs].sort((a, b) => (a.filingDate < b.filingDate ? 1 : -1)).find((f) => f.form === "10-K");
+  const everySince10K = (fs: FilingEntry[]) => { const k = latest10K(fs); return fs.filter((f) => k && f.filingDate >= k.filingDate); };
+  const eightKsOnly = (fs: FilingEntry[]) => readSetOf(fs).filter((f) => f.form === "8-K");
+  const readSetOnlyKey: KeyFn = (i) => sha(readSetOf(i.filings).map((f) => `${f.accessionNumber}|${i.contentHash(f.primaryDocUrl)}`).join(",") + i.promptVersion);
+  const dayAfter = (iso: string) => new Date(Date.parse(`${iso}T00:00:00Z`) + 864e5).toISOString().slice(0, 10);
+
+  interface DRule { id: string; name: string; moves: boolean; change: (c: Catalog) => [FilingEntry[], FilingEntry[]] | null; controlCands: (f: FilingEntry[]) => FilingEntry[]; controlName: string }
+  const DRULES: DRule[] = [
+    { id: "D1", name: "an unrelated 8-K (Item 5.02) moves neither the candidate list nor the key", moves: false, change: (c) => [c.filings, withNew(c, synth(c, "8-K", "5.02", 11))], controlCands: everySince10K, controlName: "candidates over every filing since the latest 10-K" },
+    { id: "D1", name: "EDGAR's window aging out moves neither the candidate list nor the key", moves: false, change: (c) => [c.filings, c.filings.slice(0, c.filings.length - 3)], controlCands: (f) => f.slice(-3), controlName: "candidates over the oldest filings EDGAR returns" },
+    { id: "D2", name: "a new 10-K moves both the candidate list and the key", moves: true, change: (c) => [c.filings, withNew(c, synth(c, "10-K", "", 12))], controlCands: eightKsOnly, controlName: "candidates over the 8-Ks alone" },
+  ];
+  for (const r of DRULES) {
+    console.log(`\n${r.id} — ${r.name}`);
+    for (const c of catalogs) {
+      const [fa, fb] = r.change(c)!;
+      const candMoved = ids(candidatesOf(fa)) !== ids(candidatesOf(fb));
+      const keyMoved = underTest(base(c, fa)) !== underTest(base(c, fb));
+      const ok = candMoved === r.moves && keyMoved === r.moves;
+      if (ok) { passed++; console.log(`  ✓ ${c.company}: candidates ${candMoved ? "move" : "stay"}, key ${keyMoved ? "moves" : "stays"}`); }
+      else { failed++; failures.push(`${r.id} ${c.company}: candidates ${candMoved ? "moved" : "stayed"}, key ${keyMoved ? "moved" : "stayed"}`); console.log(`  ✗ ${c.company}: candidates ${candMoved ? "moved" : "stayed"}, key ${keyMoved ? "moved" : "stayed"}; the rule says both ${r.moves ? "move" : "stay"}`); }
+      controls++;
+      if ((ids(r.controlCands(fa)) !== ids(r.controlCands(fb))) !== r.moves) controlsFailed++;
+      else console.log(`  ✗ CONTROL PASSED on ${c.company}: ${r.controlName} also satisfies the rule`);
+    }
+  }
+
+  console.log(`\nD3 — a change to the candidate list alone moves the key (the list is part of the key)`);
+  for (const c of catalogs) {
+    const k = latest10K(c.filings);
+    const qs = c.filings.filter((f) => f.form === "10-Q" && k && f.filingDate > k.filingDate);
+    if (!k || qs.length < 2) { console.log(`  · ${c.company}: fewer than two 10-Qs since the latest 10-K, so no 10-Q can join the candidates without joining the read set — not constructible here`); continue; }
+    const extra: FilingEntry = { ...synth(c, "10-Q", "", 13), filingDate: dayAfter(k.filingDate), reportDate: k.reportDate };
+    const fb = [...c.filings, extra];
+    if (ids(readSetOf(c.filings)) !== ids(readSetOf(fb))) { failed++; failures.push(`D3 ${c.company}: the constructed 10-Q entered the read set`); continue; }
+    const candMoved = ids(candidatesOf(c.filings)) !== ids(candidatesOf(fb));
+    const keyMoved = underTest(base(c)) !== underTest(base(c, fb));
+    if (candMoved && keyMoved) { passed++; console.log(`  ✓ ${c.company}: read set unchanged, candidates and key move`); }
+    else { failed++; failures.push(`D3 ${c.company}: candidates ${candMoved ? "moved" : "stayed"}, key ${keyMoved ? "moved" : "stayed"}`); console.log(`  ✗ ${c.company}: read set unchanged; candidates ${candMoved ? "moved" : "stayed"}, key ${keyMoved ? "moved" : "stayed"}`); }
+    controls++;
+    if (readSetOnlyKey(base(c)) === readSetOnlyKey(base(c, fb))) controlsFailed++;
+    else console.log(`  ✗ CONTROL PASSED on ${c.company}: a key over the read set alone moved`);
+  }
+
+  console.log(`\nD4 — a document the dig opens joins the recorded read set`);
+  {
+    const record = mod?.recordedReadSet as undefined | ((baseDocs: { url: string; text: string; filing: FilingEntry }[], dug: { url: string; text: string; filing: FilingEntry }[]) => { url: string; contentHash: string; via: string }[]);
+    for (const c of catalogs) {
+      const rs = readSetOf(c.filings);
+      const outside = c.filings.find((f) => !rs.some((r) => r.accessionNumber === f.accessionNumber))!;
+      const baseDocs = rs.map((f) => ({ url: f.primaryDocUrl, text: textOf(f.primaryDocUrl), filing: f }));
+      const dug = [{ url: outside.primaryDocUrl, text: textOf(outside.primaryDocUrl), filing: outside }];
+      const rec = record ? record(baseDocs, dug) : baseDocs.map((d) => ({ url: d.url, contentHash: "", via: "base" }));
+      const hit = rec.find((r) => r.url === outside.primaryDocUrl);
+      if (hit && hit.via === "dig" && hit.contentHash === createHash("sha256").update(textOf(outside.primaryDocUrl)).digest("hex") && rec.length === rs.length + 1) { passed++; console.log(`  ✓ ${c.company}: ${rec.length} documents recorded, the dug one with its content hash`); }
+      else { failed++; failures.push(`D4 ${c.company}: the dug document is ${hit ? "recorded without its hash or source" : "not recorded"}`); console.log(`  ✗ ${c.company}: the dug document is ${hit ? "recorded without its hash or source" : "not recorded"}`); }
+    }
+    controls++;
+    const leaky = (baseDocs: { url: string }[]) => baseDocs.map((d) => ({ url: d.url, contentHash: "", via: "base" }));
+    if (!leaky([{ url: "a" }]).some((r) => r.via === "dig")) controlsFailed++;
+    else console.log("  ✗ CONTROL PASSED: a record leaving the dug document out was accepted");
+  }
+
   // K7 — one deciding function, read off the source.
   console.log(`\nK7 — one deciding function for the loop, checkFree and preflight`);
   // The loop and checkFree decide through the read-set module itself; preflight may do so through checkFree.
@@ -98,6 +177,10 @@ type KeyFn = (i: KeyInputs) => string;
     if (/selectBaselineFilings\s*\(/.test(code)) f.push("selects filings itself (selectBaselineFilings)");
     if (/corpusFingerprint\s*\(/.test(code)) f.push("hashes the whole catalog (corpusFingerprint)");
     if (!via.test(code)) f.push("does not decide its reads through readSetOf / resolveReadSet");
+    // The dig's target comes from the candidate list, never from the whole filing list.
+    if (/filings\.find\([^;]*digHint/.test(code)) f.push("finds the dig target in the whole filing list, not the candidate list");
+    if (/digHint/.test(code) && !/digCandidates/.test(code)) f.push("digs without the candidate list");
+    if (/digHint/.test(code) && !/recordedReadSet\s*\(/.test(code)) f.push("does not record what the dig opens");
     return f;
   };
   for (const file of ["lib/agent/loop.ts", "lib/cache/freeRun.ts", "lib/cache/preflight.ts"]) {
@@ -106,6 +189,9 @@ type KeyFn = (i: KeyInputs) => string;
   }
   controls++;
   if (audit(`const baseline = selectBaselineFilings(filings); readSetOf(filings);`).length > 0) controlsFailed++;
+  else console.log("  ✗ CONTROL PASSED: a source selecting its own filings was not flagged");
+  controls++;
+  if (audit(`readSetOf(x); const digFiling = filingsResult.filings.find((f) => f.primaryDocUrl === v.digHint);`).length > 0) controlsFailed++;
   else console.log("  ✗ CONTROL PASSED: a source selecting its own filings was not flagged");
 
   console.log(`\n${passed} passed, ${failed} failed; negative controls ${controlsFailed} of ${controls} failed as required.`);
