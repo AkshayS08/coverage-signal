@@ -1001,6 +1001,32 @@ export function buildCard(i: CardInputs): Card {
   const lenderFacilities = facilities.filter((f) => !(f.category === "commercial-paper" || classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType === "commercial-paper"));
   /** The facility a filing states backs the commercial paper: named by the backing sentence, or the only lender facility. */
   const cpBackerOf = () => (cpBacking ? lenderFacilities.find((x) => containsWord(x.name, cpBacking.backedBy!.value)) ?? (lenderFacilities.length === 1 ? lenderFacilities[0] : null) : null);
+  /**
+   * SESSION 27 (Akshay, Oct 23, 2026) — LIQUIDITY NEVER DROPS A COMPONENT
+   * BECAUSE ANOTHER FIELD CHANGED. One reading of a facility's undrawn
+   * capacity, for both liquidity views: the stated availability where there
+   * is one; otherwise its size less what is drawn and the letters of credit
+   * outstanding, flagged for whatever of those is not stated; otherwise an
+   * explicit "availability not stated". The commercial paper a facility backs
+   * is netted whenever it is stated, however the undrawn figure was reached.
+   */
+  const undrawnOf = (f: VerifiedFacility): { usd: number | null; parts: Part[]; basis: "stated" | "computed" | "not-stated"; flags: string[]; backsCp: { value: string; src: { sentence: string; url: string } } | null } => {
+    const fs = (field: string, sentence: string) => src(sentence, f.figureSources?.[field] ?? f.citedUrl);
+    const backsCp = cpBacking && cpBackerOf() === f ? cpBacking.outstanding! : null;
+    const cpPart: Part[] = backsCp ? [{ printed: backsCp.value, usd: -(parseMoneyAmount(backsCp.value) ?? 0), src: src(backsCp.src.sentence, backsCp.src.url) }] : [];
+    if (f.available) {
+      const parts: Part[] = [{ printed: f.available.value, usd: parseMoneyAmount(f.available.value) ?? 0, src: fs("available", f.available.sourceLine) }, ...cpPart];
+      return { usd: parts.reduce((a, x) => a + x.usd, 0), parts, basis: "stated", flags: [], backsCp };
+    }
+    if (f.facilitySize && !borrowingBaseOf(f)) {
+      const parts: Part[] = [{ printed: f.facilitySize.value, usd: parseMoneyAmount(f.facilitySize.value) ?? 0, src: fs("facilitySize", f.facilitySize.sourceLine) }];
+      for (const [field, fig] of [["drawn", f.drawn], ["lettersOfCredit", f.lettersOfCredit]] as const) if (fig) parts.push({ printed: fig.value, usd: -(parseMoneyAmount(fig.value) ?? 0), src: fs(field, fig.sourceLine) });
+      const flags = [...(f.drawn ? [] : ["drawn not stated"]), ...(f.lettersOfCredit ? [] : ["letters of credit outstanding not stated"])];
+      parts.push(...cpPart);
+      return { usd: parts.reduce((a, x) => a + x.usd, 0), parts, basis: "computed", flags, backsCp };
+    }
+    return { usd: null, parts: [], basis: "not-stated", flags: ["availability not stated"], backsCp };
+  };
   for (const f of facilities) {
     const kind = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;
     if (f.category === "commercial-paper" || kind === "commercial-paper") {
@@ -1025,22 +1051,17 @@ export function buildCard(i: CardInputs): Card {
     const line: Line = [typeLabel(pseudo, fsrc("facilitySize", sizeSentence)), t(" ")];
     if (f.facilitySize) line.push({ k: "figure", t: displayAmount(f.facilitySize.value, f.facilitySize.sourceLine), printed: f.facilitySize.value, src: fsrc("facilitySize", f.facilitySize.sourceLine) }, t(" facility, "));
     const bb = borrowingBaseOf(f);
-    if (f.available) {
-      const usd = parseMoneyAmount(f.available.value) ?? 0;
+    const ud = undrawnOf(f);
+    if (ud.basis === "stated" && f.available) {
       line.push({ k: "figure", t: displayAmount(f.available.value, f.available.sourceLine), printed: f.available.value, src: fsrc("available", f.available.sourceLine) }, t(bb ? " available as stated (borrowing-base limited)" : " available as stated"));
-      liqParts.push({ printed: f.available.value, usd, src: fsrc("available", f.available.sourceLine) });
-      // v3.2 §2.4 (Akshay's ruling): commercial paper a facility backs has spoken for that capacity.
-      if (cpBacking && cpBackerOf() === f) {
-        const o = cpBacking.outstanding!;
-        liqParts.push({ printed: o.value, usd: -(parseMoneyAmount(o.value) ?? 0), src: src(o.src.sentence, o.src.url) });
-      }
+      // v3.2 §2.4 (Akshay's ruling): commercial paper a facility backs has spoken for that capacity (in ud.parts).
+      liqParts.push(...ud.parts);
       if (f.asOfDate !== periodEnd) liqComputable = false;
-    } else if (f.facilitySize && !bb) {
-      const parts = [{ printed: f.facilitySize.value, usd: parseMoneyAmount(f.facilitySize.value) ?? 0, src: fsrc("facilitySize", f.facilitySize.sourceLine) }];
-      for (const [field, fig] of [["drawn", f.drawn], ["lettersOfCredit", f.lettersOfCredit]] as const) if (fig) parts.push({ printed: fig.value, usd: -(parseMoneyAmount(fig.value) ?? 0), src: fsrc(field, fig.sourceLine) });
-      const usd = parts.reduce((a, p) => a + p.usd, 0);
-      line.push({ k: "computed", t: displayUsd(usd, false, dp(parts)), usd, parts }, t(" available (size less drawn and letters of credit; no availability stated)"));
-      liqParts.push(...parts);
+    } else if (ud.basis === "computed") {
+      const own = ud.parts.filter((x) => !ud.backsCp || x.printed !== ud.backsCp.value);
+      const usd = own.reduce((a, p) => a + p.usd, 0);
+      line.push({ k: "computed", t: displayUsd(usd, false, dp(own)), usd, parts: own }, t(` available (size less drawn and letters of credit; no availability stated${ud.flags.length ? `; ${ud.flags.join(", ")}, so it may be lower` : ""})`));
+      liqParts.push(...ud.parts);
     } else {
       line.push({ k: "notStated", t: "availability not stated", src: fsrc("facilitySize", sizeSentence) });
       liqComputable = false;
@@ -1801,19 +1822,30 @@ export function buildCard(i: CardInputs): Card {
     liqLegend.push({ color: PALETTE.cash, label: [{ k: "label", t: filerLabel, stated: filerLabel, src: s0 }], amount: { k: "figure", t: displayAmount(i.cash.printed, i.cash.printedLine), printed: i.cash.printed, src: s0 } });
   }
   for (const f of lenders) {
-    if (!f.available) continue;
-    const fsrc = src(f.available.sourceLine, f.figureSources?.available ?? f.citedUrl);
-    const usd = parseMoneyAmount(f.available.value) ?? 0;
+    // Session 27: never skipped for want of a stated availability (undrawnOf).
+    const ud = undrawnOf(f);
+    const anyFig = f.available ?? f.facilitySize ?? f.drawn ?? f.maturity;
+    if (!anyFig) continue;
+    const fsrc = src(anyFig.sourceLine, f.figureSources?.[f.available ? "available" : "facilitySize"] ?? f.citedUrl);
+    const usd = f.available ? parseMoneyAmount(f.available.value) ?? 0 : 0;
     const m = facilityMaturityAtItsSentence(f);
     // The type word links to a sentence of the facility's own that names it.
     const typeWord = classifyInstrument({ headings: [], instrumentName: f.name });
     const typeSrc = [fsrc, ...[f.facilitySize, f.drawn, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => src(x.sourceLine, f.figureSources?.facilitySize ?? f.citedUrl))].find((x) => containsWord(x.sentence, typeWord.instrumentTypeStatedAs ?? f.name) || containsWord(x.sentence, f.name));
     const type: Segment = typeSrc ? typeLabel({ instrument: f.name, classification: typeWord }, typeSrc) : t(typeLabel({ instrument: f.name, classification: typeWord }, fsrc).t);
-    const backsCp = cpBacking && cpBackerOf() === f ? cpBacking.outstanding! : null;
-    const net = backsCp ? usd - (parseMoneyAmount(backsCp.value) ?? 0) : usd;
-    const netParts: Part[] = backsCp ? [{ printed: f.available.value, usd, src: fsrc }, { printed: backsCp.value, usd: -(parseMoneyAmount(backsCp.value) ?? 0), src: src(backsCp.src.sentence, backsCp.src.url) }] : [];
-    liqSegments.push({ usd: net, color: PALETTE.undrawn, title: f.name });
-    liqLegend.push({ color: PALETTE.undrawn, label: [t("Undrawn "), type, ...(m.kind === "dated" ? [t(", matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: src(m.sentence, f.figureSources?.maturity ?? f.citedUrl) } as Segment] : [])], amount: backsCp ? { k: "computed", t: displayUsd(net, netParts.some(hedgedPart), dp(netParts)), usd: net, parts: netParts } : { k: "figure", t: displayAmount(f.available.value, f.available.sourceLine), printed: f.available.value, src: fsrc } });
+    const backsCp = ud.backsCp;
+    const net = ud.usd ?? 0;
+    void usd;
+    if (ud.usd !== null) liqSegments.push({ usd: net, color: PALETTE.undrawn, title: f.name });
+    const amount: Segment = ud.basis === "not-stated"
+      ? { k: "notStated", t: "availability not stated", src: fsrc }
+      : ud.basis === "stated" && !backsCp && f.available
+        ? { k: "figure", t: displayAmount(f.available.value, f.available.sourceLine), printed: f.available.value, src: fsrc }
+        : { k: "computed", t: displayUsd(net, ud.parts.some(hedgedPart), dp(ud.parts)), usd: net, parts: ud.parts };
+    liqLegend.push({ color: PALETTE.undrawn, label: [t("Undrawn "), type, ...(m.kind === "dated" ? [t(", matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: src(m.sentence, f.figureSources?.maturity ?? f.citedUrl) } as Segment] : [])], amount });
+    // An uncertain component is flagged, never omitted.
+    if (ud.basis === "computed") liqNotes.push([t(`Undrawn ${type.t} computed as size less drawn and letters of credit; no availability stated${ud.flags.length ? `, and ${ud.flags.join(", ")}, so it may be lower` : ""}.`)]);
+    if (ud.basis === "not-stated") liqNotes.push([t(`Undrawn ${type.t}: availability not stated, and its size cannot be reduced to an undrawn figure (borrowing-base limited or no size stated).`)]);
     if (backsCp) liqNotes.push([t(`Undrawn ${type.t} shown net of `), { k: "figure", t: displayAmount(backsCp.value, backsCp.src.sentence), printed: backsCp.value, src: src(backsCp.src.sentence, backsCp.src.url) }, t(" commercial paper it "), { k: "label", t: "backs", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(". Commercial paper itself is not counted as liquidity.")]);
     if (borrowingBaseOf(f)) liqNotes.push([t("Borrowing-base limited; stated availability shown.")]);
   }
@@ -2031,6 +2063,9 @@ export function buildCard(i: CardInputs): Card {
     for (const fl of facts) bold.push(t(" · "), ...fl);
     const sub: Line = [];
     for (const sf of subsFor.get(f) ?? []) { const note = directedNote(sf.amount.src.url); sub.push(...(sub.length ? [t(" ")] : []), t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`} `), factFig(sf.amount), t(`, capacity only${note ? `, ${note}` : ""}.`)); }
+    // Session 27: a letters-of-credit figure its own sentence predicates as capacity is shown as capacity, where no sub-facility line already states it.
+    const lcCap = (f as any).lettersOfCreditCapacity as { value: string; sourceLine: string } | undefined;
+    if (lcCap && !(subsFor.get(f) ?? []).some((sf) => /letter/i.test(sf.kind))) sub.push(...(sub.length ? [t(" ")] : []), t("Letter-of-credit capacity "), { k: "figure", t: displayAmount(lcCap.value, lcCap.sourceLine), printed: lcCap.value, src: src(lcCap.sourceLine, f.figureSources?.lettersOfCreditCapacity ?? f.citedUrl) }, t(", capacity only."));
     const lcWithheld = (dm?.facilityRejections ?? []).some((r: any) => r.facility === f.name && r.field === "lettersOfCredit");
     if (kind === "facility" && !f.lettersOfCredit) sub.push(...(sub.length ? [t(" ")] : []), lcWithheld ? t("Letters of credit withheld, see Not shown.") : { k: "notStated", t: "Letters of credit outstanding not stated.", src: own });
     if (kind === "facility" && !f.available) sub.push(...(sub.length ? [t(" ")] : []), { k: "notStated", t: "Availability not stated.", src: own });
