@@ -48,8 +48,10 @@ import { cachedBaseClassification } from "./answerCache";
 import { Messages } from "@anthropic-ai/sdk/resources/messages";
 
 type Fault = "error" | "404" | "hang";
-// Short enough to keep the suite quick; production's default is 60s. Set before any read runs.
-process.env.READ_TIMEOUT_MS = "1500";
+// Short enough to keep the hang cases quick; production's default is 60s.
+// Set for the H cases ONLY: applied process-wide it cuts off ordinary slow
+// reads (a filer's ~10MB company facts) and the other cases fail for it.
+const HANG_TIMEOUT_MS = "1500";
 const DEADLINE_MS = 30_000;
 type Rule = (origin: string, path: string, method?: string) => Fault | null;
 const stats = { model: 0, attempts: new Map<string, number>(), requests: [] as string[] };
@@ -126,6 +128,7 @@ async function attempt(company: string, cik: string, c: Case | null): Promise<Ou
   let out: Outcome;
   try {
     answerProceedsUse = c?.id === "W1";
+    if (c?.id.startsWith("H")) process.env.READ_TIMEOUT_MS = HANG_TIMEOUT_MS; else delete process.env.READ_TIMEOUT_MS;
     const run = !c || c.run === "loop" ? runAgentLoop(company) : c.run === "checkFree" ? checkFree(company) : cachedBaseClassification(cik, `s27-write-test-${cik}`, async () => [] as unknown[]);
     let timer: NodeJS.Timeout | undefined;
     const hung = await Promise.race([run.then(() => false), new Promise<boolean>((r) => { timer = setTimeout(() => r(true), DEADLINE_MS); })]);
@@ -167,7 +170,7 @@ const verdict = (c: Case, o: Outcome, company = ""): string[] => {
     for (const n of names.filter((x) => !c.only || c.only.test(x.company))) {
       const o = await attempt(n.company, n.cik, c);
       const f = verdict(c, o, n.company);
-      if (f.length === 0) { passed++; console.log(`  ✓ ${n.company}: stopped with ReadFailedError (${o.source}), 0 model calls, ${o.maxAttempts} attempt(s)`); }
+      if (f.length === 0) { passed++; console.log(`  ✓ ${n.company}: stopped with ${o.name} (${o.source}), ${o.model} model call(s), ${o.maxAttempts} attempt(s)`); }
       else { failed++; failures.push(`${c.id} ${n.company}: ${f.join("; ")}`); console.log(`  ✗ ${n.company}: ${f.join("; ")}`); }
     }
   }

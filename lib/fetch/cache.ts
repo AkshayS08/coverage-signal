@@ -1,5 +1,5 @@
 import { get, put } from "@vercel/blob";
-import { ReadFailedError, blobRead } from "./readError";
+import { ReadFailedError, WriteFailedError, blobRead, blobWrite } from "./readError";
 
 /**
  * Generic Blob-backed key/value cache. Used by the document cache (this
@@ -96,18 +96,21 @@ export async function readCache<T>(
 export async function writeCache(relPath: string, data: unknown): Promise<void> {
   const token = requireBlobToken();
   const envelope: CacheEnvelope<unknown> = { cachedAt: new Date().toISOString(), data };
+  // SESSION 27: the write and at most two retries, then a named error.
+  const body = JSON.stringify(envelope, null, 2);
   try {
-    await put(relPath, JSON.stringify(envelope, null, 2), {
-      access: "public",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: "application/json",
-      token,
-    });
-  } catch (err) {
-    throw new Error(
-      `Blob cache write failed for "${relPath}": ${err instanceof Error ? err.message : String(err)}`
+    await blobWrite((abortSignal) =>
+      put(relPath, body, {
+        access: "public",
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        contentType: "application/json",
+        token,
+        abortSignal,
+      })
     );
+  } catch (err) {
+    throw new WriteFailedError(`the cache write of "${relPath}"`, err);
   }
 }
 

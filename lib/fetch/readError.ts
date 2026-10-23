@@ -32,6 +32,30 @@ export class ReadFailedError extends Error {
 export const isReadFailed = (e: unknown): e is ReadFailedError => e instanceof ReadFailedError;
 
 /**
+ * SESSION 27 (Akshay, Oct 22, 2026) — A FAILED WRITE AFTER A BILLED CALL IS
+ * AN ERROR, NEVER SWALLOWED. The write is the paid answer: in the canonical
+ * run Tenet's proceeds-use call billed, its blob write failed on a network
+ * drop, and a catch-all left the field null, so the answer was lost and the
+ * next run would buy it again. A write is retried at most twice (the same
+ * write; `put` overwrites, so a retry cannot duplicate), then this.
+ */
+export class WriteFailedError extends Error {
+  readonly source: "blob";
+  readonly what: string;
+  constructor(what: string, cause: unknown) {
+    const detail = cause instanceof Error ? cause.message + (cause.cause instanceof Error ? ` (${cause.cause.message})` : "") : String(cause);
+    super(`WRITE FAILED (blob): ${what}: ${detail}. The build stops here: an answer that was paid for and not stored is not dropped silently.`);
+    this.name = "WriteFailedError";
+    this.source = "blob";
+    this.what = what;
+    this.cause = cause;
+  }
+}
+export const isWriteFailed = (e: unknown): e is WriteFailedError => e instanceof WriteFailedError;
+/** A failed read or write: what no catch in the build may turn into a fallback. */
+export const isIoFailed = (e: unknown): boolean => isReadFailed(e) || isWriteFailed(e);
+
+/**
  * The read and at most two retries of the SAME read, with a short pause
  * between. A read that never answers is a failed read too: each attempt is
  * cut off after `readTimeoutMs()` (its AbortSignal fires and the attempt is
@@ -79,6 +103,9 @@ export async function retryRead<T>(read: (signal: AbortSignal) => Promise<T>, re
  * client's own are set to zero for the call. (Only API calls such as `head`
  * read that setting; `get` fetches the blob directly and never retried.)
  */
+/** A blob write: the same shape as a blob read (the write and two retries, ours, each cut off by the timeout). */
+export const blobWrite = <T>(write: (signal: AbortSignal) => Promise<T>): Promise<T> => blobRead(write);
+
 export async function blobRead<T>(read: (signal: AbortSignal) => Promise<T>): Promise<T> {
   const prev = process.env.VERCEL_BLOB_RETRIES;
   process.env.VERCEL_BLOB_RETRIES = "0";
