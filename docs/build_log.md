@@ -7281,3 +7281,23 @@ equals its golden, with only the derived lines' source text re-transcribed
 identical, with two internal `printed` fields recording "$ —" for "$ 0
 million"; Cigna's labels fail the verbatim rule and its card lost the
 undrawn revolver to two model variances. Re-tastes held.
+
+### Session 27, Stage 1: the Oct 23 rulings, and a fill over its ceiling
+
+Full account: sessions/27/stage1_checkpoint4.md.
+
+Built at $0, tests first: a tolerated class for 9b and golden comparison (a
+re-transcribed source line, verbatim in its row's document and stating the
+amount); one canonical internal form for a stated zero ("$0"), at storage
+and comparison; a letters-of-credit figure is outstanding only where its own
+clause predicates outstanding or issued, and capacity otherwise; liquidity
+never drops a component because another field changed (one undrawnOf for
+both views, the CP netting either way, uncertain components flagged); the
+name check is case-insensitive and a name not in its sentence renders as the
+plain type; narration spend is written to the ledger.
+
+**Finding: an approved fill billed over its ceiling.** Tenet's proceeds-use
+refill was approved up to $0.064 and billed $0.0738: the estimate came from
+the v31 call's tokens, and this call's bounded input was larger. A gate can
+measure a call but not stop one mid-way; the next declaration prices from
+the current input's size, not a prior call's. The narration pass did not run.
