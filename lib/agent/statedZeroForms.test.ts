@@ -20,7 +20,8 @@
  */
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { isZeroValue } from "./statedZero";
+import * as statedZero from "./statedZero";
+const { isZeroValue } = statedZero;
 import { verifyFacilities } from "./verifyFacility";
 
 let passed = 0, failed = 0;
@@ -69,6 +70,30 @@ if (existsSync(replayPath)) {
   const r = verifyFacilities({ facilities: [fac], textByUrl, anchorReportDate: dm.debtScheduleSourceFiling?.reportDate ?? null });
   assert(!!rej && rej.value === "$ —", `[Z3] the v33 answer wrote the ABL's drawn figure as "${rej?.value}"`);
   assert((r.verified[0] as any)?.drawn?.value === "$ —", `[Z3] and it verifies as a stated zero against "${(rej?.sourceLine ?? "").slice(0, 70)}…"`);
+}
+
+// ── Z4-Z5 (Akshay, Oct 23): ONE canonical internal form for a stated zero, before storage and comparison (Rule 67's principle) ──
+console.log("\n=== Z4: every printed zero has one canonical form; a quantity keeps its own ===");
+const canonical = (statedZero as any).canonicalZero as ((v: string) => string) | undefined;
+const CANON = (statedZero as any).CANONICAL_ZERO as string | undefined;
+for (const z of ["$ —", "$—", "—", "$0", "$ 0 million", "$0 thousand", "nil", "none", "None", "zero"]) assert(!!canonical && canonical(z) === CANON, `[Z4] "${z}" is stored as ${CANON ?? "(no canonical form)"}`);
+for (const q of ["$ 32 million", "$ 751 million", "$1.0 billion"]) assert(!!canonical && canonical(q) === q, `[Z4] "${q}" keeps its own form`);
+assert(!!canonical && canonical("$ 32 million") !== CANON, `[Z4 control] a quantity is never the canonical zero`);
+
+console.log("\n=== Z5: over all six, every stored facility zero is canonical, every quantity untouched ===");
+const canonFacilities = (statedZero as any).canonicalizeFacilityZeros as ((f: any[]) => any[]) | undefined;
+for (const f of readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x))) {
+  const s0 = JSON.parse(readFileSync(join(IN, f), "utf-8"));
+  const facs = s0.result.results.find((t: any) => t.triggerId === "debt-maturity")?.facilities ?? [];
+  const out = canonFacilities ? canonFacilities(facs) : facs;
+  let zerosHere = 0, ok = true;
+  for (const [i, fac] of facs.entries()) for (const field of FIELDS) {
+    const before = fac[field]?.value, after = out[i]?.[field]?.value;
+    if (!before) continue;
+    if (isZeroValue(before)) { zerosHere++; if (after !== CANON) ok = false; } else if (after !== before) ok = false;
+    if (out[i]?.[field]?.sourceLine !== fac[field].sourceLine) ok = false;
+  }
+  assert(!!canonFacilities && ok, `[Z5:${s0.company}] ${zerosHere} stated zero(s) canonical, every quantity and every sentence untouched`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);
