@@ -1,0 +1,30 @@
+
+TENET HEALTHCARE CORP ($0.0000): POSITION CHANGED — a finding to explain before any signing
+    cards[0].derived["months-to-maturity"].inputs: expected 5.125 % due 2027 $ 1,500   $ 1,500, got Senior secured first lien notes:     5.125 % due 2027 1,500
+    cards[0].derived["next-tranche"].inputs: expected 5.125 % due 2027 $ 1,500   $ 1,500,4.625 % due 2028 $ 600   $ 600, got Senior secured first lien notes:     5.125 % due 2027 1,500,4.625 % due 2028 600
+    stability: the same position with and without the 2 redemption claim(s) and 4 note-prose retirement(s) the signed answer did not have
+
+Encompass Health Corp ($0.0000): ZERO POSITION CHANGE against the signed v31 golden
+    stability: the same position with and without the 1 redemption claim(s) and 1 note-prose retirement(s) the signed answer did not have
+
+DAVITA INC. ($0.0000): ZERO POSITION CHANGE against the signed v31 golden
+    stability: the same position with and without the 0 redemption claim(s) and 0 note-prose retirement(s) the signed answer did not have
+
+COMMUNITY HEALTH SYSTEMS INC ($0.0000): POSITION CHANGED — a finding to explain before any signing
+    rows["ABL Facility"].provenance: expected "note", got "note-narrative"
+    stability: the same position with and without the 0 redemption claim(s) and 2 note-prose retirement(s) the signed answer did not have
+
+MOLINA HEALTHCARE, INC. ($0.0000): ZERO POSITION CHANGE against the signed v31 golden
+    stability: the same position with and without the 0 redemption claim(s) and 0 note-prose retirement(s) the signed answer did not have
+
+Cigna Group ($0.0000): POSITION CHANGED — a finding to explain before any signing
+    accepted: Rule 66: ci-20251231.htm joins the position identity as the labelled prior-period base (it was already cited)
+    label "commercial paper program" → "Commercial Paper Program" NOT accepted: not verbatim in its sentence "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 20…"
+    roll delta label "1.250 % senior notes" → "$ 550 million, 1.250 % Notes due March 2026" NOT accepted: not verbatim in its sentence
+    roll delta label "commercial paper program" → "Commercial Paper Program" NOT accepted: not verbatim in its sentence
+    rolled.deltas[0].instrument: expected "1.250 % senior notes", got "$ 550 million, 1.250 % Notes due March 2026"
+    rolled.deltas[0].date: expected "2026-03-01", got "2026-03"
+    rolled.deltas[1].instrument: expected "commercial paper program", got "Commercial Paper Program"
+    stability: the same position with and without the 0 redemption claim(s) and 0 note-prose retirement(s) the signed answer did not have
+
+3 of 6 with zero position change.
