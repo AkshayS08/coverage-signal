@@ -7247,3 +7247,37 @@ twice or its amount moves, it is counted again.
 **Finding, not fixed: a failed write after a paid call is swallowed.**
 Tenet's proceeds-use answer billed, its blob write failed on a network drop,
 and the catch-all left it null. Step 4 closed that catch for reads only.
+
+### Session 27, Stage 1: the rulings of Oct 22 applied, at $0
+
+Full account: sessions/27/stage1_checkpoint3.md.
+
+**RULE: a failed write after a billed call is an error, never swallowed.**
+A write is the write and two retries, then a named WriteFailedError. Tenet's
+canonical proceeds-use answer was lost to a swallowed write.
+
+**RULE: a retirement is dated by the document that states it.** Every
+redemption claim used to take the trigger's first citation's date, so
+Tenet's November 2025 redemptions (stated in its 2025 10-K) were treated as
+events of a September 2026 8-K and subtracted from a June balance that
+already held them. One decision, classifyRedeemsClaims, read by the
+position, Tier 2, the refinancing pattern and the card's move sizes:
+(a) done by the position date is in the balance, an event, never subtracted
+again (a row the note itself carries at nil may still be retired by it,
+which subtracts nothing); (b) a partial retirement leaves the row live with
+its remainder; (c) a redemption set for a later date is pending until a
+filing after that date confirms it.
+
+**Rule 53 over every printed zero.** "$ —" is a stated zero like "$ 0
+million". CHS's ABL drawn figure was rejected for its dash.
+
+**Acceptance N1:** every displayed instrument name is verbatim, whitespace
+aside, in the sentence it cites.
+
+After a $0 replay of the six cached v33 answers through this code:
+Encompass, DaVita and Molina show zero position change; Tenet's position
+equals its golden, with only the derived lines' source text re-transcribed
+(verbatim in the 10-Q where the signed text was not); CHS's card text is
+identical, with two internal `printed` fields recording "$ —" for "$ 0
+million"; Cigna's labels fail the verbatim rule and its card lost the
+undrawn revolver to two model variances. Re-tastes held.
