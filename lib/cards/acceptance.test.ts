@@ -978,8 +978,9 @@ const N1_VERBATIM: Test = {
   id: "N1", name: "every displayed instrument name is a verbatim substring of its cited sentence",
   run: (card) => {
     if (!card.v3) return ["no v3 card"];
-    // Whitespace is not content: the filings' HTML-to-text spacing puts "3.400 %" where the filing prints 3.400%. Case is content.
-    const norm = (x: string) => x.replace(/\s+/g, "");
+    // Whitespace is not content (the filings' HTML-to-text spacing puts "3.400 %" where the filing prints 3.400%), and
+    // neither is case (Akshay, Oct 23): "Commercial Paper" names what "commercial paper program" states.
+    const norm = (x: string) => x.replace(/\s+/g, "").toLowerCase();
     const bad: string[] = [];
     for (const r of card.v3.table.rows) for (const seg of r.instrument as Segment[]) {
       if (seg.k !== "label") continue;
@@ -1287,12 +1288,12 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, [...real, ...real]).counted.length > 0, what: "the ruled residual failing twice" });
   }
 
-  // ── N1: a name read in another case than its sentence prints is not verbatim ──
+  // ── N1: a name its sentence does not contain (a paraphrase) is not verbatim. Re-casing no longer is (Oct 23). ──
   {
     const c = clone(cards.find((x) => /cigna/i.test(x.company))!);
-    const seg = c.v3!.table.rows.flatMap((r) => r.instrument as Segment[]).find((x) => x.k === "label" && /[a-z]/.test(x.stated)) as any;
-    if (seg) seg.stated = seg.stated.replace(/\b[a-z]/g, (ch: string) => ch.toUpperCase());
-    out.push({ id: "N1", failed: !!seg && N1_VERBATIM.run(c, null).length > 0, what: "a displayed name re-cased from its sentence (\"Commercial Paper\" for \"commercial paper\")" });
+    const seg = c.v3!.table.rows.flatMap((r) => r.instrument as Segment[]).find((x) => x.k === "label") as any;
+    if (seg) seg.stated = "Short-Term Funding Line";
+    out.push({ id: "N1", failed: !!seg && N1_VERBATIM.run(c, null).length > 0, what: "a displayed name its sentence does not contain (\"Short-Term Funding Line\")" });
   }
 
   // ── v3.3 negative controls ──

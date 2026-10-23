@@ -22,7 +22,8 @@ import * as build from "./build";
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const verbatimNameSegments = (build as any).verbatimNameSegments as ((segs: any[], instrument: string) => any[]) | undefined;
-const nameIn = (stated: string, sentence: string) => sentence.replace(/\s+/g, " ").toLowerCase().includes(stated.replace(/\s+/g, " ").toLowerCase().trim());
+// Whitespace removed, as in acceptance N1: the HTML-to-text spacing prints "3.400 %" for 3.400%.
+const nameIn = (stated: string, sentence: string) => sentence.replace(/\s+/g, "").toLowerCase().includes(stated.replace(/\s+/g, "").toLowerCase());
 
 const cpSentence = "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.";
 const rvSentence = "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030.";

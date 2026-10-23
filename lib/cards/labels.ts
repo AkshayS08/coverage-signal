@@ -28,7 +28,7 @@ import { kindOf } from "./headings";
 const SENIORITY_RE = /\b(senior(?:[- ]priority)?|junior[- ]priority|junior|subordinated)\b/i;
 const SECURITY_RE = /\b(unsecured|secured|first[- ]lien|second[- ]lien)\b/i;
 
-const TYPE_DISPLAY: Record<string, string> = {
+export const TYPE_DISPLAY: Record<string, string> = {
   "senior-note": "notes",
   "term-loan-a": "term loan A",
   "term-loan-b": "term loan B",

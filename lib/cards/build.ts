@@ -30,7 +30,7 @@ import { createTextLocator } from "../agent/verifyQuote";
 
 import type { BarSegment, Card, CardFacts, CardSection, CardV3, ChartBar, Fact, Line, PaletteColor, Segment, Source, Tag } from "./types";
 import { PALETTE } from "./types";
-import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord } from "./labels";
+import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, statementReaches, typeLabel, containsWord, TYPE_DISPLAY } from "./labels";
 import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
@@ -110,6 +110,33 @@ interface Item {
 
 function withCanonicalFacilityZeros(result: CompanyResult): CompanyResult {
   return { ...result, results: result.results.map((r) => (r.triggerId === "debt-maturity" && Array.isArray((r as any).facilities) ? ({ ...r, facilities: canonicalizeFacilityZeros((r as any).facilities) } as typeof r) : r)) };
+}
+
+/**
+ * SESSION 27 (Akshay, Oct 23, 2026) — THE NAME CHECK. Each label segment of a
+ * displayed instrument name must be in its own cited sentence, compared
+ * case-insensitively with whitespace removed (the HTML-to-text spacing puts
+ * "3.400 %" where the filing prints 3.400%). A name not found there renders
+ * as the plain instrument type, never the model's paraphrase: linked to the
+ * same sentence where the sentence prints the type word (or its stem, as
+ * "revolv" in "revolving"), and as plain text where it does not, so nothing
+ * unverbatim is ever shown as a linked name.
+ */
+export function verbatimNameSegments(segs: Segment[], instrument: string): Segment[] {
+  const squash = (x: string) => x.replace(/\s+/g, "").toLowerCase();
+  return segs.map((seg) => {
+    if (seg.k !== "label" || squash(seg.src.sentence).includes(squash(seg.stated))) return seg;
+    const c = classifyInstrument({ headings: [], instrumentName: instrument });
+    const word = (c.instrumentType && TYPE_DISPLAY[c.instrumentType]) || "instrument";
+    // The type word as the sentence prints it: the word itself, or its longest stem of five letters or more.
+    const lower = seg.src.sentence.toLowerCase();
+    let found: string | null = null;
+    for (let n = word.length; n >= Math.min(5, word.length); n--) {
+      const at = lower.indexOf(word.slice(0, n).toLowerCase());
+      if (at >= 0) { found = seg.src.sentence.slice(at, at + n); break; }
+    }
+    return found ? { k: "label", t: word, stated: found, src: seg.src } : t(word);
+  });
 }
 
 /** The same note: its coupon, and its year where it states one. */
@@ -2024,7 +2051,7 @@ export function buildCard(i: CardInputs): Card {
     const ns = !st && !mostlyNotStated ? notStatedPhrase(it) : null;
     return {
       matures: isCP(it) ? [t("Short-term")] : it.maturity ? [{ k: "date", t: whenOf(it.maturity), date: it.maturity.date, granularity: it.maturity.granularity, src: it.maturity.src }] : it.range ? [{ k: "label", t: `${it.range.from}–${it.range.to}`, stated: it.range.stated, src: it.range.src }] : [t("Various")],
-      instrument: instrumentWords(it),
+      instrument: verbatimNameSegments(instrumentWords(it), it.rowLabel ?? it.name),
       tenK: it.rolled,
       face: it.basis === "carrying" ? (() => { const f0 = usdSeg(partOf(it), { bare: true }); return { ...f0, t: `${f0.t} (carrying value)` }; })() : usdSeg(partOf(it), { bare: true }),
       status: st ?? (ns ? { text: [{ k: "notStated", t: ns, src: it.amountSrc }], tone: "neutral" } : null),
