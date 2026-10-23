@@ -973,6 +973,23 @@ const H2_FINAL: Test = {
   },
 };
 
+// ── Oct 22, 2026 (Akshay): every displayed instrument name is verbatim in the sentence it cites ──
+const N1_VERBATIM: Test = {
+  id: "N1", name: "every displayed instrument name is a verbatim substring of its cited sentence",
+  run: (card) => {
+    if (!card.v3) return ["no v3 card"];
+    // Whitespace is not content: the filings' HTML-to-text spacing puts "3.400 %" where the filing prints 3.400%. Case is content.
+    const norm = (x: string) => x.replace(/\s+/g, "");
+    const bad: string[] = [];
+    for (const r of card.v3.table.rows) for (const seg of r.instrument as Segment[]) {
+      if (seg.k !== "label") continue;
+      const sentence = norm(seg.src.sentence);
+      if (!sentence.includes(norm(seg.stated))) bad.push(`"${seg.stated}" (shown "${seg.t}") is not in its sentence: "${sentence.slice(0, 90)}…"`);
+    }
+    return bad;
+  },
+};
+
 const NAMED_TYPE = /\b(notes|debentures|term loan|revolver|ABL|credit (?:facility|agreement)|line of credit|commercial paper)\b/i;
 const R3_NAMED: Test = {
   id: "A3", name: "refinance box: named instruments only, no \"not stated\" fallbacks",
@@ -1127,7 +1144,7 @@ const TESTS = [T1_PURITY, T2_LINKS, T3_TABLE, T4_NOTSTATED, T5_ONEMATURITY, T6_P
   R1_BOX, R2_SUMMARY, R2B_SCOPE, R3_NAMED, R4_LEFTOVERS, R5_MARKERS, R6_CP, R7_NEXT, R8_PREPERIOD, R9_GROUPING, R11_MOVEFORMAT, R12_MERGE, R13_DECIMALS, R14_ORDER, R15_ONCE, R16_TAGS,
   V1_LAYOUT, V2_CASE, V3_TILES, V4_VOCAB, V5_LEGEND, V6_BARS, V7_TABLE, V8_HEADBARS, V9_NEXT, G1_OWNLABELS,
   W1_LADDER, W2_MOVEROW, W3_FACECELL, W4_WITHHELD, W5_NOTSTATED, W6_GREY, W7_CPNET, W8_COUPON, W9_NAME, W10_PRICE,
-  H1_HORIZON, H2_FINAL];
+  H1_HORIZON, H2_FINAL, N1_VERBATIM];
 
 // ── negative controls: a corrupted card or fixture each test MUST fail ──
 function clone<T>(x: T): T { return JSON.parse(JSON.stringify(x)); }
@@ -1268,6 +1285,14 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, []).counted.length > 0, what: "the ruled $65MM residual no longer failing" });
     out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, real.map((x) => x.replace("$65MM", "$66MM"))).counted.length > 0, what: "the ruled residual with its amount moved to $66MM" });
     out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, [...real, ...real]).counted.length > 0, what: "the ruled residual failing twice" });
+  }
+
+  // ── N1: a name read in another case than its sentence prints is not verbatim ──
+  {
+    const c = clone(cards.find((x) => /cigna/i.test(x.company))!);
+    const seg = c.v3!.table.rows.flatMap((r) => r.instrument as Segment[]).find((x) => x.k === "label" && /[a-z]/.test(x.stated)) as any;
+    if (seg) seg.stated = seg.stated.replace(/\b[a-z]/g, (ch: string) => ch.toUpperCase());
+    out.push({ id: "N1", failed: !!seg && N1_VERBATIM.run(c, null).length > 0, what: "a displayed name re-cased from its sentence (\"Commercial Paper\" for \"commercial paper\")" });
   }
 
   // ── v3.3 negative controls ──
