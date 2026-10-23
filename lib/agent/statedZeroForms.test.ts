@@ -61,7 +61,8 @@ const replayPath = join(process.cwd(), "baselines", "s27-replay.json");
 if (existsSync(replayPath)) {
   const chs = JSON.parse(readFileSync(replayPath, "utf-8")).results.find((x: any) => x.result.cik === "0001108109").result;
   const dm = chs.results.find((t: any) => t.triggerId === "debt-maturity");
-  const rej = (dm.facilityRejections ?? []).find((x: any) => x.facility === "ABL Facility" && x.field === "drawn");
+  // As the answer wrote it: in the rejections under the old verifier, on the verified facility once the replay re-verifies it.
+  const rej = (dm.facilityRejections ?? []).find((x: any) => x.facility === "ABL Facility" && x.field === "drawn") ?? dm.facilities.find((x: any) => x.name === "ABL Facility")?.drawn;
   const snap = JSON.parse(readFileSync(join(IN, "0001108109.json"), "utf-8"));
   const textByUrl = new Map<string, string>(Object.entries(snap.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
   const fac = { ...dm.facilities.find((x: any) => x.name === "ABL Facility"), drawn: { value: rej?.value, sourceLine: rej?.sourceLine } };

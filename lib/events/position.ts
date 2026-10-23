@@ -1736,6 +1736,15 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
     citedUrl: x.citedUrl,
     note: `stated as done by a filing dated ${x.knownBy}, on or before the position date, so it is already in that balance: an event, and nothing is subtracted again`,
   }));
+  // Rule (a) never subtracts again, and a row the note ITSELF carries at nil
+  // has nothing left to subtract: there the earlier retirement is the cause
+  // of the nil, and the row is retired with it as its evidence, as before.
+  // A row with a balance is never touched by it.
+  if (newDebtIssuance?.fired && classified.prior.length > 0) {
+    const priorText = classified.prior.map((x) => [x.claim.instrument, x.claim.sourceLine ?? ""].join(" ")).join(" ;; ");
+    const priorEvidence = { evidence: classified.prior.map((x) => x.claim.sourceLine ?? x.claim.instrument).join("; "), citedUrl: classified.prior[0].citedUrl };
+    rows = rows.map((row) => (row.status === "live" && parseMoneyAmount(row.amount) === 0 && redemptionRetiresRow(row, priorText) ? { ...row, status: "retired" as const, retiredBy: priorEvidence } : row));
+  }
   if (newDebtIssuance?.fired && actionableClaims.length > 0) {
     const redeemsText = actionableClaims.map((c) => [c.instrument, c.sourceLine ?? ""].join(" ")).join(" ;; ");
     const retiredByEvidence = { evidence: actionableClaims.map((c) => c.sourceLine ?? c.instrument).join("; "), citedUrl: newDebtIssuance.citations[0]?.url ?? "" };
