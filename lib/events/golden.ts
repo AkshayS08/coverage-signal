@@ -467,7 +467,30 @@ export function unsupportedAmountRows(state: GoldenState): string[] {
     .map((r) => `${r.instrument}: ${r.amount} is not stated by the sentence shown for this row`);
 }
 
-export function compareToGolden(expected: GoldenState, actual: GoldenState): GoldenVerdict {
+/**
+ * SESSION 27 (Akshay, Oct 23, 2026) — A TOLERATED CLASS: A RE-TRANSCRIBED
+ * SOURCE LINE. A cited source line may differ across samples if it appears
+ * verbatim in the same document and states the amount (Rule 58). The check
+ * needs the documents, which this comparison does not hold, so the caller
+ * supplies it (sourceLineCheckFor); without it the comparison stays strict.
+ */
+export interface CompareOptions {
+  /** True when `line` is verbatim (whitespace aside) in the document `row` cites, and states `row.amount`. */
+  sourceLineCheck?: (row: { instrument: string; amount: string }, line: string) => boolean;
+}
+
+/** The check, built from a result (for the document each row cites) and the documents' text. */
+export function sourceLineCheckFor(result: CompanyResult, textByUrl: Map<string, string>, asOf: Date): NonNullable<CompareOptions["sourceLineCheck"]> {
+  const cited = new Map(assemblePosition(result, asOf).rows.map((r) => [r.instrument, r.citedUrl] as const));
+  const squash = (x: string) => x.replace(/\s+/g, "");
+  return (row, line) => {
+    const url = cited.get(row.instrument);
+    const doc = url ? textByUrl.get(url) : undefined;
+    return !!doc && squash(doc).includes(squash(line)) && amountSupportOf(row.amount, line).kind !== "unsupported";
+  };
+}
+
+export function compareToGolden(expected: GoldenState, actual: GoldenState, opts: CompareOptions = {}): GoldenVerdict {
   const exp = new Set(expected.filingSet);
   const act = new Set(actual.filingSet);
   const added = actual.filingSet.filter((u) => !exp.has(u));
@@ -694,7 +717,19 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState): Gol
       if (!al) { d.push(`cards[${i}].derived["${el.kind}"]: MISSING — signed, and not produced by this run`); continue; }
       cmp(`cards[${i}].derived["${el.kind}"].text`, el.text, al.text);
       cmp(`cards[${i}].derived["${el.kind}"].computed`, el.computed, al.computed);
-      cmp(`cards[${i}].derived["${el.kind}"].inputs`, el.inputs, al.inputs);
+      // Session 27: a re-transcribed source line is tolerated when it is the
+      // same row's line, verbatim in that row's document, stating its amount.
+      if (JSON.stringify(el.inputs) !== JSON.stringify(al.inputs)) {
+        const ok = !!opts.sourceLineCheck && el.inputs.length === al.inputs.length && el.inputs.every((ei, j) => {
+          const ai = al.inputs[j];
+          if (ei === ai) return true;
+          const re = expected.rows.find((r) => r.sourceLine === ei), ra = actual.rows.find((r) => r.sourceLine === ai);
+          return !!re && !!ra && re.instrument === ra.instrument && sameAmount(re.amount, ra.amount) && opts.sourceLineCheck!(ra, ai);
+        });
+        const line = `cards[${i}].derived["${el.kind}"].inputs: expected ${fmt(el.inputs)}, got ${fmt(al.inputs)}`;
+        if (ok) tolerated.push(`${line} — the same rows' lines, each verbatim in its row's document and stating its amount (Rule 58): a re-transcription, not a changed fact`);
+        else d.push(line);
+      }
       cmp(`cards[${i}].derived["${el.kind}"].fieldInputs`, el.fieldInputs, al.fieldInputs);
     }
     cmp(`cards[${i}].withheld`, e.withheld, a.withheld);

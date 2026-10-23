@@ -42,6 +42,19 @@ if (tr) {
   const tolerant = compareToGolden(tg.state, actual, { sourceLineCheck: sourceLineCheckFor(tr, docsOf("0000070318"), asOf) });
   assert(strict.kind === "diverged" && strict.divergences.every((d) => /derived\[".+"\]\.inputs/.test(d)), `[L1 control] without the check, the only divergences are the derived lines' inputs (${strict.kind === "diverged" ? strict.divergences.length : 0})`);
   assert(tolerant.kind === "matches" && tolerant.tolerated.some((t) => /derived\[".+"\]\.inputs/.test(t)), `[L1] with the check, Tenet matches and the re-transcribed inputs are recorded as tolerated`);
+  // Controls on the same pair: the new input moved to a line in no document, or to another row's line.
+  const check = sourceLineCheckFor(tr, docsOf("0000070318"), asOf);
+  const mutate = (line: (row: any) => string) => {
+    const a2 = JSON.parse(JSON.stringify(actual));
+    const dl = a2.cards.flatMap((c: any) => c.derived).find((d: any) => d.inputs.some((i: string) => a2.rows.some((r: any) => r.sourceLine === i)));
+    const j = dl.inputs.findIndex((i: string) => a2.rows.some((r: any) => r.sourceLine === i));
+    const row = a2.rows.find((r: any) => r.sourceLine === dl.inputs[j]);
+    const next = line(row); row.sourceLine = next; dl.inputs[j] = next;
+    return a2;
+  };
+  assert(compareToGolden(tg.state, mutate((row) => `${row.instrument} ${row.amount} — a line in no filing`), { sourceLineCheck: check }).kind === "diverged", `[L1 control] the new input moved to a line in no document is a divergence`);
+  const otherRow = actual.rows.find((r) => !r.isCapacity && r.sourceLine && r.amount !== actual.rows.find((x) => x.instrument === "5.125 % due 2027")?.amount);
+  assert(!!otherRow && compareToGolden(tg.state, mutate(() => otherRow!.sourceLine), { sourceLineCheck: check }).kind === "diverged", `[L1 control] the new input moved to another row's line (${otherRow?.amount}) is a divergence`);
 }
 
 console.log("\n=== L2: every name with a derived line ===");
@@ -61,6 +74,8 @@ for (const g of goldens) {
     a.cards.find((c: any) => c.triggerId === card.triggerId).derived.find((d: any) => d.kind === dl.kind).inputs[j] = line;
     return a;
   };
+  // Precondition, stated: the signed line must itself be verbatim in its document, or varying it tests nothing.
+  if (!check(row, row.sourceLine)) { console.log(`  · ${g.state.company}: the signed "${dl.kind}" input is not itself verbatim in its row's document ("${row.sourceLine.slice(0, 50)}…"), so re-spacing it cannot test the class; L1 is this name's case`); continue; }
   const respaced = row.sourceLine.replace(/ /g, "  ");
   const v1 = compareToGolden(base, vary(respaced), { sourceLineCheck: check });
   assert(v1.kind === "matches", `[L2:${g.state.company}] "${dl.kind}" input re-spaced (verbatim, states ${row.amount}) is tolerated`);
