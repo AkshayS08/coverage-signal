@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { guardedCreate } from "./spendGuard";
 import type { TriggerDef } from "./triggers";
 import { recordUsage } from "./costMeter";
 
@@ -1565,7 +1566,7 @@ And regardless: any instrument the ANCHOR itself states in sentences is a proseI
     formatCorpus(corpus),
   ].join("\n");
 
-  const response = await getClient().messages.create({
+  const response = await guardedCreate(getClient(), {
     model: HAIKU_MODEL,
     // Session 18: raised from 6144 — a full multi-tranche debtSchedule PLUS
     // its priorDebtSchedule counterpart PLUS the other 14 triggers' normal
@@ -1653,7 +1654,7 @@ export async function classifyOneTrigger(params: {
     `Re-evaluate this one trigger with the new evidence and submit a final verdict. Set needsDig to false regardless — no further digs are available for this trigger.`,
   ].join("\n");
 
-  const response = await getClient().messages.create({
+  const response = await guardedCreate(getClient(), {
     model: HAIKU_MODEL,
     // Session 18: raised from 3072 — a dig on "debt-maturity" specifically
     // can still need to return a full debtSchedule, same reasoning as

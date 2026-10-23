@@ -92,6 +92,8 @@ let answerProceedsUse = false;
   if (answerProceedsUse && body?.tools?.[0]?.name === "submit_proceeds_use") return Promise.resolve({ content: [{ type: "tool_use", id: "t", name: "submit_proceeds_use", input: { proceedsUse: "unstated" } }], usage: { input_tokens: 0, output_tokens: 0 }, stop_reason: "tool_use" });
   return Promise.reject(new Error("model call refused by the test"));
 };
+// The preventive gate counts a call's input before making it (spendGuard.ts); the count is answered here too, at $0.
+(Messages.prototype as any).countTokens = function () { return Promise.resolve({ input_tokens: 1000 }); };
 const failAnswerWrites: Rule = (o, p, m) => (/vercel\.com$/.test(o) && p.startsWith("/api/blob") && m === "PUT" && /answer\//.test(decodeURIComponent(p)) ? "error" : null);
 
 const PUBLIC = /\.public\.blob\.vercel-storage\.com$/;
@@ -112,7 +114,8 @@ const CASES: Case[] = [
   { id: "H3", name: "hang: the answer-key HEAD never answers (preflight, checkFree)", source: "blob", run: "checkFree", rule: (cik) => (o, p) => (/vercel\.com$/.test(o) && p.startsWith("/api/blob") && p.includes(encodeURIComponent(`answer/${cik}/`)) ? "hang" : null) },
   { id: "H4", name: "hang: the filing list is not cached and EDGAR never answers", source: "edgar", run: "loop", rule: () => (o, p) => (PUBLIC.test(o) && /^\/edgar\/(submissions|filings)\//.test(p) ? "404" : /data\.sec\.gov/.test(o) && /^\/submissions\//.test(p) ? "hang" : null) },
   { id: "H5", name: "hang: the cached company-facts read never answers", source: "xbrl", run: "loop", rule: () => onPublic(/^\/edgar\/companyfacts\//, "hang") },
-  { id: "W1", name: "write: the proceeds-use answer's write fails after its call (Tenet: the one name whose proceeds-use is not cached)", source: "blob", run: "loop", rule: () => failAnswerWrites, error: "WriteFailedError", models: 1, only: /TENET/ },
+  // W1 tests the proceeds-use catch: an I/O failure inside it is rethrown, never a null field. Since Tenet's proceeds-use was refilled (Oct 23) no name misses it, so the failure is the proceeds-use answer's cached READ; the failed WRITE is W2's.
+  { id: "W1", name: "the proceeds-use answer's cached read fails inside the catch that used to swallow it (every name with an issuance)", source: "blob", run: "loop", rule: (cik) => onPublic(new RegExp(`^/answer/${cik}/proceedsUse/`), "error"), only: /TENET|Encompass|DAVITA|MOLINA|Cigna/ },
   { id: "W2", name: "write: the answer-cache write of a computed answer fails", source: "blob", run: "answerWrite", rule: () => failAnswerWrites, error: "WriteFailedError", models: 0 },
 ];
 
@@ -168,6 +171,9 @@ const verdict = (c: Case, o: Outcome, company = ""): string[] => {
   for (const c of CASES.filter((x) => !only || only.includes(x.id))) {
     console.log(`\n${c.id} — ${c.name}`);
     for (const n of names.filter((x) => !c.only || c.only.test(x.company))) {
+      // Precondition for W1, stated: the name's answer is cached under its current read set. A name whose corpus
+      // moved (Molina's Q3 10-Q, Oct 22) misses the base answer before the proceeds-use path is reached.
+      if (c.id === "W1" && !(await checkFree(n.company)).cached) { console.log(`  · ${n.company}: not cached under its current read set (corpus moved), so the proceeds-use path is not reached — not tested here`); continue; }
       const o = await attempt(n.company, n.cik, c);
       const f = verdict(c, o, n.company);
       if (f.length === 0) { passed++; console.log(`  ✓ ${n.company}: stopped with ${o.name} (${o.source}), ${o.model} model call(s), ${o.maxAttempts} attempt(s)`); }

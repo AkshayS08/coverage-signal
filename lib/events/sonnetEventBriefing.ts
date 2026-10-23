@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { guardedCreate } from "../agent/spendGuard";
 import { dedupeCitations, type FlashCard } from "./buildEvents";
 import type { VerifiedFact } from "./factBase";
 import { failedEventBriefing, type DraftedEventBriefing } from "./eventBriefing";
@@ -285,7 +286,7 @@ async function callSonnet(card: FlashCard, factBase: VerifiedFact[], correctionI
   const context = buildContext(card, factBase);
   const userContent = correctionInstruction ? `${context}\n\nYour previous attempt had a problem: ${correctionInstruction}` : context;
 
-  const response = await getClient().messages.create(
+  const response = await guardedCreate(getClient(), 
     {
       model: SONNET_MODEL,
       max_tokens: CARD_MAX_OUTPUT_TOKENS,

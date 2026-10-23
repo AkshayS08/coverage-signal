@@ -25,6 +25,7 @@
  * Run: npx tsx lib/cards/capture/facts.ts            (declare, $0)
  *      npx tsx lib/cards/capture/facts.ts --bill     (bill, within the bands)
  */
+import { guardedCreate } from "../../agent/spendGuard";
 import { loadEnvQuietly } from "../../cache/loadEnv";
 loadEnvQuietly();
 import Anthropic from "@anthropic-ai/sdk";
@@ -392,7 +393,7 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
     const rejected: { fact: string; why: string }[] = [];
     for (let ask = 1; ask <= ASKS; ask++) {
       const { data } = await cachedCardFacts(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, ask, async () => {
-        const r = await client.messages.create({
+        const r = await guardedCreate(client, {
           model: MODEL, max_tokens: 8000, temperature: 0, system: SYSTEM,
           messages: [{ role: "user", content: p.input }],
           tools: [{ name: "submit_facts", description: "Submit the transcribed facts.", input_schema: SCHEMA as any }],

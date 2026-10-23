@@ -1,0 +1,84 @@
+/**
+ * SESSION 27 (Akshay, Oct 23, 2026) — THE GATE IS PREVENTIVE.
+ *
+ * Every billed call goes through `guardedCreate`. Before the call it counts
+ * the input tokens (the Messages API's own counter, which is free), prices
+ * the WORST case from that count at the model's rate with output at the
+ * call's max_tokens, and refuses the call if that worst case would cross the
+ * per-run or the running limit. After the call it adds the actual cost.
+ *
+ * Why: Tenet's proceeds-use refill was approved to $0.064 and billed $0.0738.
+ * The gate measured after each call, so it caught the overrun and could not
+ * prevent it. Priced before the call, that call's worst case was $0.0762 and
+ * it would have been refused.
+ *
+ * A count that cannot be taken is a refusal, never an unguarded call. With
+ * no limits set (the ordinary app path) every call is still counted and
+ * priced, and none is refused. Price-only mode counts and records without
+ * calling, for declarations.
+ */
+import type Anthropic from "@anthropic-ai/sdk";
+import { priceOf, usdFor } from "./costMeter";
+
+export class SpendRefusedError extends Error {
+  readonly worstUsd: number | null;
+  constructor(message: string, worstUsd: number | null) {
+    super(`SPEND REFUSED before the call: ${message}`);
+    this.name = "SpendRefusedError";
+    this.worstUsd = worstUsd;
+  }
+}
+export class PricedOnlyError extends Error {
+  readonly worstUsd: number;
+  constructor(worstUsd: number) {
+    super(`PRICED ONLY: this call would cost at most $${worstUsd.toFixed(6)}; price-only mode makes no call`);
+    this.name = "PricedOnlyError";
+    this.worstUsd = worstUsd;
+  }
+}
+
+export interface PricedCall { model: string; inputTokens: number; maxTokens: number; worstUsd: number; label: string }
+let limits: { perRunUsd: number | null; totalUsd: number | null } = { perRunUsd: null, totalUsd: null };
+let runLabel = "(no run)", runSpent = 0, totalSpent = 0, priceOnly = false;
+let last: PricedCall | null = null;
+const priced: PricedCall[] = [];
+
+export function setSpendLimits(l: { perRunUsd?: number | null; totalUsd?: number | null }): void {
+  limits = { perRunUsd: l.perRunUsd ?? null, totalUsd: l.totalUsd ?? null };
+}
+/** A new run (one company's build): the per-run spend restarts; the running total does not. */
+export function beginGuardRun(label: string): void { runLabel = label; runSpent = 0; }
+export function setPriceOnly(on: boolean): void { priceOnly = on; }
+export function resetSpendGuard(): void { limits = { perRunUsd: null, totalUsd: null }; runLabel = "(no run)"; runSpent = 0; totalSpent = 0; priceOnly = false; last = null; priced.length = 0; }
+export const lastPriced = (): PricedCall | null => last;
+export const pricedCalls = (): PricedCall[] => [...priced];
+export const spentTotal = (): number => totalSpent;
+export const spentThisRun = (): number => runSpent;
+
+type CreateParams = Anthropic.MessageCreateParamsNonStreaming;
+export async function guardedCreate(client: Anthropic, params: CreateParams, options?: Parameters<Anthropic["messages"]["create"]>[1]): Promise<Anthropic.Message> {
+  const price = priceOf(params.model);
+  if (!price) throw new SpendRefusedError(`model ${params.model} has no price, so its worst case cannot be known`, null);
+  let inputTokens: number;
+  try {
+    const { model, messages, system, tools, tool_choice, thinking } = params as any;
+    const counted = await client.messages.countTokens({ model, messages, ...(system !== undefined ? { system } : {}), ...(tools ? { tools } : {}), ...(tool_choice ? { tool_choice } : {}), ...(thinking ? { thinking } : {}) } as any);
+    inputTokens = counted.input_tokens;
+  } catch (e) {
+    throw new SpendRefusedError(`the input could not be counted (${e instanceof Error ? e.message : String(e)}), so the call is not made`, null);
+  }
+  const worstUsd = (inputTokens * price.input + params.max_tokens * price.output) / 1_000_000;
+  last = { model: params.model, inputTokens, maxTokens: params.max_tokens, worstUsd, label: runLabel };
+  if (priceOnly) { priced.push(last); throw new PricedOnlyError(worstUsd); }
+  if (limits.perRunUsd !== null && runSpent + worstUsd > limits.perRunUsd + 1e-12) {
+    throw new SpendRefusedError(`${runLabel}: $${runSpent.toFixed(4)} spent this run + this call's worst case $${worstUsd.toFixed(4)} (${inputTokens} in, ${params.max_tokens} max out, ${params.model}) would cross the per-run limit $${limits.perRunUsd.toFixed(4)}`, worstUsd);
+  }
+  if (limits.totalUsd !== null && totalSpent + worstUsd > limits.totalUsd + 1e-12) {
+    throw new SpendRefusedError(`$${totalSpent.toFixed(4)} spent so far + this call's worst case $${worstUsd.toFixed(4)} (${inputTokens} in, ${params.max_tokens} max out, ${params.model}) would cross the running limit $${limits.totalUsd.toFixed(4)}`, worstUsd);
+  }
+  const response = (await client.messages.create(params, options)) as Anthropic.Message;
+  const actual = usdFor(params.model, response.usage);
+  runSpent += actual;
+  totalSpent += actual;
+  return response;
+}

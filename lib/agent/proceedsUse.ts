@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { guardedCreate } from "./spendGuard";
 import type { ProceedsUse } from "./claude";
 import { recordUsage } from "./costMeter";
 
@@ -76,7 +77,7 @@ export async function classifyProceedsUse(params: {
     ...filingTexts.map((text, i) => `--- filing ${i + 1} ---\n${text}`),
   ].join("\n");
 
-  const response = await getClient().messages.create(
+  const response = await guardedCreate(getClient(), 
     {
       model: SONNET_MODEL,
       max_tokens: 200,

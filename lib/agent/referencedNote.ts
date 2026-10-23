@@ -24,6 +24,7 @@
  * ITS OWN VERSION, ITS OWN CACHE KEY. The combined call's prompt is untouched,
  * so no existing answer is orphaned by this existing.
  */
+import { guardedCreate } from "./spendGuard";
 import Anthropic from "@anthropic-ai/sdk";
 import { recordUsage } from "./costMeter";
 import { locateDebtNoteSection, narrowToDebtDisclosure } from "../fetch/noteLocation";
@@ -157,7 +158,7 @@ export async function transcribeReferencedNote(params: {
     `--- end note ---`,
   ].join("\n");
 
-  const response = await getClient().messages.create({
+  const response = await guardedCreate(getClient(), {
     model: HAIKU_MODEL,
     max_tokens: 12000,
     temperature: 0,

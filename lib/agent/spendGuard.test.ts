@@ -53,12 +53,12 @@ const refused = async (p: Promise<unknown>) => { try { await p; return null; } c
 
   console.log("\n=== G4-G5 ===");
   g.resetSpendGuard?.();
-  g.setSpendLimits?.({ totalUsd: 0.10 });
+  g.setSpendLimits?.({ totalUsd: 0.09 });
   const c4 = stub(10000, { input_tokens: 10000, output_tokens: 0 });
   await g.guardedCreate?.(c4, params("claude-sonnet-5", 100)); // worst 0.0315, actual 0.03
-  await g.guardedCreate?.(c4, params("claude-sonnet-5", 100)); // spent 0.06, worst 0.0315 -> 0.0915 fits
-  const e4 = await refused(g.guardedCreate?.(c4, params("claude-sonnet-5", 100))); // 0.09 + 0.0315 > 0.10
-  assert(c4.created === 2 && e4?.name === "SpendRefusedError", `[G4] the running limit holds: a third call whose worst case would cross $0.10 is refused (${c4.created} made)`);
+  await g.guardedCreate?.(c4, params("claude-sonnet-5", 100)); // spent 0.03 + worst 0.0315 = 0.0615 fits
+  const e4 = await refused(g.guardedCreate?.(c4, params("claude-sonnet-5", 100))); // spent 0.06 + worst 0.0315 = 0.0915 > 0.09
+  assert(c4.created === 2 && e4?.name === "SpendRefusedError", `[G4] the running limit holds: a third call whose worst case would cross $0.09 is refused (${c4.created} made)`);
   g.resetSpendGuard?.();
   g.setSpendLimits?.({ perRunUsd: 0.05, totalUsd: 1 });
   const c5 = stub(10000, { input_tokens: 10000, output_tokens: 0 });

@@ -241,3 +241,14 @@ export async function withLedgerDelta<T>(label: string, fn: () => Promise<T>): P
     throw e;
   }
 }
+
+/** Session 27: the meter's own rates, for the preventive gate (spendGuard.ts). Null for an unpriced model. */
+export function priceOf(model: string): { input: number; output: number } | null {
+  return PRICING_PER_MTOK[model] ?? null;
+}
+/** What a call's usage cost at the meter's rates (the same arithmetic as recordUsage). */
+export function usdFor(model: string, usage: UsageLike | undefined | null): number {
+  const price = PRICING_PER_MTOK[model];
+  if (!price || !usage) return 0;
+  return ((usage.input_tokens ?? 0) * price.input + (usage.output_tokens ?? 0) * price.output + (usage.cache_read_input_tokens ?? 0) * price.input * CACHE_READ_MULTIPLIER + (usage.cache_creation_input_tokens ?? 0) * price.input * CACHE_WRITE_MULTIPLIER) / 1_000_000;
+}
