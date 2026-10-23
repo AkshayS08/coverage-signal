@@ -1876,7 +1876,7 @@
       {
        "k": "figure",
        "t": "$0",
-       "printed": "$ 0 thousand",
+       "printed": "$0",
        "src": {
         "sentence": "Credit available under this revolving line of credit is reduced by the amount of any letters of credit outstanding under the facility, of which there were none as of June 30, 2026.",
         "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
@@ -4955,7 +4955,7 @@
      {
       "k": "figure",
       "t": "$0",
-      "printed": "$ 0 thousand",
+      "printed": "$0",
       "src": {
        "sentence": "Credit available under this revolving line of credit is reduced by the amount of any letters of credit outstanding under the facility, of which there were none as of June 30, 2026.",
        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",

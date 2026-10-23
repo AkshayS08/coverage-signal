@@ -76,6 +76,7 @@ import { annualReportGate, withholdAnnualReportRows } from "./annualReportSource
 import { transcribeReferencedNote, REFERENCED_NOTE_PROMPT_VERSION, type ReferencedNoteResult } from "./referencedNote";
 import { cachedReferencedNote } from "../cache/answerCache";
 import { isIoFailed } from "../fetch/readError";
+import { canonicalizeFacilityZeros } from "./statedZero";
 import { rolledRowLabel } from "../events/rolledPosition";
 
 /** The transcribed prior-period note, plus the one label every row of it renders under. */
@@ -1505,7 +1506,8 @@ async function runAgentLoopInner(
     // scale. Doing it the other way round would hand the verifier a figure
     // carrying a unit its own table cell does not print, and the guard that
     // exists to catch fabricated composites would reject a correct number.
-    const facilities = deriveFacilityScale(facilityCheck.verified, textByUrl, log, label) ?? facilityCheck.verified;
+    // Session 27: a stated zero is stored in its one canonical form (canonicalizeFacilityZeros).
+    const facilities = canonicalizeFacilityZeros(deriveFacilityScale(facilityCheck.verified, textByUrl, log, label) ?? facilityCheck.verified);
     const facilityRejections = facilityCheck.rejections;
     for (const r of facilityRejections) {
       // RULE 71's rejection is not a fabrication finding and does not read

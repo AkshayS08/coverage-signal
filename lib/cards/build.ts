@@ -24,6 +24,7 @@ import { computeCoverage } from "../events/coverage";
 import { rolledCoverageFor } from "../events/rolledCoverage";
 import { borrowingBaseOf } from "../agent/borrowingBase";
 import { classifyInstrument, type NoteSeniorityStatement } from "../events/instrumentClass";
+import { canonicalizeFacilityZeros } from "../agent/statedZero";
 import { extractFactTokens, factTokensMatch } from "../agent/factTokens";
 import { createTextLocator } from "../agent/verifyQuote";
 
@@ -107,6 +108,10 @@ interface Item {
   amountParts?: { printed: string; usd: number; src: Source }[];
 }
 
+function withCanonicalFacilityZeros(result: CompanyResult): CompanyResult {
+  return { ...result, results: result.results.map((r) => (r.triggerId === "debt-maturity" && Array.isArray((r as any).facilities) ? ({ ...r, facilities: canonicalizeFacilityZeros((r as any).facilities) } as typeof r) : r)) };
+}
+
 /** The same note: its coupon, and its year where it states one. */
 export function sameNoteOf(text: string, instrument: string): boolean {
   const cb = couponsIn(instrument)[0]?.rate;
@@ -130,7 +135,10 @@ export function claimSizingMove<C extends { instrument: string; amount: string |
 }
 
 export function buildCard(i: CardInputs): Card {
-  const { result, briefDate } = i;
+  const { briefDate } = i;
+  // Session 27: a stated zero is compared and rendered in its one canonical
+  // form, whatever form an answer stored before it was canonical at storage.
+  const result = withCanonicalFacilityZeros(i.result);
   const dm = result.results.find((r) => r.triggerId === "debt-maturity") as any;
   const anchor = dm?.debtScheduleSourceFiling as { form: string; date: string; reportDate: string; url: string } | undefined;
   if (!anchor) throw new Error(`${result.company}: no anchor filing — a card states where its position comes from or it is not built`);

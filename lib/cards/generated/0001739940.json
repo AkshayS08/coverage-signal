@@ -3687,7 +3687,7 @@
       {
        "k": "figure",
        "t": "$0",
-       "printed": "$0 million",
+       "printed": "$0",
        "src": {
         "sentence": "As of June 30, 2026, there was no outstanding balance under the Credit Agreement.",
         "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
@@ -8620,7 +8620,7 @@
      {
       "k": "figure",
       "t": "$0",
-      "printed": "$0 million",
+      "printed": "$0",
       "src": {
        "sentence": "As of June 30, 2026, there was no outstanding balance under the Credit Agreement.",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",

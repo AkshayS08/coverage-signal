@@ -166,6 +166,34 @@ export function isZeroValue(value: string): boolean {
   // the figure; a dash or a zero left after them is.
   const t = value.trim().replace(/^\$\s*/, "").replace(/\s*(?:thousand|million|billion)\s*$/i, "").trim();
   if (/^[—–-]$/.test(t)) return true;
+  // Session 27: a zero stated in a word is the same stated zero.
+  if (/^(?:nil|none|zero)$/i.test(t)) return true;
   const digits = t.replace(/[^\d.]/g, "");
   return digits.length > 0 && Number(digits) === 0;
+}
+
+/**
+ * SESSION 27 (Akshay, Oct 23, 2026) — ONE CANONICAL INTERNAL FORM FOR A
+ * STATED ZERO, whatever its printed form ("$ —", "$0", "$ 0 million", "nil",
+ * "none", "zero"), applied before storage and before comparison: the same
+ * principle as Rule 67, which resolves a cell's scale once where the text is
+ * and stores the result. Two answers that read the same "no outstanding
+ * borrowings" sentence, one copying "$ —" and one "$ 0 million", store and
+ * render the same thing. The sentence that states the zero is untouched.
+ */
+export const CANONICAL_ZERO = "$0";
+export function canonicalZero(value: string): string {
+  return isZeroValue(value) ? CANONICAL_ZERO : value;
+}
+const FACILITY_FIGURES = ["facilitySize", "drawn", "lettersOfCredit", "available"] as const;
+/** Every facility figure that is a stated zero, in its canonical form; everything else as it was. */
+export function canonicalizeFacilityZeros<F>(facilities: F[]): F[] {
+  return facilities.map((f) => {
+    const out = { ...(f as Record<string, unknown>) };
+    for (const field of FACILITY_FIGURES) {
+      const fig = out[field] as { value?: string } | null | undefined;
+      if (fig && typeof fig.value === "string" && isZeroValue(fig.value) && fig.value !== CANONICAL_ZERO) out[field] = { ...fig, value: CANONICAL_ZERO };
+    }
+    return out as F;
+  });
 }
