@@ -211,3 +211,33 @@ export function persistCompanySpend(spend: CompanySpend = currentCompanySpend(),
     // valid run; the trace line above it is the fallback record.
   }
 }
+
+/**
+ * SESSION 27 (Akshay, Oct 23, 2026) — a call made AFTER its scope was
+ * persisted (card narration runs after runAgentLoop has written its line)
+ * still reaches the ledger. Writes exactly the spend incurred inside `fn`, as
+ * one line under `label`, whether `fn` returns or throws (Rule 68). Writes
+ * nothing when nothing billed. The current scope is left as it was.
+ */
+export async function withLedgerDelta<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  const before = new Map(currentCompanySpend().byModel.map((m) => [m.model, { ...m }]));
+  const write = () => {
+    const after = currentCompanySpend();
+    const byModel = after.byModel
+      .map((m) => {
+        const b = before.get(m.model);
+        return { model: m.model, calls: m.calls - (b?.calls ?? 0), inputTokens: m.inputTokens - (b?.inputTokens ?? 0), outputTokens: m.outputTokens - (b?.outputTokens ?? 0), cacheReadTokens: m.cacheReadTokens - (b?.cacheReadTokens ?? 0), cacheWriteTokens: m.cacheWriteTokens - (b?.cacheWriteTokens ?? 0), usd: m.usd - (b?.usd ?? 0) };
+      })
+      .filter((m) => m.calls > 0);
+    if (byModel.length === 0) return;
+    persistCompanySpend({ company: label, byModel, totalCalls: byModel.reduce((n, m) => n + m.calls, 0), totalUsd: byModel.reduce((n, m) => n + m.usd, 0), hasUnpricedModel: after.hasUnpricedModel, unpricedModels: after.unpricedModels });
+  };
+  try {
+    const out = await fn();
+    write();
+    return out;
+  } catch (e) {
+    write();
+    throw e;
+  }
+}

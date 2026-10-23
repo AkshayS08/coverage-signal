@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { readCache, writeCache } from "../fetch/cache";
+import { withLedgerDelta } from "../agent/costMeter";
 import { NARRATION_PROMPT_VERSION } from "./promptVersion";
 import { cacheStats } from "./stats";
 import { draftEventBriefing, buildContext as buildCardContext } from "../events/sonnetEventBriefing";
@@ -61,5 +62,6 @@ export async function cachedDraftEventBriefing(
   // context, so a collision needed the same number AND identical context.
   // "Less exposed" is not a namespace.
   const key = `wording/card/nar-v${NARRATION_PROMPT_VERSION}/${sha256(context)}.json`;
-  return getOrCompute(key, () => draftEventBriefing(card, factBase));
+  // Session 27: narration spend is written to the ledger as its own line (Rule 68), since it runs after the extraction's scope was persisted.
+  return getOrCompute(key, () => withLedgerDelta(`${card.company} (narration)`, () => draftEventBriefing(card, factBase)));
 }
