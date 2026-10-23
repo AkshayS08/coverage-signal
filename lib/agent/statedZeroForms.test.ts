@@ -58,7 +58,8 @@ for (const f of readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x))) {
 assert(zeros > 0, `[Z2] the six carry ${zeros} stated zero(s) to test (a check over none is not a check)`);
 
 console.log("\n=== Z3: CHS's ABL, as its v33 answer wrote it ===");
-const replayPath = join(process.cwd(), "baselines", "s27-replay.json");
+// The answer as the canonical run stored it, before stored zeros were canonical (Oct 23): the replay now holds "$0".
+const replayPath = join(process.cwd(), "baselines", "s27-canonical.json");
 if (existsSync(replayPath)) {
   const chs = JSON.parse(readFileSync(replayPath, "utf-8")).results.find((x: any) => x.result.cik === "0001108109").result;
   const dm = chs.results.find((t: any) => t.triggerId === "debt-maturity");
