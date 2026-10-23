@@ -3018,7 +3018,7 @@
          "sourceLine": "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities."
         },
         "lettersOfCredit": {
-         "value": "$ 0 thousand",
+         "value": "$0",
          "sourceLine": "Credit available under this revolving line of credit is reduced by the amount of any letters of credit outstanding under the facility, of which there were none as of June 30, 2026."
         },
         "available": {
@@ -4478,7 +4478,7 @@
          "sourceLine": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\")."
         },
         "drawn": {
-         "value": "$ —",
+         "value": "$0",
          "sourceLine": "At June 30, 2026 , the Company had no outstanding borrowings and approximately $ 751 million of additional borrowing capacity (after taking into consideration the $ 32 million of outstanding letters of credit) under the ABL Facility."
         },
         "lettersOfCredit": {
@@ -5994,7 +5994,7 @@
          "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million."
         },
         "drawn": {
-         "value": "$0 million",
+         "value": "$0",
          "sourceLine": "As of June 30, 2026, no amount was outstanding under the Credit Agreement."
         },
         "lettersOfCredit": null,
@@ -6017,15 +6017,7 @@
         }
        }
       ],
-      "facilityRejections": [
-       {
-        "facility": "senior unsecured revolving credit facility",
-        "field": "lettersOfCredit",
-        "value": "$0",
-        "reason": "claimed zero, but the sentence states a quantity for this figure",
-        "sourceLine": "a $ 100  million letter of credit sub-facility"
-       }
-      ],
+      "facilityRejections": [],
       "seniorityStatement": {
        "statement": "Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
        "appliesTo": "Each of these notes"
@@ -7343,13 +7335,10 @@
          "sourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\")."
         },
         "drawn": {
-         "value": "$0 million",
+         "value": "$0",
          "sourceLine": "As of June 30, 2026, there was no outstanding balance under the Credit Agreement."
         },
-        "lettersOfCredit": {
-         "value": "$ 500 million",
-         "sourceLine": "The Company can borrow up to $ 6.5 billion under the Credit Agreement for general corporate purposes, with up to $ 500 million available for issuance of letters of credit."
-        },
+        "lettersOfCredit": null,
         "available": null,
         "maturity": {
          "value": "April 2030",
@@ -7357,11 +7346,15 @@
         },
         "asOfDate": "2026-06-30",
         "availabilityBasis": null,
+        "lettersOfCreditCapacity": {
+         "value": "$ 500 million",
+         "sourceLine": "The Company can borrow up to $ 6.5 billion under the Credit Agreement for general corporate purposes, with up to $ 500 million available for issuance of letters of credit."
+        },
         "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
         "figureSources": {
          "facilitySize": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
          "drawn": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-         "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+         "lettersOfCreditCapacity": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
          "maturity": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
         }
        },

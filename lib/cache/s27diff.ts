@@ -24,7 +24,8 @@
  * Run: npx tsx lib/cache/s27diff.ts replay
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { deriveGoldenState, compareToGolden, positionFilingSetOf, type GoldenFile, type GoldenState } from "../events/golden";
+import { deriveGoldenState, compareToGolden, positionFilingSetOf, sourceLineCheckFor, type GoldenFile, type GoldenState } from "../events/golden";
+import { buildCard } from "../cards/build";
 
 const phase = process.argv[2] ?? "canonical";
 const run = JSON.parse(readFileSync(`baselines/s27-${phase}.json`, "utf-8")) as { results: { company: string; bust: string | null; usd: number; result: any }[] };
@@ -32,7 +33,12 @@ const goldens = readdirSync("baselines/golden").map((f) => JSON.parse(readFileSy
 const lines: string[] = [];
 const say = (s: string) => { console.log(s); lines.push(s); };
 const squash = (x: string) => x.replace(/\s+/g, "");
-const verbatim = (label: string, sentence: string) => squash(sentence).includes(squash(label));
+// Oct 23: case-insensitive with whitespace normalised (Akshay's name-check ruling).
+const verbatim = (label: string, sentence: string) => squash(sentence).toLowerCase().includes(squash(label).toLowerCase());
+const snapOf = (cik: string) => JSON.parse(readFileSync(`lib/cards/inputs/${cik}.json`, "utf-8"));
+const docsOf = (cik: string) => new Map<string, string>(Object.entries(snapOf(cik).docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
+const week = JSON.parse(readFileSync("lib/cards/inputs/week/2026-10-15.json", "utf-8"));
+const cardText = (card: any): string[] => { const out: string[] = []; const walk = (x: any) => { if (Array.isArray(x)) { if (x.length && x.every((s) => s && typeof s === "object" && "k" in s && "t" in s)) { out.push(x.map((s: any) => s.t).join("")); return; } x.forEach(walk); return; } if (x && typeof x === "object") for (const [k, v] of Object.entries(x)) { if (k === "src" || k === "parts") continue; walk(v); } }; walk(card.v3 ?? card); return out; };
 let changed = 0;
 
 for (const r of run.results) {
@@ -54,7 +60,9 @@ for (const r of run.results) {
   }
 
   // Changed labels, paired by everything but the label — only where the plain comparison diverges on them.
-  const plain = compareToGolden(expected, actual);
+  // The tolerated source-line class (Oct 23), with the documents the card snapshot holds.
+  const opts = { sourceLineCheck: sourceLineCheckFor(r.result, docsOf(r.result.cik), asOf) };
+  const plain = compareToGolden(expected, actual, opts);
   const divergedOn = (label: string) => plain.kind === "diverged" && plain.divergences.some((d) => d.includes(label));
   const keyOf = (x: any) => [x.amount, x.maturityDate, x.status, x.provenance, x.isCapacity].join("|");
   for (const row of actual.rows) {
@@ -72,12 +80,13 @@ for (const r of run.results) {
     else refused.push(`roll delta label "${twin[0].instrument}" → "${d.instrument}" NOT accepted: not verbatim in its sentence`);
   }
 
-  const verdict = compareToGolden(expected, actual);
+  const verdict = compareToGolden(expected, actual, opts);
   const sameId = (verdict.kind !== "not-applicable") && actual.filingSet.join("|") === expected.filingSet.join("|");
   const same = verdict.kind === "matches" && sameId && refused.length === 0;
   if (!same) changed++;
   say(`\n${r.company}${r.bust ? ` [${r.bust}]` : ""} ($${r.usd.toFixed(4)}): ${same ? "ZERO POSITION CHANGE against the signed v31 golden" : "POSITION CHANGED — a finding to explain before any signing"}`);
   for (const a of accepted) say(`    accepted: ${a}`);
+  if (verdict.kind !== "not-applicable") for (const tl of verdict.tolerated.filter((x) => /derived\[".+"\]\.inputs/.test(x))) say(`    tolerated: ${tl.slice(0, 160)}…`);
   for (const x of refused) say(`    ${x}`);
   if (verdict.kind === "diverged") for (const d of verdict.divergences) say(`    ${d}`);
   if (verdict.kind === "not-applicable") say(`    not applicable: ${verdict.reason}`);
@@ -100,6 +109,21 @@ for (const r of run.results) {
   say(`    stability: ${stable ? "the same" : "NOT the same"} position with and without the ${extraRedeems} redemption claim(s) and ${extraNotes} note-prose retirement(s) the signed answer did not have`);
   if (!stable) changed++;
 }
-say(`\n${run.results.length - changed} of ${run.results.length} with zero position change.`);
+// CARD TEXT: the card built from this answer against the committed card, displayed text only.
+let textChanged = 0;
+for (const r of run.results) {
+  const cik = r.result.cik, snap = snapOf(cik), w = week.names[cik];
+  let facts = null; try { facts = JSON.parse(readFileSync(`lib/cards/inputs/facts/${cik}.json`, "utf-8")); } catch {}
+  const card = buildCard({ result: r.result, briefDate: "2026-10-15", previousBrief: w?.previousBrief ?? null, weekFilings: w?.filings ?? [], cash: snap.cash, textByUrl: docsOf(cik), periodSentence: snap.periodSentence, laterUrls: (snap.laterFilings ?? []).filter((x: any) => x.filingDate <= "2026-10-15").map((x: any) => x.url), facts } as any);
+  const committed = JSON.parse(readFileSync(`lib/cards/generated/${cik}.json`, "utf-8"));
+  const a = cardText(card), b = cardText(committed), A = new Set(a), B = new Set(b);
+  const gone = b.filter((l) => !A.has(l)), added = a.filter((l) => !B.has(l));
+  say(`\ncard text, ${r.company}: ${gone.length + added.length === 0 ? "IDENTICAL" : `${gone.length} line(s) only in the committed card, ${added.length} only in this one`}${JSON.stringify(card) === JSON.stringify(committed) ? " (byte-identical)" : ""}`);
+  for (const l of gone) say(`    - ${l.slice(0, 200)}`);
+  for (const l of added) say(`    + ${l.slice(0, 200)}`);
+  if (gone.length + added.length > 0) textChanged++;
+}
+say(`\n${run.results.length - changed} of ${run.results.length} with zero position change; ${run.results.length - textChanged} of ${run.results.length} with identical card text.`);
+if (textChanged > 0) changed++;
 writeFileSync(`sessions/27/stage1_diffs_${phase}.txt`, lines.join("\n") + "\n");
 process.exit(changed > 0 ? 1 : 0);
