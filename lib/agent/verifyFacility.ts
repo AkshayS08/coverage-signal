@@ -77,6 +77,7 @@ export interface FigureRejection {
     /** The corpus could not answer. NEVER a claim about the filing — see corpus.ts. */
     | "could not be checked — the corpus was not loaded"
     | "sentence does not state this figure"
+    | "the sentence does not predicate letters of credit outstanding or issued"
     /**
      * SESSION 23, B3 — the two ways a claimed ZERO fails, kept apart because
      * they need different fixes. A sentence stating a real quantity means the
@@ -349,6 +350,48 @@ function verifyFigure(
 
 const FIGURE_FIELDS = ["facilitySize", "drawn", "lettersOfCredit", "available", "maturity"] as const;
 
+/**
+ * SESSION 27 (Akshay, Oct 23, 2026) — A LETTER-OF-CREDIT FIGURE IS
+ * OUTSTANDING ONLY WHERE ITS SENTENCE PREDICATES OUTSTANDING OR ISSUED
+ * AMOUNTS. The predicate principle of Rules 57 and 70: a figure is what its
+ * own clause says of it. Cigna's v33 answer took "with up to $ 500 million
+ * available for issuance of letters of credit" — a sub-limit — as $500MM of
+ * letters of credit outstanding.
+ *
+ * The scope is the figure's own clause: the parenthetical it sits in, or else
+ * back to the previous ", ", " and ", ";" or "(" and forward to the next ";",
+ * "." or ")". Then, a closed grammatical class (how the amount is
+ * predicated, never what company or instrument it is about):
+ *   outstanding  "outstanding", "issued", "utilized", "drawn"
+ *   capacity     "available for issuance", "sub-limit", "sub-facility",
+ *                "up to", "may be used/issued", "capacity" — and no
+ *                outstanding predicate
+ *   unstated     neither
+ */
+export function letterOfCreditPredicate(value: string, sentence: string): "outstanding" | "capacity" | "unstated" {
+  const num = (value.match(/\d[\d,]*(?:\.\d+)?/) ?? [])[0];
+  let scope = sentence;
+  if (num) {
+    const esc = num.replace(/[.,]/g, (m) => `\\${m}`);
+    let i = sentence.search(new RegExp(`\\$\\s*${esc}`));
+    if (i < 0) i = sentence.indexOf(num);
+    if (i >= 0) {
+      const open = sentence.lastIndexOf("(", i), lastClose = sentence.lastIndexOf(")", i), close = sentence.indexOf(")", i);
+      if (open >= 0 && open > lastClose && close > i) scope = sentence.slice(open + 1, close);
+      else {
+        const before = sentence.slice(0, i);
+        const cut = Math.max(before.lastIndexOf(", "), before.lastIndexOf(" and "), before.lastIndexOf(";"), before.lastIndexOf("("));
+        const after = sentence.slice(i);
+        const end = after.search(/[;)]|\.(?:\s|$)/);
+        scope = before.slice(cut < 0 ? 0 : cut + 1) + (end < 0 ? after : after.slice(0, end));
+      }
+    }
+  }
+  if (/\b(?:outstanding|issued|utili[sz]ed|drawn)\b/i.test(scope)) return "outstanding";
+  if (/\bavailable for (?:the )?issuance\b|\bsub-?limit\b|\bsub-?facility\b|\bup to\b|\b(?:may|can) be (?:used|issued)\b|\bcapacity\b/i.test(scope)) return "capacity";
+  return "unstated";
+}
+
 export function verifyFacilities(params: {
   facilities: FacilityRow[];
   /** The documents this run fetched. NOT the model's self-reported citations — see the note above. */
@@ -371,6 +414,35 @@ export function verifyFacilities(params: {
     let citedUrl: string | null = null;
 
     for (const field of FIGURE_FIELDS) {
+      // Session 27: a letters-of-credit figure its own clause predicates as
+      // CAPACITY is not letters of credit outstanding. It is kept as capacity
+      // (so outstanding reads "not stated"), never as outstanding; one its
+      // clause predicates neither way is withheld with that reason.
+      const lc = field === "lettersOfCredit" ? f.lettersOfCredit : null;
+      // A ZERO claimed from a sentence that states only CAPACITY ("a $100
+      // million letter of credit sub-facility") says nothing about what is
+      // outstanding: outstanding is not stated, and the claim is neither kept
+      // nor withheld. The sentence's own figure is what its predicate is read on.
+      if (lc?.value && lc.sourceLine && isZeroValue(lc.value)) {
+        const own = (lc.sourceLine.match(/\$\s*\d[\d,]*(?:\.\d+)?/) ?? [])[0];
+        if (own && letterOfCreditPredicate(own, lc.sourceLine) === "capacity" && !/\b(?:outstanding|issued|utili[sz]ed|drawn)\b/i.test(lc.sourceLine)) {
+          (out as unknown as Record<string, unknown>)[field] = null;
+          continue;
+        }
+      }
+      if (lc?.value && lc.sourceLine && !isZeroValue(lc.value)) {
+        const pred = letterOfCreditPredicate(lc.value, lc.sourceLine);
+        if (pred !== "outstanding") {
+          const check = verifyFigure(f.name, field, lc, corpus, params.anchorReportDate ?? null, f.asOfDate ?? null);
+          (out as unknown as Record<string, unknown>)[field] = null;
+          if (pred === "capacity" && check.kept) {
+            (out as unknown as Record<string, unknown>).lettersOfCreditCapacity = check.kept;
+            if (check.foundIn) figureSources.lettersOfCreditCapacity = check.foundIn;
+          } else if (check.rejection) rejections.push(check.rejection);
+          else rejections.push({ facility: f.name, field, value: lc.value, reason: "the sentence does not predicate letters of credit outstanding or issued", sourceLine: lc.sourceLine });
+          continue;
+        }
+      }
       const r = verifyFigure(f.name, field, f[field], corpus, params.anchorReportDate ?? null, f.asOfDate ?? null);
       if (r.kept && r.foundIn) figureSources[field] = r.foundIn;
       (out as unknown as Record<string, unknown>)[field] = r.kept;

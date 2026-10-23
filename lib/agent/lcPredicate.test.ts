@@ -60,7 +60,10 @@ for (const f of readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x))) {
       if (!offered?.value) continue;
       const p = predicate ? predicate(offered.value, offered.sourceLine) : "unstated";
       if (fac.lettersOfCredit) assert(p === "outstanding" || /^\$?\s*0|—/.test(fac.lettersOfCredit.value), `[C2:${snap.company} ${s.label}] ${fac.name}: kept as outstanding ${fac.lettersOfCredit.value}, and its sentence predicates ${p}`);
-      if (p === "capacity") assert(!fac.lettersOfCredit && fac.lettersOfCreditCapacity?.value === offered.value, `[C2:${snap.company} ${s.label}] ${fac.name}: ${offered.value} predicated capacity is kept as capacity, not outstanding`);
+      const zero = /^\$?\s*0\b|^\$?\s*[—–-]$/.test(offered.value.trim());
+      if (p === "capacity" && !zero) assert(!fac.lettersOfCredit && fac.lettersOfCreditCapacity?.value === offered.value, `[C2:${snap.company} ${s.label}] ${fac.name}: ${offered.value} predicated capacity is kept as capacity, not outstanding`);
+      // A zero claimed from a capacity-only sentence: outstanding not stated — neither kept nor withheld.
+      if (p === "capacity" && zero) assert(!fac.lettersOfCredit && !r.rejections.some((x: any) => x.facility === fac.name && x.field === "lettersOfCredit"), `[C2:${snap.company} ${s.label}] ${fac.name}: a zero claimed from a capacity-only sentence leaves outstanding not stated (not kept, not withheld)`);
       console.log(`    ${snap.company} ${s.label} ${fac.name}: offered ${offered.value} — predicate ${p}; outstanding ${fac.lettersOfCredit?.value ?? "not kept"}; capacity ${fac.lettersOfCreditCapacity?.value ?? "—"}`);
     }
     for (const rej of r.rejections.filter((x: any) => x.field === "lettersOfCredit")) console.log(`    ${snap.company} ${s.label} ${rej.facility}: ${rej.value} withheld — ${rej.reason}`);
