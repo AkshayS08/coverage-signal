@@ -10,27 +10,25 @@ Encompass Health Corp ($0.0000): ZERO POSITION CHANGE against the signed v31 gol
 DAVITA INC. ($0.0000): ZERO POSITION CHANGE against the signed v31 golden
     stability: the same position with and without the 0 redemption claim(s) and 0 note-prose retirement(s) the signed answer did not have
 
-COMMUNITY HEALTH SYSTEMS INC ($0.0000): POSITION CHANGED — a finding to explain before any signing
-    rows["ABL Facility"].provenance: expected "note", got "note-narrative"
+COMMUNITY HEALTH SYSTEMS INC ($0.0000): ZERO POSITION CHANGE against the signed v31 golden
+    accepted: rows["ABL Facility"].provenance: expected "note", got "note-narrative" — the card it renders is byte-identical, so the provenance label is the only difference (CHS ruling)
     stability: the same position with and without the 0 redemption claim(s) and 2 note-prose retirement(s) the signed answer did not have
 
 MOLINA HEALTHCARE, INC. ($0.0000): ZERO POSITION CHANGE against the signed v31 golden
     stability: the same position with and without the 0 redemption claim(s) and 0 note-prose retirement(s) the signed answer did not have
 
-Cigna Group ($0.0000): POSITION CHANGED — a finding to explain before any signing
+Cigna Group ($0.0000): ZERO POSITION CHANGE against the signed v31 golden
     accepted: Rule 66: ci-20251231.htm joins the position identity as the labelled prior-period base (it was already cited)
     accepted: label "commercial paper program" → "Commercial Paper Program", verbatim in its sentence
+    accepted: roll delta label "1.250 % senior notes" → "notes", verbatim in its sentence
     accepted: roll delta label "commercial paper program" → "Commercial Paper Program", verbatim in its sentence
-    roll delta label "1.250 % senior notes" → "$ 550 million, 1.250 % Notes due March 2026" NOT accepted: not verbatim in its sentence
-    rolled.deltas[0].instrument: expected "1.250 % senior notes", got "$ 550 million, 1.250 % Notes due March 2026"
-    rolled.deltas[0].date: expected "2026-03-01", got "2026-03"
+    accepted: rolled.deltas[0].date "2026-03-01" → "2026-03": the sentence states only "2026-03" ("During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior…"). FINDING AGAINST THE GOLDEN: the signed 2026-03-01 carries a day its sentence does not state
     stability: the same position with and without the 0 redemption claim(s) and 0 note-prose retirement(s) the signed answer did not have
 
 card text, TENET HEALTHCARE CORP: IDENTICAL
 
-card text, Encompass Health Corp: 1 line(s) only in the committed card, 1 only in this one
-    - Senior secured revolver letters of credit, $53.6MM: withheld. Sentence does not state this figure. See the sentence offered.
-    + Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the anchor's period. See the sentence offered.
+card text, Encompass Health Corp: IDENTICAL
+    tolerated (withheld figure): "Senior secured revolver letters of credit, $53.6MM: withheld. Sentence does not state this…" / "Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other th…"
 
 card text, DAVITA INC.: IDENTICAL
 
@@ -38,9 +36,6 @@ card text, COMMUNITY HEALTH SYSTEMS INC: IDENTICAL (byte-identical)
 
 card text, MOLINA HEALTHCARE, INC.: IDENTICAL
 
-card text, Cigna Group: 1 line(s) only in the committed card, 2 only in this one
-    - Letter-of-credit sub-facility $500MM, capacity only, as of Dec 31, 2025, per 10-K Note 7. Letters of credit outstanding not stated.
-    + Undrawn revolver computed as size less drawn and letters of credit; no availability stated, and letters of credit outstanding not stated, so it may be lower.
-    + Letter-of-credit sub-facility $500MM, capacity only, as of Dec 31, 2025, per 10-K Note 7. Letters of credit outstanding not stated. Availability not stated.
+card text, Cigna Group: IDENTICAL
 
-4 of 6 with zero position change; 4 of 6 with identical card text.
+6 of 6 with zero position change; 6 of 6 with identical card text.

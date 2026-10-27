@@ -26,6 +26,7 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { deriveGoldenState, compareToGolden, positionFilingSetOf, sourceLineCheckFor, type GoldenFile, type GoldenState } from "../events/golden";
 import { buildCard } from "../cards/build";
+import { sentenceSupportsMaturity } from "../events/position";
 
 const phase = process.argv[2] ?? "canonical";
 const run = JSON.parse(readFileSync(`baselines/s27-${phase}.json`, "utf-8")) as { results: { company: string; bust: string | null; usd: number; result: any }[] };
@@ -80,7 +81,25 @@ for (const r of run.results) {
     else refused.push(`roll delta label "${twin[0].instrument}" → "${d.instrument}" NOT accepted: not verbatim in its sentence`);
   }
 
-  const verdict = compareToGolden(expected, actual, opts);
+  // Rules 76-78 (Akshay, Oct 23, ruling 3(b)): a roll delta's date may differ in precision only where the NEW date is at
+  // the precision its own sentence states and the signed one claimed more. Accepted, and logged as a finding against the golden.
+  if (actual.rolled && expected.rolled) for (const [k, d] of actual.rolled.deltas.entries()) {
+    const e = expected.rolled.deltas[k];
+    if (!e || e.date === d.date || !e.date || !d.date || !e.date.startsWith(d.date) || e.sourceLine !== d.sourceLine) continue;
+    // The check takes a full ISO date and the precision it is held to: "2026-03" is ("2026-03-01", month).
+    const held = (x: string): [string, "day" | "month" | "year"] => (x.length === 10 ? [x, "day"] : x.length === 7 ? [`${x}-01`, "month"] : [`${x}-01-01`, "year"]);
+    if (sentenceSupportsMaturity(...held(d.date), d.sourceLine) && !sentenceSupportsMaturity(...held(e.date), e.sourceLine)) {
+      accepted.push(`rolled.deltas[${k}].date "${e.date}" → "${d.date}": the sentence states only "${d.date}" ("${d.sourceLine.slice(0, 90)}…"). FINDING AGAINST THE GOLDEN: the signed ${e.date} carries a day its sentence does not state`);
+      d.date = e.date;
+    }
+  }
+  let verdict = compareToGolden(expected, actual, opts);
+  // Akshay's CHS ruling (Oct 22): byte-identical apart from provenance. A divergence in a row's provenance label
+  // ALONE is accepted where the card built from this answer is byte-identical to the committed card.
+  if (verdict.kind === "diverged" && verdict.divergences.every((x) => /^rows\[".+"\]\.provenance:/.test(x)) && cardBytesSame(r)) {
+    for (const x of verdict.divergences) accepted.push(`${x} — the card it renders is byte-identical, so the provenance label is the only difference (CHS ruling)`);
+    verdict = { kind: "matches", tolerated: verdict.tolerated };
+  }
   const sameId = (verdict.kind !== "not-applicable") && actual.filingSet.join("|") === expected.filingSet.join("|");
   const same = verdict.kind === "matches" && sameId && refused.length === 0;
   if (!same) changed++;
@@ -109,6 +128,14 @@ for (const r of run.results) {
   say(`    stability: ${stable ? "the same" : "NOT the same"} position with and without the ${extraRedeems} redemption claim(s) and ${extraNotes} note-prose retirement(s) the signed answer did not have`);
   if (!stable) changed++;
 }
+function cardFor(r: { result: any }) {
+  const cik = r.result.cik, snap = snapOf(cik), w = week.names[cik];
+  let facts = null; try { facts = JSON.parse(readFileSync(`lib/cards/inputs/facts/${cik}.json`, "utf-8")); } catch {}
+  return buildCard({ result: r.result, briefDate: "2026-10-15", previousBrief: w?.previousBrief ?? null, weekFilings: w?.filings ?? [], cash: snap.cash, textByUrl: docsOf(cik), periodSentence: snap.periodSentence, laterUrls: (snap.laterFilings ?? []).filter((x: any) => x.filingDate <= "2026-10-15").map((x: any) => x.url), facts } as any);
+}
+function cardBytesSame(r: { result: any }): boolean {
+  return JSON.stringify(cardFor(r)) === JSON.stringify(JSON.parse(readFileSync(`lib/cards/generated/${r.result.cik}.json`, "utf-8")));
+}
 // CARD TEXT: the card built from this answer against the committed card, displayed text only.
 let textChanged = 0;
 for (const r of run.results) {
@@ -117,8 +144,18 @@ for (const r of run.results) {
   const card = buildCard({ result: r.result, briefDate: "2026-10-15", previousBrief: w?.previousBrief ?? null, weekFilings: w?.filings ?? [], cash: snap.cash, textByUrl: docsOf(cik), periodSentence: snap.periodSentence, laterUrls: (snap.laterFilings ?? []).filter((x: any) => x.filingDate <= "2026-10-15").map((x: any) => x.url), facts } as any);
   const committed = JSON.parse(readFileSync(`lib/cards/generated/${cik}.json`, "utf-8"));
   const a = cardText(card), b = cardText(committed), A = new Set(a), B = new Set(b);
-  const gone = b.filter((l) => !A.has(l)), added = a.filter((l) => !B.has(l));
+  let gone = b.filter((l) => !A.has(l)), added = a.filter((l) => !B.has(l));
+  const tol: string[] = [];
+  // Tolerated class (Akshay, Oct 23): a WITHHELD figure may differ in amount and reason across samples, since nothing is
+  // displayed. Paired by what is withheld ("<facility> <field>, $X: withheld."); the canonical sample's line is the one rendered.
+  const withheldKey = (l: string) => (/^(.+?), [~<]?\$[\d,.]+MM: withheld\./.exec(l) ?? [])[1];
+  for (const l of [...gone]) {
+    const key = withheldKey(l);
+    const twin = key ? added.find((x) => withheldKey(x) === key) : undefined;
+    if (twin) { gone = gone.filter((x) => x !== l); added = added.filter((x) => x !== twin); tol.push(`    tolerated (withheld figure): "${l.slice(0, 90)}…" / "${twin.slice(0, 90)}…"`); }
+  }
   say(`\ncard text, ${r.company}: ${gone.length + added.length === 0 ? "IDENTICAL" : `${gone.length} line(s) only in the committed card, ${added.length} only in this one`}${JSON.stringify(card) === JSON.stringify(committed) ? " (byte-identical)" : ""}`);
+  for (const l of tol) say(l);
   for (const l of gone) say(`    - ${l.slice(0, 200)}`);
   for (const l of added) say(`    + ${l.slice(0, 200)}`);
   if (gone.length + added.length > 0) textChanged++;
