@@ -11,6 +11,12 @@
  *       linked to the same sentence where the type word appears in it
  *   M3  over all six cards (committed inputs) and the v33 replay cards: every
  *       table row's name passes the check after rendering
+ *   M4  the same rule for a roll-forward delta's label (Cigna, Oct 23 ruling
+ *       (a)): "$ 550 million, 1.250 % Notes due March 2026" is not in its
+ *       sentence ("…repaid $ 550 million 1.250 % senior notes that matured in
+ *       March 2026"), so it renders as the plain type as the sentence prints
+ *       it; a label the sentence contains is kept. Over every rolled delta of
+ *       the six (v31 and v33): each delta's label is in its own sentence
  *   control: the paraphrase itself fails the check
  *
  * Offline, $0. Run: npx tsx lib/cards/nameCheck.test.ts
@@ -53,5 +59,23 @@ for (const cik of CIKS) {
   }
 }
 
+(async () => {
+console.log("\n=== M4: roll-forward delta labels ===");
+const nameRule = await import("../events/nameRule").catch(() => null) as any;
+const deltaSentence = "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.";
+const fixedLabel = nameRule?.nameOrPlainType?.("$ 550 million, 1.250 % Notes due March 2026", deltaSentence);
+assert(!!fixedLabel && nameIn(fixedLabel, deltaSentence) && fixedLabel !== "$ 550 million, 1.250 % Notes due March 2026", `[M4] the paraphrased delta label renders as the plain type the sentence prints ("${fixedLabel}")`);
+assert(nameRule?.nameOrPlainType?.("1.250 % senior notes", deltaSentence) === "1.250 % senior notes", `[M4] a delta label its sentence contains is kept`);
+const { deriveGoldenState } = await import("../events/golden");
+for (const cik of CIKS) {
+  const snap = JSON.parse(readFileSync(join("lib", "cards", "inputs", `${cik}.json`), "utf-8"));
+  for (const [label, result] of [["v31", snap.result], ["v33", replay.results.find((x: any) => x.result.cik === cik)?.result]] as const) {
+    if (!result) continue;
+    const st: any = deriveGoldenState(result, new Date("2026-10-15T00:00:00Z"));
+    for (const d of st.rolled?.deltas ?? []) assert(nameIn(d.instrument, d.sourceLine), `[M4:${snap.company} ${label}] delta "${d.instrument}" is in its sentence`);
+  }
+}
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);
+})();
