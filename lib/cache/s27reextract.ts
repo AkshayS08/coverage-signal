@@ -30,6 +30,8 @@ loadEnvQuietly();
 import { writeFileSync } from "node:fs";
 import { runAgentLoop } from "../agent";
 import { checkFree, spendTracker } from "./freeRun";
+import { setSpendLimits, beginGuardRun } from "../agent/spendGuard";
+import { readFileSync } from "node:fs";
 
 /**
  * Per name, from the ledger: the last v31 extraction (Haiku base + Sonnet
@@ -55,7 +57,16 @@ const BUSTS = ["s27-retaste-1", "s27-retaste-2"];
   if (process.env.S27_APPROVED !== phase) { console.error(`REFUSING: this phase bills. Set S27_APPROVED=${phase} only after Akshay's written approval.`); process.exit(1); }
   if (!process.env.ANTHROPIC_API_KEY) { console.error("REFUSING: no API key, so nothing could be extracted; a run without one only proves the gate."); process.exit(1); }
 
-  const runs = DECLARED.flatMap((d) => (phase === "canonical" ? [{ ...d, bust: null as string | null, ceiling: d.usd + d.dig }] : BUSTS.map((b) => ({ ...d, bust: b, ceiling: d.usd + d.dig + d.retasteExtra }))));
+  // Session 27 (Akshay, Oct 23): the re-tastes are priced from pre-call counts (s27price.ts, sessions/27/retaste_pricing.json),
+  // and the preventive gate (spendGuard.ts) refuses any call whose worst case would cross its run's counted worst case or the
+  // $3.00 running cap. A name not cached under its current read set is not re-tasted: that would be a new corpus.
+  const pricing = phase === "retaste" ? (JSON.parse(readFileSync("sessions/27/retaste_pricing.json", "utf-8")) as { rows: { company: string; perRun: number }[] }) : null;
+  const RETASTE_CAP = 3.0;
+  const runs = phase === "canonical"
+    ? DECLARED.map((d) => ({ ...d, bust: null as string | null, ceiling: d.usd + d.dig }))
+    : pricing!.rows.flatMap((p) => BUSTS.map((b) => ({ company: p.company, usd: p.perRun, dig: 0, retasteExtra: 0, bust: b, ceiling: p.perRun })));
+  for (const d of DECLARED.filter((x) => phase === "retaste" && !pricing!.rows.some((p) => p.company === x.company))) console.log(`  ${d.company}: not re-tasted (not cached under its current read set; its corpus moved)`);
+  if (phase === "retaste") setSpendLimits({ totalUsd: RETASTE_CAP });
   const declaredTotal = runs.reduce((a, r) => a + r.ceiling, 0);
 
   // BEFORE: the forced misses are exactly the declared runs.
@@ -68,6 +79,7 @@ const BUSTS = ["s27-retaste-1", "s27-retaste-2"];
   const results: { company: string; bust: string | null; usd: number; key: string; result: unknown }[] = [];
   for (const [n, r] of runs.entries()) {
     if (r.bust) process.env.CACHE_BUST = r.bust; else delete process.env.CACHE_BUST;
+    if (phase === "retaste") { setSpendLimits({ perRunUsd: r.ceiling, totalUsd: RETASTE_CAP }); beginGuardRun(`${r.company} [${r.bust}]`); }
     const result = await runAgentLoop(r.company);
     const usd = spend.record(`${r.company}${r.bust ? ` (${r.bust})` : ""}`);
     delete process.env.CACHE_BUST;

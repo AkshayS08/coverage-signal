@@ -1,0 +1,54 @@
+{
+ "pricedAt": "2026-10-27T17:33:53.723Z",
+ "haikuRate": {
+  "input": 1,
+  "output": 5
+ },
+ "sonnetRate": {
+  "input": 3,
+  "output": 15
+ },
+ "rows": [
+  {
+   "company": "TENET HEALTHCARE CORP",
+   "base": 0.197403,
+   "proceeds": 0.076215,
+   "note": 0,
+   "dig": 0,
+   "perRun": 0.27361800000000003
+  },
+  {
+   "company": "Encompass Health Corp",
+   "base": 0.170695,
+   "proceeds": 0.075489,
+   "note": 0,
+   "dig": 0,
+   "perRun": 0.24618400000000001
+  },
+  {
+   "company": "DAVITA INC.",
+   "base": 0.177725,
+   "proceeds": 0.060471,
+   "note": 0,
+   "dig": 0,
+   "perRun": 0.238196
+  },
+  {
+   "company": "COMMUNITY HEALTH SYSTEMS INC",
+   "base": 0.174605,
+   "proceeds": 0,
+   "note": 0,
+   "dig": 0.23244,
+   "perRun": 0.407045
+  },
+  {
+   "company": "Cigna Group",
+   "base": 0.169102,
+   "proceeds": 0.067386,
+   "note": 0.063429,
+   "dig": 0,
+   "perRun": 0.299917
+  }
+ ],
+ "totalWorstUsd": 2.92992
+}
