@@ -28,18 +28,9 @@ import { kindOf } from "./headings";
 const SENIORITY_RE = /\b(senior(?:[- ]priority)?|junior[- ]priority|junior|subordinated)\b/i;
 const SECURITY_RE = /\b(unsecured|secured|first[- ]lien|second[- ]lien)\b/i;
 
-export const TYPE_DISPLAY: Record<string, string> = {
-  "senior-note": "notes",
-  "term-loan-a": "term loan A",
-  "term-loan-b": "term loan B",
-  "term-loan": "other term loan",
-  "delayed-draw": "other term loan",
-  revolver: "revolver",
-  "credit-facility": "revolver",
-  "commercial-paper": "commercial paper",
-  "finance-lease": "finance leases",
-  "letter-of-credit": "letters of credit",
-};
+// Session 27: one definition, shared with the roll-forward (lib/events/nameRule.ts).
+export { TYPE_DISPLAY } from "../events/nameRule";
+import { TYPE_DISPLAY } from "../events/nameRule";
 
 export interface RowLabels {
   type: Segment;

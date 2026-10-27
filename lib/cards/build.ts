@@ -25,6 +25,7 @@ import { rolledCoverageFor } from "../events/rolledCoverage";
 import { borrowingBaseOf } from "../agent/borrowingBase";
 import { classifyInstrument, type NoteSeniorityStatement } from "../events/instrumentClass";
 import { canonicalizeFacilityZeros } from "../agent/statedZero";
+import { nameIsVerbatim, nameOrPlainType, plainTypeOf } from "../events/nameRule";
 import { extractFactTokens, factTokensMatch } from "../agent/factTokens";
 import { createTextLocator } from "../agent/verifyQuote";
 
@@ -123,19 +124,10 @@ function withCanonicalFacilityZeros(result: CompanyResult): CompanyResult {
  * unverbatim is ever shown as a linked name.
  */
 export function verbatimNameSegments(segs: Segment[], instrument: string): Segment[] {
-  const squash = (x: string) => x.replace(/\s+/g, "").toLowerCase();
   return segs.map((seg) => {
-    if (seg.k !== "label" || squash(seg.src.sentence).includes(squash(seg.stated))) return seg;
-    const c = classifyInstrument({ headings: [], instrumentName: instrument });
-    const word = (c.instrumentType && TYPE_DISPLAY[c.instrumentType]) || "instrument";
-    // The type word as the sentence prints it: the word itself, or its longest stem of five letters or more.
-    const lower = seg.src.sentence.toLowerCase();
-    let found: string | null = null;
-    for (let n = word.length; n >= Math.min(5, word.length); n--) {
-      const at = lower.indexOf(word.slice(0, n).toLowerCase());
-      if (at >= 0) { found = seg.src.sentence.slice(at, at + n); break; }
-    }
-    return found ? { k: "label", t: word, stated: found, src: seg.src } : t(word);
+    if (seg.k !== "label" || nameIsVerbatim(seg.stated, seg.src.sentence)) return seg;
+    const p = plainTypeOf(instrument, seg.src.sentence);
+    return p.stated ? { k: "label", t: p.word, stated: p.stated, src: seg.src } : t(p.word);
   });
 }
 
@@ -1420,7 +1412,7 @@ export function buildCard(i: CardInputs): Card {
       : undefined;
     // v2.1 §2.3/§2.5: repaid before the referenced period end, so it never appears on the card.
     if (done) continue;
-    withheld.push([t(`Not counted in the totals: ${m.instrument}, ${m.placement === "undated" ? "no date stated" : "stated as an intention, and no filing this card holds states it done"}.`)]);
+    withheld.push([t(`Not counted in the totals: ${nameOrPlainType(m.instrument, m.sourceLine)}, ${m.placement === "undated" ? "no date stated" : "stated as an intention, and no filing this card holds states it done"}.`)]);
   }
   if (withheld.length === 0) withheld.push([t("Nothing withheld this week.")]);
 

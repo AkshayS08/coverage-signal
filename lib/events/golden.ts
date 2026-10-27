@@ -31,6 +31,7 @@ import { computeCoverage } from "./coverage";
 import { rolledCoverageFor } from "./rolledCoverage";
 import { buildDerivedLines } from "./derived";
 import { buildEvents } from "./buildEvents";
+import { nameOrPlainType } from "./nameRule";
 
 /** One ladder entry, reduced to what a signature actually pins. */
 export interface GoldenRow {
@@ -338,7 +339,8 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
           deltas: rc.movements
             .filter((m) => m.placement === "delta")
             .map((m) => ({
-              instrument: m.instrument, amountMillions: m.amountMillions, statedAs: m.statedAs,
+              // Session 27: the label as SHOWN, under the name rule; the roll matches on the model's label, which stays as it is.
+              instrument: nameOrPlainType(m.instrument, m.sourceLine), amountMillions: m.amountMillions, statedAs: m.statedAs,
               date: m.date, sourceLine: m.sourceLine, citedUrl: m.citedUrl,
             })),
           rollComputedMillions: rc.rollTie.computedMillions,
