@@ -59,6 +59,21 @@ if (cr) {
   assert(nettingNote(card), `[Q3] the CP netting note renders`);
 }
 
+console.log("\n=== Q4-Q5: a stated availability beats a computed one (Cigna ruling (c)) ===");
+if (cr) {
+  const card = build("0001739940", undefined, cr);
+  const amt = undrawnEntries(card)[0]?.amount;
+  assert(amt?.k === "figure" && /undrawn committed capacity under our revolving credit agreement/i.test(amt.src.sentence) && /6,500|6\.5/.test(amt.t), `[Q4] the v33 card shows the revolver's stated availability (${amt?.t}), from "${amt?.src?.sentence?.slice(0, 70)}…"`);
+  assert(!(card.v3?.liquidity.notes ?? []).some((n: any) => /computed as size less drawn/i.test(text(n))), `[Q4] and drops the computed flag`);
+  assert(!(card.v3?.liquidity.legend ?? []).some((e: any) => /^Undrawn/.test(text(e.label)) && /5,500|5\.5/.test(e.amount?.t ?? "")), `[Q5] the commercial paper program's "$5.5 billion of remaining capacity" is never the revolver's availability`);
+  // control: with that sentence gone from the documents, the computed flag stands
+  const snap = JSON.parse(readFileSync("lib/cards/inputs/0001739940.json", "utf-8"));
+  const w = week.names["0001739940"];
+  const docs = new Map(Object.entries(snap.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text.replace(/we had \$6\.5 billion of undrawn committed capacity under our revolving credit agreement/g, "we had a revolving credit agreement")]));
+  const c2 = buildCard({ result: cr, briefDate: "2026-10-15", previousBrief: w?.previousBrief ?? null, weekFilings: w?.filings ?? [], cash: snap.cash, textByUrl: docs, periodSentence: snap.periodSentence, laterUrls: (snap.laterFilings ?? []).filter((x: any) => x.filingDate <= "2026-10-15").map((x: any) => x.url), facts: JSON.parse(readFileSync("lib/cards/inputs/facts/0001739940.json", "utf-8")) } as any);
+  assert((c2.v3?.liquidity.notes ?? []).some((n: any) => /computed as size less drawn/i.test(text(n))), `[Q4 control] with no sentence stating availability, the computed flag stands`);
+}
+
 console.log("\n=== control ===");
 const c = build("0001739940");
 const lost = JSON.parse(JSON.stringify(c)); lost.v3.liquidity.legend = lost.v3.liquidity.legend.filter((e: any) => !/^Undrawn/.test(text(e.label)));
