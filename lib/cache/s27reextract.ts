@@ -69,28 +69,36 @@ const BUSTS = ["s27-retaste-1", "s27-retaste-2"];
   if (phase === "retaste") setSpendLimits({ totalUsd: RETASTE_CAP });
   const declaredTotal = runs.reduce((a, r) => a + r.ceiling, 0);
 
-  // BEFORE: the forced misses are exactly the declared runs.
+  // RESUME (S27_RESUME_FROM=<ISO time the phase started>): a run already done is replayed from its cache at $0 for its
+  // result; what this phase has already billed (the ledger since then) is taken off the running cap; the forced misses
+  // must then equal exactly the runs NOT yet done.
+  const resumeFrom = process.env.S27_RESUME_FROM ?? null;
+  const spentSoFar = resumeFrom ? readFileSync("baselines/cost-log.jsonl", "utf-8").trim().split("\n").map((l) => JSON.parse(l)).filter((j) => j.at >= resumeFrom).reduce((a, j) => a + (j.totalUsd ?? 0), 0) : 0;
+  // BEFORE: the forced misses are exactly the declared runs (on a resume, exactly the runs not yet done).
   const before = await Promise.all(runs.map((r) => checkFree(r.company, r.bust)));
-  const cached = before.filter((v) => v.cached);
-  if (cached.length) { console.error(`REFUSING: ${cached.length} declared run(s) are already cached, so the forced misses do not equal the declared names:\n${cached.map((v) => `  ${v.company} ${v.key}`).join("\n")}`); process.exit(1); }
-  console.log(`GATE before: ${runs.length} forced miss(es), exactly the declared runs. Declared total $${declaredTotal.toFixed(4)}.`);
+  const done = new Set(before.filter((v) => v.cached).map((v) => v.key));
+  if (done.size && !resumeFrom) { console.error(`REFUSING: ${done.size} declared run(s) are already cached, so the forced misses do not equal the declared names:\n${[...done].map((k) => `  ${k}`).join("\n")}`); process.exit(1); }
+  const todo = runs.filter((r, k) => !before[k].cached);
+  console.log(`GATE before: ${todo.length} forced miss(es), exactly the declared runs${resumeFrom ? ` not yet done (${done.size} done earlier, replayed at $0; $${spentSoFar.toFixed(4)} already billed this phase, so the running cap left is $${(RETASTE_CAP - spentSoFar).toFixed(4)})` : ""}. Declared worst total $${declaredTotal.toFixed(4)}.`);
 
   const spend = spendTracker();
   const results: { company: string; bust: string | null; usd: number; key: string; result: unknown }[] = [];
   for (const [n, r] of runs.entries()) {
     if (r.bust) process.env.CACHE_BUST = r.bust; else delete process.env.CACHE_BUST;
-    if (phase === "retaste") { setSpendLimits({ perRunUsd: r.ceiling, totalUsd: RETASTE_CAP }); beginGuardRun(`${r.company} [${r.bust}]`); }
+    if (phase === "retaste") { setSpendLimits({ perRunUsd: r.ceiling, totalUsd: RETASTE_CAP - spentSoFar }); beginGuardRun(`${r.company} [${r.bust}]`); }
+    const wasDone = done.has(before[n].key);
     const result = await runAgentLoop(r.company);
     const usd = spend.record(`${r.company}${r.bust ? ` (${r.bust})` : ""}`);
     delete process.env.CACHE_BUST;
     const after = await checkFree(r.company, r.bust);
     console.log(`  ${r.company}${r.bust ? ` [${r.bust}]` : ""}: $${usd.toFixed(4)} (declared $${r.ceiling.toFixed(4)}), answer ${after.cached ? "written" : "MISSING"} at ${after.key}`);
     results.push({ company: r.company, bust: r.bust, usd, key: after.key, result });
+    if (wasDone) { if (usd !== 0) { console.error(`STOPPED: ${r.company} [${r.bust}] was done earlier and its replay billed $${usd.toFixed(4)}`); process.exit(1); } continue; }
     const breach =
       usd === 0 ? "billed $0: the answer came from somewhere other than this extraction" :
       usd > r.ceiling * PER_NAME_CEILING ? `billed $${usd.toFixed(4)}, over ${PER_NAME_CEILING}x its declared $${r.ceiling.toFixed(4)}` :
       !after.cached ? "no answer at the key checkFree names" :
-      spend.totalUsd > declaredTotal && n < runs.length - 1 ? `running total $${spend.totalUsd.toFixed(4)} passed the declared $${declaredTotal.toFixed(4)}` : null;
+      spentSoFar + spend.totalUsd > RETASTE_CAP && n < runs.length - 1 ? `running total $${spend.totalUsd.toFixed(4)} passed the declared $${declaredTotal.toFixed(4)}` : null;
     if (breach) { writeFileSync(`baselines/s27-${phase}.json`, JSON.stringify({ stoppedAt: r.company, breach, results }, null, 1) + "\n"); console.error(`STOPPED: ${r.company}: ${breach}. ${spend.line()}`); process.exit(1); }
   }
 
