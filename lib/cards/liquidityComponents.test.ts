@@ -63,9 +63,11 @@ console.log("\n=== Q4-Q5: a stated availability beats a computed one (Cigna ruli
 if (cr) {
   const card = build("0001739940", undefined, cr);
   const amt = undrawnEntries(card)[0]?.amount;
-  assert(amt?.k === "figure" && /undrawn committed capacity under our revolving credit agreement/i.test(amt.src.sentence) && /6,500|6\.5/.test(amt.t), `[Q4] the v33 card shows the revolver's stated availability (${amt?.t}), from "${amt?.src?.sentence?.slice(0, 70)}…"`);
+  // Netted of the CP it backs, the entry is computed; its AVAILABILITY part is what must be stated, and from the revolver's own sentence.
+  const avail = amt?.k === "computed" ? amt.parts?.[0] : amt;
+  assert(!!avail && /undrawn committed capacity under our revolving credit agreement/i.test(avail.src?.sentence ?? "") && /6\.5 billion|6,500/.test(avail.printed ?? avail.t ?? ""), `[Q4] the v33 card's undrawn revolver starts from its stated availability (${avail?.printed ?? avail?.t}), from "${avail?.src?.sentence?.slice(0, 70)}…"`);
   assert(!(card.v3?.liquidity.notes ?? []).some((n: any) => /computed as size less drawn/i.test(text(n))), `[Q4] and drops the computed flag`);
-  assert(!(card.v3?.liquidity.legend ?? []).some((e: any) => /^Undrawn/.test(text(e.label)) && /5,500|5\.5/.test(e.amount?.t ?? "")), `[Q5] the commercial paper program's "$5.5 billion of remaining capacity" is never the revolver's availability`);
+  assert(!!avail && !/remaining capacity under our commercial paper program/i.test((avail.src?.sentence ?? "").slice(0, (avail.src?.sentence ?? "").indexOf("revolving credit agreement") + 30)) && !/5\.5 billion/.test(avail.printed ?? ""), `[Q5] the commercial paper program's "$5.5 billion of remaining capacity" is never read as the revolver's availability (availability part: ${avail?.printed})`);
   // control: with that sentence gone from the documents, the computed flag stands
   const snap = JSON.parse(readFileSync("lib/cards/inputs/0001739940.json", "utf-8"));
   const w = week.names["0001739940"];
