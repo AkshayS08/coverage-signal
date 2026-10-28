@@ -7301,3 +7301,26 @@ refill was approved up to $0.064 and billed $0.0738: the estimate came from
 the v31 call's tokens, and this call's bounded input was larger. A gate can
 measure a call but not stop one mid-way; the next declaration prices from
 the current input's size, not a prior call's. The narration pass did not run.
+
+### Session 27, Stage 1: the preventive gate, the re-tastes, two golden findings (Oct 27, 2026)
+
+Full account: sessions/27/stage1_checkpoint5.md.
+
+**RULE: no billed call without its worst case counted first.** Every call
+goes through guardedCreate: input tokens counted by the API's own counter,
+priced at the model's rate with output at max_tokens, refused before the
+call if it would cross its per-run or running limit. It refused DaVita's
+narration ($0.0331 worst against $0.0195 left) and, when the account's
+credit ran out, the next re-taste, both before any call was made.
+
+**Golden findings (Cigna).** The signed roll delta's date 2026-03-01 is an
+invented day: its sentence says "matured in March 2026". The signed
+availability figure was supported only by the facility's size sentence;
+the anchor's own "$6.5 billion of undrawn committed capacity under our
+revolving credit agreement" is the sentence that states it, and the card
+now cites it.
+
+**9b, five samples of ten:** Tenet x2 and Encompass x2 reproduce; DaVita #1
+diverges (two extra rows from its facilities; captured face +$253.5MM).
+Molina's Q3 10-Q moved its read set on Oct 22: its next step is a quarterly
+refresh, not a re-taste. The phase stopped on the account's credit balance.
