@@ -12,12 +12,11 @@
  * Run: npx tsx lib/cache/s27nineb.ts
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { deriveGoldenState, compareToGolden, sourceLineCheckFor, countsToward9b } from "../events/golden";
+import { compareSample } from "./s27compare";
 
 const canon = JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results as { company: string; result: any }[];
 const re = JSON.parse(readFileSync("baselines/s27-retaste.json", "utf-8")).results as { company: string; bust: string; usd: number; result: any }[];
 const AS_OF = new Date("2026-10-15T00:00:00Z");
-const docsOf = (cik: string) => new Map<string, string>(Object.entries(JSON.parse(readFileSync(`lib/cards/inputs/${cik}.json`, "utf-8")).docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
 const FIELDS = ["facilitySize", "drawn", "lettersOfCredit", "available"] as const;
 const figs = (r: any) => (r.results.find((t: any) => t.triggerId === "debt-maturity")?.facilities ?? []).map((f: any) => `${f.name}: ${FIELDS.map((k) => `${k}=${f[k]?.value ?? "—"}`).join(" ")}`);
 const lines: string[] = [];
@@ -26,21 +25,10 @@ let reproduced = 0;
 for (const r of re) {
   const c = canon.find((x) => x.result.cik === r.result.cik);
   if (!c) { say(`${r.company} [${r.bust}]: no canonical answer to compare`); continue; }
-  const expected: any = deriveGoldenState(c.result, AS_OF), actual: any = deriveGoldenState(r.result, AS_OF);
+  const { verdict: v, tie, rule66 } = compareSample(c.result, r.result, AS_OF);
   // Rule 66 (accepted, Oct 22): the labelled prior-period base may be in one sample's position identity and not the other's.
-  const base = r.result.results.find((t: any) => t.triggerId === "debt-maturity")?.priorPeriodBase?.filingUrl;
-  const diffSet = (a: string[], b: string[]) => a.filter((u) => !b.includes(u));
-  const extra = [...diffSet(expected.filingSet, actual.filingSet), ...diffSet(actual.filingSet, expected.filingSet)];
-  if (base && extra.length === 1 && extra[0] === base) {
-    actual.filingSet = expected.filingSet;
-    actual.otherCitations = (actual.otherCitations ?? []).filter((u: string) => u !== base);
-    expected.otherCitations = (expected.otherCitations ?? []).filter((u: string) => u !== base);
-    say(`
-${r.company} [${r.bust}]: accepted: Rule 66 — ${base.split("/").pop()}, the labelled prior-period base, is in one identity and not the other`);
-  }
-  const v = compareToGolden(expected, actual, { sourceLineCheck: sourceLineCheckFor(r.result, docsOf(r.result.cik), AS_OF) });
-  // Ruling 1(c) (Oct 29): a sample that breaks the coverage tie is a check failure, never an alternate reading.
-  const tie = countsToward9b(expected, actual, v);
+  if (rule66) say(`
+${r.company} [${r.bust}]: accepted: Rule 66 — ${rule66.split("/").pop()}, the labelled prior-period base, is in one identity and not the other`);
   if (tie.checkFailure) say(`
 ${r.company} [${r.bust}]: CHECK FAILURE — ${tie.reason}; not counted toward 9b`);
   const ok = tie.counts;

@@ -16,30 +16,18 @@
  * Run: ANTHROPIC_API_KEY="" npx tsx lib/cache/s27signing.ts
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { deriveGoldenState, compareToGolden, sourceLineCheckFor, countsToward9b, unsupportedAmountRows, type GoldenFile } from "../events/golden";
+import { deriveGoldenState, compareToGolden, unsupportedAmountRows, type GoldenFile } from "../events/golden";
 import { evaluateGoldenCriteria } from "../events/goldenCriteria";
+import { compareSample } from "./s27compare";
 
 const AS_OF = new Date("2026-10-15T00:00:00Z");
 const NAMES = ["0000070318", "0000785161", "0000927066", "0001739940"];
 const canon = JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results as { result: any }[];
 const re = JSON.parse(readFileSync("baselines/s27-retaste.json", "utf-8")).results as { bust: string; result: any }[];
-const docsOf = (cik: string) => new Map<string, string>(Object.entries(JSON.parse(readFileSync(`lib/cards/inputs/${cik}.json`, "utf-8")).docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
 const lines: string[] = [];
 const say = (s: string) => { console.log(s); lines.push(s); };
 
-/** s27nineb's comparison: Rule 66 accepted for the labelled prior-period base. */
-function compare(c: any, r: any) {
-  const expected: any = deriveGoldenState(c, AS_OF), actual: any = deriveGoldenState(r, AS_OF);
-  const base = r.results.find((t: any) => t.triggerId === "debt-maturity")?.priorPeriodBase?.filingUrl;
-  const extra = [...expected.filingSet.filter((u: string) => !actual.filingSet.includes(u)), ...actual.filingSet.filter((u: string) => !expected.filingSet.includes(u))];
-  if (base && extra.length === 1 && extra[0] === base) {
-    actual.filingSet = expected.filingSet;
-    actual.otherCitations = (actual.otherCitations ?? []).filter((u: string) => u !== base);
-    expected.otherCitations = (expected.otherCitations ?? []).filter((u: string) => u !== base);
-  }
-  const v = compareToGolden(expected, actual, { sourceLineCheck: sourceLineCheckFor(r, docsOf(r.cik), AS_OF) });
-  return { v, tie: countsToward9b(expected, actual, v) };
-}
+const compare = (c: any, r: any) => { const x = compareSample(c, r, AS_OF); return { v: x.verdict, tie: x.tie }; };
 
 for (const cik of NAMES) {
   const c = canon.find((x) => x.result.cik === cik)!.result;
