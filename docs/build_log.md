@@ -7324,3 +7324,20 @@ now cites it.
 diverges (two extra rows from its facilities; captured face +$253.5MM).
 Molina's Q3 10-Q moved its read set on Oct 22: its next step is a quarterly
 refresh, not a re-taste. The phase stopped on the account's credit balance.
+
+### Session 27, Stage 1: 9b results (Oct 28-29, 2026)
+
+Full account: sessions/27/stage1_checkpoint6.md. Re-taste phase $1.7555 of
+the $3.00 cap, every call under its pre-call worst case. 9b, 4 of 8:
+Tenet and Encompass reproduce; DaVita's two re-tastes agree with each other
+and not with the canonical (its facility reading splits 2-2 across four
+samples); Cigna's rolled position reproduces but its re-transcribed 10-K
+rows differ in whitespace and footnote markers, and its roll delta's date
+comes back as the invented 2026-03-01 in both re-tastes: the date is taken
+from the model's field, not clamped to its sentence (Rules 76-78).
+
+**Finding: a corpus can move between pricing and running.** Encompass and
+CHS filed Q3 earnings 8-Ks on Oct 28, between the pricing and the resumed
+run, and the gate's pre-run check (done keys cached) would have let it
+re-extract them as "re-tastes". It now drops, at run time, any name whose
+canonical answer is not cached under its current read set.
