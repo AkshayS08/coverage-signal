@@ -492,6 +492,14 @@ export function sourceLineCheckFor(result: CompanyResult, textByUrl: Map<string,
   };
 }
 
+/**
+ * Text for comparison only (Session 27 ruling (b)): footnote markers such as
+ * "(1)" removed and whitespace removed. Never stored.
+ */
+export function normalisedText(s: string): string {
+  return String(s ?? "").replace(/\(\d{1,2}\)(?=\s|$|[,.;:])/g, "").replace(/\s+/g, "");
+}
+
 export function compareToGolden(expected: GoldenState, actual: GoldenState, opts: CompareOptions = {}): GoldenVerdict {
   const exp = new Set(expected.filingSet);
   const act = new Set(actual.filingSet);
@@ -522,8 +530,22 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState, opts
         otherRemoved.map((u) => ` (− ${u})`).join("")
     );
   }
+  /**
+   * SESSION 27 (Akshay, Oct 29, 2026) — CIGNA RULING (b). Whitespace-only
+   * differences and footnote markers like "(1)" are tolerated: both sides are
+   * normalised for the comparison only, and the stored text keeps its form.
+   * Collected and reported as one tolerated line, never dropped.
+   */
+  const textTolerated: string[] = [];
   const cmp = (field: string, e: unknown, a: unknown) => {
-    if (JSON.stringify(e) !== JSON.stringify(a)) d.push(`${field}: expected ${fmt(e)}, got ${fmt(a)}`);
+    if (JSON.stringify(e) === JSON.stringify(a)) return;
+    if (typeof e === "string" && typeof a === "string" && normalisedText(e) === normalisedText(a)) { textTolerated.push(field); return; }
+    d.push(`${field}: expected ${fmt(e)}, got ${fmt(a)}`);
+  };
+  /** Ruling (c): a roll-forward label compares on the DISPLAYED label (the name rule), case-insensitively. */
+  const cmpLabel = (field: string, e: string, a: string) => {
+    if (e !== a && normalisedText(e).toLowerCase() === normalisedText(a).toLowerCase()) { tolerated.push(`${field}: ${fmt(e)} / ${fmt(a)} — the same displayed label but for case (the name rule compares case-insensitively)`); return; }
+    cmp(field, e, a);
   };
 
   /**
@@ -618,7 +640,8 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState, opts
     // either sees the number. That is tolerated. A run whose sentence does
     // NOT state the amount has changed what backs the figure, and that blocks
     // (Rule 58).
-    if (e.sourceLine !== a.sourceLine) {
+    if (e.sourceLine !== a.sourceLine && normalisedText(e.sourceLine) === normalisedText(a.sourceLine)) textTolerated.push(`rows["${e.instrument}"].sourceLine`);
+    else if (e.sourceLine !== a.sourceLine) {
       const eOk = amountSupportOf(e.amount, e.sourceLine).kind !== "unsupported";
       const aOk = amountSupportOf(a.amount, a.sourceLine).kind !== "unsupported";
       const line = `rows["${e.instrument}"].sourceLine: expected ${fmt(e.sourceLine)}, got ${fmt(a.sourceLine)}`;
@@ -692,7 +715,8 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState, opts
     }
     cmp("rolled.deltas.count", er.deltas.length, ar.deltas.length);
     for (let i = 0; i < Math.min(er.deltas.length, ar.deltas.length); i++) {
-      for (const k of ["instrument", "amountMillions", "statedAs", "date", "sourceLine", "citedUrl"] as const) {
+      cmpLabel(`rolled.deltas[${i}].instrument`, er.deltas[i].instrument, ar.deltas[i].instrument);
+      for (const k of ["amountMillions", "statedAs", "date", "sourceLine", "citedUrl"] as const) {
         cmp(`rolled.deltas[${i}].${k}`, er.deltas[i][k], ar.deltas[i][k]);
       }
     }
@@ -737,6 +761,9 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState, opts
     cmp(`cards[${i}].withheld`, e.withheld, a.withheld);
   }
 
+  if (textTolerated.length > 0) {
+    tolerated.push(`${textTolerated.length} text field(s) differ only in whitespace or footnote markers such as "(1)" (Session 27 ruling (b)): ${textTolerated.slice(0, 6).join(", ")}${textTolerated.length > 6 ? ", …" : ""}`);
+  }
   return d.length === 0 ? { kind: "matches", tolerated } : { kind: "diverged", divergences: d, tolerated };
 }
 
