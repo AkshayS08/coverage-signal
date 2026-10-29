@@ -1,6 +1,6 @@
 # Session 27, Stage 2: one build-a-card pipeline (design only)
 
-Status: **draft for Akshay's review.** Nothing here is built and nothing bills. Every cost figure comes from `baselines/cost-log.jsonl` or from pre-call counts.
+Status: **draft, revised with Akshay's Stage 2 decisions of Oct 29** (§10 records them). Nothing here is built and nothing bills. Every cost figure comes from `baselines/cost-log.jsonl` or from pre-call counts.
 
 ## 0. What Stage 1 taught, applied here
 
@@ -15,6 +15,9 @@ Status: **draft for Akshay's review.** Nothing here is built and nothing bills. 
 | **Reads fail closed** (`ReadFailedError`: at most 2 retries, never a different source). | Every stage's "fails" column. |
 | **A broken coverage tie is a check failure, not an alternate reading** (ruling 1(c)). | §3: "Checks passed" requires the tie, and §4 stability counts only samples whose tie holds. |
 | **The debt table decides** (letters of credit are never debt; a description supplies a row only where the table has none). | §2 stage 8 (post-extraction rules); its failures surface as checks, not as extra rows. |
+| **What the document prints is read from the document.** A model sample dropped a printed subtotal label (DaVita) and a printed heading (Molina). | §2 stage 8: printed headings and subtotal labels are recovered from the anchor's text in code (`textHeadingBefore`, `recoverSubtotalLabels`). |
+| **A label the reader sees is built from identity, not from model wording.** Cigna's samples worded one repayment two ways. | §2 stage 8 and §4: deltas are matched by identity (amount, date, coupon, maturity) and labelled from it (`deltaIdentityOf`, `deltaLabelOf`). |
+| **Signing a name re-captures its card input**, so a signature changes the committed card wherever the signed answer cites differently (Tenet's and Encompass's re-signatures, Oct 29). | §9 Ring 1: a signature is a card change, shown as a diff before it is cleared. |
 
 ## 1. Entry point
 
@@ -27,7 +30,7 @@ Status: **draft for Akshay's review.** Nothing here is built and nothing bills. 
   - **A name** resolves through the normalised title. **Every** match is collected: exact, prefix, and all-tokens.
 - **One match:** proceed.
 - **More than one match:** return `{ kind: "choose", matches: CikMatch[] }` and stop, at $0. Never guess.
-  - **This changes current code.** Today `resolveCik` (`lib/fetch/cik.ts:42`) returns the *first* match and caches it under the name's slug. That is a guess, and the cache makes the guess permanent. The resolver must return all matches. The per-name cache stores the user's pick, never the resolver's.
+  - **This changes current code (agreed, Oct 29).** Today `resolveCik` (`lib/fetch/cik.ts:42`) returns the *first* match and caches it under the name's slug. That is a guess, and the cache makes the guess permanent. The resolver returns **every** match, and **never caches a guess**: the per-name cache stores only the user's pick.
 - **No match:** `{ kind: "could-not-build", reason: "No SEC registrant matches \"…\"" }`.
 
 `BuildOutcome` is one of:
@@ -47,9 +50,9 @@ Status: **draft for Akshay's review.** Nothing here is built and nothing bills. 
 | 5 | **Check the cache** | `answer/<cik>/base-rs/<fp>/v<EXTRACTION_PROMPT_VERSION>.json`, plus the referenced-note, dig and proceeds-use keys | none | $0 | A **read failure** is `ReadFailedError` and stops the build. It is never treated as a miss, which would bill. Only a confirmed "not found" is a miss. |
 | 6 | **Extract on a miss** | the read set's documents (EDGAR text cache, fail-closed) | the answer (§7) and ledger lines | Haiku base call; the ledger shows **$0.124 to $0.233 per sample** across the six (Oct 22 canonical run) | Every call goes through `guardedCreate`. Refused: **Could not build** "cost cap reached", with nothing billed. The read set is re-resolved before the call; if it moved, the call is refused and the build restarts at stage 4. |
 | 7 | **Referenced-note call** (Rule 66) | the referenced 10-K when the anchor directs to it (Cigna's shape) | the note answer, cached on its own key | worst case $0.0634 from pre-call counts (Cigna, the one name that takes it) | As stage 6. A note that cannot be read is a named check failure ("the referenced note could not be read"), never a model guess. |
-| 8 | **Post-extraction rules** | the answer; the read set's text | none (pure) | $0 | Pure functions: `assemblePosition`, `fundedProse`, the Rule 58 provenance, the Rule 76–78 dates, the canonical zero, the name rule, the retirement rules. They do not fail; they mark. |
+| 8 | **Post-extraction rules** | the answer; the read set's text | none (pure) | $0 | Pure functions: `assemblePosition`, `fundedProse`, the Rule 58 provenance, the Rule 76–78 dates (`dateHeldToSentence`), the canonical zero, the name rule, the retirement rules, printed headings and subtotal labels recovered from the anchor's text, delta identity and labels. They do not fail; they mark. |
 | 9 | **Automated checks** | the result of stage 8 | the check list | $0 | Each check is pass, fail or not-applicable, with its figure and source (§3). |
-| 10 | **Render** | stage 8 and 9 outputs; the documents' text (`textByUrl`); XBRL cash; the period sentence; later filings | the card JSON; the brief log line | $0 from cache; narration is a separately approved Sonnet call (Tenet $0.0281, DaVita's worst case $0.0331) | A narration failure renders the card without narration, as today's integrity checks already do, and names it in the panel. |
+| 10 | **Render** | stage 8 and 9 outputs; the documents' text (`textByUrl`); XBRL cash; the period sentence; filings since the last build | the card JSON; the brief log line | $0 from cache; narration is a separately approved Sonnet call (Tenet $0.0281, DaVita $0.0287) | A narration failure renders the card without narration, as today's integrity checks already do, and names it in the panel. |
 
 Stages 6 and 7 are the only stages that bill. Everything after them is pure and replays at $0.
 
@@ -94,6 +97,7 @@ Rules apply in this order. The first that applies decides the badge.
   - re-transcribed source lines;
   - whitespace and footnote markers;
   - case in labels;
+  - deltas matched by identity (amount, date at stated precision, coupon, maturity), label word choice tolerated where both labels pass the name rule;
   - the withheld-figure class.
 - **Agreement.** A sample counts only under `countsToward9b`, so a broken tie never counts. "Checks passed" needs 3/3.
 - **A figure that differs across samples** is shown **withheld** ("differs across stability samples") and listed in the breakage panel with all three readings. The rest of the card renders.
@@ -109,11 +113,13 @@ Rules apply in this order. The first that applies decides the badge.
 
 ## 5. Quarterly refresh: the same pipeline
 
-- **The trigger is a new anchor filing**: a 10-Q or 10-K that `anchorOf(readSetOf(filings))` now returns.
-  - An earnings 8-K alone (Items 2.02, 7.01, 9.01) **does not trigger a refresh**, even though Item 7.01 is in the read set (ruling F2). The card keeps its current build and lists the 8-K under "filed since this card".
-- **The trigger and the key are different functions.** The *key* (stage 4) moves whenever the read set moves, which keeps cached answers honest. The *trigger* decides when a stored card is rebuilt unprompted.
-  - When a user asks for a name whose key moved but whose anchor did not, the pipeline serves the stored card with the newer filings listed, and does not bill.
-- **Open question for Akshay:** does an 8-K with a debt item (1.01, 1.02, 2.03, 2.04) between anchors trigger a refresh, or only appear as "filed since"? This design assumes **only "filed since"** until ruled.
+- **The triggers (decided Oct 29).** A refresh happens on either of:
+  - **a new anchor:** a 10-Q or 10-K that `anchorOf(readSetOf(filings))` now returns;
+  - **an 8-K carrying a debt item:** 1.01, 1.02, 2.03, 2.04 or 8.01.
+- **An 8-K with only Items 2.02, 7.01 or 9.01 does not trigger a refresh,** even though Item 7.01 is in the read set (ruling F2). It is picked up at the next trigger.
+- **Between triggers, the card is served from its last build**, with the filings since that build listed in the card's header. Nothing bills.
+- **The trigger and the key are different functions.** The *key* (stage 4) moves whenever the read set moves, which keeps cached answers honest. The *trigger* (`refreshTriggered(filingsSinceBuild)`, one function, its item list the one above) decides when a stored card is rebuilt.
+  - So a name whose key moved on an earnings 8-K (Encompass and CHS, Oct 28) keeps its last build, lists the 8-K in its header, and does not bill.
 - **On a refresh:**
   1. The card rebuilds as a cold build (§4) on the new read set.
   2. The badge drops from **Signed** to the automated result. The golden no longer applies, because its filing set moved (Rule 30's "not-applicable").
@@ -122,28 +128,29 @@ Rules apply in this order. The first that applies decides the badge.
   - If the new anchor's table no longer carries the tranche, or a filing states it done, it becomes a retirement.
   - If not, it stays pending, with its original sentence.
   - Tenet's Sept 23 redemption is the first case.
-- **Molina is the first live test** (priced, awaiting approval):
-  - The anchor moves from the 10-Q of Jul 23 (period Jun 30) to the 10-Q of Oct 22 (period Sep 30).
-  - The filer's tagged debt moves from $3,769M to $3,771M (`LongTermDebtNoncurrent`).
-  - Expected card changes: the position date becomes Sep 30, 2026; the anchor citation changes to the Q3 10-Q; the debt rows are re-read from the Q3 table; cash comes from the Sep 30 tag.
+- **Molina was the first live test (run Oct 29, approved worst case $1.5353, billed $0.6165).**
+  - Canonical plus two re-tastes, bound to one read set (`s27molina.ts`): **3/3**.
+  - The position date moves from Jun 30 to **Sep 30, 2026** (the Oct 22 10-Q). The same five notes and the $1.25B revolver. Captured face $3,800M against $3,771M tagged (was $3,769M), residual 0%: the tie holds. The printed heading "Non-current long-term debt" is now recovered.
+  - Not yet signed; the diff is in `sessions/27/molina_refresh_diff.txt`.
 
 ## 6. Cost controls
 
-- **Caps:**
-  - per build: default $1.00, and it must exceed the declared worst case;
-  - per day, across all users;
-  - per user, per day.
+- **Caps (decided Oct 29), all checked pre-call:**
+  - **$2.00 worst case per build.** The declared worst case of a cold build (canonical plus two re-tastes, from counts) must fit under it, or the build is **Could not build: "cost cap reached"** before any call.
+  - **$10 per day per user.**
+  - **$25 per day, global.**
 - **All are enforced in one place, before every call:** `guardedCreate` counts the input tokens and prices the worst case. It refuses if the call would cross any cap, with remaining = cap minus spent, read from the ledger.
   - This extends `setSpendLimits({ perRunUsd, totalUsd })` with a per-user dimension.
   - The day and user totals are read from the ledger, not held in process memory, so two processes cannot each spend the full cap.
 - **Before a cold build starts**, the pipeline returns `needs-approval` with the expected cost (the ledger range for a name of this shape) and the worst case (from counts, in price-only mode, at $0).
   - A cached build never asks: `assertFree` proves it is $0.
-- **Declared figures are rounded up** (lesson 5).
+- **Declared figures are rounded up to the cent** (lesson 5; Akshay, Oct 29).
 - **Rule 68:** every billing path is inside `withCostScope`, and every narration call writes a "(narration)" ledger line.
 
 ## 7. Concurrency and cache writes
 
-- **One build per key.** Before stage 6, a build takes a **lease** on `(cik, read-set fp, version, bust)`: a blob written with no overwrite allowed, so the write fails if the blob exists. The lease records an owner and an expiry (10 minutes).
+- **Leases are not on Vercel Blob (decided Oct 29).** Our Oct 21 403 was a read straight after an overwrite, so Blob cannot be trusted for a lock. Leases live in **Upstash Redis** (Vercel Marketplace): `SET lease:<key> <owner> NX EX 600`. Blob keeps the answers and the spool data.
+- **One build per key.** Before stage 6, a build takes the lease on `(cik, read-set fp, version, bust)`. `SET … NX` succeeds for exactly one caller; the lease records an owner and expires after 10 minutes. A Redis read failure is `ReadFailedError`: the build stops, and never proceeds as if the lease were free.
   - A second build of the same key finds the lease, waits, and polls the answer key.
   - When the answer appears, it is served at $0.
   - When the lease expires with no answer, it may take the lease.
@@ -153,6 +160,7 @@ Rules apply in this order. The first that applies decides the badge.
   - If the blob write fails after retries, the build stops with `WriteFailedError` naming the spool path.
   - The next build of that key promotes the spool to the blob store **before** checking for a miss, so a write failure never causes a re-bill.
 - The ledger stays append-only, and stays out of every working-tree operation (the Session 26 rule).
+- **The test (decided Oct 29):** two concurrent cold builds of one name produce **exactly one set of billed calls**: one canonical and two re-tastes in the ledger, both builds serving the same answers. Control: with the lease disabled, the same test bills twice and fails.
 
 ## 8. What the card needs that snapshots supply today
 
@@ -164,7 +172,7 @@ Today `lib/cards/inputs/<cik>.json` supplies the following, captured once and co
 | `docs` (the text of every cited document, by URL) | the read set's fetched text (stage 6's documents), plus any referenced 10-K; the EDGAR text cache, fail-closed |
 | `cash` (XBRL value plus the printed balance-sheet line) | `fetchXbrlCash(cik, anchor.reportDate)` and the line locator over the anchor's text |
 | `periodSentence` | the anchor's cover line, found in its text |
-| `laterFilings` | filing list entries after the anchor and up to the brief date |
+| `laterFilings` | filing list entries since the last build, shown in the card header (§5) |
 | `corpusFingerprint`, `sourceCommit`, `capturedOn` | replaced by the read-set fingerprint, the build's commit, and the build time, all recorded on the card |
 | `facts` (verified card facts) | `cachedCardFacts`, on its own key |
 
@@ -172,13 +180,16 @@ Committed snapshots remain the test fixtures for Ring 1. The product never reads
 
 ## 9. Test plan
 
-**Ring 1: the six signed names.**
-- Each must come out **Signed** and byte-identical to its golden, at $0, once its golden is re-signed at v33 on its current read set.
-- Today's status (Oct 29):
-  - Tenet, Encompass and DaVita: 3/3, proposed for re-signing.
-  - Cigna: 1/3 (one delta label).
-  - Molina, Encompass's and CHS's refreshes: waiting on their Q3 10-Qs, or (Molina) on approval.
-- The release check `goldenThroughLoop` is the Ring 1 gate.
+**Ring 1: the six signed names (definition decided Oct 29).**
+- **Determinism:** a card rendered from a cached answer must be **byte-identical**, every time, at $0.
+- **A fresh extraction** is compared with the recorded tolerated classes (`compareToGolden` through `s27compare`), never byte for byte.
+- Each name must come out **Signed** once re-signed at v33 on its read set. The release check `goldenThroughLoop` is the Ring 1 gate.
+- Status, Oct 29:
+  - **Signed at v33:** Tenet; Encompass (its pre-Oct 28 read set).
+  - **DaVita:** 3/3, refused by its signing condition. Its card from the v33 canonical differs from the committed card on 136 lines of cited sentences: no figure, date or label differs.
+  - **Cigna:** 3/3 since deltas match by identity; held on criterion 2 (a rule proposed).
+  - **Molina:** refreshed on its Q3 10-Q, 3/3, not yet signed.
+  - **CHS, and Encompass's refresh:** wait for their Q3 10-Qs.
 
 **Ring 2: UHS, HCA, Quest, Centene.** The expected breakage, from what is recorded:
 
@@ -205,9 +216,11 @@ Committed snapshots remain the test fixtures for Ring 1. The product never reads
 
 "Honestly flagged" means withheld or flagged with a reason that is true. A flagged figure with a false reason counts as **wrong**. The badge is scored too: was it the right one of the four?
 
-## 10. Decisions this design needs from Akshay
+## 10. Decisions (Akshay, Oct 29, 2026)
 
-1. Does a debt-item 8-K between anchors trigger a refresh, or only appear as "filed since"? (§5)
-2. The default caps: per build, per day, per user. (§6)
-3. Is the lease or spool design (§7) acceptable on Vercel Blob, or should answers move to a store with real compare-and-set?
-4. **Ring 1's definition of done:** byte-identical to the golden, or `compareToGolden` with the recorded tolerated classes? The prompt says byte-identical. Since the re-tastes, the tolerated classes are what make a re-signed golden reproducible.
+1. **Refresh triggers:** a new anchor (10-Q or 10-K), or an 8-K carrying a debt item (1.01, 1.02, 2.03, 2.04, 8.01). An 8-K with only 2.02, 7.01 or 9.01 does not trigger; it is picked up at the next anchor. Between triggers the card is served from its last build, with the filings since listed in the header. (§5)
+2. **Caps:** $2.00 worst case per build, $10 per day per user, $25 per day global, all checked pre-call. (§6)
+3. **Leases:** Upstash Redis with `SET NX` and an expiry, not Vercel Blob. Blob keeps answers and spool data. Tested by two concurrent cold builds of one name producing exactly one set of billed calls. (§7)
+4. **Ring 1:** a card rendered from a cached answer is byte-identical (determinism); a fresh extraction is compared with the recorded tolerated classes. (§9)
+5. **`resolveCik`:** return every match and never cache a guess. (§1)
+6. **Quotes round up to the cent.** (§6)

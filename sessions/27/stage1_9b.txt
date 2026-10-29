@@ -31,22 +31,18 @@ DAVITA INC. [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
 
 Cigna Group [s27-retaste-1]: accepted: Rule 66 — ci-20251231.htm, the labelled prior-period base, is in one identity and not the other
 
-Cigna Group [s27-retaste-1] ($0.0000): DIVERGES from the canonical position
-    rolled.deltas[0].instrument: expected "notes", got "1.250 % senior notes"
+Cigna Group [s27-retaste-1] ($0.0000): REPRODUCES the canonical position
     tolerated: rows["Revolving Credit Agreement"].instrument: RENAMED to "$ 6.5 billion, five-year revolving credit and letter of credit agreement" — same amount, maturity and status, so the same instrument under an
     tolerated: rows["Commercial Paper Program"].instrument: RENAMED to "Commercial paper program" — same amount, maturity and status, so the same instrument under another of the filing's own names
-    tolerated: rolled.deltas[1].instrument: "Commercial Paper Program" / "Commercial paper program" — the same displayed label but for case (the name rule compares case-insensitively)
     tolerated: 66 text field(s) differ only in whitespace or footnote markers such as "(1)" (Session 27 ruling (b)): rolled.baseRows[1].instrument, rolled.baseRows[1].sourceLine, rolled.baseRows[2].instrument, rolle
     facility figures (not pinned by 9b): canonical Revolving Credit Agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=— | this sample $ 6.5 billion, five-year revolving credit and letter of credit agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=—
     facility figures (not pinned by 9b): canonical Commercial Paper Program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=— | this sample Commercial paper program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=—
 
 Cigna Group [s27-retaste-2]: accepted: Rule 66 — ci-20251231.htm, the labelled prior-period base, is in one identity and not the other
 
-Cigna Group [s27-retaste-2] ($0.0000): DIVERGES from the canonical position
-    rolled.deltas[0].instrument: expected "notes", got "1.250 % senior notes"
+Cigna Group [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
     tolerated: rows["Revolving Credit Agreement"].instrument: RENAMED to "$ 6.5 billion, five-year revolving credit and letter of credit agreement" — same amount, maturity and status, so the same instrument under an
     tolerated: rows["Commercial Paper Program"].instrument: RENAMED to "Commercial paper program" — same amount, maturity and status, so the same instrument under another of the filing's own names
-    tolerated: rolled.deltas[1].instrument: "Commercial Paper Program" / "Commercial paper program" — the same displayed label but for case (the name rule compares case-insensitively)
     tolerated: 66 text field(s) differ only in whitespace or footnote markers such as "(1)" (Session 27 ruling (b)): rolled.baseRows[1].instrument, rolled.baseRows[1].sourceLine, rolled.baseRows[2].instrument, rolle
     facility figures (not pinned by 9b): canonical Revolving Credit Agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=— | this sample $ 6.5 billion, five-year revolving credit and letter of credit agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=—
     facility figures (not pinned by 9b): canonical Commercial Paper Program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=— | this sample Commercial paper program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=—
@@ -58,4 +54,4 @@ Encompass Health Corp [s27-retaste-2] ($0.0000): REPRODUCES the canonical positi
     tolerated: rows["Advances under revolving credit facility"].maturitySourceLine: expected "the maturity date has been changed to March 9, 2031", got "the maturity date is March 9, 2031, rather than October 7, 202
     facility figures (not pinned by 9b): canonical senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=approximately $ 746 million | this sample senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=$ 746 million
 
-9b: 6 of 8 re-taste samples reproduce their canonical position.
+9b: 8 of 8 re-taste samples reproduce their canonical position.
