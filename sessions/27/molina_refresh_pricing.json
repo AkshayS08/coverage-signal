@@ -1,0 +1,121 @@
+{
+ "pricedAt": "2026-10-29T04:48:40.913Z",
+ "readSet": [
+  {
+   "form": "10-Q",
+   "filingDate": "2026-10-22",
+   "accessionNumber": "0001179929-26-000045"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2026-07-23",
+   "accessionNumber": "0001179929-26-000039"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2026-02-10",
+   "accessionNumber": "0001179929-26-000005"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-06-10",
+   "accessionNumber": "0001437749-26-020160"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-05-08",
+   "accessionNumber": "0001437749-26-015766"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-02-26",
+   "accessionNumber": "0001437749-26-005871"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-02-06",
+   "accessionNumber": "0001437749-26-003384"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-11-20",
+   "accessionNumber": "0001437749-25-035866"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-11-18",
+   "accessionNumber": "0001437749-25-035490"
+  }
+ ],
+ "anchor": {
+  "form": "10-Q",
+  "filingDate": "2026-10-22",
+  "reportDate": "2026-09-30"
+ },
+ "taggedDebt": {
+  "before": {
+   "total": 3769000000,
+   "asOf": "2026-06-30",
+   "parts": [
+    {
+     "tag": "LongTermDebtNoncurrent",
+     "value": 3769000000
+    }
+   ],
+   "separateLeases": [
+    {
+     "tag": "FinanceLeaseLiabilityNoncurrent",
+     "value": 184000000
+    }
+   ],
+   "unavailableReason": null
+  },
+  "after": {
+   "total": 3771000000,
+   "asOf": "2026-09-30",
+   "parts": [
+    {
+     "tag": "LongTermDebtNoncurrent",
+     "value": 3771000000
+    }
+   ],
+   "separateLeases": [
+    {
+     "tag": "FinanceLeaseLiabilityNoncurrent",
+     "value": 179000000
+    }
+   ],
+   "unavailableReason": null
+  }
+ },
+ "rows": [
+  {
+   "label": "canonical",
+   "base": 0.16035,
+   "inputTokens": 60350,
+   "maxTokens": 20000,
+   "dig": 0.275935,
+   "proceeds": 0.075492,
+   "perRun": 0.5117769999999999
+  },
+  {
+   "label": "s27-refresh-retaste-1",
+   "base": 0.16035,
+   "inputTokens": 60350,
+   "maxTokens": 20000,
+   "dig": 0.275935,
+   "proceeds": 0.075492,
+   "perRun": 0.5117769999999999
+  },
+  {
+   "label": "s27-refresh-retaste-2",
+   "base": 0.16035,
+   "inputTokens": 60350,
+   "maxTokens": 20000,
+   "dig": 0.275935,
+   "proceeds": 0.075492,
+   "perRun": 0.5117769999999999
+  }
+ ],
+ "totalWorstUsd": 1.5353309999999998
+}
