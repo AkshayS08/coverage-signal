@@ -59,7 +59,7 @@ import { computeScheduleCompleteness, type ScheduleCompletenessResult } from "..
 import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isSelfDescribingAmount, scaleWordFromDeclaration } from "./moneyScale";
 import { detectDollarScaleAt, canonicalScaleWord } from "./scaleNormalize";
 import { createTextLocator } from "./verifyQuote";
-import { annotatePrintedHeadings } from "../events/printedHeadings";
+import { annotatePrintedHeadings, recoverSubtotalLabels } from "../events/printedHeadings";
 // A LAYERING INVERSION, STATED RATHER THAN HIDDEN. `amountSupportOf` answers
 // "does this line state this amount", and Rule 58's extension needs that
 // question at extraction time. There is NO runtime cycle — position.ts imports
@@ -1301,7 +1301,7 @@ async function runAgentLoopInner(
     const anchorTextForHeadings = debtScheduleGuidance.base ? textByUrl.get(debtScheduleGuidance.base.url) ?? null : null;
     const headingLocator = anchorTextForHeadings ? createTextLocator(anchorTextForHeadings) : null;
     const scheduleSequence: VerifiedSequenceEntry[] = trigger.id === "debt-maturity"
-      ? annotatePrintedHeadings(annualSplit.kept, anchorTextForHeadings, (l) => headingLocator?.find(l) ?? null)
+      ? recoverSubtotalLabels(annotatePrintedHeadings(annualSplit.kept, anchorTextForHeadings, (l) => headingLocator?.find(l) ?? null), anchorTextForHeadings, (l) => headingLocator?.find(l) ?? null)
       : annualSplit.kept;
     for (const w of annualSplit.withheld) {
       log(`  ⚠ ANNUAL-REPORT ROW WITHHELD for ${label} — "${String((w.entry as { label?: string | null }).label ?? "(unnamed row)")}" is cited to a prior-period annual report. ${w.reason}`);

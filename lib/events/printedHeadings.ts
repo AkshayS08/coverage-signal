@@ -105,8 +105,58 @@ export function annotatePrintedHeadings<E extends { kind: string; label?: string
   const headings = tableText
     ? printedHeadings(tableText, rows.map((e) => {
         const cands = [e.section, e.seniority].filter((x): x is string => !!x);
-        return { label: e.label ?? "", recordedHeading: cands.find((h) => printedBefore(tableText, h, e.label ?? "")) ?? cands[0] ?? null };
+        // Session 27: the heading the TABLE prints directly before this row, found in code, so a sample whose model
+        // recorded none still gets it (Molina's v33 canonical: "Non-current long-term debt:").
+        return { label: e.label ?? "", recordedHeading: cands.find((h) => printedBefore(tableText, h, e.label ?? "")) ?? textHeadingBefore(tableText, e.label ?? "") ?? cands[0] ?? null };
       }))
     : [];
   return entries.map((e) => (e.kind === "row" ? { ...e, printedHeading: headingFor(headings, e.label ?? "")?.text ?? null } : e));
+}
+
+/**
+ * SESSION 27 (Akshay, Oct 29, 2026) — A HEADING READ FROM THE PRINT, NOT FROM
+ * THE MODEL. The phrase the table prints directly before a row: one to eight
+ * words, no digits, ending in a colon or a dash ("Senior Notes:", "Credit
+ * Agreement—"), after a figure, a closing parenthesis or the start of the
+ * table. A phrase anywhere else is not this row's heading. Null when the
+ * table prints none.
+ */
+const HEADING_BEFORE = /(?:^|[\d%)$])\s*([A-Za-z][A-Za-z ,'&/-]*?)\s*[:—–]\s*(?:\(\d{1,2}\)\s*)?$/;
+export function textHeadingBefore(tableText: string, rowLabel: string): string | null {
+  const t = flat(tableText), full = flat(rowLabel);
+  if (!full) return null;
+  const needle = t.includes(full) ? full : full.slice(0, 14);
+  for (let at = t.indexOf(needle); at >= 0; at = t.indexOf(needle, at + 1)) {
+    const m = HEADING_BEFORE.exec(t.slice(Math.max(0, at - 120), at));
+    const h = m?.[1]?.trim();
+    if (h && h.split(/\s+/).length <= 8) return h;
+  }
+  return null;
+}
+
+/**
+ * SESSION 27 (Akshay, Oct 29, 2026) — A SUBTOTAL'S PRINTED LABEL, READ FROM
+ * THE DOCUMENT. DaVita's v33 canonical left "Total debt principal outstanding"
+ * null on a subtotal whose own located line prints it. A subtotal with no
+ * label takes the words its line prints before its first figure or, where
+ * the line starts at the figure, the phrase printed directly before it in the
+ * document. Only from a line found in the text; a subtotal the filer prints
+ * without a label stays null. A label the answer carries is never replaced.
+ */
+const LEAD_WORDS = /^([A-Za-z][A-Za-z ,'&/:-]*?)\s*(?=[$(\d—–]|$)/;
+const PHRASE_BEFORE = /(?:^|[\d%)$])\s*([A-Za-z][A-Za-z ,'&/-]*?)\s*:?\s*$/;
+export function recoverSubtotalLabels<E extends { kind: string; label?: string | null; sourceLine: string }>(
+  entries: E[],
+  text: string | null | undefined,
+  find: (line: string) => number | null
+): E[] {
+  if (!text) return entries;
+  const words = (x: string | undefined) => { const w = (x ?? "").replace(/:$/, "").trim(); return w && /[A-Za-z]/.test(w) && w.split(/\s+/).length <= 10 ? w : null; };
+  return entries.map((e) => {
+    if (e.kind !== "subtotal" || (e.label ?? "").trim()) return e;
+    const at = find(e.sourceLine);
+    if (at === null) return e;
+    const label = words(LEAD_WORDS.exec(flat(e.sourceLine))?.[1]) ?? words(PHRASE_BEFORE.exec(flat(text.slice(Math.max(0, at - 120), at)))?.[1]);
+    return label ? { ...e, label } : e;
+  });
 }

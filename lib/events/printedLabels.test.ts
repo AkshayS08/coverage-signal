@@ -68,7 +68,9 @@ for (const cik of CIKS) {
   const recovered = new Set(got.flatMap((g) => g.map((x) => x.split("=").pop()).filter((h) => h !== "∅")));
   const company = ss[0].result.company;
   if ((dmOf(ss[0].result).scheduleSequence ?? []).length === 0) { console.log(`  · ${company}: no anchor table (its position is rolled from the prior 10-K) — nothing to annotate`); continue; }
-  const sameAcross = got.every((g) => JSON.stringify(g.map((x) => x.split("=").pop())) === JSON.stringify(got[0].map((x) => x.split("=").pop())));
+  // Samples may carry different rows (CHS's v33 holds its nil ABL Facility out of the rows); each row BOTH carry must get the same heading.
+  const headingByRow = got.map((g) => new Map(g.map((x) => [x.slice(0, x.lastIndexOf("=")), x.slice(x.lastIndexOf("=") + 1)] as const)));
+  const sameAcross = headingByRow.every((m) => [...m].every(([row, h]) => headingByRow.every((o) => !o.has(row) || o.get(row) === h)));
   assert(sameAcross && [...recorded].every((h) => recovered.has(h as string)),
     `[H1:${company}] with recorded headings removed, ${ss.length} samples recover the same printed headings from the text (${[...recovered].join("; ") || "none"}), covering every heading a model recorded (${[...recorded].join("; ") || "none"})`);
   if (recorded.size) {
