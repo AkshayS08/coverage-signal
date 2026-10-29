@@ -72,7 +72,13 @@ for (const cik of CIKS) {
   for (const [label, result] of [["v31", snap.result], ["v33", replay.results.find((x: any) => x.result.cik === cik)?.result]] as const) {
     if (!result) continue;
     const st: any = deriveGoldenState(result, new Date("2026-10-15T00:00:00Z"));
-    for (const d of st.rolled?.deltas ?? []) assert(nameIn(d.instrument, d.sourceLine), `[M4:${snap.company} ${label}] delta "${d.instrument}" is in its sentence`);
+    // Session 27 (Akshay, Oct 29): a delta's label is BUILT FROM ITS IDENTITY (coupon, type, maturity), and passes the name rule
+    // as such; the words it links to are the sentence's own span.
+    const rd = await import("../events/rollDeltas");
+    for (const d of st.rolled?.deltas ?? []) {
+      const span = rd.deltaStatedSpan(d);
+      assert(rd.deltaLabelPasses(d) && d.instrument === rd.deltaLabelOf(d) && (span === null || nameIn(span, d.sourceLine)), `[M4:${snap.company} ${label}] delta "${d.instrument}" is built from its identity, and its stated span${span ? ` "${span}"` : ""} is in its sentence`);
+    }
   }
 }
 

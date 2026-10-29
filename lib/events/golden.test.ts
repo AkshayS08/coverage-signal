@@ -453,7 +453,8 @@ console.log("\n=== [10] THE ROLLED POSITION IS PINNED, AND MOVING IT BLOCKS ==="
     deltas: [{ instrument: "Commercial paper program", amountMillions: 1100, statedAs: "$ 1.1 billion", date: "2026-06-30", sourceLine: "had approximately $ 1.0 billion outstanding as of June 30, 2026", citedUrl: "https://sec.gov/anchor.htm" }],
   });
   const v = compareToGolden(withRoll(rolledBase()), withRoll(swapped));
-  assert(v.kind === "diverged" && v.divergences.some((x) => x.startsWith("rolled.baseRows[0].amountMillions")) && v.divergences.some((x) => x.startsWith("rolled.deltas[0].amountMillions")),
+  assert(v.kind === "diverged" && v.divergences.some((x) => x.startsWith("rolled.baseRows[0].amountMillions")) && v.divergences.some((x) => x.startsWith("rolled.deltas[0].amountMillions") || /^rolled\.deltas.*(MISSING|UNEXPECTED)/.test(x)),
+    // Session 27 (Oct 29): deltas are matched by identity, amount included, so a heavier delta is a different delta: MISSING and UNEXPECTED.
     `[10e] A ROW DROPPED AND A DELTA GAINED OF THE SAME SIZE IS CAUGHT. The roll still lands on 1,993 and every coverage figure still matches; the rows and the deltas are compared line by line precisely so that identical totals cannot hide a different position (got ${v.kind})`);
 
   const resourced = compareToGolden(withRoll(rolledBase()), withRoll(rolledBase({

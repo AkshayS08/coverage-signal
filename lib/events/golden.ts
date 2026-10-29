@@ -32,6 +32,7 @@ import { rolledCoverageFor } from "./rolledCoverage";
 import { buildDerivedLines } from "./derived";
 import { buildEvents } from "./buildEvents";
 import { nameOrPlainType } from "./nameRule";
+import { deltaIdentityOf, deltaLabelOf, deltaLabelPasses } from "./rollDeltas";
 
 /** One ladder entry, reduced to what a signature actually pins. */
 export interface GoldenRow {
@@ -339,8 +340,9 @@ export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenStat
           deltas: rc.movements
             .filter((m) => m.placement === "delta")
             .map((m) => ({
-              // Session 27: the label as SHOWN, under the name rule; the roll matches on the model's label, which stays as it is.
-              instrument: nameOrPlainType(m.instrument, m.sourceLine), amountMillions: m.amountMillions, statedAs: m.statedAs,
+              // Session 27 (Oct 29): the label the card shows, BUILT FROM THE DELTA'S IDENTITY (coupon, type, maturity), so it
+              // does not depend on the model's wording; the roll itself matches on the model's label, which stays as it is.
+              instrument: deltaLabelOf(m), amountMillions: m.amountMillions, statedAs: m.statedAs,
               date: m.date, sourceLine: m.sourceLine, citedUrl: m.citedUrl,
             })),
           rollComputedMillions: rc.rollTie.computedMillions,
@@ -713,13 +715,23 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState, opts
         cmp(`rolled.baseSections[${i}].${k}`, er.baseSections[i][k], ar.baseSections[i][k]);
       }
     }
+    // SESSION 27 (Akshay, Oct 29, 2026) — DELTAS ARE MATCHED BY IDENTITY: amount, date at its stated precision, coupon,
+    // maturity (deltaIdentityOf). Label word choice is tolerated when both labels pass the name rule; a label that
+    // passes no part of it is compared as before.
     cmp("rolled.deltas.count", er.deltas.length, ar.deltas.length);
-    for (let i = 0; i < Math.min(er.deltas.length, ar.deltas.length); i++) {
-      cmpLabel(`rolled.deltas[${i}].instrument`, er.deltas[i].instrument, ar.deltas[i].instrument);
-      for (const k of ["amountMillions", "statedAs", "date", "sourceLine", "citedUrl"] as const) {
-        cmp(`rolled.deltas[${i}].${k}`, er.deltas[i][k], ar.deltas[i][k]);
-      }
-    }
+    const idKey = (x: { instrument: string; sourceLine: string; amountMillions: number; date: string | null }) => JSON.stringify(deltaIdentityOf(x));
+    const usedDelta = new Set<number>();
+    er.deltas.forEach((e, i) => {
+      const j = ar.deltas.findIndex((a, k) => !usedDelta.has(k) && idKey(a) === idKey(e));
+      if (j < 0) { d.push(`rolled.deltas[${i}] ${fmt(e.instrument)}: MISSING — no delta in this run has its identity ${idKey(e)}`); return; }
+      usedDelta.add(j);
+      const a = ar.deltas[j];
+      if (e.instrument !== a.instrument && deltaLabelPasses(e) && deltaLabelPasses(a)) {
+        tolerated.push(`rolled.deltas[${i}].instrument: ${fmt(e.instrument)} / ${fmt(a.instrument)} — the same delta by identity ${idKey(e)}, both labels pass the name rule, so this is word choice`);
+      } else cmpLabel(`rolled.deltas[${i}].instrument`, e.instrument, a.instrument);
+      for (const k of ["statedAs", "sourceLine", "citedUrl"] as const) cmp(`rolled.deltas[${i}].${k}`, e[k], a[k]);
+    });
+    ar.deltas.forEach((a, k) => { if (!usedDelta.has(k)) d.push(`rolled.deltas ${fmt(a.instrument)}: UNEXPECTED — this run carries a delta with identity ${idKey(a)} the signed state does not`); });
     for (const k of ["rollComputedMillions", "rollStatedMillions", "rollResidualMillions", "rollTies", "toleranceMillions"] as const) {
       cmp(`rolled.${k}`, er[k], ar[k]);
     }

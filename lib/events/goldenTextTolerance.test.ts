@@ -58,8 +58,9 @@ assert(compareToGolden(cigna, w3).kind === "diverged", `[W3 control] a changed f
 const l1 = clone(cigna); l1.rolled.deltas[1].instrument = l1.rolled.deltas[1].instrument.toUpperCase();
 const vl = compareToGolden(cigna, l1);
 assert(vl.kind === "matches", `[L1] a delta label differing only in case ("${cigna.rolled.deltas[1].instrument}" / "${l1.rolled.deltas[1].instrument}") is tolerated: ${vl.kind}`);
-const l2 = clone(cigna); l2.rolled.deltas[0].instrument = "notes";
-assert(cigna.rolled.deltas[0].instrument.toLowerCase() === "notes" || compareToGolden(cigna, l2).kind === "diverged", `[L2 control] a different displayed label ("${cigna.rolled.deltas[0].instrument}" / "notes") diverges`);
+// Session 27 (Oct 29): a plain type ("notes") now passes the name rule as word choice; the control is a label passing none of it.
+const l2 = clone(cigna); l2.rolled.deltas[0].instrument = "1.250% debentures of 2026";
+assert(compareToGolden(cigna, l2).kind === "diverged", `[L2 control] a different displayed label passing no part of the name rule ("${cigna.rolled.deltas[0].instrument}" / "1.250% debentures of 2026") diverges`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

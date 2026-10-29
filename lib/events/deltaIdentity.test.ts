@@ -61,9 +61,10 @@ for (const s of cigna.slice(2)) {
 }
 
 console.log("\n=== D3: the card's Repaid line ===");
-const repaidLine = (card: string) => (card.match(/"t": " ([^"]*between[^"]*)"/) ?? [])[1] ?? null;
+// The delta reaches the card as a move card (its title); the "Repaid: …, between" line is the same label where it renders.
+const repaidLine = (card: string) => { const c = JSON.parse(card); const txt = (l: any[]) => l.map((x) => x.t ?? x.printed ?? "").join(""); return (c.v3?.moves ?? []).map((m: any) => m.title.map(txt).join(" / ")).find((x: string) => /\$550MM/.test(x)) ?? null; };
 const lines = cigna.map((s) => repaidLine(cardFrom("0001739940", s.result)));
-assert(lines.every((l) => l !== null && l === lines[0]), `[D3:Cigna] every sample's card prints the same Repaid line: "${lines[0]}"`);
+assert(lines.every((l) => l !== null && l === lines[0]) && lines[0] === "$550MM 1.250% notes due March 2026", `[D3:Cigna] every sample's card titles the repayment from its identity: "${lines[0]}"`);
 const coupon = clone(cigna[1].result);
 const nr = coupon.results.find((t: any) => t.triggerId === "debt-maturity").noteRetirements.find((x: any) => /1\.250/.test(x.sourceLine));
 nr.sourceLine = nr.sourceLine.replace("1.250 %", "2.250 %"); nr.instrument = String(nr.instrument).replace("1.250", "2.250");

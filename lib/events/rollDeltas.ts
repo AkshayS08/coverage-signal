@@ -41,6 +41,7 @@
  */
 import type { RollDelta } from "./rollForward";
 import { statedDatePrecision, datePrecisionOf, morePrecise, type FactToken } from "../agent/factTokens";
+import { plainTypeOf, nameIsVerbatim, TYPE_DISPLAY } from "./nameRule";
 
 export type Placement = "in-base" | "delta" | "subsequent" | "excluded-not-completed" | "undated";
 
@@ -282,4 +283,67 @@ export function inBaseButMissing(movements: PlacedMovement[], baseRows: { instru
   return movements
     .filter((m) => m.placement === "in-base")
     .filter((m) => !baseRows.some((r) => sameInstrument(String(r.instrument ?? ""), m.instrument)));
+}
+
+/**
+ * SESSION 27 (Akshay, Oct 29, 2026) — A DELTA'S IDENTITY, AND A LABEL BUILT
+ * FROM IT. 9b and golden comparison match deltas by identity: amount, date
+ * at its stated precision, coupon, maturity. The card's label is built from
+ * the same fields, so two samples whose models worded one repayment two ways
+ * ("$ 550 million, 1.250 % Notes due March 2026" / "1.250 % senior notes")
+ * print one label: "1.250% notes due March 2026".
+ *
+ * Coupon: a percent printed directly before a security noun (notes,
+ * debentures, bonds), in the label or else the sentence; an average rate
+ * stated elsewhere in the sentence is not a coupon. Maturity: the date after
+ * "due" or "matured in/on", in the label or else the sentence, at the
+ * precision printed.
+ */
+export interface DeltaIdentity { amountMillions: number; date: string | null; coupon: string | null; maturity: string | null }
+type DeltaLike = { instrument: string; sourceLine: string; amountMillions: number; date: string | null };
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const COUPON_BEFORE_NOUN = /(\d{1,2}(?:\.\d{1,4})?)\s*%\s+(?:[A-Za-z-]+\s+){0,3}?(?:notes?|debentures?|bonds?)\b/i;
+const MATURITY_AFTER = new RegExp(String.raw`\b(?:due|matur(?:e|es|ed|ing)(?:\s+(?:in|on))?)\s+(?:(${MONTH_NAMES.join("|")})\s+(?:(\d{1,2}),\s*)?(\d{4})|(\d{4}))`, "i");
+const couponIn = (s: string) => { const m = COUPON_BEFORE_NOUN.exec(s); return m ? `${m[1]}%` : null; };
+const maturityIn = (s: string) => {
+  const m = MATURITY_AFTER.exec(s);
+  if (!m) return null;
+  if (m[4]) return m[4];
+  const mm = String(MONTH_NAMES.findIndex((x) => x.toLowerCase() === m[1].toLowerCase()) + 1).padStart(2, "0");
+  return m[2] ? `${m[3]}-${mm}-${m[2].padStart(2, "0")}` : `${m[3]}-${mm}`;
+};
+export function deltaIdentityOf(d: DeltaLike): DeltaIdentity {
+  return {
+    amountMillions: d.amountMillions,
+    date: d.date,
+    coupon: couponIn(d.instrument) ?? couponIn(d.sourceLine),
+    maturity: maturityIn(d.instrument) ?? maturityIn(d.sourceLine),
+  };
+}
+export function deltaLabelOf(d: DeltaLike): string {
+  const id = deltaIdentityOf(d);
+  const p = plainTypeOf(d.instrument, d.sourceLine);
+  const word = p.word === "instrument" ? plainTypeOf(d.sourceLine, d.sourceLine).word : p.word;
+  const due = id.maturity
+    ? (([y, m, day]) => (m ? `${MONTH_NAMES[Number(m) - 1]} ${day ? `${Number(day)}, ` : ""}${y}` : y))(id.maturity.split("-"))
+    : null;
+  return [id.coupon, word, due ? `due ${due}` : null].filter(Boolean).join(" ");
+}
+/** Does this delta label pass the name rule: verbatim in its sentence, a plain type, or built from the delta's identity? */
+export function deltaLabelPasses(d: DeltaLike): boolean {
+  return nameIsVerbatim(d.instrument, d.sourceLine) || Object.values(TYPE_DISPLAY).includes(d.instrument.toLowerCase()) || d.instrument === deltaLabelOf(d);
+}
+
+/**
+ * The sentence's own words for a delta's identity: from its coupon through
+ * its maturity where the sentence prints both ("1.250 % senior notes that
+ * matured in March 2026"), else the coupon and its noun. What a card links
+ * the built label to; null when the sentence prints neither.
+ */
+export function deltaStatedSpan(d: DeltaLike): string | null {
+  const c = COUPON_BEFORE_NOUN.exec(d.sourceLine);
+  if (!c) return null;
+  const rest = d.sourceLine.slice(c.index);
+  const m = MATURITY_AFTER.exec(rest);
+  return m ? rest.slice(0, m.index + m[0].length) : c[0];
 }

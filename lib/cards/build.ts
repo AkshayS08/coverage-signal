@@ -22,6 +22,7 @@ import type { VerifiedFacility } from "../agent/verifyFacility";
 import { assemblePosition, amountProvenanceFor, classifyRedeemsClaims, facilityMaturityAtItsSentence, matchFacility, parseMoneyAmount, type ClassifiedRedeems, type LadderRow } from "../events/position";
 import { computeCoverage } from "../events/coverage";
 import { rolledCoverageFor } from "../events/rolledCoverage";
+import { deltaLabelOf, deltaIdentityOf, deltaStatedSpan } from "../events/rollDeltas";
 import { borrowingBaseOf } from "../agent/borrowingBase";
 import { classifyInstrument, type NoteSeniorityStatement } from "../events/instrumentClass";
 import { canonicalizeFacilityZeros } from "../agent/statedZero";
@@ -369,7 +370,8 @@ export function buildCard(i: CardInputs): Card {
         rolledEvents.push([
           t("Repaid: "),
           { k: "figure", t: displayAmount(m.statedAs, m.sourceLine), printed: m.statedAs, src: src(m.sourceLine, m.citedUrl) },
-          t(` ${tidyCoupon(m.instrument)}, between ${rolledFrom(rolledLabel ?? "")} and ${displayDate(periodEnd, "day")}. Not on the ladder.`),
+          // Session 27 (Oct 29): the label is built from the delta's identity, never the model's wording.
+          t(` ${deltaLabelOf(m)}, between ${rolledFrom(rolledLabel ?? "")} and ${displayDate(periodEnd, "day")}. Not on the ladder.`),
         ]);
       }
     }
@@ -708,6 +710,15 @@ export function buildCard(i: CardInputs): Card {
       face: { k: "figure", t: displayAmount(w.priorAmount, w.sourceLine), printed: w.priorAmount, src: s0 }, faceUsd: parseMoneyAmount(w.priorAmount),
       sentence: w.sourceLine, url: w.citedUrl, funding: [], use: [], price: null, extra: [t(", the prior balance, repaid inside the period")], retires: [],
     });
+  }
+  // SESSION 27 (Akshay, Oct 29, 2026): a move that IS a counted roll delta (same coupon, same face) is labelled from
+  // the delta's identity, never the wording of whichever model read it; the label links to the sentence's own span.
+  if (rc.counts) for (const d of rc.movements.filter((x) => x.placement === "delta" && x.amountMillions < 0)) {
+    const id = deltaIdentityOf(d), span = deltaStatedSpan(d);
+    if (!id.coupon || !span) continue;
+    const hits = movesAll.filter((m) => m.faceUsd !== null && Math.abs(m.faceUsd - Math.abs(d.amountMillions) * 1e6) < 0.5e6 && deltaIdentityOf({ ...d, instrument: m.instrument, sourceLine: m.sentence }).coupon === id.coupon);
+    // The phrase (instPhrase) is then composed from the built label: coupon, type, maturity, and the card's own row labels.
+    if (hits.length === 1) { hits[0].instrument = deltaLabelOf(d); hits[0].instSeg = { k: "label", t: deltaLabelOf(d), stated: span, src: src(d.sourceLine, d.citedUrl) }; }
   }
   for (const m of movesAll) {
     const dateText = m.dateSeg.k === "label" ? m.dateSeg.stated : null;
