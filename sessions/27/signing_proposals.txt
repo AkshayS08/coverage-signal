@@ -1,0 +1,108 @@
+
+==========================================================================================
+TENET HEALTHCARE CORP (CIK 0000070318)
+  9b: 3/3 (canonical v33 + 2 re-tastes) — HOLDS
+    s27-retaste-1: reproduces
+    s27-retaste-2: reproduces
+  Rule 58: every amount is stated by its sentence
+  position: 12 rows; captured face 13333000000; residual 0% (passes)
+  criteria: 12/12 pass; changed from signed: none
+  against the signed v31 state (2026-09-09): 3 difference(s)
+      Δ asOf: expected "2026-09-09", got "2026-10-15"
+      Δ cards[0].derived["months-to-maturity"].inputs: expected 5.125 % due 2027 $ 1,500   $ 1,500, got Senior secured first lien notes:     5.125 % due 2027 1,500
+      Δ cards[0].derived["next-tranche"].inputs: expected 5.125 % due 2027 $ 1,500   $ 1,500,4.625 % due 2028 $ 600   $ 600, got Senior secured first lien notes:     5.125 % due 2027 1,500,4.625 % due 2028 600
+      tolerated: non-position citations moved: 2 added, 0 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are recorded and do not ma
+      tolerated: rows["5.125 % due 2027"].sourceLine: expected "5.125 % due 2027 $ 1,500   $ 1,500", got "Senior secured first lien notes:     5.125 % due 2027 1,500" — both sentences state the row's amount, so this is which document was
+      tolerated: rows["4.625 % due 2028"].sourceLine: expected "4.625 % due 2028 $ 600   $ 600", got "4.625 % due 2028 600" — both sentences state the row's amount, so this is which document was cited, not a changed fact
+      tolerated: rows["4.250 % due 2029"].sourceLine: expected "4.250 % due 2029 $ 1,400   $ 1,400", got "4.250 % due 2029 1,400" — both sentences state the row's amount, so this is which document was cited, not a changed fact
+      tolerated: rows["4.375 % due 2030"].sourceLine: expected "4.375 % due 2030 $ 1,450   $ 1,450", got "4.375 % due 2030 1,450" — both sentences state the row's amount, so this is which document was cited, not a changed fact
+      tolerated: rows["6.125 % due 2030"].sourceLine: expected "6.125 % due 2030 $ 2,000   $ 2,000", got "6.125 % due 2030 2,000" — both sentences state the row's amount, so this is which document was cited, not a changed fact
+      tolerated: rows["6.750 % due 2031"].sourceLine: expected "6.750 % due 2031 $ 1,350   $ 1,350", got "6.750 % due 2031 1,350" — both sentences state the row's amount, so this is which document was cited, not a changed fact
+      tolerated: rows["5.500 % due 2032"].sourceLine: expected "5.500 % due 2032 $ 1,500   $ 1,500", got "5.500 % due 2032 1,500" — both sentences state the row's amount, so this is which document was cited, not a changed fact
+      tolerated: rows["6.125 % due 2028"].sourceLine: expected "6.125 % due 2028 $ 1,750   $ 1,750", got "Senior unsecured notes:     6.125 % due 2028 $ 1,750" — both sentences state the row's amount, so this is which document was cited,
+      tolerated: rows["6.875 % due 2031"].sourceLine: expected "6.875 % due 2031 $ 362   $ 362", got "6.875 % due 2031 362" — both sentences state the row's amount, so this is which document was cited, not a changed fact
+      tolerated: rows["6.000 % due 2033"].sourceLine: expected "6.000 % due 2033 $ 750   $ —", got "6.000 % due 2033 750" — both sentences state the row's amount, so this is which document was cited, not a changed fact
+      tolerated: rows["Finance leases, mortgages and other notes"].sourceLine: expected "Finance leases, mortgages and other notes $ 671   $ 603", got "Finance leases, mortgages and other notes 671" — both sentences state the row's amoun
+
+==========================================================================================
+Encompass Health Corp (CIK 0000785161)
+  9b: 3/3 (canonical v33 + 2 re-tastes) — HOLDS
+    s27-retaste-1: reproduces
+    s27-retaste-2: reproduces
+      tolerated: non-position citations moved: 1 added, 1 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are recorded and do not ma
+      tolerated: rows["Advances under revolving credit facility"].maturitySourceLine: expected "the maturity date has been changed to March 9, 2031", got "the maturity date is March 9, 2031, rather than October 7, 2027" — both sentences 
+  Rule 58: every amount is stated by its sentence
+  position: 7 rows; captured face 2634000000; residual 0% (passes)
+  criteria: 12/12 pass; changed from signed: 8b
+    8b: was "4 of 7 row(s) carry a class; the remaining 3 state "class not stated on this row" explicitly (Advances under revolving credit facility; Other notes payable; Fin" → now "4 of 7 row(s) carry a class; the remaining 3 state "class not stated on this row" explicitly (Advances under revolving credit facility; Other notes payable; Fin"
+  against the signed v31 state (2026-09-09): 1 difference(s)
+      Δ asOf: expected "2026-09-09", got "2026-10-15"
+      tolerated: non-position citations moved: 1 added, 0 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are recorded and do not ma
+      tolerated: rows["Advances under revolving credit facility"].maturitySourceLine: expected "the maturity date is March 9, 2031, rather than October 7, 2027", got "the maturity date has been changed to March 9, 2031" — both sentences 
+
+==========================================================================================
+DAVITA INC. (CIK 0000927066)
+  9b: 3/3 (canonical v33 + 2 re-tastes) — HOLDS
+    s27-retaste-1: reproduces
+      tolerated: rows["4.625% Senior Notes"].sourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %" — both sentences state t
+      tolerated: rows["4.625% Senior Notes"].maturitySourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %" — both sentences
+      tolerated: rows["3.75% Senior Notes"].sourceLine: expected "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625", got "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %" — both sentences state the 
+      tolerated: rows["3.75% Senior Notes"].maturitySourceLine: expected "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625", got "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %" — both sentences st
+      tolerated: rows["6.875% Senior Notes"].sourceLine: expected "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750", got "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %" — both sentences state t
+      tolerated: rows["6.875% Senior Notes"].maturitySourceLine: expected "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750", got "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %" — both sentences
+      tolerated: rows["6.75% Senior Notes"].sourceLine: expected "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750", got "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %" — both sentences state the 
+      tolerated: rows["6.75% Senior Notes"].maturitySourceLine: expected "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750", got "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %" — both sentences st
+      tolerated: rows["Acquisition obligations and other notes payable"].sourceLine: expected "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463", got "Acquisition obligations and other not
+    s27-retaste-2: reproduces
+      tolerated: rows["4.625% Senior Notes"].sourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %" — both sentences state t
+      tolerated: rows["4.625% Senior Notes"].maturitySourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %" — both sentences
+      tolerated: rows["3.75% Senior Notes"].sourceLine: expected "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625", got "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %" — both sentences state the 
+      tolerated: rows["3.75% Senior Notes"].maturitySourceLine: expected "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625", got "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %" — both sentences st
+      tolerated: rows["6.875% Senior Notes"].sourceLine: expected "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750", got "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %" — both sentences state t
+      tolerated: rows["6.875% Senior Notes"].maturitySourceLine: expected "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750", got "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %" — both sentences
+      tolerated: rows["6.75% Senior Notes"].sourceLine: expected "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750", got "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %" — both sentences state the 
+      tolerated: rows["6.75% Senior Notes"].maturitySourceLine: expected "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750", got "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %" — both sentences st
+      tolerated: rows["Acquisition obligations and other notes payable"].sourceLine: expected "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463", got "Acquisition obligations and other not
+  Rule 58: every amount is stated by its sentence
+  position: 9 rows; captured face 10847516000; residual 0% (passes)
+  criteria: 12/12 pass; changed from signed: 4
+    4: was "Total debt principal outstanding: gap 0 TIES; (unlabelled): gap 0 TIES" → now "(unlabelled): gap 0 TIES; (unlabelled): gap 0 TIES"
+  against the signed v31 state (2026-09-09): 1 difference(s)
+      Δ asOf: expected "2026-09-09", got "2026-10-15"
+      tolerated: rows["4.625% Senior Notes"].sourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750" — both sentences state t
+      tolerated: rows["3.75% Senior Notes"].sourceLine: expected "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %", got "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625" — both sentences state the 
+      tolerated: rows["6.875% Senior Notes"].sourceLine: expected "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %", got "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750" — both sentences state t
+      tolerated: rows["6.75% Senior Notes"].sourceLine: expected "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %", got "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750" — both sentences state the 
+      tolerated: rows["Acquisition obligations and other notes payable"].sourceLine: expected "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %", got "Acquisition obligations and other notes payabl
+
+==========================================================================================
+Cigna Group (CIK 0001739940)
+  9b: 1/3 (canonical v33 + 2 re-tastes) — does not hold
+    s27-retaste-1: diverges
+      ✗ rolled.deltas[0].instrument: expected "notes", got "1.250 % senior notes"
+      tolerated: rows["Revolving Credit Agreement"].instrument: RENAMED to "$ 6.5 billion, five-year revolving credit and letter of credit agreement" — same amount, maturity and status, so the same instrument under another of the filing'
+      tolerated: rows["Commercial Paper Program"].instrument: RENAMED to "Commercial paper program" — same amount, maturity and status, so the same instrument under another of the filing's own names
+      tolerated: rolled.deltas[1].instrument: "Commercial Paper Program" / "Commercial paper program" — the same displayed label but for case (the name rule compares case-insensitively)
+      tolerated: 66 text field(s) differ only in whitespace or footnote markers such as "(1)" (Session 27 ruling (b)): rolled.baseRows[1].instrument, rolled.baseRows[1].sourceLine, rolled.baseRows[2].instrument, rolled.baseRows[2].source
+    s27-retaste-2: diverges
+      ✗ rolled.deltas[0].instrument: expected "notes", got "1.250 % senior notes"
+      tolerated: rows["Revolving Credit Agreement"].instrument: RENAMED to "$ 6.5 billion, five-year revolving credit and letter of credit agreement" — same amount, maturity and status, so the same instrument under another of the filing'
+      tolerated: rows["Commercial Paper Program"].instrument: RENAMED to "Commercial paper program" — same amount, maturity and status, so the same instrument under another of the filing's own names
+      tolerated: rolled.deltas[1].instrument: "Commercial Paper Program" / "Commercial paper program" — the same displayed label but for case (the name rule compares case-insensitively)
+      tolerated: 66 text field(s) differ only in whitespace or footnote markers such as "(1)" (Session 27 ruling (b)): rolled.baseRows[1].instrument, rolled.baseRows[1].sourceLine, rolled.baseRows[2].instrument, rolled.baseRows[2].source
+  Rule 58: every amount is stated by its sentence
+  position: 6 rows; captured face 31913000000; residual 0.11% (passes); rolled (36 base rows, 2 deltas, roll ties: true)
+  criteria: 10/12 pass (failing: 2, 9b); changed from signed: 2, 7, 8b, 9b
+    2: was "all 6 row(s) carry a printed unit; all 2 narrative instrument(s) state a basis (commitment, outstanding) — NOTE: the basis is carried on the extracted instrumen" → now "all 6 row(s) carry a printed unit; 1 of 2 narrative instrument(s) state NO basis — NOTE: the basis is carried on the extracted instrument and is DROPPED on the "
+    7: was "1 capacity row(s) held out of captured face and reported separately: revolving credit and letter of credit agreement" → now "1 capacity row(s) held out of captured face and reported separately: Revolving Credit Agreement"
+    8b: was "4 of 5 row(s) carry a class; the remaining 1 state "class not stated on this row" explicitly (commercial paper program)" → now "4 of 5 row(s) carry a class; the remaining 1 state "class not stated on this row" explicitly (Commercial Paper Program)"
+    9b: was "attested by Akshay Sahani — three CACHE_BUST re-asks at a fixed prompt version" → now "NOT DEMONSTRATED. Warm re-runs prove the pipeline is deterministic; only a re-ask at the same version on the same filings measures the model, and that is billed"
+  against the signed state: accepted: Rule 66 — ci-20251231.htm joins the identity
+  against the signed v31 state (2026-09-09): 3 difference(s)
+      Δ asOf: expected "2026-09-09", got "2026-10-15"
+      Δ rolled.deltas[0].instrument: expected "1.250 % senior notes", got "notes"
+      Δ rolled.deltas[0].date: expected "2026-03-01", got "2026-03"
+      tolerated: non-position citations moved: 0 added, 1 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are recorded and do not ma
+      tolerated: rows["revolving credit and letter of credit agreement"].instrument: RENAMED to "Revolving Credit Agreement" — same amount, maturity and status, so the same instrument under another of the filing's own names
+      tolerated: rows["commercial paper program"].instrument: RENAMED to "Commercial Paper Program" — same amount, maturity and status, so the same instrument under another of the filing's own names
+      tolerated: rolled.deltas[1].instrument: "commercial paper program" / "Commercial Paper Program" — the same displayed label but for case (the name rule compares case-insensitively)
