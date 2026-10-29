@@ -3223,7 +3223,7 @@
        },
        {
         "kind": "subtotal",
-        "label": null,
+        "label": "Total debt principal outstanding",
         "amount": "$ 10,847,516 thousand",
         "rate": null,
         "seniority": null,
