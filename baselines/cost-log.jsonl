@@ -3567,3 +3567,5 @@
 {"at":"2026-10-29T15:43:37.438Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-29T16:04:51.212Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-29T16:16:08.787Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T16:17:40.850Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T16:17:45.446Z","company":"DAVITA INC. (narration)","totalUsd":0.028677,"totalCalls":1,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":7549,"outputTokens":402,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.028677}],"unpricedModels":[]}
