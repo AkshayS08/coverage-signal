@@ -153,6 +153,19 @@ export function claimSizingMove<C extends { instrument: string; amount: string |
   return pool.find((c) => c.foundIn?.url === move.url) ?? pool[0] ?? null;
 }
 
+/**
+ * A withheld figure's reason in plain language (5.9). The stored reason is the
+ * loop's own wording, and one of them names an engine term ("the anchor's
+ * period"); the card says what it means. The stored reason is unchanged.
+ */
+const PLAIN_REJECTION: Record<string, string> = {
+  "stated as of a date other than the anchor's period": "stated as of a date other than the period this card reports",
+};
+export function plainRejectionReason(reason: string): string {
+  const r = PLAIN_REJECTION[reason] ?? reason;
+  return r.charAt(0).toUpperCase() + r.slice(1);
+}
+
 export function buildCard(i: CardInputs): Card {
   const { briefDate } = i;
   // Session 27: a stated zero is compared and rendered in its one canonical
@@ -1409,7 +1422,7 @@ export function buildCard(i: CardInputs): Card {
     const words = [labels.seniority?.t, labels.security?.t, type].filter(Boolean).join(" ");
     return words.charAt(0).toUpperCase() + words.slice(1);
   };
-  for (const r of dm?.facilityRejections ?? []) withheld.push([t(`${cardNameOf(r.facility)} ${FIELD_NAMES[r.field] ?? r.field}, ${displayAmount(r.value, "")}: withheld. ${String(r.reason).charAt(0).toUpperCase()}${String(r.reason).slice(1)}. `), { k: "notStated", t: "See the sentence offered", src: src(r.sourceLine ?? r.facility, anchor.url) }, t(".")]);
+  for (const r of dm?.facilityRejections ?? []) withheld.push([t(`${cardNameOf(r.facility)} ${FIELD_NAMES[r.field] ?? r.field}, ${displayAmount(r.value, "")}: withheld. ${plainRejectionReason(String(r.reason))}. `), { k: "notStated", t: "See the sentence offered", src: src(r.sourceLine ?? r.facility, anchor.url) }, t(".")]);
   // A claimed date that a sourced one replaced is no longer withheld: the card shows the sourced date.
   for (const r of pos.rows) if (r.maturityWithheld && !r.maturityDate) withheld.push([t(`${r.instrument}: maturity ${r.maturityWithheld.claimed} withheld — ${r.maturityWithheld.why}.`)]);
   if (rawStatement && !statement) withheld.push([t(`Seniority and security are stated only in an earlier annual report, which this card does not use for labels: “${rawStatement.statement}”`)]);
