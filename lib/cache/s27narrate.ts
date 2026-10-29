@@ -22,7 +22,8 @@ import { cachedDraftEventBriefing } from "./wordingCache";
 import { NARRATION_PROMPT_VERSION } from "./promptVersion";
 import { answerExists, checkFree } from "./freeRun";
 
-const LIMIT = 0.0476;
+// Oct 29: DaVita alone, up to $0.0331 (S27_NARRATE_LIMIT, S27_NARRATE_NAMES). The approved ceiling is the gate's limit.
+const LIMIT = Number(process.env.S27_NARRATE_LIMIT ?? 0.0476);
 const AS_OF = new Date("2026-09-01T00:00:00Z");
 const NAMES = ["TENET HEALTHCARE CORP", "Encompass Health Corp", "DAVITA INC.", "COMMUNITY HEALTH SYSTEMS INC", "MOLINA HEALTHCARE, INC.", "Cigna Group"];
 const stop = (why: string): never => { console.error(`STOPPED: ${why}`); process.exit(1); };
@@ -31,7 +32,8 @@ const stop = (why: string): never => { console.error(`STOPPED: ${why}`); process
   if (process.env.S27_APPROVED !== "narration") stop("this bills; set S27_APPROVED=narration only after approval");
   if (!process.env.ANTHROPIC_API_KEY) stop("no API key in the environment");
   setSpendLimits({ totalUsd: LIMIT });
-  for (const company of NAMES) {
+  const only = (process.env.S27_NARRATE_NAMES ?? "").split("|").filter(Boolean);
+  for (const company of NAMES.filter((n) => !only.length || only.includes(n))) {
     if (!(await checkFree(company)).cached) { console.log(`${company}: not cached under its current read set (corpus moved) — not narrated`); continue; }
     const result = await runAgentLoop(company);
     if (currentCompanySpend().totalUsd > 0) stop(`${company}'s cached replay billed`);
