@@ -1,16 +1,16 @@
 {
-  "extractionVersion": 31,
+  "extractionVersion": 33,
   "signature": {
     "signedBy": "Akshay Sahani",
-    "signedOn": "2026-09-09",
-    "basis": "RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 23. (1) THE CORPUS MOVED HARD — the cited set is 2 documents against the 6 the v29 signature pinned. Five of those six are no longer cited (thc-20240805.htm, thc-20251231.htm, thc-20260331.htm, thc-20260908.htm, d845102d8k.htm) and one 8-K is new (d104323d8k.htm). Rule 30: a pin against a corpus that is not the current one is re-signed, never compared across. (2) THE EXTRACTION MOVED IN ONE PLACE, AND IT IS THE FIX THAT WAS ASKED FOR — the senior secured revolving credit facility reads $1.900 billion, as the filing prints it, where v29 printed $1,900 million. That is v31's unit rule (copy the printed unit, never convert) doing exactly its named job; the money is unchanged and the transcription is now the filing's own. (2b) AND THE SCALE WORD IS OURS, CANONICALLY — the twelve table rows whose cells carry no unit of their own take one from the filing's governing declaration, and that word is now the tool's singular (\"$ 1,500 million\") rather than the caption's inflection, which had been copied verbatim and rendered \"$ 1,500    millions\" across this whole ladder. The filing states a SCALE; it does not state how that scale is spelled beside one number, so there was nothing there to be faithful to. Values and units unchanged. (3) PROVENANCE WIDENED, NOT CHANGED — seven schedule sourceLines now carry both period columns (\"6.750 % due 2031 $ 1,350 $ 1,350\") where v29 carried one. Every line still states its own row's amount; Rule 58 is clean across all twelve rows. (4) NOTHING ELSE MOVED: twelve rows, identical on value, unit, maturity, granularity, provenance and capacity flag; coverage unchanged; one card, as before. Facility figures identical across all three v31 runs. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.4492): 12 rows in every run; every row identical across all three under compareToGolden on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical (statedTotalDebt, capturedFace, statedBridge, denominator); the cited document set identical across all three. Facility figures are NOT covered by 9b and were measured separately: identical across all three runs, labels included. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included. IDENTITY REDEFINED BY FIX 1, POSITION UNCHANGED. Session 24 narrowed a golden's filing set from the union of citations across all fifteen triggers to the documents the POSITION rests on — ladder rows' own citations, the anchor, and each facility figure's own `figureSources` document. The old union made an unrelated trigger's citation part of a signed position's identity: DaVita's 10-K entered it via `international-expansion` (whose quote had FAILED verification and been discarded) and CHS's 8-K via `asset-sale`, each in one run of three, and each made the signed position read as incomparable. This file was RE-PINNED, not re-signed: the position state was compared field by field with the filing set neutralised and came back identical — rows, amounts, maturities, granularity, provenance, capacity flags, coverage, tier 2 and cards all unchanged. No figure was re-read and no new attestation is claimed; only the definition of what this signature is pinned TO has changed."
+    "signedOn": "2026-10-29",
+    "basis": "RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v31 signature of 2026-09-09. Cleared by Akshay Sahani on Oct 29, 2026. Signed over the canonical v33 answer on read set 0bb8858c40f7aac2d0dda953 (current; the $0 replay through the loop gives the same state). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. NOTHING WAS TOLERATED BY THE 9b GATE. Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 23. (1) THE CORPUS MOVED HARD — the cited set is 2 documents against the 6 the v29 signature pinned. Five of those six are no longer cited (thc-20240805.htm, thc-20251231.htm, thc-20260331.htm, thc-20260908.htm, d845102d8k.htm) and one 8-K is new (d104323d8k.htm). Rule 30: a pin against a corpus that is not the current one is re-signed, never compared across. (2) THE EXTRACTION MOVED IN ONE PLACE, AND IT IS THE FIX THAT WAS ASKED FOR — the senior secured revolving credit facility reads $1.900 billion, as the filing prints it, where v29 printed $1,900 million. That is v31's unit rule (copy the printed unit, never convert) doing exactly its named job; the money is unchanged and the transcription is now the filing's own. (2b) AND THE SCALE WORD IS OURS, CANONICALLY — the twelve table rows whose cells carry no unit of their own take one from the filing's governing declaration, and that word is now the tool's singular (\"$ 1,500 million\") rather than the caption's inflection, which had been copied verbatim and rendered \"$ 1,500    millions\" across this whole ladder. The filing states a SCALE; it does not state how that scale is spelled beside one number, so there was nothing there to be faithful to. Values and units unchanged. (3) PROVENANCE WIDENED, NOT CHANGED — seven schedule sourceLines now carry both period columns (\"6.750 % due 2031 $ 1,350 $ 1,350\") where v29 carried one. Every line still states its own row's amount; Rule 58 is clean across all twelve rows. (4) NOTHING ELSE MOVED: twelve rows, identical on value, unit, maturity, granularity, provenance and capacity flag; coverage unchanged; one card, as before. Facility figures identical across all three v31 runs. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.4492): 12 rows in every run; every row identical across all three under compareToGolden on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical (statedTotalDebt, capturedFace, statedBridge, denominator); the cited document set identical across all three. Facility figures are NOT covered by 9b and were measured separately: identical across all three runs, labels included. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included. IDENTITY REDEFINED BY FIX 1, POSITION UNCHANGED. Session 24 narrowed a golden's filing set from the union of citations across all fifteen triggers to the documents the POSITION rests on — ladder rows' own citations, the anchor, and each facility figure's own `figureSources` document. The old union made an unrelated trigger's citation part of a signed position's identity: DaVita's 10-K entered it via `international-expansion` (whose quote had FAILED verification and been discarded) and CHS's 8-K via `asset-sale`, each in one run of three, and each made the signed position read as incomparable. This file was RE-PINNED, not re-signed: the position state was compared field by field with the filing set neutralised and came back identical — rows, amounts, maturities, granularity, provenance, capacity flags, coverage, tier 2 and cards all unchanged. No figure was re-read and no new attestation is claimed; only the definition of what this signature is pinned TO has changed."
   },
   "attestation": {
     "rowsCorrect": true,
     "instrumentTypeFaithful": true,
     "reproducedThreeTimes": true,
     "by": "Akshay Sahani",
-    "on": "2026-09-09"
+    "on": "2026-10-29"
   },
   "criteria": [
     {
@@ -18,7 +18,7 @@
       "name": "every row's amount, maturity and instrument correct against the filing",
       "kind": "attested",
       "pass": true,
-      "detail": "attested by Akshay Sahani on 2026-09-09 against 10-Q 2026-07-29",
+      "detail": "attested by Akshay Sahani on 2026-10-29 against 10-Q 2026-07-29",
       "defends": "a ladder that ties to itself and to nothing in the world"
     },
     {
@@ -123,6 +123,11 @@
       "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
       "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
     ],
+    "otherCitations": [
+      "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm",
+      "https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm",
+      "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+    ],
     "asOf": "2026-09-09",
     "rows": [
       {
@@ -133,7 +138,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "5.125 % due 2027 $ 1,500   $ 1,500"
+        "sourceLine": "Senior secured first lien notes:     5.125 % due 2027 1,500",
+        "maturitySourceLine": "Senior secured first lien notes:     5.125 % due 2027 1,500"
       },
       {
         "instrument": "4.625 % due 2028",
@@ -143,7 +149,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4.625 % due 2028 $ 600   $ 600"
+        "sourceLine": "4.625 % due 2028 600",
+        "maturitySourceLine": "4.625 % due 2028 600"
       },
       {
         "instrument": "4.250 % due 2029",
@@ -153,7 +160,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4.250 % due 2029 $ 1,400   $ 1,400"
+        "sourceLine": "4.250 % due 2029 1,400",
+        "maturitySourceLine": "4.250 % due 2029 1,400"
       },
       {
         "instrument": "4.375 % due 2030",
@@ -163,7 +171,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4.375 % due 2030 $ 1,450   $ 1,450"
+        "sourceLine": "4.375 % due 2030 1,450",
+        "maturitySourceLine": "4.375 % due 2030 1,450"
       },
       {
         "instrument": "6.125 % due 2030",
@@ -173,7 +182,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.125 % due 2030 $ 2,000   $ 2,000"
+        "sourceLine": "6.125 % due 2030 2,000",
+        "maturitySourceLine": "6.125 % due 2030 2,000"
       },
       {
         "instrument": "6.750 % due 2031",
@@ -183,7 +193,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.750 % due 2031 $ 1,350   $ 1,350"
+        "sourceLine": "6.750 % due 2031 1,350",
+        "maturitySourceLine": "6.750 % due 2031 1,350"
       },
       {
         "instrument": "5.500 % due 2032",
@@ -193,7 +204,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "5.500 % due 2032 $ 1,500   $ 1,500"
+        "sourceLine": "5.500 % due 2032 1,500",
+        "maturitySourceLine": "5.500 % due 2032 1,500"
       },
       {
         "instrument": "senior secured revolving credit facility",
@@ -203,7 +215,8 @@
         "status": "live",
         "provenance": "note-narrative",
         "isCapacity": true,
-        "sourceLine": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit."
+        "sourceLine": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+        "maturitySourceLine": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied."
       },
       {
         "instrument": "6.125 % due 2028",
@@ -213,7 +226,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.125 % due 2028 $ 1,750   $ 1,750"
+        "sourceLine": "Senior unsecured notes:     6.125 % due 2028 $ 1,750",
+        "maturitySourceLine": "Senior unsecured notes:     6.125 % due 2028 $ 1,750"
       },
       {
         "instrument": "6.875 % due 2031",
@@ -223,7 +237,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.875 % due 2031 $ 362   $ 362"
+        "sourceLine": "6.875 % due 2031 362",
+        "maturitySourceLine": "6.875 % due 2031 362"
       },
       {
         "instrument": "6.000 % due 2033",
@@ -233,7 +248,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.000 % due 2033 $ 750   $ —"
+        "sourceLine": "6.000 % due 2033 750",
+        "maturitySourceLine": "6.000 % due 2033 750"
       },
       {
         "instrument": "Finance leases, mortgages and other notes",
@@ -243,7 +259,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Finance leases, mortgages and other notes $ 671   $ 603"
+        "sourceLine": "Finance leases, mortgages and other notes 671",
+        "maturitySourceLine": null
       }
     ],
     "coverage": {
@@ -278,6 +295,7 @@
       }
     ],
     "rowsOutsideSubtotal": 0,
+    "rolled": null,
     "cards": [
       {
         "triggerId": "debt-maturity",
@@ -289,7 +307,7 @@
             "text": "Matures during 2027. The filing states only the year, so no month count is computed — which month it falls in is precision the filing does not disclose.",
             "computed": null,
             "inputs": [
-              "5.125 % due 2027 $ 1,500   $ 1,500"
+              "Senior secured first lien notes:     5.125 % due 2027 1,500"
             ],
             "fieldInputs": []
           },
@@ -305,8 +323,8 @@
             "text": "4.625 % due 2028, maturing 2028. The gap is not computed: at least one of the two states only a year.",
             "computed": null,
             "inputs": [
-              "5.125 % due 2027 $ 1,500   $ 1,500",
-              "4.625 % due 2028 $ 600   $ 600"
+              "Senior secured first lien notes:     5.125 % due 2027 1,500",
+              "4.625 % due 2028 600"
             ],
             "fieldInputs": []
           }
@@ -320,9 +338,6 @@
           }
         ]
       }
-    ],
-    "otherCitations": [
-      "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
     ]
   },
   "sourceResult": {
@@ -393,13 +408,17 @@
               "sourceLine": "At June 30, 2026, we had $ 105 million of standby letters of credit outstanding under the LC Facility."
             },
             "available": null,
-            "maturity": null,
+            "maturity": {
+              "value": "November 4, 2030",
+              "sourceLine": "We amended the LC Facility in November 2025 (the \"LC Facility Amendment\") to, among other things, extend the scheduled maturity date from March 16, 2027 to November 4, 2030 and revise certain pricing terms under the LC Facility."
+            },
             "asOfDate": "2026-06-30",
             "availabilityBasis": null,
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
             "figureSources": {
               "facilitySize": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-              "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+              "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+              "maturity": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
             }
           }
         ],
@@ -412,7 +431,7 @@
         "triggerName": "Debt maturity approaching",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Senior secured first lien notes of $1.5 billion due November 2027 and senior unsecured notes of $1.75 billion due October 2028 are maturing within the next 12-18 months as of June 30, 2026.",
+        "evidence": "Senior secured first lien notes due November 2027 with $1.5 billion outstanding principal amount; senior unsecured notes due October 2028 with $1.75 billion outstanding principal amount after partial redemption; senior unsecured notes due November 2031 with $362 million outstanding.",
         "mappedNeed": "Refinancing",
         "needType": "credit",
         "confidence": 0.95,
@@ -422,15 +441,21 @@
             "date": "2026-07-29",
             "reportDate": "2026-06-30",
             "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+          },
+          {
+            "form": "10-Q",
+            "date": "2026-04-30",
+            "reportDate": "2026-03-31",
+            "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "hich dates are staggered from November 2027 through November 2033. 10 Table of Contents We have",
-        "verifiedQuoteNormalized": "hich dates are staggered from November 2027 through November 2033. 10 Table of Contents We have",
-        "quoteMatchType": "co-occurrence",
+        "verifiedQuote": "At June 30, 2026, we had senior unsecured notes and senior secured notes with aggregate principal amounts outstanding of $ 12.662  billion. These notes have fixed interest rates ranging from 4.250 % to 6.875 % and require semi‑annual interest payments in arrears. Payment of the principal and any accrued but unpaid interest is due upon the maturity date of the respective notes, which dates are staggered from November 2027 through November 2033.",
+        "verifiedQuoteNormalized": "At June 30, 2026, we had senior unsecured notes and senior secured notes with aggregate principal amounts outstanding of $ 12.662  billion. These notes have fixed interest rates ranging from 4.250 % to 6.875 % and require semi‑annual interest payments in arrears. Payment of the principal and any accrued but unpaid interest is due upon the maturity date of the respective notes, which dates are staggered from November 2027 through November 2033.",
+        "quoteMatchType": "literal",
         "quoteHasFigure": true,
-        "eventDate": "2027-11-01",
-        "dateGranularity": "month",
+        "eventDate": null,
+        "dateGranularity": null,
         "scheduleSequence": [
           {
             "kind": "row",
@@ -442,8 +467,10 @@
             "seniority": "Senior unsecured notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.125 % due 2028 $ 1,750   $ 1,750",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "Senior unsecured notes:     6.125 % due 2028 $ 1,750",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "Senior unsecured notes:     6.125 % due 2028 $ 1,750",
+            "printedHeading": "Senior unsecured notes"
           },
           {
             "kind": "row",
@@ -455,8 +482,10 @@
             "seniority": "Senior unsecured notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.875 % due 2031 $ 362   $ 362",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "6.875 % due 2031 362",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "6.875 % due 2031 362",
+            "printedHeading": "Senior unsecured notes"
           },
           {
             "kind": "row",
@@ -468,8 +497,10 @@
             "seniority": "Senior unsecured notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.000 % due 2033 $ 750   $ —",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "6.000 % due 2033 750",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "6.000 % due 2033 750",
+            "printedHeading": "Senior unsecured notes"
           },
           {
             "kind": "row",
@@ -481,8 +512,10 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "5.125 % due 2027 $ 1,500   $ 1,500",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "Senior secured first lien notes:     5.125 % due 2027 1,500",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "Senior secured first lien notes:     5.125 % due 2027 1,500",
+            "printedHeading": "Senior secured first lien notes"
           },
           {
             "kind": "row",
@@ -494,8 +527,10 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "4.625 % due 2028 $ 600   $ 600",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "4.625 % due 2028 600",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "4.625 % due 2028 600",
+            "printedHeading": "Senior secured first lien notes"
           },
           {
             "kind": "row",
@@ -507,8 +542,10 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "4.250 % due 2029 $ 1,400   $ 1,400",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "4.250 % due 2029 1,400",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "4.250 % due 2029 1,400",
+            "printedHeading": "Senior secured first lien notes"
           },
           {
             "kind": "row",
@@ -520,8 +557,10 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "4.375 % due 2030 $ 1,450   $ 1,450",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "4.375 % due 2030 1,450",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "4.375 % due 2030 1,450",
+            "printedHeading": "Senior secured first lien notes"
           },
           {
             "kind": "row",
@@ -533,8 +572,10 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.125 % due 2030 $ 2,000   $ 2,000",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "6.125 % due 2030 2,000",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "6.125 % due 2030 2,000",
+            "printedHeading": "Senior secured first lien notes"
           },
           {
             "kind": "row",
@@ -546,8 +587,10 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.750 % due 2031 $ 1,350   $ 1,350",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "6.750 % due 2031 1,350",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "6.750 % due 2031 1,350",
+            "printedHeading": "Senior secured first lien notes"
           },
           {
             "kind": "row",
@@ -559,8 +602,10 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "5.500 % due 2032 $ 1,500   $ 1,500",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "5.500 % due 2032 1,500",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "5.500 % due 2032 1,500",
+            "printedHeading": "Senior secured first lien notes"
           },
           {
             "kind": "row",
@@ -572,20 +617,21 @@
             "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Finance leases, mortgages and other notes $ 671   $ 603",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "Finance leases, mortgages and other notes 671",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "printedHeading": null
           },
           {
             "kind": "adjustment",
             "label": "Unamortized issue costs and note discounts",
-            "amount": "( 85 ) million",
+            "amount": "( $ 85 million )",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Unamortized issue costs and note discounts ( 85 ) ( 94 )",
+            "sourceLine": "Unamortized issue costs and note discounts ( 85 )",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
           },
           {
@@ -593,25 +639,25 @@
             "label": "Total long-term debt",
             "amount": "$ 13,248 million",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Total long-term debt 13,248   13,171",
+            "sourceLine": "Total long-term debt 13,248",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
           },
           {
             "kind": "adjustment",
             "label": "Less: Current portion",
-            "amount": "160 million",
+            "amount": "$ 160 million",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Less: Current portion 160   79",
+            "sourceLine": "Less: Current portion 160",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
           }
         ],
@@ -626,8 +672,9 @@
             "seniority": "Senior unsecured notes",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "6.125 % due 2028 $ 1,750   $ 1,750",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "Senior unsecured notes:     6.125 % due 2028 $ 1,750",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "Senior unsecured notes:     6.125 % due 2028 $ 1,750"
           },
           {
             "kind": "row",
@@ -639,21 +686,9 @@
             "seniority": "Senior unsecured notes",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "6.875 % due 2031 $ 362   $ 362",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
-          },
-          {
-            "kind": "row",
-            "label": "6.000 % due 2033",
-            "amount": "$ 750 million",
-            "rate": "6.000%",
-            "maturityDate": "2033",
-            "dateGranularity": "year",
-            "seniority": "Senior unsecured notes",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "6.000 % due 2033 $ 750   $ —",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "6.875 % due 2031 362",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "6.875 % due 2031 362"
           },
           {
             "kind": "row",
@@ -665,8 +700,9 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "5.125 % due 2027 $ 1,500   $ 1,500",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "Senior secured first lien notes:     5.125 % due 2027 1,500",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "Senior secured first lien notes:     5.125 % due 2027 1,500"
           },
           {
             "kind": "row",
@@ -678,8 +714,9 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "4.625 % due 2028 $ 600   $ 600",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "4.625 % due 2028 600",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "4.625 % due 2028 600"
           },
           {
             "kind": "row",
@@ -691,8 +728,9 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "4.250 % due 2029 $ 1,400   $ 1,400",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "4.250 % due 2029 1,400",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "4.250 % due 2029 1,400"
           },
           {
             "kind": "row",
@@ -704,8 +742,9 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "4.375 % due 2030 $ 1,450   $ 1,450",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "4.375 % due 2030 1,450",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "4.375 % due 2030 1,450"
           },
           {
             "kind": "row",
@@ -717,8 +756,9 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "6.125 % due 2030 $ 2,000   $ 2,000",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "6.125 % due 2030 2,000",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "6.125 % due 2030 2,000"
           },
           {
             "kind": "row",
@@ -730,8 +770,9 @@
             "seniority": "Senior secured first lien notes",
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "6.750 % due 2031 $ 1,350   $ 1,350",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+            "sourceLine": "6.750 % due 2031 1,350",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+            "maturitySourceLine": "6.750 % due 2031 1,350"
           },
           {
             "kind": "row",
@@ -743,20 +784,20 @@
             "seniority": null,
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "Finance leases, mortgages and other notes $ 636   $ 603",
+            "sourceLine": "Finance leases, mortgages and other notes 636",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
           },
           {
             "kind": "adjustment",
             "label": "Unamortized issue costs and note discounts",
-            "amount": "( 89 ) million",
+            "amount": "( $ 89 million )",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "Unamortized issue costs and note discounts ( 89 ) ( 94 )",
+            "sourceLine": "Unamortized issue costs and note discounts ( 89 )",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
           },
           {
@@ -764,25 +805,25 @@
             "label": "Total long-term debt",
             "amount": "$ 13,209 million",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "Total long-term debt 13,209   13,171",
+            "sourceLine": "Total long-term debt 13,209",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
           },
           {
             "kind": "adjustment",
             "label": "Less: Current portion",
-            "amount": "81 million",
+            "amount": "$ 81 million",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "March 31, 2026",
-            "sourceLine": "Less: Current portion 81   79",
+            "sourceLine": "Less: Current portion 81",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
           }
         ],
@@ -791,14 +832,14 @@
             "label": "Current portion of long-term debt",
             "amount": "$ 160 million",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Current portion of long-term debt $ 160   $ 79",
+            "sourceLine": "Current portion of long-term debt $ 160",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
           },
           {
             "label": "Long-term debt, net of current portion",
             "amount": "$ 13,088 million",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Long-term debt, net of current portion $ 13,088   $ 13,092",
+            "sourceLine": "Long-term debt, net of current portion $ 13,088",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
           }
         ],
@@ -814,25 +855,59 @@
           "reportDate": "2026-03-31",
           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm"
         },
-        "rowsExtracted": 29,
-        "rowsVerified": 29,
+        "anchorNoteShape": "tabular",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": 1,
+        "rowsExtracted": 28,
+        "rowsVerified": 28,
         "baseRowsExtracted": 14,
         "columnReadFailure": false,
         "scheduleCompleteness": {
           "checked": true,
           "subtotalsTranscribed": 1,
           "labeledTotalCandidatesInSource": 1,
-          "missingLabeledTotals": [
-            "Total long-term debt 13,248"
-          ],
+          "missingLabeledTotals": [],
           "trailingUnconsumedText": null,
-          "complete": false
+          "complete": true
         },
         "redeems": [],
         "proceedsUses": [],
         "issuedTranches": [],
         "eventInstances": [],
-        "noteRetirements": [],
+        "noteRetirements": [
+          {
+            "instrument": "6.250 % senior secured second lien notes due February 2027",
+            "amount": "$ 1.500 billion",
+            "eventDate": "2025-11-19",
+            "dateGranularity": "day",
+            "sourceLine": "We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to finance the redemption of all $ 1.500 billion aggregate principal amount outstanding of our 6.250 % senior secured second lien notes due February 2027 (the \"February 2027 Senior Secured Second Lien Notes\") and the redemption of $ 750 million aggregate principal amount of the then $ 2.500 billion aggregate principal amount outstanding of our 6.125 % senior notes due October 2028 (the \"October 2028 Senior Unsecured Notes\"), in each case in advance of their maturity dates.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
+          },
+          {
+            "instrument": "6.125 % senior notes due October 2028",
+            "amount": "$ 750 million",
+            "eventDate": "2025-11-19",
+            "dateGranularity": "day",
+            "sourceLine": "We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to finance the redemption of all $ 1.500 billion aggregate principal amount outstanding of our 6.250 % senior secured second lien notes due February 2027 (the \"February 2027 Senior Secured Second Lien Notes\") and the redemption of $ 750 million aggregate principal amount of the then $ 2.500 billion aggregate principal amount outstanding of our 6.125 % senior notes due October 2028 (the \"October 2028 Senior Unsecured Notes\"), in each case in advance of their maturity dates.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
+          },
+          {
+            "instrument": "5.125 % senior secured first lien notes due November 2027",
+            "amount": "$ 1.5 billion",
+            "eventDate": "2026-09-23",
+            "dateGranularity": "day",
+            "sourceLine": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+          },
+          {
+            "instrument": "6.125 % senior notes due October 2028",
+            "amount": "$ 0.5 billion",
+            "eventDate": "2026-09-23",
+            "dateGranularity": "day",
+            "sourceLine": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+          }
+        ],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
         "cashAmount": null,
@@ -872,7 +947,7 @@
         "triggerName": "New debt issuance / notes pricing",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "On September 22, 2026, Tenet issued $2.0 billion in aggregate principal amount of 6.250% senior notes due 2034. The company intends to use net proceeds to redeem $1.5 billion of 5.125% senior secured first lien notes due November 2027 and $0.5 billion of 6.125% senior notes due October 2028.",
+        "evidence": "Tenet issued $2.0 billion in aggregate principal amount of 6.250% senior notes due 2034 on September 22, 2026. The company also issued $1.5 billion of 5.500% senior secured first lien notes due 2032 and $750 million of 6.000% senior unsecured notes due 2033 on November 18, 2025.",
         "mappedNeed": "Refi or add-on financing",
         "needType": "credit",
         "confidence": 0.98,
@@ -882,6 +957,12 @@
             "date": "2026-09-22",
             "reportDate": "2026-09-22",
             "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+          },
+          {
+            "form": "8-K",
+            "date": "2025-11-18",
+            "reportDate": "2025-11-18",
+            "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm"
           }
         ],
         "quoteVerified": true,
@@ -896,25 +977,58 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
-        "rowsExtracted": 1,
-        "rowsVerified": 1,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
+        "rowsExtracted": 3,
+        "rowsVerified": 3,
         "baseRowsExtracted": 0,
         "columnReadFailure": false,
         "scheduleCompleteness": null,
         "redeems": [
           {
+            "instrument": "6.250% senior secured second lien notes due February 2027",
+            "amount": "$ 1.500 billion",
+            "status": "completed",
+            "sourceLine": "We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to finance the redemption of all $ 1.500 billion aggregate principal amount outstanding of our 6.250 % senior secured second lien notes due February 2027 (the \"February 2027 Senior Secured Second Lien Notes\") and the redemption of $ 750 million aggregate principal amount of the then $ 2.500 billion aggregate principal amount outstanding of our 6.125 % senior notes due October 2028 (the \"October 2028 Senior Unsecured Notes\"), in each case in advance of their maturity dates.",
+            "verified": true,
+            "foundIn": {
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
+              "filingDate": "2026-02-17"
+            }
+          },
+          {
+            "instrument": "6.125% senior notes due October 2028",
+            "amount": "$ 750 million",
+            "status": "completed",
+            "sourceLine": "We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to finance the redemption of all $ 1.500 billion aggregate principal amount outstanding of our 6.250 % senior secured second lien notes due February 2027 (the \"February 2027 Senior Secured Second Lien Notes\") and the redemption of $ 750 million aggregate principal amount of the then $ 2.500 billion aggregate principal amount outstanding of our 6.125 % senior notes due October 2028 (the \"October 2028 Senior Unsecured Notes\"), in each case in advance of their maturity dates.",
+            "verified": true,
+            "foundIn": {
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
+              "filingDate": "2026-02-17"
+            }
+          },
+          {
             "instrument": "5.125% senior secured first lien notes due November 2027",
             "amount": "$ 1.5 billion",
             "status": "intended",
             "sourceLine": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
-            "verified": true
+            "verified": true,
+            "foundIn": {
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+              "filingDate": "2026-09-22"
+            }
           },
           {
             "instrument": "6.125% senior notes due October 2028",
             "amount": "$ 0.5 billion",
             "status": "intended",
             "sourceLine": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
-            "verified": true
+            "verified": true,
+            "foundIn": {
+              "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+              "filingDate": "2026-09-22"
+            }
           }
         ],
         "proceedsUses": [
@@ -927,6 +1041,16 @@
             "use": "partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028",
             "amount": "$ 0.5 billion",
             "sourceLine": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\")."
+          },
+          {
+            "use": "redemption of all $ 1.500 billion aggregate principal amount outstanding of our 6.250 % senior secured second lien notes due February 2027",
+            "amount": "$ 1.500 billion",
+            "sourceLine": "We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to finance the redemption of all $ 1.500 billion aggregate principal amount outstanding of our 6.250 % senior secured second lien notes due February 2027 (the \"February 2027 Senior Secured Second Lien Notes\") and the redemption of $ 750 million aggregate principal amount of the then $ 2.500 billion aggregate principal amount outstanding of our 6.125 % senior notes due October 2028 (the \"October 2028 Senior Unsecured Notes\"), in each case in advance of their maturity dates."
+          },
+          {
+            "use": "redemption of $ 750 million aggregate principal amount of the then $ 2.500 billion aggregate principal amount outstanding of our 6.125 % senior notes due October 2028",
+            "amount": "$ 750 million",
+            "sourceLine": "We used the net proceeds from the issuance of the 2032 Senior Secured First Lien Notes and 2033 Senior Unsecured Notes, together with cash on hand, to finance the redemption of all $ 1.500 billion aggregate principal amount outstanding of our 6.250 % senior secured second lien notes due February 2027 (the \"February 2027 Senior Secured Second Lien Notes\") and the redemption of $ 750 million aggregate principal amount of the then $ 2.500 billion aggregate principal amount outstanding of our 6.125 % senior notes due October 2028 (the \"October 2028 Senior Unsecured Notes\"), in each case in advance of their maturity dates."
           }
         ],
         "issuedTranches": [
@@ -938,17 +1062,40 @@
             "dateGranularity": "year",
             "seniority": "senior unsecured",
             "sourceLine": "On September 22, 2026, Tenet Healthcare Corporation (the \"Company\") issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the \"Notes\").",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+            "maturitySourceLine": "On September 22, 2026, Tenet Healthcare Corporation (the \"Company\") issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the \"Notes\")."
+          },
+          {
+            "instrument": "5.500% senior secured first lien notes due 2032",
+            "amount": "$ 1,500 million",
+            "rate": "5.500%",
+            "maturityDate": "2032",
+            "dateGranularity": "year",
+            "seniority": "senior secured first lien",
+            "sourceLine": "On November 18, 2025, Tenet Healthcare Corporation (\"Tenet\") issued $1,500,000,000 in aggregate principal amount of 5.500% senior secured first lien notes due 2032 (the \"First Lien Notes\")",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm",
+            "maturitySourceLine": "On November 18, 2025, Tenet Healthcare Corporation (\"Tenet\") issued $1,500,000,000 in aggregate principal amount of 5.500% senior secured first lien notes due 2032 (the \"First Lien Notes\")"
+          },
+          {
+            "instrument": "6.000% senior notes due 2033",
+            "amount": "$ 750 million",
+            "rate": "6.000%",
+            "maturityDate": "2033",
+            "dateGranularity": "year",
+            "seniority": "senior unsecured",
+            "sourceLine": "and $750,000,000 in aggregate principal amount of 6.000% senior notes due 2033 (the \"Senior Notes\" and together with the First Lien Notes, the \"Notes\").",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm",
+            "maturitySourceLine": "and $750,000,000 in aggregate principal amount of 6.000% senior notes due 2033 (the \"Senior Notes\" and together with the First Lien Notes, the \"Notes\")."
           }
         ],
         "eventInstances": [],
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$ 2,000 million",
+        "cashAmount": null,
         "projectName": null,
         "eventStatus": "completed",
-        "proceedsUse": "refinancing_only"
+        "proceedsUse": null
       },
       {
         "proseInstruments": [],
@@ -962,7 +1109,7 @@
         "triggerName": "Acquisition announced",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No acquisition of another business by Tenet Healthcare Corporation is disclosed in the filings provided.",
+        "evidence": "No acquisition of another business announced or completed by Tenet Healthcare during the filing period. The company engaged in acquisitions of ambulatory surgery centers and surgical hospitals through its USPI subsidiary, but these are organic growth activities within existing business segments, not acquisitions of separate businesses.",
         "mappedNeed": "Bridge financing, then permanent",
         "needType": "credit",
         "confidence": 0.95,
@@ -986,6 +1133,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1015,7 +1165,7 @@
         "triggerName": "Capex program / new facility or construction",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Tenet anticipates capital expenditures for the year ending December 31, 2026 will total approximately $700 million to $800 million. Capital expenditures relate to expansion and renovation of existing facilities, surgical hospital expansion, equipment and information systems additions, new medical technologies, and design and construction of new facilities.",
+        "evidence": "Tenet disclosed capital expenditure program with anticipated spending of $700 million to $800 million for the year ending December 31, 2026. Capital expenditures were $348 million for the six months ended June 30, 2026 and $364 million for the year ended December 31, 2025.",
         "mappedNeed": "Term loan or capex facility",
         "needType": "credit",
         "confidence": 0.92,
@@ -1025,6 +1175,12 @@
             "date": "2026-07-29",
             "reportDate": "2026-06-30",
             "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+          },
+          {
+            "form": "10-K",
+            "date": "2026-02-17",
+            "reportDate": "2025-12-31",
+            "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
           }
         ],
         "quoteVerified": true,
@@ -1032,13 +1188,16 @@
         "verifiedQuoteNormalized": "We anticipate that our capital expenditures for the year ending December 31, 2026 will total approximately $700 million to $800 million, including $111 million that was accrued as a liability at December 31, 2025.",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
-        "eventDate": null,
-        "dateGranularity": null,
+        "eventDate": "2026",
+        "dateGranularity": "year",
         "scheduleSequence": [],
         "priorScheduleSequence": [],
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1049,9 +1208,18 @@
         "issuedTranches": [],
         "eventInstances": [
           {
-            "description": "Florida Coast Medical Center in Port St. Lucie, Florida - newly constructed 54-bed acute care hospital",
+            "description": "Capital expenditure program for expansion and renovation of existing facilities, equipment and information systems additions and replacements, introduction of new medical technologies, and design and construction of new facilities",
+            "amount": "$ 700 million to $ 800 million",
+            "eventDate": "2026",
+            "dateGranularity": "year",
+            "eventStatus": "standing",
+            "sourceLine": "We anticipate that our capital expenditures for the year ending December 31, 2026 will total approximately $700 million to $800 million, including $111 million that was accrued as a liability at December 31, 2025.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+          },
+          {
+            "description": "Florida Coast Medical Center, a newly constructed 54-bed acute care hospital in Port St. Lucie, Florida, opened in September 2025",
             "amount": null,
-            "eventDate": "2025-09-01",
+            "eventDate": "2025-09",
             "dateGranularity": "month",
             "eventStatus": "completed",
             "sourceLine": "In September 2025, we opened the newly constructed, 54-bed Florida Coast Medical Center in Port St. Lucie, Florida.",
@@ -1059,10 +1227,10 @@
           }
         ],
         "noteRetirements": [],
-        "projectCompletionDate": null,
-        "projectCompletionGranularity": null,
-        "cashAmount": "$ 700 million to $ 800 million",
-        "projectName": null,
+        "projectCompletionDate": "2025-09",
+        "projectCompletionGranularity": "month",
+        "cashAmount": null,
+        "projectName": "Florida Coast Medical Center",
         "eventStatus": "standing",
         "proceedsUse": null
       },
@@ -1078,7 +1246,7 @@
         "triggerName": "Revolver near capacity + growth",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "At June 30, 2026, Tenet had no cash borrowings and less than $1 million of standby letters of credit outstanding under the $1.9 billion revolving credit facility, with $1.9 billion available for borrowing. The revolver is not near capacity.",
+        "evidence": "Tenet's revolving credit facility had $1.9 billion in capacity with no cash borrowings and less than $1 million in standby letters of credit outstanding at June 30, 2026, indicating full availability and no near-capacity condition.",
         "mappedNeed": "Revolver upsize",
         "needType": "credit",
         "confidence": 0.95,
@@ -1102,6 +1270,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1131,7 +1302,7 @@
         "triggerName": "Dividend recap / buyback authorization",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "During the six months ended June 30, 2026, Tenet repurchased 5.675 million shares of common stock for $1.360 billion. During the three months ended June 30, 2026, the company purchased approximately 1.346 million shares for $318 million.",
+        "evidence": "Tenet repurchased common stock during the six months ended June 30, 2026, with $1.360 billion in repurchases for the six-month period and $1.042 billion in the three months ended June 30, 2026. The company has an ongoing share repurchase program.",
         "mappedNeed": "Leverage capacity conversation",
         "needType": "credit",
         "confidence": 0.9,
@@ -1144,8 +1315,8 @@
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "Repurchases of common stock ( 1,346 ) —  —  —  ( 320 ) —  ( 320 )",
-        "verifiedQuoteNormalized": "— 270 — — — 84 354 Repurchases of common stock ( $1.35 billion ) — — — — ( 320 ) — ( 320 ) Stock-based compensation expe",
+        "verifiedQuote": "Repurchases of common stock ( 1,360 )",
+        "verifiedQuoteNormalized": "eds from borrowings 28 15 Repurchases of common stock ( $1.36 billion ) ( $1.09 billion ) Distributions paid",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
         "eventDate": null,
@@ -1155,6 +1326,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1163,7 +1337,17 @@
         "redeems": [],
         "proceedsUses": [],
         "issuedTranches": [],
-        "eventInstances": [],
+        "eventInstances": [
+          {
+            "description": "Repurchase of common stock during the six months ended June 30, 2026",
+            "amount": "$ 1,360 million",
+            "eventDate": "2026-06-30",
+            "dateGranularity": "day",
+            "eventStatus": "standing",
+            "sourceLine": "Repurchases of common stock ( 1,360 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+          }
+        ],
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
@@ -1184,7 +1368,7 @@
         "triggerName": "Large cash balance building",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Cash and cash equivalents were $2.170 billion at June 30, 2026 compared to $2.883 billion at December 31, 2025. The company maintains a substantial cash balance to support operations and liquidity needs.",
+        "evidence": "Cash and cash equivalents were $2.170 billion at June 30, 2026, compared to $2.883 billion at December 31, 2025. The company maintains a substantial cash balance to support operations and liquidity needs.",
         "mappedNeed": "Liquidity management, earning on idle cash",
         "needType": "treasury",
         "confidence": 0.95,
@@ -1197,17 +1381,20 @@
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "Cash and cash equivalents were $ 2.170 billion and $ 2.883  billion at June 30, 2026 and December 31, 2025, respectively.",
-        "verifiedQuoteNormalized": "Cash and cash equivalents were $ 2.170 billion and $ 2.883  billion at June 30, 2026 and December 31, 2025, respectively.",
+        "verifiedQuote": "Cash and cash equivalents were $2.170 billion at June 30, 2026 compared to $2.967 billion at March 31, 2026.",
+        "verifiedQuoteNormalized": "Cash and cash equivalents were $2.170 billion at June 30, 2026 compared to $2.967 billion at March 31, 2026.",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
-        "eventDate": null,
-        "dateGranularity": null,
+        "eventDate": "2026-06-30",
+        "dateGranularity": "day",
         "scheduleSequence": [],
         "priorScheduleSequence": [],
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1220,7 +1407,7 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$ 2.170 billion",
+        "cashAmount": "$ 2,170 million",
         "projectName": null,
         "eventStatus": "standing",
         "proceedsUse": null
@@ -1237,7 +1424,7 @@
         "triggerName": "Asset sale / divestiture closing",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material asset sales or divestitures are disclosed in the six-month period ended June 30, 2026. The company recorded net gains from sales, consolidation and deconsolidation of facilities totaling $34 million during the six months ended June 30, 2026, primarily from consolidation of an ASC and sale of certain facilities, but no major divestiture is announced.",
+        "evidence": "No material asset sales or divestitures disclosed in the current filing period. The company recorded net gains from sales, consolidation and deconsolidation of facilities totaling $34 million during the six months ended June 30, 2026, primarily from consolidation of an ASC and sale of certain facilities, but these are routine operational activities, not major divestitures.",
         "mappedNeed": "Proceeds deposit + sweep",
         "needType": "treasury",
         "confidence": 0.9,
@@ -1261,6 +1448,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1290,7 +1480,7 @@
         "triggerName": "International expansion / rising foreign revenue",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "Tenet operates a Global Business Center in the Philippines supporting administrative functions, but no material international expansion or rising foreign revenue as a share of total revenue is disclosed in the filings.",
+        "evidence": "Tenet operates a Global Business Center in the Philippines supporting administrative functions, but the company's revenue is primarily domestic U.S.-based. No material international expansion or rising foreign revenue disclosed in the filings.",
         "mappedNeed": "FX hedging, cross-border cash management",
         "needType": "treasury",
         "confidence": 0.92,
@@ -1314,6 +1504,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1343,7 +1536,7 @@
         "triggerName": "New subsidiary / entity formation",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No new subsidiary or legal entity formation is disclosed in the filings provided for the period ended June 30, 2026.",
+        "evidence": "No new subsidiary or legal entity formation disclosed in the current filing period. The company's subsidiary structure remains consistent with prior periods.",
         "mappedNeed": "New operating accounts",
         "needType": "treasury",
         "confidence": 0.9,
@@ -1367,6 +1560,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1396,7 +1592,7 @@
         "triggerName": "IPO / secondary raise",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No IPO or secondary equity offering is disclosed in the filings provided.",
+        "evidence": "No IPO or secondary equity offering announced or completed by Tenet Healthcare during the filing period.",
         "mappedNeed": "Proceeds management, treasury build-out",
         "needType": "treasury",
         "confidence": 0.95,
@@ -1420,6 +1616,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1447,12 +1646,12 @@
         "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "floating-rate-debt",
         "triggerName": "Floating-rate debt + rate exposure",
-        "fired": true,
+        "fired": false,
         "dataAvailable": true,
-        "evidence": "Tenet has a senior secured revolving credit facility of $1.9 billion that accrues interest at either a base rate plus margin or SOFR/EURIBOR plus margin. Outstanding revolving loans accrue interest at floating rates based on SOFR or similar benchmarks.",
+        "evidence": "Tenet's debt structure consists primarily of fixed-rate senior notes and senior secured notes. The revolving credit facility provides for floating-rate borrowings based on SOFR or base rate plus margin, but the facility had no outstanding borrowings at June 30, 2026, indicating minimal floating-rate debt exposure.",
         "mappedNeed": "Interest-rate hedging",
         "needType": "credit",
-        "confidence": 0.88,
+        "confidence": 0.92,
         "citations": [
           {
             "form": "10-Q",
@@ -1462,10 +1661,10 @@
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "Outstanding revolving loans under the 2025 Credit Agreement accrue interest at either (1) a base rate plus an applicable margin ranging from 0.25 % to 0.50 % per annum or (2) the Term Secured Overnight Financing Rate (\"SOFR\"), Daily Simple SOFR or the Euro Interbank Offered Rate (\"EURIBOR\") (each as defined in the 2025 Credit Agreement) plus an applicable margin ranging from 1.25 % to 1.50 % per annum, in each case based upon average quarterly available credit.",
-        "verifiedQuoteNormalized": "Outstanding revolving loans under the 2025 Credit Agreement accrue interest at either (1) a base rate plus an applicable margin ranging from 0.25 % to 0.50 % per annum or (2) the Term Secured Overnight Financing Rate (\"SOFR\"), Daily Simple SOFR or the Euro Interbank Offered Rate (\"EURIBOR\") (each as defined in the 2025 Credit Agreement) plus an applicable margin ranging from 1.25 % to 1.50 % per annum, in each case based upon average quarterly available credit.",
-        "quoteMatchType": "literal",
-        "quoteHasFigure": true,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
         "eventDate": null,
         "dateGranularity": null,
         "scheduleSequence": [],
@@ -1473,6 +1672,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1502,10 +1704,10 @@
         "triggerName": "Commodity / input-cost exposure",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material disclosure of commodity or input-cost exposure is provided in the risk factors or other sections of the filings reviewed.",
+        "evidence": "No material disclosure of commodity or input-cost exposure in the risk factors or MD&A sections of the filings provided. Healthcare provider operations have general exposure to supply costs and labor inflation, but no specific commodity hedging or material commodity price exposure is disclosed.",
         "mappedNeed": "Commodity hedging",
         "needType": "credit",
-        "confidence": 0.85,
+        "confidence": 0.88,
         "citations": [
           {
             "form": "10-Q",
@@ -1526,6 +1728,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1555,10 +1760,10 @@
         "triggerName": "Large FX exposure disclosed",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material foreign-currency exposure is disclosed in the quantitative and qualitative market risk section (Item 3) of the filings provided.",
+        "evidence": "Tenet's operations are primarily domestic U.S.-based with a Global Business Center in the Philippines for administrative support. No material foreign-currency exposure or hedging activities disclosed in the quantitative and qualitative market risk disclosures.",
         "mappedNeed": "FX hedging program",
         "needType": "treasury",
-        "confidence": 0.9,
+        "confidence": 0.92,
         "citations": [
           {
             "form": "10-Q",
@@ -1579,6 +1784,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1608,7 +1816,7 @@
         "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning is disclosed in the filings. The company states it was in compliance with all covenants and conditions in its Credit Agreement at June 30, 2026.",
+        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. The company states it was in compliance with all covenants and conditions in its credit agreements at June 30, 2026.",
         "mappedNeed": "Restructuring or amendment support",
         "needType": "distress",
         "confidence": 0.95,
@@ -1632,6 +1840,9 @@
         "balanceSheetDebtCaptions": [],
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
         "baseRowsExtracted": 0,
@@ -1651,6 +1862,80 @@
       }
     ],
     "verdict": "CALL",
-    "relationshipFlags": []
+    "relationshipFlags": [],
+    "recordedReadSet": [
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "form": "10-Q",
+        "filingDate": "2026-07-29",
+        "accessionNumber": "0000070318-26-000037",
+        "contentHash": "c169cbb56bd49aa0903fc9a8780fe334250a0eafbc40a128804fa0dc76296356",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm",
+        "form": "10-Q",
+        "filingDate": "2026-04-30",
+        "accessionNumber": "0000070318-26-000026",
+        "contentHash": "84a7290fbbaacd1223d98bab6dc6e9d6e744775df04204b3126f08171d915bc6",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
+        "form": "10-K",
+        "filingDate": "2026-02-17",
+        "accessionNumber": "0000070318-26-000012",
+        "contentHash": "e36601fc17de1759e3d13d99edbcccfb1687967bd6a77c3853b37e21dd2f5b48",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "form": "8-K",
+        "filingDate": "2026-09-22",
+        "accessionNumber": "0001193125-26-397901",
+        "contentHash": "65cf79bfdc45f080d5bc0b06c1056bcfde3abbc525ad4289c196f80422806148",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "form": "8-K",
+        "filingDate": "2026-09-08",
+        "accessionNumber": "0000070318-26-000040",
+        "contentHash": "cf89e7019e5874dde19d2ca20c88f3d7425940a26dc4d1463c3bd35fe785f716",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000003/thc-20260127.htm",
+        "form": "8-K",
+        "filingDate": "2026-02-02",
+        "accessionNumber": "0000070318-26-000003",
+        "contentHash": "4e6b7b2a029a6a8753850d13625873f36a5f34505eb0b71186b72309439c7315",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm",
+        "form": "8-K",
+        "filingDate": "2025-11-18",
+        "accessionNumber": "0001193125-25-286146",
+        "contentHash": "1039a5f4cc87d047f4087126068fd17cd4fca305d34b13666fadb56fb91798ae",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312525266885/d85698d8k.htm",
+        "form": "8-K",
+        "filingDate": "2025-11-05",
+        "accessionNumber": "0001193125-25-266885",
+        "contentHash": "95bb8905b02211caafb891fe4fd513a4ba022ea42f1b4b2eb47489287023d440",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031825000048/thc-20251103.htm",
+        "form": "8-K",
+        "filingDate": "2025-11-03",
+        "accessionNumber": "0000070318-25-000048",
+        "contentHash": "9f51b1c38dbb5a9a36216d244dbd7efd2e21c453969bc65149fbf21afdb9db56",
+        "via": "base"
+      }
+    ]
   }
 }

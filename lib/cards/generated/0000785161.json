@@ -884,7 +884,7 @@
         }
        },
        {
-        "printed": "$ 746 million",
+        "printed": "approximately $ 746 million",
         "usd": 746000000,
         "src": {
          "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
@@ -989,7 +989,7 @@
      {
       "k": "figure",
       "t": "~$746MM",
-      "printed": "$ 746 million",
+      "printed": "approximately $ 746 million",
       "src": {
        "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -1010,9 +1010,9 @@
       "date": "2031-03-09",
       "granularity": "day",
       "src": {
-       "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-       "doc": "ehc-20260309.htm"
+       "sentence": "the maturity date has been changed to March 9, 2031",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
       }
      }
     ]
@@ -1897,9 +1897,9 @@
        "date": "2031-03-09",
        "granularity": "day",
        "src": {
-        "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-        "doc": "ehc-20260309.htm"
+        "sentence": "the maturity date has been changed to March 9, 2031",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
        }
       }
      ],
@@ -2187,7 +2187,7 @@
       {
        "k": "figure",
        "t": "~$746MM",
-       "printed": "$ 746 million",
+       "printed": "approximately $ 746 million",
        "src": {
         "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -2207,9 +2207,9 @@
        "date": "2031-03-09",
        "granularity": "day",
        "src": {
-        "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-        "doc": "ehc-20260309.htm"
+        "sentence": "the maturity date has been changed to March 9, 2031",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
        }
       }
      ],
@@ -2243,13 +2243,13 @@
    [
     {
      "k": "text",
-     "t": "Senior secured revolver letters of credit, $53.6MM: withheld. Sentence does not state this figure. "
+     "t": "Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the period this card reports. "
     },
     {
      "k": "notStated",
      "t": "See the sentence offered",
      "src": {
-      "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+      "sentence": "As of December 31, 2025 and 2024, $ 46.3  million and $ 36.3  million , respectively, was being utilized under the letter of credit subfacility, which were being used in the ordinary course of business to secure workers' compensation and other insurance coverages and for general corporate purposes.",
       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
       "doc": "10-Q 2026-08-07"
      }
@@ -3760,7 +3760,7 @@
       }
      },
      {
-      "printed": "$ 746 million",
+      "printed": "approximately $ 746 million",
       "usd": 746000000,
       "src": {
        "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
@@ -3835,16 +3835,16 @@
        "date": "2031-03-09",
        "granularity": "day",
        "src": {
-        "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-        "doc": "ehc-20260309.htm"
+        "sentence": "the maturity date has been changed to March 9, 2031",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
        }
       }
      ],
      "amount": {
       "k": "figure",
       "t": "~$746MM",
-      "printed": "$ 746 million",
+      "printed": "approximately $ 746 million",
       "src": {
        "sentence": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility.",
        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
@@ -4509,9 +4509,9 @@
        "date": "2031-03-09",
        "granularity": "day",
        "src": {
-        "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-        "doc": "ehc-20260309.htm"
+        "sentence": "the maturity date has been changed to March 9, 2031",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+        "doc": "10-Q 2026-08-07"
        }
       }
      ],
@@ -5301,9 +5301,9 @@
         "date": "2031-03-09",
         "granularity": "day",
         "src": {
-         "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-         "doc": "ehc-20260309.htm"
+         "sentence": "the maturity date has been changed to March 9, 2031",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+         "doc": "10-Q 2026-08-07"
         }
        }
       ],
@@ -5614,9 +5614,9 @@
       "date": "2031-03-09",
       "granularity": "day",
       "src": {
-       "sentence": "the maturity date is March 9, 2031, rather than October 7, 2027",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-       "doc": "ehc-20260309.htm"
+       "sentence": "the maturity date has been changed to March 9, 2031",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+       "doc": "10-Q 2026-08-07"
       }
      }
     ],
@@ -5654,13 +5654,13 @@
    [
     {
      "k": "text",
-     "t": "Senior secured revolver letters of credit, $53.6MM: withheld. Sentence does not state this figure. "
+     "t": "Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the period this card reports. "
     },
     {
      "k": "notStated",
      "t": "See the sentence offered",
      "src": {
-      "sentence": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+      "sentence": "As of December 31, 2025 and 2024, $ 46.3  million and $ 36.3  million , respectively, was being utilized under the letter of credit subfacility, which were being used in the ordinary course of business to secure workers' compensation and other insurance coverages and for general corporate purposes.",
       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
       "doc": "10-Q 2026-08-07"
      }

@@ -27,13 +27,15 @@ import { compareToGolden, deriveGoldenState, sourceLineCheckFor, type GoldenFile
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
-const goldens = readdirSync("baselines/golden").map((f) => JSON.parse(readFileSync(`baselines/golden/${f}`, "utf-8")) as GoldenFile).filter((g) => g.extractionVersion === 31);
+// Every signed golden with a card snapshot, at whatever version it is signed (Session 27: Tenet and Encompass re-signed at v33).
+const goldens = readdirSync("baselines/golden").map((f) => JSON.parse(readFileSync(`baselines/golden/${f}`, "utf-8")) as GoldenFile).filter((g) => existsSync(join("lib", "cards", "inputs", `${g.state.cik}.json`)));
 const snap = (cik: string) => JSON.parse(readFileSync(join("lib", "cards", "inputs", `${cik}.json`), "utf-8"));
 const docsOf = (cik: string) => new Map<string, string>(Object.entries(snap(cik).docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
 
 console.log("\n=== L1: Tenet, signed v31 against the replayed v33 answer ===");
 const replay = existsSync("baselines/s27-replay.json") ? JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")) : null;
-const tg = goldens.find((g) => g.state.cik === "0000070318")!;
+// The v31 signature L1 was written against, kept as a fixture since Tenet was re-signed at v33 (Oct 29).
+const tg = JSON.parse(readFileSync(join("lib", "events", "fixtures", "golden_tenet_v31.json"), "utf-8")) as GoldenFile;
 const tr = replay?.results.find((x: any) => x.result.cik === "0000070318")?.result;
 if (tr) {
   const asOf = new Date(`${tg.state.asOf}T00:00:00Z`);
