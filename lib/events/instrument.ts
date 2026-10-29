@@ -19,6 +19,7 @@
  */
 import { parseMoneyAmount } from "./position";
 import type { ProseInstrumentRow, FacilityRow, VerifiedSequenceEntry } from "../agent";
+import { classifyInstrument } from "./instrumentClass";
 
 export type DebtCategory = ProseInstrumentRow["category"];
 
@@ -181,3 +182,36 @@ export function debtContribution(
   return { amount: p.amount ? parseMoneyAmount(p.amount) : null, capacity: false, why: "stated balance outstanding" };
 }
 
+
+/**
+ * SESSION 27 (Akshay, Oct 29, 2026) — THE DEBT TABLE DECIDES, BY RULE.
+ *
+ *   (a) Letters of credit are never funded debt. A prose instrument that is
+ *       letters of credit never becomes a row or captured debt; it renders
+ *       only under Facilities.
+ *   (b) A facility description supplies a debt row only when the anchor's
+ *       debt table has no row for that facility (identity by instrument type:
+ *       a revolver is one facility however it is named), and then only its
+ *       drawn amount (amountBasis "outstanding"; a commitment is capacity,
+ *       which debtContribution already decides). Never a second row.
+ *
+ * DaVita's two re-tastes read its revolver a second time from the facility
+ * description and its bilateral letter-of-credit facility as $188,482
+ * thousand of debt; the table carried neither. Used by the position and by
+ * coverage, so the ladder and the coverage figure count one set.
+ */
+export function fundedProse(prose: ProseInstrumentRow[], rows: { label?: string | null }[]): ProseInstrumentRow[] {
+  const kind = (name: string | null | undefined) => {
+    const t = classifyInstrument({ headings: [], instrumentName: name ?? "" }).instrumentType;
+    return t === "credit-facility" ? "revolver" : t;
+  };
+  const isLettersOfCredit = (name: string | null | undefined) => kind(name) === "letter-of-credit" || (/letters? of credit/i.test(name ?? "") && !/revolv|credit agreement|credit facility/i.test(name ?? ""));
+  const FACILITY = new Set(["revolver", "term-loan-a", "term-loan-b", "term-loan", "delayed-draw"]);
+  const tableKinds = new Set(rows.map((r) => kind(r.label)));
+  return prose.filter((p) => {
+    if (isLettersOfCredit(p.name)) return false;
+    const k = kind(p.name) ?? (p.category === "revolver" ? "revolver" : null);
+    if (k && FACILITY.has(k) && tableKinds.has(k)) return false;
+    return true;
+  });
+}

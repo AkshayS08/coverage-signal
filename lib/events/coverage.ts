@@ -24,7 +24,7 @@
  */
 import { parseMoneyAmount, normalizeScheduleSequence } from "./position";
 // The instrument-level facts live in one place and every layer reads them.
-import { dedupAgainstRows, debtContribution, sameNormalisedAmount, type DebtCategory } from "./instrument";
+import { dedupAgainstRows, debtContribution, fundedProse, sameNormalisedAmount, type DebtCategory } from "./instrument";
 export { dedupAgainstRows, debtContribution, sameNormalisedAmount } from "./instrument";
 export type { DebtCategory } from "./instrument";
 import type { TriggerResult, ProseInstrumentRow, FacilityRow, VerifiedSequenceEntry } from "../agent";
@@ -242,7 +242,8 @@ export function computeCoverage(
       contributionOf.set(p, { amount: c.amount, why: c.why });
     }
   }
-  const { kept: prose } = dedupAgainstRows(debtBearing, rows);
+  // Session 27: the debt table decides (fundedProse), the same rule the position applies.
+  const prose = fundedProse(dedupAgainstRows(debtBearing, rows).kept, rows);
   const proseEntries: CapturedEntry[] = prose.map((p) => ({
     category: p.category,
     label: p.name ?? p.category,

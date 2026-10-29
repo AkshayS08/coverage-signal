@@ -1,5 +1,5 @@
 import type { CompanyResult, TriggerResult, VerifiedBalanceSheetCaption, VerifiedIssuedTranche, VerifiedSequenceEntry, VerifiedNoteRetirement, ProseInstrumentRow, FacilityRow } from "../agent";
-import { dedupAgainstRows, debtContribution } from "./instrument";
+import { dedupAgainstRows, debtContribution, fundedProse } from "./instrument";
 import { buildTier2, isPostAnchorSource, type Tier2 } from "./tier2";
 import { classifyInstrument, priorityRank, type Classification, type NoteSeniorityStatement, type InstrumentType } from "./instrumentClass";
 import type { DateGranularity, DebtScheduleFilingRef } from "../agent/claude";
@@ -1687,7 +1687,8 @@ export function assemblePosition(result: CompanyResult, now: Date = new Date()):
   // the ladder and the coverage figure count one set. A prose entry that
   // duplicates a table row is one instrument; three notes that are each
   // $500 million with different maturities stay three (Rule 19).
-  const proseKept = dedupAgainstRows(debtMaturity?.proseInstruments ?? [], baseRowEntries).kept;
+  // Session 27: the debt table decides (fundedProse): no letters of credit, no second row for a facility the table carries.
+  const proseKept = fundedProse(dedupAgainstRows(debtMaturity?.proseInstruments ?? [], baseRowEntries).kept, baseRowEntries);
   rows = rows.concat(
     proseKept.map((p) => ladderRowFromProseInstrument(
       p as ProseInstrumentRow & { citedUrl?: string },

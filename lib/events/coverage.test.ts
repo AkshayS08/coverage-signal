@@ -309,10 +309,23 @@ console.log("\n=== [12] REAL: one instrument cannot be larger than the total it 
       row("Revolving credit facility", "$225,000 thousand"),
       row("Financial liabilities from failed sale leaseback", "$68,000 thousand"),
     ],
+    // Session 27 (the test follows the product): a facility the TABLE carries never takes a second row from a description
+    // (fundedProse, rule (b)), so UHS's duplicate "Tranche A term loan" no longer reaches this guard — [12d]. The guard is
+    // tested here on an instrument the table does not carry, which it still must catch.
     proseInstruments: [
-      prose({ category: "term-loan", name: "Tranche A term loan", amount: "$1,448 billion", amountBasis: "outstanding" }),
+      prose({ category: "other", name: "financial obligation under a guarantee", amount: "$1,448 billion", amountBasis: "outstanding" }),
     ] as never,
   }));
+  const dup = computeCoverage(dm({
+    balanceSheetDebtCaptions: [
+      { label: "Current maturities of long-term debt", amount: "$771,910 thousands" },
+      { label: "Long-term debt", amount: "$4,079,937 thousands" },
+    ] as never,
+    scheduleSequence: [row("Tranche A term loan", "$1,448,000 thousand"), row("Revolving credit facility", "$225,000 thousand"), row("Financial liabilities from failed sale leaseback", "$68,000 thousand")],
+    proseInstruments: [prose({ category: "term-loan", name: "Tranche A term loan", amount: "$1,448 billion", amountBasis: "outstanding" })] as never,
+  }));
+  assert(dup.impossible.length === 0 && Math.abs(dup.capturedFace - 1_741_000_000) < 1_000_000,
+    `[12d] UHS's own case: the duplicate "Tranche A term loan" description is not a second row for a facility the table carries (Session 27, rule (b)), so captured face is the three real rows ($${(dup.capturedFace / 1e9).toFixed(3)}B)`);
   assert(c.impossible.length === 1 && Math.abs(c.capturedFace - 1_741_000_000) < 1_000_000,
     `[12a] the $1.448 TRILLION entry is excluded and the sum is the three real rows, $1.741B (got $${(c.capturedFace / 1e9).toFixed(3)}B) — a component of a total cannot exceed it, which is arithmetic and needs no vocabulary`);
   assert(c.line.includes("IMPOSSIBLE AMOUNT, EXCLUDED") && c.line.includes("Read the filing"),
