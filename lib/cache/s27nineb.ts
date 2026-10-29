@@ -12,7 +12,7 @@
  * Run: npx tsx lib/cache/s27nineb.ts
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { deriveGoldenState, compareToGolden, sourceLineCheckFor } from "../events/golden";
+import { deriveGoldenState, compareToGolden, sourceLineCheckFor, countsToward9b } from "../events/golden";
 
 const canon = JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results as { company: string; result: any }[];
 const re = JSON.parse(readFileSync("baselines/s27-retaste.json", "utf-8")).results as { company: string; bust: string; usd: number; result: any }[];
@@ -39,7 +39,11 @@ for (const r of re) {
 ${r.company} [${r.bust}]: accepted: Rule 66 — ${base.split("/").pop()}, the labelled prior-period base, is in one identity and not the other`);
   }
   const v = compareToGolden(expected, actual, { sourceLineCheck: sourceLineCheckFor(r.result, docsOf(r.result.cik), AS_OF) });
-  const ok = v.kind === "matches";
+  // Ruling 1(c) (Oct 29): a sample that breaks the coverage tie is a check failure, never an alternate reading.
+  const tie = countsToward9b(expected, actual, v);
+  if (tie.checkFailure) say(`
+${r.company} [${r.bust}]: CHECK FAILURE — ${tie.reason}; not counted toward 9b`);
+  const ok = tie.counts;
   if (ok) reproduced++;
   say(`\n${r.company} [${r.bust}] ($${r.usd.toFixed(4)}): ${ok ? "REPRODUCES the canonical position" : v.kind === "not-applicable" ? `NOT APPLICABLE — ${v.reason}` : "DIVERGES from the canonical position"}`);
   if (v.kind === "diverged") for (const d of v.divergences) say(`    ${d.slice(0, 240)}`);

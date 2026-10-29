@@ -739,3 +739,18 @@ export function compareToGolden(expected: GoldenState, actual: GoldenState, opts
 
   return d.length === 0 ? { kind: "matches", tolerated } : { kind: "diverged", divergences: d, tolerated };
 }
+
+/**
+ * SESSION 27 (Akshay, Oct 29, 2026) — RULING 1(c). The coverage tie to the
+ * balance sheet must hold for a sample to count toward 9b. A sample that
+ * breaks it is a CHECK FAILURE, not an alternate reading — and two samples
+ * agreeing on a broken tie have agreed on a failure, not reproduced a position.
+ */
+export function countsToward9b(expected: GoldenState, actual: GoldenState, verdict: GoldenVerdict): { counts: boolean; checkFailure: boolean; reason: string | null } {
+  const broken = [expected, actual].filter((s) => s.coverage.residualPasses === false);
+  if (broken.length > 0) {
+    const which = broken.map((s) => (s === actual ? "this sample" : "the canonical") + ` (residual ${s.coverage.residualPercent}%)`).join(" and ");
+    return { counts: false, checkFailure: true, reason: `the coverage tie breaks in ${which}` };
+  }
+  return { counts: verdict.kind === "matches", checkFailure: false, reason: null };
+}
