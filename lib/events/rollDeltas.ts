@@ -40,6 +40,7 @@
  * between the two dates' stated balances.
  */
 import type { RollDelta } from "./rollForward";
+import { statedDatePrecision, datePrecisionOf, morePrecise, type FactToken } from "../agent/factTokens";
 
 export type Placement = "in-base" | "delta" | "subsequent" | "excluded-not-completed" | "undated";
 
@@ -170,6 +171,25 @@ export interface DeriveInputs {
   parseMillions: (amount: string, sourceLine: string) => number | null;
 }
 
+/**
+ * SESSION 27 (Akshay, Oct 29, 2026) — A MOVEMENT'S DATE, HELD TO ITS OWN
+ * SENTENCE (Rules 76–78). The model's date field never adds precision:
+ * "matured in March 2026" is 2026-03, and the model's 2026-03-01 is a day no
+ * text states. Spelled at its precision ("2026", "2026-03", "2026-03-15"), so
+ * the string carries what it knows. A sentence stating no matching date
+ * leaves the movement undated, as a maturity with no stating sentence is
+ * nulled.
+ */
+export function dateHeldToSentence(date: string | null, sentence: string): string | null {
+  const m = String(date ?? "").match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/);
+  if (!m) return null;
+  const claim = { kind: "date", raw: date, index: 0, dateValue: { year: +m[1], month: m[2] ? +m[2] : null, day: m[3] ? +m[3] : null } } as FactToken;
+  const stated = statedDatePrecision(claim, sentence);
+  if (!stated) return null;
+  const level = morePrecise(datePrecisionOf(claim)!, stated) ? stated : datePrecisionOf(claim)!;
+  return level === "year" ? m[1] : level === "month" ? `${m[1]}-${m[2]}` : `${m[1]}-${m[2]}-${m[3]}`;
+}
+
 export function derivePlacedMovements(i: DeriveInputs): PlacedMovement[] {
   const out: PlacedMovement[] = [];
   const url = (u?: string | null) => u ?? "";
@@ -177,11 +197,12 @@ export function derivePlacedMovements(i: DeriveInputs): PlacedMovement[] {
   for (const r of i.noteRetirements) {
     const m = i.parseMillions(String(r.amount ?? ""), String(r.sourceLine ?? ""));
     if (m === null) continue;
-    const placement = placeByDate(r.eventDate ?? null, i.baseDate, i.anchorDate);
+    const date = dateHeldToSentence(r.eventDate ?? null, String(r.sourceLine ?? ""));
+    const placement = placeByDate(date, i.baseDate, i.anchorDate);
     out.push({
       kind: "repayment", instrument: String(r.instrument ?? "(unnamed)"),
       amountMillions: -Math.abs(m), statedAs: String(r.amount ?? ""),
-      date: r.eventDate ?? null, sourceLine: String(r.sourceLine ?? ""), citedUrl: url(r.citedUrl), placement,
+      date, sourceLine: String(r.sourceLine ?? ""), citedUrl: url(r.citedUrl), placement,
       why:
         placement === "delta" ? "repaid between the base and anchor dates, so the roll must carry it"
         : placement === "in-base" ? "repaid before the base date, so the base already reflects it"
@@ -230,7 +251,7 @@ export function derivePlacedMovements(i: DeriveInputs): PlacedMovement[] {
       kind: "balance-change", instrument: name,
       amountMillions: atAnchor - atBase,
       statedAs: `${String(b.amount ?? "")} at ${String(b.asOfDate ?? i.anchorDate)} against ${baseRow.amount ?? "—"} at ${i.baseDate}`,
-      date: String(b.asOfDate ?? i.anchorDate), sourceLine: String(b.sourceLine ?? ""), citedUrl: url(b.citedUrl),
+      date: dateHeldToSentence(String(b.asOfDate ?? i.anchorDate), String(b.sourceLine ?? "")) ?? String(b.asOfDate ?? i.anchorDate), sourceLine: String(b.sourceLine ?? ""), citedUrl: url(b.citedUrl),
       placement: "delta",
       why: "a revolving balance moves with no event to cite, so its movement IS the difference between the two dates' stated balances",
     });
