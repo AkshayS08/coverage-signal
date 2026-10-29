@@ -3,13 +3,6 @@ TENET HEALTHCARE CORP [s27-retaste-1] ($0.0000): REPRODUCES the canonical positi
 
 TENET HEALTHCARE CORP [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
 
-Encompass Health Corp [s27-retaste-1] ($0.0000): REPRODUCES the canonical position
-
-Encompass Health Corp [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
-    tolerated: non-position citations moved: 1 added, 1 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are re
-    tolerated: rows["Advances under revolving credit facility"].maturitySourceLine: expected "the maturity date has been changed to March 9, 2031", got "the maturity date is March 9, 2031, rather than October 7, 202
-    facility figures (not pinned by 9b): canonical senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=approximately $ 746 million | this sample senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=$ 746 million
-
 DAVITA INC. [s27-retaste-1] ($0.0000): DIVERGES from the canonical position
     rows.count: expected 9, got 11
     rows["Revolving line of credit"].amount: expected "$ 65,000 thousand", got "$65 million drawn under $ 1,435,000 thousand"
@@ -33,4 +26,188 @@ DAVITA INC. [s27-retaste-1] ($0.0000): DIVERGES from the canonical position
     facility figures (not pinned by 9b): canonical — | this sample Term Loan A-2: facilitySize=$ 2,000,000 thousand drawn=$ 1,975,000 thousand lettersOfCredit=— available=—
     facility figures (not pinned by 9b): canonical — | this sample Term Loan B-2: facilitySize=— drawn=$ 2,357,910 thousand lettersOfCredit=— available=—
 
-9b: 4 of 5 re-taste samples reproduce their canonical position.
+DAVITA INC. [s27-retaste-2] ($0.0000): DIVERGES from the canonical position
+    rows.count: expected 9, got 11
+    rows["Revolving line of credit"].amount: expected "$ 65,000 thousand", got "$65 million drawn under $ 1,435,000 thousand"
+    rows["Revolving line of credit"].provenance: expected "note", got "note-narrative"
+    rows["Revolving line of credit"]: UNEXPECTED — this run carries it, the signed ladder does not
+    rows["bilateral secured letter of credit facility"]: UNEXPECTED — this run carries it, the signed ladder does not
+    coverage.capturedFace: expected 10847516000, got 11100998000
+    coverage.residualPercent: expected 0, got 2.35
+    tolerated: rows["Revolving line of credit"].instrument: RENAMED to "senior secured revolving credit facility" — same amount, maturity and status, so the same instrument under another of the filing's own names
+    tolerated: rows["Revolving line of credit"].sourceLine: expected "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000", got "As of June 30, 2026, the Company had $ 1,435,000 available and 
+    tolerated: rows["Revolving line of credit"].maturitySourceLine: expected "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000", got "Outstanding Term Loan A-2 and revolving line of credit 
+    tolerated: rows["4.625% Senior Notes"].sourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %" — bo
+    tolerated: rows["4.625% Senior Notes"].maturitySourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625  
+    tolerated: rows["3.75% Senior Notes"].sourceLine: expected "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625", got "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %" — both 
+    tolerated: rows["3.75% Senior Notes"].maturitySourceLine: expected "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625", got "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %"
+    tolerated: rows["6.875% Senior Notes"].sourceLine: expected "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750", got "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %" — bo
+    tolerated: rows["6.875% Senior Notes"].maturitySourceLine: expected "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750", got "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875  
+    tolerated: rows["6.75% Senior Notes"].sourceLine: expected "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750", got "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %" — both 
+    tolerated: rows["6.75% Senior Notes"].maturitySourceLine: expected "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750", got "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %"
+    tolerated: rows["Acquisition obligations and other notes payable"].sourceLine: expected "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463", got "Acquisition oblig
+    facility figures (not pinned by 9b): canonical — | this sample Term Loan A-2: facilitySize=$ 2,000,000 thousand drawn=$ 1,975,000 thousand lettersOfCredit=— available=—
+    facility figures (not pinned by 9b): canonical — | this sample Term Loan B-2: facilitySize=— drawn=$ 2,357,910 thousand lettersOfCredit=— available=—
+
+Cigna Group [s27-retaste-1]: accepted: Rule 66 — ci-20251231.htm, the labelled prior-period base, is in one identity and not the other
+
+Cigna Group [s27-retaste-1] ($0.0000): DIVERGES from the canonical position
+    rolled.baseRows[1].instrument: expected "$900 million, 3.250% Notes due April 2025", got "$ 900 million, 3.250 % Notes due April 2025"
+    rolled.baseRows[1].sourceLine: expected "$900 million, 3.250 % Notes due April 2025 —", got "$ 900 million, 3.250 % Notes due April 2025 —"
+    rolled.baseRows[2].instrument: expected "$1,216 million, 4.125% Notes due November 2025", got "$ 1,216 million, 4.125 % Notes due November 2025"
+    rolled.baseRows[2].sourceLine: expected "$1,216 million, 4.125 % Notes due November 2025 —", got "$ 1,216 million, 4.125 % Notes due November 2025 —"
+    rolled.baseRows[3].instrument: expected "$550 million, 1.250% Notes due March 2026", got "$ 550 million, 1.250 % Notes due March 2026"
+    rolled.baseRows[3].sourceLine: expected "$550 million, 1.250 % Notes due March 2026 549", got "$ 550 million, 1.250 % Notes due March 2026 549"
+    rolled.baseRows[5].instrument: expected "$1,284 million, 4.500% Notes due February 2026", got "$ 1,284 million, 4.500 % Notes due February 2026"
+    rolled.baseRows[5].sourceLine: expected "$1,284 million, 4.500 % Notes due February 2026 $ —", got "$ 1,284 million, 4.500 % Notes due February 2026 $ —"
+    rolled.baseRows[6].instrument: expected "$700 million, 5.685% Notes due March 2026", got "$ 700 million, 5.685 % Notes due March 2026"
+    rolled.baseRows[6].sourceLine: expected "$700 million, 5.685 % Notes due March 2026 —", got "$ 700 million, 5.685 % Notes due March 2026 —"
+    rolled.baseRows[7].instrument: expected "$550 million, 1.250% Notes due March 2026", got "$ 550 million, 1.250 % Notes due March 2026"
+    rolled.baseRows[7].sourceLine: expected "$550 million, 1.250 % Notes due March 2026 —", got "$ 550 million, 1.250 % Notes due March 2026 —"
+    rolled.baseRows[8].instrument: expected "$1,500 million, 3.400% Notes due March 2027", got "$ 1,500 million, 3.400 % Notes due March 2027"
+    rolled.baseRows[8].sourceLine: expected "$1,500 million, 3.400 % Notes due March 2027 1,481", got "$ 1,500 million, 3.400 % Notes due March 2027 1,481"
+    rolled.baseRows[9].instrument: expected "$259 million, 7.875% Debentures due May 2027", got "$ 259 million, 7.875 % Debentures due May 2027"
+    rolled.baseRows[9].sourceLine: expected "$259 million, 7.875 % Debentures due May 2027 260", got "$ 259 million, 7.875 % Debentures due May 2027 260"
+    rolled.baseRows[10].instrument: expected "$600 million, 3.050% Notes due October 2027", got "$ 600 million, 3.050 % Notes due October 2027"
+    rolled.baseRows[10].sourceLine: expected "$600 million, 3.050 % Notes due October 2027 599", got "$ 600 million, 3.050 % Notes due October 2027 599"
+    rolled.baseRows[11].instrument: expected "$3,800 million, 4.375% Notes due October 2028", got "$ 3,800 million, 4.375 % Notes due October 2028"
+    rolled.baseRows[11].sourceLine: expected "$3,800 million, 4.375 % Notes due October 2028 3,792", got "$ 3,800 million, 4.375 % Notes due October 2028 3,792"
+    rolled.baseRows[12].instrument: expected "$1,000 million, 5.000% Notes due May 2029", got "$ 1,000 million, 5.000 % Notes due May 2029"
+    rolled.baseRows[12].sourceLine: expected "$1,000 million, 5.000 % Notes due May 2029 996", got "$ 1,000 million, 5.000 % Notes due May 2029 996"
+    rolled.baseRows[13].instrument: expected "$1,400 million, 2.400% Notes due March 2030", got "$ 1,400 million, 2.400 % Notes due March 2030"
+    rolled.baseRows[13].sourceLine: expected "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406", got "$ 1,400 million, 2.400 % Notes due March 2030 1,406"
+    rolled.baseRows[14].instrument: expected "$1,000 million, 4.500% Notes due September 2030", got "$ 1,000 million, 4.500 % Notes due September 2030"
+    rolled.baseRows[14].sourceLine: expected "$1,000 million, 4.500 % Notes due September 2030 993", got "$ 1,000 million, 4.500 % Notes due September 2030 993"
+    rolled.baseRows[15].instrument: expected "$1,500 million, 2.375% Notes due March 2031", got "$ 1,500 million, 2.375 % Notes due March 2031"
+    rolled.baseRows[15].sourceLine: expected "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420", got "$ 1,500 million, 2.375 % Notes due March 2031 1,420"
+    rolled.baseRows[16].instrument: expected "$750 million, 5.125% Notes due May 2031", got "$ 750 million, 5.125 % Notes due May 2031"
+    rolled.baseRows[16].sourceLine: expected "$750 million, 5.125 % Notes due May 2031 (1) 750", got "$ 750 million, 5.125 % Notes due May 2031 750"
+    rolled.baseRows[17].instrument: expected "$1,250 million, 4.875% Notes due September 2032", got "$ 1,250 million, 4.875 % Notes due September 2032"
+    rolled.baseRows[17].sourceLine: expected "$1,250 million, 4.875 % Notes due September 2032 1,243", got "$ 1,250 million, 4.875 % Notes due September 2032 1,243"
+    rolled.baseRows[18].instrument: expected "$45 million, 8.080% Step Down Notes due January 2033", got "$ 45 million, 8.080 % Step Down Notes due January 2033"
+    rolled.baseRows[18].sourceLine: expected "$45 million, 8.080 % Step Down Notes due January 2033 45", got "$ 45 million, 8.080 % Step Down Notes due January 2033 45"
+    rolled.baseRows[19].instrument: expected "$800 million, 5.400% Notes due March 2033", got "$ 800 million, 5.400 % Notes due March 2033"
+    rolled.baseRows[19].sourceLine: expected "$800 million, 5.400 % Notes due March 2033 (1) 796", got "$ 800 million, 5.400 % Notes due March 2033 796"
+    rolled.baseRows[20].instrument: expected "$1,250 million, 5.250% Notes due February 2034", got "$ 1,250 million, 5.250 % Notes due February 2034"
+    rolled.baseRows[20].sourceLine: expected "$1,250 million, 5.250 % Notes due February 2034 (1) 1,250", got "$ 1,250 million, 5.250 % Notes due February 2034 1,250"
+    rolled.baseRows[21].instrument: expected "$1,500 million, 5.250% Notes due January 2036", got "$ 1,500 million, 5.250 % Notes due January 2036"
+    rolled.baseRows[21].sourceLine: expected "$1,500 million, 5.250 % Notes due January 2036 1,488", got "$ 1,500 million, 5.250 % Notes due January 2036 1,488"
+    rolled.baseRows[22].instrument: expected "$190 million, 6.150% Notes due November 2036", got "$ 190 million, 6.150 % Notes due November 2036"
+    rolled.baseRows[22].sourceLine: expected "$190 million, 6.150 % Notes due November 2036 190", got "$ 190 million, 6.150 % Notes due November 2036 190"
+    rolled.baseRows[23].instrument: expected "$2,200 million, 4.800% Notes due August 2038", got "$ 2,200 million, 4.800 % Notes due August 2038"
+    rolled.baseRows[23].sourceLine: expected "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194", got "$ 2,200 million, 4.800 % Notes due August 2038 2,194"
+    rolled.baseRows[24].instrument: expected "$750 million, 3.200% Notes due March 2040", got "$ 750 million, 3.200 % Notes due March 2040"
+    rolled.baseRows[24].sourceLine: expected "$750 million, 3.200 % Notes due March 2040 748", got "$ 750 million, 3.200 % Notes due March 2040 748"
+    rolled.baseRows[25].instrument: expected "$121 million, 5.875% Notes due March 2041", got "$ 121 million, 5.875 % Notes due March 2041"
+    rolled.baseRows[25].sourceLine: expected "$121 million, 5.875 % Notes due March 2041 119", got "$ 121 million, 5.875 % Notes due March 2041 119"
+    rolled.baseRows[26].instrument: expected "$448 million, 6.125% Notes due November 2041", got "$ 448 million, 6.125 % Notes due November 2041"
+    rolled.baseRows[26].sourceLine: expected "$448 million, 6.125 % Notes due November 2041 484", got "$ 448 million, 6.125 % Notes due November 2041 484"
+    rolled.baseRows[27].instrument: expected "$317 million, 5.375% Notes due February 2042", got "$ 317 million, 5.375 % Notes due February 2042"
+    rolled.baseRows[27].sourceLine: expected "$317 million, 5.375 % Notes due February 2042 315", got "$ 317 million, 5.375 % Notes due February 2042 315"
+    rolled.baseRows[28].instrument: expected "$1,500 million, 4.800% Notes due July 2046", got "$ 1,500 million, 4.800 % Notes due July 2046"
+    rolled.baseRows[28].sourceLine: expected "$1,500 million, 4.800 % Notes due July 2046 1,469", got "$ 1,500 million, 4.800 % Notes due July 2046 1,469"
+    rolled.baseRows[29].instrument: expected "$1,000 million, 3.875% Notes due October 2047", got "$ 1,000 million, 3.875 % Notes due October 2047"
+    rolled.baseRows[29].sourceLine: expected "$1,000 million, 3.875 % Notes due October 2047 990", got "$ 1,000 million, 3.875 % Notes due October 2047 990"
+    rolled.baseRows[30].instrument: expected "$3,000 million, 4.900% Notes due December 2048", got "$ 3,000 million, 4.900 % Notes due December 2048"
+    rolled.baseRows[30].sourceLine: expected "$3,000 million, 4.900 % Notes due December 2048 2,972", got "$ 3,000 million, 4.900 % Notes due December 2048 2,972"
+    rolled.baseRows[31].instrument: expected "$1,184 million, 3.400% Notes due March 2050", got "$ 1,184 million, 3.400 % Notes due March 2050"
+    rolled.baseRows[31].sourceLine: expected "$1,184 million, 3.400 % Notes due March 2050 1,172", got "$ 1,184 million, 3.400 % Notes due March 2050 1,172"
+    rolled.baseRows[32].instrument: expected "$1,429 million, 3.400% Notes due March 2051", got "$ 1,429 million, 3.400 % Notes due March 2051"
+    rolled.baseRows[32].sourceLine: expected "$1,429 million, 3.400 % Notes due March 2051 1,410", got "$ 1,429 million, 3.400 % Notes due March 2051 1,410"
+    rolled.baseRows[33].instrument: expected "$1,500 million, 5.600% Notes due February 2054", got "$ 1,500 million, 5.600 % Notes due February 2054"
+    rolled.baseRows[33].sourceLine: expected "$1,500 million, 5.600 % Notes due February 2054 1,486", got "$ 1,500 million, 5.600 % Notes due February 2054 1,486"
+    rolled.baseRows[34].instrument: expected "$750 million, 6.000% Notes due January 2056", got "$ 750 million, 6.000 % Notes due January 2056"
+    rolled.baseRows[34].sourceLine: expected "$750 million, 6.000 % Notes due January 2056 735", got "$ 750 million, 6.000 % Notes due January 2056 735"
+    rolled.deltas[0].instrument: expected "notes", got "1.250 % senior notes"
+    rolled.deltas[0].date: expected "2026-03", got "2026-03-01"
+    rolled.deltas[1].instrument: expected "Commercial Paper Program", got "Commercial paper program"
+    tolerated: rows["Revolving Credit Agreement"].instrument: RENAMED to "$ 6.5 billion, five-year revolving credit and letter of credit agreement" — same amount, maturity and status, so the same instrument under an
+    tolerated: rows["Commercial Paper Program"].instrument: RENAMED to "Commercial paper program" — same amount, maturity and status, so the same instrument under another of the filing's own names
+    facility figures (not pinned by 9b): canonical Revolving Credit Agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=— | this sample $ 6.5 billion, five-year revolving credit and letter of credit agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=—
+    facility figures (not pinned by 9b): canonical Commercial Paper Program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=— | this sample Commercial paper program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=—
+
+Cigna Group [s27-retaste-2]: accepted: Rule 66 — ci-20251231.htm, the labelled prior-period base, is in one identity and not the other
+
+Cigna Group [s27-retaste-2] ($0.0000): DIVERGES from the canonical position
+    rolled.baseRows[1].instrument: expected "$900 million, 3.250% Notes due April 2025", got "$ 900 million, 3.250 % Notes due April 2025"
+    rolled.baseRows[1].sourceLine: expected "$900 million, 3.250 % Notes due April 2025 —", got "$ 900 million, 3.250 % Notes due April 2025 —"
+    rolled.baseRows[2].instrument: expected "$1,216 million, 4.125% Notes due November 2025", got "$ 1,216 million, 4.125 % Notes due November 2025"
+    rolled.baseRows[2].sourceLine: expected "$1,216 million, 4.125 % Notes due November 2025 —", got "$ 1,216 million, 4.125 % Notes due November 2025 —"
+    rolled.baseRows[3].instrument: expected "$550 million, 1.250% Notes due March 2026", got "$ 550 million, 1.250 % Notes due March 2026"
+    rolled.baseRows[3].sourceLine: expected "$550 million, 1.250 % Notes due March 2026 549", got "$ 550 million, 1.250 % Notes due March 2026 549"
+    rolled.baseRows[5].instrument: expected "$1,284 million, 4.500% Notes due February 2026", got "$ 1,284 million, 4.500 % Notes due February 2026"
+    rolled.baseRows[5].sourceLine: expected "$1,284 million, 4.500 % Notes due February 2026 $ —", got "$ 1,284 million, 4.500 % Notes due February 2026 $ —"
+    rolled.baseRows[6].instrument: expected "$700 million, 5.685% Notes due March 2026", got "$ 700 million, 5.685 % Notes due March 2026"
+    rolled.baseRows[6].sourceLine: expected "$700 million, 5.685 % Notes due March 2026 —", got "$ 700 million, 5.685 % Notes due March 2026 —"
+    rolled.baseRows[7].instrument: expected "$550 million, 1.250% Notes due March 2026", got "$ 550 million, 1.250 % Notes due March 2026"
+    rolled.baseRows[7].sourceLine: expected "$550 million, 1.250 % Notes due March 2026 —", got "$ 550 million, 1.250 % Notes due March 2026 —"
+    rolled.baseRows[8].instrument: expected "$1,500 million, 3.400% Notes due March 2027", got "$ 1,500 million, 3.400 % Notes due March 2027"
+    rolled.baseRows[8].sourceLine: expected "$1,500 million, 3.400 % Notes due March 2027 1,481", got "$ 1,500 million, 3.400 % Notes due March 2027 1,481"
+    rolled.baseRows[9].instrument: expected "$259 million, 7.875% Debentures due May 2027", got "$ 259 million, 7.875 % Debentures due May 2027"
+    rolled.baseRows[9].sourceLine: expected "$259 million, 7.875 % Debentures due May 2027 260", got "$ 259 million, 7.875 % Debentures due May 2027 260"
+    rolled.baseRows[10].instrument: expected "$600 million, 3.050% Notes due October 2027", got "$ 600 million, 3.050 % Notes due October 2027"
+    rolled.baseRows[10].sourceLine: expected "$600 million, 3.050 % Notes due October 2027 599", got "$ 600 million, 3.050 % Notes due October 2027 599"
+    rolled.baseRows[11].instrument: expected "$3,800 million, 4.375% Notes due October 2028", got "$ 3,800 million, 4.375 % Notes due October 2028"
+    rolled.baseRows[11].sourceLine: expected "$3,800 million, 4.375 % Notes due October 2028 3,792", got "$ 3,800 million, 4.375 % Notes due October 2028 3,792"
+    rolled.baseRows[12].instrument: expected "$1,000 million, 5.000% Notes due May 2029", got "$ 1,000 million, 5.000 % Notes due May 2029"
+    rolled.baseRows[12].sourceLine: expected "$1,000 million, 5.000 % Notes due May 2029 996", got "$ 1,000 million, 5.000 % Notes due May 2029 996"
+    rolled.baseRows[13].instrument: expected "$1,400 million, 2.400% Notes due March 2030", got "$ 1,400 million, 2.400 % Notes due March 2030"
+    rolled.baseRows[13].sourceLine: expected "$1,400 million, 2.400 % Notes due March 2030 (1) 1,406", got "$ 1,400 million, 2.400 % Notes due March 2030 1,406"
+    rolled.baseRows[14].instrument: expected "$1,000 million, 4.500% Notes due September 2030", got "$ 1,000 million, 4.500 % Notes due September 2030"
+    rolled.baseRows[14].sourceLine: expected "$1,000 million, 4.500 % Notes due September 2030 993", got "$ 1,000 million, 4.500 % Notes due September 2030 993"
+    rolled.baseRows[15].instrument: expected "$1,500 million, 2.375% Notes due March 2031", got "$ 1,500 million, 2.375 % Notes due March 2031"
+    rolled.baseRows[15].sourceLine: expected "$1,500 million, 2.375 % Notes due March 2031 (1) 1,420", got "$ 1,500 million, 2.375 % Notes due March 2031 1,420"
+    rolled.baseRows[16].instrument: expected "$750 million, 5.125% Notes due May 2031", got "$ 750 million, 5.125 % Notes due May 2031"
+    rolled.baseRows[16].sourceLine: expected "$750 million, 5.125 % Notes due May 2031 (1) 750", got "$ 750 million, 5.125 % Notes due May 2031 750"
+    rolled.baseRows[17].instrument: expected "$1,250 million, 4.875% Notes due September 2032", got "$ 1,250 million, 4.875 % Notes due September 2032"
+    rolled.baseRows[17].sourceLine: expected "$1,250 million, 4.875 % Notes due September 2032 1,243", got "$ 1,250 million, 4.875 % Notes due September 2032 1,243"
+    rolled.baseRows[18].instrument: expected "$45 million, 8.080% Step Down Notes due January 2033", got "$ 45 million, 8.080 % Step Down Notes due January 2033"
+    rolled.baseRows[18].sourceLine: expected "$45 million, 8.080 % Step Down Notes due January 2033 45", got "$ 45 million, 8.080 % Step Down Notes due January 2033 45"
+    rolled.baseRows[19].instrument: expected "$800 million, 5.400% Notes due March 2033", got "$ 800 million, 5.400 % Notes due March 2033"
+    rolled.baseRows[19].sourceLine: expected "$800 million, 5.400 % Notes due March 2033 (1) 796", got "$ 800 million, 5.400 % Notes due March 2033 796"
+    rolled.baseRows[20].instrument: expected "$1,250 million, 5.250% Notes due February 2034", got "$ 1,250 million, 5.250 % Notes due February 2034"
+    rolled.baseRows[20].sourceLine: expected "$1,250 million, 5.250 % Notes due February 2034 (1) 1,250", got "$ 1,250 million, 5.250 % Notes due February 2034 1,250"
+    rolled.baseRows[21].instrument: expected "$1,500 million, 5.250% Notes due January 2036", got "$ 1,500 million, 5.250 % Notes due January 2036"
+    rolled.baseRows[21].sourceLine: expected "$1,500 million, 5.250 % Notes due January 2036 1,488", got "$ 1,500 million, 5.250 % Notes due January 2036 1,488"
+    rolled.baseRows[22].instrument: expected "$190 million, 6.150% Notes due November 2036", got "$ 190 million, 6.150 % Notes due November 2036"
+    rolled.baseRows[22].sourceLine: expected "$190 million, 6.150 % Notes due November 2036 190", got "$ 190 million, 6.150 % Notes due November 2036 190"
+    rolled.baseRows[23].instrument: expected "$2,200 million, 4.800% Notes due August 2038", got "$ 2,200 million, 4.800 % Notes due August 2038"
+    rolled.baseRows[23].sourceLine: expected "$2,200 million, 4.800 % Notes due August 2038 (1) 2,194", got "$ 2,200 million, 4.800 % Notes due August 2038 2,194"
+    rolled.baseRows[24].instrument: expected "$750 million, 3.200% Notes due March 2040", got "$ 750 million, 3.200 % Notes due March 2040"
+    rolled.baseRows[24].sourceLine: expected "$750 million, 3.200 % Notes due March 2040 748", got "$ 750 million, 3.200 % Notes due March 2040 748"
+    rolled.baseRows[25].instrument: expected "$121 million, 5.875% Notes due March 2041", got "$ 121 million, 5.875 % Notes due March 2041"
+    rolled.baseRows[25].sourceLine: expected "$121 million, 5.875 % Notes due March 2041 119", got "$ 121 million, 5.875 % Notes due March 2041 119"
+    rolled.baseRows[26].instrument: expected "$448 million, 6.125% Notes due November 2041", got "$ 448 million, 6.125 % Notes due November 2041"
+    rolled.baseRows[26].sourceLine: expected "$448 million, 6.125 % Notes due November 2041 484", got "$ 448 million, 6.125 % Notes due November 2041 484"
+    rolled.baseRows[27].instrument: expected "$317 million, 5.375% Notes due February 2042", got "$ 317 million, 5.375 % Notes due February 2042"
+    rolled.baseRows[27].sourceLine: expected "$317 million, 5.375 % Notes due February 2042 315", got "$ 317 million, 5.375 % Notes due February 2042 315"
+    rolled.baseRows[28].instrument: expected "$1,500 million, 4.800% Notes due July 2046", got "$ 1,500 million, 4.800 % Notes due July 2046"
+    rolled.baseRows[28].sourceLine: expected "$1,500 million, 4.800 % Notes due July 2046 1,469", got "$ 1,500 million, 4.800 % Notes due July 2046 1,469"
+    rolled.baseRows[29].instrument: expected "$1,000 million, 3.875% Notes due October 2047", got "$ 1,000 million, 3.875 % Notes due October 2047"
+    rolled.baseRows[29].sourceLine: expected "$1,000 million, 3.875 % Notes due October 2047 990", got "$ 1,000 million, 3.875 % Notes due October 2047 990"
+    rolled.baseRows[30].instrument: expected "$3,000 million, 4.900% Notes due December 2048", got "$ 3,000 million, 4.900 % Notes due December 2048"
+    rolled.baseRows[30].sourceLine: expected "$3,000 million, 4.900 % Notes due December 2048 2,972", got "$ 3,000 million, 4.900 % Notes due December 2048 2,972"
+    rolled.baseRows[31].instrument: expected "$1,184 million, 3.400% Notes due March 2050", got "$ 1,184 million, 3.400 % Notes due March 2050"
+    rolled.baseRows[31].sourceLine: expected "$1,184 million, 3.400 % Notes due March 2050 1,172", got "$ 1,184 million, 3.400 % Notes due March 2050 1,172"
+    rolled.baseRows[32].instrument: expected "$1,429 million, 3.400% Notes due March 2051", got "$ 1,429 million, 3.400 % Notes due March 2051"
+    rolled.baseRows[32].sourceLine: expected "$1,429 million, 3.400 % Notes due March 2051 1,410", got "$ 1,429 million, 3.400 % Notes due March 2051 1,410"
+    rolled.baseRows[33].instrument: expected "$1,500 million, 5.600% Notes due February 2054", got "$ 1,500 million, 5.600 % Notes due February 2054"
+    rolled.baseRows[33].sourceLine: expected "$1,500 million, 5.600 % Notes due February 2054 1,486", got "$ 1,500 million, 5.600 % Notes due February 2054 1,486"
+    rolled.baseRows[34].instrument: expected "$750 million, 6.000% Notes due January 2056", got "$ 750 million, 6.000 % Notes due January 2056"
+    rolled.baseRows[34].sourceLine: expected "$750 million, 6.000 % Notes due January 2056 735", got "$ 750 million, 6.000 % Notes due January 2056 735"
+    rolled.deltas[0].instrument: expected "notes", got "1.250 % senior notes"
+    rolled.deltas[0].date: expected "2026-03", got "2026-03-01"
+    rolled.deltas[1].instrument: expected "Commercial Paper Program", got "Commercial paper program"
+    tolerated: rows["Revolving Credit Agreement"].instrument: RENAMED to "$ 6.5 billion, five-year revolving credit and letter of credit agreement" — same amount, maturity and status, so the same instrument under an
+    tolerated: rows["Commercial Paper Program"].instrument: RENAMED to "Commercial paper program" — same amount, maturity and status, so the same instrument under another of the filing's own names
+    facility figures (not pinned by 9b): canonical Revolving Credit Agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=— | this sample $ 6.5 billion, five-year revolving credit and letter of credit agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=—
+    facility figures (not pinned by 9b): canonical Commercial Paper Program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=— | this sample Commercial paper program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=—
+
+Encompass Health Corp [s27-retaste-1] ($0.0000): REPRODUCES the canonical position
+
+Encompass Health Corp [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
+    tolerated: non-position citations moved: 1 added, 1 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are re
+    tolerated: rows["Advances under revolving credit facility"].maturitySourceLine: expected "the maturity date has been changed to March 9, 2031", got "the maturity date is March 9, 2031, rather than October 7, 202
+    facility figures (not pinned by 9b): canonical senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=approximately $ 746 million | this sample senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=$ 746 million
+
+9b: 4 of 8 re-taste samples reproduce their canonical position.

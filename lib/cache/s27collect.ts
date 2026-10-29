@@ -10,7 +10,7 @@
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { runAgentLoop } from "../agent";
 import { checkFree, spendTracker } from "./freeRun";
 
@@ -18,10 +18,16 @@ import { checkFree, spendTracker } from "./freeRun";
   if (process.env.ANTHROPIC_API_KEY !== "") { console.error('REFUSING: run with ANTHROPIC_API_KEY=""'); process.exit(1); }
   const pricing = JSON.parse(readFileSync("sessions/27/retaste_pricing.json", "utf-8")) as { rows: { company: string }[] };
   const spend = spendTracker();
+  const prior = existsSync("baselines/s27-retaste.json") ? JSON.parse(readFileSync("baselines/s27-retaste.json", "utf-8")).results : [];
   const results = [];
   const missing: string[] = [];
   for (const { company } of pricing.rows) for (const bust of ["s27-retaste-1", "s27-retaste-2"]) {
-    if (!(await checkFree(company, bust)).cached) { missing.push(`${company} [${bust}]`); continue; }
+    if (!(await checkFree(company, bust)).cached) {
+      // A sample collected earlier whose name's corpus has since moved (its key with it) is kept from the earlier collection.
+      const earlier = prior.find((x: any) => x.company === company && x.bust === bust);
+      if (earlier) { results.push(earlier); console.log(`${company} [${bust}]: kept from the earlier collection (its corpus has since moved)`); continue; }
+      missing.push(`${company} [${bust}]`); continue;
+    }
     process.env.CACHE_BUST = bust;
     const quiet = console.log; console.log = () => {};
     const result = await runAgentLoop(company);

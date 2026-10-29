@@ -26,7 +26,19 @@ let reproduced = 0;
 for (const r of re) {
   const c = canon.find((x) => x.result.cik === r.result.cik);
   if (!c) { say(`${r.company} [${r.bust}]: no canonical answer to compare`); continue; }
-  const v = compareToGolden(deriveGoldenState(c.result, AS_OF), deriveGoldenState(r.result, AS_OF), { sourceLineCheck: sourceLineCheckFor(r.result, docsOf(r.result.cik), AS_OF) });
+  const expected: any = deriveGoldenState(c.result, AS_OF), actual: any = deriveGoldenState(r.result, AS_OF);
+  // Rule 66 (accepted, Oct 22): the labelled prior-period base may be in one sample's position identity and not the other's.
+  const base = r.result.results.find((t: any) => t.triggerId === "debt-maturity")?.priorPeriodBase?.filingUrl;
+  const diffSet = (a: string[], b: string[]) => a.filter((u) => !b.includes(u));
+  const extra = [...diffSet(expected.filingSet, actual.filingSet), ...diffSet(actual.filingSet, expected.filingSet)];
+  if (base && extra.length === 1 && extra[0] === base) {
+    actual.filingSet = expected.filingSet;
+    actual.otherCitations = (actual.otherCitations ?? []).filter((u: string) => u !== base);
+    expected.otherCitations = (expected.otherCitations ?? []).filter((u: string) => u !== base);
+    say(`
+${r.company} [${r.bust}]: accepted: Rule 66 — ${base.split("/").pop()}, the labelled prior-period base, is in one identity and not the other`);
+  }
+  const v = compareToGolden(expected, actual, { sourceLineCheck: sourceLineCheckFor(r.result, docsOf(r.result.cik), AS_OF) });
   const ok = v.kind === "matches";
   if (ok) reproduced++;
   say(`\n${r.company} [${r.bust}] ($${r.usd.toFixed(4)}): ${ok ? "REPRODUCES the canonical position" : v.kind === "not-applicable" ? `NOT APPLICABLE — ${v.reason}` : "DIVERGES from the canonical position"}`);
