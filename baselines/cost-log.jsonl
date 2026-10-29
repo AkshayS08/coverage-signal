@@ -3552,3 +3552,18 @@
 {"at":"2026-10-29T04:48:38.515Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-29T04:48:39.471Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-29T04:48:40.674Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:00:52.322Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0.205487,"totalCalls":2,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":36779,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.110982},{"model":"claude-haiku-4-5","calls":1,"inputTokens":60350,"outputTokens":6831,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.094505}],"unpricedModels":[]}
+{"at":"2026-10-29T15:01:56.360Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0.205487,"totalCalls":2,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":36779,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.110982},{"model":"claude-haiku-4-5","calls":1,"inputTokens":60350,"outputTokens":6831,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.094505}],"unpricedModels":[]}
+{"at":"2026-10-29T15:03:00.013Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0.205487,"totalCalls":2,"byModel":[{"model":"claude-sonnet-5","calls":1,"inputTokens":36779,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.110982},{"model":"claude-haiku-4-5","calls":1,"inputTokens":60350,"outputTokens":6831,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.094505}],"unpricedModels":[]}
+{"at":"2026-10-29T15:03:30.362Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:03:41.020Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:04:24.387Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:04:51.167Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:05:53.290Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:07:16.548Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:25:52.936Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:34:05.295Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:43:10.169Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T15:43:37.438Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T16:04:51.212Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-29T16:16:08.787Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}

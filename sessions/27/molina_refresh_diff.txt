@@ -1,0 +1,25 @@
+
+CURRENT CARD (committed snapshot, v31): anchor 10-Q 2026-07-23, position as of 2026-06-30
+  4.375 % Notes due June 15, 2028 | $ 800 million | 2028-06-15 (day) | live | class senior-unsecured
+  3.875 % Notes due November 15, 2030 | $ 650 million | 2030-11-15 (day) | live | class senior-unsecured
+  6.500 % Notes due February 15, 2031 | $ 850 million | 2031-02-15 (day) | live | class senior-unsecured
+  3.875 % Notes due May 15, 2032 | $ 750 million | 2032-05-15 (day) | live | class senior-unsecured
+  6.250 % Notes due January 15, 2033 | $ 750 million | 2033-01-15 (day) | live | class senior-unsecured
+  [capacity] revolving credit facility | $ 1.25 billion | 2030-11-20 (day) | live | class revolver
+  tie: captured face 3800000000; stated total 3769000000 (xbrl); residual 0% — passes
+  printed subtotals: Total $ 3,769 million; headings: none
+
+REFRESH (canonical v33, $0.2055): anchor 10-Q 2026-10-22, position as of 2026-09-30
+  4.375 % Notes due June 15, 2028 | $ 800 million | 2028-06-15 (day) | live | class senior-unsecured
+  3.875 % Notes due November 15, 2030 | $ 650 million | 2030-11-15 (day) | live | class senior-unsecured
+  6.500 % Notes due February 15, 2031 | $ 850 million | 2031-02-15 (day) | live | class senior-unsecured
+  3.875 % Notes due May 15, 2032 | $ 750 million | 2032-05-15 (day) | live | class senior-unsecured
+  6.250 % Notes due January 15, 2033 | $ 750 million | 2033-01-15 (day) | live | class senior-unsecured
+  [capacity] revolving credit facility | $ 1.25 billion | 2030-11-20 (day) | live | class revolver
+  tie: captured face 3800000000; stated total 3771000000 (xbrl); residual 0% — passes
+  printed subtotals: Total $ 3,771 million; headings: Non-current long-term debt
+
+9b across the refresh samples (canonical + 2 re-tastes, one read set):
+  s27-refresh-retaste-1 ($0.2055): reproduces
+  s27-refresh-retaste-2 ($0.2055): reproduces
+  9b: 3/3
