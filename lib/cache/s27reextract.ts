@@ -62,11 +62,20 @@ const BUSTS = ["s27-retaste-1", "s27-retaste-2"];
   // $3.00 running cap. A name not cached under its current read set is not re-tasted: that would be a new corpus.
   const pricing = phase === "retaste" ? (JSON.parse(readFileSync("sessions/27/retaste_pricing.json", "utf-8")) as { rows: { company: string; perRun: number }[] }) : null;
   const RETASTE_CAP = 3.0;
-  const runs = phase === "canonical"
+  let runs = phase === "canonical"
     ? DECLARED.map((d) => ({ ...d, bust: null as string | null, ceiling: d.usd + d.dig }))
     : pricing!.rows.flatMap((p) => BUSTS.map((b) => ({ company: p.company, usd: p.perRun, dig: 0, retasteExtra: 0, bust: b, ceiling: p.perRun })));
   for (const d of DECLARED.filter((x) => phase === "retaste" && !pricing!.rows.some((p) => p.company === x.company))) console.log(`  ${d.company}: not re-tasted (not cached under its current read set; its corpus moved)`);
   if (phase === "retaste") setSpendLimits({ totalUsd: RETASTE_CAP });
+  // Checked at RUN time, not only when priced: a name whose canonical answer is not cached under its current read set
+  // has a moved corpus (a filing landed since), so its "re-taste" would be a new extraction, not a 9b sample (Oct 28:
+  // Encompass's and CHS's Q3 earnings 8-Ks, Item 7.01). Its runs are dropped and reported, never billed.
+  if (phase === "retaste") {
+    const moved = new Set<string>();
+    for (const c of [...new Set(runs.map((r) => r.company))]) if (!(await checkFree(c)).cached) moved.add(c);
+    for (const c of moved) console.log(`  ${c}: corpus moved since it was priced (its canonical answer is not cached under its current read set) — not re-tasted`);
+    for (let k = runs.length - 1; k >= 0; k--) if (moved.has(runs[k].company)) runs.splice(k, 1);
+  }
   const declaredTotal = runs.reduce((a, r) => a + r.ceiling, 0);
 
   // RESUME (S27_RESUME_FROM=<ISO time the phase started>): a run already done is replayed from its cache at $0 for its
