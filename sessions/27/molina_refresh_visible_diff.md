@@ -1,0 +1,84 @@
+# Molina: the refreshed card against the committed card
+
+Review render, not committed. Brief 2026-10-30 (week 2026-10-16 to 2026-10-30; previous brief 2026-10-15). Week filings: SCHEDULE 13G/A 2026-10-27; 10-Q 2026-10-22; 8-K 2026-10-21 [2.02,9.01].
+Built without verified card facts (a separate billed extraction for the Q3 10-Q).
+
+- **header (label)**
+  - was: Weekly coverage brief · Oct 5 to Oct 15, 2026
+  - now: Weekly coverage brief · Oct 16 to Oct 30, 2026
+- **header**
+  - was: Position as of June 30, 2026
+  - was: 10-Q filed July 23, 2026
+  - was: No new debt filings this week
+  - now: Position as of September 30, 2026
+  - now: 10-Q filed Oct 22, 2026
+  - now: New this week: this 10-Q, filed Oct 22, 2026, is the position · 2 other filings, none affecting debt
+- **call (label)**
+  - was: The call · next 18 months, to Apr 15, 2028
+  - now: The call · next 18 months, to Apr 30, 2028
+- **call (away)**
+  - was: 20 months away · 2 months past the window
+  - now: 19 months away · 1 month past the window
+- **moves**
+  - was: Feb 4, 2026 · Amended
+  - was: Credit agreement amended
+  - was: Terms of the amendment are not covered in this version.
+- **liquidity**
+  - was: $6,235MM
+  - was: $4,985MM
+  - was: Not counted: up to $800MM of uncommitted incremental term loans to finance certain acquisitions.
+  - now: $5,729MM
+  - now: $4,479MM
+- **facilities**
+  - was: revolver · $1,250MM size · $0 drawn · matures November 20, 2030
+  - was: Swingline sub-facility $15MM, capacity only. Letter-of-credit sub-facility $100MM, capacity only. Letters of credit outstanding not stated.
+  - now: revolver · $1,250MM size · matures November 20, 2030
+  - now: Letters of credit outstanding not stated.
+- **footnote**
+  - was: Face total $3,800MM. Balance sheet $3,769MM, after $31MM of deferred debt issuance costs. Every figure links to the sentence it came from.
+  - now: Face total $3,800MM. Balance sheet $3,771MM, after $29MM of deferred debt issuance costs. Every figure links to the sentence it came from.
+- **cited sentences behind source links**: 81 out, 74 in
+  - was cited: 10-Q 2026-07-23 | For the quarterly period ended June 30, 2026
+  - was cited: 10-Q 2026-07-23 | 4.375 % Notes due June 15, 2028 $ 800
+  - was cited: 10-Q 2026-07-23 | Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of paymen
+  - was cited: 10-Q 2026-07-23 | We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) w
+  - was cited: 10-Q 2026-07-23 | 3.875 % Notes due November 15, 2030 650
+  - was cited: 10-Q 2026-07-23 | 6.500 % Notes due February 15, 2031 850
+  - was cited: 10-Q 2026-07-23 | 3.875 % Notes due May 15, 2032 750
+  - was cited: 10-Q 2026-07-23 | 6.250 % Notes due January 15, 2033 750
+  - was cited: 10-Q 2026-07-23 | Cash and cash equivalents $ 4,985 $ 4,248
+  - was cited: 10-Q 2026-07-23 | As of June 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.
+  - was cited: 10-Q 2026-07-23 | revolving credit facility ("Credit Facility") of $ 1.25 billion
+  - was cited: 10-Q 2026-07-23 | all amounts outstanding will be due and payable on November 20, 2030
+  - was cited: 10-Q 2026-07-23 | We are party to a Credit Agreement (the "Credit Agreement") which includes a revolving credit facility ("Credit Facility") of $ 1.25 billion
+  - was cited: 10-Q 2026-07-23 | As of June 30, 2026, no amount was outstanding under the Credit Agreement.
+  - was cited: 10-Q 2026-07-23 | Long-term debt 3,769
+  - was cited: 10-Q 2026-07-23 | Deferred debt issuance costs ( 31 )
+  - now cited: 10-Q 2026-10-22 | For the quarterly period ended September 30, 2026
+  - now cited: 10-Q 2026-10-22 | 4.375 % Notes due June 15, 2028 $ 800
+  - now cited: 10-Q 2026-10-22 | Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of paymen
+  - now cited: 10-Q 2026-10-22 | 3.875 % Notes due November 15, 2030 $ 650
+  - now cited: 10-Q 2026-10-22 | 6.500 % Notes due February 15, 2031 $ 850
+  - now cited: 10-Q 2026-10-22 | 3.875 % Notes due May 15, 2032 $ 750
+  - now cited: 10-Q 2026-10-22 | 6.250 % Notes due January 15, 2033 $ 750
+  - now cited: 10-Q 2026-10-22 | Cash and cash equivalents $ 4,479 $ 4,248
+  - now cited: 10-Q 2026-10-22 | As of September 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.
+  - now cited: 10-Q 2026-10-22 | We are party to a Credit Agreement (the "Credit Agreement") which includes a revolving credit facility ("Credit Facility") of $ 1.25  billio
+  - now cited: 10-Q 2026-10-22 | The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.
+  - now cited: 10-Q 2026-10-22 | Long-term debt 3,771
+  - now cited: 10-Q 2026-10-22 | Deferred debt issuance costs ( 29 )
+- **parts of computed figures (shown when a figure is opened)**: 29 shown differently
+  - was: $ 800 million
+  - was: $ 650 million
+  - was: $ 850 million
+  - was: $ 750 million
+  - was: $ 4,985 million
+  - was: $ 1.25 billion
+  - was: $ 3,769 million
+  - now: $800MM
+  - now: $650MM
+  - now: $850MM
+  - now: $750MM
+  - now: $4,479MM
+  - now: $1,250MM
+  - now: $3,771MM

@@ -18,20 +18,26 @@ const ORDER = JSON.parse(readFileSync("lib/cards/generated/index.json", "utf-8")
 const textOf = (line: any[]) => line.map((s) => s?.t ?? s?.printed ?? "").join("").replace(/\s+/g, " ").trim();
 const isLine = (o: any) => Array.isArray(o) && o.length > 0 && o.every((s) => s && typeof s === "object" && ("k" in s || "t" in s));
 
+/** String fields the view uses as data, never as text. */
+const NOT_RENDERED = new Set(["k", "kind", "url", "doc", "date", "iso", "granularity", "color", "pattern", "tone", "source", "cik", "id", "sort", "stated", "sentence", "printed", "usd"]);
+
 /** Every rendered line of a v3 card, by section, plus every cited sentence. */
 function visible(card: any) {
   const lines = new Map<string, string[]>(), cites: string[] = [];
   const push = (section: string, t: string) => { (lines.get(section) ?? lines.set(section, []).get(section)!).push(t); };
-  const walk = (o: any, section: string) => {
+  const walk = (o: any, section: string, inLine = false) => {
     if (!o || typeof o !== "object") return;
     if (o.src?.sentence) cites.push(`${o.src.doc ?? ""} | ${String(o.src.sentence).slice(0, 140)}`);
-    if (isLine(o)) { const t = textOf(o); if (t) push(section, t); }
-    // Labels rendered as-is: bar segment titles (tooltips) and table row names.
-    for (const k of ["title", "name"]) if (typeof o[k] === "string") push(`${section} (${k === "title" ? "tooltip" : "row name"})`, o[k]);
-    for (const [k, v] of Object.entries(o)) if (k !== "src") walk(v, section);
+    const line = isLine(o);
+    if (line) { const t = textOf(o); if (t) push(section, t); }
+    // A segment rendered on its own (a headline figure, a filing link), not inside a line.
+    else if (!inLine && !Array.isArray(o) && typeof o.k === "string" && typeof (o.t ?? o.printed) === "string") push(section, String(o.t ?? o.printed));
+    // Every other string field of a non-segment object renders as-is ("label", a bar's "title" tooltip, a row's
+    // "name", a tile's "away"), except the fields the view never prints.
+    if (!line && typeof o.k !== "string") for (const [k, v] of Object.entries(o)) if (typeof v === "string" && !NOT_RENDERED.has(k)) push(`${section} (${k === "title" ? "tooltip" : k})`, v);
+    for (const [k, v] of Object.entries(o)) if (k !== "src") walk(v, section, inLine || line);
   };
   for (const [k, v] of Object.entries(card.v3 ?? {})) walk(v, k);
-  lines.set("header", [card.company, card.subtitle, card.briefDate].filter((x) => typeof x === "string"));
   return { lines, cites };
 }
 const multisetDiff = (a: string[], b: string[]) => {
@@ -40,14 +46,10 @@ const multisetDiff = (a: string[], b: string[]) => {
   return { removed: left, added };
 };
 
-const out: string[] = [];
-const say = (s: string) => { console.log(s); out.push(s); };
-for (const cik of ORDER) {
-  const now = JSON.parse(readFileSync(`lib/cards/generated/${cik}.json`, "utf-8"));
-  let then: any = null;
-  try { then = JSON.parse(execSync(`git show ${REF}:lib/cards/generated/${cik}.json`, { encoding: "utf-8", maxBuffer: 64 << 20 })); } catch { /* new card */ }
-  say(`\n## ${now.company}`);
-  if (!then) { say("- new card (not at the ref)"); continue; }
+/** Every visible difference between two cards, as markdown list lines. */
+export function visibleDiff(then: any, now: any): string[] {
+  const out: string[] = [];
+  const say = (x: string) => { out.push(x); };
   const a = visible(then), b = visible(now);
   let any = false;
   for (const sec of new Set([...a.lines.keys(), ...b.lines.keys()])) {
@@ -80,5 +82,17 @@ for (const cik of ORDER) {
     for (const x of [...new Set(pd.added)].slice(0, 12)) say(`  - now: ${x}`);
   }
   if (!any) say("- no visible change");
+  return out;
 }
-if (OUT) writeFileSync(OUT, `# Visible changes against ${REF}\n` + out.join("\n") + "\n");
+
+if (process.argv[1]?.replace(/\\/g, "/").endsWith("s27cardDiff.ts")) {
+  const out: string[] = [];
+  for (const cik of ORDER) {
+    const now = JSON.parse(readFileSync(`lib/cards/generated/${cik}.json`, "utf-8"));
+    let then: any = null;
+    try { then = JSON.parse(execSync(`git show ${REF}:lib/cards/generated/${cik}.json`, { encoding: "utf-8", maxBuffer: 64 << 20 })); } catch { /* new card */ }
+    out.push(`\n## ${now.company}`, ...(then ? visibleDiff(then, now) : ["- new card (not at the ref)"]));
+  }
+  console.log(out.join("\n"));
+  if (OUT) writeFileSync(OUT, `# Visible changes against ${REF}\n` + out.join("\n") + "\n");
+}

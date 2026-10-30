@@ -1,0 +1,2560 @@
+{
+ "cik": "0001179929",
+ "company": "MOLINA HEALTHCARE, INC.",
+ "briefDate": "2026-10-30",
+ "weekFrom": "2026-10-16",
+ "weekTo": "2026-10-30",
+ "previousBrief": "2026-10-15",
+ "header": [
+  [
+   {
+    "k": "text",
+    "t": "MOLINA HEALTHCARE, INC."
+   }
+  ],
+  [
+   {
+    "k": "text",
+    "t": "Brief week: Oct 16 to Oct 30, 2026"
+   }
+  ],
+  [
+   {
+    "k": "text",
+    "t": "Position from "
+   },
+   {
+    "k": "filing",
+    "t": "10-Q for the quarter ended September 30, 2026, filed Oct 22, 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+   }
+  ]
+ ],
+ "thisWeek": {
+  "heading": "This week",
+  "lines": [
+   [
+    {
+     "k": "filing",
+     "t": "Form 10-Q · Oct 22, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+    },
+    {
+     "k": "text",
+     "t": " — this card's position: the 10-Q for the quarter ended September 30, 2026, filed this week and read for this card."
+    }
+   ],
+   [
+    {
+     "k": "text",
+     "t": "No new filings affecting debt since Oct 15, 2026."
+    }
+   ],
+   [
+    {
+     "k": "text",
+     "t": "1 SCHEDULE 13G/A "
+    },
+    {
+     "k": "filing",
+     "t": "[Oct 27, 2026]",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000201238326003818/xslSCHEDULE_13G_X02/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "text",
+     "t": "1 Form 8-K (Item 2.02, results; Item 9.01, exhibits) "
+    },
+    {
+     "k": "filing",
+     "t": "[Oct 21, 2026]",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000042/moh-20261021.htm"
+    },
+    {
+     "k": "text",
+     "t": ", none affecting debt."
+    }
+   ]
+  ]
+ },
+ "moves": {
+  "heading": "Recent debt moves",
+  "lines": [
+   [
+    {
+     "k": "text",
+     "t": "No debt moves stated between Jan 1, 2026 and Oct 30, 2026."
+    }
+   ]
+  ],
+  "blocks": []
+ },
+ "headlines": {
+  "totalDebt": {
+   "heading": "Total debt",
+   "lines": [
+    [
+     {
+      "k": "text",
+      "t": "Total debt "
+     },
+     {
+      "k": "computed",
+      "t": "$3,800MM",
+      "usd": 3800000000,
+      "parts": [
+       {
+        "printed": "$ 800 million",
+        "usd": 800000000,
+        "src": {
+         "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 650 million",
+        "usd": 650000000,
+        "src": {
+         "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 850 million",
+        "usd": 850000000,
+        "src": {
+         "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " at face"
+     },
+     {
+      "k": "text",
+      "t": " as of "
+     },
+     {
+      "k": "date",
+      "t": "September 30, 2026",
+      "date": "2026-09-30",
+      "granularity": "day",
+      "src": {
+       "sentence": "For the quarterly period ended September 30, 2026",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": ""
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "senior",
+      "src": {
+       "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "unsecured",
+      "stated": "unsecured",
+      "src": {
+       "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "computed",
+      "t": "$3,800MM",
+      "usd": 3800000000,
+      "parts": [
+       {
+        "printed": "$ 800 million",
+        "usd": 800000000,
+        "src": {
+         "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 650 million",
+        "usd": 650000000,
+        "src": {
+         "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 850 million",
+        "usd": 850000000,
+        "src": {
+         "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     }
+    ]
+   ]
+  },
+  "liquidity": {
+   "heading": "Liquidity",
+   "lines": [
+    [
+     {
+      "k": "text",
+      "t": "Liquidity "
+     },
+     {
+      "k": "computed",
+      "t": "$5,729MM",
+      "usd": 5729000000,
+      "parts": [
+       {
+        "printed": "$ 4,479 million",
+        "usd": 4479000000,
+        "src": {
+         "sentence": "Cash and cash equivalents $ 4,479 $ 4,248",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 1.25 billion",
+        "usd": 1250000000,
+        "src": {
+         "sentence": "As of September 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     {
+      "k": "text",
+      "t": " as of "
+     },
+     {
+      "k": "date",
+      "t": "September 30, 2026",
+      "date": "2026-09-30",
+      "granularity": "day",
+      "src": {
+       "sentence": "For the quarterly period ended September 30, 2026",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "Cash plus stated availability, both stated as of the position date."
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "Cash and cash equivalents",
+      "stated": "Cash and cash equivalents",
+      "src": {
+       "sentence": "Cash and cash equivalents $ 4,479 $ 4,248",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " (balance sheet) "
+     },
+     {
+      "k": "figure",
+      "t": "$4,479MM",
+      "printed": "$ 4,479 million",
+      "src": {
+       "sentence": "Cash and cash equivalents $ 4,479 $ 4,248",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " as of "
+     },
+     {
+      "k": "date",
+      "t": "September 30, 2026",
+      "date": "2026-09-30",
+      "granularity": "day",
+      "src": {
+       "sentence": "For the quarterly period ended September 30, 2026",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ],
+    [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "figure",
+      "t": "$1,250MM",
+      "printed": "$ 1.25 billion",
+      "src": {
+       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " facility, "
+     },
+     {
+      "k": "figure",
+      "t": "$1,250MM",
+      "printed": "$ 1.25 billion",
+      "src": {
+       "sentence": "As of September 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " available as stated"
+     },
+     {
+      "k": "text",
+      "t": ", matures "
+     },
+     {
+      "k": "date",
+      "t": "November 20, 2030",
+      "date": "2030-11-20",
+      "granularity": "day",
+      "src": {
+       "sentence": "The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ]
+   ]
+  },
+  "refi": {
+   "heading": "Potential refinance opportunities (to Apr 30, 2028)",
+   "lines": [
+    [
+     {
+      "k": "text",
+      "t": "Nothing matures within 18 months."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "Next, after Apr 30, 2028: "
+     },
+     {
+      "k": "figure",
+      "t": "$800MM",
+      "printed": "$ 800 million",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      },
+      "row": "4.375 % Notes due June 15, 2028"
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "4.375%",
+      "stated": "4.375 %",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "senior",
+      "src": {
+       "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "unsecured",
+      "stated": "unsecured",
+      "src": {
+       "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", due "
+     },
+     {
+      "k": "date",
+      "t": "June 15, 2028",
+      "date": "2028-06-15",
+      "granularity": "day",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ]
+   ]
+  }
+ },
+ "ladder": {
+  "heading": "Maturity ladder",
+  "lines": [
+   [
+    {
+     "k": "text",
+     "t": "Capacity, not debt:"
+    }
+   ],
+   [
+    {
+     "k": "figure",
+     "t": "$1,250MM",
+     "printed": "$ 1.25 billion",
+     "src": {
+      "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     },
+     "row": "revolving credit facility"
+    },
+    {
+     "k": "text",
+     "t": " "
+    },
+    {
+     "k": "label",
+     "t": "revolving credit facility",
+     "stated": "revolving credit facility",
+     "src": {
+      "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     }
+    },
+    {
+     "k": "text",
+     "t": ", due "
+    },
+    {
+     "k": "date",
+     "t": "November 20, 2030",
+     "date": "2030-11-20",
+     "granularity": "day",
+     "src": {
+      "sentence": "The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     }
+    },
+    {
+     "k": "text",
+     "t": " · undrawn commitment, not debt"
+    },
+    {
+     "k": "text",
+     "t": " · "
+    },
+    {
+     "k": "notStated",
+     "t": "seniority and security not stated, please refer to sources",
+     "src": {
+      "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     }
+    }
+   ]
+  ],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2028"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$800MM",
+       "printed": "$ 800 million",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       },
+       "row": "4.375 % Notes due June 15, 2028"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "4.375%",
+       "stated": "4.375 %",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", due "
+      },
+      {
+       "k": "date",
+       "t": "June 15, 2028",
+       "date": "2028-06-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2030"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$650MM",
+       "printed": "$ 650 million",
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       },
+       "row": "3.875 % Notes due November 15, 2030"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "3.875%",
+       "stated": "3.875 %",
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", due "
+      },
+      {
+       "k": "date",
+       "t": "November 15, 2030",
+       "date": "2030-11-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2031"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$850MM",
+       "printed": "$ 850 million",
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       },
+       "row": "6.500 % Notes due February 15, 2031"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "6.500%",
+       "stated": "6.500 %",
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", due "
+      },
+      {
+       "k": "date",
+       "t": "February 15, 2031",
+       "date": "2031-02-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2032"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$750MM",
+       "printed": "$ 750 million",
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       },
+       "row": "3.875 % Notes due May 15, 2032"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "3.875%",
+       "stated": "3.875 %",
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", due "
+      },
+      {
+       "k": "date",
+       "t": "May 15, 2032",
+       "date": "2032-05-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "2033"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "figure",
+       "t": "$750MM",
+       "printed": "$ 750 million",
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       },
+       "row": "6.250 % Notes due January 15, 2033"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "6.250%",
+       "stated": "6.250 %",
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", due "
+      },
+      {
+       "k": "date",
+       "t": "January 15, 2033",
+       "date": "2033-01-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    ]
+   }
+  ]
+ },
+ "facilities": {
+  "heading": "Facilities",
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " — revolving credit facility"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "text",
+       "t": "Size "
+      },
+      {
+       "k": "figure",
+       "t": "$1,250MM",
+       "printed": "$ 1.25 billion",
+       "src": {
+        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       },
+       "field": "facilitySize"
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Drawn "
+      },
+      {
+       "k": "notStated",
+       "t": "not stated",
+       "src": {
+        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Letters of credit "
+      },
+      {
+       "k": "notStated",
+       "t": "not stated",
+       "src": {
+        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Available "
+      },
+      {
+       "k": "figure",
+       "t": "$1,250MM",
+       "printed": "$ 1.25 billion",
+       "src": {
+        "sentence": "As of September 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       },
+       "field": "available"
+      }
+     ],
+     [
+      {
+       "k": "text",
+       "t": "Maturity "
+      },
+      {
+       "k": "date",
+       "t": "November 20, 2030",
+       "date": "2030-11-20",
+       "granularity": "day",
+       "src": {
+        "sentence": "The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    ]
+   }
+  ]
+ },
+ "withheld": {
+  "heading": "What the tool did not show",
+  "lines": [
+   [
+    {
+     "k": "text",
+     "t": "Nothing withheld this week."
+    }
+   ]
+  ]
+ },
+ "coverage": {
+  "heading": "Coverage",
+  "lines": [
+   [
+    {
+     "k": "text",
+     "t": "Face total "
+    },
+    {
+     "k": "computed",
+     "t": "$3,800MM",
+     "usd": 3800000000,
+     "parts": [
+      {
+       "printed": "$ 800 million",
+       "usd": 800000000,
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "printed": "$ 650 million",
+       "usd": 650000000,
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "printed": "$ 850 million",
+       "usd": 850000000,
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "printed": "$ 750 million",
+       "usd": 750000000,
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "printed": "$ 750 million",
+       "usd": 750000000,
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    },
+    {
+     "k": "text",
+     "t": ". Balance sheet "
+    },
+    {
+     "k": "computed",
+     "t": "$3,771MM",
+     "usd": 3771000000,
+     "parts": [
+      {
+       "printed": "$ 3,771 million",
+       "usd": 3771000000,
+       "src": {
+        "sentence": "Long-term debt 3,771",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    },
+    {
+     "k": "text",
+     "t": ", after "
+    },
+    {
+     "k": "figure",
+     "t": "$29MM",
+     "printed": "$ 29 million",
+     "src": {
+      "sentence": "Deferred debt issuance costs ( 29 )",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     }
+    },
+    {
+     "k": "text",
+     "t": " of "
+    },
+    {
+     "k": "label",
+     "t": "deferred debt issuance costs",
+     "stated": "Deferred debt issuance costs",
+     "src": {
+      "sentence": "Deferred debt issuance costs ( 29 )",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     }
+    },
+    {
+     "k": "text",
+     "t": "."
+    }
+   ]
+  ]
+ },
+ "v3": {
+  "header": {
+   "label": "Weekly coverage brief · Oct 16 to Oct 30, 2026",
+   "company": "MOLINA HEALTHCARE, INC.",
+   "position": [
+    {
+     "k": "text",
+     "t": "Position as of "
+    },
+    {
+     "k": "date",
+     "t": "September 30, 2026",
+     "date": "2026-09-30",
+     "granularity": "day",
+     "src": {
+      "sentence": "For the quarterly period ended September 30, 2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     }
+    }
+   ],
+   "filing": {
+    "k": "filing",
+    "t": "10-Q filed Oct 22, 2026",
+    "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+   },
+   "status": [
+    {
+     "k": "text",
+     "t": "New this week: this 10-Q, filed Oct 22, 2026, is the position"
+    },
+    {
+     "k": "text",
+     "t": " · 2 other filings, none affecting debt"
+    }
+   ],
+   "actionable": []
+  },
+  "rolledNote": null,
+  "call": {
+   "label": "The call · next 18 months, to Apr 30, 2028",
+   "case": "D",
+   "headline": [
+    {
+     "k": "text",
+     "t": "Nothing matures in the next 18 months."
+    }
+   ],
+   "tiles": [],
+   "nextTile": {
+    "value": {
+     "k": "computed",
+     "t": "$800MM",
+     "usd": 800000000,
+     "parts": [
+      {
+       "printed": "$ 800 million",
+       "usd": 800000000,
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    },
+    "instrument": [
+     {
+      "k": "label",
+      "t": "4.375%",
+      "stated": "4.375 %",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "senior",
+      "stated": "senior",
+      "src": {
+       "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "unsecured",
+      "stated": "unsecured",
+      "src": {
+       "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "label",
+      "t": "notes",
+      "stated": "Notes",
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ],
+    "date": {
+     "k": "date",
+     "t": "June 15, 2028",
+     "date": "2028-06-15",
+     "granularity": "day",
+     "src": {
+      "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     }
+    },
+    "away": "19 months away · 1 month past the window"
+   },
+   "rows": [],
+   "notes": [],
+   "legend": null
+  },
+  "moves": [],
+  "totalDebt": {
+   "figure": {
+    "k": "computed",
+    "t": "$3,800MM",
+    "usd": 3800000000,
+    "parts": [
+     {
+      "printed": "$ 800 million",
+      "usd": 800000000,
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 650 million",
+      "usd": 650000000,
+      "src": {
+       "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 850 million",
+      "usd": 850000000,
+      "src": {
+       "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 750 million",
+      "usd": 750000000,
+      "src": {
+       "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 750 million",
+      "usd": 750000000,
+      "src": {
+       "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ]
+   },
+   "segments": [
+    {
+     "usd": 3800000000,
+     "color": "#5C8DBF",
+     "title": "senior unsecured notes",
+     "rows": [
+      "4.375 % Notes due June 15, 2028",
+      "3.875 % Notes due November 15, 2030",
+      "6.500 % Notes due February 15, 2031",
+      "3.875 % Notes due May 15, 2032",
+      "6.250 % Notes due January 15, 2033"
+     ]
+    }
+   ],
+   "legend": [
+    {
+     "color": "#5C8DBF",
+     "label": [
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "amount": {
+      "k": "computed",
+      "t": "$3,800MM",
+      "usd": 3800000000,
+      "parts": [
+       {
+        "printed": "$ 800 million",
+        "usd": 800000000,
+        "src": {
+         "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 650 million",
+        "usd": 650000000,
+        "src": {
+         "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 850 million",
+        "usd": 850000000,
+        "src": {
+         "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "notes": []
+  },
+  "liquidity": {
+   "figure": {
+    "k": "computed",
+    "t": "$5,729MM",
+    "usd": 5729000000,
+    "parts": [
+     {
+      "printed": "$ 4,479 million",
+      "usd": 4479000000,
+      "src": {
+       "sentence": "Cash and cash equivalents $ 4,479 $ 4,248",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 1.25 billion",
+      "usd": 1250000000,
+      "src": {
+       "sentence": "As of September 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ]
+   },
+   "segments": [
+    {
+     "usd": 4479000000,
+     "color": "#2E7D6B",
+     "title": "Cash and cash equivalents"
+    },
+    {
+     "usd": 1250000000,
+     "color": "#9CCBBE",
+     "title": "revolving credit facility"
+    }
+   ],
+   "legend": [
+    {
+     "color": "#2E7D6B",
+     "label": [
+      {
+       "k": "label",
+       "t": "Cash and cash equivalents",
+       "stated": "Cash and cash equivalents",
+       "src": {
+        "sentence": "Cash and cash equivalents $ 4,479 $ 4,248",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "amount": {
+      "k": "figure",
+      "t": "$4,479MM",
+      "printed": "$ 4,479 million",
+      "src": {
+       "sentence": "Cash and cash equivalents $ 4,479 $ 4,248",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    },
+    {
+     "color": "#9CCBBE",
+     "label": [
+      {
+       "k": "text",
+       "t": "Undrawn "
+      },
+      {
+       "k": "label",
+       "t": "revolver",
+       "stated": "revolv",
+       "src": {
+        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", matures "
+      },
+      {
+       "k": "date",
+       "t": "November 20, 2030",
+       "date": "2030-11-20",
+       "granularity": "day",
+       "src": {
+        "sentence": "The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "amount": {
+      "k": "figure",
+      "t": "$1,250MM",
+      "printed": "$ 1.25 billion",
+      "src": {
+       "sentence": "As of September 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    }
+   ],
+   "notes": []
+  },
+  "chart": {
+   "bars": [
+    {
+     "label": "2026",
+     "total": {
+      "k": "computed",
+      "t": "0",
+      "usd": 0,
+      "parts": []
+     },
+     "segments": [],
+     "source": "named",
+     "broken": false,
+     "drawUsd": 0,
+     "instruments": 0
+    },
+    {
+     "label": "2027",
+     "total": {
+      "k": "computed",
+      "t": "0",
+      "usd": 0,
+      "parts": []
+     },
+     "segments": [],
+     "source": "named",
+     "broken": false,
+     "drawUsd": 0,
+     "instruments": 0
+    },
+    {
+     "label": "2028",
+     "total": {
+      "k": "computed",
+      "t": "800",
+      "usd": 800000000,
+      "parts": [
+       {
+        "printed": "$ 800 million",
+        "usd": 800000000,
+        "src": {
+         "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 800000000,
+       "color": "#5C8DBF",
+       "title": "4.375 % Notes due June 15, 2028",
+       "rows": [
+        "4.375 % Notes due June 15, 2028"
+       ]
+      }
+     ],
+     "source": "named",
+     "broken": false,
+     "drawUsd": 800000000,
+     "instruments": 1
+    },
+    {
+     "label": "2029",
+     "total": {
+      "k": "computed",
+      "t": "0",
+      "usd": 0,
+      "parts": []
+     },
+     "segments": [],
+     "source": "named",
+     "broken": false,
+     "drawUsd": 0,
+     "instruments": 0
+    },
+    {
+     "label": "2030",
+     "total": {
+      "k": "computed",
+      "t": "650",
+      "usd": 650000000,
+      "parts": [
+       {
+        "printed": "$ 650 million",
+        "usd": 650000000,
+        "src": {
+         "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 650000000,
+       "color": "#5C8DBF",
+       "title": "3.875 % Notes due November 15, 2030",
+       "rows": [
+        "3.875 % Notes due November 15, 2030"
+       ]
+      }
+     ],
+     "source": "named",
+     "broken": false,
+     "drawUsd": 650000000,
+     "instruments": 1
+    },
+    {
+     "label": "2031+",
+     "total": {
+      "k": "computed",
+      "t": "2,350",
+      "usd": 2350000000,
+      "parts": [
+       {
+        "printed": "$ 850 million",
+        "usd": 850000000,
+        "src": {
+         "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       },
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     "segments": [
+      {
+       "usd": 2350000000,
+       "color": "#5C8DBF",
+       "title": "6.500 % Notes due February 15, 2031",
+       "rows": [
+        "6.500 % Notes due February 15, 2031",
+        "3.875 % Notes due May 15, 2032",
+        "6.250 % Notes due January 15, 2033"
+       ]
+      }
+     ],
+     "source": "named",
+     "broken": true,
+     "drawUsd": 919999999.9999999,
+     "instruments": 3
+    }
+   ],
+   "window": {
+    "endIndex": 2,
+    "endFraction": 0.33064516129032256,
+    "label": "18-month window · nothing due"
+   },
+   "legend": [
+    {
+     "color": "#5C8DBF",
+     "label": "Unsecured"
+    }
+   ],
+   "captions": [
+    [
+     {
+      "k": "text",
+      "t": "Color shows seniority."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "2031+ combines every maturity from 2031 on; the table below lists each."
+     }
+    ],
+    [
+     {
+      "k": "text",
+      "t": "The 2031+ bar holds 3 instruments and is cut to fit; its full height would be about 2.9 times the 2028 bar."
+     }
+    ]
+   ]
+  },
+  "table": {
+   "rows": [
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "June 15, 2028",
+       "date": "2028-06-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "4.375%",
+       "stated": "4.375 %",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "800",
+      "usd": 800000000,
+      "parts": [
+       {
+        "printed": "$ 800 million",
+        "usd": 800000000,
+        "src": {
+         "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "4.375 % Notes due June 15, 2028"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "Nov 15, 2030",
+       "date": "2030-11-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "3.875%",
+       "stated": "3.875 %",
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "650",
+      "usd": 650000000,
+      "parts": [
+       {
+        "printed": "$ 650 million",
+        "usd": 650000000,
+        "src": {
+         "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "3.875 % Notes due November 15, 2030"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "Feb 15, 2031",
+       "date": "2031-02-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "6.500%",
+       "stated": "6.500 %",
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "850",
+      "usd": 850000000,
+      "parts": [
+       {
+        "printed": "$ 850 million",
+        "usd": 850000000,
+        "src": {
+         "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "6.500 % Notes due February 15, 2031"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "May 15, 2032",
+       "date": "2032-05-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "3.875%",
+       "stated": "3.875 %",
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "750",
+      "usd": 750000000,
+      "parts": [
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "3.875 % Notes due May 15, 2032"
+    },
+    {
+     "matures": [
+      {
+       "k": "date",
+       "t": "Jan 15, 2033",
+       "date": "2033-01-15",
+       "granularity": "day",
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "instrument": [
+      {
+       "k": "label",
+       "t": "6.250%",
+       "stated": "6.250 %",
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "senior",
+       "stated": "senior",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "unsecured",
+       "stated": "unsecured",
+       "src": {
+        "sentence": "Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "notes",
+       "stated": "Notes",
+       "src": {
+        "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ],
+     "tenK": false,
+     "face": {
+      "k": "computed",
+      "t": "750",
+      "usd": 750000000,
+      "parts": [
+       {
+        "printed": "$ 750 million",
+        "usd": 750000000,
+        "src": {
+         "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "doc": "10-Q 2026-10-22"
+        }
+       }
+      ]
+     },
+     "status": null,
+     "inWindow": false,
+     "name": "6.250 % Notes due January 15, 2033"
+    }
+   ],
+   "visible": 5,
+   "schedule": null
+  },
+  "facilities": [
+   {
+    "bold": [
+     {
+      "k": "label",
+      "t": "revolver",
+      "stated": "revolv",
+      "src": {
+       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "figure",
+      "t": "$1,250MM",
+      "printed": "$ 1.25 billion",
+      "src": {
+       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      },
+      "field": "facilitySize"
+     },
+     {
+      "k": "text",
+      "t": " size"
+     },
+     {
+      "k": "text",
+      "t": " · "
+     },
+     {
+      "k": "text",
+      "t": "matures "
+     },
+     {
+      "k": "date",
+      "t": "November 20, 2030",
+      "date": "2030-11-20",
+      "granularity": "day",
+      "src": {
+       "sentence": "The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ],
+    "sub": [
+     {
+      "k": "notStated",
+      "t": "Letters of credit outstanding not stated.",
+      "src": {
+       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ]
+   }
+  ],
+  "notShown": [
+   [
+    {
+     "k": "text",
+     "t": "Nothing withheld this week."
+    }
+   ]
+  ],
+  "footnote": [
+   {
+    "k": "text",
+    "t": "Face total "
+   },
+   {
+    "k": "computed",
+    "t": "$3,800MM",
+    "usd": 3800000000,
+    "parts": [
+     {
+      "printed": "$ 800 million",
+      "usd": 800000000,
+      "src": {
+       "sentence": "4.375 % Notes due June 15, 2028 $ 800",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 650 million",
+      "usd": 650000000,
+      "src": {
+       "sentence": "3.875 % Notes due November 15, 2030 $ 650",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 850 million",
+      "usd": 850000000,
+      "src": {
+       "sentence": "6.500 % Notes due February 15, 2031 $ 850",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 750 million",
+      "usd": 750000000,
+      "src": {
+       "sentence": "3.875 % Notes due May 15, 2032 $ 750",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "printed": "$ 750 million",
+      "usd": 750000000,
+      "src": {
+       "sentence": "6.250 % Notes due January 15, 2033 $ 750",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ]
+   },
+   {
+    "k": "text",
+    "t": ". Balance sheet "
+   },
+   {
+    "k": "computed",
+    "t": "$3,771MM",
+    "usd": 3771000000,
+    "parts": [
+     {
+      "printed": "$ 3,771 million",
+      "usd": 3771000000,
+      "src": {
+       "sentence": "Long-term debt 3,771",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     }
+    ]
+   },
+   {
+    "k": "text",
+    "t": ", after "
+   },
+   {
+    "k": "figure",
+    "t": "$29MM",
+    "printed": "$ 29 million",
+    "src": {
+     "sentence": "Deferred debt issuance costs ( 29 )",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+     "doc": "10-Q 2026-10-22"
+    }
+   },
+   {
+    "k": "text",
+    "t": " of "
+   },
+   {
+    "k": "label",
+    "t": "deferred debt issuance costs",
+    "stated": "Deferred debt issuance costs",
+    "src": {
+     "sentence": "Deferred debt issuance costs ( 29 )",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+     "doc": "10-Q 2026-10-22"
+    }
+   },
+   {
+    "k": "text",
+    "t": "."
+   },
+   {
+    "k": "text",
+    "t": " Every figure links to the sentence it came from."
+   }
+  ]
+ }
+}

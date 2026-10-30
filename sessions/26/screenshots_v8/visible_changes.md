@@ -188,10 +188,13 @@
 - **moves**
   - was: $550MM 1.250% senior notes
   - now: $550MM 1.250% notes due March 2026
+- **totalDebt (0)**
+  - was: commercial paper program
+  - now: Commercial Paper Program
 - **liquidity (tooltip)**
   - was: revolving credit and letter of credit agreement
   - now: Revolving Credit Agreement
-- **table (row name)**
+- **table (name)**
   - was: commercial paper program
   - now: Commercial Paper Program
 - **cited sentences behind source links**: 2 out, 2 in

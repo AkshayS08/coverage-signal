@@ -1,0 +1,55 @@
+/**
+ * SESSION 27 — A REVIEW RENDER THAT IS NOT THE COMMITTED CARD. $0.
+ *
+ * Builds a name's card from a given answer at the current brief (briefDateArg)
+ * with its own live inputs (captureCardInput: the answer's documents, tagged
+ * cash at its period end, its period sentence, later filings) and this brief
+ * week's filings, and writes it to sessions/27/<name>_review_card.json with the
+ * visible differences from the committed card. It never writes
+ * lib/cards/inputs or lib/cards/generated, and records no brief.
+ *
+ * Verified card facts are a separate billed extraction (capture/facts.ts);
+ * the committed facts were read from the previous anchor, so the review card
+ * is built WITHOUT facts, and says so.
+ *
+ * Molina's refresh: ANTHROPIC_API_KEY="" npx tsx lib/cards/capture/preview.ts molina
+ */
+import { loadEnvQuietly } from "../../cache/loadEnv";
+loadEnvQuietly();
+import { readFileSync, writeFileSync } from "node:fs";
+import { execSync } from "node:child_process";
+import { buildCard } from "../build";
+import { captureCardInput } from "./snapshot";
+import { briefDateArg, briefWeek } from "../briefDate";
+import { previousBrief, readBriefLog } from "../briefLog";
+import { liveFilingsBetween } from "../../fetch/thisWeek";
+import { visibleDiff } from "../../cache/s27cardDiff";
+
+(async () => {
+  if (process.env.ANTHROPIC_API_KEY !== "") { console.error('REFUSING: run with ANTHROPIC_API_KEY=""'); process.exit(1); }
+  if (process.argv[2] !== "molina") { console.error("usage: preview.ts molina"); process.exit(1); }
+  const refresh = JSON.parse(readFileSync("baselines/s27-molina-refresh.json", "utf-8"));
+  const result = refresh.results.find((x: any) => x.bust === null).result;
+  const brief = briefDateArg();
+  const prev = previousBrief(readBriefLog(), result.cik, brief);
+  const week = briefWeek(brief, prev);
+  const input = await captureCardInput(result, { fingerprint: refresh.boundFingerprint, commit: execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim(), source: "REVIEW RENDER of the refreshed v33 answer (Oct 22 10-Q); not the committed card", briefDate: brief });
+  const weekFilings = await liveFilingsBetween(result.cik, week.from, week.to);
+  const card = buildCard({
+    result, briefDate: brief, previousBrief: prev, weekFilings, cash: input.cash,
+    textByUrl: new Map(Object.entries(input.docs).map(([u, d]) => [u, d.text])), periodSentence: input.periodSentence,
+    laterUrls: input.laterFilings.filter((x) => x.filingDate <= brief).map((x) => x.url), facts: null,
+  });
+  writeFileSync("sessions/27/molina_review_card.json", JSON.stringify(card, null, 1) + "\n");
+  const current = JSON.parse(readFileSync("lib/cards/generated/0001179929.json", "utf-8"));
+  const lines = [
+    `# Molina: the refreshed card against the committed card`,
+    ``,
+    `Review render, not committed. Brief ${brief} (week ${week.from} to ${week.to}; previous brief ${prev}). Week filings: ${weekFilings.map((f) => `${f.form} ${f.filingDate}${f.items ? ` [${f.items}]` : ""}`).join("; ") || "none"}.`,
+    `Built without verified card facts (a separate billed extraction for the Q3 10-Q).`,
+    ``,
+    ...visibleDiff(current, card),
+  ];
+  writeFileSync("sessions/27/molina_refresh_visible_diff.md", lines.join("\n") + "\n");
+  console.log(lines.join("\n"));
+})().catch((e) => { console.error(e); process.exit(1); });
