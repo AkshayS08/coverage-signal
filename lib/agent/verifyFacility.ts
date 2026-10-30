@@ -179,10 +179,13 @@ export function retargetAnnualReportFigures(params: {
   anchorReportDate: string | null;
   /** From `annualReportGate`. Not enforced ⇒ this does nothing. */
   enforced: boolean;
+  /** From `annualReportGate`: Rule 66 permits the annual report (the anchor is not-located and directs to it). */
+  mayRead?: boolean;
   gateReason: string;
-}): { facilities: FacilityRow[]; retargeted: string[]; notRestated: string[] } {
+}): { facilities: FacilityRow[]; retargeted: string[]; notRestated: string[]; removed: string[] } {
   const { facilities, textByUrl, isAnnualReport, anchorUrl, anchorReportDate, enforced, gateReason } = params;
-  if (!enforced || facilities.length === 0) return { facilities, retargeted: [], notRestated: [] };
+  const mayRead = params.mayRead ?? false;
+  if (!enforced || facilities.length === 0) return { facilities, retargeted: [], notRestated: [], removed: [] };
   const corpus = corpusOf(textByUrl);
   const anchorText = anchorUrl ? textByUrl.get(anchorUrl) : undefined;
   const anchorSentences = anchorText
@@ -190,8 +193,10 @@ export function retargetAnnualReportFigures(params: {
     : [];
 
   const retargeted: string[] = [];
-  /** Recorded, not withheld — see the tail of the loop below. */
+  /** Kept at the annual report where Rule 66 permits it — see the tail of the loop below. */
   const notRestated: string[] = [];
+  /** Removed: stated only in the annual report, which Rule 66 does not permit for this anchor. */
+  const removed: string[] = [];
 
   const out = facilities.map((f) => {
     const next: FacilityRow = { ...f };
@@ -238,12 +243,27 @@ export function retargetAnnualReportFigures(params: {
       // figures to fix a different problem. The coin flip this function
       // exists to remove is "which of two documents that BOTH state it", and
       // where only one does there is no coin flip to remove.
-      notRestated.push(`${f.name}.${field} = ${fig.value} (the anchor does not restate it; a standing term is kept at the document that states it)`);
+      //
+      // SESSION 27 (Akshay, Oct 30, 2026) — SUPERSEDED FOR AN ANCHOR RULE 66
+      // DOES NOT COVER. The 10-K is a source only when the anchor is
+      // not-located and directs to it. Where it does not, a figure only the
+      // 10-K states is REMOVED from the card — Tenet's revolver and L/C
+      // facility maturities, "November 4, 2030", which no 10-Q or 8-K it holds
+      // states. Logged, never silent. Where Rule 66 does permit it (Cigna),
+      // the standing term stays at the document that states it, as above.
+      if (!mayRead) {
+        next[field] = null;
+        // Recorded on the facility, so a row claiming the same figure does not render it as "withheld" either.
+        (next as FacilityRow & { removedUnderRule66?: string[] }).removedUnderRule66 = [...((next as { removedUnderRule66?: string[] }).removedUnderRule66 ?? []), field];
+        removed.push(`${f.name}.${field} = ${fig.value} — stated only in the prior-period annual report, which is a source only where the anchor locates no debt note and directs to it (Rule 66); no current filing states it, so it is not shown`);
+        continue;
+      }
+      notRestated.push(`${f.name}.${field} = ${fig.value} (the anchor does not restate it; a standing term is kept at the document that states it, Rule 66 permitting)`);
     }
     return next;
   });
 
-  return { facilities: out, retargeted, notRestated };
+  return { facilities: out, retargeted, notRestated, removed };
 }
 
 function verifyFigure(

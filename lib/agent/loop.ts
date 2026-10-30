@@ -1479,6 +1479,7 @@ async function runAgentLoopInner(
       anchorUrl,
       anchorReportDate: debtScheduleGuidance.base?.reportDate ?? null,
       enforced: annualGate.enforced,
+      mayRead: annualGate.mayRead,
       gateReason: annualGate.reason,
     });
     for (const r of annualFigures.retargeted) {
@@ -1486,6 +1487,9 @@ async function runAgentLoopInner(
     }
     for (const n of annualFigures.notRestated) {
       log(`  FACILITY FIGURE KEPT AT THE ANNUAL REPORT for ${label} — ${n}`);
+    }
+    for (const n of annualFigures.removed) {
+      log(`  FACILITY FIGURE REMOVED (Rule 66) for ${label} — ${n}`);
     }
     const facilityCheck = verifyFacilities({
       facilities: annualFigures.facilities,

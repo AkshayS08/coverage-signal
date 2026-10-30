@@ -770,6 +770,12 @@ function applyFacilityMaturities(rows: LadderRow[], facilities: FacilityRow[] | 
     if (t === null || !FACILITY_INSTRUMENT_TYPES.has(t)) return row;
     const f = matchFacility({ name: row.instrument, category: null }, list, { byNameOnly: true });
     if (!f) return row;
+    // SESSION 27 (Akshay, Oct 30): a maturity only the prior-period annual report states, where Rule 66 does not
+    // permit it, is REMOVED from the card — and a row claiming that same date does not show it as withheld either.
+    if ((f as { removedUnderRule66?: string[] }).removedUnderRule66?.includes("maturity") && row.maturityWithheld) {
+      const { maturityWithheld: _gone, ...rest } = row;
+      return rest as LadderRow;
+    }
     const m = facilityMaturityAtItsSentence(f);
     // Stated and not a date. Recorded so the surface can say so rather
     // than render an absence the filer does not have.
