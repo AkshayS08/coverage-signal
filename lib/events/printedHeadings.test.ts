@@ -31,10 +31,16 @@ assert(loopDerived.length > 0, `[1] ${loopDerived.length} of ${ALL.length} snaps
 const carries = (cik: string) => { const rows = snap(cik).result.results.find((r: any) => r.triggerId === "debt-maturity").scheduleSequence.filter((e: any) => e.kind === "row"); return rows.length > 0 && rows.every((e: any) => e.printedHeading !== undefined); };
 // Negative control: a golden-derived snapshot predates the field, so it would fail [1]; the selection is what keeps it out.
 const goldenDerived = ALL.filter((cik) => !loopDerived.includes(cik));
-assert(goldenDerived.length === 0 || goldenDerived.some((cik) => !carries(cik)), `[1 control] a golden-derived snapshot (${goldenDerived.map((c) => snap(c).company).join(", ")}) would fail the check, so choosing by source matters`);
+// Session 27 (Oct 30): the v33 goldens carry the field, so the control is constructed: a result whose rows predate it fails.
+const legacy = JSON.parse(JSON.stringify(snap(loopDerived.find((c) => carries(c))!).result));
+for (const e of legacy.results.find((r: any) => r.triggerId === "debt-maturity").scheduleSequence) delete e.printedHeading;
+const carriesResult = (r: any) => { const rows = r.results.find((t: any) => t.triggerId === "debt-maturity").scheduleSequence.filter((e: any) => e.kind === "row"); return rows.length > 0 && rows.every((e: any) => e.printedHeading !== undefined); };
+assert(!carriesResult(legacy), `[1 control] a result whose rows predate the field fails the check (golden-derived snapshots: ${goldenDerived.map((c) => snap(c).company).join(", ") || "none"})`);
 for (const cik of loopDerived) {
   const dm = snap(cik).result.results.find((r: any) => r.triggerId === "debt-maturity");
   const rows = dm.scheduleSequence.filter((e: any) => e.kind === "row");
+  // A position rolled from the prior 10-K has no anchor table, so no row to annotate (Cigna).
+  if (rows.length === 0) { console.log(`  · ${snap(cik).company}: no anchor table rows (a rolled position) — nothing to annotate`); continue; }
   assert(rows.length > 0 && rows.every((e: any) => e.printedHeading !== undefined), `[1:${snap(cik).company}] all ${rows.length} rows carry printedHeading (a heading or an explicit null)`);
 }
 

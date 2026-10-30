@@ -38,6 +38,7 @@ const CLEARED: Record<string, string> = {
   "0000070318": "Cleared by Akshay Sahani on Oct 29, 2026.",
   "0000785161": "Cleared by Akshay Sahani on Oct 29, 2026, at its pre-Oct 28 read set (its Q3 earnings 8-K of Oct 28 moved the read set after the samples were taken; by ruling, an earnings 8-K alone is not a refresh).",
   "0000927066": "Cleared by Akshay Sahani on Oct 29, 2026, on the tolerated classes: the byte-identity condition first set was withdrawn as stricter than what Tenet and Encompass were signed on. The 136 card lines that differ from the v31 card are cited sentences verbatim in the same document that state the amount (Rule 58); no figure, date or label differs. Its subtotal label \"Total debt principal outstanding\" is recovered from the document in code.",
+  "0001739940": "Cleared by Akshay Sahani on Oct 30, 2026, on the condition that 3/3 and criterion 2 hold. Its deltas are matched by identity and labelled from it (ruling of Oct 29); its revolver's commitment is filled from its own sentence through its one verified facility, basis commitment, held out of captured debt (ruling of Oct 30).",
 };
 // The byte-identity condition on DaVita was withdrawn (Akshay, Oct 29); kept as a mechanism for a future clear that sets one.
 const CARD_CONDITION = new Set<string>();

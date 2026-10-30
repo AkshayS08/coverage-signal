@@ -1,16 +1,16 @@
 {
-  "extractionVersion": 31,
+  "extractionVersion": 33,
   "signature": {
     "signedBy": "Akshay Sahani",
-    "signedOn": "2026-09-09",
-    "basis": "RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the CHS 9¾% notes was an interest date read as a maturity. (1) THE REVOLVER'S MATURITY MOVES FROM DAY TO MONTH. Its sentence says the agreement \"will mature in April 2030\"; the row had shown 2030-04-01 at day precision, the day supplied by the model's prose entry and approved by a check that let a coarser sentence support a finer date (Rules 76, 77). It now shows April 2030. (2) THE FOUR SEPTEMBER 2025 NOTES KEEP THEIR DAYS, NOW CORRECTLY SOURCED. Each maturity cites the 8-K sentence that states it (\"…until the maturity date of September 15, 2030\"), which Rule 58's amount re-selection had been discarding; the amount still cites the sentence stating the amount (Rule 78). (3) NOTHING ELSE MOVED: six rows, the same amounts, statuses and capacity flags; the roll pinned in `state.rolled` identical — 36 base rows, both subtotal ties, the counted deltas and the roll tie. (4) RECORDED, NOT NEW: re-read at $0 under this loop, the two 9b samples agree with the canonical run on every ladder row, every date, coverage and the roll, and differ in the rolled base's label spelling (\"$900 million, 3.250%\" against \"$ 900 million, 3.250 %\", 33 base rows and one delta label). The pre-change code at 17a54de gives the identical difference, so it is a property of the three transcriptions and not of this change; the Session 25 gate compared the roll's arithmetic, which agrees, and not label strings. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. CORPUS PINNED: f1237506 — the September 2025 pricing 8-K and the June 2026 10-Q. THE THREE 9b SAMPLES ARE FRESH v31 EXTRACTIONS ON THAT CORPUS, NOT RE-RENDERS OF THE CACHED SAMPLES, and they were bought by an UNAUTHORISED $0.5714 (Rule 75): the filing-list cache passed its 24-hour TTL mid-session, EDGAR returned a changed catalog, the fingerprint moved 813c7d6b → f1237506, and three re-renders that had been free an hour earlier re-extracted live under an instruction that said no spend. What it bought is what 9b asks for — three independent asks at one version against one corpus — and it is recorded here as what it is rather than presented as the measurement that was authorised. THIS IS THE FIRST SIGNATURE OVER A ROLLED POSITION. Coverage is not computed on rows the anchor states: the anchor's debt note yields no ladder and directs the reader, in its own verified words, to Note 7 of the 2025 10-K. That note's 36 transcribed rows are the labelled prior-period base, rolled forward to the anchor date through movements derived from the filings. The signature pins the WORK and not only the result — `state.rolled` carries all 36 base rows with their sentences, both printed subtotals against the rows that precede them, every counted delta with the sentence and document stating it, and the roll tie — so a later change that dropped a row and gained an equal delta would still fail, though every coverage figure matched. THE LOAD-BEARING ASSUMPTION, STATED: commercial paper outstanding at the base date is ZERO, sourced to the 10-K twice (the MD&A sentence and the note table's em-dash). The CP delta is therefore the whole closing balance rather than an increment, so if that base is not zero the roll is wrong by exactly the amount it is not. AND THE HEDGE SURVIVES: the anchor states the $1.0 billion twice, once qualified and once not; the qualified sentence is the evidence, because asserting a precision the filer did not consistently claim would be worse — and because it is also the reading under which the roll ties. The contrary reading gives no band and a 35 miss, and is available to anyone who wants it. Three independent v31 extractions against corpus f1237506 (canonical + CACHE_BUST x2), unintentionally bought — see Rule 75. Identical in all three: the position identity (2 documents — the September 2025 pricing 8-K and the June 2026 10-Q), the ladder row for row (4 senior-note tranches, the $6.5bn revolver as capacity, the commercial paper programme at $1.0bn), the base tie (5 rows → 592 and 31 rows → 30,871, both exact against the 10-K's own printed subtotals, 31,463 total), the roll tie (31,463 − 550 + 1,000 = 31,913 against the anchor's stated 31,878, residual 35 inside the ±50 the filer's own \"approximately\" earns), coverage (31,913 face, residual 0.11%, passes), criteria 4 and 6, and the full computed-criteria verdict. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (1): (1) the three runs fire a different NUMBER of triggers (5, 4 and 5) — large-cash-balance and floating-rate-debt come and go. None of them touches the position: the roll reads only debt-maturity and new-debt-issuance, both fired in all three, and a non-position citation is not identity-bearing (Rule 65). A reader may see a different count of non-refi signals."
+    "signedOn": "2026-10-29",
+    "basis": "RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v31 signature of 2026-09-09. Cleared by Akshay Sahani on Oct 30, 2026, on the condition that 3/3 and criterion 2 hold. Its deltas are matched by identity and labelled from it (ruling of Oct 29); its revolver's commitment is filled from its own sentence through its one verified facility, basis commitment, held out of captured debt (ruling of Oct 30). Signed over the canonical v33 answer on read set d3f8f1576805d6d56fbc9bf0 (current; the $0 replay through the loop gives the same state). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (3): (1) rows[\"Revolving Credit Agreement\"].instrument: RENAMED to \"$ 6.5 billion, five-year revolving credit and letter of credit agreement\" — same amount, maturity and status, so the same instrument under another of the filing's own names (2) rows[\"Commercial Paper Program\"].instrument: RENAMED to \"Commercial paper program\" — same amount, maturity and status, so the same instrument under another of the filing's own names (3) 66 text field(s) differ only in whitespace or footnote markers such as \"(1)\" (Session 27 ruling (b)): rolled.baseRows[1].instrument, rolled.baseRows[1].sourceLine, rolled.baseRows[2].instrument, rolled.baseRows[2].sourceLine, rolled.baseRows[3].instrument, rolled.baseRows[3].sourceLine, … Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the CHS 9¾% notes was an interest date read as a maturity. (1) THE REVOLVER'S MATURITY MOVES FROM DAY TO MONTH. Its sentence says the agreement \"will mature in April 2030\"; the row had shown 2030-04-01 at day precision, the day supplied by the model's prose entry and approved by a check that let a coarser sentence support a finer date (Rules 76, 77). It now shows April 2030. (2) THE FOUR SEPTEMBER 2025 NOTES KEEP THEIR DAYS, NOW CORRECTLY SOURCED. Each maturity cites the 8-K sentence that states it (\"…until the maturity date of September 15, 2030\"), which Rule 58's amount re-selection had been discarding; the amount still cites the sentence stating the amount (Rule 78). (3) NOTHING ELSE MOVED: six rows, the same amounts, statuses and capacity flags; the roll pinned in `state.rolled` identical — 36 base rows, both subtotal ties, the counted deltas and the roll tie. (4) RECORDED, NOT NEW: re-read at $0 under this loop, the two 9b samples agree with the canonical run on every ladder row, every date, coverage and the roll, and differ in the rolled base's label spelling (\"$900 million, 3.250%\" against \"$ 900 million, 3.250 %\", 33 base rows and one delta label). The pre-change code at 17a54de gives the identical difference, so it is a property of the three transcriptions and not of this change; the Session 25 gate compared the roll's arithmetic, which agrees, and not label strings. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. CORPUS PINNED: f1237506 — the September 2025 pricing 8-K and the June 2026 10-Q. THE THREE 9b SAMPLES ARE FRESH v31 EXTRACTIONS ON THAT CORPUS, NOT RE-RENDERS OF THE CACHED SAMPLES, and they were bought by an UNAUTHORISED $0.5714 (Rule 75): the filing-list cache passed its 24-hour TTL mid-session, EDGAR returned a changed catalog, the fingerprint moved 813c7d6b → f1237506, and three re-renders that had been free an hour earlier re-extracted live under an instruction that said no spend. What it bought is what 9b asks for — three independent asks at one version against one corpus — and it is recorded here as what it is rather than presented as the measurement that was authorised. THIS IS THE FIRST SIGNATURE OVER A ROLLED POSITION. Coverage is not computed on rows the anchor states: the anchor's debt note yields no ladder and directs the reader, in its own verified words, to Note 7 of the 2025 10-K. That note's 36 transcribed rows are the labelled prior-period base, rolled forward to the anchor date through movements derived from the filings. The signature pins the WORK and not only the result — `state.rolled` carries all 36 base rows with their sentences, both printed subtotals against the rows that precede them, every counted delta with the sentence and document stating it, and the roll tie — so a later change that dropped a row and gained an equal delta would still fail, though every coverage figure matched. THE LOAD-BEARING ASSUMPTION, STATED: commercial paper outstanding at the base date is ZERO, sourced to the 10-K twice (the MD&A sentence and the note table's em-dash). The CP delta is therefore the whole closing balance rather than an increment, so if that base is not zero the roll is wrong by exactly the amount it is not. AND THE HEDGE SURVIVES: the anchor states the $1.0 billion twice, once qualified and once not; the qualified sentence is the evidence, because asserting a precision the filer did not consistently claim would be worse — and because it is also the reading under which the roll ties. The contrary reading gives no band and a 35 miss, and is available to anyone who wants it. Three independent v31 extractions against corpus f1237506 (canonical + CACHE_BUST x2), unintentionally bought — see Rule 75. Identical in all three: the position identity (2 documents — the September 2025 pricing 8-K and the June 2026 10-Q), the ladder row for row (4 senior-note tranches, the $6.5bn revolver as capacity, the commercial paper programme at $1.0bn), the base tie (5 rows → 592 and 31 rows → 30,871, both exact against the 10-K's own printed subtotals, 31,463 total), the roll tie (31,463 − 550 + 1,000 = 31,913 against the anchor's stated 31,878, residual 35 inside the ±50 the filer's own \"approximately\" earns), coverage (31,913 face, residual 0.11%, passes), criteria 4 and 6, and the full computed-criteria verdict. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (1): (1) the three runs fire a different NUMBER of triggers (5, 4 and 5) — large-cash-balance and floating-rate-debt come and go. None of them touches the position: the roll reads only debt-maturity and new-debt-issuance, both fired in all three, and a non-position citation is not identity-bearing (Rule 65). A reader may see a different count of non-refi signals."
   },
   "attestation": {
     "rowsCorrect": true,
     "instrumentTypeFaithful": true,
     "reproducedThreeTimes": true,
     "by": "Akshay Sahani",
-    "on": "2026-09-09"
+    "on": "2026-10-29"
   },
   "criteria": [
     {
@@ -18,7 +18,7 @@
       "name": "every row's amount, maturity and instrument correct against the filing",
       "kind": "attested",
       "pass": true,
-      "detail": "attested by Akshay Sahani on 2026-09-09 against 10-Q 2026-07-30",
+      "detail": "attested by Akshay Sahani on 2026-10-29 against 10-Q 2026-07-30",
       "defends": "a ladder that ties to itself and to nothing in the world"
     },
     {
@@ -66,7 +66,7 @@
       "name": "capacity separated and excluded from the debt sum",
       "kind": "computed",
       "pass": true,
-      "detail": "1 capacity row(s) held out of captured face and reported separately: revolving credit and letter of credit agreement",
+      "detail": "1 capacity row(s) held out of captured face and reported separately: Revolving Credit Agreement",
       "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
     },
     {
@@ -82,7 +82,7 @@
       "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
       "kind": "computed",
       "pass": true,
-      "detail": "4 of 5 row(s) carry a class; the remaining 1 state \"class not stated on this row\" explicitly (commercial paper program)",
+      "detail": "4 of 5 row(s) carry a class; the remaining 1 state \"class not stated on this row\" explicitly (Commercial Paper Program)",
       "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
     },
     {
@@ -121,11 +121,10 @@
     },
     "filingSet": [
       "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+      "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
       "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
     ],
-    "otherCitations": [
-      "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
-    ],
+    "otherCitations": [],
     "asOf": "2026-09-09",
     "rows": [
       {
@@ -173,7 +172,7 @@
         "maturitySourceLine": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056."
       },
       {
-        "instrument": "revolving credit and letter of credit agreement",
+        "instrument": "Revolving Credit Agreement",
         "amount": "$ 6.5 billion",
         "maturityDate": "2030-04-01",
         "dateGranularity": "month",
@@ -184,7 +183,7 @@
         "maturitySourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\")."
       },
       {
-        "instrument": "commercial paper program",
+        "instrument": "Commercial Paper Program",
         "amount": "$ 1.0 billion",
         "maturityDate": null,
         "dateGranularity": null,
@@ -409,15 +408,15 @@
       "baseTies": true,
       "deltas": [
         {
-          "instrument": "1.250 % senior notes",
+          "instrument": "1.250% notes due March 2026",
           "amountMillions": -550,
           "statedAs": "$ 550 million",
-          "date": "2026-03-01",
+          "date": "2026-03",
           "sourceLine": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
           "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
         },
         {
-          "instrument": "commercial paper program",
+          "instrument": "commercial paper",
           "amountMillions": 1000,
           "statedAs": "$ 1.0 billion at 2026-06-30 against $— at 2025-12-31",
           "date": "2026-06-30",
@@ -442,23 +441,23 @@
         "proseInstruments": [
           {
             "category": "revolver",
-            "name": "revolving credit and letter of credit agreement",
+            "name": "Revolving Credit Agreement",
             "amount": "$ 6.5 billion",
             "amountBasis": "commitment",
             "asOfDate": "2026-06-30",
-            "dateGranularity": "day",
-            "maturityDate": "2030-04-01",
+            "dateGranularity": "month",
+            "maturityDate": "2030-04",
             "rate": null,
             "sourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
           },
           {
             "category": "commercial-paper",
-            "name": "commercial paper program",
+            "name": "Commercial Paper Program",
             "amount": "$ 1.0 billion",
             "amountBasis": "outstanding",
             "asOfDate": "2026-06-30",
-            "dateGranularity": "day",
+            "dateGranularity": null,
             "maturityDate": null,
             "rate": "3.92 %",
             "sourceLine": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
@@ -467,37 +466,38 @@
         ],
         "facilities": [
           {
-            "name": "revolving credit and letter of credit agreement",
+            "name": "Revolving Credit Agreement",
             "category": "revolver",
             "facilitySize": {
               "value": "$ 6.5 billion",
               "sourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\")."
             },
             "drawn": {
-              "value": "$0 million",
+              "value": "$0",
               "sourceLine": "As of June 30, 2026, there was no outstanding balance under the Credit Agreement."
             },
             "lettersOfCredit": null,
-            "available": {
-              "value": "$ 6.5 billion",
-              "sourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\")."
-            },
+            "available": null,
             "maturity": {
               "value": "April 2030",
               "sourceLine": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\")."
             },
             "asOfDate": "2026-06-30",
             "availabilityBasis": null,
+            "lettersOfCreditCapacity": {
+              "value": "$ 500 million",
+              "sourceLine": "The Company can borrow up to $ 6.5 billion under the Credit Agreement for general corporate purposes, with up to $ 500 million available for issuance of letters of credit."
+            },
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
             "figureSources": {
               "facilitySize": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
               "drawn": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
-              "available": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+              "lettersOfCreditCapacity": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
               "maturity": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
             }
           },
           {
-            "name": "commercial paper program",
+            "name": "Commercial Paper Program",
             "category": "commercial-paper",
             "facilitySize": {
               "value": "$ 6.5 billion",
@@ -527,13 +527,411 @@
           "referencedFiling": "the Company's 2025 Form 10-K",
           "referencedSubject": "short-term and long-term debt"
         },
-        "referencedScheduleSequence": [],
-        "referencedBalanceSheetDebtCaptions": [],
+        "referencedScheduleSequence": [
+          {
+            "kind": "row",
+            "label": "$ 550 million, 1.250 % Notes due March 2026",
+            "amount": "$ 549 million",
+            "rate": "1.250 %",
+            "maturityDate": "2026-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Short-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 550 million, 1.250 % Notes due March 2026 549   —"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,284 million, 4.500 % Notes due February 2026",
+            "amount": "$ —",
+            "rate": "4.500 %",
+            "maturityDate": "2026-02",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,284 million, 4.500 % Notes due February 2026 $ —   $ 1,285"
+          },
+          {
+            "kind": "row",
+            "label": "$ 700 million, 5.685 % Notes due March 2026",
+            "amount": "$ —",
+            "rate": "5.685 %",
+            "maturityDate": "2026-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 700 million, 5.685 % Notes due March 2026 —   699"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,500 million, 3.400 % Notes due March 2027",
+            "amount": "$ 1,481 million",
+            "rate": "3.400 %",
+            "maturityDate": "2027-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,500 million, 3.400 % Notes due March 2027 1,481   1,466"
+          },
+          {
+            "kind": "row",
+            "label": "$ 259 million, 7.875 % Debentures due May 2027",
+            "amount": "$ 260 million",
+            "rate": "7.875 %",
+            "maturityDate": "2027-05",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 259 million, 7.875 % Debentures due May 2027 260   259"
+          },
+          {
+            "kind": "row",
+            "label": "$ 600 million, 3.050 % Notes due October 2027",
+            "amount": "$ 599 million",
+            "rate": "3.050 %",
+            "maturityDate": "2027-10",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 600 million, 3.050 % Notes due October 2027 599   598"
+          },
+          {
+            "kind": "row",
+            "label": "$ 3,800 million, 4.375 % Notes due October 2028",
+            "amount": "$ 3,792 million",
+            "rate": "4.375 %",
+            "maturityDate": "2028-10",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 3,800 million, 4.375 % Notes due October 2028 3,792   3,790"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,000 million, 5.000 % Notes due May 2029",
+            "amount": "$ 996 million",
+            "rate": "5.000 %",
+            "maturityDate": "2029-05",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,000 million, 5.000 % Notes due May 2029 996   995"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,400 million, 2.400 % Notes due March 2030",
+            "amount": "$ 1,406 million",
+            "rate": "2.400 %",
+            "maturityDate": "2030-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,400 million, 2.400 % Notes due March 2030 (1) 1,406   1,386"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,000 million, 4.500 % Notes due September 2030",
+            "amount": "$ 993 million",
+            "rate": "4.500 %",
+            "maturityDate": "2030-09",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,000 million, 4.500 % Notes due September 2030 993   —"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,500 million, 2.375 % Notes due March 2031",
+            "amount": "$ 1,420 million",
+            "rate": "2.375 %",
+            "maturityDate": "2031-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,500 million, 2.375 % Notes due March 2031 (1) 1,420   1,384"
+          },
+          {
+            "kind": "row",
+            "label": "$ 750 million, 5.125 % Notes due May 2031",
+            "amount": "$ 750 million",
+            "rate": "5.125 %",
+            "maturityDate": "2031-05",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 750 million, 5.125 % Notes due May 2031 (1) 750   745"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,250 million, 4.875 % Notes due September 2032",
+            "amount": "$ 1,243 million",
+            "rate": "4.875 %",
+            "maturityDate": "2032-09",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,250 million, 4.875 % Notes due September 2032 1,243   —"
+          },
+          {
+            "kind": "row",
+            "label": "$ 45 million, 8.080 % Step Down Notes due January 2033",
+            "amount": "$ 45 million",
+            "rate": "8.080 %",
+            "maturityDate": "2033-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 45 million, 8.080 % Step Down Notes due January 2033 45   45"
+          },
+          {
+            "kind": "row",
+            "label": "$ 800 million, 5.400 % Notes due March 2033",
+            "amount": "$ 796 million",
+            "rate": "5.400 %",
+            "maturityDate": "2033-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 800 million, 5.400 % Notes due March 2033 (1) 796   795"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,250 million, 5.250 % Notes due February 2034",
+            "amount": "$ 1,250 million",
+            "rate": "5.250 %",
+            "maturityDate": "2034-02",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,250 million, 5.250 % Notes due February 2034 (1) 1,250   1,226"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,500 million, 5.250 % Notes due January 2036",
+            "amount": "$ 1,488 million",
+            "rate": "5.250 %",
+            "maturityDate": "2036-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,500 million, 5.250 % Notes due January 2036 1,488   —"
+          },
+          {
+            "kind": "row",
+            "label": "$ 190 million, 6.150 % Notes due November 2036",
+            "amount": "$ 190 million",
+            "rate": "6.150 %",
+            "maturityDate": "2036-11",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 190 million, 6.150 % Notes due November 2036 190   190"
+          },
+          {
+            "kind": "row",
+            "label": "$ 2,200 million, 4.800 % Notes due August 2038",
+            "amount": "$ 2,194 million",
+            "rate": "4.800 %",
+            "maturityDate": "2038-08",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 2,200 million, 4.800 % Notes due August 2038 (1) 2,194   2,193"
+          },
+          {
+            "kind": "row",
+            "label": "$ 750 million, 3.200 % Notes due March 2040",
+            "amount": "$ 748 million",
+            "rate": "3.200 %",
+            "maturityDate": "2040-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 750 million, 3.200 % Notes due March 2040 748   744"
+          },
+          {
+            "kind": "row",
+            "label": "$ 121 million, 5.875 % Notes due March 2041",
+            "amount": "$ 119 million",
+            "rate": "5.875 %",
+            "maturityDate": "2041-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 121 million, 5.875 % Notes due March 2041 119   119"
+          },
+          {
+            "kind": "row",
+            "label": "$ 448 million, 6.125 % Notes due November 2041",
+            "amount": "$ 484 million",
+            "rate": "6.125 %",
+            "maturityDate": "2041-11",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 448 million, 6.125 % Notes due November 2041 484   485"
+          },
+          {
+            "kind": "row",
+            "label": "$ 317 million, 5.375 % Notes due February 2042",
+            "amount": "$ 315 million",
+            "rate": "5.375 %",
+            "maturityDate": "2042-02",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 317 million, 5.375 % Notes due February 2042 315   315"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,500 million, 4.800 % Notes due July 2046",
+            "amount": "$ 1,469 million",
+            "rate": "4.800 %",
+            "maturityDate": "2046-07",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,500 million, 4.800 % Notes due July 2046 1,469   1,469"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,000 million, 3.875 % Notes due October 2047",
+            "amount": "$ 990 million",
+            "rate": "3.875 %",
+            "maturityDate": "2047-10",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,000 million, 3.875 % Notes due October 2047 990   990"
+          },
+          {
+            "kind": "row",
+            "label": "$ 3,000 million, 4.900 % Notes due December 2048",
+            "amount": "$ 2,972 million",
+            "rate": "4.900 %",
+            "maturityDate": "2048-12",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 3,000 million, 4.900 % Notes due December 2048 2,972   2,971"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,184 million, 3.400 % Notes due March 2050",
+            "amount": "$ 1,172 million",
+            "rate": "3.400 %",
+            "maturityDate": "2050-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,184 million, 3.400 % Notes due March 2050 1,172   1,237"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,429 million, 3.400 % Notes due March 2051",
+            "amount": "$ 1,410 million",
+            "rate": "3.400 %",
+            "maturityDate": "2051-03",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,429 million, 3.400 % Notes due March 2051 1,410   1,479"
+          },
+          {
+            "kind": "row",
+            "label": "$ 1,500 million, 5.600 % Notes due February 2054",
+            "amount": "$ 1,486 million",
+            "rate": "5.600 %",
+            "maturityDate": "2054-02",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 1,500 million, 5.600 % Notes due February 2054 1,486   1,482"
+          },
+          {
+            "kind": "row",
+            "label": "$ 750 million, 6.000 % Notes due January 2056",
+            "amount": "$ 735 million",
+            "rate": "6.000 %",
+            "maturityDate": "2056-01",
+            "dateGranularity": "month",
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "$ 750 million, 6.000 % Notes due January 2056 735   —"
+          },
+          {
+            "kind": "row",
+            "label": "Other, including finance leases",
+            "amount": "$ 68 million",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "Other, including finance leases 68   41"
+          },
+          {
+            "kind": "subtotal",
+            "label": "Total long-term debt",
+            "amount": "$ 30,871 million",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": "Long-term debt",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "Total long-term debt $ 30,871   $ 28,937"
+          }
+        ],
+        "referencedBalanceSheetDebtCaptions": [
+          {
+            "label": "Short-term debt",
+            "amount": "$ 592 million",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "Short-term debt 592   3,035"
+          },
+          {
+            "label": "Long-term debt",
+            "amount": "$ 30,871 million",
+            "periodColumn": "December 31, 2025",
+            "sourceLine": "Long-term debt 30,871   28,937"
+          }
+        ],
         "triggerId": "debt-maturity",
         "triggerName": "Debt maturity approaching",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "$ 550 million, 1.250 % Notes due March 2026 matured in March 2026 and were repaid during the six months ended June 30, 2026. Additional maturities approaching include $ 1,500 million, 3.400 % Notes due March 2027 and $ 259 million, 7.875 % Debentures due May 2027.",
+        "evidence": "$ 550 million, 1.250 % Notes due March 2026 maturing within the next 12 months from the June 30, 2026 reporting date.",
         "mappedNeed": "Refinancing",
         "needType": "credit",
         "confidence": 0.95,
@@ -543,35 +941,29 @@
             "date": "2026-07-30",
             "reportDate": "2026-06-30",
             "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
-          },
-          {
-            "form": "10-K",
-            "date": "2026-02-26",
-            "reportDate": "2025-12-31",
-            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "$ 1,500 million, 3.400 % Notes due March 2027",
-        "verifiedQuoteNormalized": "$ 1,500 million, 3.400 % Notes due March 2027",
-        "quoteMatchType": "literal",
+        "verifiedQuote": "30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026. For more information regardi",
+        "verifiedQuoteNormalized": "30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026. For more information regardi",
+        "quoteMatchType": "co-occurrence",
         "quoteHasFigure": true,
-        "eventDate": "2027-03-01",
-        "dateGranularity": "month",
+        "eventDate": null,
+        "dateGranularity": null,
         "scheduleSequence": [],
         "priorScheduleSequence": [],
         "balanceSheetDebtCaptions": [
           {
             "label": "Short-term debt",
             "amount": "$ 2,792 million",
-            "periodColumn": "June 30, 2026",
+            "periodColumn": "As of June 30, 2026",
             "sourceLine": "Short-term debt $ 2,792   $ 592",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
           },
           {
             "label": "Long-term debt",
             "amount": "$ 29,086 million",
-            "periodColumn": "June 30, 2026",
+            "periodColumn": "As of June 30, 2026",
             "sourceLine": "Long-term debt 29,086   30,871",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
           }
@@ -971,9 +1363,9 @@
         "eventInstances": [],
         "noteRetirements": [
           {
-            "instrument": "1.250 % senior notes",
+            "instrument": "$ 550 million, 1.250 % Notes due March 2026",
             "amount": "$ 550 million",
-            "eventDate": "2026-03-01",
+            "eventDate": "2026-03",
             "dateGranularity": "month",
             "sourceLine": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
@@ -1018,17 +1410,11 @@
         "triggerName": "New debt issuance / notes pricing",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "In September 2025, the Company issued $ 4.5 billion of new senior notes in four tranches: $ 1.0 billion 4.500% Notes due 2030, $ 1.25 billion 4.875% Notes due 2032, $ 1.5 billion 5.250% Notes due 2036, and $ 750 million 6.000% Notes due 2056. Proceeds were used to repay $ 2.0 billion of loans outstanding under the Term Loan Facility and for general corporate purposes.",
+        "evidence": "On September 4, 2025, the Company completed its offering of $4.5 billion in aggregate principal amount of senior notes in four tranches: $1.0 billion 4.500% Notes due 2030, $1.25 billion 4.875% Notes due 2032, $1.5 billion 5.250% Notes due 2036, and $750 million 6.000% Notes due 2056.",
         "mappedNeed": "Refi or add-on financing",
         "needType": "credit",
         "confidence": 0.95,
         "citations": [
-          {
-            "form": "10-K",
-            "date": "2026-02-26",
-            "reportDate": "2025-12-31",
-            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
-          },
           {
             "form": "8-K",
             "date": "2025-09-04",
@@ -1037,8 +1423,8 @@
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "On September 4, 2025, The Cigna Group (the \"Company\") completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the \"2030 Notes\"), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the \"2032 Notes\"), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the \"2036 Notes\") and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056",
-        "verifiedQuoteNormalized": "erial Definitive Agreement. On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036 Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes",
+        "verifiedQuote": "On September 4, 2025, The Cigna Group (the \"Company\") completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the \"2030 Notes\"), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the \"2032 Notes\"), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the \"2036 Notes\") and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the \"Notes\").",
+        "verifiedQuoteNormalized": "erial Definitive Agreement. On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036 Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”). The Notes were sold pursuant",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
         "eventDate": "2025-09-04",
@@ -1062,12 +1448,16 @@
             "amount": "$ 2.0 billion",
             "status": "intended",
             "sourceLine": "The Company intends to use the proceeds (i) to repay $2.0 billion of loans outstanding under the Term Loan Agreement, dated as of August 5, 2025, among the Company, the guarantors from time to time party thereto, the banks from time to time party thereto and Bank of America, N.A., as administrative agent, the proceeds of which were used to fund a strategic investment in another company, and (ii) the remainder for general corporate purposes, which may include investments and repayment of indebtedness.",
-            "verified": true
+            "verified": true,
+            "foundIn": {
+              "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+              "filingDate": "2025-09-04"
+            }
           }
         ],
         "proceedsUses": [
           {
-            "use": "repay $ 2.0 billion of loans outstanding under the Term Loan Facility",
+            "use": "repay $2.0 billion of loans outstanding under the Term Loan Facility",
             "amount": "$ 2.0 billion",
             "sourceLine": "The Company intends to use the proceeds (i) to repay $2.0 billion of loans outstanding under the Term Loan Agreement, dated as of August 5, 2025, among the Company, the guarantors from time to time party thereto, the banks from time to time party thereto and Bank of America, N.A., as administrative agent, the proceeds of which were used to fund a strategic investment in another company, and (ii) the remainder for general corporate purposes, which may include investments and repayment of indebtedness."
           },
@@ -1082,9 +1472,9 @@
             "instrument": "4.500% Senior Notes due 2030",
             "amount": "$ 1,000 million",
             "rate": "4.500 %",
-            "seniority": "senior",
             "maturityDate": "2030-09-15",
             "dateGranularity": "day",
+            "seniority": "senior unsecured",
             "sourceLine": "On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
             "maturitySourceLine": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
@@ -1094,9 +1484,9 @@
             "instrument": "4.875% Senior Notes due 2032",
             "amount": "$ 1,250 million",
             "rate": "4.875 %",
-            "seniority": "senior",
             "maturityDate": "2032-09-15",
             "dateGranularity": "day",
+            "seniority": "senior unsecured",
             "sourceLine": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
             "maturitySourceLine": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032.",
@@ -1106,9 +1496,9 @@
             "instrument": "5.250% Senior Notes due 2036",
             "amount": "$ 1,500 million",
             "rate": "5.250 %",
-            "seniority": "senior",
             "maturityDate": "2036-01-15",
             "dateGranularity": "day",
+            "seniority": "senior unsecured",
             "sourceLine": "4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032 Notes”), $1,500,000,000 in aggregate principal amount of its 5.250% Senior Notes due 2036 (the “2036",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
             "maturitySourceLine": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036.",
@@ -1118,9 +1508,9 @@
             "instrument": "6.000% Senior Notes due 2056",
             "amount": "$ 750 million",
             "rate": "6.000 %",
-            "seniority": "senior",
             "maturityDate": "2056-01-15",
             "dateGranularity": "day",
+            "seniority": "senior unsecured",
             "sourceLine": "Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and the 2036 Notes, the “Notes”).",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
             "maturitySourceLine": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056.",
@@ -1131,7 +1521,7 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$ 4.5 billion",
+        "cashAmount": "$ 4.465 billion",
         "projectName": null,
         "eventStatus": "completed",
         "proceedsUse": "partly_unapplied"
@@ -1152,7 +1542,14 @@
         "mappedNeed": "Bridge financing, then permanent",
         "needType": "credit",
         "confidence": 0.95,
-        "citations": [],
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-30",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+          }
+        ],
         "quoteVerified": true,
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
@@ -1200,8 +1597,15 @@
         "evidence": null,
         "mappedNeed": "Term loan or capex facility",
         "needType": "credit",
-        "confidence": 0.95,
-        "citations": [],
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-30",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+          }
+        ],
         "quoteVerified": true,
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
@@ -1246,7 +1650,7 @@
         "triggerName": "Revolver near capacity + growth",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "The revolving credit facility has a $ 6.5 billion commitment with no outstanding balance as of June 30, 2026. The commercial paper program has $ 1.0 billion outstanding against a $ 6.5 billion capacity, leaving substantial available capacity.",
+        "evidence": "As of June 30, 2026, there was no outstanding balance under the $6.5 billion revolving credit facility, and the commercial paper program had $1.0 billion outstanding against a $6.5 billion capacity.",
         "mappedNeed": "Revolver upsize",
         "needType": "credit",
         "confidence": 0.95,
@@ -1302,7 +1706,7 @@
         "triggerName": "Dividend recap / buyback authorization",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "The Company declared common dividends of $ 1.56 per share for the second quarter 2026 and $ 1.56 per share for the third quarter 2026. The Company also maintains a share repurchase program authorized by the Board with approximately $ 6.480 billion remaining available for repurchase as of June 30, 2026.",
+        "evidence": "On July 22, 2026, the Board declared a third quarter cash dividend of $1.56 per share. The Company repurchased $250 million of common stock during the six months ended June 30, 2026, and maintains an ongoing share repurchase program with approximately $6.48 billion remaining authorization.",
         "mappedNeed": "Leverage capacity conversation",
         "needType": "credit",
         "confidence": 0.95,
@@ -1319,74 +1723,8 @@
         "verifiedQuoteNormalized": "On July 22, 2026 , the Board of Directors of The Cigna Group (the \"Board\") declared the third quarter cash dividend of $ 1.56 per share of The Cigna Group common stock to be paid on September 23, 2026 to shareholders of record on September 8, 2026 .",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
-        "eventDate": null,
-        "dateGranularity": null,
-        "scheduleSequence": [],
-        "priorScheduleSequence": [],
-        "balanceSheetDebtCaptions": [],
-        "debtScheduleSourceFiling": null,
-        "debtSchedulePriorFiling": null,
-        "anchorNoteShape": "not-recorded",
-        "priorPeriodBase": null,
-        "noteLocatorVersion": null,
-        "rowsExtracted": 0,
-        "rowsVerified": 0,
-        "baseRowsExtracted": 0,
-        "columnReadFailure": false,
-        "scheduleCompleteness": null,
-        "redeems": [],
-        "proceedsUses": [],
-        "issuedTranches": [],
-        "eventInstances": [
-          {
-            "description": "Quarterly cash dividend of $ 1.56 per share declared for third quarter 2026",
-            "amount": null,
-            "eventDate": "2026-07-22",
-            "dateGranularity": "day",
-            "eventStatus": "just_announced",
-            "sourceLine": "On July 22, 2026 , the Board of Directors of The Cigna Group (the \"Board\") declared the third quarter cash dividend of $ 1.56 per share of The Cigna Group common stock to be paid on September 23, 2026 to shareholders of record on September 8, 2026 .",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
-          }
-        ],
-        "noteRetirements": [],
-        "projectCompletionDate": null,
-        "projectCompletionGranularity": null,
-        "cashAmount": null,
-        "projectName": null,
-        "eventStatus": "standing",
-        "proceedsUse": null
-      },
-      {
-        "proseInstruments": [],
-        "facilities": [],
-        "facilityRejections": [],
-        "seniorityStatement": null,
-        "noteCrossReference": null,
-        "referencedScheduleSequence": [],
-        "referencedBalanceSheetDebtCaptions": [],
-        "triggerId": "large-cash-balance",
-        "triggerName": "Large cash balance building",
-        "fired": true,
-        "dataAvailable": true,
-        "evidence": "Cash and cash equivalents were $ 6.298 billion as of June 30, 2026, compared to $ 7.676 billion as of December 31, 2025. While the balance decreased during the first half of 2026, it remains substantial relative to the company's operations.",
-        "mappedNeed": "Liquidity management, earning on idle cash",
-        "needType": "treasury",
-        "confidence": 0.9,
-        "citations": [
-          {
-            "form": "10-Q",
-            "date": "2026-07-30",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
-          }
-        ],
-        "quoteVerified": true,
-        "verifiedQuote": "Cash and cash equivalents $ 6,298   $ 7,676",
-        "verifiedQuoteNormalized": "In millions) 2026 2025 Assets Cash and cash equivalents $6.3 billion $7.68 billion Investments 959 $1.06 billion A",
-        "quoteMatchType": "literal",
-        "quoteHasFigure": true,
-        "eventDate": null,
-        "dateGranularity": null,
+        "eventDate": "2026-07-22",
+        "dateGranularity": "day",
         "scheduleSequence": [],
         "priorScheduleSequence": [],
         "balanceSheetDebtCaptions": [],
@@ -1407,7 +1745,63 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$ 6.298 billion",
+        "cashAmount": null,
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
+        "triggerId": "large-cash-balance",
+        "triggerName": "Large cash balance building",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "Cash and cash equivalents were $6.298 billion as of June 30, 2026, compared to $7.676 billion as of December 31, 2025, representing a decrease of $1.378 billion during the first half of 2026.",
+        "mappedNeed": "Liquidity management, earning on idle cash",
+        "needType": "treasury",
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-30",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "Cash and cash equivalents $ 6,298   $ 7,676",
+        "verifiedQuoteNormalized": "In millions) 2026 2025 Assets Cash and cash equivalents $6.3 billion $7.68 billion Investments 959 $1.06 billion A",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2026-06-30",
+        "dateGranularity": "day",
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$ 6,298 million",
         "projectName": null,
         "eventStatus": "standing",
         "proceedsUse": null
@@ -1424,7 +1818,7 @@
         "triggerName": "Asset sale / divestiture closing",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "On March 19, 2025, the Company completed the sale of its Medicare Advantage, Medicare Individual Stand-Alone Prescription Drug Plans, Medicare and Other Supplemental Benefits, and CareAllies businesses to Health Care Services Corporation (HCSC) for cash proceeds of $ 4.9 billion.",
+        "evidence": "On March 19, 2025, the Company completed the sale of its Medicare Advantage, Medicare Individual Stand-Alone Prescription Drug Plans, Medicare and Other Supplemental Benefits, and CareAllies businesses to Health Care Services Corporation (HCSC) for $4.9 billion in cash proceeds.",
         "mappedNeed": "Proceeds deposit + sweep",
         "needType": "treasury",
         "confidence": 0.95,
@@ -1434,18 +1828,12 @@
             "date": "2026-07-30",
             "reportDate": "2026-06-30",
             "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
-          },
-          {
-            "form": "10-K",
-            "date": "2026-02-26",
-            "reportDate": "2025-12-31",
-            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "The Company completed the sale of our Medicare Advantage, Medicare Individual Stand-Alone Prescription Drug Plans, Medicare and Other Supplemental Benefits, and CareAllies ® businesses on March 19, 2025. The Company received cash proceeds of $ 4.9 billion and recorded the related gain on sale of businesses.",
-        "verifiedQuoteNormalized": "The Company completed the sale of our Medicare Advantage, Medicare Individual Stand-Alone Prescription Drug Plans, Medicare and Other Supplemental Benefits, and CareAllies ® businesses on March 19, 2025. The Company received cash proceeds of $ 4.9 billion and recorded the related gain on sale of businesses.",
-        "quoteMatchType": "literal",
+        "verifiedQuote": "xcept per share amounts) 2026 2025 2026 2025 Revenues Pharmacy r",
+        "verifiedQuoteNormalized": "xcept per share amounts) 2026 2025 2026 2025 Revenues Pharmacy r",
+        "quoteMatchType": "co-occurrence",
         "quoteHasFigure": true,
         "eventDate": "2025-03-19",
         "dateGranularity": "day",
@@ -1472,7 +1860,7 @@
             "eventDate": "2025-03-19",
             "dateGranularity": "day",
             "eventStatus": "completed",
-            "sourceLine": "The Company completed the sale of our Medicare Advantage, Medicare Individual Stand-Alone Prescription Drug Plans, Medicare and Other Supplemental Benefits, and CareAllies ® businesses on March 19, 2025. The Company received cash proceeds of $ 4.9 billion and recorded the related gain on sale of businesses.",
+            "sourceLine": "The Company received cash proceeds of $ 4.9 billion and recorded the related gain on sale of businesses.",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
           }
         ],
@@ -1500,7 +1888,14 @@
         "mappedNeed": "FX hedging, cross-border cash management",
         "needType": "treasury",
         "confidence": 0.85,
-        "citations": [],
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-30",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+          }
+        ],
         "quoteVerified": true,
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
@@ -1548,7 +1943,7 @@
         "evidence": null,
         "mappedNeed": "New operating accounts",
         "needType": "treasury",
-        "confidence": 0.5,
+        "confidence": 0.7,
         "citations": [],
         "quoteVerified": true,
         "verifiedQuote": null,
@@ -1598,55 +1993,6 @@
         "mappedNeed": "Proceeds management, treasury build-out",
         "needType": "treasury",
         "confidence": 0.95,
-        "citations": [],
-        "quoteVerified": true,
-        "verifiedQuote": null,
-        "verifiedQuoteNormalized": null,
-        "quoteMatchType": null,
-        "quoteHasFigure": false,
-        "eventDate": null,
-        "dateGranularity": null,
-        "scheduleSequence": [],
-        "priorScheduleSequence": [],
-        "balanceSheetDebtCaptions": [],
-        "debtScheduleSourceFiling": null,
-        "debtSchedulePriorFiling": null,
-        "anchorNoteShape": "not-recorded",
-        "priorPeriodBase": null,
-        "noteLocatorVersion": null,
-        "rowsExtracted": 0,
-        "rowsVerified": 0,
-        "baseRowsExtracted": 0,
-        "columnReadFailure": false,
-        "scheduleCompleteness": null,
-        "redeems": [],
-        "proceedsUses": [],
-        "issuedTranches": [],
-        "eventInstances": [],
-        "noteRetirements": [],
-        "projectCompletionDate": null,
-        "projectCompletionGranularity": null,
-        "cashAmount": null,
-        "projectName": null,
-        "eventStatus": "standing",
-        "proceedsUse": null
-      },
-      {
-        "proseInstruments": [],
-        "facilities": [],
-        "facilityRejections": [],
-        "seniorityStatement": null,
-        "noteCrossReference": null,
-        "referencedScheduleSequence": [],
-        "referencedBalanceSheetDebtCaptions": [],
-        "triggerId": "floating-rate-debt",
-        "triggerName": "Floating-rate debt + rate exposure",
-        "fired": false,
-        "dataAvailable": true,
-        "evidence": "The Company's outstanding debt as of June 30, 2026 consists primarily of fixed-rate senior notes. The revolving credit facility allows for borrowings at either a base rate, term SOFR, or daily simple SOFR, but there was no outstanding balance under the Credit Agreement as of June 30, 2026. The commercial paper program had $ 1.0 billion outstanding at an average interest rate of 3.92%, which is floating-rate debt.",
-        "mappedNeed": "Interest-rate hedging",
-        "needType": "credit",
-        "confidence": 0.9,
         "citations": [
           {
             "form": "10-Q",
@@ -1695,6 +2041,62 @@
         "noteCrossReference": null,
         "referencedScheduleSequence": [],
         "referencedBalanceSheetDebtCaptions": [],
+        "triggerId": "floating-rate-debt",
+        "triggerName": "Floating-rate debt + rate exposure",
+        "fired": true,
+        "dataAvailable": true,
+        "evidence": "The Company's revolving credit facility allows for borrowings at either a base rate, term SOFR, or daily simple SOFR, plus an applicable margin. The commercial paper program had $1.0 billion outstanding as of June 30, 2026 at an average interest rate of 3.92%, which is floating-rate debt.",
+        "mappedNeed": "Interest-rate hedging",
+        "needType": "credit",
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-30",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+          }
+        ],
+        "quoteVerified": true,
+        "verifiedQuote": "The Credit Agreement allows for borrowings at either a base rate, term Secured Overnight Financing Rate (\"SOFR\") or daily simple SOFR, plus, in each case, an applicable margin based on the Company's senior unsecured credit ratings.",
+        "verifiedQuoteNormalized": "The Credit Agreement allows for borrowings at either a base rate, term Secured Overnight Financing Rate (\"SOFR\") or daily simple SOFR, plus, in each case, an applicable margin based on the Company's senior unsecured credit ratings.",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": null,
+        "dateGranularity": null,
+        "scheduleSequence": [],
+        "priorScheduleSequence": [],
+        "balanceSheetDebtCaptions": [],
+        "debtScheduleSourceFiling": null,
+        "debtSchedulePriorFiling": null,
+        "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
+        "noteLocatorVersion": null,
+        "rowsExtracted": 0,
+        "rowsVerified": 0,
+        "baseRowsExtracted": 0,
+        "columnReadFailure": false,
+        "scheduleCompleteness": null,
+        "redeems": [],
+        "proceedsUses": [],
+        "issuedTranches": [],
+        "eventInstances": [],
+        "noteRetirements": [],
+        "projectCompletionDate": null,
+        "projectCompletionGranularity": null,
+        "cashAmount": "$ 1.0 billion",
+        "projectName": null,
+        "eventStatus": "standing",
+        "proceedsUse": null
+      },
+      {
+        "proseInstruments": [],
+        "facilities": [],
+        "facilityRejections": [],
+        "seniorityStatement": null,
+        "noteCrossReference": null,
+        "referencedScheduleSequence": [],
+        "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "commodity-exposure",
         "triggerName": "Commodity / input-cost exposure",
         "fired": false,
@@ -1703,7 +2105,14 @@
         "mappedNeed": "Commodity hedging",
         "needType": "credit",
         "confidence": 0.85,
-        "citations": [],
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-30",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+          }
+        ],
         "quoteVerified": true,
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
@@ -1751,8 +2160,15 @@
         "evidence": null,
         "mappedNeed": "FX hedging program",
         "needType": "treasury",
-        "confidence": 0.85,
-        "citations": [],
+        "confidence": 0.8,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-07-30",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+          }
+        ],
         "quoteVerified": true,
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
@@ -1797,16 +2213,16 @@
         "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "The Company was in compliance with its debt covenants as of December 31, 2025. No covenant breaches, waivers, going-concern qualifications, or liquidity warnings are disclosed in the filings.",
+        "evidence": null,
         "mappedNeed": "Restructuring or amendment support",
         "needType": "distress",
         "confidence": 0.95,
         "citations": [
           {
-            "form": "10-K",
-            "date": "2026-02-26",
-            "reportDate": "2025-12-31",
-            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+            "form": "10-Q",
+            "date": "2026-07-30",
+            "reportDate": "2026-06-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
           }
         ],
         "quoteVerified": true,
@@ -1843,6 +2259,80 @@
       }
     ],
     "verdict": "CALL",
-    "relationshipFlags": []
+    "relationshipFlags": [],
+    "recordedReadSet": [
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+        "form": "10-Q",
+        "filingDate": "2026-07-30",
+        "accessionNumber": "0001739940-26-000065",
+        "contentHash": "a7aea800a2925656c27a948d23238f28699c1ef90c7acd6362205494649fbea3",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000043/ci-20260331.htm",
+        "form": "10-Q",
+        "filingDate": "2026-04-30",
+        "accessionNumber": "0001739940-26-000043",
+        "contentHash": "0363266fc6ca4fa8ce2ae7d282aced2536455863c8c94eb5281c800b3c52ce42",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
+        "form": "10-K",
+        "filingDate": "2026-02-26",
+        "accessionNumber": "0001739940-26-000006",
+        "contentHash": "40555ebce2194ff3ccf4f9c0e0b3ce4366a8a54942b23fe1324a8801394a7789",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126038056/ef20082869_8k.htm",
+        "form": "8-K",
+        "filingDate": "2026-09-30",
+        "accessionNumber": "0001140361-26-038056",
+        "contentHash": "c1d88fdf2e25db26d0ff5312f8742c71c5a3e61c4990b38a505b03cce2f16d70",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126020906/ef20073186_8k.htm",
+        "form": "8-K",
+        "filingDate": "2026-05-13",
+        "accessionNumber": "0001140361-26-020906",
+        "contentHash": "6ad82cb2b38ecf737129a0e0b3881f2a186e14f72873e5820f36ea8fafb5355f",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126007450/ef20066976_8k.htm",
+        "form": "8-K",
+        "filingDate": "2026-03-03",
+        "accessionNumber": "0001140361-26-007450",
+        "contentHash": "41772130fc7ca08b66cd6a6b8a3966b3b49301ee4b3efc14db29a21322c7dd47",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126007049/ef20066640_8k.htm",
+        "form": "8-K",
+        "filingDate": "2026-02-27",
+        "accessionNumber": "0001140361-26-007049",
+        "contentHash": "5245183e540de05bc319c010f8c7c4b3f2788052c0d7bbfd94a420d93c236052",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125042597/ef20059558_8k.htm",
+        "form": "8-K",
+        "filingDate": "2025-11-18",
+        "accessionNumber": "0001140361-25-042597",
+        "contentHash": "9517b8ef80c2715f970c48151e3a5d33942bd51d727f5ef110969f974ffc487e",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm",
+        "form": "8-K",
+        "filingDate": "2025-09-04",
+        "accessionNumber": "0001140361-25-033986",
+        "contentHash": "78a6dff8d3bf5310eae21b193bcfbd5e2a0972106fbf368524e3017c4250ce09",
+        "via": "base"
+      }
+    ]
   }
 }
