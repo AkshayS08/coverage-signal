@@ -81,6 +81,16 @@ export function displayAmount(printed: string, sentence: string, scaledUsd?: num
   return `${hedgeMark(sentence, printed)}${formatMM(usd, mmDecimals(printed))}`;
 }
 
+/**
+ * SESSION 27 (Akshay, Oct 30, 2026): a computed figure's PART as the page shows
+ * it, through the same format function as every other figure (Rule 67) — never
+ * its raw source string. "approximately $ 746 million" is "~$746MM", the tilde
+ * earned by "approximately" in its sentence. The sign is the view's.
+ */
+export function partText(p: { printed: string; usd: number; src: { sentence: string } }): string {
+  return displayAmount(p.printed, p.src.sentence, Math.abs(p.usd));
+}
+
 /** A computed figure: $MM at the finest precision any of its parts carries. */
 export function displayUsd(usd: number, hedged = false, decimals = 0): string {
   return `${hedged ? "~" : ""}${formatMM(usd, decimals)}`;

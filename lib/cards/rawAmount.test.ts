@@ -22,8 +22,12 @@ let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const CIKS = JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[];
 const cardOf = (cik: string) => JSON.parse(readFileSync(join("lib", "cards", "generated", `${cik}.json`), "utf-8"));
-/** The card's own money format: $MM / $B / $K at the source's precision, an optional ~ or <, a sign, or $0. */
-const CARD_FORMAT = /^[−-]?\s?[~<]?\$[\d,]+(?:\.\d+)?(?:MM|B|K)?$/;
+/**
+ * A raw source amount: the filing's own wording of a figure — a scale word ("million"), a hedge word
+ * ("approximately"), or the HTML-to-text "$ 746" spacing. The card's format function never produces any of these;
+ * it writes "$746MM", "~$746MM", "$6.5B", and, in a chart under its own "$MM" axis, the bare "746".
+ */
+const RAW_SOURCE = /\b(?:million|billion|thousand|approximately|about|roughly)\b|\$\s+\d/i;
 
 /** Every figure the page renders, as the view renders it. `part` is how a computed figure's part is shown. */
 function renderedFigures(card: any, part: (p: any) => string): { where: string; text: string }[] {
@@ -37,7 +41,7 @@ function renderedFigures(card: any, part: (p: any) => string): { where: string; 
   walk(card.v3, "v3");
   return out;
 }
-const raw = (figs: { text: string }[]) => figs.filter((f) => !CARD_FORMAT.test(f.text.trim()));
+const raw = (figs: { where: string; text: string }[]) => figs.filter((f) => RAW_SOURCE.test(f.text));
 
 for (const cik of CIKS) {
   const card = cardOf(cik), figs = renderedFigures(card, partText), bad = raw(figs);

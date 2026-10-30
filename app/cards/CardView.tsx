@@ -1,5 +1,5 @@
 import type { Card, CardSection, Line, Segment } from "@/lib/cards/types";
-import { sentenceUrl } from "@/lib/cards/format";
+import { partText, sentenceUrl } from "@/lib/cards/format";
 import styles from "./cards.module.css";
 import CardV3View from "./CardV3View";
 
@@ -42,7 +42,7 @@ export function Seg({ s }: { s: Segment }) {
               <span key={n} className={styles.part}>
                 <a href={sentenceUrl(p.src.url, p.src.sentence)} target="_blank" rel="noreferrer" title={`${p.src.doc}: “${p.src.sentence}”`}>
                   {p.usd < 0 ? "− " : n ? "+ " : ""}
-                  {p.printed}
+                  {partText(p)}
                 </a>
                 <span className={styles.partDoc}> {p.src.doc}</span>
               </span>
