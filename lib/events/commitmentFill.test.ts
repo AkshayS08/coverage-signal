@@ -51,7 +51,7 @@ for (const cik of CIKS) for (const s of samples(cik)) {
   const after = filled(s.result);
   const name = `${s.result.company} ${s.label}`;
   const c2 = evaluateGoldenCriteria(after, AS_OF, {}).criteria.find((k) => k.id === "2")!;
-  assert(c2.pass, `[K1:${name}] criterion 2 holds after the fill (${c2.detail.slice(0, 110)})`);
+  assert(c2.pass === true, `[K1:${name}] criterion 2 holds after the fill (${c2.detail.slice(0, 110)})`);
   assert(computeCoverage(dmOf(after)).capturedFace === computeCoverage(dmOf(s.result)).capturedFace && funded(after) === funded(s.result),
     `[K2:${name}] captured face and the funded rows are unchanged by the fill`);
   if (cik === "0001739940") {

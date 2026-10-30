@@ -215,3 +215,35 @@ export function fundedProse(prose: ProseInstrumentRow[], rows: { label?: string 
     return true;
   });
 }
+
+/**
+ * SESSION 27 (Akshay, Oct 30, 2026) — A NARRATIVE INSTRUMENT WITH NO AMOUNT
+ * TAKES THE COMMITMENT ITS OWN CITED SENTENCE STATES. Cigna's v33 revolver
+ * came back with no amount and no basis; its sentence states "$ 6.5 billion"
+ * as a commitment, and the same answer's verified facility carries that size
+ * from that sentence. The fill goes through EXACTLY ONE verified facility of
+ * the same category whose size cites the instrument's own sentence and is
+ * printed in it; two candidates fill neither, another sentence fills
+ * nothing, and a carried amount is never touched.
+ *
+ * GUARDRAIL: the basis is "commitment". It is facility size, never
+ * outstanding debt: it never enters captured debt or the ladder (the
+ * position holds a commitment out as capacity) and renders only under
+ * Facilities. commitmentFill.test pins that, with a leak control.
+ */
+export function fillCommitmentFromFacility<P extends { category?: string | null; amount?: string | null; amountBasis?: string | null; sourceLine?: string | null }>(
+  prose: P[],
+  facilities: { category?: string | null; facilitySize?: { value?: string | null; sourceLine?: string | null } | null }[]
+): P[] {
+  const flat = (s: string | null | undefined) => String(s ?? "").replace(/\s+/g, " ").trim();
+  const printedIn = (value: string, sentence: string) => {
+    const num = (value.match(/\d[\d,.]*/) ?? [""])[0];
+    const unit = (value.match(/\b(billion|million|thousand)\b/i) ?? [""])[0].toLowerCase();
+    return !!num && sentence.replace(/\s+/g, " ").includes(num) && (!unit || sentence.toLowerCase().includes(unit));
+  };
+  return prose.map((p) => {
+    if ((p.amount ?? "").trim() || !p.sourceLine) return p;
+    const hits = facilities.filter((f) => f.category && f.category === p.category && f.facilitySize?.value && flat(f.facilitySize.sourceLine) === flat(p.sourceLine) && printedIn(String(f.facilitySize.value), String(p.sourceLine)));
+    return hits.length === 1 ? { ...p, amount: hits[0].facilitySize!.value!, amountBasis: "commitment" } : p;
+  });
+}

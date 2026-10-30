@@ -60,6 +60,7 @@ import { checkMoneyScale, hasDeterminableMoneyScale, applyTableUnitToAmount, isS
 import { detectDollarScaleAt, canonicalScaleWord } from "./scaleNormalize";
 import { createTextLocator } from "./verifyQuote";
 import { annotatePrintedHeadings, recoverSubtotalLabels } from "../events/printedHeadings";
+import { fillCommitmentFromFacility } from "../events/instrument";
 // A LAYERING INVERSION, STATED RATHER THAN HIDDEN. `amountSupportOf` answers
 // "does this line state this amount", and Rule 58's extension needs that
 // question at extraction time. There is NO runtime cycle — position.ts imports
@@ -1692,7 +1693,7 @@ async function runAgentLoopInner(
       result,
       dateGuard,
       textByUrl,
-      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments: proseFromSentence, facilities, facilityRejections, seniorityStatement },
+      { scheduleSequence, priorScheduleSequence, issuedTranches, balanceSheetDebtCaptions, eventInstances, noteRetirements, proseInstruments: fillCommitmentFromFacility(proseFromSentence, facilities), facilities, facilityRejections, seniorityStatement },
       debtScheduleGuidance.base,
       debtScheduleGuidance.prior,
       anchorNoteShape,

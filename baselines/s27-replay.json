@@ -7304,8 +7304,8 @@
        {
         "category": "revolver",
         "name": "Revolving Credit Agreement",
-        "amount": null,
-        "amountBasis": null,
+        "amount": "$ 6.5 billion",
+        "amountBasis": "commitment",
         "asOfDate": "2026-06-30",
         "dateGranularity": "month",
         "maturityDate": "2030-04",
