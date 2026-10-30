@@ -3,7 +3,7 @@
   "signature": {
     "signedBy": "Akshay Sahani",
     "signedOn": "2026-10-29",
-    "basis": "RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v31 signature of 2026-09-09. Cleared by Akshay Sahani on Oct 29, 2026. Signed over the canonical v33 answer on read set 0bb8858c40f7aac2d0dda953 (current; the $0 replay through the loop gives the same state). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. NOTHING WAS TOLERATED BY THE 9b GATE. Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 23. (1) THE CORPUS MOVED HARD — the cited set is 2 documents against the 6 the v29 signature pinned. Five of those six are no longer cited (thc-20240805.htm, thc-20251231.htm, thc-20260331.htm, thc-20260908.htm, d845102d8k.htm) and one 8-K is new (d104323d8k.htm). Rule 30: a pin against a corpus that is not the current one is re-signed, never compared across. (2) THE EXTRACTION MOVED IN ONE PLACE, AND IT IS THE FIX THAT WAS ASKED FOR — the senior secured revolving credit facility reads $1.900 billion, as the filing prints it, where v29 printed $1,900 million. That is v31's unit rule (copy the printed unit, never convert) doing exactly its named job; the money is unchanged and the transcription is now the filing's own. (2b) AND THE SCALE WORD IS OURS, CANONICALLY — the twelve table rows whose cells carry no unit of their own take one from the filing's governing declaration, and that word is now the tool's singular (\"$ 1,500 million\") rather than the caption's inflection, which had been copied verbatim and rendered \"$ 1,500    millions\" across this whole ladder. The filing states a SCALE; it does not state how that scale is spelled beside one number, so there was nothing there to be faithful to. Values and units unchanged. (3) PROVENANCE WIDENED, NOT CHANGED — seven schedule sourceLines now carry both period columns (\"6.750 % due 2031 $ 1,350 $ 1,350\") where v29 carried one. Every line still states its own row's amount; Rule 58 is clean across all twelve rows. (4) NOTHING ELSE MOVED: twelve rows, identical on value, unit, maturity, granularity, provenance and capacity flag; coverage unchanged; one card, as before. Facility figures identical across all three v31 runs. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.4492): 12 rows in every run; every row identical across all three under compareToGolden on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical (statedTotalDebt, capturedFace, statedBridge, denominator); the cited document set identical across all three. Facility figures are NOT covered by 9b and were measured separately: identical across all three runs, labels included. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included. IDENTITY REDEFINED BY FIX 1, POSITION UNCHANGED. Session 24 narrowed a golden's filing set from the union of citations across all fifteen triggers to the documents the POSITION rests on — ladder rows' own citations, the anchor, and each facility figure's own `figureSources` document. The old union made an unrelated trigger's citation part of a signed position's identity: DaVita's 10-K entered it via `international-expansion` (whose quote had FAILED verification and been discarded) and CHS's 8-K via `asset-sale`, each in one run of three, and each made the signed position read as incomparable. This file was RE-PINNED, not re-signed: the position state was compared field by field with the filing set neutralised and came back identical — rows, amounts, maturities, granularity, provenance, capacity flags, coverage, tier 2 and cards all unchanged. No figure was re-read and no new attestation is claimed; only the definition of what this signature is pinned TO has changed."
+    "basis": "RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v33 signature of 2026-10-29. Cleared by Akshay Sahani on Oct 29, 2026. Re-signed Oct 30 under his Rule 66 ruling of that day: the 10-K is a source only where the anchor is not-located and directs to it, which is not Tenet's case, so the revolver's and the L/C facility's maturity (November 4, 2030), stated only in the 10-K, are removed from the card, and the 10-K leaves the position identity. Nothing else moved. Signed over the canonical v33 answer on read set 0bb8858c40f7aac2d0dda953 (current; the $0 replay through the loop gives the same state). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. NOTHING WAS TOLERATED BY THE 9b GATE. Previously signed 2026-10-29 on the basis: RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v31 signature of 2026-09-09. Cleared by Akshay Sahani on Oct 29, 2026. Signed over the canonical v33 answer on read set 0bb8858c40f7aac2d0dda953 (current; the $0 replay through the loop gives the same state). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. NOTHING WAS TOLERATED BY THE 9b GATE. Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 23. (1) THE CORPUS MOVED HARD — the cited set is 2 documents against the 6 the v29 signature pinned. Five of those six are no longer cited (thc-20240805.htm, thc-20251231.htm, thc-20260331.htm, thc-20260908.htm, d845102d8k.htm) and one 8-K is new (d104323d8k.htm). Rule 30: a pin against a corpus that is not the current one is re-signed, never compared across. (2) THE EXTRACTION MOVED IN ONE PLACE, AND IT IS THE FIX THAT WAS ASKED FOR — the senior secured revolving credit facility reads $1.900 billion, as the filing prints it, where v29 printed $1,900 million. That is v31's unit rule (copy the printed unit, never convert) doing exactly its named job; the money is unchanged and the transcription is now the filing's own. (2b) AND THE SCALE WORD IS OURS, CANONICALLY — the twelve table rows whose cells carry no unit of their own take one from the filing's governing declaration, and that word is now the tool's singular (\"$ 1,500 million\") rather than the caption's inflection, which had been copied verbatim and rendered \"$ 1,500    millions\" across this whole ladder. The filing states a SCALE; it does not state how that scale is spelled beside one number, so there was nothing there to be faithful to. Values and units unchanged. (3) PROVENANCE WIDENED, NOT CHANGED — seven schedule sourceLines now carry both period columns (\"6.750 % due 2031 $ 1,350 $ 1,350\") where v29 carried one. Every line still states its own row's amount; Rule 58 is clean across all twelve rows. (4) NOTHING ELSE MOVED: twelve rows, identical on value, unit, maturity, granularity, provenance and capacity flag; coverage unchanged; one card, as before. Facility figures identical across all three v31 runs. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.4492): 12 rows in every run; every row identical across all three under compareToGolden on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical (statedTotalDebt, capturedFace, statedBridge, denominator); the cited document set identical across all three. Facility figures are NOT covered by 9b and were measured separately: identical across all three runs, labels included. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included. IDENTITY REDEFINED BY FIX 1, POSITION UNCHANGED. Session 24 narrowed a golden's filing set from the union of citations across all fifteen triggers to the documents the POSITION rests on — ladder rows' own citations, the anchor, and each facility figure's own `figureSources` document. The old union made an unrelated trigger's citation part of a signed position's identity: DaVita's 10-K entered it via `international-expansion` (whose quote had FAILED verification and been discarded) and CHS's 8-K via `asset-sale`, each in one run of three, and each made the signed position read as incomparable. This file was RE-PINNED, not re-signed: the position state was compared field by field with the filing set neutralised and came back identical — rows, amounts, maturities, granularity, provenance, capacity flags, coverage, tier 2 and cards all unchanged. No figure was re-read and no new attestation is claimed; only the definition of what this signature is pinned TO has changed."
   },
   "attestation": {
     "rowsCorrect": true,
@@ -120,10 +120,10 @@
       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
     },
     "filingSet": [
-      "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
       "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
     ],
     "otherCitations": [
+      "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
       "https://www.sec.gov/Archives/edgar/data/70318/000007031826000026/thc-20260331.htm",
       "https://www.sec.gov/Archives/edgar/data/70318/000119312525286146/d845102d8k.htm",
       "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
@@ -210,13 +210,13 @@
       {
         "instrument": "senior secured revolving credit facility",
         "amount": "$ 1.900 billion",
-        "maturityDate": "2030-11-04",
-        "dateGranularity": "day",
+        "maturityDate": null,
+        "dateGranularity": null,
         "status": "live",
         "provenance": "note-narrative",
         "isCapacity": true,
         "sourceLine": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
-        "maturitySourceLine": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied."
+        "maturitySourceLine": null
       },
       {
         "instrument": "6.125 % due 2028",
@@ -380,19 +380,18 @@
               "value": "$ 1.900 billion",
               "sourceLine": "Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible accounts receivable, eligible inventory and Medicaid supplemental payments, was $ 1.900  billion at June 30, 2026."
             },
-            "maturity": {
-              "value": "November 4, 2030",
-              "sourceLine": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied."
-            },
+            "maturity": null,
             "asOfDate": "2026-06-30",
             "availabilityBasis": null,
+            "removedUnderRule66": [
+              "maturity"
+            ],
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
             "figureSources": {
               "facilitySize": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
               "drawn": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
               "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-              "available": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-              "maturity": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
+              "available": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
             }
           },
           {
@@ -408,17 +407,16 @@
               "sourceLine": "At June 30, 2026, we had $ 105 million of standby letters of credit outstanding under the LC Facility."
             },
             "available": null,
-            "maturity": {
-              "value": "November 4, 2030",
-              "sourceLine": "We amended the LC Facility in November 2025 (the \"LC Facility Amendment\") to, among other things, extend the scheduled maturity date from March 16, 2027 to November 4, 2030 and revise certain pricing terms under the LC Facility."
-            },
+            "maturity": null,
             "asOfDate": "2026-06-30",
             "availabilityBasis": null,
+            "removedUnderRule66": [
+              "maturity"
+            ],
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
             "figureSources": {
               "facilitySize": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-              "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-              "maturity": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
+              "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
             }
           }
         ],
@@ -1095,7 +1093,7 @@
         "cashAmount": null,
         "projectName": null,
         "eventStatus": "completed",
-        "proceedsUse": null
+        "proceedsUse": "refinancing_only"
       },
       {
         "proseInstruments": [],

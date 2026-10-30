@@ -35,7 +35,7 @@ import { buildCard } from "../cards/build";
 const SIGNER = "Akshay Sahani";
 const CLEARED_ON = "2026-10-29";
 const CLEARED: Record<string, string> = {
-  "0000070318": "Cleared by Akshay Sahani on Oct 29, 2026.",
+  "0000070318": "Cleared by Akshay Sahani on Oct 29, 2026. Re-signed Oct 30 under his Rule 66 ruling of that day: the 10-K is a source only where the anchor is not-located and directs to it, which is not Tenet's case, so the revolver's and the L/C facility's maturity (November 4, 2030), stated only in the 10-K, are removed from the card, and the 10-K leaves the position identity. Nothing else moved.",
   "0000785161": "Cleared by Akshay Sahani on Oct 29, 2026, at its pre-Oct 28 read set (its Q3 earnings 8-K of Oct 28 moved the read set after the samples were taken; by ruling, an earnings 8-K alone is not a refresh).",
   "0000927066": "Cleared by Akshay Sahani on Oct 29, 2026, on the tolerated classes: the byte-identity condition first set was withdrawn as stricter than what Tenet and Encompass were signed on. The 136 card lines that differ from the v31 card are cited sentences verbatim in the same document that state the amount (Rule 58); no figure, date or label differs. Its subtotal label \"Total debt principal outstanding\" is recovered from the document in code.",
   "0001739940": "Cleared by Akshay Sahani on Oct 30, 2026, on the condition that 3/3 and criterion 2 hold. Its deltas are matched by identity and labelled from it (ruling of Oct 29); its revolver's commitment is filled from its own sentence through its one verified facility, basis commitment, held out of captured debt (ruling of Oct 30).",

@@ -675,18 +675,7 @@
      },
      {
       "k": "text",
-      "t": ", matures "
-     },
-     {
-      "k": "date",
-      "t": "November 4, 2030",
-      "date": "2030-11-04",
-      "granularity": "day",
-      "src": {
-       "sentence": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied.",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
-       "doc": "10-K 2026-02-17"
-      }
+      "t": ", no maturity stated"
      }
     ]
    ]
@@ -1262,18 +1251,7 @@
     },
     {
      "k": "text",
-     "t": ", due "
-    },
-    {
-     "k": "date",
-     "t": "November 4, 2030",
-     "date": "2030-11-04",
-     "granularity": "day",
-     "src": {
-      "sentence": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied.",
-      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
-      "doc": "10-K 2026-02-17"
-     }
+     "t": ", no maturity stated"
     },
     {
      "k": "text",
@@ -2582,14 +2560,12 @@
        "t": "Maturity "
       },
       {
-       "k": "date",
-       "t": "November 4, 2030",
-       "date": "2030-11-04",
-       "granularity": "day",
+       "k": "notStated",
+       "t": "not stated",
        "src": {
-        "sentence": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
-        "doc": "10-K 2026-02-17"
+        "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+        "doc": "10-Q 2026-07-29"
        }
       }
      ],
@@ -2681,23 +2657,6 @@
         "doc": "10-Q 2026-07-29"
        },
        "field": "facilitySize"
-      }
-     ],
-     [
-      {
-       "k": "text",
-       "t": "Maturity "
-      },
-      {
-       "k": "date",
-       "t": "November 4, 2030",
-       "date": "2030-11-04",
-       "granularity": "day",
-       "src": {
-        "sentence": "We amended the LC Facility in November 2025 (the \"LC Facility Amendment\") to, among other things, extend the scheduled maturity date from March 16, 2027 to November 4, 2030 and revise certain pricing terms under the LC Facility.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
-        "doc": "10-K 2026-02-17"
-       }
       }
      ],
      [
@@ -4128,21 +4087,6 @@
         "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "doc": "10-Q 2026-07-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": ", matures "
-      },
-      {
-       "k": "date",
-       "t": "November 4, 2030",
-       "date": "2030-11-04",
-       "granularity": "day",
-       "src": {
-        "sentence": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
-        "doc": "10-K 2026-02-17"
        }
       }
      ],
@@ -6836,25 +6780,6 @@
      {
       "k": "text",
       "t": " letters of credit"
-     },
-     {
-      "k": "text",
-      "t": " · "
-     },
-     {
-      "k": "text",
-      "t": "matures "
-     },
-     {
-      "k": "date",
-      "t": "November 4, 2030",
-      "date": "2030-11-04",
-      "granularity": "day",
-      "src": {
-       "sentence": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied.",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm",
-       "doc": "10-K 2026-02-17"
-      }
      }
     ],
     "sub": [

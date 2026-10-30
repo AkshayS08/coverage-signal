@@ -3,6 +3,13 @@ TENET HEALTHCARE CORP [s27-retaste-1] ($0.0000): REPRODUCES the canonical positi
 
 TENET HEALTHCARE CORP [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
 
+Encompass Health Corp [s27-retaste-1] ($0.0000): REPRODUCES the canonical position
+
+Encompass Health Corp [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
+    tolerated: non-position citations moved: 1 added, 1 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are re
+    tolerated: rows["Advances under revolving credit facility"].maturitySourceLine: expected "the maturity date has been changed to March 9, 2031", got "the maturity date is March 9, 2031, rather than October 7, 202
+    facility figures (not pinned by 9b): canonical senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=approximately $ 746 million | this sample senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=$ 746 million
+
 DAVITA INC. [s27-retaste-1] ($0.0000): REPRODUCES the canonical position
     tolerated: rows["4.625% Senior Notes"].sourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %" — bo
     tolerated: rows["4.625% Senior Notes"].maturitySourceLine: expected "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750", got "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625  
@@ -46,12 +53,5 @@ Cigna Group [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
     tolerated: 66 text field(s) differ only in whitespace or footnote markers such as "(1)" (Session 27 ruling (b)): rolled.baseRows[1].instrument, rolled.baseRows[1].sourceLine, rolled.baseRows[2].instrument, rolle
     facility figures (not pinned by 9b): canonical Revolving Credit Agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=— | this sample $ 6.5 billion, five-year revolving credit and letter of credit agreement: facilitySize=$ 6.5 billion drawn=$0 lettersOfCredit=— available=—
     facility figures (not pinned by 9b): canonical Commercial Paper Program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=— | this sample Commercial paper program: facilitySize=$ 6.5 billion drawn=$ 1.0 billion lettersOfCredit=— available=—
-
-Encompass Health Corp [s27-retaste-1] ($0.0000): REPRODUCES the canonical position
-
-Encompass Health Corp [s27-retaste-2] ($0.0000): REPRODUCES the canonical position
-    tolerated: non-position citations moved: 1 added, 1 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are re
-    tolerated: rows["Advances under revolving credit facility"].maturitySourceLine: expected "the maturity date has been changed to March 9, 2031", got "the maturity date is March 9, 2031, rather than October 7, 202
-    facility figures (not pinned by 9b): canonical senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=approximately $ 746 million | this sample senior secured revolving credit facility: facilitySize=$ 1 billion drawn=$ 200.0 million lettersOfCredit=— available=$ 746 million
 
 9b: 8 of 8 re-taste samples reproduce their canonical position.
