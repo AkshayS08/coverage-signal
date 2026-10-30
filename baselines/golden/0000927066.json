@@ -1,16 +1,16 @@
 {
-  "extractionVersion": 31,
+  "extractionVersion": 33,
   "signature": {
     "signedBy": "Akshay Sahani",
-    "signedOn": "2026-09-09",
-    "basis": "Re-signed in Session 26 (Oct 17, 2026) for criterion 8b only. Reason: a row's priority class is now read only from a heading the anchor's table PRINTS before the row's block (card_spec v2.0 §3.5; Akshay's rulings of Oct 15 and Oct 17, 2026); the stored answer's recorded headings fed the class whether printed or not (audit-spine instance 12). Printed headings: \"Senior Secured Credit Facilities\"; \"Senior Notes\". Recorded but not printed, so no longer a class source: none. 8b was \"all 9 row(s) carry a class (Senior Secured Credit Facilities; Senior Notes)\"; now \"7 of 9 row(s) carry a class; the remaining 2 state \"class not stated on this row\" explicitly (Acquisition obligations and other notes payable; Financing lease obligations). Sections printed: Senior Secured Credit Facilities; Senior Notes\". The stored result gains one field per row, printedHeading, computed in code from the anchor's own text (the loop now records the same); nothing else in it changed. Position, coverage, filing set and every other criterion compared and UNCHANGED. Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 24, and the position it pins is the one v29 pinned: nine rows, same instruments, same amounts, same maturities and classes. WHAT MOVED WAS OUR ABILITY TO SEE THAT. This name failed criterion 9b three times, and every failure was in this codebase rather than in the extraction. (1) The ladder returned 9, 17 and 9 rows across three runs whose every row-bearing field was IDENTICAL — same instruments, values, counts and period columns. The only difference was a date written \"11/24/2030\" instead of \"2030-11-24\", which made `debtRowDateToken` return null, which `rowsRepresentSameTranche` reported as \"not the same tranche\", which re-added seven prior entries beside their own live twins (Rule 61). An earlier diagnosis of mine blamed an off-anchor 10-K citation; that was wrong and is recorded as wrong — the citation was on `international-expansion` and never touched the ladder. (2) The same spelling then broke ROW IDENTITY, a second and independent path to the same question, reporting seven instruments as seven MISSING plus seven UNEXPECTED. (3) The answer's IDENTITY moved when that unrelated citation entered the fifteen-trigger filing set (Rule 65). Two extraction-side changes also land here and both are corrections rather than re-readings: five facility figures that alternated between \"$ 188,482 thousand\" and \"$ 188,482\" across runs — the bare form being dropped as indeterminate — now take their scale from the filing's own \"dollars and shares in thousands\" declaration in code; and maturity dates render canonically, while the extracted entry keeps what the filing printed. Nine rows, coverage unchanged, every facility figure identical across all three v31 runs. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.3834; re-read at $0 after each fix): 9 rows in every run, identical across all three under compareToGolden on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical; the cited position documents identical. Facility figures are NOT covered by 9b and were measured separately: identical across all three runs, labels included. THIS NAME FAILED 9b THREE TIMES BEFORE IT HELD, and each failure was ours rather than the model's — the ladder doubled to 17 rows when a date spelled \"11/24/2030\" made a comparison report identical tranches as different ones (Rule 61); the same spelling then broke ROW IDENTITY separately, reporting seven instruments as seven missing plus seven unexpected; and the identity of the answer itself moved when an `international-expansion` citation entered the filing set (Rule 65). The three runs behind this evidence are the same three extractions throughout: nothing was re-bought to make them agree. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
+    "signedOn": "2026-10-29",
+    "basis": "RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v31 signature of 2026-09-09. Cleared by Akshay Sahani on Oct 29, 2026, on the tolerated classes: the byte-identity condition first set was withdrawn as stricter than what Tenet and Encompass were signed on. The 136 card lines that differ from the v31 card are cited sentences verbatim in the same document that state the amount (Rule 58); no figure, date or label differs. Its subtotal label \"Total debt principal outstanding\" is recovered from the document in code. Signed over the canonical v33 answer on read set 6053888cae75bc597980f79b (current; the $0 replay through the loop gives the same state). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (9): (1) rows[\"4.625% Senior Notes\"].sourceLine: expected \"4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750\", got \"4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %\" — both sentences state the row's amount, so this is which document was cited, not a changed fact (2) rows[\"4.625% Senior Notes\"].maturitySourceLine: expected \"4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750\", got \"4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %\" — both sentences state the row's maturity at the precision shown, so this is which sentence was cited, not a changed fact (3) rows[\"3.75% Senior Notes\"].sourceLine: expected \"3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625\", got \"3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %\" — both sentences state the row's amount, so this is which document was cited, not a changed fact (4) rows[\"3.75% Senior Notes\"].maturitySourceLine: expected \"3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625\", got \"3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %\" — both sentences state the row's maturity at the precision shown, so this is which sentence was cited, not a changed fact (5) rows[\"6.875% Senior Notes\"].sourceLine: expected \"6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750\", got \"6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %\" — both sentences state the row's amount, so this is which document was cited, not a changed fact (6) rows[\"6.875% Senior Notes\"].maturitySourceLine: expected \"6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750\", got \"6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %\" — both sentences state the row's maturity at the precision shown, so this is which sentence was cited, not a changed fact (7) rows[\"6.75% Senior Notes\"].sourceLine: expected \"6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750\", got \"6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %\" — both sentences state the row's amount, so this is which document was cited, not a changed fact (8) rows[\"6.75% Senior Notes\"].maturitySourceLine: expected \"6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750\", got \"6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %\" — both sentences state the row's maturity at the precision shown, so this is which sentence was cited, not a changed fact (9) rows[\"Acquisition obligations and other notes payable\"].sourceLine: expected \"Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463\", got \"Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %\" — both sentences state the row's amount, so this is which document was cited, not a changed fact Previously signed 2026-09-09 on the basis: Re-signed in Session 26 (Oct 17, 2026) for criterion 8b only. Reason: a row's priority class is now read only from a heading the anchor's table PRINTS before the row's block (card_spec v2.0 §3.5; Akshay's rulings of Oct 15 and Oct 17, 2026); the stored answer's recorded headings fed the class whether printed or not (audit-spine instance 12). Printed headings: \"Senior Secured Credit Facilities\"; \"Senior Notes\". Recorded but not printed, so no longer a class source: none. 8b was \"all 9 row(s) carry a class (Senior Secured Credit Facilities; Senior Notes)\"; now \"7 of 9 row(s) carry a class; the remaining 2 state \"class not stated on this row\" explicitly (Acquisition obligations and other notes payable; Financing lease obligations). Sections printed: Senior Secured Credit Facilities; Senior Notes\". The stored result gains one field per row, printedHeading, computed in code from the anchor's own text (the loop now records the same); nothing else in it changed. Position, coverage, filing set and every other criterion compared and UNCHANGED. Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined at v31 in Session 24, and the position it pins is the one v29 pinned: nine rows, same instruments, same amounts, same maturities and classes. WHAT MOVED WAS OUR ABILITY TO SEE THAT. This name failed criterion 9b three times, and every failure was in this codebase rather than in the extraction. (1) The ladder returned 9, 17 and 9 rows across three runs whose every row-bearing field was IDENTICAL — same instruments, values, counts and period columns. The only difference was a date written \"11/24/2030\" instead of \"2030-11-24\", which made `debtRowDateToken` return null, which `rowsRepresentSameTranche` reported as \"not the same tranche\", which re-added seven prior entries beside their own live twins (Rule 61). An earlier diagnosis of mine blamed an off-anchor 10-K citation; that was wrong and is recorded as wrong — the citation was on `international-expansion` and never touched the ladder. (2) The same spelling then broke ROW IDENTITY, a second and independent path to the same question, reporting seven instruments as seven MISSING plus seven UNEXPECTED. (3) The answer's IDENTITY moved when that unrelated citation entered the fifteen-trigger filing set (Rule 65). Two extraction-side changes also land here and both are corrections rather than re-readings: five facility figures that alternated between \"$ 188,482 thousand\" and \"$ 188,482\" across runs — the bare form being dropped as indeterminate — now take their scale from the filing's own \"dollars and shares in thousands\" declaration in code; and maturity dates render canonically, while the extracted entry keeps what the filing printed. Nine rows, coverage unchanged, every facility figure identical across all three v31 runs. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.3834; re-read at $0 after each fix): 9 rows in every run, identical across all three under compareToGolden on identity, amount, maturity date, granularity, provenance and capacity flag; coverage identical; the cited position documents identical. Facility figures are NOT covered by 9b and were measured separately: identical across all three runs, labels included. THIS NAME FAILED 9b THREE TIMES BEFORE IT HELD, and each failure was ours rather than the model's — the ladder doubled to 17 rows when a date spelled \"11/24/2030\" made a comparison report identical tranches as different ones (Rule 61); the same spelling then broke ROW IDENTITY separately, reporting seven instruments as seven missing plus seven unexpected; and the identity of the answer itself moved when an `international-expansion` citation entered the filing set (Rule 65). The three runs behind this evidence are the same three extractions throughout: nothing was re-bought to make them agree. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
   },
   "attestation": {
     "rowsCorrect": true,
     "instrumentTypeFaithful": true,
     "reproducedThreeTimes": true,
     "by": "Akshay Sahani",
-    "on": "2026-09-09"
+    "on": "2026-10-29"
   },
   "criteria": [
     {
@@ -18,7 +18,7 @@
       "name": "every row's amount, maturity and instrument correct against the filing",
       "kind": "attested",
       "pass": true,
-      "detail": "attested by Akshay Sahani on 2026-09-09 against 10-Q 2026-08-04",
+      "detail": "attested by Akshay Sahani on 2026-10-29 against 10-Q 2026-08-04",
       "defends": "a ladder that ties to itself and to nothing in the world"
     },
     {
@@ -136,7 +136,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063"
+        "sourceLine": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
+        "maturitySourceLine": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063"
       },
       {
         "instrument": "Revolving line of credit",
@@ -146,7 +147,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000"
+        "sourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
+        "maturitySourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000"
       },
       {
         "instrument": "Term Loan B-2",
@@ -156,7 +158,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015"
+        "sourceLine": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
+        "maturitySourceLine": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015"
       },
       {
         "instrument": "4.625% Senior Notes",
@@ -166,7 +169,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %"
+        "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750",
+        "maturitySourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750"
       },
       {
         "instrument": "3.75% Senior Notes",
@@ -176,7 +180,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %"
+        "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625",
+        "maturitySourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625"
       },
       {
         "instrument": "6.875% Senior Notes",
@@ -186,7 +191,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %"
+        "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750",
+        "maturitySourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750"
       },
       {
         "instrument": "6.75% Senior Notes",
@@ -196,7 +202,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %"
+        "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750",
+        "maturitySourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750"
       },
       {
         "instrument": "Acquisition obligations and other notes payable",
@@ -206,7 +213,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %"
+        "sourceLine": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463",
+        "maturitySourceLine": null
       },
       {
         "instrument": "Financing lease obligations",
@@ -216,7 +224,8 @@
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %"
+        "sourceLine": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
+        "maturitySourceLine": null
       }
     ],
     "coverage": {
@@ -229,6 +238,7 @@
     },
     "tier2": [],
     "rowsOutsideSubtotal": 0,
+    "rolled": null,
     "cards": []
   },
   "sourceResult": {
@@ -251,7 +261,7 @@
               "sourceLine": "As of June 30, 2026, the Company had $ 1,435,000 available and $ 65,000 drawn on its $ 1,500,000 revolving line of credit under its senior secured credit facilities."
             },
             "lettersOfCredit": {
-              "value": "$ 0 thousand",
+              "value": "$0",
               "sourceLine": "Credit available under this revolving line of credit is reduced by the amount of any letters of credit outstanding under the facility, of which there were none as of June 30, 2026."
             },
             "available": {
@@ -260,7 +270,7 @@
             },
             "maturity": {
               "value": "November 24, 2030",
-              "sourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000"
+              "sourceLine": "Outstanding Term Loan A-2 and revolving line of credit balances are due on November 24, 2030"
             },
             "asOfDate": "2026-06-30",
             "availabilityBasis": null,
@@ -301,7 +311,7 @@
         "triggerName": "Debt maturity approaching",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "4.625% Senior Notes due June 1, 2030 with $2,750,000 thousand principal outstanding as of June 30, 2026. Term Loan A-2 due November 24, 2030 unless 4.625% Senior Notes remain outstanding 91 days prior, in which case due March 2, 2030.",
+        "evidence": "4.625% Senior Notes due June 1, 2030 with $2,750,000 thousand outstanding as of June 30, 2026; Term Loan A-2 due November 24, 2030 with $1,975,000 thousand outstanding; Term Loan B-2 due May 9, 2031 with $2,357,910 thousand outstanding.",
         "mappedNeed": "Refinancing",
         "needType": "credit",
         "confidence": 0.95,
@@ -314,25 +324,26 @@
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
-        "verifiedQuoteNormalized": ".50% $65 million Senior Notes: 4.625% Senior Notes $2.75 billion $2.75 billion 6/1/2030 4.625 % $2.65 billion 3.75% Senior No",
+        "verifiedQuote": "Outstanding Term Loan A-2 and revolving line of credit balances are due on November 24, 2030 , unless any of the 4.625 % senior notes due 2030 (the 4.625 % Senior Notes) remain outstanding 91 days prior to the 4.625 % Senior Notes maturity date, in which case the outstanding Term Loan A-2 and revolving line of credit balances become due at that 91 day date ( March 2, 2030 ).",
+        "verifiedQuoteNormalized": "Outstanding Term Loan A-2 and revolving line of credit balances are due on November 24, 2030 , unless any of the 4.625 % senior notes due 2030 (the 4.625 % Senior Notes) remain outstanding 91 days prior to the 4.625 % Senior Notes maturity date, in which case the outstanding Term Loan A-2 and revolving line of credit balances become due at that 91 day date ( March 2, 2030 ).",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
-        "eventDate": "2030-06-01",
-        "dateGranularity": "day",
+        "eventDate": "2030",
+        "dateGranularity": "year",
         "scheduleSequence": [
           {
             "kind": "row",
             "label": "Term Loan A-2",
             "amount": "$ 1,975,000 thousand",
             "rate": "SOFR + 1.50%",
+            "seniority": null,
             "maturityDate": "2030-11-24",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Secured Credit Facilities",
             "periodColumn": "June 30, 2026",
+            "section": "Senior Secured Credit Facilities",
             "sourceLine": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "Term Loan A-2 (2) $ 1,975,000   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,970,063",
             "printedHeading": "Senior Secured Credit Facilities"
           },
           {
@@ -340,13 +351,14 @@
             "label": "Term Loan B-2",
             "amount": "$ 2,357,910 thousand",
             "rate": "SOFR + 1.75%",
+            "seniority": null,
             "maturityDate": "2031-05-09",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Secured Credit Facilities",
             "periodColumn": "June 30, 2026",
+            "section": "Senior Secured Credit Facilities",
             "sourceLine": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "Term Loan B-2 2,357,910   1,868,559   5/9/2031 SOFR + 1.75% $ 2,352,015",
             "printedHeading": "Senior Secured Credit Facilities"
           },
           {
@@ -354,13 +366,14 @@
             "label": "Revolving line of credit",
             "amount": "$ 65,000 thousand",
             "rate": "SOFR + 1.50%",
+            "seniority": null,
             "maturityDate": "2030-11-24",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Secured Credit Facilities",
             "periodColumn": "June 30, 2026",
+            "section": "Senior Secured Credit Facilities",
             "sourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000",
             "printedHeading": "Senior Secured Credit Facilities"
           },
           {
@@ -368,13 +381,14 @@
             "label": "4.625% Senior Notes",
             "amount": "$ 2,750,000 thousand",
             "rate": "4.625%",
+            "seniority": null,
             "maturityDate": "2030-06-01",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
+            "section": "Senior Notes",
+            "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750",
             "printedHeading": "Senior Notes"
           },
           {
@@ -382,13 +396,14 @@
             "label": "3.75% Senior Notes",
             "amount": "$ 1,500,000 thousand",
             "rate": "3.75%",
+            "seniority": null,
             "maturityDate": "2031-02-15",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %",
+            "section": "Senior Notes",
+            "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625",
             "printedHeading": "Senior Notes"
           },
           {
@@ -396,13 +411,14 @@
             "label": "6.875% Senior Notes",
             "amount": "$ 1,000,000 thousand",
             "rate": "6.875%",
+            "seniority": null,
             "maturityDate": "2032-09-01",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %",
+            "section": "Senior Notes",
+            "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750",
             "printedHeading": "Senior Notes"
           },
           {
@@ -410,13 +426,14 @@
             "label": "6.75% Senior Notes",
             "amount": "$ 1,000,000 thousand",
             "rate": "6.75%",
+            "seniority": null,
             "maturityDate": "2033-07-15",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %",
+            "section": "Senior Notes",
+            "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750",
             "printedHeading": "Senior Notes"
           },
           {
@@ -424,12 +441,12 @@
             "label": "Acquisition obligations and other notes payable",
             "amount": "$ 39,463 thousand",
             "rate": "4.67%",
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %",
+            "section": "Senior Notes",
+            "sourceLine": "Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
             "printedHeading": null
           },
@@ -438,11 +455,11 @@
             "label": "Financing lease obligations",
             "amount": "$ 160,143 thousand",
             "rate": "4.30%",
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "June 30, 2026",
+            "section": "Senior Notes",
             "sourceLine": "Financing lease obligations (4) 160,143   185,120   2027-2039 4.30   %",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
             "printedHeading": null
@@ -452,24 +469,24 @@
             "label": "Total debt principal outstanding",
             "amount": "$ 10,847,516 thousand",
             "rate": null,
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": null,
             "periodColumn": "June 30, 2026",
+            "section": null,
             "sourceLine": "Total debt principal outstanding 10,847,516   10,344,583",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
           },
           {
             "kind": "adjustment",
             "label": "Discount, premium and deferred financing costs",
-            "amount": "( $ 66,503 thousand )",
+            "amount": "( 66,503 ) thousand",
             "rate": null,
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": null,
             "periodColumn": "June 30, 2026",
+            "section": null,
             "sourceLine": "Discount, premium and deferred financing costs ( 66,503 ) ( 71,394 )",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
           },
@@ -478,24 +495,24 @@
             "label": null,
             "amount": "$ 10,781,013 thousand",
             "rate": null,
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": null,
             "periodColumn": "June 30, 2026",
+            "section": null,
             "sourceLine": "10,781,013   10,273,189",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
           },
           {
             "kind": "adjustment",
             "label": "Less current portion",
-            "amount": "( $ 117,177 thousand )",
+            "amount": "( 117,177 ) thousand",
             "rate": null,
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": null,
             "periodColumn": "June 30, 2026",
+            "section": null,
             "sourceLine": "Less current portion ( 117,177 ) ( 109,201 )",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
           }
@@ -506,103 +523,110 @@
             "label": "Term Loan A-2",
             "amount": "$ 1,987,500 thousand",
             "rate": "SOFR + 1.50%",
+            "seniority": null,
             "maturityDate": "2030-11-24",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Secured Credit Facilities",
             "periodColumn": "March 31, 2026",
+            "section": "Senior Secured Credit Facilities",
             "sourceLine": "Term Loan A-2 (2) $ 1,987,500   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,982,531",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm",
+            "maturitySourceLine": "Term Loan A-2 (2) $ 1,987,500   $ 2,000,000   11/24/2030 SOFR + 1.50% $ 1,982,531"
           },
           {
             "kind": "row",
             "label": "Term Loan B-2",
             "amount": "$ 1,863,864 thousand",
             "rate": "SOFR + 1.75%",
+            "seniority": null,
             "maturityDate": "2031-05-09",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Secured Credit Facilities",
             "periodColumn": "March 31, 2026",
+            "section": "Senior Secured Credit Facilities",
             "sourceLine": "Term Loan B-2 1,863,864   1,868,559   5/9/2031 SOFR + 1.75% $ 1,866,194",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm",
+            "maturitySourceLine": "Term Loan B-2 1,863,864   1,868,559   5/9/2031 SOFR + 1.75% $ 1,866,194"
           },
           {
             "kind": "row",
             "label": "Revolving line of credit",
             "amount": "$ 375,000 thousand",
             "rate": "SOFR + 1.50%",
+            "seniority": null,
             "maturityDate": "2030-11-24",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Secured Credit Facilities",
             "periodColumn": "March 31, 2026",
+            "section": "Senior Secured Credit Facilities",
             "sourceLine": "Revolving line of credit (2) 375,000   —   11/24/2030 SOFR + 1.50% $ 375,000",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm",
+            "maturitySourceLine": "Revolving line of credit (2) 375,000   —   11/24/2030 SOFR + 1.50% $ 375,000"
           },
           {
             "kind": "row",
             "label": "4.625% Senior Notes",
             "amount": "$ 2,750,000 thousand",
             "rate": "4.625%",
+            "seniority": null,
             "maturityDate": "2030-06-01",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "March 31, 2026",
-            "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "section": "Senior Notes",
+            "sourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,640,000",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,640,000"
           },
           {
             "kind": "row",
             "label": "3.75% Senior Notes",
             "amount": "$ 1,500,000 thousand",
             "rate": "3.75%",
+            "seniority": null,
             "maturityDate": "2031-02-15",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "March 31, 2026",
-            "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "section": "Senior Notes",
+            "sourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,372,500",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,372,500"
           },
           {
             "kind": "row",
             "label": "6.875% Senior Notes",
             "amount": "$ 1,000,000 thousand",
             "rate": "6.875%",
+            "seniority": null,
             "maturityDate": "2032-09-01",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "March 31, 2026",
-            "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "section": "Senior Notes",
+            "sourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,020,000",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,020,000"
           },
           {
             "kind": "row",
             "label": "6.75% Senior Notes",
             "amount": "$ 1,000,000 thousand",
             "rate": "6.75%",
+            "seniority": null,
             "maturityDate": "2033-07-15",
             "dateGranularity": "day",
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "March 31, 2026",
-            "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+            "section": "Senior Notes",
+            "sourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,015,000",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+            "maturitySourceLine": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,015,000"
           },
           {
             "kind": "row",
             "label": "Acquisition obligations and other notes payable",
             "amount": "$ 41,181 thousand",
             "rate": "4.73%",
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "March 31, 2026",
-            "sourceLine": "Acquisition obligations and other notes payable (3) 41,181   40,904   2026-2038 4.73   %",
+            "section": "Senior Notes",
+            "sourceLine": "Acquisition obligations and other notes payable (3) 41,181   40,904   2026-2038 4.73   % $ 41,181",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
           },
           {
@@ -610,37 +634,37 @@
             "label": "Financing lease obligations",
             "amount": "$ 176,784 thousand",
             "rate": "4.37%",
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": "Senior Notes",
             "periodColumn": "March 31, 2026",
+            "section": "Senior Notes",
             "sourceLine": "Financing lease obligations (4) 176,784   185,120   2027-2039 4.37   %",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
           },
           {
             "kind": "subtotal",
-            "label": "Total debt principal outstanding",
+            "label": null,
             "amount": "$ 10,694,329 thousand",
             "rate": null,
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": null,
             "periodColumn": "March 31, 2026",
+            "section": null,
             "sourceLine": "Total debt principal outstanding 10,694,329   10,344,583",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
           },
           {
             "kind": "adjustment",
             "label": "Discount, premium and deferred financing costs",
-            "amount": "( $ 68,079 thousand )",
+            "amount": "( 68,079 ) thousand",
             "rate": null,
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": null,
             "periodColumn": "March 31, 2026",
+            "section": null,
             "sourceLine": "Discount, premium and deferred financing costs ( 68,079 ) ( 71,394 )",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
           },
@@ -649,24 +673,24 @@
             "label": null,
             "amount": "$ 10,626,250 thousand",
             "rate": null,
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": null,
             "periodColumn": "March 31, 2026",
+            "section": null,
             "sourceLine": "10,626,250   10,273,189",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
           },
           {
             "kind": "adjustment",
             "label": "Less current portion",
-            "amount": "( $ 112,653 thousand )",
+            "amount": "( 112,653 ) thousand",
             "rate": null,
+            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "seniority": null,
-            "section": null,
             "periodColumn": "March 31, 2026",
+            "section": null,
             "sourceLine": "Less current portion ( 112,653 ) ( 109,201 )",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
           }
@@ -700,6 +724,7 @@
           "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
         },
         "anchorNoteShape": "tabular",
+        "priorPeriodBase": null,
         "noteLocatorVersion": 1,
         "rowsExtracted": 28,
         "rowsVerified": 28,
@@ -723,7 +748,7 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$ 2,750,000 thousand",
+        "cashAmount": null,
         "projectName": null,
         "eventStatus": "upcoming",
         "proceedsUse": null,
@@ -791,7 +816,7 @@
         "triggerName": "New debt issuance / notes pricing",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "On June 8, 2026, the Company entered into the Ninth Amendment to its Credit Agreement providing for an incremental borrowing of $500 million under its Term Loan B-2 facility. The Company used proceeds to repay a portion of its outstanding revolving line of credit.",
+        "evidence": "On June 8, 2026, the Company entered into the Ninth Amendment to its Credit Agreement to provide an incremental borrowing of $500 million under its Term Loan B-2 facility. The Company used the net proceeds to repay a portion of its outstanding revolving line of credit.",
         "mappedNeed": "Refi or add-on financing",
         "needType": "credit",
         "confidence": 0.95,
@@ -816,6 +841,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 1,
         "rowsVerified": 1,
@@ -842,14 +868,15 @@
         ],
         "issuedTranches": [
           {
-            "instrument": "Term Loan B-2 Incremental Tranche",
+            "instrument": "Incremental Tranche B-2 Term Loans",
             "amount": "$ 500 million",
             "rate": "SOFR + 1.75%",
             "seniority": null,
-            "maturityDate": "2031-05-09",
-            "dateGranularity": "day",
+            "maturityDate": "2031-05-01",
+            "dateGranularity": "month",
             "sourceLine": "The Ninth Amendment, among other things, provides for an incremental borrowing under the Company's existing senior secured term loan \"B\" facility maturing in May 2031 (the \"Tranche B-2 Term Facility\" and the loans borrowed thereunder, the \"Tranche B-2 Term Loans\") in an aggregate principal amount of $500 million (the \"Incremental Tranche B-2 Term Loans\").",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677426000316/dva4647631-8k.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677426000316/dva4647631-8k.htm",
+            "maturitySourceLine": "The Ninth Amendment, among other things, provides for an incremental borrowing under the Company's existing senior secured term loan \"B\" facility maturing in May 2031 (the \"Tranche B-2 Term Facility\" and the loans borrowed thereunder, the \"Tranche B-2 Term Loans\") in an aggregate principal amount of $500 million (the \"Incremental Tranche B-2 Term Loans\")."
           }
         ],
         "eventInstances": [],
@@ -859,7 +886,7 @@
         "cashAmount": "$ 500 million",
         "projectName": null,
         "eventStatus": "completed",
-        "proceedsUse": "refinancing_only"
+        "proceedsUse": "partly_unapplied"
       },
       {
         "proseInstruments": [],
@@ -873,10 +900,10 @@
         "triggerName": "Acquisition announced",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No acquisition announced by DaVita Inc. as the acquirer in the filing period. The company made small acquisitions of dialysis centers (8 U.S. centers and 13 international centers in the six months ended June 30, 2026) but these are routine operational acquisitions, not material announced acquisitions.",
+        "evidence": "The filings disclose acquisitions of dialysis centers and other businesses during the six months ended June 30, 2026, but these are routine tuck-in acquisitions of individual dialysis centers and minority interests, not material acquisitions of other businesses that would constitute a reportable acquisition announcement.",
         "mappedNeed": "Bridge financing, then permanent",
         "needType": "credit",
-        "confidence": 0.95,
+        "confidence": 0.85,
         "citations": [
           {
             "form": "10-Q",
@@ -898,6 +925,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -913,7 +941,7 @@
         "projectCompletionGranularity": null,
         "cashAmount": null,
         "projectName": null,
-        "eventStatus": "standing",
+        "eventStatus": "completed",
         "proceedsUse": null
       },
       {
@@ -931,7 +959,7 @@
         "evidence": "Development capital expenditures of $75 million for the six months ended June 30, 2026, principally for new U.S. and international dialysis center developments, dialysis center expansions and relocations, and new or expanded contracted hospital operations.",
         "mappedNeed": "Term loan or capex facility",
         "needType": "credit",
-        "confidence": 0.85,
+        "confidence": 0.9,
         "citations": [
           {
             "form": "10-Q",
@@ -940,11 +968,11 @@
             "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
           }
         ],
-        "quoteVerified": true,
-        "verifiedQuote": "Development capital expenditures (2) (75) (80) 5  6.3  %",
-        "verifiedQuoteNormalized": "Development capital expenditures (2) (75) (80) 5  6.3  %",
-        "quoteMatchType": "literal",
-        "quoteHasFigure": true,
+        "quoteVerified": false,
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
+        "quoteHasFigure": false,
         "eventDate": null,
         "dateGranularity": null,
         "scheduleSequence": [],
@@ -953,6 +981,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -983,7 +1012,7 @@
         "triggerName": "Revolver near capacity + growth",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "As of June 30, 2026, the Company had $1,435 million available and $65 million drawn on its $1,500 million revolving line of credit. Drawn balance represents only 4.3% of facility capacity, well below near-capacity threshold.",
+        "evidence": "As of June 30, 2026, the Company had $1,435 million available and $65 million drawn on its $1,500 million revolving line of credit, representing only 4.3% utilization. This is not near capacity.",
         "mappedNeed": "Revolver upsize",
         "needType": "credit",
         "confidence": 0.9,
@@ -999,7 +1028,7 @@
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
         "quoteMatchType": null,
-        "quoteHasFigure": false,
+        "quoteHasFigure": true,
         "eventDate": null,
         "dateGranularity": null,
         "scheduleSequence": [],
@@ -1008,6 +1037,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1038,7 +1068,7 @@
         "triggerName": "Dividend recap / buyback authorization",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "On August 20, 2025, the board of directors increased the authorization under the Company's existing share repurchase program by $2,000,000,000 in additional repurchasing authority. The Company repurchased 5.2 million shares for $751 million during the six months ended June 30, 2026.",
+        "evidence": "On August 20, 2025, the board of directors increased the authorization under the Company's existing share repurchase program by $2,000 million in additional repurchasing authority. During the six months ended June 30, 2026, the Company repurchased 5.2 million shares for $751 million.",
         "mappedNeed": "Leverage capacity conversation",
         "needType": "credit",
         "confidence": 0.9,
@@ -1063,6 +1093,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1091,9 +1122,9 @@
         "referencedBalanceSheetDebtCaptions": [],
         "triggerId": "large-cash-balance",
         "triggerName": "Large cash balance building",
-        "fired": true,
+        "fired": false,
         "dataAvailable": true,
-        "evidence": "Cash and cash equivalents of $668,963 thousand as of June 30, 2026, compared to $676,438 thousand as of December 31, 2025. Short-term investments of $19,914 thousand as of June 30, 2026. Total liquid assets of approximately $689 million.",
+        "evidence": "Cash and cash equivalents were $668,963 thousand as of June 30, 2026, compared to $676,438 thousand as of December 31, 2025, representing a slight decrease. This is not a large or growing cash balance in the context of the company's $17.7 billion in total assets.",
         "mappedNeed": "Liquidity management, earning on idle cash",
         "needType": "treasury",
         "confidence": 0.9,
@@ -1106,9 +1137,9 @@
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "Cash and cash equivalents $ 668,963   $ 676,438",
-        "verifiedQuoteNormalized": "2026 December 31, 2025 ASSETS Cash and cash equivalents $668.96 million $676.44 million Restricted cash and equival",
-        "quoteMatchType": "literal",
+        "verifiedQuote": null,
+        "verifiedQuoteNormalized": null,
+        "quoteMatchType": null,
         "quoteHasFigure": true,
         "eventDate": null,
         "dateGranularity": null,
@@ -1118,6 +1149,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1148,10 +1180,10 @@
         "triggerName": "Asset sale / divestiture closing",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material asset sales or divestitures disclosed in the filing period. Proceeds from asset and business sales of $4,392 thousand for the six months ended June 30, 2026 represent routine sales of self-developed properties, not a material divestiture.",
+        "evidence": "Proceeds from asset and business sales were $4,392 thousand for the six months ended June 30, 2026, and $3,721 thousand for the three months ended March 31, 2026. These are immaterial amounts representing routine sales of self-developed properties, not material divestitures.",
         "mappedNeed": "Proceeds deposit + sweep",
         "needType": "treasury",
-        "confidence": 0.9,
+        "confidence": 0.85,
         "citations": [
           {
             "form": "10-Q",
@@ -1173,6 +1205,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1203,10 +1236,10 @@
         "triggerName": "International expansion / rising foreign revenue",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "International operations provided dialysis and administrative services to 595 outpatient dialysis centers as of June 30, 2026, compared to 585 centers as of December 31, 2025. International segment revenues and growth metrics require review of full 10-K for detailed geographic breakdown.",
+        "evidence": "As of June 30, 2026, the Company operated 595 international dialysis centers in 14 countries outside the U.S., compared to 585 centers as of December 31, 2025, representing growth of 10 centers. International operations are a standing business segment with ongoing expansion.",
         "mappedNeed": "FX hedging, cross-border cash management",
         "needType": "treasury",
-        "confidence": 0.75,
+        "confidence": 0.8,
         "citations": [
           {
             "form": "10-Q",
@@ -1228,6 +1261,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1258,7 +1292,7 @@
         "triggerName": "New subsidiary / entity formation",
         "fired": false,
         "dataAvailable": false,
-        "evidence": "No new subsidiary formation disclosed in public filings. Formation of new subsidiaries is typically an internal matter not disclosed unless tied to a reported acquisition or transaction.",
+        "evidence": "No disclosure of new subsidiary or entity formation in the filings provided. This type of event is typically not disclosed in public filings unless tied to a reported acquisition.",
         "mappedNeed": "New operating accounts",
         "needType": "treasury",
         "confidence": 0.5,
@@ -1276,6 +1310,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1306,7 +1341,7 @@
         "triggerName": "IPO / secondary raise",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No IPO or secondary equity offering announced or completed. DaVita Inc. is an established public company trading on NYSE under ticker DVA.",
+        "evidence": "No IPO or secondary equity offering is disclosed in the filings. The company is an established public company with no equity issuance activity during the period.",
         "mappedNeed": "Proceeds management, treasury build-out",
         "needType": "treasury",
         "confidence": 0.95,
@@ -1331,6 +1366,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1361,7 +1397,7 @@
         "triggerName": "Floating-rate debt + rate exposure",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Meaningful floating-rate debt exposure: Term Loan A-2 of $1,975,000 thousand at SOFR + 1.50%, Term Loan B-2 of $2,357,910 thousand at SOFR + 1.75%, and Revolving line of credit of $65,000 thousand at SOFR + 1.50%. Total floating-rate debt of approximately $4,398 million represents 40.5% of total debt principal. Company has interest rate cap agreements covering $3,500 million notional through 2026.",
+        "evidence": "As of June 30, 2026, the Company has $1,975,000 thousand of Term Loan A-2 and $2,357,910 thousand of Term Loan B-2 outstanding, both bearing interest at SOFR plus margins. Additionally, $65,000 thousand is drawn on the revolving line of credit at SOFR + 1.50%. Total floating-rate debt is approximately $4.4 billion, representing approximately 40% of total debt principal outstanding.",
         "mappedNeed": "Interest-rate hedging",
         "needType": "credit",
         "confidence": 0.95,
@@ -1386,6 +1422,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1416,7 +1453,7 @@
         "triggerName": "Commodity / input-cost exposure",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No specific commodity or input-cost exposure disclosed in the 10-Q excerpts provided. Risk factors section in 10-K would contain detailed disclosure of material commodity exposures if present.",
+        "evidence": "No material disclosure of commodity or input-cost exposure in the risk factors or MD&A sections of the filings provided. The company's business is primarily service-based dialysis provision, not commodity-dependent.",
         "mappedNeed": "Commodity hedging",
         "needType": "credit",
         "confidence": 0.7,
@@ -1441,6 +1478,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1471,10 +1509,10 @@
         "triggerName": "Large FX exposure disclosed",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "International operations in 14 countries create foreign currency exposure. Unrealized gains on foreign currency translation of $22,732 thousand for the three months ended June 30, 2026 and $50,525 thousand for the six months ended June 30, 2026 indicate material FX exposure. Item 3 Quantitative and Qualitative Disclosures about Market Risk would contain detailed FX exposure analysis.",
+        "evidence": "The company operates 595 international dialysis centers in 14 countries outside the U.S., which creates foreign currency exposure. However, no specific quantitative disclosure of material FX exposure is provided in Item 3 (Quantitative and Qualitative Disclosures about Market Risk) of the filings.",
         "mappedNeed": "FX hedging program",
         "needType": "treasury",
-        "confidence": 0.7,
+        "confidence": 0.75,
         "citations": [
           {
             "form": "10-Q",
@@ -1496,6 +1534,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1526,7 +1565,7 @@
         "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. Management states: 'We believe that our cash flow from operations and other sources of liquidity, including from amounts available under our senior secured credit facilities and our access to the capital markets, will be sufficient to fund our scheduled debt service under the terms of our debt agreements and other obligations for the foreseeable future, including the next 12 months.'",
+        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning is disclosed in the filings. The company states it believes its cash flows and liquidity sources will be sufficient to fund debt service and obligations for the foreseeable future.",
         "mappedNeed": "Restructuring or amendment support",
         "needType": "distress",
         "confidence": 0.95,
@@ -1551,6 +1590,7 @@
         "debtScheduleSourceFiling": null,
         "debtSchedulePriorFiling": null,
         "anchorNoteShape": "not-recorded",
+        "priorPeriodBase": null,
         "noteLocatorVersion": null,
         "rowsExtracted": 0,
         "rowsVerified": 0,
@@ -1571,6 +1611,80 @@
       }
     ],
     "verdict": "CALL",
-    "relationshipFlags": []
+    "relationshipFlags": [],
+    "recordedReadSet": [
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm",
+        "form": "10-Q",
+        "filingDate": "2026-08-04",
+        "accessionNumber": "0000927066-26-000108",
+        "contentHash": "9ac5b2bdd1cd1c2821f6763ae63c78ef716a61ad433b266ba399c27b9289532c",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm",
+        "form": "10-Q",
+        "filingDate": "2026-05-05",
+        "accessionNumber": "0000927066-26-000062",
+        "contentHash": "b18a76379391f660d6585f4ca2e394f15f2a47d9c392097a4fe4f8f74ff8f346",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm",
+        "form": "10-K",
+        "filingDate": "2026-02-11",
+        "accessionNumber": "0000927066-26-000012",
+        "contentHash": "6c608785b97c4c896af3e16d822d345c34605562518c1904509a84fe3635b67e",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677426000316/dva4647631-8k.htm",
+        "form": "8-K",
+        "filingDate": "2026-06-08",
+        "accessionNumber": "0001206774-26-000316",
+        "contentHash": "1c50bd6bb6051010569bb7aa338a4c394737e6b3e476e2803ffc6a7eb24a52f8",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000750/dva4564821-8k.htm",
+        "form": "8-K",
+        "filingDate": "2025-11-25",
+        "accessionNumber": "0001206774-25-000750",
+        "contentHash": "549702f05e560b8c2eb13f5b4be13612fa4b3c5dfaabc2886970aa3d67e3ef08",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000154/dva-20250820.htm",
+        "form": "8-K",
+        "filingDate": "2025-08-20",
+        "accessionNumber": "0000927066-25-000154",
+        "contentHash": "11b8ea88f17efd6b7a7a694088826384c8072794b4a365d8af31eb4bd1a0b9a5",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000119312525160501/d75954d8k.htm",
+        "form": "8-K",
+        "filingDate": "2025-07-17",
+        "accessionNumber": "0001193125-25-160501",
+        "contentHash": "24adf9f6b2f9cd6a8b0ab99dee2d3e33538fe3b5aad7409181bf7a609eb5226b",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000378/dva4490761-8k.htm",
+        "form": "8-K",
+        "filingDate": "2025-05-23",
+        "accessionNumber": "0001206774-25-000378",
+        "contentHash": "b7783647e3e0a19f42352b75339c2687449f372523ccd8782881d9d2509f304c",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000369/dva4487961-8k.htm",
+        "form": "8-K",
+        "filingDate": "2025-05-20",
+        "accessionNumber": "0001206774-25-000369",
+        "contentHash": "d6dff3e8720b8239ec9a7a1b298b0f33be71900784370ba2fb4fbd322a603dee",
+        "via": "base"
+      }
+    ]
   }
 }
