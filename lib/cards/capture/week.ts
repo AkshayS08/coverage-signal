@@ -15,10 +15,10 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { liveFilingsBetween } from "../../fetch/thisWeek";
 import { previousBrief, readBriefLog } from "../briefLog";
-import { addDays } from "../format";
+import { briefDateArg, briefWeek } from "../briefDate";
 
 const ROOT = process.cwd();
-const BRIEF = process.argv[2] ?? "2026-10-15";
+const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one is given
 
 (async () => {
   const dir = join(ROOT, "lib", "cards", "inputs");
@@ -27,7 +27,7 @@ const BRIEF = process.argv[2] ?? "2026-10-15";
   for (const f of readdirSync(dir).filter((x) => /^\d+\.json$/.test(x))) {
     const { cik, company } = JSON.parse(readFileSync(join(dir, f), "utf-8"));
     const prev = previousBrief(log, cik, BRIEF);
-    const from = prev ? addDays(prev, 1) : addDays(BRIEF, -6);
+    const { from } = briefWeek(BRIEF, prev);
     names[cik] = { previousBrief: prev, from, filings: await liveFilingsBetween(cik, from, BRIEF) };
     console.log(`${company}: ${(names[cik].filings as unknown[]).length} filing(s) ${from} to ${BRIEF}`);
   }

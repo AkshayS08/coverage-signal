@@ -23,6 +23,7 @@ import { assemblePosition, amountProvenanceFor, classifyRedeemsClaims, facilityM
 import { computeCoverage } from "../events/coverage";
 import { rolledCoverageFor } from "../events/rolledCoverage";
 import { deltaLabelOf, deltaIdentityOf, deltaStatedSpan } from "../events/rollDeltas";
+import { briefWeek } from "./briefDate";
 import { borrowingBaseOf } from "../agent/borrowingBase";
 import { classifyInstrument, type NoteSeniorityStatement } from "../events/instrumentClass";
 import { canonicalizeFacilityZeros } from "../agent/statedZero";
@@ -496,7 +497,7 @@ export function buildCard(i: CardInputs): Card {
   };
 
   // ── 2.1 header ──
-  const weekFrom = i.previousBrief ? addDays(i.previousBrief, 1) : addDays(briefDate, -6);
+  const weekFrom = briefWeek(briefDate, i.previousBrief).from;
   const header: Line[] = [
     [t(result.company)],
     [t(`Brief week: ${weekRange(weekFrom, briefDate)}${i.previousBrief ? "" : " (first brief for this name: the trailing seven days)"}`)],
@@ -507,7 +508,11 @@ export function buildCard(i: CardInputs): Card {
   // ── 2.2 this week ──
   const actionable: Line[] = [];
   const other: FilingEntry[] = [];
+  // SESSION 27 (Akshay, Oct 30): the ANCHOR filed inside the brief week is this card's position, read — never a new
+  // filing "not yet read". Named in the header; kept out of the actionable and other lists.
+  const anchorThisWeek = anchor.date >= weekFrom && anchor.date <= briefDate;
   for (const f of i.weekFilings) {
+    if (f.primaryDocUrl === anchor.url) continue;
     const items = f.items.split(",").map((s) => s.trim()).filter(Boolean);
     const hit = items.filter((it) => ACTIONABLE_ITEMS[it]);
     const meta = `${formName(f.form)}${items.length ? `, Item${items.length > 1 ? "s" : ""} ${items.join(", ")}` : ""} · ${shortDate(f.filingDate)}`;
@@ -520,7 +525,10 @@ export function buildCard(i: CardInputs): Card {
       ]);
     } else other.push(f);
   }
-  const thisWeekLines: Line[] = [...actionable];
+  const thisWeekLines: Line[] = [
+    ...(anchorThisWeek ? [[{ k: "filing", t: `${formName(anchor.form)} · ${shortDate(anchor.date)}`, url: anchor.url } as Segment, t(` — this card's position: the ${anchor.form} for the ${anchor.form === "10-K" ? "year" : "quarter"} ended ${displayDate(periodEnd, "day")}, filed this week and read for this card.`)] as Line] : []),
+    ...actionable,
+  ];
   if (actionable.length === 0) thisWeekLines.push([t(`No new filings affecting debt since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
   // §2.2: everything else in one line, grouped by form, each filing one click deeper.
   if (other.length > 0) {
@@ -1627,7 +1635,9 @@ export function buildCard(i: CardInputs): Card {
     company: result.company.toUpperCase(),
     position: [t("Position as of "), periodDate()],
     filing: { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url },
-    status: actionable.length
+    status: anchorThisWeek
+      ? [t(`New this week: this ${anchor.form}, filed ${shortDate(anchor.date)}, is the position`), ...(actionable.length ? [t(` · ${actionable.length} other filing${actionable.length === 1 ? "" : "s"} may affect debt`)] : otherCount ? [t(` · ${otherCount} other filing${otherCount === 1 ? "" : "s"}, none affecting debt`)] : [])]
+      : actionable.length
       ? [t(`${actionable.length} filing${actionable.length === 1 ? "" : "s"} this week may affect debt`)]
       : otherCount
         ? [t(`${otherCount} filing${otherCount === 1 ? "" : "s"} this week, none affecting debt: `), ...other.flatMap((f, n) => [...(n ? [t(" ")] : []), { k: "filing", t: `${formName(f.form)} ${shortDate(f.filingDate)}`, url: f.primaryDocUrl } as Segment])]

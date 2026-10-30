@@ -29,11 +29,12 @@ import { liveFilingsBetween } from "../../fetch/thisWeek";
 import { fetchXbrlCash } from "../../fetch/xbrlDebt";
 import { locatorFor, scaledAmountString } from "../../agent/tableScale";
 import { assemblePosition, parseMoneyAmount } from "../../events/position";
+import { briefDateArg } from "../briefDate";
 
 const ROOT = process.cwd();
 const OUT = join(ROOT, "lib", "cards", "inputs");
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const BRIEF = process.argv[2] ?? "2026-10-15";
+const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one is given
 
 /** The anchor's cover line stating its period end — the phrase every "as of" date links to. */
 export function periodSentenceIn(text: string, iso: string): string | null {

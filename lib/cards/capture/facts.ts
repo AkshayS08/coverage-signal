@@ -32,6 +32,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { briefDateArg } from "../briefDate";
 import { cachedCardFacts, cardFactsKey } from "../../cache/answerCache";
 import { beginCompanyCostScope, currentCompanySpend, persistCompanySpend, recordUsage } from "../../agent/costMeter";
 import { locateDebtNoteSection } from "../../fetch/noteLocation";
@@ -48,7 +49,7 @@ const BAND_PER_ASK = 0.12;
 const BAND_PER_NAME = 0.35;
 const OUTPUT_TOKENS_EST = 3500;
 const BILL = process.argv.includes("--bill");
-const BRIEF = process.argv.find((a) => /^\d{4}-\d{2}-\d{2}$/.test(a)) ?? "2026-10-15";
+const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one is given
 const ROOT = process.cwd();
 const IN = join(ROOT, "lib", "cards", "inputs");
 

@@ -18,11 +18,12 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { buildCard } from "./build";
 import { recordBrief } from "./briefLog";
+import { briefDateArg } from "./briefDate";
 
 /** card_spec 1: the six, in the spec's order. */
 const ORDER = ["0000070318", "0000785161", "0001179929", "0000927066", "0001108109", "0001739940"];
 const ROOT = process.cwd();
-const BRIEF = process.argv[2] ?? "2026-10-15";
+const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one is given
 const IN = join(ROOT, "lib", "cards", "inputs");
 const OUT = join(ROOT, "lib", "cards", "generated");
 
