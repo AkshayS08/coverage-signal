@@ -10,6 +10,7 @@
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { execSync } from "node:child_process";
+import { partText } from "../cards/format";
 
 const REF = process.argv[2] ?? "origin/main";
 const OUT = process.argv[3] ?? null;
@@ -63,6 +64,20 @@ for (const cik of ORDER) {
     say(`- **cited sentences behind source links**: ${c.removed.length} out, ${c.added.length} in`);
     for (const x of [...new Set(c.removed)]) say(`  - was cited: ${x}`);
     for (const x of [...new Set(c.added)]) say(`  - now cited: ${x}`);
+  }
+  // The view changed too (Oct 30): a computed figure's opened parts were shown as raw `printed`, now through partText.
+  const partsShown = (card: any, show: (p: any) => string) => {
+    const out: string[] = [];
+    const walk = (o: any) => { if (!o || typeof o !== "object") return; if (o.k === "computed") for (const p of o.parts ?? []) out.push(show(p)); for (const [k, v] of Object.entries(o)) if (k !== "src") walk(v); };
+    walk(card.v3);
+    return out;
+  };
+  const pd = multisetDiff(partsShown(then, (p) => p.printed), partsShown(now, partText));
+  if (pd.removed.length || pd.added.length) {
+    any = true;
+    say(`- **parts of computed figures (shown when a figure is opened)**: ${pd.removed.length} shown differently`);
+    for (const x of [...new Set(pd.removed)].slice(0, 12)) say(`  - was: ${x}`);
+    for (const x of [...new Set(pd.added)].slice(0, 12)) say(`  - now: ${x}`);
   }
   if (!any) say("- no visible change");
 }

@@ -1,0 +1,224 @@
+# Visible changes against origin/main
+
+## TENET HEALTHCARE CORP
+- **liquidity**
+  - was: Undrawn revolver, matures November 4, 2030
+  - now: Undrawn revolver
+- **facilities**
+  - was: senior secured revolver · $1,900MM size · $0 drawn · <$1MM letters of credit · matures November 4, 2030
+  - now: senior secured revolver · $1,900MM size · $0 drawn · <$1MM letters of credit
+- **cited sentences behind source links**: 136 out, 134 in
+  - was cited: 10-Q 2026-07-29 | 4.625 % due 2028 $ 600   $ 600
+  - was cited: 10-Q 2026-07-29 | 5.125 % due 2027 $ 1,500   $ 1,500
+  - was cited: 10-Q 2026-07-29 | 6.125 % due 2028 $ 1,750   $ 1,750
+  - was cited: 10-Q 2026-07-29 | 4.250 % due 2029 $ 1,400   $ 1,400
+  - was cited: 10-Q 2026-07-29 | 4.375 % due 2030 $ 1,450   $ 1,450
+  - was cited: 10-Q 2026-07-29 | 6.125 % due 2030 $ 2,000   $ 2,000
+  - was cited: 10-Q 2026-07-29 | 6.750 % due 2031 $ 1,350   $ 1,350
+  - was cited: 10-Q 2026-07-29 | 5.500 % due 2032 $ 1,500   $ 1,500
+  - was cited: 10-Q 2026-07-29 | 6.875 % due 2031 $ 362   $ 362
+  - was cited: 10-Q 2026-07-29 | 6.000 % due 2033 $ 750   $ —
+  - was cited: 10-Q 2026-07-29 | Finance leases, mortgages and other notes $ 671   $ 603
+  - was cited: thc-20251231.htm | The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the "Scheduled Maturity Date") or (2)  45 business days pri
+  - was cited: 10-Q 2026-07-29 | Senior secured first lien notes
+  - was cited: 10-Q 2026-07-29 | Senior unsecured notes
+  - was cited: 10-Q 2026-07-29 | Current portion of long-term debt $ 160   $ 79
+  - was cited: 10-Q 2026-07-29 | Long-term debt, net of current portion $ 13,088   $ 13,092
+  - was cited: 10-Q 2026-07-29 | Unamortized issue costs and note discounts ( 85 ) ( 94 )
+  - now cited: 10-Q 2026-07-29 | 4.625 % due 2028 600
+  - now cited: 10-Q 2026-07-29 | Senior secured first lien notes:     5.125 % due 2027 1,500
+  - now cited: 10-Q 2026-07-29 | Senior unsecured notes:     6.125 % due 2028 $ 1,750
+  - now cited: 10-Q 2026-07-29 | 4.250 % due 2029 1,400
+  - now cited: 10-Q 2026-07-29 | 4.375 % due 2030 1,450
+  - now cited: 10-Q 2026-07-29 | 6.125 % due 2030 2,000
+  - now cited: 10-Q 2026-07-29 | 6.750 % due 2031 1,350
+  - now cited: 10-Q 2026-07-29 | 5.500 % due 2032 1,500
+  - now cited: 10-Q 2026-07-29 | 6.875 % due 2031 362
+  - now cited: 10-Q 2026-07-29 | 6.000 % due 2033 750
+  - now cited: 10-Q 2026-07-29 | Finance leases, mortgages and other notes 671
+  - now cited: 10-Q 2026-07-29 | Current portion of long-term debt $ 160
+  - now cited: 10-Q 2026-07-29 | Long-term debt, net of current portion $ 13,088
+  - now cited: 10-Q 2026-07-29 | Unamortized issue costs and note discounts ( 85 )
+- **parts of computed figures (shown when a figure is opened)**: 90 shown differently
+  - was: $ 600 million
+  - was: $ 1,500 million
+  - was: $ 1.5 billion
+  - was: $ 45
+  - was: $ 1,643 million
+  - was: $ 2,422 million
+  - was: $ 1,750 million
+  - was: $ 0.5 billion
+  - was: $ 1,400 million
+  - was: $ 1,450 million
+  - was: $ 2,000 million
+  - was: $ 1,350 million
+  - now: $600MM
+  - now: $1,500MM
+  - now: $45MM
+  - now: $1,643MM
+  - now: $2,422MM
+  - now: $1,750MM
+  - now: $500MM
+  - now: $1,400MM
+  - now: $1,450MM
+  - now: $2,000MM
+  - now: $1,350MM
+  - now: $362MM
+
+## Encompass Health Corp
+- **notShown**
+  - was: Senior secured revolver letters of credit, $53.6MM: withheld. Sentence does not state this figure. See the sentence offered.
+  - now: Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the period this card reports. See the sentence offered.
+- **cited sentences behind source links**: 5 out, 5 in
+  - was cited: ehc-20260309.htm | the maturity date is March 9, 2031, rather than October 7, 2027
+  - was cited: 10-Q 2026-08-07 | As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.
+  - now cited: 10-Q 2026-08-07 | the maturity date has been changed to March 9, 2031
+  - now cited: 10-Q 2026-08-07 | As of December 31, 2025 and 2024, $ 46.3  million and $ 36.3  million , respectively, was being utilized under the letter of credit subfacil
+- **parts of computed figures (shown when a figure is opened)**: 87 shown differently
+  - was: $ 800 million
+  - was: $ 400  million in aggregate principal amount
+  - was: $ 18.4 million
+  - was: $ 46.9 million
+  - was: $ 435.8 million
+  - was: $ 788.4 million
+  - was: $ 44.9 million
+  - was: $ 850.8 million
+  - was: $ 640.1 million
+  - was: $ 626.8 million
+  - was: $ 200.0 million
+  - was: $ 500  million
+  - now: $800MM
+  - now: $400MM
+  - now: $18.4MM
+  - now: $46.9MM
+  - now: $435.8MM
+  - now: $788.4MM
+  - now: $44.9MM
+  - now: $850.8MM
+  - now: $640.1MM
+  - now: $626.8MM
+  - now: $200MM
+  - now: $500MM
+
+## MOLINA HEALTHCARE, INC.
+- **parts of computed figures (shown when a figure is opened)**: 29 shown differently
+  - was: $ 800 million
+  - was: $ 650 million
+  - was: $ 850 million
+  - was: $ 750 million
+  - was: $ 4,985 million
+  - was: $ 1.25 billion
+  - was: $ 3,769 million
+  - now: $800MM
+  - now: $650MM
+  - now: $850MM
+  - now: $750MM
+  - now: $4,985MM
+  - now: $1,250MM
+  - now: $3,769MM
+
+## DAVITA INC.
+- **cited sentences behind source links**: 81 out, 81 in
+  - was cited: 10-Q 2026-08-04 | 4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   %
+  - was cited: 10-Q 2026-08-04 | 3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   %
+  - was cited: 10-Q 2026-08-04 | 6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   %
+  - was cited: 10-Q 2026-08-04 | 6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   %
+  - was cited: 10-Q 2026-08-04 | Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   %
+  - was cited: 10-Q 2026-08-04 | Revolving line of credit (2) 65,000   —   11/24/2030 SOFR + 1.50% $ 65,000
+  - now cited: 10-Q 2026-08-04 | 4.625% Senior Notes 2,750,000   2,750,000   6/1/2030 4.625   % $ 2,653,750
+  - now cited: 10-Q 2026-08-04 | 3.75% Senior Notes 1,500,000   1,500,000   2/15/2031 3.75   % $ 1,385,625
+  - now cited: 10-Q 2026-08-04 | 6.875% Senior Notes 1,000,000   1,000,000   9/1/2032 6.875   % $ 1,028,750
+  - now cited: 10-Q 2026-08-04 | 6.75% Senior Notes 1,000,000   1,000,000   7/15/2033 6.75   % $ 1,028,750
+  - now cited: 10-Q 2026-08-04 | Acquisition obligations and other notes payable (3) 39,463   40,904   2026-2038 4.67   % $ 39,463
+  - now cited: 10-Q 2026-08-04 | Outstanding Term Loan A-2 and revolving line of credit balances are due on November 24, 2030
+- **parts of computed figures (shown when a figure is opened)**: 66 shown differently
+  - was: $ 62,283 thousand
+  - was: $ 114,026 thousand
+  - was: $ 160,808 thousand
+  - was: $ 2,750,000 thousand
+  - was: $ 1,975,000 thousand
+  - was: $ 65,000 thousand
+  - was: $ 2,357,910 thousand
+  - was: $ 1,500,000 thousand
+  - was: $ 1,000,000 thousand
+  - was: $ 39,463 thousand
+  - was: $ 160,143 thousand
+  - was: $ 668,963 thousand
+  - now: $62.3MM
+  - now: $114MM
+  - now: $160.8MM
+  - now: $2,750MM
+  - now: $1,975MM
+  - now: $65MM
+  - now: $2,357.9MM
+  - now: $1,500MM
+  - now: $1,000MM
+  - now: $39.5MM
+  - now: $160.1MM
+  - now: $669MM
+
+## COMMUNITY HEALTH SYSTEMS INC
+- **parts of computed figures (shown when a figure is opened)**: 72 shown differently
+  - was: $ 42 million
+  - was: $ 1,244 million
+  - was: $ 689 million
+  - was: $ 1,549 million
+  - was: $ 1,227 million
+  - was: $ 644 million
+  - was: $ 1,535 million
+  - was: $ 700 million
+  - was: $ 1,790 million
+  - was: $ 298 million
+  - was: $ 52 million
+  - was: $ 149 million
+  - now: $42MM
+  - now: $1,244MM
+  - now: $689MM
+  - now: $1,549MM
+  - now: $1,227MM
+  - now: $644MM
+  - now: $1,535MM
+  - now: $700MM
+  - now: $1,790MM
+  - now: $298MM
+  - now: $52MM
+  - now: $149MM
+
+## Cigna Group
+- **moves**
+  - was: $550MM 1.250% senior notes
+  - now: $550MM 1.250% notes due March 2026
+- **liquidity (tooltip)**
+  - was: revolving credit and letter of credit agreement
+  - now: Revolving Credit Agreement
+- **table (row name)**
+  - was: commercial paper program
+  - now: Commercial Paper Program
+- **cited sentences behind source links**: 2 out, 2 in
+  - was cited: 10-Q 2026-07-30 | The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an opt
+  - now cited: 10-Q 2026-07-30 | As of June 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are available for
+- **parts of computed figures (shown when a figure is opened)**: 204 shown differently
+  - was: $1,500 million
+  - was: $259 million
+  - was: $600 million
+  - was: $ 1.0 billion
+  - was: $3,800 million
+  - was: $ 1,000 million
+  - was: $ 1,250 million
+  - was: $ 1,500 million
+  - was: $ 750 million
+  - was: $1,000 million
+  - was: $1,400 million
+  - was: $750 million
+  - now: $1,500MM
+  - now: $259MM
+  - now: $600MM
+  - now: ~$1,000MM
+  - now: $3,800MM
+  - now: $1,000MM
+  - now: $1,250MM
+  - now: $750MM
+  - now: $1,400MM
+  - now: $45MM
+  - now: $800MM
+  - now: $190MM
