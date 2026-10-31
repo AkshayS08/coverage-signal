@@ -181,4 +181,6 @@ export interface CardV3 {
   stages: { facts: boolean };
   /** The moves section's line when the facts stage has not read this anchor (sections.ts). */
   movesUnread: Line | null;
+  /** Session 27 (Oct 31): debt-move sentences located in code that no confirmed move covers — never fact, never "none". */
+  possibleMoves: Line[];
 }

@@ -24,6 +24,9 @@ import { computeCoverage } from "../events/coverage";
 import { rolledCoverageFor } from "../events/rolledCoverage";
 import { deltaLabelOf, deltaIdentityOf, deltaStatedSpan } from "../events/rollDeltas";
 import { briefWeek } from "./briefDate";
+import { locateMoveSentences, uncoveredMoves } from "./moveSentences";
+/** The documents a card holds, as [url, text]. */
+const textByUrlOf = (i: { textByUrl: Map<string, string> }) => i.textByUrl.entries();
 import { borrowingBaseOf } from "../agent/borrowingBase";
 import { classifyInstrument, type NoteSeniorityStatement } from "../events/instrumentClass";
 import { canonicalizeFacilityZeros } from "../agent/statedZero";
@@ -2165,6 +2168,13 @@ export function buildCard(i: CardInputs): Card {
   const notShown = withheld.filter((l) => !/^Nothing withheld/.test(l.map((x) => x.t).join("")));
   const footnote: Line = [...(coverageLines[0] ?? []), t(" Every figure links to the sentence it came from.")];
 
+  // SESSION 27 (Akshay, Oct 31): A DEBT-MOVE SENTENCE NO CONFIRMED MOVE COVERS is listed as "Possible move, not
+  // confirmed", with its sentence — never as fact and never as "none". Located in code (moveSentences.ts) over the
+  // documents the card holds, dated from January 1 of the anchor period's year through the brief date. Covered: a move
+  // card cites the same sentence (spacing aside) or carries the same date.
+  const located = locateMoveSentences([...textByUrlOf(i)].map(([url, text]) => ({ url, label: src("", url).doc, text })), `${periodEnd.slice(0, 4)}-01-01`, briefDate);
+  const possibleMoves: Line[] = uncoveredMoves(located, moveCards)
+    .map((m) => { const excerpt = m.sentence.length > 220 ? `${m.sentence.slice(0, 217)}…` : m.sentence; return [t("Possible move, not confirmed: "), { k: "label", t: `“${excerpt}”`, stated: m.sentence.slice(0, Math.min(m.sentence.length, 217)), src: src(m.sentence, m.url) } as Segment]; });
   // Session 27 (Oct 31): a trigger left unresolved by a refused dig is flagged, never silently answered.
   for (const r of result.results as any[]) if (r.unresolved) notShown.push([t(`${String(r.triggerId).replace(/-/g, " ")}: unresolved — ${r.unresolved}.`)]);
   if (!factsRead) {
@@ -2185,6 +2195,7 @@ export function buildCard(i: CardInputs): Card {
     notShown: notShown.length ? notShown : [[t("Nothing withheld this week.")]],
     footnote,
     stages: { facts: factsRead },
+    possibleMoves,
     movesUnread: factsRead ? null : notYetRead("Debt moves this year"),
   };
 

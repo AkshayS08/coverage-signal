@@ -40,6 +40,7 @@ import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { briefDateArg } from "../briefDate";
+import { locateMoveSentences } from "../moveSentences";
 import { cachedCardFacts, cardFactsKey } from "../../cache/answerCache";
 import { beginCompanyCostScope, currentCompanySpend, persistCompanySpend, recordUsage } from "../../agent/costMeter";
 import { locateDebtNoteSection } from "../../fetch/noteLocation";
@@ -151,6 +152,11 @@ function inputFor(snap: any): string {
     const n = locateDebtNoteSection(t);
     if (n.status === "found") block(`10-K for ${base.periodOfReport}, the debt note the anchor directs to`, base.filingUrl, at(t, n.start, 30000));
   }
+  // SESSION 27 (Akshay, Oct 31): THE CAUSE OF MOLINA'S MISSED MOVE. On its Q3 anchor all three asks omitted a move
+  // sentence they were shown (year-scoped instruction; the Q2 asks returned it). Move sentences are located in code and
+  // listed for the stage to account for; the card checks the same list (moveSentences.ts).
+  const candidates = locateMoveSentences(Object.entries(snap.docs as Record<string, { label: string; text: string }>).map(([url, d]) => ({ url, label: d.label, text: d.text })), `${String(anchor.reportDate).slice(0, 4)}-01-01`, BRIEF);
+  if (candidates.length) block(`CANDIDATE MOVE SENTENCES, located in code — return EACH one that states a debt transaction as a move (with this sentence as its sourceLine); omit one only if it is not a debt transaction`, anchor.url, candidates.map((c) => `${c.date} | ${c.label} | ${c.url} | ${c.sentence}`).join("\n"));
   return [`Company: ${snap.company}`, `Anchor: ${anchor.form} for the period ended ${anchor.reportDate}, filed ${anchor.date}`, `Brief date: ${BRIEF}`, ``, ...blocks].join("\n\n");
 }
 

@@ -9375,6 +9375,7 @@
   "stages": {
    "facts": true
   },
+  "possibleMoves": [],
   "movesUnread": null
  }
 }

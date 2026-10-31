@@ -225,7 +225,10 @@ export default function CardV3View({ card }: { card: Card }) {
       {/* 4. Recent debt moves */}
       <section className={styles.section}>
         <h3 className={styles.sectionHead}>Recent debt moves</h3>
-        {v.movesUnread ? <L line={v.movesUnread} className={styles.muted} /> : v.moves.length === 0 ? <div className={styles.muted}>{movesSectionText(v)}</div> : null}
+        {v.movesUnread ? <L line={v.movesUnread} className={styles.muted} /> : v.moves.length === 0 && movesSectionText(v) ? <div className={styles.muted}>{movesSectionText(v)}</div> : null}
+        {(v.possibleMoves ?? []).map((l, i) => (
+          <L key={`pm${i}`} line={l} className={styles.muted} />
+        ))}
         <div className={styles.moves}>
           {v.moves.map((m, i) => (
             <div key={i} className={m.retires ? styles.movePair : styles.moveSingle}>

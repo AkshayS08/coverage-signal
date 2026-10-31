@@ -66,7 +66,7 @@ for (const [label, facts] of [["no facts", null], ["the prior anchor's facts", J
 
 console.log("\n=== M4: the control ===");
 const bad = build(null);
-bad.v3.movesUnread = null;
+bad.v3.movesUnread = null; bad.v3.possibleMoves = []; // Oct 31: a possible move also forbids "none", so the control clears both
 assert(stageViolations(bad).some((x) => /No debt moves stated/.test(x)), `[M4 control] a card whose facts stage did not run, saying "No debt moves stated", is flagged`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);

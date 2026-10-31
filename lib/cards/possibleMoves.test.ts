@@ -29,7 +29,7 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { locateMoveSentences } from "./moveSentences";
+import { locateMoveSentences, uncoveredMoves } from "./moveSentences";
 import { movesSectionText } from "./sections";
 import { buildCard } from "./build";
 
@@ -54,11 +54,11 @@ assert(locateMoveSentences([{ url: "u", label: "x", text: "We may redeem the 203
 /** The check: every located move sentence is a confirmed move's or a possible-move line; no absence claim beside one. */
 function violations(card: any, docs: { url: string; label: string; text: string }[], from: string, to: string): string[] {
   const v = card.v3, out: string[] = [];
-  const confirmed = JSON.stringify(v.moves);
-  const possible = (v.possibleMoves ?? []).map(txt).join(" | ");
-  for (const m of locateMoveSentences(docs, from, to)) {
-    const head = flat(m.sentence).slice(0, 60);
-    if (!flat(confirmed).includes(head) && !flat(possible).includes(head.slice(0, 50))) out.push(`unlisted: "${head}…" (${m.date})`);
+  // The card's own coverage rule (uncoveredMoves): what no confirmed move covers must be listed as possible.
+  const possible = flat((v.possibleMoves ?? []).map(txt).join(" | "));
+  for (const m of uncoveredMoves(locateMoveSentences(docs, from, to), v.moves)) {
+    const head = flat(m.sentence).slice(0, 50);
+    if (!possible.includes(head)) out.push(`unlisted: "${head}…" (${m.date})`);
   }
   if (out.length === 0 && (v.possibleMoves ?? []).length && /No debt moves stated/.test(movesSectionText(v))) out.push("asserts none beside a possible move");
   if ((v.possibleMoves ?? []).length && /No debt moves stated/.test(movesSectionText(v))) out.push(`moves section says "${movesSectionText(v)}" beside a possible move`);
