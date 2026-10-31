@@ -33,9 +33,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.05741
   - now: Face total $3,800MM. Balance sheet $3,771MM, after $29MM of deferred debt issuance costs. Every figure links to the sentence it came from.
 - **possibleMoves**
   - now: Possible move, not confirmed: “We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and includin…”
-  - now: Possible move, not confirmed: “On February 4, 2026, we entered into an amendment to the New Credit Agreement (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter e…”
-  - now: Possible move, not confirmed: “Subsequently, we executed an amendment to the New Credit Agreement on February 4, 2026 (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal …”
-- **cited sentences behind source links**: 81 out, 82 in
+- **cited sentences behind source links**: 81 out, 80 in
   - was cited: 10-Q 2026-07-23 | For the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-07-23 | 4.375 % Notes due June 15, 2028 $ 800
   - was cited: 10-Q 2026-07-23 | Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of paymen
@@ -67,8 +65,6 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.05741
   - now cited: 10-Q 2026-10-22 | Long-term debt 3,771
   - now cited: 10-Q 2026-10-22 | Deferred debt issuance costs ( 29 )
   - now cited: 10-Q 2026-10-22 | We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) w
-  - now cited: 10-K 2026-02-10 | On February 4, 2026, we entered into an amendment to the New Credit Agreement (the “First Amendment”) that temporarily reduces the minimum I
-  - now cited: 10-K 2026-02-10 | Subsequently, we executed an amendment to the New Credit Agreement on February 4, 2026 (the “First Amendment”) that temporarily reduces the 
 - **parts of computed figures (shown when a figure is opened)**: 29 shown differently
   - was: $ 800 million
   - was: $ 650 million
