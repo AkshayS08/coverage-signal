@@ -77,14 +77,21 @@ for (const cik of CIKS) {
 
 console.log("\n=== P3-P4: Molina's refresh card ===");
 const result = JSON.parse(readFileSync("baselines/s27-molina-refresh.json", "utf-8")).results.find((x: any) => x.bust === null).result;
-const facts = JSON.parse(readFileSync("sessions/27/molina_review_facts/0001179929.json", "utf-8"));
-const card: any = buildCard({ result, briefDate: "2026-10-30", previousBrief: "2026-10-15", weekFilings: [], cash: mol.cash, textByUrl: new Map(docsOf(mol).map((d) => [d.url, d.text])), periodSentence: mol.periodSentence, laterUrls: [], facts });
+// Nov 1: Molina's facts were re-run with the move-sentence list and now keep the Feb 4 amendment (the cause, fixed).
+// The safety net is tested on the case it exists for: the same facts with the move missed, as the first run had it.
+const rerun = JSON.parse(readFileSync("sessions/27/molina_review_facts/0001179929.json", "utf-8"));
+const missed = { ...rerun, moves: [] };
+const buildWith = (facts: any): any => buildCard({ result, briefDate: "2026-10-30", previousBrief: "2026-10-15", weekFilings: [], cash: mol.cash, textByUrl: new Map(docsOf(mol).map((d) => [d.url, d.text])), periodSentence: mol.periodSentence, laterUrls: [], facts });
+const card: any = buildWith(missed);
 const poss = (card.v3.possibleMoves ?? []).map(txt).join(" | ");
 assert(/Possible move, not confirmed/.test(poss) && /February 4, 2026/.test(poss) && !/No debt moves stated/.test(movesSectionText(card.v3)) && violations(card, docsOf(mol), "2026-01-01", "2026-10-30").length === 0, `[P3] the Feb 4 amendment shows as "${poss.slice(0, 120)}…"; the section reads "${movesSectionText(card.v3)}"`);
 // P6 (Oct 31): one transaction printed in two documents is one possible move, as it is one confirmed move.
 assert((card.v3.possibleMoves ?? []).length === 1, `[P6] the Feb 4 amendment, printed in the 10-Q and the 10-K, is listed once (${(card.v3.possibleMoves ?? []).length} lines)`);
 const bad = JSON.parse(JSON.stringify(card)); bad.v3.possibleMoves = [];
 assert(violations(bad, docsOf(mol), "2026-01-01", "2026-10-30").length > 0, `[P4 control] with the possible-move lines removed, the card is flagged`);
+
+const confirmed = buildWith(rerun);
+assert(confirmed.v3.moves.some((m: any) => /Feb 4, 2026/.test(m.meta.map((x: any) => x.t ?? "").join(""))) && (confirmed.v3.possibleMoves ?? []).length === 0, `[P7] with the re-run facts, the Feb 4 amendment is a confirmed move card and nothing is left as possible`);
 
 console.log("\n=== P5: the cause, fixed ===");
 const dump = join(process.env.TEMP ?? ".", "p5dump");
