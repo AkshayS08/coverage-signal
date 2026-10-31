@@ -248,7 +248,11 @@ export function buildCard(i: CardInputs): Card {
     const cands = [e.section, e.seniority].filter(Boolean) as string[];
     return { label: e.label ?? "", recordedHeading: cands.find((h) => printedBefore(tableText, h, e.label ?? "")) ?? cands[0] ?? null };
   }));
-  const headingFor = (name: string): string | null => printedHeadingFor(headings, name)?.text ?? null;
+  // Session 27 (Oct 31): ONE RULE, ONE HOME. The loop records each row's printed heading (annotatePrintedHeadings, by
+  // position); the card reads it. Recomputing here by adjacency let the two disagree (Tenet's Q3 refresh: secured
+  // notes shown "unsecured"). A legacy answer without the field falls back to the computation above.
+  const recordedHeading = new Map<string, string | null>(rowEntries.filter((e) => "printedHeading" in e).map((e) => [e.label ?? "", e.printedHeading ?? null]));
+  const headingFor = (name: string): string | null => (recordedHeading.has(name) ? recordedHeading.get(name)! : printedHeadingFor(headings, name)?.text ?? null);
   // The sentences a label may come from: the anchor, every later filing through
   // the brief date, and the row's own cited document (§3.5, Rule 66).
   const sentencePools = new Map<string, Source[]>();

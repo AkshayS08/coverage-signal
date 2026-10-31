@@ -110,7 +110,27 @@ export function annotatePrintedHeadings<E extends { kind: string; label?: string
         return { label: e.label ?? "", recordedHeading: cands.find((h) => printedBefore(tableText, h, e.label ?? "")) ?? textHeadingBefore(tableText, e.label ?? "") ?? cands[0] ?? null };
       }))
     : [];
-  return entries.map((e) => (e.kind === "row" ? { ...e, printedHeading: headingFor(headings, e.label ?? "")?.text ?? null } : e));
+  // SESSION 27 (Oct 31): BY POSITION. A row's heading is the last candidate heading the table PRINTS before the row's
+  // own position, where the instrument types agree. Tenet's Q3 table prints "Senior secured first lien notes:" before a
+  // nil row the answer no longer carries; matching only a heading printed directly before a carried row let the
+  // unsecured block run on through every secured row. The adjacency result stands where the position rule finds none.
+  const flatT = flat(tableText);
+  const cands = [...new Set([...rows.flatMap((e) => [e.section, e.seniority]), ...rows.map((e) => textHeadingBefore(tableText, e.label ?? ""))].filter((x): x is string => !!x).map((h) => flat(h).replace(/[:—–-]+$/, "")))];
+  const printedAt = cands.flatMap((h) => [...flatT.matchAll(new RegExp(`${esc(h)}\\s*[:—–]`, "gi"))].map((m) => ({ h, at: m.index ?? 0 })));
+  let cursor = 0;
+  const byPosition = new Map<E, string | null>();
+  for (const e of rows) {
+    const full = flat(e.label ?? "");
+    let at = full ? flatT.indexOf(full, cursor) : -1;
+    if (at < 0 && full) at = flatT.indexOf(full.slice(0, 14), cursor);
+    if (at < 0) continue;
+    cursor = at + 1;
+    const before = printedAt.filter((p) => p.at < at).sort((a, b) => b.at - a.at)[0];
+    if (!before) { byPosition.set(e, null); continue; }
+    const rk = kindOf(e.label ?? ""), hk = kindOf(before.h);
+    byPosition.set(e, rk !== null && hk !== null && rk !== hk ? null : before.h);
+  }
+  return entries.map((e) => (e.kind === "row" ? { ...e, printedHeading: byPosition.has(e) ? byPosition.get(e)! : headingFor(headings, e.label ?? "")?.text ?? null } : e));
 }
 
 /**
