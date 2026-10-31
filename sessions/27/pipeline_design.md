@@ -85,6 +85,7 @@ Rules apply in this order. The first that applies decides the badge.
 | Names verbatim or plain type | `nameIsVerbatim`, or the plain-type fallback | name rule |
 | Stability | 3 of 3 samples reproduce (§4) | `compareToGolden`, `countsToward9b` |
 | Narration integrity | the existing narration integrity suite on the card's text | `narrationIntegrity` |
+| Every stage on this anchor | every section's stage read the card's own anchor; otherwise the section says "not yet read from [filing]" and asserts nothing | `missingStage.test` (Oct 30) |
 
 ## 4. Stability on demand (Akshay's decision: three samples)
 
@@ -120,8 +121,10 @@ Rules apply in this order. The first that applies decides the badge.
 - **Between triggers, the card is served from its last build**, with the filings since that build listed in the card's header. Nothing bills.
 - **The trigger and the key are different functions.** The *key* (stage 4) moves whenever the read set moves, which keeps cached answers honest. The *trigger* (`refreshTriggered(filingsSinceBuild)`, one function, its item list the one above) decides when a stored card is rebuilt.
   - So a name whose key moved on an earnings 8-K (Encompass and CHS, Oct 28) keeps its last build, lists the 8-K in its header, and does not bill.
+- **A refresh re-runs every billed stage on the new anchor (decided Oct 30).** That is the base extraction (canonical plus two re-tastes), the referenced-note call where Rule 66 directs, the dig, proceeds-use, **and the verified-facts extraction** (`capture/facts.ts`). A card never renders a section from a prior anchor, and never drops one silently. The refresh's declared cost includes every stage, priced from pre-call counts.
+- **A section whose stage has not run on the current anchor (decided Oct 30)** renders "not yet read from [filing]", naming the anchor filing. It never asserts absence. "No debt moves stated this year" was false on Molina's first refresh render: the Feb 4 amendment is this year, and the facts stage that reads moves had not run on the Oct 22 10-Q. Each stage records the anchor it read (the facts record its `anchorUrl`); the card compares that with its own anchor, section by section.
 - **On a refresh:**
-  1. The card rebuilds as a cold build (§4) on the new read set.
+  1. The card rebuilds as a cold build (§4) on the new read set, every stage included.
   2. The badge drops from **Signed** to the automated result. The golden no longer applies, because its filing set moved (Rule 30's "not-applicable").
   3. The old signed card stays available as **the prior quarter**, read-only, with its signature.
 - **Moves "awaiting confirmation"** (rule (c): an announced redemption) are re-evaluated against the new filing by the same `classifyRedeemsClaims`.
@@ -224,3 +227,7 @@ Committed snapshots remain the test fixtures for Ring 1. The product never reads
 4. **Ring 1:** a card rendered from a cached answer is byte-identical (determinism); a fresh extraction is compared with the recorded tolerated classes. (§9)
 5. **`resolveCik`:** return every match and never cache a guess. (§1)
 6. **Quotes round up to the cent.** (§6)
+7. **A refresh is every stage** on the new anchor, the verified-facts extraction included. A card never renders a section from a prior anchor, and never drops one silently. (§5; Oct 30)
+8. **Missing-stage rendering:** a section whose stage has not run on the current anchor renders "not yet read from [filing]" and never asserts absence. (§3, §5; Oct 30)
+9. **Standing terms vs balances (Oct 30):** Rule 66 governs balances (amounts stated as of a date). A standing term (facility maturity or size, a sub-limit, a note's coupon and maturity) stated only in the latest 10-K renders with the "10-K" tag, unless a later filing in the read set amends that facility or instrument (an 8-K Item 1.01, 1.02 or 2.03, or a 10-Q stating an amendment). In that case the term comes from that filing, or shows "not stated".
+10. **Serving from the last build:** `READ_SET_AS_OF` reads the filing list as of a build's brief date, so a card served between triggers, and its Ring 1 check, use the read set that build used. (§5, §9; Oct 30)
