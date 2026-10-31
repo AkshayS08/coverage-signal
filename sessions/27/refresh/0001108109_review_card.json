@@ -1154,20 +1154,6 @@
     },
     {
      "k": "label",
-     "t": "senior",
-     "stated": "Senior",
-     "src": {
-      "sentence": "Principal amounts outstanding under the ABL Facility, if any, will be due and payable in full on June 5, 2029. 2026 Financing Activity On February 2, 2026, we exercised a special call provision to redeem 10% of the original principal amount, or approximately $223 million, of the 10.875% Senior Secured Notes due 2032, at a redemption price of 103% of the principal amount, plus accrued and unpaid interest.",
-      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
-      "doc": "10-Q 2026-10-29"
-     }
-    },
-    {
-     "k": "text",
-     "t": " "
-    },
-    {
-     "k": "label",
      "t": "secured",
      "stated": "secured",
      "src": {
@@ -1208,6 +1194,19 @@
     {
      "k": "text",
      "t": " · undrawn commitment, not debt"
+    },
+    {
+     "k": "text",
+     "t": " · "
+    },
+    {
+     "k": "notStated",
+     "t": "seniority not stated, please refer to sources",
+     "src": {
+      "sentence": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\").",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+      "doc": "10-Q 2026-10-29"
+     }
     }
    ]
   ],

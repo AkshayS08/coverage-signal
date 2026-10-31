@@ -41,6 +41,7 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { briefDateArg } from "../briefDate";
 import { locateMoveSentences } from "../moveSentences";
+import { placedInsideParent } from "../subFacility";
 import { cachedCardFacts, cardFactsKey } from "../../cache/answerCache";
 import { beginCompanyCostScope, currentCompanySpend, persistCompanySpend, recordUsage } from "../../agent/costMeter";
 import { locateDebtNoteSection } from "../../fetch/noteLocation";
@@ -283,7 +284,8 @@ function verifyAsk(snap: any, raw: Raw, rejected: { fact: string; why: string }[
     // overall size is not a sub-limit of itself (DaVita's answer).
     subFacilities: (raw.subFacilities ?? []).map((r: any) => {
       const ok = row(r, ["amount"], `sub-facility ${r.kind} ${r.amount}`);
-      if (ok && !/sub-?facilit|sub-?limit|swing ?line|letters? of credit/i.test(r.sourceLine)) { rejected.push({ fact: `sub-facility ${r.kind} ${r.amount}`, why: "its sentence does not name a sub-facility or sub-limit" }); return null; }
+      // Session 27 (Nov 1): its own sentence must place it INSIDE the parent; a separate facility's figure is not one.
+      if (ok && !placedInsideParent(r.sourceLine)) { rejected.push({ fact: `sub-facility ${r.kind} ${r.amount}`, why: "its sentence does not place it inside the parent facility (a sub-facility, sub-limit or swingline, or capacity the parent provides for letters of credit; never a separate facility)" }); return null; }
       return ok;
     }).filter(Boolean),
     uncommitted: (raw.uncommitted ?? []).map((r: any) => row(r, ["description", "amount"], `uncommitted ${r.description}`)).filter(Boolean),
@@ -391,13 +393,13 @@ const LIMIT = argOf("--limit");
   if (process.argv.includes("--reverify")) {
     if (process.env.ANTHROPIC_API_KEY !== "") { console.error('REFUSING: run --reverify with ANTHROPIC_API_KEY="" so nothing can bill'); process.exit(1); }
     for (const p of plan) {
-      const saved = JSON.parse(readFileSync(join(IN, "facts", `raw-${p.s.cik}.json`), "utf-8"));
-      const prior = JSON.parse(readFileSync(join(IN, "facts", `${p.s.cik}.json`), "utf-8"));
+      const saved = JSON.parse(readFileSync(join(OUT_DIR, `raw-${p.s.cik}.json`), "utf-8"));
+      const prior = JSON.parse(readFileSync(join(OUT_DIR, `${p.s.cik}.json`), "utf-8"));
       const rejected: { fact: string; why: string }[] = [];
       const asks = saved.asks.map((r: Raw, i: number) => verifyAsk(p.s, r, i === 0 ? rejected : []));
       const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
       const facts: CardFacts = { cik: p.s.cik, anchorUrl: anchorUrlOf(p.s), promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: prior.costUsd, ...reproduce(asks, residual), residual };
-      writeFileSync(join(IN, "facts", `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");
+      writeFileSync(join(OUT_DIR, `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");
       console.log(`  ${p.s.company.padEnd(30)} kept: ${facts.moves.length} moves, ${facts.schedule.length} schedule, ${facts.subFacilities.length} sub-facilities, ${facts.maturities.length} maturities, ${facts.faces.length} faces; residual ${facts.residual.length}`);
     }
     console.log("\nRe-verified from saved answers. $0, no client constructed.");

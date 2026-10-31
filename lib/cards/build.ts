@@ -25,6 +25,11 @@ import { rolledCoverageFor } from "../events/rolledCoverage";
 import { deltaLabelOf, deltaIdentityOf, deltaStatedSpan } from "../events/rollDeltas";
 import { briefWeek } from "./briefDate";
 import { locateMoveSentences, uncoveredMoves } from "./moveSentences";
+import { scaledAmountString, locatorFor } from "../agent/tableScale";
+/** A fact's value in the unit its source declares (Rule 67's single scale function). */
+export function scaledFactValue(value: string, sentence: string, filingText: string): string {
+  return scaledAmountString(value, sentence, filingText, locatorFor(filingText));
+}
 /** The documents a card holds, as [url, text]. */
 const textByUrlOf = (i: { textByUrl: Map<string, string> }) => i.textByUrl.entries();
 import { borrowingBaseOf } from "../agent/borrowingBase";
@@ -1373,7 +1378,13 @@ export function buildCard(i: CardInputs): Card {
     const base = dm?.priorPeriodBase, ref = dm?.noteCrossReference;
     return base?.filingUrl === url && ref?.referencedNote ? `as of ${shortDate(base.periodOfReport)}, per 10-K ${ref.referencedNote}` : null;
   }
-  const factFig = (fact: { value: string; src: { sentence: string; url: string } }): Segment => ({ k: "figure", t: displayAmount(fact.value, fact.src.sentence), printed: fact.value, src: src(fact.src.sentence, fact.src.url) });
+  // Session 27 (Nov 1): a verified fact's figure takes the scale its own table or caption declares, through the single
+  // scale function (Rule 67) — DaVita's "$ 184,758" in thousands rendered "~$0MM" without it.
+  const factFig = (fact: { value: string; src: { sentence: string; url: string } }): Segment => {
+    const text = i.textByUrl.get(fact.src.url);
+    const scaled = text ? scaledFactValue(fact.value, fact.src.sentence, text) : fact.value;
+    return { k: "figure", t: displayAmount(scaled, fact.src.sentence), printed: fact.value, src: src(fact.src.sentence, fact.src.url) };
+  };
   const unpermittedFacts: string[] = [];
   const kindOfFacility = (f: VerifiedFacility) => {
     const k = classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType;

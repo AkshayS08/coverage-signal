@@ -76,19 +76,7 @@
    }
   }
  ],
- "subFacilities": [
-  {
-   "facility": "Bilateral secured letter of credit facility",
-   "kind": "letter-of-credit",
-   "amount": {
-    "value": "$ 184,758",
-    "src": {
-     "sentence": "The Company also had letters of credit of approximately $ 184,758 outstanding under a separate bilateral secured letter of credit facility as of September 30, 2026.",
-     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
-    }
-   }
-  }
- ],
+ "subFacilities": [],
  "uncommitted": [],
  "commercialPaper": null,
  "cash": [],
@@ -295,7 +283,12 @@
  "residual": [
   {
    "fact": "sub-facility other $ 1,500,000",
-   "why": "not verified: its sentence does not name a sub-facility or sub-limit",
+   "why": "not verified: its sentence does not place it inside the parent facility (a sub-facility, sub-limit or swingline, or capacity the parent provides for letters of credit; never a separate facility)",
+   "variation": []
+  },
+  {
+   "fact": "sub-facility letter-of-credit $ 184,758",
+   "why": "not verified: its sentence does not place it inside the parent facility (a sub-facility, sub-limit or swingline, or capacity the parent provides for letters of credit; never a separate facility)",
    "variation": []
   },
   {

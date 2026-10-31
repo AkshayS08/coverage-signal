@@ -91,12 +91,11 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.09192
   - was: senior secured revolver · $1,500MM size · $65MM drawn · $0 letters of credit · matures November 24, 2030
   - was: secured letter of credit facility · ~$188.5MM letters of credit outstanding · facility size not stated
   - now: senior secured revolver · $1,500MM size · $80MM drawn · $0 letters of credit · matures November 24, 2030
-  - now: Letter-of-credit sub-facility ~$0MM, capacity only.
   - now: secured letter of credit facility · ~$184.8MM letters of credit outstanding · facility size not stated
 - **footnote**
   - was: Face total $10,847.5MM. Balance sheet $10,781MM, after $66.5MM of discount, premium and deferred financing costs. Every figure links to the sentence it came from.
   - now: Face total $10,832.2MM. Balance sheet $10,769.1MM, after $63.1MM of discount, premium and deferred financing costs. Every figure links to the sentence it came from.
-- **cited sentences behind source links**: 186 out, 187 in
+- **cited sentences behind source links**: 186 out, 186 in
   - was cited: 10-Q 2026-08-04 | For the Quarterly Period Ended June 30, 2026
   - was cited: 10-Q 2026-08-04 |  Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283
   - was cited: 10-Q 2026-08-04 |  Scheduled maturities of long-term debt at June 30, 2026 were as follows: 2026 (remainder of the year) $ 62,283 2027 $ 114,026
@@ -140,8 +139,8 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.09192
   - now cited: 10-Q 2026-10-29 | As of September 30, 2026, the Company had $ 1,420,000 available and $ 80,000 drawn on its $ 1,500,000 revolving line of credit under its sen
   - now cited: 10-Q 2026-10-29 | Outstanding Term Loan A-2 and revolving line of credit balances are due on November 24, 2030
   - now cited: 10-Q 2026-10-29 | Credit available under this revolving line of credit is reduced by the amount of any letters of credit outstanding under the facility, of wh
-  - now cited: 10-Q 2026-10-29 | The Company also had letters of credit of approximately $ 184,758 outstanding under a separate bilateral secured letter of credit facility a
   - now cited: 10-Q 2026-10-29 | bilateral secured letter of credit facility
+  - now cited: 10-Q 2026-10-29 | The Company also had letters of credit of approximately $ 184,758 outstanding under a separate bilateral secured letter of credit facility a
   - now cited: 10-Q 2026-10-29 | Current portion of long-term debt 112,491   109,201
   - now cited: 10-Q 2026-10-29 | Long-term debt 10,656,624   10,163,988
   - now cited: 10-Q 2026-10-29 | Discount, premium and deferred financing costs ( 63,128 ) ( 71,394 )
