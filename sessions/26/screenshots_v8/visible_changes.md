@@ -1,13 +1,10 @@
 # Visible changes against origin/main
 
 ## TENET HEALTHCARE CORP
-- **liquidity**
-  - was: Undrawn revolver, matures November 4, 2030
-  - now: Undrawn revolver
 - **facilities**
-  - was: senior secured revolver · $1,900MM size · $0 drawn · <$1MM letters of credit · matures November 4, 2030
-  - now: senior secured revolver · $1,900MM size · $0 drawn · <$1MM letters of credit
-- **cited sentences behind source links**: 136 out, 134 in
+  - was: letter of credit facility · $105MM letters of credit outstanding · $200MM size
+  - now: letter of credit facility · $105MM letters of credit outstanding · $200MM size · matures November 4, 2030
+- **cited sentences behind source links**: 136 out, 137 in
   - was cited: 10-Q 2026-07-29 | 4.625 % due 2028 $ 600   $ 600
   - was cited: 10-Q 2026-07-29 | 5.125 % due 2027 $ 1,500   $ 1,500
   - was cited: 10-Q 2026-07-29 | 6.125 % due 2028 $ 1,750   $ 1,750
@@ -36,6 +33,8 @@
   - now cited: 10-Q 2026-07-29 | 6.875 % due 2031 362
   - now cited: 10-Q 2026-07-29 | 6.000 % due 2033 750
   - now cited: 10-Q 2026-07-29 | Finance leases, mortgages and other notes 671
+  - now cited: 10-K 2026-02-17 | The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the "Scheduled Maturity Date") or (2)  45 business days pri
+  - now cited: 10-K 2026-02-17 | We amended the LC Facility in November 2025 (the "LC Facility Amendment") to, among other things, extend the scheduled maturity date from Ma
   - now cited: 10-Q 2026-07-29 | Current portion of long-term debt $ 160
   - now cited: 10-Q 2026-07-29 | Long-term debt, net of current portion $ 13,088
   - now cited: 10-Q 2026-07-29 | Unamortized issue costs and note discounts ( 85 )
@@ -66,14 +65,16 @@
   - now: $362MM
 
 ## Encompass Health Corp
+- **facilities**
+  - was: Swingline sub-facility $40MM, capacity only. Letters of credit withheld, see Not shown.
+  - now: Swingline sub-facility $40MM, capacity only. Letters of credit outstanding not stated.
 - **notShown**
   - was: Senior secured revolver letters of credit, $53.6MM: withheld. Sentence does not state this figure. See the sentence offered.
-  - now: Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the period this card reports. See the sentence offered.
 - **cited sentences behind source links**: 5 out, 5 in
   - was cited: ehc-20260309.htm | the maturity date is March 9, 2031, rather than October 7, 2027
   - was cited: 10-Q 2026-08-07 | As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.
   - now cited: 10-Q 2026-08-07 | the maturity date has been changed to March 9, 2031
-  - now cited: 10-Q 2026-08-07 | As of December 31, 2025 and 2024, $ 46.3  million and $ 36.3  million , respectively, was being utilized under the letter of credit subfacil
+  - now cited: ehc-20260309.htm | In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit su
 - **parts of computed figures (shown when a figure is opened)**: 87 shown differently
   - was: $ 800 million
   - was: $ 400  million in aggregate principal amount
