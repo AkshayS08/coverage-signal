@@ -585,3 +585,42 @@ export function facilityArithmetic(f: FacilityRow, parse: (s: string) => number 
       : `DOES NOT TIE — the parts sum to ${parts.toLocaleString("en-US")} against a stated size of ${(size as number).toLocaleString("en-US")}`,
   };
 }
+
+/**
+ * SESSION 27 (Akshay, Oct 30, 2026) — RULE 53, EXTENDED. "No amount was
+ * outstanding", "no borrowings outstanding" and their equivalents are a stated
+ * zero for a facility's DRAWN amount. Molina's three refresh samples left drawn
+ * empty while its Q3 10-Q says "As of September 30, 2026, no amount was
+ * outstanding under the Credit Agreement."
+ *
+ * Only a facility the answer left without a drawn amount is filled, and only
+ * from a sentence of the anchor that names THIS facility (its name, or the
+ * defined term its own sentences give it) and no other facility on the list
+ * (Rule 19), asserts absence for "drawn" (zeroSupportFor — the same test a
+ * claimed zero is verified by), and predicates the anchor's own period
+ * (Rule 71). A stated amount is never replaced.
+ */
+export function fillStatedNothingOutstanding<F extends { name: string; drawn?: FacilityFigure | null; figureSources?: Record<string, string> }>(
+  facilities: F[],
+  anchorText: string | null | undefined,
+  anchorUrl: string | null,
+  anchorReportDate: string | null
+): { facilities: F[]; filled: string[] } {
+  const filled: string[] = [];
+  if (!anchorText || !anchorUrl) return { facilities, filled };
+  const sentences = sentencesOf(anchorText);
+  const out = facilities.map((f) => {
+    if (f.drawn) return f;
+    const hit = sentences
+      .filter((s) => namesFacility(s, f.name) && !facilities.some((o) => o !== f && namesFacility(s, o.name)))
+      .filter((s) => zeroSupportFor(s, "drawn").kind === "asserts-absence")
+      .filter((s) => figurePeriodOf(s, anchorReportDate).period === "anchor")
+      .sort((a, b) => a.length - b.length)[0]
+      // A bare note number the text-flattening ran on after the sentence ("…Credit Agreement. 8.") is not part of it.
+      ?.replace(/(\.)\s+\d{1,3}\.$/, "$1");
+    if (!hit) return f;
+    filled.push(`${f.name}.drawn = $0 — "${hit}" (a stated nothing-outstanding sentence naming this facility, at the anchor's period)`);
+    return { ...f, drawn: { value: "$0", sourceLine: hit }, figureSources: { ...(f.figureSources ?? {}), drawn: anchorUrl } };
+  });
+  return { facilities: out, filled };
+}

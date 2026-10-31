@@ -38,7 +38,10 @@
          "value": "$ 1.25 billion",
          "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million."
         },
-        "drawn": null,
+        "drawn": {
+         "value": "$0",
+         "sourceLine": "As of September 30, 2026, no amount was outstanding under the Credit Agreement."
+        },
         "lettersOfCredit": null,
         "available": {
          "value": "$ 1.25 billion",
@@ -54,7 +57,8 @@
         "figureSources": {
          "facilitySize": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
          "available": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
-         "maturity": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+         "maturity": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "drawn": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
         }
        }
       ],
@@ -1291,7 +1295,10 @@
          "value": "$ 1.25 billion",
          "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million."
         },
-        "drawn": null,
+        "drawn": {
+         "value": "$0",
+         "sourceLine": "As of September 30, 2026, no amount was outstanding under the Credit Agreement."
+        },
         "lettersOfCredit": null,
         "available": {
          "value": "$ 1.25 billion",
@@ -1307,7 +1314,8 @@
         "figureSources": {
          "facilitySize": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
          "available": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
-         "maturity": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+         "maturity": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "drawn": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
         }
        }
       ],
@@ -2544,7 +2552,10 @@
          "value": "$ 1.25 billion",
          "sourceLine": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million."
         },
-        "drawn": null,
+        "drawn": {
+         "value": "$0",
+         "sourceLine": "As of September 30, 2026, no amount was outstanding under the Credit Agreement."
+        },
         "lettersOfCredit": null,
         "available": {
          "value": "$ 1.25 billion",
@@ -2560,7 +2571,8 @@
         "figureSources": {
          "facilitySize": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
          "available": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
-         "maturity": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+         "maturity": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+         "drawn": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
         }
        }
       ],

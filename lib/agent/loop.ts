@@ -3,7 +3,7 @@ import { TRIGGERS, type TriggerDef } from "./triggers";
 import { resolveReadSet, recordedReadSet } from "../cache/readSet";
 import { readFiling, searchNews } from "./tools";
 import { quoteAppearsIn } from "./verifyQuote";
-import { verifyFacilities, retargetAnnualReportFigures, type VerifiedFacility, type FigureRejection } from "./verifyFacility";
+import { verifyFacilities, retargetAnnualReportFigures, fillStatedNothingOutstanding, type VerifiedFacility, type FigureRejection } from "./verifyFacility";
 import { locatorFor, tableCellMillions } from "./tableScale";
 import { figurePeriodOf, dateTokensFor } from "./figurePeriod";
 import { statedBalanceAt } from "../events/rollDeltas";
@@ -1515,7 +1515,10 @@ async function runAgentLoopInner(
     // carrying a unit its own table cell does not print, and the guard that
     // exists to catch fabricated composites would reject a correct number.
     // Session 27: a stated zero is stored in its one canonical form (canonicalizeFacilityZeros).
-    const facilities = canonicalizeFacilityZeros(deriveFacilityScale(facilityCheck.verified, textByUrl, log, label) ?? facilityCheck.verified);
+    // Session 27 (Oct 30): Rule 53 extended — a stated nothing-outstanding sentence naming the facility is its drawn zero.
+    const nothingOutstanding = fillStatedNothingOutstanding(facilityCheck.verified, anchorUrl ? textByUrl.get(anchorUrl) : null, anchorUrl, debtScheduleGuidance.base?.reportDate ?? null);
+    for (const n of nothingOutstanding.filled) log(`  STATED ZERO FROM A NOTHING-OUTSTANDING SENTENCE for ${label} — ${n}`);
+    const facilities = canonicalizeFacilityZeros(deriveFacilityScale(nothingOutstanding.facilities, textByUrl, log, label) ?? nothingOutstanding.facilities);
     const facilityRejections = facilityCheck.rejections;
     for (const r of facilityRejections) {
       // RULE 71's rejection is not a fabrication finding and does not read
