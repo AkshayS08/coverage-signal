@@ -2149,8 +2149,14 @@ export function buildCard(i: CardInputs): Card {
     const lcCap = (f as any).lettersOfCreditCapacity as { value: string; sourceLine: string } | undefined;
     if (lcCap && !(subsFor.get(f) ?? []).some((sf) => /letter/i.test(sf.kind))) sub.push(...(sub.length ? [t(" ")] : []), t("Letter-of-credit capacity "), { k: "figure", t: displayAmount(lcCap.value, lcCap.sourceLine), printed: lcCap.value, src: src(lcCap.sourceLine, f.figureSources?.lettersOfCreditCapacity ?? f.citedUrl) }, t(", capacity only."));
     const lcWithheld = (dm?.facilityRejections ?? []).some((r: any) => r.facility === f.name && r.field === "lettersOfCredit");
-    if (kind === "facility" && !f.lettersOfCredit) sub.push(...(sub.length ? [t(" ")] : []), lcWithheld ? t("Letters of credit withheld, see Not shown.") : { k: "notStated", t: "Letters of credit outstanding not stated.", src: own });
-    if (kind === "facility" && !f.available && !statedAvailabilityOf(f)) sub.push(...(sub.length ? [t(" ")] : []), { k: "notStated", t: "Availability not stated.", src: own });
+    // SESSION 27 (Akshay, Oct 31): a figure found in a read document is never "not stated". One stated only in the
+    // 10-K (removed under Rule 66) says so: "stated only as of [date] in the 10-K; not shown".
+    const removedNote = (field: string, label: string): Segment | null => {
+      const d = ((f as any).removedUnderRule66Detail ?? []).find((x: any) => x.field === field);
+      return d ? { k: "label", t: `${label}: stated only ${d.statedAsOf ? `as of ${displayDate(d.statedAsOf, "day")} ` : ""}in the 10-K; not shown.`, stated: d.value, src: src(d.sourceLine, d.url) } : null;
+    };
+    if (kind === "facility" && !f.lettersOfCredit) sub.push(...(sub.length ? [t(" ")] : []), lcWithheld ? t("Letters of credit withheld, see Not shown.") : removedNote("lettersOfCredit", "Letters of credit outstanding") ?? { k: "notStated", t: "Letters of credit outstanding not stated.", src: own });
+    if (kind === "facility" && !f.available && !statedAvailabilityOf(f)) sub.push(...(sub.length ? [t(" ")] : []), removedNote("available", "Availability") ?? { k: "notStated", t: "Availability not stated.", src: own });
     const bb = borrowingBaseOf(f);
     if (bb) sub.push(...(sub.length ? [t(" ")] : []), { k: "label", t: "Borrowing-base limited", stated: bb.limitedBy, src: src(widen(bb.statement, [f.facilitySize, f.drawn, f.lettersOfCredit, f.available, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => x.sourceLine)), f.figureSources?.facilitySize ?? f.citedUrl) }, t("; stated availability shown."));
     facLines.push({ bold, sub: sub.length ? sub : null });

@@ -307,6 +307,9 @@ export function retargetAnnualReportFigures(params: {
         next[field] = null;
         // Recorded on the facility, so a row claiming the same figure does not render it as "withheld" either.
         (next as FacilityRow & { removedUnderRule66?: string[] }).removedUnderRule66 = [...((next as { removedUnderRule66?: string[] }).removedUnderRule66 ?? []), field];
+        // Oct 31: and WHAT was removed — the figure is stated, so the card may never call it "not stated".
+        const statedAsOf = figurePeriodOf(fig.sourceLine, null).predicated[0] ?? null;
+        (next as FacilityRow & { removedUnderRule66Detail?: unknown[] }).removedUnderRule66Detail = [...((next as { removedUnderRule66Detail?: unknown[] }).removedUnderRule66Detail ?? []), { field, value: fig.value, sourceLine: fig.sourceLine, statedAsOf, url: hit.url }];
         removed.push(`${f.name}.${field} = ${fig.value} — stated only in the prior-period annual report, which is a source only where the anchor locates no debt note and directs to it (Rule 66); no current filing states it, so it is not shown`);
         continue;
       }

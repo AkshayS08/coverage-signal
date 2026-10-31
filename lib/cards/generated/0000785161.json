@@ -5634,12 +5634,13 @@
       "t": " "
      },
      {
-      "k": "notStated",
-      "t": "Letters of credit outstanding not stated.",
+      "k": "label",
+      "t": "Letters of credit outstanding: stated only as of December 31, 2025 in the 10-K; not shown.",
+      "stated": "$ 46.3 million",
       "src": {
-       "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-       "doc": "ehc-20260309.htm"
+       "sentence": "As of December 31, 2025 and 2024, $ 46.3  million and $ 36.3  million , respectively, was being utilized under the letter of credit subfacility, which were being used in the ordinary course of business to secure workers' compensation and other insurance coverages and for general corporate purposes.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm",
+       "doc": "ehc-20251231.htm"
       }
      }
     ]
