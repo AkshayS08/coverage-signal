@@ -35,7 +35,7 @@ import { buildCard } from "../cards/build";
 const SIGNER = "Akshay Sahani";
 const CLEARED_ON = "2026-10-29";
 const CLEARED: Record<string, string> = {
-  "0000070318": "Cleared by Akshay Sahani on Oct 29, 2026. Re-signed Oct 30 under his Rule 66 ruling of that day: the 10-K is a source only where the anchor is not-located and directs to it, which is not Tenet's case, so the revolver's and the L/C facility's maturity (November 4, 2030), stated only in the 10-K, are removed from the card, and the 10-K leaves the position identity. Nothing else moved.",
+  "0000070318": "Cleared by Akshay Sahani on Oct 29, 2026; re-signed Oct 30 under his Rule 66 ruling; corrected card cleared by him Oct 31, 2026 and re-signed on the Oct 15 read set: the revolver's and the L/C facility's maturity (November 4, 2030) are standing terms stated only in the latest 10-K, which no later filing in the read set amends, so they render with the 10-K tag (ruling of Oct 30), and the 10-K is in the position identity for them.",
   "0000785161": "Cleared by Akshay Sahani on Oct 29, 2026, at its pre-Oct 28 read set (its Q3 earnings 8-K of Oct 28 moved the read set after the samples were taken; by ruling, an earnings 8-K alone is not a refresh).",
   "0000927066": "Cleared by Akshay Sahani on Oct 29, 2026, on the tolerated classes: the byte-identity condition first set was withdrawn as stricter than what Tenet and Encompass were signed on. The 136 card lines that differ from the v31 card are cited sentences verbatim in the same document that state the amount (Rule 58); no figure, date or label differs. Its subtotal label \"Total debt principal outstanding\" is recovered from the document in code.",
   "0001739940": "Cleared by Akshay Sahani on Oct 30, 2026, on the condition that 3/3 and criterion 2 hold. Its deltas are matched by identity and labelled from it (ruling of Oct 29); its revolver's commitment is filled from its own sentence through its one verified facility, basis commitment, held out of captured debt (ruling of Oct 30).",
@@ -84,7 +84,7 @@ export function cardFrom(cik: string, result: any): string {
       const replay = await runAgentLoop(c.company);
       console.log = quiet;
       if (JSON.stringify(deriveGoldenState(replay, asOf)) !== JSON.stringify(state)) problems.push("Rule 75: the $0 replay through the loop does not give the stored canonical's state");
-      readSetNote = `read set ${live.fingerprint} (current; the $0 replay through the loop gives the same state)`;
+      readSetNote = `read set ${live.fingerprint} (${process.env.READ_SET_AS_OF ? `as of ${process.env.READ_SET_AS_OF}, the published brief` : "current"}; the $0 replay through the loop gives the same state)`;
     } else readSetNote = "the read set the canonical and both re-tastes were taken on (since moved; not a refresh by ruling)";
     if (CARD_CONDITION.has(cik)) {
       const a = cardFrom(cik, c.result), b = readFileSync(`lib/cards/generated/${cik}.json`, "utf-8").replace(/\r\n/g, "\n");

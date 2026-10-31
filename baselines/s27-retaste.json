@@ -49,10 +49,13 @@
          "value": "$ 1.900 billion",
          "sourceLine": "Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible accounts receivable, eligible inventory and Medicaid supplemental payments, was $ 1.900  billion at June 30, 2026."
         },
-        "maturity": null,
+        "maturity": {
+         "value": "November 4, 2030",
+         "sourceLine": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied."
+        },
         "asOfDate": "2026-06-30",
         "availabilityBasis": null,
-        "removedUnderRule66": [
+        "standingFrom10K": [
          "maturity"
         ],
         "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -60,7 +63,8 @@
          "facilitySize": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
          "drawn": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
          "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "available": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+         "available": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "maturity": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
         }
        },
        {
@@ -76,16 +80,20 @@
          "sourceLine": "At June 30, 2026, we had $ 105 million of standby letters of credit outstanding under the LC Facility."
         },
         "available": null,
-        "maturity": null,
+        "maturity": {
+         "value": "November 4, 2030",
+         "sourceLine": "We amended the LC Facility in November 2025 (the \"LC Facility Amendment\") to, among other things, extend the scheduled maturity date from March 16, 2027 to November 4, 2030 and revise certain pricing terms under the LC Facility."
+        },
         "asOfDate": "2026-06-30",
         "availabilityBasis": null,
-        "removedUnderRule66": [
+        "standingFrom10K": [
          "maturity"
         ],
         "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "figureSources": {
          "facilitySize": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+         "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "maturity": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
         }
        }
       ],
@@ -1650,10 +1658,13 @@
          "value": "$ 1.900 billion",
          "sourceLine": "Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible accounts receivable, eligible inventory and Medicaid supplemental payments, was $ 1.900  billion at June 30, 2026."
         },
-        "maturity": null,
+        "maturity": {
+         "value": "November 4, 2030",
+         "sourceLine": "The 2025 Credit Agreement will terminate on the earlier of (1) November 4, 2030 (the \"Scheduled Maturity Date\") or (2)  45 business days prior to the maturity date of (a) any series of our senior notes due in 2028 or (b) any series of our senior secured notes due between 2027 and 2030, but solely to the extent that the principal amount of such series exceeds $ 2.500  billion (each, a \"Springing Maturity Date\"), unless (i) prior to each Springing Maturity Date, with respect to at least 80 % of the aggregate principal amount of the applicable series of notes, the maturity date is extended to a date no earlier than one year after the Scheduled Maturity Date or such amount is repaid, defeased, discharged or refinanced, or (ii) on each such Springing Maturity Date, the Excess Availability Condition (as defined in the 2025 Credit Agreement), determined on a pro forma basis, after giving effect to the full repayment of the applicable series of the notes, is satisfied."
+        },
         "asOfDate": "2026-06-30",
         "availabilityBasis": null,
-        "removedUnderRule66": [
+        "standingFrom10K": [
          "maturity"
         ],
         "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
@@ -1661,7 +1672,8 @@
          "facilitySize": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
          "drawn": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
          "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "available": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+         "available": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "maturity": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
         }
        },
        {
@@ -1677,16 +1689,20 @@
          "sourceLine": "At June 30, 2026, we had $ 105 million of standby letters of credit outstanding under the LC Facility."
         },
         "available": null,
-        "maturity": null,
+        "maturity": {
+         "value": "November 4, 2030",
+         "sourceLine": "We amended the LC Facility in November 2025 (the \"LC Facility Amendment\") to, among other things, extend the scheduled maturity date from March 16, 2027 to November 4, 2030 and revise certain pricing terms under the LC Facility."
+        },
         "asOfDate": "2026-06-30",
         "availabilityBasis": null,
-        "removedUnderRule66": [
+        "standingFrom10K": [
          "maturity"
         ],
         "citedUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
         "figureSources": {
          "facilitySize": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
-         "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm"
+         "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000037/thc-20260630.htm",
+         "maturity": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000012/thc-20251231.htm"
         }
        }
       ],
