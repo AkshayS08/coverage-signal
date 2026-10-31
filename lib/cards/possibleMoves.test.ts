@@ -81,6 +81,8 @@ const facts = JSON.parse(readFileSync("sessions/27/molina_review_facts/000117992
 const card: any = buildCard({ result, briefDate: "2026-10-30", previousBrief: "2026-10-15", weekFilings: [], cash: mol.cash, textByUrl: new Map(docsOf(mol).map((d) => [d.url, d.text])), periodSentence: mol.periodSentence, laterUrls: [], facts });
 const poss = (card.v3.possibleMoves ?? []).map(txt).join(" | ");
 assert(/Possible move, not confirmed/.test(poss) && /February 4, 2026/.test(poss) && !/No debt moves stated/.test(movesSectionText(card.v3)) && violations(card, docsOf(mol), "2026-01-01", "2026-10-30").length === 0, `[P3] the Feb 4 amendment shows as "${poss.slice(0, 120)}…"; the section reads "${movesSectionText(card.v3)}"`);
+// P6 (Oct 31): one transaction printed in two documents is one possible move, as it is one confirmed move.
+assert((card.v3.possibleMoves ?? []).length === 1, `[P6] the Feb 4 amendment, printed in the 10-Q and the 10-K, is listed once (${(card.v3.possibleMoves ?? []).length} lines)`);
 const bad = JSON.parse(JSON.stringify(card)); bad.v3.possibleMoves = [];
 assert(violations(bad, docsOf(mol), "2026-01-01", "2026-10-30").length > 0, `[P4 control] with the possible-move lines removed, the card is flagged`);
 
