@@ -16,7 +16,7 @@
  */
 import { loadEnvQuietly } from "../../cache/loadEnv";
 loadEnvQuietly();
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { buildCard } from "../build";
 import { captureCardInput } from "./snapshot";
@@ -34,11 +34,15 @@ import { visibleDiff } from "../../cache/s27cardDiff";
   const prev = previousBrief(readBriefLog(), result.cik, brief);
   const week = briefWeek(brief, prev);
   const input = await captureCardInput(result, { fingerprint: refresh.boundFingerprint, commit: execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim(), source: "REVIEW RENDER of the refreshed v33 answer (Oct 22 10-Q); not the committed card", briefDate: brief });
+  writeFileSync("sessions/27/molina_review_input.json", JSON.stringify(input) + "\n");
+  // The refresh's own facts stage (capture/facts.ts --input this file --out sessions/27/molina_review_facts), where run.
+  const factsPath = `sessions/27/molina_review_facts/${result.cik}.json`;
+  const facts = existsSync(factsPath) ? JSON.parse(readFileSync(factsPath, "utf-8")) : null;
   const weekFilings = await liveFilingsBetween(result.cik, week.from, week.to);
   const card = buildCard({
     result, briefDate: brief, previousBrief: prev, weekFilings, cash: input.cash,
     textByUrl: new Map(Object.entries(input.docs).map(([u, d]) => [u, d.text])), periodSentence: input.periodSentence,
-    laterUrls: input.laterFilings.filter((x) => x.filingDate <= brief).map((x) => x.url), facts: null,
+    laterUrls: input.laterFilings.filter((x) => x.filingDate <= brief).map((x) => x.url), facts,
   });
   writeFileSync("sessions/27/molina_review_card.json", JSON.stringify(card, null, 1) + "\n");
   const current = JSON.parse(readFileSync("lib/cards/generated/0001179929.json", "utf-8"));
@@ -46,7 +50,7 @@ import { visibleDiff } from "../../cache/s27cardDiff";
     `# Molina: the refreshed card against the committed card`,
     ``,
     `Review render, not committed. Brief ${brief} (week ${week.from} to ${week.to}; previous brief ${prev}). Week filings: ${weekFilings.map((f) => `${f.form} ${f.filingDate}${f.items ? ` [${f.items}]` : ""}`).join("; ") || "none"}.`,
-    `Built without verified card facts (a separate billed extraction for the Q3 10-Q).`,
+    facts ? `Verified card facts: read from ${facts.anchorUrl === (result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.url) ? "this anchor (the Oct 22 10-Q)" : "ANOTHER anchor, so not used"} ($${facts.costUsd}).` : `Verified card facts: not yet read from this anchor; those sections say so.`,
     ``,
     ...visibleDiff(current, card),
   ];

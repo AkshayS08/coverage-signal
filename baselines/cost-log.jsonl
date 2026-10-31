@@ -3626,3 +3626,4 @@
 {"at":"2026-10-31T02:53:16.236Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-31T02:53:22.572Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-31T02:53:28.479Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-10-31T03:20:43.348Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0.057417,"totalCalls":3,"byModel":[{"model":"claude-haiku-4-5","calls":3,"inputTokens":25422,"outputTokens":6399,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.057417}],"unpricedModels":[]}

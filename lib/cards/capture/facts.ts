@@ -24,8 +24,15 @@
  *
  * Run: npx tsx lib/cards/capture/facts.ts            (declare, $0)
  *      npx tsx lib/cards/capture/facts.ts --bill     (bill, within the bands)
+ *
+ * SESSION 27 (Oct 30): a refresh runs this stage on the NEW anchor without
+ * touching the committed facts:
+ *      --input <card-input.json>   one name's card input (e.g. a review capture)
+ *      --out <dir>                 where its facts are written (not lib/cards/inputs/facts)
+ *      --price                     count every ask's input pre-call (spend guard, price-only) and stop: $0
+ *      --limit <usd>               with --bill: the approved ceiling the guard holds, pre-call
  */
-import { guardedCreate } from "../../agent/spendGuard";
+import { guardedCreate, setPriceOnly, setSpendLimits, pricedCalls } from "../../agent/spendGuard";
 import { loadEnvQuietly } from "../../cache/loadEnv";
 loadEnvQuietly();
 import Anthropic from "@anthropic-ai/sdk";
@@ -351,8 +358,13 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
   return { schedule, subFacilities, uncommitted, commercialPaper, cash, faces, maturities, moves };
 }
 
+const argOf = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : null; };
+const INPUT = argOf("--input");
+const OUT_DIR = argOf("--out") ?? join(IN, "facts");
+const LIMIT = argOf("--limit");
+
 (async () => {
-  const snaps = readdirSync(IN).filter((f) => /^\d+\.json$/.test(f)).map((f) => JSON.parse(readFileSync(join(IN, f), "utf-8")));
+  const snaps = INPUT ? [JSON.parse(readFileSync(INPUT, "utf-8"))] : readdirSync(IN).filter((f) => /^\d+\.json$/.test(f)).map((f) => JSON.parse(readFileSync(join(IN, f), "utf-8")));
   // DECLARE FIRST: every name's estimated cost, before anything bills.
   const plan = snaps.map((s) => {
     const input = inputFor(s);
@@ -385,10 +397,24 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
     console.log("\nRe-verified from saved answers. $0, no client constructed.");
     return;
   }
+  // --price: each ask's real input counted by the Messages API (the guard in price-only mode), worst case at max_tokens.
+  if (process.argv.includes("--price")) {
+    setPriceOnly(true);
+    const client = new Anthropic();
+    for (const p of plan) {
+      const n0 = pricedCalls().length;
+      await guardedCreate(client, { model: MODEL, max_tokens: 8000, temperature: 0, system: SYSTEM, messages: [{ role: "user", content: p.input }], tools: [{ name: "submit_facts", description: "Submit the transcribed facts.", input_schema: SCHEMA as any }], tool_choice: { type: "tool", name: "submit_facts" } }).catch((e) => { if (e?.name !== "PricedOnlyError") throw e; });
+      const c = pricedCalls().slice(n0)[0];
+      console.log(`PRICED ${p.s.company}: ${c?.inputTokens} input tokens/ask, 8000 max out → worst $${c?.worstUsd.toFixed(4)}/ask, $${((c?.worstUsd ?? 0) * ASKS).toFixed(4)} for ${ASKS} asks`);
+    }
+    console.log("Priced from pre-call counts. Nothing billed.");
+    return;
+  }
   if (!BILL) { console.log("\nDeclared only. Re-run with --bill to extract. Nothing billed."); return; }
+  if (LIMIT) setSpendLimits({ totalUsd: Number(LIMIT) });
 
   const client = new Anthropic();
-  mkdirSync(join(IN, "facts"), { recursive: true });
+  mkdirSync(OUT_DIR, { recursive: true });
   let spent = 0;
   for (const p of plan) {
     beginCompanyCostScope(p.s.company);
@@ -417,8 +443,8 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
     spent += spend.totalUsd;
     const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
     const facts: CardFacts = { cik: p.s.cik, anchorUrl: anchorUrlOf(p.s), promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: Number(spend.totalUsd.toFixed(6)), ...reproduce(asks, residual), residual };
-    writeFileSync(join(IN, "facts", `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");
-    writeFileSync(join(IN, "facts", `raw-${p.s.cik}.json`), JSON.stringify({ keys: [1, 2, 3].map((a) => cardFactsKey(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, a)), asks: raws }, null, 1) + "\n", "utf-8");
+    writeFileSync(join(OUT_DIR, `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");
+    writeFileSync(join(OUT_DIR, `raw-${p.s.cik}.json`), JSON.stringify({ keys: [1, 2, 3].map((a) => cardFactsKey(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, a)), asks: raws }, null, 1) + "\n", "utf-8");
     console.log(`  ${p.s.company.padEnd(30)} $${spend.totalUsd.toFixed(4)} (${spend.totalCalls} calls)  kept: ${facts.moves.length} moves, ${facts.schedule.length} schedule, ${facts.subFacilities.length} sub-facilities, ${facts.maturities.length} maturities, ${facts.faces.length} faces; residual ${facts.residual.length}`);
     if (spend.totalUsd > BAND_PER_NAME) { console.error(`STOPPING: ${p.s.company} cost $${spend.totalUsd.toFixed(4)}, over its $${BAND_PER_NAME} band. No further name billed.`); process.exit(1); }
   }

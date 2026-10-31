@@ -1,7 +1,7 @@
 # Molina: the refreshed card against the committed card
 
-Review render, not committed. Brief 2026-10-30 (week 2026-10-16 to 2026-10-30; previous brief 2026-10-15). Week filings: SCHEDULE 13G/A 2026-10-27; 10-Q 2026-10-22; 8-K 2026-10-21 [2.02,9.01].
-Built without verified card facts (a separate billed extraction for the Q3 10-Q).
+Review render, not committed. Brief 2026-10-30 (week 2026-10-16 to 2026-10-30; previous brief 2026-10-15). Week filings: SCHEDULE 13G/A 2026-10-30; SCHEDULE 13G/A 2026-10-27; 10-Q 2026-10-22; 8-K 2026-10-21 [2.02,9.01].
+Verified card facts: read from this anchor (the Oct 22 10-Q) ($0.057417).
 
 - **header (label)**
   - was: Weekly coverage brief · Oct 5 to Oct 15, 2026
@@ -12,7 +12,7 @@ Built without verified card facts (a separate billed extraction for the Q3 10-Q)
   - was: No new debt filings this week
   - now: Position as of September 30, 2026
   - now: 10-Q filed Oct 22, 2026
-  - now: New this week: this 10-Q, filed Oct 22, 2026, is the position · 2 other filings, none affecting debt
+  - now: New this week: this 10-Q, filed Oct 22, 2026, is the position · 3 other filings, none affecting debt
 - **call (label)**
   - was: The call · next 18 months, to Apr 15, 2028
   - now: The call · next 18 months, to Apr 30, 2028
@@ -26,18 +26,12 @@ Built without verified card facts (a separate billed extraction for the Q3 10-Q)
 - **liquidity**
   - was: $6,235MM
   - was: $4,985MM
-  - was: Not counted: up to $800MM of uncommitted incremental term loans to finance certain acquisitions.
   - now: $5,729MM
   - now: $4,479MM
-- **facilities**
-  - was: revolver · $1,250MM size · $0 drawn · matures November 20, 2030
-  - was: Swingline sub-facility $15MM, capacity only. Letter-of-credit sub-facility $100MM, capacity only. Letters of credit outstanding not stated.
-  - now: revolver · $1,250MM size · matures November 20, 2030
-  - now: Letters of credit outstanding not stated.
 - **footnote**
   - was: Face total $3,800MM. Balance sheet $3,769MM, after $31MM of deferred debt issuance costs. Every figure links to the sentence it came from.
   - now: Face total $3,800MM. Balance sheet $3,771MM, after $29MM of deferred debt issuance costs. Every figure links to the sentence it came from.
-- **cited sentences behind source links**: 81 out, 74 in
+- **cited sentences behind source links**: 81 out, 79 in
   - was cited: 10-Q 2026-07-23 | For the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-07-23 | 4.375 % Notes due June 15, 2028 $ 800
   - was cited: 10-Q 2026-07-23 | Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of paymen
@@ -65,6 +59,7 @@ Built without verified card facts (a separate billed extraction for the Q3 10-Q)
   - now cited: 10-Q 2026-10-22 | As of September 30, 2026, we had available borrowing capacity of $1.25 billion under the Credit Facility.
   - now cited: 10-Q 2026-10-22 | We are party to a Credit Agreement (the "Credit Agreement") which includes a revolving credit facility ("Credit Facility") of $ 1.25  billio
   - now cited: 10-Q 2026-10-22 | The Credit Agreement has a term of five years , and all amounts outstanding will be due and payable on November 20, 2030.
+  - now cited: 10-Q 2026-10-22 | As of September 30, 2026, no amount was outstanding under the Credit Agreement.
   - now cited: 10-Q 2026-10-22 | Long-term debt 3,771
   - now cited: 10-Q 2026-10-22 | Deferred debt issuance costs ( 29 )
 - **parts of computed figures (shown when a figure is opened)**: 29 shown differently
