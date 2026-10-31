@@ -90,7 +90,11 @@ export function uncoveredMoves(located: LocatedMove[], moveCards: unknown): Loca
     }
     for (const v of Object.values(o)) walk(v);
   })(moveCards);
-  return located.filter((m) => {
+  // One transaction printed in several documents is one possible move, as it is one confirmed move: the first located
+  // sentence (the anchor's, which the caller lists first) stands for each date and kind.
+  const firstOf = new Map<string, LocatedMove>();
+  for (const m of located) if (!firstOf.has(`${m.date}|${m.kind}`)) firstOf.set(`${m.date}|${m.kind}`, m);
+  return [...firstOf.values()].filter((m) => {
     const head = squash(m.sentence).slice(0, 60);
     if (sentences.some((s) => s.includes(head))) return false;
     const [from, to] = m.date.length === 7 ? [`${m.date}-01`, `${m.date}-31`] : [m.date, m.date];
