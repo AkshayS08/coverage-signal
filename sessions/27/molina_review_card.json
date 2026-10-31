@@ -91,15 +91,53 @@
  },
  "moves": {
   "heading": "Recent debt moves",
-  "lines": [
-   [
-    {
-     "k": "text",
-     "t": "No debt moves stated between Jan 1, 2026 and Oct 31, 2026."
-    }
-   ]
-  ],
-  "blocks": []
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "During the period, Jan 1, 2026 to Sept 30, 2026: already in the position"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "label",
+       "t": "February 4, 2026",
+       "stated": "February 4, 2026",
+       "src": {
+        "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": "
+      },
+      {
+       "k": "text",
+       "t": "Amended"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "credit agreement",
+       "stated": "Credit Agreement",
+       "src": {
+        "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      }
+     ]
+    ]
+   }
+  ]
  },
  "headlines": {
   "totalDebt": {
@@ -446,8 +484,8 @@
      },
      {
       "k": "label",
-      "t": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
-      "stated": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+      "t": "incremental term loans to finance certain acquisitions",
+      "stated": "incremental term loans to finance certain acquisitions",
       "src": {
        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
@@ -1529,7 +1567,51 @@
    "notes": [],
    "legend": null
   },
-  "moves": [],
+  "moves": [
+   {
+    "meta": [
+     {
+      "k": "label",
+      "t": "Feb 4, 2026",
+      "stated": "February 4, 2026",
+      "src": {
+       "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+       "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+       "doc": "10-Q 2026-10-22"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · Amended"
+     }
+    ],
+    "title": [
+     [
+      {
+       "k": "label",
+       "t": "Credit agreement",
+       "stated": "Credit Agreement",
+       "src": {
+        "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+        "doc": "10-Q 2026-10-22"
+       }
+      },
+      {
+       "k": "text",
+       "t": " amended"
+      }
+     ]
+    ],
+    "detail": [
+     {
+      "k": "text",
+      "t": "Terms of the amendment are not covered in this version."
+     }
+    ],
+    "retires": null
+   }
+  ],
   "totalDebt": {
    "figure": {
     "k": "computed",
@@ -1831,8 +1913,8 @@
      },
      {
       "k": "label",
-      "t": "uncommitted incremental term loans to finance certain acquisitions",
-      "stated": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+      "t": "incremental term loans to finance certain acquisitions",
+      "stated": "incremental term loans to finance certain acquisitions",
       "src": {
        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
@@ -2746,24 +2828,7 @@
   "stages": {
    "facts": true
   },
-  "possibleMoves": [
-   [
-    {
-     "k": "text",
-     "t": "Possible move, not confirmed: "
-    },
-    {
-     "k": "label",
-     "t": "“We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and includin…”",
-     "stated": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and includin",
-     "src": {
-      "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
-      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
-      "doc": "10-Q 2026-10-22"
-     }
-    }
-   ]
-  ],
+  "possibleMoves": [],
   "movesUnread": null
  }
 }

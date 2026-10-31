@@ -1,7 +1,7 @@
 # MOLINA HEALTHCARE, INC.: the refreshed card against the committed card
 
 Review render, not committed (REVIEW RENDER of the refreshed v33 answer (10-Q filed 2026-10-22); not the committed card). Brief 2026-10-31 (week 2026-10-16 to 2026-10-31; previous brief 2026-10-15). Week filings: SCHEDULE 13G/A 2026-10-30; SCHEDULE 13G/A 2026-10-27; 10-Q 2026-10-22; 8-K 2026-10-21 [2.02,9.01].
-Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.057417).
+Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.089136).
 
 - **header (label)**
   - was: Weekly coverage brief · Oct 5 to Oct 15, 2026
@@ -19,21 +19,17 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.05741
 - **call (away)**
   - was: 20 months away · 2 months past the window
   - now: 19 months away · 1 month past the window
-- **moves**
-  - was: Feb 4, 2026 · Amended
-  - was: Credit agreement amended
-  - was: Terms of the amendment are not covered in this version.
 - **liquidity**
   - was: $6,235MM
   - was: $4,985MM
+  - was: Not counted: up to $800MM of uncommitted incremental term loans to finance certain acquisitions.
   - now: $5,729MM
   - now: $4,479MM
+  - now: Not counted: up to $800MM of incremental term loans to finance certain acquisitions.
 - **footnote**
   - was: Face total $3,800MM. Balance sheet $3,769MM, after $31MM of deferred debt issuance costs. Every figure links to the sentence it came from.
   - now: Face total $3,800MM. Balance sheet $3,771MM, after $29MM of deferred debt issuance costs. Every figure links to the sentence it came from.
-- **possibleMoves**
-  - now: Possible move, not confirmed: “We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and includin…”
-- **cited sentences behind source links**: 81 out, 80 in
+- **cited sentences behind source links**: 81 out, 81 in
   - was cited: 10-Q 2026-07-23 | For the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-07-23 | 4.375 % Notes due June 15, 2028 $ 800
   - was cited: 10-Q 2026-07-23 | Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of paymen
@@ -53,6 +49,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.05741
   - now cited: 10-Q 2026-10-22 | For the quarterly period ended September 30, 2026
   - now cited: 10-Q 2026-10-22 | 4.375 % Notes due June 15, 2028 $ 800
   - now cited: 10-Q 2026-10-22 | Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of paymen
+  - now cited: 10-Q 2026-10-22 | We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) w
   - now cited: 10-Q 2026-10-22 | 3.875 % Notes due November 15, 2030 $ 650
   - now cited: 10-Q 2026-10-22 | 6.500 % Notes due February 15, 2031 $ 850
   - now cited: 10-Q 2026-10-22 | 3.875 % Notes due May 15, 2032 $ 750
@@ -64,7 +61,6 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.05741
   - now cited: 10-Q 2026-10-22 | As of September 30, 2026, no amount was outstanding under the Credit Agreement.
   - now cited: 10-Q 2026-10-22 | Long-term debt 3,771
   - now cited: 10-Q 2026-10-22 | Deferred debt issuance costs ( 29 )
-  - now cited: 10-Q 2026-10-22 | We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) w
 - **parts of computed figures (shown when a figure is opened)**: 29 shown differently
   - was: $ 800 million
   - was: $ 650 million
