@@ -1,5 +1,6 @@
 import type { BarSegment, Card, CardV3, Line, Tag } from "@/lib/cards/types";
 import { LineView, Seg } from "./CardView";
+import { movesSectionText } from "@/lib/cards/sections";
 import styles from "./cardsV3.module.css";
 
 /**
@@ -224,7 +225,7 @@ export default function CardV3View({ card }: { card: Card }) {
       {/* 4. Recent debt moves */}
       <section className={styles.section}>
         <h3 className={styles.sectionHead}>Recent debt moves</h3>
-        {v.moves.length === 0 ? <div className={styles.muted}>No debt moves stated this year.</div> : null}
+        {v.movesUnread ? <L line={v.movesUnread} className={styles.muted} /> : v.moves.length === 0 ? <div className={styles.muted}>{movesSectionText(v)}</div> : null}
         <div className={styles.moves}>
           {v.moves.map((m, i) => (
             <div key={i} className={m.retires ? styles.movePair : styles.moveSingle}>

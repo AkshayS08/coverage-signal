@@ -58,7 +58,8 @@ for (const [label, facts] of [["no facts", null], ["the prior anchor's facts", J
   const card = build(facts), v = card.v3, moves = movesSectionText(v);
   assert(v.stages?.facts === false && stageViolations(card).length === 0 && /10-Q filed Oct 22, 2026/.test(moves), `[${label === "no facts" ? "M2" : "M3"}] Molina refresh, ${label}: every facts section says "not yet read from 10-Q filed Oct 22, 2026"; moves reads "${moves}" (violations: ${stageViolations(card).join("; ") || "none"})`);
   if (label !== "no facts") {
-    const all = JSON.stringify(v);
+    // Rendered text only: a cited sentence behind a link (src) is the current anchor's own text, not a prior fact.
+    const all = JSON.stringify(v, (k, x) => (k === "src" ? undefined : x));
     assert(!/Feb 4, 2026/.test(all) && !/Swingline sub-facility/i.test(all), `[M3] nothing from the prior anchor's facts renders (no Feb 4 amendment, no swingline sub-facility)`);
   }
 }

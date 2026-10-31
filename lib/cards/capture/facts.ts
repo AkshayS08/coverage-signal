@@ -107,6 +107,9 @@ const SCHEMA = {
 
 type Raw = any;
 
+/** Session 27 (Oct 30): the anchor the facts are read from, recorded on them. */
+const anchorUrlOf = (snap: any): string => snap.result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.url;
+
 /** The text the model is shown: labelled regions of the documents the card holds. */
 function inputFor(snap: any): string {
   const dm = snap.result.results.find((r: any) => r.triggerId === "debt-maturity");
@@ -375,7 +378,7 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
       const rejected: { fact: string; why: string }[] = [];
       const asks = saved.asks.map((r: Raw, i: number) => verifyAsk(p.s, r, i === 0 ? rejected : []));
       const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
-      const facts: CardFacts = { cik: p.s.cik, promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: prior.costUsd, ...reproduce(asks, residual), residual };
+      const facts: CardFacts = { cik: p.s.cik, anchorUrl: anchorUrlOf(p.s), promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: prior.costUsd, ...reproduce(asks, residual), residual };
       writeFileSync(join(IN, "facts", `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");
       console.log(`  ${p.s.company.padEnd(30)} kept: ${facts.moves.length} moves, ${facts.schedule.length} schedule, ${facts.subFacilities.length} sub-facilities, ${facts.maturities.length} maturities, ${facts.faces.length} faces; residual ${facts.residual.length}`);
     }
@@ -413,7 +416,7 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
     persistCompanySpend(spend);
     spent += spend.totalUsd;
     const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
-    const facts: CardFacts = { cik: p.s.cik, promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: Number(spend.totalUsd.toFixed(6)), ...reproduce(asks, residual), residual };
+    const facts: CardFacts = { cik: p.s.cik, anchorUrl: anchorUrlOf(p.s), promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: Number(spend.totalUsd.toFixed(6)), ...reproduce(asks, residual), residual };
     writeFileSync(join(IN, "facts", `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");
     writeFileSync(join(IN, "facts", `raw-${p.s.cik}.json`), JSON.stringify({ keys: [1, 2, 3].map((a) => cardFactsKey(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, a)), asks: raws }, null, 1) + "\n", "utf-8");
     console.log(`  ${p.s.company.padEnd(30)} $${spend.totalUsd.toFixed(4)} (${spend.totalCalls} calls)  kept: ${facts.moves.length} moves, ${facts.schedule.length} schedule, ${facts.subFacilities.length} sub-facilities, ${facts.maturities.length} maturities, ${facts.faces.length} faces; residual ${facts.residual.length}`);

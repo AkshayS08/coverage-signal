@@ -176,6 +176,12 @@ export function buildCard(i: CardInputs): Card {
   const dm = result.results.find((r) => r.triggerId === "debt-maturity") as any;
   const anchor = dm?.debtScheduleSourceFiling as { form: string; date: string; reportDate: string; url: string } | undefined;
   if (!anchor) throw new Error(`${result.company}: no anchor filing — a card states where its position comes from or it is not built`);
+  // SESSION 27 (Akshay, Oct 30): EVERY STAGE ON THIS ANCHOR. Verified facts are used only when they were read from this
+  // card's own anchor; facts from a prior anchor never render. A section whose stage has not run says so (sections.ts).
+  const factsRead = !!i.facts && i.facts.anchorUrl === anchor.url;
+  const facts = factsRead ? i.facts : null;
+  const anchorFiling: Segment = { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url };
+  const notYetRead = (what: string): Line => [t(`${what}: not yet read from `), anchorFiling, t(".")];
   const periodEnd = anchor.reportDate;
   const pos = assemblePosition(result, new Date(`${briefDate}T00:00:00Z`));
   const rc = rolledCoverageFor(result);
@@ -626,7 +632,7 @@ export function buildCard(i: CardInputs): Card {
     refinancing: ["Refinanced", "Refinancing announced"], draw: ["Drew on", "Draw announced"], paydown: ["Repaid", "Repayment announced"], "incremental add-on": ["Incremental add-on", "Add-on announced"],
   };
   const movesAll: Move[] = [];
-  for (const m of i.facts?.moves ?? []) {
+  for (const m of facts?.moves ?? []) {
     const url = m.date.src.url;
     if (!(url === anchor.url || (i.laterUrls ?? []).includes(url))) continue;
     const d = isoOfText(m.date.value);
@@ -881,7 +887,7 @@ export function buildCard(i: CardInputs): Card {
   const during = evs.filter((ms) => ms[0].inPeriod);
   const moves: CardSection = {
     heading: "Recent debt moves",
-    lines: movesAll.length ? [] : [[t(`No debt moves stated between ${shortDate(fyStart)} and ${shortDate(briefDate)}.`)]],
+    lines: !factsRead ? [notYetRead("Debt moves this year")] : movesAll.length ? [] : [[t(`No debt moves stated between ${shortDate(fyStart)} and ${shortDate(briefDate)}.`)]],
     blocks: [
       ...(since.length ? [{ heading: [t(`Since ${displayDate(periodEnd, "day")}: not yet in the position totals`)] as Line, lines: since.map(eventLine) }] : []),
       ...(during.length ? [{ heading: [t(`During the period, ${shortDate(fyStart)} to ${shortDate(periodEnd)}: already in the position`)] as Line, lines: during.map(eventLine) }] : []),
@@ -959,7 +965,7 @@ export function buildCard(i: CardInputs): Card {
   // The scale is the caption's; where the schedule's sentence carries none, the note's table scale (Rule 67).
   const scheduleScale = (sentence: string) => (/in thousands/i.test(sentence) ? "thousand" : /in billions/i.test(sentence) ? "billion" : /in millions/i.test(sentence) ? "million" : tableScale);
   const scheduleUrl = rc.counts ? dm?.priorPeriodBase?.filingUrl ?? null : anchor.url;
-  const scheduleEntries = (i.facts?.schedule ?? [])
+  const scheduleEntries = (facts?.schedule ?? [])
     .filter((e) => e.amount.src.url === scheduleUrl)
     .map((e) => {
       const cell = `$ ${e.amount.value.replace(/[$\s]/g, "")}`;
@@ -1044,10 +1050,10 @@ export function buildCard(i: CardInputs): Card {
   const liqPermitted = (url: string) => url === anchor.url || (i.laterUrls ?? []).includes(url);
   const liqFig = (fact: { value: string; src: { sentence: string; url: string } }): Segment => ({ k: "figure", t: displayAmount(fact.value, fact.src.sentence), printed: fact.value, src: src(fact.src.sentence, fact.src.url) });
   // A parent-company or unrestricted figure the filer also states sits beside the consolidated one, not added to it.
-  for (const c of (i.facts?.cash ?? []).filter((x) => liqPermitted(x.amount.src.url))) {
+  for (const c of (facts?.cash ?? []).filter((x) => liqPermitted(x.amount.src.url))) {
     liqLines.push([{ k: "label", t: c.label.value, stated: c.label.value, src: src(c.label.src.sentence, c.label.src.url) }, t(" "), liqFig(c.amount), t(", as the filer states it; shown beside the balance-sheet figure, not added to it")]);
   }
-  const cp = i.facts?.commercialPaper ?? null;
+  const cp = facts?.commercialPaper ?? null;
   const cpBacking = cp?.backedBy && cp.outstanding && liqPermitted(cp.backedBy.src.url) && liqPermitted(cp.outstanding.src.url) ? cp : null;
   const lenderFacilities = facilities.filter((f) => !(f.category === "commercial-paper" || classifyInstrument({ headings: [], instrumentName: f.name }).instrumentType === "commercial-paper"));
   /** The facility a filing states backs the commercial paper: named by the backing sentence, or the only lender facility. */
@@ -1143,7 +1149,7 @@ export function buildCard(i: CardInputs): Card {
     else line.push(t(m.kind === "relative" ? ", maturity stated as a relative term, not a date" : ", no maturity stated"));
     liqLines.push(line);
   }
-  for (const u of (i.facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
+  for (const u of (facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
     const line: Line = [...(/^uncommitted/i.test(u.description.value) ? [] : [t("Uncommitted: ")]), { k: "label", t: u.description.value, stated: u.description.value, src: src(u.description.src.sentence, u.description.src.url) }];
     if (u.amount && liqPermitted(u.amount.src.url)) line.push(t(", up to "), liqFig(u.amount));
     line.push(t(". Uncommitted, not counted in liquidity."));
@@ -1294,7 +1300,7 @@ export function buildCard(i: CardInputs): Card {
     line.push(it.labels.type, t(" outstanding"));
     const shortTerm = [it.labels.security?.k === "label" ? it.labels.security.src : null, it.amountSrc].find((x) => x && /short-term/i.test(x.sentence));
     if (shortTerm) line.push(t(", "), { k: "label", t: "short-term", stated: "short-term", src: shortTerm });
-    const cpb = i.facts?.commercialPaper?.backedBy;
+    const cpb = facts?.commercialPaper?.backedBy;
     const backer = cpb && (cpb.src.url === anchor.url || (i.laterUrls ?? []).includes(cpb.src.url)) ? facilities.find((f) => !/commercial paper/i.test(f.name) && f.facilitySize) : undefined;
     if (cpb && backer?.facilitySize) line.push(t(", "), { k: "label", t: "backed by", stated: cpb.value, src: src(cpb.src.sentence, cpb.src.url) }, t(" the "), { k: "figure", t: displayAmount(backer.facilitySize.value, backer.facilitySize.sourceLine), printed: backer.facilitySize.value, src: src(backer.facilitySize.sourceLine, backer.figureSources?.facilitySize ?? backer.citedUrl) }, t(" "), typeLabel({ instrument: backer.name, classification: classifyInstrument({ headings: [], instrumentName: backer.name }) }, src(backer.facilitySize.sourceLine, backer.figureSources?.facilitySize ?? backer.citedUrl)));
     refi.push(line);
@@ -1369,9 +1375,9 @@ export function buildCard(i: CardInputs): Card {
   // Sub-facilities and sub-limits are capacity inside a facility (Rule 48): matched by the
   // facility's own name, or to the only lender facility where there is one.
   const lenders = facilities.filter((f) => kindOfFacility(f) === "facility");
-  const subsFor = new Map<VerifiedFacility, NonNullable<typeof i.facts>["subFacilities"]>();
-  const orphanSubs: NonNullable<typeof i.facts>["subFacilities"] = [];
-  for (const sf of i.facts?.subFacilities ?? []) {
+  const subsFor = new Map<VerifiedFacility, NonNullable<typeof facts>["subFacilities"]>();
+  const orphanSubs: NonNullable<typeof facts>["subFacilities"] = [];
+  for (const sf of facts?.subFacilities ?? []) {
     if (!permitted(sf.amount.src.url)) { unpermittedFacts.push(`${sf.kind.replace(/-/g, " ")} sub-facility of ${displayAmount(sf.amount.value, sf.amount.src.sentence)}`); continue; }
     const byName = lenders.filter((f) => containsWord(sf.amount.src.sentence, f.name) || containsWord(f.name, sf.facility));
     const host = byName.length === 1 ? byName[0] : lenders.length === 1 ? lenders[0] : null;
@@ -1379,11 +1385,11 @@ export function buildCard(i: CardInputs): Card {
     else orphanSubs.push(sf);
   }
   const SUB_NAME: Record<string, string> = { "letter-of-credit": "Letter-of-credit sub-facility", swingline: "Swingline sub-facility" };
-  const subLine = (sf: NonNullable<typeof i.facts>["subFacilities"][number], of?: string): Line => {
+  const subLine = (sf: NonNullable<typeof facts>["subFacilities"][number], of?: string): Line => {
     const note = directedNote(sf.amount.src.url);
     return [t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`}${of ? ` of the ${of}` : ""} `), factFig(sf.amount), t(`: capacity within the facility, not drawn${note ? `, ${note}` : ""}`)];
   };
-  const cpFacts = i.facts?.commercialPaper ?? null;
+  const cpFacts = facts?.commercialPaper ?? null;
   const facBlocks = facilities.map((f) => {
     const fsrc = (field: string, sentence: string) => src(sentence, f.figureSources?.[field] ?? f.citedUrl);
     const own = fsrc("facilitySize", f.facilitySize?.sourceLine ?? f.name);
@@ -1595,7 +1601,7 @@ export function buildCard(i: CardInputs): Card {
   const remainsUsd = (it: Item, retired: Move[]) => faceUsdOf(it) - retired.filter((m) => !m.inPeriod).reduce((a, m) => a + m.faceUsd!, 0);
   const statusOf = (it: Item): Tag | null => {
     if (isCP(it)) {
-      const cpb = i.facts?.commercialPaper?.backedBy;
+      const cpb = facts?.commercialPaper?.backedBy;
       return cpb && (cpb.src.url === anchor.url || (i.laterUrls ?? []).includes(cpb.src.url)) ? { text: [{ k: "label", t: "Backed by revolver", stated: cpb.value, src: src(cpb.src.sentence, cpb.src.url) }], tone: "neutral" } : { text: [t("Short-term")], tone: "neutral" };
     }
     const rs = retirementsOf(it);
@@ -1693,7 +1699,7 @@ export function buildCard(i: CardInputs): Card {
     headline.push(t("No notes or loans mature in the next 18 months. "), { k: "computed", t: displayUsd(leftoverSegs.reduce((a, x) => a + x.usd, 0), false, Math.max(0, ...leftoverSegs.map((x) => (/\.(\d+)MM/.exec(x.t)?.[1] ?? "").length))), usd: leftoverSegs.reduce((a, x) => a + x.usd, 0), parts: ps }, ...(leftoverMaybe ? [t(MARK)] : []), t(" of scheduled amortization."));
     if (leftoverMaybe) daggerUsed = true;
   } else headline.push(t("Nothing matures in the next 18 months."));
-  const cpb = i.facts?.commercialPaper?.backedBy;
+  const cpb = facts?.commercialPaper?.backedBy;
   const cpBacker = cpb && (cpb.src.url === anchor.url || (i.laterUrls ?? []).includes(cpb.src.url)) ? facilities.find((f) => !/commercial paper/i.test(f.name) && f.facilitySize) : undefined;
   for (const cp of cpItems) {
     const parts = partOf(cp);
@@ -1728,7 +1734,7 @@ export function buildCard(i: CardInputs): Card {
   const callRows: CardV3["call"]["rows"] = [];
   for (const cp of cpItems) {
     const body: Line = [usdSeg(partOf(cp)), t(" "), ...(cp.labels.security ? [cp.labels.security, t(" ")] : []), cp.labels.type];
-    const rate = i.facts?.commercialPaper?.averageRate;
+    const rate = facts?.commercialPaper?.averageRate;
     if (rate && (rate.src.url === anchor.url || (i.laterUrls ?? []).includes(rate.src.url))) body.push(t(", "), { k: "label", t: `${rate.value.replace(/\s+%/, "%")} average rate`, stated: rate.value, src: src(rate.src.sentence, rate.src.url) });
     callRows.push({ when: [t("Short-term")], body, tenK: false, tag: statusOf(cp), usd: null, isCP: true });
   }
@@ -1923,7 +1929,7 @@ export function buildCard(i: CardInputs): Card {
     if (backsCp) liqNotes.push([t(`Undrawn ${type.t} shown net of `), { k: "figure", t: displayAmount(backsCp.value, backsCp.src.sentence), printed: backsCp.value, src: src(backsCp.src.sentence, backsCp.src.url) }, t(" commercial paper it "), { k: "label", t: "backs", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(". Commercial paper itself is not counted as liquidity.")]);
     if (borrowingBaseOf(f)) liqNotes.push([t("Borrowing-base limited; stated availability shown.")]);
   }
-  for (const u of (i.facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
+  for (const u of (facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
     liqNotes.push([t("Not counted: "), ...(u.amount && liqPermitted(u.amount.src.url) ? [t("up to "), liqFig(u.amount), t(" of ")] : []), { k: "label", t: u.description.value.replace(/^uncommitted capacity to incur /i, "uncommitted "), stated: u.description.value, src: src(u.description.src.sentence, u.description.src.url) }, t(".")]);
   }
   const liqFigure: Segment | null = liqComputable && liqParts.length ? { k: "computed", t: displayUsd(liqUsd, liqParts.some(hedgedPart), dp(liqParts)), usd: liqUsd, parts: liqParts } : null;
@@ -2153,6 +2159,11 @@ export function buildCard(i: CardInputs): Card {
   const notShown = withheld.filter((l) => !/^Nothing withheld/.test(l.map((x) => x.t).join("")));
   const footnote: Line = [...(coverageLines[0] ?? []), t(" Every figure links to the sentence it came from.")];
 
+  if (!factsRead) {
+    liqNotes.push(notYetRead("Uncommitted capacity and parent cash"));
+    captions.push(notYetRead("The filer's printed maturity schedule"));
+    facLines.push({ bold: [t("Sub-facilities and commercial paper details")], sub: notYetRead("Sub-facilities, sub-limits and commercial paper") });
+  }
   const v3: CardV3 = {
     header: v3header,
     rolledNote,
@@ -2165,6 +2176,8 @@ export function buildCard(i: CardInputs): Card {
     facilities: facLines,
     notShown: notShown.length ? notShown : [[t("Nothing withheld this week.")]],
     footnote,
+    stages: { facts: factsRead },
+    movesUnread: factsRead ? null : notYetRead("Debt moves this year"),
   };
 
   // SESSION 27 (Akshay, Oct 30): A 10-K STANDING TERM CARRIES THE "10-K" TAG wherever the card shows it — a facility

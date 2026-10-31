@@ -65,10 +65,13 @@ const fresh = build("0001179929", ref, "2026-10-30", "2026-10-15", [q3]);
 const status = txt(fresh.v3.header.status);
 const all = JSON.stringify(fresh.v3);
 assert(/10-Q/.test(status) && /Oct 22/.test(status) && /position/i.test(status), `[W4] the header names the 10-Q filed Oct 22 as this week's filing and the position: "${status}"`);
-assert(!/not yet read/i.test(all), `[W4] no line calls the anchor "not yet read"`);
+// The line that calls a NEW filing unread ("Not yet read: this card's position is still …"); Session 27's missing-stage
+// lines ("Debt moves this year: not yet read from …") are a different statement and are tested in missingStage.test.
+const NEW_UNREAD = /Not yet read: this card's position is still/;
+assert(!NEW_UNREAD.test(all), `[W4] no line calls the anchor a new filing "not yet read"`);
 const stale = build("0001179929", snapOf("0001179929").result, "2026-10-30", "2026-10-15", [q3]);
 const sStatus = txt(stale.v3.header.status);
-assert(/not yet read/i.test(JSON.stringify(stale.v3)) && !/position/i.test(sStatus), `[W5 control] a card still on the Jul 23 10-Q calls the Oct 22 10-Q new and not yet read, and its header does not claim it ("${sStatus}")`);
+assert(NEW_UNREAD.test(JSON.stringify(stale.v3)) && !/position/i.test(sStatus), `[W5 control] a card still on the Jul 23 10-Q calls the Oct 22 10-Q new and not yet read, and its header does not claim it ("${sStatus}")`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

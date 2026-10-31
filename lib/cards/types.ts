@@ -57,6 +57,8 @@ export interface FactSource { sentence: string; url: string }
 export interface Fact<T = string> { value: T; src: FactSource }
 export interface CardFacts {
   cik: string;
+  /** Session 27 (Oct 30): the anchor filing these facts were read from. A card uses them only when it is its own anchor. */
+  anchorUrl?: string;
   promptVersion: number;
   asks: number;
   costUsd: number;
@@ -175,4 +177,8 @@ export interface CardV3 {
   facilities: { bold: Line; sub: Line | null }[];
   notShown: Line[];
   footnote: Line;
+  /** Session 27 (Oct 30): which stages read THIS card's anchor. A section whose stage did not says "not yet read". */
+  stages: { facts: boolean };
+  /** The moves section's line when the facts stage has not read this anchor (sections.ts). */
+  movesUnread: Line | null;
 }
