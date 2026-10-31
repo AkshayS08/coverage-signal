@@ -38,7 +38,7 @@ import { visibleDiff } from "../../cache/s27cardDiff";
   const brief = briefDateArg();
   const prev = previousBrief(readBriefLog(), result.cik, brief);
   const week = briefWeek(brief, prev);
-  const input = await captureCardInput(result, { fingerprint: refresh.boundFingerprint, commit: execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim(), source: "REVIEW RENDER of the refreshed v33 answer (Oct 22 10-Q); not the committed card", briefDate: brief });
+  const input = await captureCardInput(result, { fingerprint: refresh.boundFingerprint, commit: execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim(), source: `REVIEW RENDER of the refreshed v33 answer (${result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.form} filed ${result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.date}); not the committed card`, briefDate: brief });
   writeFileSync(`${dir}/${isMolina ? "molina_review_input" : `${stem}_input`}.json`, JSON.stringify(input) + "\n");
   // The refresh's own facts stage (capture/facts.ts --input that file --out <dir>), where run.
   const factsPath = isMolina ? `sessions/27/molina_review_facts/${result.cik}.json` : `sessions/27/refresh/facts/${result.cik}.json`;
@@ -55,7 +55,7 @@ import { visibleDiff } from "../../cache/s27cardDiff";
     `# ${result.company}: the refreshed card against the committed card`,
     ``,
     `Review render, not committed (${(input as any).source}). Brief ${brief} (week ${week.from} to ${week.to}; previous brief ${prev}). Week filings: ${weekFilings.map((f) => `${f.form} ${f.filingDate}${f.items ? ` [${f.items}]` : ""}`).join("; ") || "none"}.`,
-    facts ? `Verified card facts: read from ${facts.anchorUrl === (result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.url) ? "this anchor (the Oct 22 10-Q)" : "ANOTHER anchor, so not used"} ($${facts.costUsd}).` : `Verified card facts: not yet read from this anchor; those sections say so.`,
+    facts ? `Verified card facts: read from ${facts.anchorUrl === (result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.url) ? `this anchor (the ${result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.form} filed ${result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.date})` : "ANOTHER anchor, so not used"} ($${facts.costUsd}).` : `Verified card facts: not yet read from this anchor; those sections say so.`,
     ``,
     ...visibleDiff(current, card),
   ];

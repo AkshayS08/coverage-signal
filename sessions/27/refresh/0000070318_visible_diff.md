@@ -1,0 +1,233 @@
+# TENET HEALTHCARE CORP: the refreshed card against the committed card
+
+Review render, not committed (REVIEW RENDER of the refreshed v33 answer (10-Q filed 2026-10-29); not the committed card). Brief 2026-10-31 (week 2026-10-16 to 2026-10-31; previous brief 2026-10-15). Week filings: 8-K 2026-10-29 [2.02,9.01]; 10-Q 2026-10-29.
+Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.105051).
+
+- **header (label)**
+  - was: Weekly coverage brief · Oct 5 to Oct 15, 2026
+  - now: Weekly coverage brief · Oct 16 to Oct 31, 2026
+- **header**
+  - was: Position as of June 30, 2026
+  - was: 10-Q filed July 29, 2026
+  - was: No new debt filings this week
+  - now: Position as of September 30, 2026
+  - now: 10-Q filed Oct 29, 2026
+  - now: New this week: this 10-Q, filed Oct 29, 2026, is the position · 1 other filing, none affecting debt
+- **call (label)**
+  - was: The call · next 18 months, to Apr 15, 2028
+  - now: The call · next 18 months, to Apr 30, 2028
+- **call**
+  - was: $600MM of 4.625% senior secured notes due 2028 are not yet refinanced. The 2027 notes are already refinanced.
+  - was: $2,100MM
+  - was: 2 note issues
+  - was: $1,500MM
+  - was: With the Sept 22 notes · redemption awaiting confirmation
+  - was: Nov 2027
+  - was: $1,500MM 5.125% senior secured notes
+  - was: Refinanced · redemption set for Sept 23
+  - was: Also in window: $260MM† of scheduled amortization and other principal.
+  - was: Next after the window: $1,750MM 6.125% senior unsecured notes, October 2028, of which $500MM is refinanced, leaving $1,250MM.
+  - now: $600MM of 4.625% senior secured notes due 2028 are not yet refinanced.
+  - now: 1 note issue, all in 2028
+  - now: $0
+  - now: None stated in any filing
+  - now: $600MM
+  - now: Also in window: $265MM† of scheduled amortization and other principal.
+  - now: Next after the window: $1,250MM 6.125% senior unsecured notes, October 2028.
+- **moves**
+  - was: Sept 22, 2026 · Issued, confirmed by 8-K
+  - was: $2,000MM 6.250% senior notes due 2034
+  - was: Refinanced · redemption set for Sept 23, 2026, awaiting confirmation in a filing
+  - was: $1,500MM 5.125% senior secured notes due November 2027
+  - was: $500MM 6.125% senior unsecured notes due October 2028 · $1,250MM remains
+  - now: Sept 2026 · Issued, confirmed by 10-Q
+  - now: $2,000MM 6.250% senior unsecured notes due 2034
+  - now: use of the proceeds stated.
+  - now: Sept 2026 · Redeemed
+  - now: $1,500MM 5.125% senior secured first lien notes due November 2027
+  - now: With cash on hand.
+  - now: Sept 2026 · Redeemed
+  - now: $500MM 6.125% senior unsecured notes due October 2028
+- **totalDebt**
+  - was: $13,333MM
+  - was: $9,800MM
+  - was: $2,862MM
+  - was: $671MM
+  - now: $13,341MM
+  - now: $8,300MM
+  - now: $4,362MM
+  - now: $679MM
+- **totalDebt (0)**
+  - was: 5.125 % due 2027
+  - now: 4.625 % due 2028
+- **totalDebt (1)**
+  - was: 4.625 % due 2028
+  - now: 4.250 % due 2029
+- **totalDebt (2)**
+  - was: 4.250 % due 2029
+  - now: 4.375 % due 2030
+- **totalDebt (3)**
+  - was: 4.375 % due 2030
+  - now: 6.125 % due 2030
+  - now: 6.250 % due 2034
+- **totalDebt (4)**
+  - was: 6.125 % due 2030
+  - now: 6.750 % due 2031
+- **totalDebt (5)**
+  - was: 6.750 % due 2031
+  - now: 5.500 % due 2032
+- **totalDebt (6)**
+  - was: 5.500 % due 2032
+- **liquidity**
+  - was: $4,070MM
+  - was: $2,170MM
+  - now: $4,574MM
+  - now: $2,674MM
+- **chart (label)**
+  - was: Refinanced, redemption pending confirmation
+- **chart**
+  - was: 45
+  - was: 1,643
+  - was: 2,422
+  - was: 1,457
+  - was: 3,488
+  - was: 4,278
+  - was: Color shows seniority. Stripes show debt refinanced with new notes, whose redemption a filing has yet to confirm. Orange shows debt due inside the window that is not yet refinanced. Where the filer prints a maturity schedule, each bar is the schedule's figure for its year: notes at full face, and term loans, leases and other amortizing debt in the scheduled other principal.
+  - was: The principal of $671MM Finance leases, mortgages and other notes is included in scheduled other principal.
+  - now: 27
+  - now: 157
+  - now: 1,931
+  - now: 1,464
+  - now: 3,493
+  - now: 6,269
+  - now: Color shows seniority. Orange shows debt due inside the window that is not yet refinanced. Where the filer prints a maturity schedule, each bar is the schedule's figure for its year: notes at full face, and term loans, leases and other amortizing debt in the scheduled other principal.
+  - now: The principal of $679MM Finance leases, mortgages and other notes is included in scheduled other principal.
+- **chart (tooltip)**
+  - was: 5.125 % due 2027, refinanced, redemption pending confirmation
+  - was: 6.125 % due 2028, refinanced, redemption pending confirmation
+- **chart (0)**
+  - was: 5.125 % due 2027
+  - was: 6.125 % due 2028
+- **table (name)**
+  - was: 5.125 % due 2027
+  - now: 6.250 % due 2034
+- **table**
+  - was: Nov 2027
+  - was: 5.125% senior secured notes
+  - was: Refinanced · redemption set for Sept 23
+  - was: 1,750
+  - was: $500MM refinanced · $1,250MM remains
+  - was: 1,500
+  - was: 671
+  - was: $45MM other scheduled principal, per the filer's schedule
+  - was: $1,500MM 5.125% senior secured notes, due November 2027 · pending redemption $1,500MM, not yet confirmed by a filing
+  - was: $143MM other scheduled principal, per the filer's schedule
+  - was: $1,750MM 6.125% senior unsecured notes, due October 2028 · pending redemption $500MM, not yet confirmed by a filing
+  - was: $72MM other scheduled principal, per the filer's schedule
+  - was: $57MM other scheduled principal, per the filer's schedule
+  - was: $38MM other scheduled principal, per the filer's schedule
+  - was: $671MM Finance leases, mortgages and other notes, no maturity stated · seniority and security not stated, please refer to sources
+  - now: 1,250
+  - now: $500MM retired in 2026 · $1,250MM remains
+  - now: 2034
+  - now: 6.250% senior unsecured notes
+  - now: 2,000
+  - now: 679
+  - now: $27MM other scheduled principal, per the filer's schedule
+  - now: $157MM other scheduled principal, per the filer's schedule
+  - now: $1,250MM 6.125% senior unsecured notes, due October 2028 · $500MM redeemed September 2026
+  - now: $81MM other scheduled principal, per the filer's schedule
+  - now: $64MM other scheduled principal, per the filer's schedule
+  - now: $43MM other scheduled principal, per the filer's schedule
+  - now: 2034
+  - now: $2,000MM 6.250% senior unsecured notes, due 2034
+  - now: $679MM Finance leases, mortgages and other notes, no maturity stated · seniority and security not stated, please refer to sources
+- **notShown**
+  - was: Nothing withheld this week.
+  - now: Senior secured letters of credit available, $95MM: withheld. Sentence does not state this figure. See the sentence offered.
+- **footnote**
+  - was: Face total $13,333MM. Balance sheet $13,248MM, after $85MM of unamortized issue costs and note discounts. Every figure links to the sentence it came from.
+  - now: Face total $13,341MM. Balance sheet $13,243MM, after $98MM of unamortized issue costs and note discounts. Every figure links to the sentence it came from.
+- **chart (2)**
+  - now: 6.250 % due 2034
+- **cited sentences behind source links**: 259 out, 241 in
+  - was cited: 10-Q 2026-07-29 | for the quarterly period ended June 30, 2026
+  - was cited: 10-Q 2026-07-29 | 4.625 % due 2028 600
+  - was cited: 10-Q 2026-07-29 | Senior secured first lien notes:     5.125 % due 2027 1,500
+  - was cited: 8-K 2026-09-22 | The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash o
+  - was cited: 10-Q 2026-07-29 | Senior secured first lien notes
+  - was cited: thc-20260908.htm | On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of condition
+  - was cited: 10-Q 2026-07-29 |  Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term de
+  - was cited: 10-Q 2026-07-29 | Senior unsecured notes:     6.125 % due 2028 $ 1,750
+  - was cited: 10-Q 2026-07-29 | Senior unsecured notes
+  - was cited: 8-K 2026-09-22 | On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior not
+  - was cited: thc-20260908.htm | The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash o
+  - was cited: 10-Q 2026-07-29 | 4.250 % due 2029 1,400
+  - was cited: 10-Q 2026-07-29 | 4.375 % due 2030 1,450
+  - was cited: 10-Q 2026-07-29 | 6.125 % due 2030 2,000
+  - was cited: 10-Q 2026-07-29 | 6.750 % due 2031 1,350
+  - was cited: 10-Q 2026-07-29 | 5.500 % due 2032 1,500
+  - was cited: 10-Q 2026-07-29 | 6.875 % due 2031 362
+  - was cited: 10-Q 2026-07-29 | 6.000 % due 2033 750
+  - was cited: 10-Q 2026-07-29 | Finance leases, mortgages and other notes 671
+  - was cited: 10-Q 2026-07-29 | Cash and cash equivalents $ 2,170 $ 2,883
+  - was cited: 10-Q 2026-07-29 | Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible acc
+  - was cited: 10-Q 2026-07-29 | We have a senior secured revolving credit facility (the "Credit Agreement") that provides for revolving loans in an aggregate principal amou
+  - was cited: 10-Q 2026-07-29 | On that date, we had no cash borrowings and less than $ 1  million of standby letters of credit outstanding under the Credit Agreement.
+  - was cited: 10-Q 2026-07-29 | At June 30, 2026, we had $ 105 million of standby letters of credit outstanding under the LC Facility.
+  - was cited: 10-Q 2026-07-29 | We have a letter of credit facility (as amended to date, the "LC Facility") that provides for the issuance, from time to time, of standby an
+  - was cited: 10-Q 2026-07-29 | Current portion of long-term debt $ 160
+  - was cited: 10-Q 2026-07-29 | Long-term debt, net of current portion $ 13,088
+  - was cited: 10-Q 2026-07-29 | Unamortized issue costs and note discounts ( 85 )
+  - now cited: 10-Q 2026-10-29 | for the quarterly period ended September 30, 2026
+  - now cited: 10-Q 2026-10-29 | 4.625 % due 2028 600
+  - now cited: 10-Q 2026-10-29 | Senior secured first lien notes
+  - now cited: 10-Q 2026-10-29 |  Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term de
+  - now cited: 10-Q 2026-10-29 | Senior unsecured notes:     6.125 % due 2028 $ 1,250
+  - now cited: 10-Q 2026-10-29 | Senior unsecured notes
+  - now cited: 10-Q 2026-10-29 | We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amoun
+  - now cited: 10-Q 2026-10-29 | In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 203
+  - now cited: 10-Q 2026-10-29 | The redemption, using the issuance proceeds and cash on hand, of all $1.500 billion in aggregate principal amount of our 5.125% senior secur
+  - now cited: 10-Q 2026-10-29 | 4.250 % due 2029 1,400
+  - now cited: 10-Q 2026-10-29 | 4.375 % due 2030 1,450
+  - now cited: 10-Q 2026-10-29 | 6.125 % due 2030 2,000
+  - now cited: 10-Q 2026-10-29 | 6.750 % due 2031 1,350
+  - now cited: 10-Q 2026-10-29 | 5.500 % due 2032 1,500
+  - now cited: 10-Q 2026-10-29 | 6.875 % due 2031 362
+  - now cited: 10-Q 2026-10-29 | 6.000 % due 2033 750
+  - now cited: 10-Q 2026-10-29 | 6.250 % due 2034 2,000
+  - now cited: 10-Q 2026-10-29 | Finance leases, mortgages and other notes 679
+  - now cited: 10-Q 2026-10-29 | Cash and cash equivalents $ 2,674 $ 2,883
+  - now cited: 10-Q 2026-10-29 | Our borrowing availability, which is calculated by reference to a borrowing base that is determined by specified percentages of eligible acc
+  - now cited: 10-Q 2026-10-29 | We have a senior secured revolving credit facility (the "Credit Agreement") that provides for revolving loans in an aggregate principal amou
+  - now cited: 10-Q 2026-10-29 | On that date, we had no cash borrowings and less than $ 1  million of standby letters of credit outstanding under the Credit Agreement.
+  - now cited: 10-Q 2026-10-29 | At September 30, 2026, we had $ 105 million of standby letters of credit outstanding under the LC Facility.
+  - now cited: 10-Q 2026-10-29 | In addition, we have a letter of credit facility (as amended to date, the "LC Facility") that provides for the issuance, from time to time, 
+  - now cited: 10-Q 2026-10-29 | Current portion of long-term debt $ 164
+  - now cited: 10-Q 2026-10-29 | Long-term debt, net of current portion $ 13,079
+  - now cited: 10-Q 2026-10-29 | Unamortized issue costs and note discounts ( 98 )
+- **parts of computed figures (shown when a figure is opened)**: 90 shown differently
+  - was: $ 600 million
+  - was: $ 1,500 million
+  - was: $ 1.5 billion
+  - was: $ 45
+  - was: $ 1,643 million
+  - was: $ 2,422 million
+  - was: $ 1,750 million
+  - was: $ 0.5 billion
+  - was: $ 1,400 million
+  - was: $ 1,450 million
+  - was: $ 2,000 million
+  - was: $ 1,350 million
+  - now: $600MM
+  - now: $27MM
+  - now: $157MM
+  - now: $1,931MM
+  - now: $1,250MM
+  - now: $1,400MM
+  - now: $1,450MM
+  - now: $2,000MM
+  - now: $1,350MM
+  - now: $1,500MM
+  - now: $362MM
+  - now: $750MM

@@ -1,11 +1,11 @@
-# Molina: the refreshed card against the committed card
+# MOLINA HEALTHCARE, INC.: the refreshed card against the committed card
 
-Review render, not committed. Brief 2026-10-30 (week 2026-10-16 to 2026-10-30; previous brief 2026-10-15). Week filings: SCHEDULE 13G/A 2026-10-30; SCHEDULE 13G/A 2026-10-27; 10-Q 2026-10-22; 8-K 2026-10-21 [2.02,9.01].
-Verified card facts: read from this anchor (the Oct 22 10-Q) ($0.057417).
+Review render, not committed (REVIEW RENDER of the refreshed v33 answer (10-Q filed 2026-10-22); not the committed card). Brief 2026-10-31 (week 2026-10-16 to 2026-10-31; previous brief 2026-10-15). Week filings: SCHEDULE 13G/A 2026-10-30; SCHEDULE 13G/A 2026-10-27; 10-Q 2026-10-22; 8-K 2026-10-21 [2.02,9.01].
+Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.057417).
 
 - **header (label)**
   - was: Weekly coverage brief · Oct 5 to Oct 15, 2026
-  - now: Weekly coverage brief · Oct 16 to Oct 30, 2026
+  - now: Weekly coverage brief · Oct 16 to Oct 31, 2026
 - **header**
   - was: Position as of June 30, 2026
   - was: 10-Q filed July 23, 2026
@@ -31,7 +31,11 @@ Verified card facts: read from this anchor (the Oct 22 10-Q) ($0.057417).
 - **footnote**
   - was: Face total $3,800MM. Balance sheet $3,769MM, after $31MM of deferred debt issuance costs. Every figure links to the sentence it came from.
   - now: Face total $3,800MM. Balance sheet $3,771MM, after $29MM of deferred debt issuance costs. Every figure links to the sentence it came from.
-- **cited sentences behind source links**: 81 out, 79 in
+- **possibleMoves**
+  - now: Possible move, not confirmed: “We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and includin…”
+  - now: Possible move, not confirmed: “On February 4, 2026, we entered into an amendment to the New Credit Agreement (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter e…”
+  - now: Possible move, not confirmed: “Subsequently, we executed an amendment to the New Credit Agreement on February 4, 2026 (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal …”
+- **cited sentences behind source links**: 81 out, 82 in
   - was cited: 10-Q 2026-07-23 | For the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-07-23 | 4.375 % Notes due June 15, 2028 $ 800
   - was cited: 10-Q 2026-07-23 | Each of these notes are senior unsecured obligations of the Parent corporation, Molina Healthcare, Inc., and rank equally in right of paymen
@@ -62,6 +66,9 @@ Verified card facts: read from this anchor (the Oct 22 10-Q) ($0.057417).
   - now cited: 10-Q 2026-10-22 | As of September 30, 2026, no amount was outstanding under the Credit Agreement.
   - now cited: 10-Q 2026-10-22 | Long-term debt 3,771
   - now cited: 10-Q 2026-10-22 | Deferred debt issuance costs ( 29 )
+  - now cited: 10-Q 2026-10-22 | We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) w
+  - now cited: 10-K 2026-02-10 | On February 4, 2026, we entered into an amendment to the New Credit Agreement (the “First Amendment”) that temporarily reduces the minimum I
+  - now cited: 10-K 2026-02-10 | Subsequently, we executed an amendment to the New Credit Agreement on February 4, 2026 (the “First Amendment”) that temporarily reduces the 
 - **parts of computed figures (shown when a figure is opened)**: 29 shown differently
   - was: $ 800 million
   - was: $ 650 million

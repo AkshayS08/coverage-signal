@@ -1,9 +1,9 @@
 {
  "cik": "0001179929",
  "company": "MOLINA HEALTHCARE, INC.",
- "briefDate": "2026-10-30",
+ "briefDate": "2026-10-31",
  "weekFrom": "2026-10-16",
- "weekTo": "2026-10-30",
+ "weekTo": "2026-10-31",
  "previousBrief": "2026-10-15",
  "header": [
   [
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Oct 16 to Oct 30, 2026"
+    "t": "Brief week: Oct 16 to Oct 31, 2026"
    }
   ],
   [
@@ -95,7 +95,7 @@
    [
     {
      "k": "text",
-     "t": "No debt moves stated between Jan 1, 2026 and Oct 30, 2026."
+     "t": "No debt moves stated between Jan 1, 2026 and Oct 31, 2026."
     }
    ]
   ],
@@ -1394,7 +1394,7 @@
  },
  "v3": {
   "header": {
-   "label": "Weekly coverage brief · Oct 16 to Oct 30, 2026",
+   "label": "Weekly coverage brief · Oct 16 to Oct 31, 2026",
    "company": "MOLINA HEALTHCARE, INC.",
    "position": [
     {
@@ -2746,6 +2746,56 @@
   "stages": {
    "facts": true
   },
+  "possibleMoves": [
+   [
+    {
+     "k": "text",
+     "t": "Possible move, not confirmed: "
+    },
+    {
+     "k": "label",
+     "t": "“We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and includin…”",
+     "stated": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and includin",
+     "src": {
+      "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+      "doc": "10-Q 2026-10-22"
+     }
+    }
+   ],
+   [
+    {
+     "k": "text",
+     "t": "Possible move, not confirmed: "
+    },
+    {
+     "k": "label",
+     "t": "“On February 4, 2026, we entered into an amendment to the New Credit Agreement (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter e…”",
+     "stated": "On February 4, 2026, we entered into an amendment to the New Credit Agreement (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter e",
+     "src": {
+      "sentence": "On February 4, 2026, we entered into an amendment to the New Credit Agreement (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75:1.00, (b) with respect to each fiscal quarter ending March 31, 2027, 2.00:1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50:1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75:1.00.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm",
+      "doc": "10-K 2026-02-10"
+     }
+    }
+   ],
+   [
+    {
+     "k": "text",
+     "t": "Possible move, not confirmed: "
+    },
+    {
+     "k": "label",
+     "t": "“Subsequently, we executed an amendment to the New Credit Agreement on February 4, 2026 (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal …”",
+     "stated": "Subsequently, we executed an amendment to the New Credit Agreement on February 4, 2026 (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal ",
+     "src": {
+      "sentence": "Subsequently, we executed an amendment to the New Credit Agreement on February 4, 2026 (the “First Amendment”) that temporarily reduces the minimum Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75:1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00:1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50:1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75:1.00.",
+      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm",
+      "doc": "10-K 2026-02-10"
+     }
+    }
+   ]
+  ],
   "movesUnread": null
  }
 }

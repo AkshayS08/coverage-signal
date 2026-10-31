@@ -1,0 +1,9 @@
+TENET HEALTHCARE CORP: 9b 3/3; 13 rows; captured face 13341000000; residual 0% (passes)
+  s27-refresh-retaste-1: reproduces
+  s27-refresh-retaste-2: reproduces
+DAVITA INC.: 9b 3/3; 9 rows; captured face 10832243000; residual 0% (passes)
+  s27-refresh-retaste-1: reproduces
+  s27-refresh-retaste-2: reproduces
+COMMUNITY HEALTH SYSTEMS INC: 9b 3/3; 12 rows; captured face 9766000000; residual 0% (passes)
+  s27-refresh-retaste-1: reproduces
+  s27-refresh-retaste-2: reproduces

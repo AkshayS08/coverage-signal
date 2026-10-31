@@ -1,0 +1,117 @@
+# COMMUNITY HEALTH SYSTEMS INC: the refreshed card against the committed card
+
+Review render, not committed (REVIEW RENDER of the refreshed v33 answer (10-Q filed 2026-10-29); not the committed card). Brief 2026-10-31 (week 2026-10-16 to 2026-10-31; previous brief 2026-10-15). Week filings: 10-Q 2026-10-29; 8-K 2026-10-28 [2.02,7.01,9.01].
+Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317).
+
+- **header (label)**
+  - was: Weekly coverage brief · Oct 5 to Oct 15, 2026
+  - now: Weekly coverage brief · Oct 16 to Oct 31, 2026
+- **header**
+  - was: Position as of June 30, 2026
+  - was: 10-Q filed July 23, 2026
+  - was: No new debt filings this week
+  - now: Position as of September 30, 2026
+  - now: 10-Q filed Oct 29, 2026
+  - now: New this week: this 10-Q, filed Oct 29, 2026, is the position · 1 other filing, none affecting debt
+- **call (label)**
+  - was: The call · next 18 months, to Apr 15, 2028
+  - now: The call · next 18 months, to Apr 30, 2028
+- **moves**
+  - now: May 6, 2026 · Repurchased
+  - now: ~$368MM 4¾% senior secured notes due 2031 · $689MM remains
+  - now: With ~$600MM of divestiture proceeds.
+- **totalDebt**
+  - was: $9,770MM
+  - was: $298MM
+  - was: $52MM
+  - now: $9,766MM
+  - now: $300MM
+  - now: $46MM
+- **liquidity**
+  - was: $149MM
+  - was: ~$751MM
+  - now: $155MM
+  - now: ~$745MM
+- **chart**
+  - was: Not shown on the chart, with no single maturity: $298MM Finance lease and financing obligations; $52MM Other.
+  - now: Not shown on the chart, with no single maturity: $300MM Finance lease and financing obligations; $46MM Other.
+- **table**
+  - was: ~$368MM repurchased in 2026 · $689MM remains
+  - was: 298
+  - was: 52
+  - now: ~$736MM repurchased in 2026 · $689MM remains
+  - now: 300
+  - now: 46
+- **footnote**
+  - was: Face total $9,770MM. Balance sheet $9,578MM, after $192MM of unamortized deferred debt issuance costs. Every figure links to the sentence it came from.
+  - now: Face total $9,766MM. Balance sheet $9,586MM, after $180MM of unamortized deferred debt issuance costs. Every figure links to the sentence it came from.
+- **cited sentences behind source links**: 166 out, 172 in
+  - was cited: 10-Q 2026-07-23 | For the quarterly period ended June 30, 2026
+  - was cited: 10-Q 2026-07-23 | 6 ⅞% Senior Notes due 2028 $ 42
+  - was cited: 10-Q 2026-07-23 | 6 ⅞% Junior-Priority Secured Notes due 2029 1,244
+  - was cited: 10-Q 2026-07-23 | The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million prin
+  - was cited: 10-Q 2026-07-23 | 4 ¾% Senior Secured Notes due 2031 689
+  - was cited: 10-Q 2026-07-23 | 10 ⅞% Senior Secured Notes due 2032 1,549
+  - was cited: 10-Q 2026-07-23 | On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 
+  - was cited: 10-Q 2026-07-23 | 6 ⅛% Junior-Priority Secured Notes due 2030 1,227
+  - was cited: 10-Q 2026-07-23 | 6 % Senior Secured Notes due 2029 644
+  - was cited: 10-Q 2026-07-23 | 5 ¼% Senior Secured Notes due 2030 1,535
+  - was cited: 10-Q 2026-07-23 | 10 ¾% Senior Secured Notes due 2033 700
+  - was cited: 10-Q 2026-07-23 | 9 ¾% Senior Secured Notes due 2034 1,790
+  - was cited: 10-Q 2026-07-23 | Finance lease and financing obligations 298
+  - was cited: 10-Q 2026-07-23 | Other 52
+  - was cited: 10-Q 2026-07-23 | Cash and cash equivalents $ 149 $ 260
+  - was cited: 10-Q 2026-07-23 | At June 30, 2026 , the Company had no outstanding borrowings and approximately $ 751 million of additional borrowing capacity (after taking 
+  - was cited: 10-Q 2026-07-23 | Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029.
+  - was cited: 10-Q 2026-07-23 | Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the max
+  - was cited: 10-Q 2026-07-23 | The ABL Facility includes borrowing capacity available for letters of credit of $ 200 million.
+  - was cited: 10-Q 2026-07-23 | Current maturities of long-term debt $ 26
+  - was cited: 10-Q 2026-07-23 | Long-term debt 9,552
+  - was cited: 10-Q 2026-07-23 | Less: Unamortized deferred debt issuance costs ( 192 )
+  - now cited: 10-Q 2026-10-29 | For the quarterly period ended September 30, 2026
+  - now cited: 10-Q 2026-10-29 | 6 ⅞% Senior Notes due 2028 $ 42
+  - now cited: 10-Q 2026-10-29 | 6 ⅞% Junior-Priority Secured Notes due 2029 1,244
+  - now cited: 10-Q 2026-10-29 | The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million prin
+  - now cited: 10-Q 2026-10-29 | 4 ¾% Senior Secured Notes due 2031 689
+  - now cited: 10-Q 2026-10-29 | 10 ⅞% Senior Secured Notes due 2032 1,549
+  - now cited: 10-Q 2026-10-29 | On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 
+  - now cited: 10-Q 2026-10-29 | 6 ⅛% Junior-Priority Secured Notes due 2030 1,227
+  - now cited: 10-Q 2026-10-29 | 6 % Senior Secured Notes due 2029 644
+  - now cited: 10-Q 2026-10-29 | 5 ¼% Senior Secured Notes due 2030 1,535
+  - now cited: 10-Q 2026-10-29 | 10 ¾% Senior Secured Notes due 2033 700
+  - now cited: 10-Q 2026-10-29 | 9 ¾% Senior Secured Notes due 2034 1,790
+  - now cited: 10-Q 2026-10-29 | Finance lease and financing obligations 300
+  - now cited: 10-Q 2026-10-29 | Other 46
+  - now cited: 10-Q 2026-10-29 | Cash and cash equivalents $ 155 $ 260
+  - now cited: 10-Q 2026-10-29 | At September 30, 2026 , the Company had no outstanding borrowings and approximately $ 745 million of additional borrowing capacity (after ta
+  - now cited: 10-Q 2026-10-29 | Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029.
+  - now cited: 10-Q 2026-10-29 | Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the max
+  - now cited: 10-Q 2026-10-29 | The ABL Facility includes borrowing capacity available for letters of credit of $200 million.
+  - now cited: 10-Q 2026-10-29 | Current maturities of long-term debt $ 18
+  - now cited: 10-Q 2026-10-29 | Long-term debt 9,568
+  - now cited: 10-Q 2026-10-29 | Less: Unamortized deferred debt issuance costs ( 180 )
+- **parts of computed figures (shown when a figure is opened)**: 72 shown differently
+  - was: $ 42 million
+  - was: $ 1,244 million
+  - was: $ 689 million
+  - was: $ 1,549 million
+  - was: $ 1,227 million
+  - was: $ 644 million
+  - was: $ 1,535 million
+  - was: $ 700 million
+  - was: $ 1,790 million
+  - was: $ 298 million
+  - was: $ 52 million
+  - was: $ 149 million
+  - now: $42MM
+  - now: $1,244MM
+  - now: $689MM
+  - now: $1,549MM
+  - now: $1,227MM
+  - now: $644MM
+  - now: $1,535MM
+  - now: $700MM
+  - now: $1,790MM
+  - now: $300MM
+  - now: $46MM
+  - now: $155MM
