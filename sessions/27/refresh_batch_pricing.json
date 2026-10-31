@@ -1,0 +1,43 @@
+{
+ "pricedAt": "2026-10-31T03:26:08.725Z",
+ "rows": [
+  {
+   "company": "TENET HEALTHCARE CORP",
+   "anchor": "10-Q 2026-10-29 (period 2026-09-30)",
+   "baseInputTokens": 101097,
+   "baseWorst": 0.201097,
+   "digWorst": 0.32411,
+   "digCandidate": "10-Q 2026-04-30",
+   "proceedsEstimate": 0.094521,
+   "factsWorst": 0.1563,
+   "worst": 2.015484,
+   "declared": 2.02
+  },
+  {
+   "company": "DAVITA INC.",
+   "anchor": "10-Q 2026-10-29 (period 2026-09-30)",
+   "baseInputTokens": 79085,
+   "baseWorst": 0.179085,
+   "digWorst": 0.29485500000000003,
+   "digCandidate": "10-Q 2026-05-05",
+   "proceedsEstimate": 0.074841,
+   "factsWorst": 0.1593,
+   "worst": 1.8056430000000003,
+   "declared": 1.81
+  },
+  {
+   "company": "COMMUNITY HEALTH SYSTEMS INC",
+   "anchor": "10-Q 2026-10-29 (period 2026-09-30)",
+   "baseInputTokens": 75660,
+   "baseWorst": 0.17566,
+   "digWorst": 0.29777000000000003,
+   "digCandidate": "10-Q 2026-04-22",
+   "proceedsEstimate": 0,
+   "factsWorst": 0.1569,
+   "worst": 1.57719,
+   "declared": 1.58
+  }
+ ],
+ "batchDeclaredUsd": 5.41,
+ "molinaSpentUsd": 0.6739
+}
