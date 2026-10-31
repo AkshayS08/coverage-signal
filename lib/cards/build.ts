@@ -737,6 +737,19 @@ export function buildCard(i: CardInputs): Card {
       sentence: w.sourceLine, url: w.citedUrl, funding: [], use: [], price: null, extra: [t(", the prior balance, repaid inside the period")], retires: [],
     });
   }
+  // SESSION 27 (Akshay, Nov 1, 2026): ONE OFFER IS ONE TRANSACTION. Launch, expiry and settlement of one offer —
+  // the same type, the same notes (coupon and year) and the same face — are one move, dated by its completion (the
+  // latest). CHS's facts kept one tender twice (Apr 22 launch, May 6 settlement), and the table read "~$736MM".
+  {
+    const key = (m: Move) => { const c = couponsIn(m.instrument)[0]?.rate; const y = (/\b(20\d\d)\b/.exec(m.instrument) ?? [])[1]; return c === undefined || m.faceUsd === null ? null : `${m.type}|${c}|${y ?? ""}`; };
+    const keep = new Set<Move>(movesAll);
+    for (const a of movesAll) for (const b of movesAll) {
+      if (a === b || !keep.has(a) || !keep.has(b) || key(a) === null || key(a) !== key(b)) continue;
+      if (Math.abs(a.faceUsd! - b.faceUsd!) > Math.max(1e6, 0.005 * a.faceUsd!)) continue;
+      keep.delete(a.sort < b.sort ? a : b);
+    }
+    for (let k = movesAll.length - 1; k >= 0; k--) if (!keep.has(movesAll[k])) movesAll.splice(k, 1);
+  }
   // SESSION 27 (Akshay, Oct 29, 2026): a move that IS a counted roll delta (same coupon, same face) is labelled from
   // the delta's identity, never the wording of whichever model read it; the label links to the sentence's own span.
   if (rc.counts) for (const d of rc.movements.filter((x) => x.placement === "delta" && x.amountMillions < 0)) {
