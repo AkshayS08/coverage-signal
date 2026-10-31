@@ -35,8 +35,6 @@ const ROOT = process.cwd();
 const OUT = join(ROOT, "lib", "cards", "inputs");
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one is given
-// A brief's card inputs read each name's read set as it stood on that brief date (the build it is served from).
-process.env.READ_SET_AS_OF ??= BRIEF;
 
 /** The anchor's cover line stating its period end — the phrase every "as of" date links to. */
 export function periodSentenceIn(text: string, iso: string): string | null {
@@ -101,6 +99,9 @@ export async function captureCardInput(result: any, opts: { fingerprint: string;
 }
 
 if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/snapshot.ts")) (async () => {
+  // A brief's card inputs read each name's read set as it stood on that brief date (the build it is served from). Set
+  // here, in the script's own run, never at import: a refresh that imports captureCardInput reads the CURRENT read set.
+  process.env.READ_SET_AS_OF ??= BRIEF;
   if (process.env.ANTHROPIC_API_KEY !== "") { console.error('REFUSING: run with ANTHROPIC_API_KEY="" so nothing can bill'); process.exit(1); }
   mkdirSync(OUT, { recursive: true });
   const commit = execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim();

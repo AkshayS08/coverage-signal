@@ -13,6 +13,7 @@
  * is built WITHOUT facts, and says so.
  *
  * Molina's refresh: ANTHROPIC_API_KEY="" npx tsx lib/cards/capture/preview.ts molina
+ * A batch refresh:  ANTHROPIC_API_KEY="" npx tsx lib/cards/capture/preview.ts <cik>   (baselines/s27-refresh-batch.json)
  */
 import { loadEnvQuietly } from "../../cache/loadEnv";
 loadEnvQuietly();
@@ -27,16 +28,20 @@ import { visibleDiff } from "../../cache/s27cardDiff";
 
 (async () => {
   if (process.env.ANTHROPIC_API_KEY !== "") { console.error('REFUSING: run with ANTHROPIC_API_KEY=""'); process.exit(1); }
-  if (process.argv[2] !== "molina") { console.error("usage: preview.ts molina"); process.exit(1); }
-  const refresh = JSON.parse(readFileSync("baselines/s27-molina-refresh.json", "utf-8"));
+  const which = process.argv[2];
+  if (!which) { console.error("usage: preview.ts molina | <cik>"); process.exit(1); }
+  const isMolina = which === "molina";
+  const refresh = isMolina ? JSON.parse(readFileSync("baselines/s27-molina-refresh.json", "utf-8")) : (() => { const b = JSON.parse(readFileSync("baselines/s27-refresh-batch.json", "utf-8")).names.find((n: any) => n.cik === which); if (!b) throw new Error(`${which} is not in the refresh batch`); return { boundFingerprint: b.boundFingerprint, results: b.samples }; })();
   const result = refresh.results.find((x: any) => x.bust === null).result;
+  const dir = isMolina ? "sessions/27" : "sessions/27/refresh";
+  const stem = isMolina ? "molina" : result.cik;
   const brief = briefDateArg();
   const prev = previousBrief(readBriefLog(), result.cik, brief);
   const week = briefWeek(brief, prev);
   const input = await captureCardInput(result, { fingerprint: refresh.boundFingerprint, commit: execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim(), source: "REVIEW RENDER of the refreshed v33 answer (Oct 22 10-Q); not the committed card", briefDate: brief });
-  writeFileSync("sessions/27/molina_review_input.json", JSON.stringify(input) + "\n");
-  // The refresh's own facts stage (capture/facts.ts --input this file --out sessions/27/molina_review_facts), where run.
-  const factsPath = `sessions/27/molina_review_facts/${result.cik}.json`;
+  writeFileSync(`${dir}/${isMolina ? "molina_review_input" : `${stem}_input`}.json`, JSON.stringify(input) + "\n");
+  // The refresh's own facts stage (capture/facts.ts --input that file --out <dir>), where run.
+  const factsPath = isMolina ? `sessions/27/molina_review_facts/${result.cik}.json` : `sessions/27/refresh/facts/${result.cik}.json`;
   const facts = existsSync(factsPath) ? JSON.parse(readFileSync(factsPath, "utf-8")) : null;
   const weekFilings = await liveFilingsBetween(result.cik, week.from, week.to);
   const card = buildCard({
@@ -44,16 +49,16 @@ import { visibleDiff } from "../../cache/s27cardDiff";
     textByUrl: new Map(Object.entries(input.docs).map(([u, d]) => [u, d.text])), periodSentence: input.periodSentence,
     laterUrls: input.laterFilings.filter((x) => x.filingDate <= brief).map((x) => x.url), facts,
   });
-  writeFileSync("sessions/27/molina_review_card.json", JSON.stringify(card, null, 1) + "\n");
-  const current = JSON.parse(readFileSync("lib/cards/generated/0001179929.json", "utf-8"));
+  writeFileSync(`${dir}/${stem}_review_card.json`, JSON.stringify(card, null, 1) + "\n");
+  const current = JSON.parse(readFileSync(`lib/cards/generated/${result.cik}.json`, "utf-8"));
   const lines = [
-    `# Molina: the refreshed card against the committed card`,
+    `# ${result.company}: the refreshed card against the committed card`,
     ``,
-    `Review render, not committed. Brief ${brief} (week ${week.from} to ${week.to}; previous brief ${prev}). Week filings: ${weekFilings.map((f) => `${f.form} ${f.filingDate}${f.items ? ` [${f.items}]` : ""}`).join("; ") || "none"}.`,
+    `Review render, not committed (${(input as any).source}). Brief ${brief} (week ${week.from} to ${week.to}; previous brief ${prev}). Week filings: ${weekFilings.map((f) => `${f.form} ${f.filingDate}${f.items ? ` [${f.items}]` : ""}`).join("; ") || "none"}.`,
     facts ? `Verified card facts: read from ${facts.anchorUrl === (result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.url) ? "this anchor (the Oct 22 10-Q)" : "ANOTHER anchor, so not used"} ($${facts.costUsd}).` : `Verified card facts: not yet read from this anchor; those sections say so.`,
     ``,
     ...visibleDiff(current, card),
   ];
-  writeFileSync("sessions/27/molina_refresh_visible_diff.md", lines.join("\n") + "\n");
+  writeFileSync(`${dir}/${isMolina ? "molina_refresh" : stem}_visible_diff.md`, lines.join("\n") + "\n");
   console.log(lines.join("\n"));
 })().catch((e) => { console.error(e); process.exit(1); });
