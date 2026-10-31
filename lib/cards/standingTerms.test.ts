@@ -41,7 +41,7 @@ const fac = () => ({
   lettersOfCredit: null, available: null, citedUrl: K, figureSources: {},
 });
 const run = (later: any[], extra: Record<string, string> = {}, mayRead = false) => retargetAnnualReportFigures({
-  facilities: [fac()] as any, textByUrl: new Map(Object.entries({ [K]: kText, [Q]: qText, ...extra })), isAnnualReport: (u) => u === K,
+  facilities: [fac()] as any, textByUrl: new Map(Object.entries({ [K]: kText, [Q]: qText, ...extra })), isAnnualReport: (u: string) => u === K,
   anchorUrl: Q, anchorReportDate: "2026-06-30", enforced: true, mayRead, gateReason: "test",
   annualReportDate: "2026-02-17", laterFilings: later,
 } as any);

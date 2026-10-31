@@ -96,6 +96,11 @@ export async function getRecentFilings(
   }
 
   filings.sort((a, b) => (a.filingDate < b.filingDate ? 1 : -1));
+  // SESSION 27 (Oct 30): a card served from its LAST BUILD reads the filing list as it stood then. READ_SET_AS_OF
+  // (YYYY-MM-DD) keeps only filings on or before that date, so the read set, its key and the cached answer are the
+  // ones that build used — never a new extraction. Unset, nothing is filtered.
+  const asOf = process.env.READ_SET_AS_OF;
+  if (asOf && /^\d{4}-\d{2}-\d{2}$/.test(asOf)) filings.splice(0, filings.length, ...filings.filter((f) => f.filingDate <= asOf));
 
   return {
     company: match.title,

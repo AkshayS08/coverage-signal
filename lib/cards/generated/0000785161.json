@@ -2176,7 +2176,16 @@
      [
       {
        "k": "text",
-       "t": "Letters of credit withheld, see what the tool did not show"
+       "t": "Letters of credit "
+      },
+      {
+       "k": "notStated",
+       "t": "not stated",
+       "src": {
+        "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+        "doc": "ehc-20260309.htm"
+       }
       }
      ],
      [
@@ -2240,25 +2249,6 @@
  "withheld": {
   "heading": "What the tool did not show",
   "lines": [
-   [
-    {
-     "k": "text",
-     "t": "Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the period this card reports. "
-    },
-    {
-     "k": "notStated",
-     "t": "See the sentence offered",
-     "src": {
-      "sentence": "As of December 31, 2025 and 2024, $ 46.3  million and $ 36.3  million , respectively, was being utilized under the letter of credit subfacility, which were being used in the ordinary course of business to secure workers' compensation and other insurance coverages and for general corporate purposes.",
-      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-      "doc": "10-Q 2026-08-07"
-     }
-    },
-    {
-     "k": "text",
-     "t": "."
-    }
-   ],
    [
     {
      "k": "text",
@@ -5644,32 +5634,18 @@
       "t": " "
      },
      {
-      "k": "text",
-      "t": "Letters of credit withheld, see Not shown."
+      "k": "notStated",
+      "t": "Letters of credit outstanding not stated.",
+      "src": {
+       "sentence": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+       "doc": "ehc-20260309.htm"
+      }
      }
     ]
    }
   ],
   "notShown": [
-   [
-    {
-     "k": "text",
-     "t": "Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the period this card reports. "
-    },
-    {
-     "k": "notStated",
-     "t": "See the sentence offered",
-     "src": {
-      "sentence": "As of December 31, 2025 and 2024, $ 46.3  million and $ 36.3  million , respectively, was being utilized under the letter of credit subfacility, which were being used in the ordinary course of business to secure workers' compensation and other insurance coverages and for general corporate purposes.",
-      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-      "doc": "10-Q 2026-08-07"
-     }
-    },
-    {
-     "k": "text",
-     "t": "."
-    }
-   ],
    [
     {
      "k": "text",

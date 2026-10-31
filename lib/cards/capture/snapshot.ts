@@ -35,6 +35,8 @@ const ROOT = process.cwd();
 const OUT = join(ROOT, "lib", "cards", "inputs");
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one is given
+// A brief's card inputs read each name's read set as it stood on that brief date (the build it is served from).
+process.env.READ_SET_AS_OF ??= BRIEF;
 
 /** The anchor's cover line stating its period end — the phrase every "as of" date links to. */
 export function periodSentenceIn(text: string, iso: string): string | null {

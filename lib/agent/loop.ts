@@ -1481,6 +1481,9 @@ async function runAgentLoopInner(
       enforced: annualGate.enforced,
       mayRead: annualGate.mayRead,
       gateReason: annualGate.reason,
+      // Session 27 (Oct 30): what may amend a 10-K standing term — the read set's filings after the latest 10-K.
+      annualReportDate: [...baseline].filter((x) => x.form === "10-K").map((x) => x.filingDate).sort().pop() ?? null,
+      laterFilings: baseline.map((x) => ({ url: x.primaryDocUrl, form: x.form, filingDate: x.filingDate, items: x.items })),
     });
     for (const r of annualFigures.retargeted) {
       log(`  FACILITY EVIDENCE RE-POINTED AT THE ANCHOR for ${label} — ${r}`);

@@ -33,7 +33,8 @@ export type Segment =
    */
   | { k: "figure"; t: string; printed: string; src: Source; field?: string; row?: string }
   /** A date shown at `granularity`; the sentence must state it at least that precisely. */
-  | { k: "date"; t: string; date: string; granularity: DateGranularity; src: Source }
+  /** `tenK`: a standing term stated only in the latest 10-K, shown with the "10-K" tag (Session 27, Oct 30). */
+  | { k: "date"; t: string; date: string; granularity: DateGranularity; src: Source; tenK?: true }
   /** A label word (type, seniority, security). `stated` is the filer's word, which the sentence must contain. */
   | { k: "label"; t: string; stated: string; src: Source }
   /** Arithmetic over stated figures. `usd` must equal the sum of the parts' signed values. */

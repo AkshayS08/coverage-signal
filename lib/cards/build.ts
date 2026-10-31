@@ -2129,6 +2129,8 @@ export function buildCard(i: CardInputs): Card {
     } else if (kind === "lc") {
       if (f.lettersOfCredit) facts.push(fig("lettersOfCredit", "letters of credit outstanding"));
       facts.push(f.facilitySize ? fig("facilitySize", "size") : [{ k: "notStated", t: "facility size not stated", src: own }]);
+      // Session 27 (Oct 30): a letter-of-credit facility shows its maturity as any facility does; it never rendered one.
+      if (m.kind === "dated") facts.push([t("matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: src(m.sentence, f.figureSources?.maturity ?? f.citedUrl) }]);
     } else {
       for (const [field, word] of [["facilitySize", "size"], ["drawn", "drawn"], ["lettersOfCredit", "letters of credit"]] as const) if (f[field]) facts.push(fig(field, word));
       if (m.kind === "dated") facts.push([t("matures "), { k: "date", t: displayDate(m.date, m.granularity), date: m.date, granularity: m.granularity, src: src(m.sentence, f.figureSources?.maturity ?? f.citedUrl) }]);
@@ -2164,6 +2166,20 @@ export function buildCard(i: CardInputs): Card {
     notShown: notShown.length ? notShown : [[t("Nothing withheld this week.")]],
     footnote,
   };
+
+  // SESSION 27 (Akshay, Oct 30): A 10-K STANDING TERM CARRIES THE "10-K" TAG wherever the card shows it — a facility
+  // maturity or size stated only in the latest 10-K (verifyFacility's standingFrom10K). One pass over the built card,
+  // matched by the facility's own sentence, so no section can show the term untagged.
+  const standing = (dm?.facilities ?? []).flatMap((f: any) => (f.standingFrom10K ?? []).map((field: string) => ({ field, sentence: f[field]?.sourceLine as string | undefined }))).filter((x: { sentence?: string }) => !!x.sentence);
+  if (standing.length) {
+    const tag = (o: any) => {
+      if (!o || typeof o !== "object") return;
+      const hit = o.src?.sentence && standing.find((x: { field: string; sentence?: string }) => x.sentence === o.src.sentence && ((x.field === "maturity" && o.k === "date") || (x.field === "facilitySize" && (o.k === "figure" || o.k === "computed"))));
+      if (hit) { o.tenK = true; if (hit.field === "facilitySize") o.term = "facilitySize"; }
+      for (const v of Object.values(o)) tag(v);
+    };
+    tag(v3); tag(header); tag(liqLines); tag(facBlocks);
+  }
 
   return {
     cik: result.cik,

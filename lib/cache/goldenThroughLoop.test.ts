@@ -37,6 +37,9 @@
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
+// Session 27 (Oct 30): Ring 1 checks the PUBLISHED brief — each name's read set as it stood on the published cards'
+// brief date, the build those cards were served from — unless a run pins another date.
+process.env.READ_SET_AS_OF ??= (JSON.parse(require("node:fs").readFileSync("lib/cards/generated/index.json", "utf-8")) as { briefDate: string }).briefDate;
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { runAgentLoop } from "../agent";

@@ -171,6 +171,29 @@ export function sentenceStatesFigure(value: string, sentence: string): boolean {
  * it — a legitimate current source the anchor never restates — and would
  * change a signed golden's identity to fix a different company's problem.
  */
+/** A facility's standing terms; every other figure field is a balance stated as of a date. */
+const STANDING_TERMS = new Set<string>(["facilitySize", "maturity"]);
+const flatOf = (x: string) => x.replace(/\s+/g, " ").trim().toLowerCase();
+const sentencesOf = (t: string) => t.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)/).filter((x) => x.length > 12 && x.length < 900);
+const FACILITY_STOP = new Set(["senior", "secured", "unsecured", "first", "lien", "that", "with", "from"]);
+/** Does this sentence name the facility: two of its own name's distinguishing words, or its defined term? */
+function namesFacility(sentence: string, name: string): boolean {
+  const s = sentence.toLowerCase();
+  const words = (name.toLowerCase().match(/[a-z]{4,}/g) ?? []).filter((w) => !FACILITY_STOP.has(w));
+  const hits = words.filter((w) => s.includes(w)).length;
+  const defined = /letter of credit/i.test(name) ? /\blc facility\b|letter of credit facility/i.test(sentence) : /revolv/i.test(name) ? /credit agreement|credit facility|revolving/i.test(sentence) : false;
+  return hits >= Math.min(2, words.length) || defined;
+}
+/** A sentence stating that the facility WAS amended or replaced — never the "as amended (to date)" formula of a defined name. */
+const AMENDS = /\b(?:entered into an? (?:\w+ )?amendment|amendment (?:no\.|to)|we amended|was amended|were amended|amended and restated|replaced|refinanced|terminated)\b/i;
+function amendingFilings(f: { name: string }, later: { url: string; form: string; filingDate: string; items?: string | null }[], after: string | null, textByUrl: Map<string, string>): string[] {
+  return later
+    .filter((x) => !after || x.filingDate > after)
+    .filter((x) => x.form === "10-Q" || (x.form === "8-K" && String(x.items ?? "").split(",").map((i) => i.trim()).some((i) => ["1.01", "1.02", "2.03"].includes(i))))
+    .filter((x) => sentencesOf(textByUrl.get(x.url) ?? "").some((s) => namesFacility(s, f.name) && AMENDS.test(s.replace(/\(as amended[^)]*\)|,? as amended(?: to date| and restated)?/gi, ""))))
+    .map((x) => x.url);
+}
+
 export function retargetAnnualReportFigures(params: {
   facilities: FacilityRow[];
   textByUrl: Map<string, string>;
@@ -182,6 +205,9 @@ export function retargetAnnualReportFigures(params: {
   /** From `annualReportGate`: Rule 66 permits the annual report (the anchor is not-located and directs to it). */
   mayRead?: boolean;
   gateReason: string;
+  /** The annual report's filing date, and the read set's filings: what may amend a standing term after it. */
+  annualReportDate?: string | null;
+  laterFilings?: { url: string; form: string; filingDate: string; items?: string | null }[];
 }): { facilities: FacilityRow[]; retargeted: string[]; notRestated: string[]; removed: string[] } {
   const { facilities, textByUrl, isAnnualReport, anchorUrl, anchorReportDate, enforced, gateReason } = params;
   const mayRead = params.mayRead ?? false;
@@ -251,6 +277,32 @@ export function retargetAnnualReportFigures(params: {
       // facility maturities, "November 4, 2030", which no 10-Q or 8-K it holds
       // states. Logged, never silent. Where Rule 66 does permit it (Cigna),
       // the standing term stays at the document that states it, as above.
+      // A sentence the ANCHOR ITSELF prints is not "stated only in the 10-K": verification decides it (a figure of
+      // another date is withheld there under Rule 71, and says so). Encompass's $46.3 million "as of December 31,
+      // 2025" is in both documents.
+      if (anchorText && flatOf(anchorText).includes(flatOf(fig.sourceLine))) { notRestated.push(`${f.name}.${field} = ${fig.value} — its sentence is also in the anchor, so verification decides it`); continue; }
+      // SESSION 27 (Akshay, Oct 30, bounded the same day) — A STANDING TERM IS NOT A BALANCE. Rule 66 governs
+      // amounts stated as of a date (drawn, letters of credit outstanding, available). A facility's maturity and
+      // size hold until amended: stated only in the latest 10-K, they are KEPT and tagged (standingFrom10K),
+      // unless a filing in the read set after that 10-K amends or replaces this facility — then the term comes
+      // from that filing where it states it, or is not stated.
+      if (!mayRead && STANDING_TERMS.has(field)) {
+        const amending = amendingFilings(f, params.laterFilings ?? [], params.annualReportDate ?? null, textByUrl);
+        if (amending.length === 0) {
+          (next as FacilityRow & { standingFrom10K?: string[] }).standingFrom10K = [...((next as { standingFrom10K?: string[] }).standingFrom10K ?? []), field];
+          notRestated.push(`${f.name}.${field} = ${fig.value} — a standing term stated only in the latest 10-K, and no later filing in the read set amends this facility; shown with the 10-K tag`);
+          continue;
+        }
+        const restated = amending.flatMap((u) => sentencesOf(textByUrl.get(u) ?? "")).find((x) => namesFacility(x, f.name) && flatOf(x).includes(flatOf(String(fig.value))));
+        if (restated) {
+          next[field] = { ...fig, sourceLine: restated };
+          retargeted.push(`${f.name}.${field} = ${fig.value} — a later filing amends this facility and states it, so that filing's sentence is the evidence`);
+          continue;
+        }
+        next[field] = null;
+        removed.push(`${f.name}.${field} = ${fig.value} — a filing after the 10-K amends this facility (${amending.map((u) => u.split("/").pop()).join(", ")}) and does not state this term, so it is not stated`);
+        continue;
+      }
       if (!mayRead) {
         next[field] = null;
         // Recorded on the facility, so a row claiming the same figure does not render it as "withheld" either.
