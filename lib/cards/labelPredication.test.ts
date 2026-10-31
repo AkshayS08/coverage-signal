@@ -23,7 +23,7 @@
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { sentenceClass, predicatedSpan } from "./labels";
+import { sentenceClass, predicatedSpan, couponsIn } from "./labels";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -42,7 +42,12 @@ function violations(card: any): string[] {
     const name = r.name ?? txt(r.instrument);
     for (const seg of r.instrument) {
       if (seg.k !== "label" || !/^(senior|junior|subordinated|secured|unsecured|first[- ]lien|second[- ]lien)$/i.test(seg.t)) continue;
-      if (!seg.src?.sentence || seg.src.sentence.replace(/\s+/g, " ").includes(name.replace(/\s+/g, " ").slice(0, 12)) && /\d[\d,]{3,}\s+\d[\d,]{3,}/.test(seg.src.sentence)) continue; // the row's own table line
+      // Only the sentence route this rule governs: a sentence naming the debt by its own coupon. A heading, the note's
+      // class statement ("Each of these notes are senior unsecured obligations") and the agreement's class sentence
+      // are other routes, each with its own rule; the row's own table line names it by definition.
+      const own = couponsIn(name)[0]?.rate;
+      if (!seg.src?.sentence || own === undefined || !couponsIn(seg.src.sentence).some((c) => Math.abs(c.rate - own) < 1e-9)) continue;
+      if (/\d[\d,]{3,}\s+\d[\d,]{3,}/.test(seg.src.sentence) && seg.src.sentence.length < 160) continue;
       const span = predicatedSpan(seg.src.sentence, name);
       if (span === null || !span.toLowerCase().includes(String(seg.stated).toLowerCase())) out.push(`${name}: "${seg.t}" from "${seg.src.sentence.slice(0, 90)}…"`);
     }

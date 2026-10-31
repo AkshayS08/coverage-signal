@@ -162,8 +162,11 @@ export function sentenceClass(rowName: string, sentences: Source[]): { seniority
     } else if (facilityWord) named = facilityWord.test(head);
     else if (isFacility && rowName.length > 8) named = containsWord(head, rowName);
     if (!named) continue;
-    const sen = seniorityIn(head);
-    const sec = SECURITY_RE.exec(head);
+    // Session 27 (Nov 1): only what the sentence PREDICATES of this debt — its own name, or a predicate about it.
+    const span = predicatedSpan(sentence, rowName);
+    if (span === null) continue;
+    const sen = seniorityIn(span);
+    const sec = SECURITY_RE.exec(span);
     if (!seniority && sen) seniority = { k: "label", t: sen[1].toLowerCase(), stated: sen[0], src };
     if (!security && sec) security = { k: "label", t: sec[1].toLowerCase(), stated: sec[0], src };
   }
@@ -188,4 +191,45 @@ export function notStatedSuffix(seniority: Segment | null, security: Segment | n
 export function statementReaches(s: NoteSeniorityStatement | null | undefined, row: Pick<LadderRow, "instrument" | "provenance" | "maturityDate" | "classification">): boolean {
   if (!s || row.provenance === "pricing-8-K") return false;
   return statementCoversRow(s.appliesTo, { instrumentName: row.instrument, instrumentType: row.classification.instrumentType, maturityDate: row.maturityDate });
+}
+
+/**
+ * SESSION 27 (Akshay, Nov 1, 2026) — WHAT A SENTENCE PREDICATES OF ONE DEBT.
+ * A seniority or security word labels a debt only inside the debt's own name
+ * ("6.75% senior secured notes", "senior unsecured 6.75% notes") or in a
+ * predicate about it ("the 6.75% Senior Notes are senior unsecured
+ * obligations") — as Rules 57/70 hold a date or a figure to the sentence that
+ * predicates it. DaVita: "…a secured Term Loan B-2 facility … and issuance of
+ * the 6.75% Senior Notes…" — "secured" is the term loan's.
+ *
+ * Returns that span (the name with up to three words before it, and a
+ * following "are/is/rank …" predicate), or null when the sentence does not
+ * name the debt.
+ */
+export function predicatedSpan(sentence: string, rowName: string): string | null {
+  const head = statementHead(sentence.replace(/\s+/g, " ")).split(/\bguaranteed on an?\b/i)[0];
+  const own = couponsIn(rowName)[0]?.rate ?? null;
+  // Where the sentence mentions the debt: its own coupon (the first), or every mention of a facility's own word.
+  let mentions: number[] = [];
+  if (own !== null) { const c = couponsIn(head).find((x) => Math.abs(x.rate - own) < 1e-9); mentions = c ? [c.at] : []; }
+  else {
+    const word = /\bABL\b/i.test(rowName) ? /\bABL\b/gi : /commercial paper/i.test(rowName) ? /commercial paper/gi : rowName.length > 8 ? new RegExp(rowName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi") : null;
+    mentions = word ? [...head.matchAll(word)].map((m) => m.index ?? 0) : [];
+  }
+  if (mentions.length === 0) return null;
+  const spanAt = (at: number): string => {
+    // Up to three words before the mention, stopping at punctuation or a figure; a list of adjectives is still the
+    // name ("short-term, unsecured commercial paper notes").
+    const before = (/((?:[A-Za-z][\w-]*,?\s+){0,3})$/.exec(head.slice(0, at))?.[1] ?? "");
+    // The name runs to its debt noun.
+    const rest = head.slice(at);
+    const noun = /^(?:[^.;,]|\.(?=\d)){0,90}?\b(?:notes|debentures|bonds|loans?|facility|facilities|agreement|securities|paper)\b/i.exec(rest);
+    if (!noun) return `${before}${rest.slice(0, 40)}`;
+    const after = rest.slice(noun[0].length);
+    // A predicate about it: "(the “2033 Notes”) are senior unsecured obligations …", up to the clause's end.
+    // A coordinated subject is still the subject: "the ABL Facility and the related guarantees are secured by …".
+    const pred = /^\s*(?:\([^)]{0,80}\)\s*)?,?\s*(?:and\s+(?:[\w-]+\s+){0,4})?(?:which\s+)?(?:are|is|were|was|will be|rank|ranks|constitute|represent)\b(?:[^;.]|\.(?=\d)){0,120}/i.exec(after);
+    return `${before}${noun[0]}${pred ? pred[0] : ""}`;
+  };
+  return mentions.map(spanAt).join(" … ");
 }
