@@ -5,8 +5,8 @@
  * it is refused before the call and its trigger renders as UNRESOLVED,
  * flagged on the card. A cap is never raised to fit a worst case.
  *
- *   D1  with an allowance of $0.10, a dig whose counted worst case is $0.06
- *       runs; the next ($0.06 more) is refused before any call is made
+ *   D1  with an allowance of $0.08, a dig whose counted worst case is $0.06
+ *       runs ($0.035 actual); the next ($0.06 worst) would reach $0.095 and is refused
  *   D2  a non-dig call is not limited by the dig allowance
  *   D3  control: with no allowance set, both digs run
  *   D4  the card flags a trigger left unresolved by a refused dig; control:
@@ -30,11 +30,11 @@ const params: any = { model: "claude-haiku-4-5", max_tokens: 10_000, messages: [
 const dig = () => asKind("dig", () => guardedCreate(fake, params));
 
 (async () => {
-  resetSpendGuard(); setSpendLimits({ totalUsd: 2.0 }); setDigAllowance(0.10); created = 0;
+  resetSpendGuard(); setSpendLimits({ totalUsd: 2.0 }); setDigAllowance(0.08); created = 0;
   let first = false, second: unknown = null;
   try { await dig(); first = true; } catch { /* */ }
   try { await dig(); } catch (e) { second = e; }
-  assert(first && second instanceof DigRefusedError && created === 1, `[D1] the first dig runs; the second would exceed the $0.10 left under the cap and is refused before the call (calls made: ${created})`);
+  assert(first && second instanceof DigRefusedError && created === 1, `[D1] the first dig runs; the second would exceed the $0.08 left under the cap and is refused before the call (calls made: ${created})`);
   let other = false;
   try { await guardedCreate(fake, params); other = true; } catch { /* */ }
   assert(other && created === 2, `[D2] a non-dig call is not limited by the dig allowance`);

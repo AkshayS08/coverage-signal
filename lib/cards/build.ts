@@ -2165,6 +2165,8 @@ export function buildCard(i: CardInputs): Card {
   const notShown = withheld.filter((l) => !/^Nothing withheld/.test(l.map((x) => x.t).join("")));
   const footnote: Line = [...(coverageLines[0] ?? []), t(" Every figure links to the sentence it came from.")];
 
+  // Session 27 (Oct 31): a trigger left unresolved by a refused dig is flagged, never silently answered.
+  for (const r of result.results as any[]) if (r.unresolved) notShown.push([t(`${String(r.triggerId).replace(/-/g, " ")}: unresolved — ${r.unresolved}.`)]);
   if (!factsRead) {
     liqNotes.push(notYetRead("Uncommitted capacity and parent cash"));
     captions.push(notYetRead("The filer's printed maturity schedule"));

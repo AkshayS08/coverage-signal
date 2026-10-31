@@ -28,6 +28,30 @@ export class SpendRefusedError extends Error {
     this.worstUsd = worstUsd;
   }
 }
+/**
+ * SESSION 27 (Akshay, Oct 31, 2026): the per-build cap stays; DIGS DRAW ONLY ON WHAT IS LEFT UNDER IT after the
+ * other stages' counted worst case. A dig that would not fit is refused before the call, and its trigger renders as
+ * unresolved. A cap is never raised to fit a worst case.
+ */
+export class DigRefusedError extends Error {
+  readonly worstUsd: number;
+  constructor(message: string, worstUsd: number) {
+    super(`DIG REFUSED before the call: ${message}`);
+    this.name = "DigRefusedError";
+    this.worstUsd = worstUsd;
+  }
+}
+let digAllowance: number | null = null;
+let digSpent = 0;
+let currentKind: string | null = null;
+/** What digs may spend: the build's cap less the other stages' counted worst case. Null: no dig allowance. */
+export function setDigAllowance(usd: number | null): void { digAllowance = usd; digSpent = 0; }
+export const digAllowanceLeft = (): number | null => (digAllowance === null ? null : digAllowance - digSpent);
+/** Runs `fn` with every guarded call inside it counted as `kind` ("dig"). */
+export async function asKind<T>(kind: string, fn: () => Promise<T>): Promise<T> {
+  const prev = currentKind; currentKind = kind;
+  try { return await fn(); } finally { currentKind = prev; }
+}
 export class PricedOnlyError extends Error {
   readonly worstUsd: number;
   constructor(worstUsd: number) {
@@ -49,7 +73,7 @@ export function setSpendLimits(l: { perRunUsd?: number | null; totalUsd?: number
 /** A new run (one company's build): the per-run spend restarts; the running total does not. */
 export function beginGuardRun(label: string): void { runLabel = label; runSpent = 0; }
 export function setPriceOnly(on: boolean): void { priceOnly = on; }
-export function resetSpendGuard(): void { limits = { perRunUsd: null, totalUsd: null }; runLabel = "(no run)"; runSpent = 0; totalSpent = 0; priceOnly = false; last = null; priced.length = 0; }
+export function resetSpendGuard(): void { digAllowance = null; digSpent = 0; currentKind = null; limits = { perRunUsd: null, totalUsd: null }; runLabel = "(no run)"; runSpent = 0; totalSpent = 0; priceOnly = false; last = null; priced.length = 0; }
 export const lastPriced = (): PricedCall | null => last;
 export const pricedCalls = (): PricedCall[] => [...priced];
 export const spentTotal = (): number => totalSpent;
@@ -73,6 +97,9 @@ export async function guardedCreate(client: Anthropic, params: CreateParams, opt
   if (limits.perRunUsd !== null && runSpent + worstUsd > limits.perRunUsd + 1e-12) {
     throw new SpendRefusedError(`${runLabel}: $${runSpent.toFixed(4)} spent this run + this call's worst case $${worstUsd.toFixed(4)} (${inputTokens} in, ${params.max_tokens} max out, ${params.model}) would cross the per-run limit $${limits.perRunUsd.toFixed(4)}`, worstUsd);
   }
+  if (currentKind === "dig" && digAllowance !== null && digSpent + worstUsd > digAllowance + 1e-12) {
+    throw new DigRefusedError(`${runLabel}: digs have spent $${digSpent.toFixed(4)} of the $${digAllowance.toFixed(4)} left under the cap after the other stages' counted worst case; this dig's worst case is $${worstUsd.toFixed(4)}`, worstUsd);
+  }
   if (limits.totalUsd !== null && totalSpent + worstUsd > limits.totalUsd + 1e-12) {
     throw new SpendRefusedError(`$${totalSpent.toFixed(4)} spent so far + this call's worst case $${worstUsd.toFixed(4)} (${inputTokens} in, ${params.max_tokens} max out, ${params.model}) would cross the running limit $${limits.totalUsd.toFixed(4)}`, worstUsd);
   }
@@ -80,5 +107,6 @@ export async function guardedCreate(client: Anthropic, params: CreateParams, opt
   const actual = usdFor(params.model, response.usage);
   runSpent += actual;
   totalSpent += actual;
+  if (currentKind === "dig") digSpent += actual;
   return response;
 }

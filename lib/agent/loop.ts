@@ -61,6 +61,7 @@ import { detectDollarScaleAt, canonicalScaleWord } from "./scaleNormalize";
 import { createTextLocator } from "./verifyQuote";
 import { annotatePrintedHeadings, recoverSubtotalLabels } from "../events/printedHeadings";
 import { fillCommitmentFromFacility } from "../events/instrument";
+import { asKind, DigRefusedError } from "./spendGuard";
 // A LAYERING INVERSION, STATED RATHER THAN HIDDEN. `amountSupportOf` answers
 // "does this line state this amount", and Rule 58's extension needs that
 // question at extraction time. There is NO runtime cycle — position.ts imports
@@ -1780,7 +1781,9 @@ async function runAgentLoopInner(
       // chars to the model for what's usually a narrow, single-trigger
       // follow-up question unrelated to the debt schedule.
       const digExtraction = buildExtractionText({ form: digFiling.form, url: digFiling.primaryDocUrl, fullText: digFullText });
-      const { data: refined, hit: digHit } = await cachedDigClassification(
+      // Session 27 (Oct 31): a dig spends only what is left under the cap; a refused dig leaves the trigger unresolved.
+      let digged: { data: Awaited<ReturnType<typeof classifyOneTrigger>>; hit: boolean };
+      try { digged = await asKind("dig", () => cachedDigClassification(
         filingsResult.cik,
         fingerprint,
         trigger.id,
@@ -1798,7 +1801,13 @@ async function runAgentLoopInner(
               text: digExtraction.text,
             },
           })
-      );
+      )); } catch (e) {
+        if (!(e instanceof DigRefusedError)) throw e;
+        log(`${label} UNRESOLVED — ${e.message}`);
+        results.push(finalizeVerified(trigger, { ...v, unresolved: `a follow-up read was refused: it would exceed what is left under the per-build cost cap` } as typeof v, label));
+        continue;
+      }
+      const { data: refined, hit: digHit } = digged;
       log(`  answer cache ${digHit ? "HIT" : "MISS"} (dig, ${trigger.id})`);
       log(`${label} resolved — ${describeVerdict(trigger, refined)}.`);
       // Same reasoning as baseVerdicts above — a cached dig answer from
