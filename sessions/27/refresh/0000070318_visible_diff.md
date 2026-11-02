@@ -37,17 +37,12 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
 - **moves**
   - was: Sept 22, 2026 · Issued, confirmed by 8-K
   - was: $2,000MM 6.250% senior notes due 2034
-  - was: Refinanced · redemption set for Sept 23, 2026, awaiting confirmation in a filing
+  - was: Refinanced · redemption set for Sept 23, 2026, awaiting confirmation in a filing, funded by the new notes and cash on hand
   - was: $1,500MM 5.125% senior secured notes due November 2027
-  - was: $500MM 6.125% senior unsecured notes due October 2028 · $1,250MM remains
-  - now: Sept 2026 · Issued, confirmed by 10-Q
+  - now: Sept 22, 2026 · Issued, confirmed by 10-Q
   - now: $2,000MM 6.250% senior unsecured notes due 2034
-  - now: use of the proceeds stated.
-  - now: Sept 2026 · Redeemed
+  - now: Refinanced · redeemed Sept 23, 2026, funded by the new notes and cash on hand
   - now: $1,500MM 5.125% senior secured first lien notes due November 2027
-  - now: With cash on hand.
-  - now: Sept 2026 · Redeemed
-  - now: $500MM 6.125% senior unsecured notes due October 2028
 - **totalDebt**
   - was: $13,333MM
   - was: $9,800MM
@@ -116,7 +111,6 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - was: 5.125% senior secured notes
   - was: Refinanced · redemption set for Sept 23
   - was: 1,750
-  - was: $500MM refinanced · $1,250MM remains
   - was: 1,500
   - was: 671
   - was: $45MM other scheduled principal, per the filer's schedule
@@ -128,14 +122,13 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - was: $38MM other scheduled principal, per the filer's schedule
   - was: $671MM Finance leases, mortgages and other notes, no maturity stated · seniority and security not stated, please refer to sources
   - now: 1,250
-  - now: $500MM retired in 2026 · $1,250MM remains
   - now: 2034
   - now: 6.250% senior unsecured notes
   - now: 2,000
   - now: 679
   - now: $27MM other scheduled principal, per the filer's schedule
   - now: $157MM other scheduled principal, per the filer's schedule
-  - now: $1,250MM 6.125% senior unsecured notes, due October 2028 · $500MM redeemed September 2026
+  - now: $1,250MM 6.125% senior unsecured notes, due October 2028 · $500MM redeemed September 23, 2026
   - now: $81MM other scheduled principal, per the filer's schedule
   - now: $64MM other scheduled principal, per the filer's schedule
   - now: $43MM other scheduled principal, per the filer's schedule
@@ -150,17 +143,19 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - now: Face total $13,341MM. Balance sheet $13,243MM, after $98MM of unamortized issue costs and note discounts. Every figure links to the sentence it came from.
 - **chart (2)**
   - now: 6.250 % due 2034
-- **cited sentences behind source links**: 259 out, 241 in
+- **possibleMoves**
+  - now: Possible move, not confirmed: “On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.”
+- **cited sentences behind source links**: 258 out, 239 in
   - was cited: 10-Q 2026-07-29 | for the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-07-29 | 4.625 % due 2028 600
   - was cited: 10-Q 2026-07-29 | Senior secured first lien notes:     5.125 % due 2027 1,500
   - was cited: 8-K 2026-09-22 | The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash o
   - was cited: 10-Q 2026-07-29 | Senior secured first lien notes
-  - was cited: thc-20260908.htm | On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of condition
   - was cited: 10-Q 2026-07-29 |  Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term de
   - was cited: 10-Q 2026-07-29 | Senior unsecured notes:     6.125 % due 2028 $ 1,750
   - was cited: 10-Q 2026-07-29 | Senior unsecured notes
   - was cited: 8-K 2026-09-22 | On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior not
+  - was cited: thc-20260908.htm | On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of condition
   - was cited: thc-20260908.htm | The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash o
   - was cited: 10-Q 2026-07-29 | 4.250 % due 2029 1,400
   - was cited: 10-Q 2026-07-29 | 4.375 % due 2030 1,450
@@ -187,7 +182,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - now cited: 10-Q 2026-10-29 | Senior unsecured notes
   - now cited: 10-Q 2026-10-29 | We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amoun
   - now cited: 10-Q 2026-10-29 | In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 203
-  - now cited: 10-Q 2026-10-29 | The redemption, using the issuance proceeds and cash on hand, of all $1.500 billion in aggregate principal amount of our 5.125% senior secur
+  - now cited: thc-20260908.htm | The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.
   - now cited: 10-Q 2026-10-29 | 4.250 % due 2029 1,400
   - now cited: 10-Q 2026-10-29 | 4.375 % due 2030 1,450
   - now cited: 10-Q 2026-10-29 | 6.125 % due 2030 2,000

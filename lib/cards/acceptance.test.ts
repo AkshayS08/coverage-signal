@@ -643,7 +643,9 @@ const V4_VOCAB: Test = {
       const meta = text(m.meta);
       if (!MOVE_WORD.test(meta)) bad.push(`move word in "${meta}" is not in the vocabulary`);
       const r = m.retires ? text(m.retires.meta) : "";
-      if (r && !/^Refinanced · (?:redemption set for .+, awaiting confirmation in a filing|redeemed [A-Z][a-z]+ \d{4})$/.test(r)) bad.push(`retire line "${r}" off vocabulary`);
+      // Session 27 (Nov 1): the retire line states its day where a held document does (Rules 76-78), and every funding
+      // source its sentence names, in order (ruling (d)): "Refinanced · redeemed Sept 23, 2026, funded by the new notes and cash on hand".
+      if (r && !/^Refinanced · (?:redemption set for .+, awaiting confirmation in a filing|redeemed [A-Z][a-z]+ (?:\d{1,2}, )?\d{4})(?:, funded by the new notes(?:,? and [a-z ]+)+)?$/.test(r)) bad.push(`retire line "${r}" off vocabulary`);
       if (/\bredeemed\b/.test(r) && m.retires!.meta.some((x) => x.k === "label" && /\bintends?\b|\bwill be\b|\bexpected to be\b|\bnotice of\b/i.test(x.src.sentence))) bad.push(`"${r}" without a confirming sentence`);
     }
     return bad;

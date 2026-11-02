@@ -3594,6 +3594,20 @@
       {
        "k": "text",
        "t": ", awaiting confirmation in a filing"
+      },
+      {
+       "k": "text",
+       "t": ", funded by the new notes and "
+      },
+      {
+       "k": "label",
+       "t": "cash on hand",
+       "stated": "cash on hand",
+       "src": {
+        "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
       }
      ],
      "items": [

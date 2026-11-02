@@ -82,12 +82,12 @@
      [
       {
        "k": "label",
-       "t": "September 2026",
-       "stated": "September 2026",
+       "t": "September 22, 2026",
+       "stated": "September 22, 2026",
        "src": {
-        "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-        "doc": "10-Q 2026-10-29"
+        "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+        "doc": "8-K 2026-09-22"
        }
       },
       {
@@ -128,29 +128,11 @@
       },
       {
        "k": "text",
-       "t": ", "
-      },
-      {
-       "k": "label",
-       "t": "use of the proceeds stated",
-       "stated": "finance",
-       "src": {
-        "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-        "doc": "10-Q 2026-10-29"
-       }
+       "t": ", used to "
       },
       {
        "k": "text",
-       "t": "; "
-      },
-      {
-       "k": "text",
-       "t": "Redeemed"
-      },
-      {
-       "k": "text",
-       "t": " "
+       "t": "redeem "
       },
       {
        "k": "figure",
@@ -164,7 +146,7 @@
       },
       {
        "k": "text",
-       "t": " "
+       "t": " of the "
       },
       {
        "k": "label",
@@ -178,29 +160,11 @@
       },
       {
        "k": "text",
-       "t": ", funded by "
-      },
-      {
-       "k": "label",
-       "t": "cash on hand",
-       "stated": "cash on hand",
-       "src": {
-        "sentence": "The redemption, using the issuance proceeds and cash on hand, of all $1.500 billion in aggregate principal amount of our 5.125% senior secured first lien notes due November 2027 (the \"2027 Senior Secured First Lien Notes\")",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-        "doc": "10-Q 2026-10-29"
-       }
+       "t": " and "
       },
       {
        "k": "text",
-       "t": "; "
-      },
-      {
-       "k": "text",
-       "t": "Redeemed"
-      },
-      {
-       "k": "text",
-       "t": " "
+       "t": "redeem "
       },
       {
        "k": "figure",
@@ -214,7 +178,7 @@
       },
       {
        "k": "text",
-       "t": " "
+       "t": " of the "
       },
       {
        "k": "label",
@@ -1058,7 +1022,7 @@
      },
      {
       "k": "text",
-      "t": " September 2026"
+      "t": " September 23, 2026"
      }
     ],
     [
@@ -1396,7 +1360,7 @@
       },
       {
        "k": "text",
-       "t": " September 2026"
+       "t": " September 23, 2026"
       }
      ],
      [
@@ -3149,12 +3113,12 @@
     "meta": [
      {
       "k": "label",
-      "t": "Sept 2026",
-      "stated": "September 2026",
+      "t": "Sept 22, 2026",
+      "stated": "September 22, 2026",
       "src": {
-       "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-       "doc": "10-Q 2026-10-29"
+       "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the “Notes”).",
+       "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm",
+       "doc": "8-K 2026-09-22"
       }
      },
      {
@@ -3190,142 +3154,117 @@
       }
      ]
     ],
-    "detail": [
-     {
-      "k": "text",
-      "t": ""
-     },
-     {
-      "k": "label",
-      "t": "use of the proceeds stated",
-      "stated": "finance",
-      "src": {
-       "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-       "doc": "10-Q 2026-10-29"
-      }
-     },
-     {
-      "k": "text",
-      "t": "."
-     }
-    ],
-    "retires": null
-   },
-   {
-    "meta": [
-     {
-      "k": "label",
-      "t": "Sept 2026",
-      "stated": "September 2026",
-      "src": {
-       "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-       "doc": "10-Q 2026-10-29"
-      }
-     },
-     {
-      "k": "text",
-      "t": " · Redeemed"
-     }
-    ],
-    "title": [
-     [
-      {
-       "k": "figure",
-       "t": "$1,500MM",
-       "printed": "$ 1.500 billion",
-       "src": {
-        "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-        "doc": "10-Q 2026-10-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " "
-      },
-      {
-       "k": "label",
-       "t": "5.125% senior secured first lien notes due November 2027",
-       "stated": "5.125 %",
-       "src": {
-        "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-        "doc": "10-Q 2026-10-29"
-       }
-      }
-     ]
-    ],
-    "detail": [
-     {
-      "k": "text",
-      "t": "With "
-     },
-     {
-      "k": "label",
-      "t": "cash on hand",
-      "stated": "cash on hand",
-      "src": {
-       "sentence": "The redemption, using the issuance proceeds and cash on hand, of all $1.500 billion in aggregate principal amount of our 5.125% senior secured first lien notes due November 2027 (the \"2027 Senior Secured First Lien Notes\")",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-       "doc": "10-Q 2026-10-29"
-      }
-     },
-     {
-      "k": "text",
-      "t": "."
-     }
-    ],
-    "retires": null
-   },
-   {
-    "meta": [
-     {
-      "k": "label",
-      "t": "Sept 2026",
-      "stated": "September 2026",
-      "src": {
-       "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
-       "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-       "doc": "10-Q 2026-10-29"
-      }
-     },
-     {
-      "k": "text",
-      "t": " · Redeemed"
-     }
-    ],
-    "title": [
-     [
-      {
-       "k": "figure",
-       "t": "$500MM",
-       "printed": "$ 500 million",
-       "src": {
-        "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-        "doc": "10-Q 2026-10-29"
-       }
-      },
-      {
-       "k": "text",
-       "t": " "
-      },
-      {
-       "k": "label",
-       "t": "6.125% senior unsecured notes due October 2028",
-       "stated": "6.125 %",
-       "src": {
-        "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-        "doc": "10-Q 2026-10-29"
-       }
-      }
-     ]
-    ],
     "detail": null,
-    "retires": null
+    "retires": {
+     "meta": [
+      {
+       "k": "text",
+       "t": "Refinanced · "
+      },
+      {
+       "k": "label",
+       "t": "redeemed Sept 23, 2026",
+       "stated": "September 23, 2026",
+       "src": {
+        "sentence": "The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", funded by the new notes and "
+      },
+      {
+       "k": "label",
+       "t": "cash on hand",
+       "stated": "cash on hand",
+       "src": {
+        "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+        "doc": "10-Q 2026-10-29"
+       }
+      }
+     ],
+     "items": [
+      [
+       {
+        "k": "figure",
+        "t": "$1,500MM",
+        "printed": "$ 1.500 billion",
+        "src": {
+         "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+         "doc": "10-Q 2026-10-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "5.125% senior secured first lien notes due November 2027",
+        "stated": "5.125 %",
+        "src": {
+         "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+         "doc": "10-Q 2026-10-29"
+        }
+       }
+      ],
+      [
+       {
+        "k": "figure",
+        "t": "$500MM",
+        "printed": "$ 500 million",
+        "src": {
+         "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+         "doc": "10-Q 2026-10-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " "
+       },
+       {
+        "k": "label",
+        "t": "6.125% senior unsecured notes due October 2028",
+        "stated": "6.125 %",
+        "src": {
+         "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+         "doc": "10-Q 2026-10-29"
+        }
+       },
+       {
+        "k": "text",
+        "t": " · "
+       },
+       {
+        "k": "computed",
+        "t": "$1,250MM",
+        "usd": 1250000000,
+        "parts": [
+         {
+          "printed": "$ 1,250   million",
+          "usd": 1250000000,
+          "src": {
+           "sentence": "Senior unsecured notes:     6.125 % due 2028 $ 1,250",
+           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+           "doc": "10-Q 2026-10-29"
+          }
+         }
+        ]
+       },
+       {
+        "k": "text",
+        "t": " remains"
+       }
+      ]
+     ]
+    }
    }
   ],
   "totalDebt": {
@@ -4336,7 +4275,7 @@
        },
        {
         "k": "text",
-        "t": " retired in 2026 · "
+        "t": " refinanced · "
        },
        {
         "k": "computed",
@@ -4359,7 +4298,7 @@
         "t": " remains"
        }
       ],
-      "tone": "neutral"
+      "tone": "pending"
      },
      "inWindow": false,
      "name": "6.125 % due 2028"
@@ -5401,7 +5340,7 @@
        },
        {
         "k": "text",
-        "t": " September 2026"
+        "t": " September 23, 2026"
        }
       ],
       [
@@ -6732,7 +6671,24 @@
   "stages": {
    "facts": true
   },
-  "possibleMoves": [],
+  "possibleMoves": [
+   [
+    {
+     "k": "text",
+     "t": "Possible move, not confirmed: "
+    },
+    {
+     "k": "label",
+     "t": "“On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.”",
+     "stated": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.",
+     "src": {
+      "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.",
+      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+      "doc": "thc-20260908.htm"
+     }
+    }
+   ]
+  ],
   "movesUnread": null
  }
 }

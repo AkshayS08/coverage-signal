@@ -62,7 +62,8 @@ export function moveIntegrityViolations(card: any, input: any): { M1: string[]; 
     ...(mv.retires ? [{ meta: txt(mv.retires.meta), segs: mv.retires.items.flat() }] : []),
   ]);
   for (const p of retirementParts) {
-    const rendered = p.segs.map((s: any) => s.t ?? "").join(" ");
+    // The retirement's own meta line is part of the move ("Refinanced · redeemed …, with the new notes' proceeds and cash on hand").
+    const rendered = [p.meta, ...p.segs.map((s: any) => s.t ?? "")].join(" ");
     const sentences = [...new Set(p.segs.map((s: any) => s.src?.sentence).filter((x: any) => typeof x === "string" && /\b(?:used|use|finance|fund)\w*\b/i.test(x) && /proceeds|cash on hand|borrowings/i.test(x)))] as string[];
     for (const s of sentences) {
       if (NEW_DEBT_SOURCE.test(s) && !/Refinanced/.test(p.meta)) out.M5.push(`"${s.slice(0, 80)}…" names new debt as a source, but the retirement reads "${p.meta}"`);

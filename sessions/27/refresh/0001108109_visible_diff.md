@@ -42,7 +42,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317
 - **footnote**
   - was: Face total $9,770MM. Balance sheet $9,578MM, after $192MM of unamortized deferred debt issuance costs. Every figure links to the sentence it came from.
   - now: Face total $9,766MM. Balance sheet $9,586MM, after $180MM of unamortized deferred debt issuance costs. Every figure links to the sentence it came from.
-- **cited sentences behind source links**: 166 out, 166 in
+- **cited sentences behind source links**: 167 out, 167 in
   - was cited: 10-Q 2026-07-23 | For the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-07-23 | 6 ⅞% Senior Notes due 2028 $ 42
   - was cited: 10-Q 2026-07-23 | 6 ⅞% Junior-Priority Secured Notes due 2029 1,244
