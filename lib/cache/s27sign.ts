@@ -19,6 +19,10 @@
  * The basis records the clear, the read set, and every tolerated difference.
  *
  * Dry run by default. Run: ANTHROPIC_API_KEY="" npx tsx lib/cache/s27sign.ts <cik>... [--write]
+ *
+ * --refresh (Nov 1): sign a name on its REFRESH read set — the canonical and two re-tastes of
+ * baselines/s27-refresh-batch.json, at that batch's as-of (REFRESH_AS_OF), with the read set pinned there. The
+ * golden records readSetAsOf so the through-loop check re-derives it on that read set, not the published brief's.
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
@@ -43,6 +47,19 @@ const CLEARED: Record<string, string> = {
 // The byte-identity condition on DaVita was withdrawn (Akshay, Oct 29); kept as a mechanism for a future clear that sets one.
 const CARD_CONDITION = new Set<string>();
 const WRITE = process.argv.includes("--write");
+const REFRESH = process.argv.includes("--refresh");
+/** Each refresh's samples and the as-of its 9b was taken at, which is also the read set its samples were cached under. */
+const REFRESH_OF: Record<string, { file: string; asOf: string }> = {
+  "0000070318": { file: "baselines/s27-refresh-batch.json", asOf: "2026-10-31" }, // s27batch9b.ts
+  "0000927066": { file: "baselines/s27-refresh-batch.json", asOf: "2026-10-31" },
+  "0001108109": { file: "baselines/s27-refresh-batch.json", asOf: "2026-10-31" },
+  "0001179929": { file: "baselines/s27-molina-refresh.json", asOf: "2026-10-29" }, // s27molinaDiff.ts
+};
+const REFRESH_CLEARED: Record<string, string> = {
+  "0000927066": "Cleared by Akshay Sahani on Nov 1, 2026, to sign at v33 on its Oct 29 read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31); its card at the published brief still renders from the Oct 15 read set until the next brief.",
+  "0001108109": "Cleared by Akshay Sahani on Nov 1, 2026, once his fixes of Oct 31 and Nov 1 landed (predicated labels, sub-facility placement and scale, one offer as one transaction with the retirement-balance check, the move-sentence list), re-rendered, and signed on its Oct 29 read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31). Its card at the published brief still renders from its v31 input until the next brief.",
+  "0001179929": "Cleared by Akshay Sahani on Nov 1, 2026, once his fixes of Oct 31 and Nov 1 landed (the facts step re-run with the move-sentence list, which now keeps the Feb 4, 2026 credit-agreement amendment), re-rendered, and signed on its Oct 22 read set (its 10-Q filed Oct 22, 2026, the refresh of Oct 29). Its card at the published brief still renders from its v31 input until the next brief.",
+};
 const ciks = process.argv.slice(2).filter((a) => /^\d{10}$/.test(a));
 
 /** The card the generator would write from this result, with the committed snapshot's other inputs. */
@@ -61,21 +78,36 @@ export function cardFrom(cik: string, result: any): string {
 
 (async () => {
   if (process.env.ANTHROPIC_API_KEY !== "") { console.error('REFUSING: run with ANTHROPIC_API_KEY=""'); process.exit(1); }
-  const canon = JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results as { company: string; result: any }[];
-  const re = JSON.parse(readFileSync("baselines/s27-retaste.json", "utf-8")).results as { bust: string; result: any }[];
+  /** A refresh file's samples, either shape: the batch's names[].samples, or Molina's results[]. */
+  const samplesIn = (file: string): { bust: string | null; result: any }[] => { const f = JSON.parse(readFileSync(file, "utf-8")); return f.names ? f.names.flatMap((n: any) => n.samples) : f.results; };
+  const clearedOf = REFRESH ? REFRESH_CLEARED : CLEARED;
+  const clearedOn = REFRESH ? "2026-11-01" : CLEARED_ON;
   for (const cik of ciks) {
+    if (REFRESH && !REFRESH_OF[cik]) { console.log(`
+${cik}: REFUSED — no refresh recorded`); continue; }
+    const REFRESH_AS_OF = REFRESH ? REFRESH_OF[cik].asOf : "";
+    if (REFRESH) process.env.READ_SET_AS_OF = REFRESH_AS_OF;
+    const all = REFRESH ? samplesIn(REFRESH_OF[cik].file).filter((x) => x.result.cik === cik) : [];
+    const canon = REFRESH
+      ? all.filter((x) => x.bust === null).map((x) => ({ company: x.result.company as string, result: x.result }))
+      : JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results as { company: string; result: any }[];
+    const re = REFRESH
+      ? all.filter((x) => x.bust !== null) as { bust: string; result: any }[]
+      : JSON.parse(readFileSync("baselines/s27-retaste.json", "utf-8")).results as { bust: string; result: any }[];
     const path = `baselines/golden/${cik}.json`;
     const g = JSON.parse(readFileSync(path, "utf-8")) as GoldenFile;
     const c = canon.find((x) => x.result.cik === cik)!;
-    const asOf = new Date(`${g.state.asOf}T00:00:00Z`);
+    if (!c) { console.log(`
+${cik}: REFUSED — no ${REFRESH ? "refresh" : "canonical"} sample`); continue; }
+    const asOf = new Date(`${REFRESH ? REFRESH_AS_OF : g.state.asOf}T00:00:00Z`);
     const problems: string[] = [];
-    if (!CLEARED[cik]) problems.push("not cleared by Akshay");
+    if (!clearedOf[cik]) problems.push(`not cleared by Akshay${REFRESH ? " on its refresh read set" : ""}`);
     const samples = re.filter((x) => x.result.cik === cik).map((x) => ({ bust: x.bust, ...compareSample(c.result, x.result, asOf) }));
     const n = 1 + samples.filter((x) => x.tie.counts).length;
-    if (n !== 3) problems.push(`9b ${n}/3 at ${g.state.asOf}`);
+    if (n !== 3) problems.push(`9b ${n}/3 at ${asOf.toISOString().slice(0, 10)}`);
     const state = deriveGoldenState(c.result, asOf);
     for (const u of unsupportedAmountRows(state)) problems.push(`Rule 58 — ${u}`);
-    const crit = evaluateGoldenCriteria(c.result, asOf, { rowsCorrect: true, instrumentTypeFaithful: true, reproducedThreeTimes: n === 3, by: SIGNER, on: CLEARED_ON });
+    const crit = evaluateGoldenCriteria(c.result, asOf, { rowsCorrect: true, instrumentTypeFaithful: true, reproducedThreeTimes: n === 3, by: SIGNER, on: clearedOn });
     for (const k of crit.criteria) if (k.kind === "computed" && !k.pass) problems.push(`criterion ${k.id} does not hold: ${k.detail.slice(0, 140)}`);
     const live = await checkFree(c.company);
     let readSetNote: string;
@@ -84,28 +116,28 @@ export function cardFrom(cik: string, result: any): string {
       const replay = await runAgentLoop(c.company);
       console.log = quiet;
       if (JSON.stringify(deriveGoldenState(replay, asOf)) !== JSON.stringify(state)) problems.push("Rule 75: the $0 replay through the loop does not give the stored canonical's state");
-      readSetNote = `read set ${live.fingerprint} (${process.env.READ_SET_AS_OF ? `as of ${process.env.READ_SET_AS_OF}, the published brief` : "current"}; the $0 replay through the loop gives the same state)`;
+      readSetNote = `read set ${live.fingerprint} (${process.env.READ_SET_AS_OF ? `as of ${process.env.READ_SET_AS_OF}${REFRESH ? ", the refresh batch's read set" : ", the published brief"}` : "current"}; the $0 replay through the loop gives the same state)`;
     } else readSetNote = "the read set the canonical and both re-tastes were taken on (since moved; not a refresh by ruling)";
     if (CARD_CONDITION.has(cik)) {
       const a = cardFrom(cik, c.result), b = readFileSync(`lib/cards/generated/${cik}.json`, "utf-8").replace(/\r\n/g, "\n");
       const bl = b.split("\n");
       if (a !== b) problems.push(`card condition: the card built from the v33 canonical differs from the committed card on ${a.split("\n").filter((l, i) => l !== bl[i]).length} line(s)`);
     }
-    console.log(`\n${c.company} (${cik}) — 9b ${n}/3 at ${g.state.asOf}; ${readSetNote}`);
+    console.log(`\n${c.company} (${cik}) — 9b ${n}/3 at ${asOf.toISOString().slice(0, 10)}; ${readSetNote}`);
     if (problems.length) { console.log(`  REFUSED:\n${problems.map((p) => `    ${p}`).join("\n")}`); continue; }
     const tolerated = [...new Set(samples.flatMap((x) => (x.verdict.kind === "not-applicable" ? [] : x.verdict.tolerated)))];
     const basis =
       `RE-SIGNED at extraction v${EXTRACTION_PROMPT_VERSION} under the read-set key (Session 27), replacing the v${g.extractionVersion} signature of ${g.signature?.signedOn}. ` +
-      `${CLEARED[cik]} Signed over the canonical v33 answer on ${readSetNote}. ` +
-      `9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). ` +
+      `${clearedOf[cik]} Signed over the ${REFRESH ? "refresh batch's" : ""} canonical v33 answer on ${readSetNote}. `.replace("  ", " ") +
+      `9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set${REFRESH ? `, at ${REFRESH_AS_OF}` : ""}; s27compare, with the coverage tie required). ` +
       `Rule 58: every amount stated by its sentence. All computed criteria hold. ` +
       (tolerated.length ? `TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (${tolerated.length}): ${tolerated.map((t, i) => `(${i + 1}) ${t}`).join(" ")}` : "NOTHING WAS TOLERATED BY THE 9b GATE.") +
       ` Previously signed ${g.signature?.signedOn} on the basis: ${g.signature?.basis}`;
     console.log(`  ${WRITE ? "SIGNED" : "would sign"}: ${state.rows.length} rows, residual ${state.coverage.residualPercent}%, ${tolerated.length} tolerated difference(s)`);
     if (WRITE) {
       const out: GoldenFile = {
-        ...g, extractionVersion: EXTRACTION_PROMPT_VERSION, signature: { signedBy: SIGNER, signedOn: CLEARED_ON, basis },
-        attestation: { rowsCorrect: true, instrumentTypeFaithful: true, reproducedThreeTimes: true, by: SIGNER, on: CLEARED_ON },
+        ...g, extractionVersion: EXTRACTION_PROMPT_VERSION, ...(REFRESH ? { readSetAsOf: REFRESH_AS_OF } : {}), signature: { signedBy: SIGNER, signedOn: clearedOn, basis },
+        attestation: { rowsCorrect: true, instrumentTypeFaithful: true, reproducedThreeTimes: true, by: SIGNER, on: clearedOn },
         criteria: crit.criteria.map((k) => ({ id: k.id, name: k.name, kind: k.kind, pass: k.pass, detail: k.detail, defends: k.defends })),
         state, sourceResult: c.result,
       };

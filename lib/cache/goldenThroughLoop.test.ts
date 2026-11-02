@@ -40,6 +40,10 @@ loadEnvQuietly();
 // Session 27 (Oct 30): Ring 1 checks the PUBLISHED brief — each name's read set as it stood on the published cards'
 // brief date, the build those cards were served from — unless a run pins another date.
 process.env.READ_SET_AS_OF ??= (JSON.parse(require("node:fs").readFileSync("lib/cards/generated/index.json", "utf-8")) as { briefDate: string }).briefDate;
+// Nov 1: a golden signed on a refresh read set (readSetAsOf) is re-derived on THAT read set; the published card's
+// snapshot is still checked against the loop at the published brief, since the card renders from it until the next brief.
+const PUBLISHED_AS_OF = process.env.READ_SET_AS_OF;
+const pinFor = (g: { readSetAsOf?: string }) => { process.env.READ_SET_AS_OF = g.readSetAsOf ?? PUBLISHED_AS_OF; };
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { runAgentLoop } from "../agent";
@@ -87,6 +91,7 @@ const snapshotOf = (cik: string): { result: unknown; extractionVersion: number }
   const notComparable: string[] = [];
   for (const g of current) {
     let v;
+    pinFor(g);
     try { v = await checkFree(g.state.company); } catch (e) { notComparable.push(`${g.state.company} — preflight could not read its filing list: ${(e as Error).message.slice(0, 100)}`); continue; }
     if (v.cached) comparable.push(g);
     else notComparable.push(`${g.state.company} — its corpus fingerprint is now ${v.fingerprint.slice(0, 8)} and no answer is cached at ${v.key}. A filing has landed since it was signed; re-deriving would re-extract on a new corpus. Its card renders from the signed golden's stored result. Not compared, not re-signed.`);
@@ -96,10 +101,11 @@ const snapshotOf = (cik: string): { result: unknown; extractionVersion: number }
     `[2a] every signed name is either cached (${comparable.length}) or reported not comparable with its reason (${notComparable.length}); nothing is re-extracted, and at least one name is actually checked`);
 
   console.log("\n=== [3] EACH CACHED SIGNED NAME, RE-DERIVED THROUGH THE CURRENT LOOP ===");
-  await assertFree(comparable.map((g) => ({ company: g.state.company }))); // Rule 75, again, for exactly what runs
+  for (const g of comparable) { pinFor(g); await assertFree([{ company: g.state.company }]); } // Rule 75, again, for exactly what runs
   const spend = spendTracker();
   for (const g of comparable) {
     const name = g.state.company;
+    pinFor(g);
     delete process.env.CACHE_BUST;
     const result = await runAgentLoop(name);
     spend.record(name);
@@ -118,8 +124,21 @@ const snapshotOf = (cik: string): { result: unknown; extractionVersion: number }
     // committed snapshots; a snapshot that drifted from what the loop
     // reproduces today would be a card resting on an answer nothing re-derives.
     const snap = snapshotOf(g.state.cik);
-    assert(!!snap && JSON.stringify(JSON.parse(JSON.stringify(result))) === JSON.stringify(snap.result) && snap.extractionVersion === EXTRACTION_PROMPT_VERSION,
-      `[3snap:${name}] its card input snapshot is byte-identical to the answer reproduced here, at v${EXTRACTION_PROMPT_VERSION}`);
+    let published: unknown = result;
+    if (g.readSetAsOf && g.readSetAsOf !== PUBLISHED_AS_OF && snap && snap.extractionVersion !== EXTRACTION_PROMPT_VERSION) {
+      // The published card still renders from an input of an earlier version (Rule 30: not compared across a schema).
+      console.log(`  — PUBLISHED INPUT NOT COMPARED: ${name}'s published card input is v${snap.extractionVersion}; the golden is v${EXTRACTION_PROMPT_VERSION} on its refresh read set (${g.readSetAsOf}). The card moves to it at the next brief.`);
+      continue;
+    }
+    if (g.readSetAsOf && g.readSetAsOf !== PUBLISHED_AS_OF) {
+      process.env.READ_SET_AS_OF = PUBLISHED_AS_OF;
+      await assertFree([{ company: name }]);
+      delete process.env.CACHE_BUST;
+      published = await runAgentLoop(name);
+      spend.record(name);
+    }
+    assert(!!snap && JSON.stringify(JSON.parse(JSON.stringify(published))) === JSON.stringify(snap.result) && snap.extractionVersion === EXTRACTION_PROMPT_VERSION,
+      `[3snap:${name}] its card input snapshot is byte-identical to the answer reproduced ${published === result ? "here" : `at the published brief's read set (${PUBLISHED_AS_OF}; the golden is pinned at ${g.readSetAsOf})`}, at v${EXTRACTION_PROMPT_VERSION}`);
   }
   for (const g of current.filter((x) => !comparable.includes(x))) {
     const snap = snapshotOf(g.state.cik);

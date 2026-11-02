@@ -18,7 +18,8 @@
  *   F3  a revolver prose instrument injected where the table has a revolver
  *       row is not a second row; control: with the table's revolver row
  *       removed, it supplies the row
- *   F4  DaVita's four samples: 9 rows and the signed captured face
+ *   F4  DaVita's four Oct 15 samples: the face signed on that read set; its three
+ *       refresh samples: the golden now signed on its Oct 29 read set
  *
  * Offline, $0. Run: npx tsx lib/events/fundedDebt.test.ts
  */
@@ -78,11 +79,21 @@ for (const cik of CIKS) {
   assert(assemblePosition(rNoTable, AS_OF).rows.some((r: any) => /\$ 91 million/.test(r.amount)), `[F3 control:${base.company}] with the table's revolver row removed, the description supplies the row`);
 }
 
-console.log("\n=== F4: DaVita's four samples against the signed position ===");
-const signed = read("baselines/golden/0000927066.json").state;
+console.log("\n=== F4: DaVita's samples against the position each read set was signed at ===");
+// Nov 1: DaVita is now signed on its Oct 29 read set (readSetAsOf). Its four Oct 15 samples keep the position they were
+// signed at on the Oct 15 read set (Oct 29 signature: 9 rows, captured face $10,847,516,000); its three refresh samples
+// are checked against the golden now signed.
+const OCT15 = { rows: 9, capturedFace: 10847516000 };
 for (const s of samples("0000927066")) {
   const st: any = deriveGoldenState(s.result, AS_OF);
-  assert(st.rows.length === signed.rows.length && st.coverage.capturedFace === signed.coverage.capturedFace, `[F4:${s.label}] ${st.rows.length} rows (signed ${signed.rows.length}), captured face ${st.coverage.capturedFace} (signed ${signed.coverage.capturedFace})`);
+  assert(st.rows.length === OCT15.rows && st.coverage.capturedFace === OCT15.capturedFace, `[F4:${s.label}] ${st.rows.length} rows (signed ${OCT15.rows} on Oct 15), captured face ${st.coverage.capturedFace} (signed ${OCT15.capturedFace})`);
+}
+const golden = read("baselines/golden/0000927066.json");
+const signed = golden.state;
+const refresh = read("baselines/s27-refresh-batch.json").names.find((n: any) => n.cik === "0000927066").samples;
+for (const s of refresh) {
+  const st: any = deriveGoldenState(s.result, new Date(`${signed.asOf}T00:00:00Z`));
+  assert(golden.readSetAsOf === signed.asOf && st.rows.length === signed.rows.length && st.coverage.capturedFace === signed.coverage.capturedFace, `[F4:refresh ${s.bust ?? "canonical"}] ${st.rows.length} rows (signed ${signed.rows.length}), captured face ${st.coverage.capturedFace} (signed ${signed.coverage.capturedFace}, read set ${golden.readSetAsOf})`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed.`);

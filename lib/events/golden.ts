@@ -178,6 +178,11 @@ export interface GoldenFile {
    * un-comparable against a newer version rather than assumed to match it.
    */
   extractionVersion?: number;
+  /**
+   * SESSION 27 (Nov 1): the date its read set is pinned to, where it was signed on a refresh (DaVita, on its Oct 29
+   * 10-Q). Absent: the published brief's read set. The golden is re-derived through the loop at THIS read set.
+   */
+  readSetAsOf?: string;
   /** Who signed, when, and on what evidence. A golden file with no signature is not one. */
   signature: { signedBy: string; signedOn: string; basis: string };
   /**
