@@ -143,19 +143,17 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - now: Face total $13,341MM. Balance sheet $13,243MM, after $98MM of unamortized issue costs and note discounts. Every figure links to the sentence it came from.
 - **chart (2)**
   - now: 6.250 % due 2034
-- **possibleMoves**
-  - now: Possible move, not confirmed: “On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.”
-- **cited sentences behind source links**: 258 out, 239 in
+- **cited sentences behind source links**: 259 out, 239 in
   - was cited: 10-Q 2026-07-29 | for the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-07-29 | 4.625 % due 2028 600
   - was cited: 10-Q 2026-07-29 | Senior secured first lien notes:     5.125 % due 2027 1,500
   - was cited: 8-K 2026-09-22 | The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash o
   - was cited: 10-Q 2026-07-29 | Senior secured first lien notes
+  - was cited: thc-20260908.htm | On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of condition
   - was cited: 10-Q 2026-07-29 |  Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term de
   - was cited: 10-Q 2026-07-29 | Senior unsecured notes:     6.125 % due 2028 $ 1,750
   - was cited: 10-Q 2026-07-29 | Senior unsecured notes
   - was cited: 8-K 2026-09-22 | On September 22, 2026, Tenet Healthcare Corporation (the “Company”) issued $2,000,000,000 in aggregate principal amount of 6.250% senior not
-  - was cited: thc-20260908.htm | On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of condition
   - was cited: thc-20260908.htm | The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash o
   - was cited: 10-Q 2026-07-29 | 4.250 % due 2029 1,400
   - was cited: 10-Q 2026-07-29 | 4.375 % due 2030 1,450

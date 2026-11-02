@@ -93,6 +93,23 @@ assert(violations(bad, docsOf(mol), "2026-01-01", "2026-10-30").length > 0, `[P4
 const confirmed = buildWith(rerun);
 assert(confirmed.v3.moves.some((m: any) => /Feb 4, 2026/.test(m.meta.map((x: any) => x.t ?? "").join(""))) && (confirmed.v3.possibleMoves ?? []).length === 0, `[P7] with the re-run facts, the Feb 4 amendment is a confirmed move card and nothing is left as possible`);
 
+console.log("\n=== P8: a redemption notice is covered by the redemption it announced ===");
+// Nov 1: with the debt-item 8-Ks back in the read set (M1), Tenet's Sept 8 "notice of conditional full redemption to the
+// holders of its 2027 Notes …" surfaced as a possible move beside the confirmed Sept 23 redemption of those notes. A
+// notice and the redemption it announces are one transaction: covered by a confirmed retirement of the same notes (by
+// maturity year) dated on or after the notice, within 60 days.
+const tenRefresh = JSON.parse(readFileSync("sessions/27/refresh/0000070318_review_card.json", "utf-8"));
+const tenIn = JSON.parse(readFileSync("sessions/27/refresh/0000070318_input.json", "utf-8"));
+const notice = locateMoveSentences(docsOf(tenIn), "2026-01-01", "2026-10-31").filter((m) => /notice of conditional full redemption/.test(m.sentence));
+assert(notice.length > 0 && uncoveredMoves(notice, tenRefresh.v3.moves).length === 0 && !(tenRefresh.v3.possibleMoves ?? []).map(txt).join(" ").includes("notice of conditional"), `[P8] Tenet's Sept 8 redemption notice is covered by the confirmed Sept 23 redemption (${notice.length} located; card lists ${(tenRefresh.v3.possibleMoves ?? []).length} possible)`);
+const noRedemption = tenRefresh.v3.moves.map((m: any) => ({ ...m, retires: null }));
+assert(uncoveredMoves(notice, noRedemption).length > 0, `[P8 control] with the confirmed redemption removed, the notice is a possible move`);
+for (const cik of CIKS) {
+  const c = JSON.parse(readFileSync(join("lib", "cards", "generated", `${cik}.json`), "utf-8"));
+  const own = (c.v3.possibleMoves ?? []).map(txt).filter((p: string) => /notices? of (?:conditional )?(?:full |partial )?redemption/i.test(p));
+  assert(own.length === 0 || own.every((p: string) => !c.v3.moves.some((m: any) => JSON.stringify(m).includes((/\b(20\d\d) (?:Senior )?Notes/.exec(p) ?? [])[1] ?? "@@"))), `[P8:${c.company}] no redemption notice is listed as possible beside the redemption it announced`);
+}
+
 console.log("\n=== P5: the cause, fixed ===");
 const dump = join(process.env.TEMP ?? ".", "p5dump");
 require("node:fs").mkdirSync(dump, { recursive: true });

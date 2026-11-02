@@ -94,9 +94,28 @@ export function uncoveredMoves(located: LocatedMove[], moveCards: unknown): Loca
   // sentence (the anchor's, which the caller lists first) stands for each date and kind.
   const firstOf = new Map<string, LocatedMove>();
   for (const m of located) if (!firstOf.has(`${m.date}|${m.kind}`)) firstOf.set(`${m.date}|${m.kind}`, m);
+  // Session 27 (Nov 1): a redemption notice and the redemption it announces are one transaction. The notice is covered
+  // by a confirmed retirement of the same notes (each maturity year the notice names, on the card's retirement lines)
+  // dated on or after the notice and within 60 days (the indenture notice window).
+  const retireLines: { text: string; dates: string[] }[] = (Array.isArray(moveCards) ? moveCards : []).flatMap((mv: any) => {
+    const txt = (l: any[] | null | undefined) => (l ?? []).map((s: any) => s.t ?? "").join("");
+    const lineDates = (l: any[] | null | undefined) => (l ?? []).flatMap((s: any) => [s.k === "date" ? s.date : null, s.k === "label" ? s.stated : null]).filter((x: any) => typeof x === "string").flatMap((x: string) => (/^\d{4}-\d{2}-\d{2}$/.test(x) ? [x] : datesIn(x).filter((d) => d.from === d.to).map((d) => d.from)));
+    return [
+      ...(/\b(?:Redeemed|Repurchased|Retired|Repaid|Refinanced)\b/.test(txt(mv.meta)) ? [{ text: mv.title.map(txt).join(" "), dates: lineDates(mv.meta) }] : []),
+      ...(mv.retires ? [{ text: mv.retires.items.map(txt).join(" "), dates: lineDates(mv.retires.meta) }] : []),
+    ];
+  });
+  const plusDays = (iso: string, n: number) => new Date(Date.parse(`${iso}T00:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
+  const noticeCovered = (m: LocatedMove): boolean => {
+    if (!/\bnotices?\s+of\s+(?:conditional\s+)?(?:full\s+|partial\s+)?redemption\b/i.test(m.sentence) || m.date.length !== 10) return false;
+    const years = [...new Set([...m.sentence.matchAll(/\b(20\d\d)\s+(?:Senior\s+)?(?:Secured\s+)?(?:First\s+Lien\s+)?Notes\b/gi)].map((x) => x[1]))];
+    if (!years.length) return false;
+    return years.every((y) => retireLines.some((r) => new RegExp(`\\b${y}\\b`).test(r.text) && r.dates.some((d) => d >= m.date && d <= plusDays(m.date, 60))));
+  };
   return [...firstOf.values()].filter((m) => {
     const head = squash(m.sentence).slice(0, 60);
     if (sentences.some((s) => s.includes(head))) return false;
+    if (noticeCovered(m)) return false;
     const [from, to] = m.date.length === 7 ? [`${m.date}-01`, `${m.date}-31`] : [m.date, m.date];
     return !dates.some((d) => d.from <= to && d.to >= from && (d.from === d.to || from === to || d.from === from));
   });

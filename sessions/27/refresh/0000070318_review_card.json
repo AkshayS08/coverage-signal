@@ -6671,24 +6671,7 @@
   "stages": {
    "facts": true
   },
-  "possibleMoves": [
-   [
-    {
-     "k": "text",
-     "t": "Possible move, not confirmed: "
-    },
-    {
-     "k": "label",
-     "t": "“On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.”",
-     "stated": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.",
-     "src": {
-      "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.",
-      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
-      "doc": "thc-20260908.htm"
-     }
-    }
-   ]
-  ],
+  "possibleMoves": [],
   "movesUnread": null
  }
 }
