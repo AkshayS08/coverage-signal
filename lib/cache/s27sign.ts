@@ -57,8 +57,7 @@ const REFRESH_OF: Record<string, { file: string; asOf: string }> = {
 };
 const REFRESH_CLEARED: Record<string, string> = {
   "0000927066": "Cleared by Akshay Sahani on Nov 1, 2026, to sign at v33 on its Oct 29 read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31); its card at the published brief still renders from the Oct 15 read set until the next brief.",
-  "0001108109": "Cleared by Akshay Sahani on Nov 1, 2026, once his fixes of Oct 31 and Nov 1 landed (predicated labels, sub-facility placement and scale, one offer as one transaction with the retirement-balance check, the move-sentence list), re-rendered, and signed on its Oct 29 read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31). Its card at the published brief still renders from its v31 input until the next brief.",
-  "0001179929": "Cleared by Akshay Sahani on Nov 1, 2026, once his fixes of Oct 31 and Nov 1 landed (the facts step re-run with the move-sentence list, which now keeps the Feb 4, 2026 credit-agreement amendment), re-rendered, and signed on its Oct 22 read set (its 10-Q filed Oct 22, 2026, the refresh of Oct 29). Its card at the published brief still renders from its v31 input until the next brief.",
+  "0000070318": "Cleared by Akshay Sahani on Nov 3, 2026, after he viewed its rendered refresh card (screenshots_v9), to sign at v33 on its Oct 29 read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31). Its card at the published brief still renders from the Oct 15 read set until the next brief. (CHS and Molina: their Nov 1 signatures were reverted on Nov 3; nothing signs until he has seen the rendered card.)",
 };
 const ciks = process.argv.slice(2).filter((a) => /^\d{10}$/.test(a));
 
@@ -81,11 +80,12 @@ export function cardFrom(cik: string, result: any): string {
   /** A refresh file's samples, either shape: the batch's names[].samples, or Molina's results[]. */
   const samplesIn = (file: string): { bust: string | null; result: any }[] => { const f = JSON.parse(readFileSync(file, "utf-8")); return f.names ? f.names.flatMap((n: any) => n.samples) : f.results; };
   const clearedOf = REFRESH ? REFRESH_CLEARED : CLEARED;
-  const clearedOn = REFRESH ? "2026-11-01" : CLEARED_ON;
+  const REFRESH_CLEARED_ON: Record<string, string> = { "0000927066": "2026-11-01", "0000070318": "2026-11-03" };
   for (const cik of ciks) {
     if (REFRESH && !REFRESH_OF[cik]) { console.log(`
 ${cik}: REFUSED — no refresh recorded`); continue; }
     const REFRESH_AS_OF = REFRESH ? REFRESH_OF[cik].asOf : "";
+    const clearedOn = REFRESH ? REFRESH_CLEARED_ON[cik] ?? "" : CLEARED_ON;
     if (REFRESH) process.env.READ_SET_AS_OF = REFRESH_AS_OF;
     const all = REFRESH ? samplesIn(REFRESH_OF[cik].file).filter((x) => x.result.cik === cik) : [];
     const canon = REFRESH
