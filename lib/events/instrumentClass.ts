@@ -230,7 +230,7 @@ const TYPE_PATTERNS: [RegExp, InstrumentType][] = [
  * one contiguous span of the filer's own text. Never composed: if the noun is
  * not there, the span is not extended.
  */
-const GROUPING_NOUN = /^\s+(notes?|bonds?|debentures?|facility|facilities|loans?|paper|leases?|obligations?|borrowings?)/i;
+const GROUPING_NOUN = /^\s+(notes?|bonds?|debentures?|facility|facilities|loans?|paper|leases?|obligations?|borrowings?)\b/i;
 
 function extendToGroupingLabel(name: string, matched: string): string {
   const at = name.toLowerCase().indexOf(matched.toLowerCase());
