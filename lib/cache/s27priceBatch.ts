@@ -30,7 +30,10 @@ import { checkFree } from "./freeRun";
 import { buildExtractionText } from "../fetch/noteLocation";
 import { TRIGGERS } from "../agent/triggers";
 
-const NAMES = ["TENET HEALTHCARE CORP", "DAVITA INC.", "COMMUNITY HEALTH SYSTEMS INC"];
+// Names and output from the command line (Nov 3: Encompass on its Q3 10-Q); the Oct 31 batch by default.
+const NAMES_ARG = process.argv.find((x) => x.startsWith("--names="));
+const NAMES = NAMES_ARG ? NAMES_ARG.slice(8).split("|") : ["TENET HEALTHCARE CORP", "DAVITA INC.", "COMMUNITY HEALTH SYSTEMS INC"];
+const OUT = (process.argv.find((x) => x.startsWith("--out=")) ?? "--out=sessions/27/refresh_batch_pricing.json").slice(6);
 const BUSTS: (string | null)[] = [null, "s27-refresh-retaste-1", "s27-refresh-retaste-2"];
 const LEDGER = readFileSync("baselines/cost-log.jsonl", "utf-8").trim().split("\n").map((l) => JSON.parse(l));
 const quiet = async <T>(fn: () => Promise<T>) => { const l = console.log, w = console.warn; console.log = () => {}; console.warn = () => {}; try { return await fn(); } finally { console.log = l; console.warn = w; } };
@@ -83,5 +86,5 @@ const ceilCent = (x: number) => Math.ceil(x * 100 - 1e-9) / 100;
   }
   const batch = rows.reduce((a, r) => a + r.declared, 0);
   console.log(`\nBatch (Tenet, DaVita, CHS) declared: $${batch.toFixed(2)}. Molina, already run: extraction $0.6165 + facts $0.0574 = $0.6739, nothing further.`);
-  writeFileSync("sessions/27/refresh_batch_pricing.json", JSON.stringify({ pricedAt: new Date().toISOString(), rows, batchDeclaredUsd: Number(batch.toFixed(2)), molinaSpentUsd: 0.6739 }, null, 1) + "\n");
+  writeFileSync(OUT, JSON.stringify({ pricedAt: new Date().toISOString(), rows, batchDeclaredUsd: Number(batch.toFixed(2)), molinaSpentUsd: 0.6739 }, null, 1) + "\n");
 })().catch((e) => { console.error(e); process.exit(1); });
