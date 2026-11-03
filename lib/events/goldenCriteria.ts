@@ -62,6 +62,31 @@ export interface Attestation {
   on?: string;
 }
 
+/**
+ * SESSION 27 (Akshay, Nov 3) — CRITERION 7 CHECKS WHAT IT IS FOR, NOT A COUNT. Every capacity figure is classified
+ * as capacity (each position capacity row is in coverage's capacity report), and no capacity amount is inside
+ * captured face (no counted entry is a capacity item: same label and amount). Comparing counts failed Tenet's
+ * refresh, whose L/C facility commitment is held out as capacity with no position row (capacityCriterion.test).
+ */
+export function capacitySeparation(pos: ReturnType<typeof assemblePosition>, cov: ReturnType<typeof computeCoverage>): { pass: boolean; detail: string } {
+  const capRows = pos.rows.filter((r) => r.isCapacity);
+  const key = (label: string) => label.replace(/\s+/g, " ").trim().toLowerCase();
+  const reported = new Set(cov.capacity.map((e) => key(e.label)));
+  const unclassified = capRows.filter((r) => !reported.has(key(r.instrument)));
+  const inFace = cov.capacity.filter((cap) => cov.entries.some((e) => key(e.label) === key(cap.label) && e.amount !== null && cap.amount !== null && Math.abs(e.amount - cap.amount) < 0.5e6));
+  const problems = [
+    ...unclassified.map((r) => `"${r.instrument}" is a capacity row coverage does not report as capacity`),
+    ...inFace.map((e) => `"${e.label}" ($${((e.amount ?? 0) / 1e6).toLocaleString("en-US")}MM) is capacity counted inside captured face`),
+  ];
+  if (problems.length) return { pass: false, detail: problems.join("; ") };
+  return {
+    pass: true,
+    detail: cov.capacity.length === 0 && capRows.length === 0
+      ? "this filer states no undrawn capacity"
+      : `${cov.capacity.length} capacity item(s) held out of captured face and reported separately: ${cov.capacity.map((e) => e.label).join("; ")}`,
+  };
+}
+
 export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: Attestation = {}): CriteriaResult {
   const dm = result.results.find((t: TriggerResult) => t.triggerId === "debt-maturity");
   const pos = assemblePosition(result, asOf);
@@ -221,14 +246,11 @@ export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: A
   });
 
   // ---- (7) capacity separated ---------------------------------------------
-  const capRows = pos.rows.filter((r) => r.isCapacity);
-  const capInSum = capRows.length !== cov.capacity.length;
+  const k7 = capacitySeparation(pos, cov);
   c.push({
     id: "7", kind: "computed", name: "capacity separated and excluded from the debt sum",
-    pass: !capInSum,
-    detail: capRows.length === 0
-      ? "this filer states no undrawn capacity"
-      : `${capRows.length} capacity row(s) held out of captured face and reported separately: ${cov.capacity.map((e) => e.label).join("; ")}`,
+    pass: k7.pass,
+    detail: k7.detail,
     defends: "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage",
   });
 
