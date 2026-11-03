@@ -56,5 +56,29 @@ const pc = buildCard({ result, briefDate: "2026-10-31", previousBrief: "2026-10-
 const pair = pc.v3!.moves.find((m: any) => m.retires);
 assert(!!pair && pair.retires!.items.length === 2 && /2034/.test(txt(pair.title[0])), `[P control] with no "proceeds" anywhere, the funding sentence naming the "2034 Senior Notes" still pairs the issuance with both redemptions (${pc.v3!.moves.map((m: any) => txt(m.meta)).join(" | ")})`);
 
+console.log("\n=== P2: a reference inside a one-issuance document pairs by identity (Nov 3) ===");
+// "this offering", "the offering" and "the Notes" in a document that reports exactly one issuance refer to that
+// issuance: paired, no flag. The proceeds-wording flag applies only where the document reports more than one.
+const enc = cards.find((x) => x.label === "committed" && x.card.cik === "0000785161")!;
+const flags = (c: any) => (c.v3.notShown ?? []).map(txt).filter((l: string) => /^Paired by/.test(l));
+const may = enc.card.v3.moves.find((m: any) => /May 29, 2026 · Issued/.test(txt(m.meta)));
+assert(flags(enc.card).length === 0 && !!may?.retires && may.retires.items.length === 2, `[P2] Encompass: both retirements pair with the May 29 issue, no "Paired by" line (${flags(enc.card).length} flag line(s); ${may?.retires?.items.map(txt).join(" / ") ?? "no pair"})`);
+const encResult = read(join("baselines", "golden", "0000785161.json")).sourceResult;
+const encFacts = read(join("lib", "cards", "inputs", "facts", "0000785161.json"));
+const encWeek = read(join("lib", "cards", "inputs", "week", `${enc.card.briefDate}.json`)).names["0000785161"];
+const encBuild = (docs: Record<string, { text: string }>) => buildCard({ result: enc.input.result ?? encResult, briefDate: enc.card.briefDate, previousBrief: encWeek?.previousBrief ?? null, weekFilings: encWeek?.filings ?? [], cash: enc.input.cash, textByUrl: new Map(Object.entries(docs).map(([u, d]) => [u, d.text])), periodSentence: enc.input.periodSentence, laterUrls: (enc.input.laterFilings ?? []).filter((x: any) => x.filingDate <= enc.card.briefDate).map((x: any) => x.url), facts: encFacts });
+// The 10-Q's "this offering" as the only link: without the 8-Ks that name the May notes by their defined term.
+const only10Q = clone(enc.input.docs) as Record<string, { label: string; text: string }>;
+for (const u of Object.keys(only10Q)) if (/^8-K 2026-0[56]/.test(only10Q[u].label)) delete only10Q[u];
+const one = encBuild(only10Q);
+const oneMay = one.v3!.moves.find((m: any) => /May 29, 2026 · Issued/.test(txt(m.meta)));
+assert(flags(one).length === 0 && oneMay?.retires?.items.length === 2, `[P2] with only the 10-Q's "this offering" (one issuance reported), both retirements pair by identity, no flag (${flags(one).length} flag line(s))`);
+// Control: the same 10-Q reporting a second issuance in the year — "this offering" no longer identifies one.
+const two = clone(only10Q);
+const q2 = Object.keys(two).find((u) => /^10-Q 2026-08-07/.test(two[u].label))!;
+two[q2].text = two[q2].text.replace(/We used the net proceeds from this offering/, "In June 2026, we issued $300 million of 6.000% Senior Notes due 2036 (the “2036 Notes”) at par. We used the net proceeds from this offering");
+const twoCard = encBuild(two);
+assert(flags(twoCard).length > 0, `[P2 control] with a second issuance reported in the same 10-Q, "this offering" pairs only by the fallback and flags (${flags(twoCard).length} flag line(s))`);
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

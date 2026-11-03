@@ -739,7 +739,24 @@ export function buildCard(i: CardInputs): Card {
     // "<year> … Notes" term for it ("2034 Senior Notes"), or, in the issuance's own document, the defined term that
     // document gives it ("(the “Notes”)") — wherever the sentence also states this retirement. No proceeds wording needed.
     const rYear = (/\bdue\s+(?:[A-Z][a-z]+\s+)?(?:\d{1,2},\s*)?(20\d\d)/.exec(r.instrument) ?? [])[1] ?? year;
-    const statesR = (s: string) => /\bredeem\w*|redemption|repurchas\w*|repa(?:y|id)|retire\w*/i.test(s) && ((own !== undefined && couponsIn(s).some((c) => Math.abs(c.rate - own) < 1e-9) && (!rYear || s.includes(rYear))) || (!!rYear && new RegExp(`\\b${rYear}\\s+(?:[A-Z][a-z]+\\s+){0,4}Notes\\b`).test(s)));
+    // A facility repaid ("repay $100 million … under our revolving credit facility") is named by its kind.
+    const FACILITY = /revolv|credit facility|term loan/i;
+    const statesR = (s: string) => /\bredeem\w*|redemption|repurchas\w*|repa(?:y|id)|retire\w*/i.test(s) && ((own !== undefined && couponsIn(s).some((c) => Math.abs(c.rate - own) < 1e-9) && (!rYear || s.includes(rYear))) || (!!rYear && own !== undefined && new RegExp(`\\b${rYear}\\s+(?:[A-Z][a-z]+\\s+){0,4}Notes\\b`).test(s)) || (own === undefined && FACILITY.test(r.instrument) && FACILITY.test(s) && /\brepa(?:y|id)\b/i.test(s)));
+    /** The issuances a document reports done in the year (its coupon, maturity year and face), once each. */
+    const issuesReportedIn = (url: string) => {
+      const seen = new Map<string, Source>();
+      for (const x of sentencesOf(url)) {
+        if (!COMPLETED.test(x.sentence) || NOT_DONE.test(x.sentence) || /\bmay\s+[a-z]/.test(x.sentence)) continue;
+        const inYear = [...x.sentence.matchAll(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+(?:\d{1,2},\s*)?(20\d\d)\b/g)].some((d) => d[1] === fyStart.slice(0, 4));
+        // The issue's own terms: the maturity "due [year]", the coupon nearest before it, the amount nearest before that
+        // (a flattened run can open on another rate and balance: "$ 130.0 million … 5.9 %. … $500 million of 5.875% … due 2034").
+        const due = /\bdue\s+(?:[A-Z][a-z]+\s+)?(?:\d{1,2},\s*)?(20\d\d)/.exec(x.sentence);
+        const cp = due ? couponsIn(x.sentence).filter((z) => z.at < due.index).pop() : undefined;
+        const amt = cp ? [...x.sentence.slice(0, cp.at).matchAll(/\$\s?[\d,]+(?:\.\d+)?\s*(?:billion|million|thousand)?/gi)].pop()?.[0] : undefined;
+        if (inYear && cp && due) seen.set(`${cp.rate}|${due[1]}|${amt ? usdIn(amt)[0] ?? "" : ""}`, x);
+      }
+      return [...seen.keys()];
+    };
     const FUNDS = /\b(?:used|use|finance[ds]?|financing|fund(?:ed|s)?)\b/i;
     const namesIssuance = (s: Source, iss: Move): boolean => {
       const c = couponsIn(iss.instrument)[0]?.rate;
@@ -748,16 +765,36 @@ export function buildCard(i: CardInputs): Card {
       if (c !== undefined && couponsIn(s.sentence).some((x) => Math.abs(x.rate - c) < 1e-9) && s.sentence.includes(y)) return true;
       if (new RegExp(`\\b${y}\\s+(?:[A-Z][a-z]+\\s+){0,4}Notes\\b`).test(s.sentence)) return true;
       // The defined term the issuance's own document gives it, used in that document.
-      const defining = sentencesOf(s.url).find((x) => c !== undefined && couponsIn(x.sentence).some((z) => Math.abs(z.rate - c) < 1e-9) && x.sentence.includes(y) && COMPLETED.test(x.sentence));
+      // The defining sentence states THIS issue: its coupon, maturity year and face (an add-on of the same notes is another).
+      const defining = sentencesOf(s.url).find((x) => c !== undefined && couponsIn(x.sentence).some((z) => Math.abs(z.rate - c) < 1e-9) && x.sentence.includes(y) && COMPLETED.test(x.sentence) && (!iss.faceUsd || usdIn(x.sentence).some((u) => Math.abs(u - iss.faceUsd!) < 0.5e6)));
       // The term the document gives THIS note: the first "(the “X”)" after its coupon, never "(the “Company”)" before it.
       const at = defining ? couponsIn(defining.sentence).find((z) => Math.abs(z.rate - c!) < 1e-9)!.at : 0;
       const term = defining ? (/\(the\s+[“"]([A-Z][\w ]{1,30}?)[”"]\)/.exec(defining.sentence.slice(at)) ?? [])[1] : undefined;
       return !!term && !/\b20\d\d\b/.test(term) && new RegExp(`\\bthe\\s+${term}\\b(?![”"])`).test(s.sentence.replace(defining!.sentence, ""));
     };
     const fundingSentences = heldSentences.filter((x) => FUNDS.test(x.sentence) && statesR(x.sentence) && !/\bmay\s+[a-z]/.test(x.sentence));
-    const named = issuances.map((iss) => ({ iss, s: fundingSentences.find((x) => namesIssuance(x, iss)) })).filter((x) => x.s);
-    if (named.length === 1 && !r.fundedBy) {
-      r.fundedBy = named[0].iss; named[0].iss.retires.push(r); r.spendSrc = named[0].s!;
+    // An issuance cannot fund a retirement completed before it was issued (by month: a month-only date is not a day).
+    const eligible = issuances.filter((iss) => r.status === "pending" || iss.sort.slice(0, 7) <= r.sort.slice(0, 7));
+    // Every sentence pairing this retirement with an issuance: by its name or defined term, or (Nov 3) by "this
+    // offering", "the offering" or "the Notes" inside a document that reports exactly one issuance. A document reporting
+    // more than one leaves it to the flagged fallback.
+    const pairs: { iss: Move; s: Source }[] = [];
+    for (const x of fundingSentences) {
+      for (const iss of eligible) if (namesIssuance(x, iss)) pairs.push({ iss, s: x });
+      if (/\b(?:this|the)\s+offering\b|\bthe\s+Notes\b/.test(x.sentence)) {
+        const reported = issuesReportedIn(x.url);
+        if (reported.length !== 1) continue;
+        const [c, y, face] = reported[0].split("|");
+        const iss = eligible.filter((m) => couponsIn(m.instrument).some((z) => Math.abs(z.rate - Number(c)) < 1e-9) && m.instrument.includes(y) && (!face || !m.faceUsd || Math.abs(m.faceUsd - Number(face)) < 0.5e6));
+        if (iss.length === 1) pairs.push({ iss: iss[0], s: x });
+      }
+    }
+    const fundedByOne = [...new Set(pairs.map((x) => x.iss))];
+    if (fundedByOne.length === 1 && !r.fundedBy) {
+      // A completed retirement's funding cites a sentence stating it done, never only an intention (acceptance V4).
+      const done = pairs.find((x) => !NOT_DONE.test(x.s.sentence));
+      const chosen = r.status === "completed" ? done ?? pairs[0] : pairs[0];
+      r.fundedBy = fundedByOne[0]; fundedByOne[0].retires.push(r); r.spendSrc = chosen.s;
       continue;
     }
     // A stated funding fact keeps the move unpaired only when it names no new debt (Nov 1, rule (d)).
