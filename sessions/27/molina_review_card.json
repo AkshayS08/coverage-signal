@@ -1459,7 +1459,7 @@
    "status": [
     {
      "k": "text",
-     "t": "New this week: this 10-Q, filed Oct 22, 2026, is the position"
+     "t": "new this week"
     },
     {
      "k": "text",
@@ -1913,7 +1913,7 @@
      },
      {
       "k": "label",
-      "t": "incremental term loans to finance certain acquisitions",
+      "t": "uncommitted incremental term loans to finance certain acquisitions",
       "stated": "incremental term loans to finance certain acquisitions",
       "src": {
        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",

@@ -6080,7 +6080,21 @@
     [
      {
       "k": "text",
-      "t": "Undrawn revolver shown net of "
+      "t": "Undrawn "
+     },
+     {
+      "k": "label",
+      "t": "committed revolver",
+      "stated": "Revolv",
+      "src": {
+       "sentence": "The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an option to extend the maturity date for additional one-year periods, subject to consent of the banks (the \"Credit Agreement\").",
+       "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+       "doc": "10-Q 2026-07-30"
+      }
+     },
+     {
+      "k": "text",
+      "t": " shown net of "
      },
      {
       "k": "figure",

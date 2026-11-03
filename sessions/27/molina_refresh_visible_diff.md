@@ -12,7 +12,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.08913
   - was: No new debt filings this week
   - now: Position as of September 30, 2026
   - now: 10-Q filed Oct 22, 2026
-  - now: New this week: this 10-Q, filed Oct 22, 2026, is the position · 3 other filings, none affecting debt
+  - now: new this week · 3 other filings, none affecting debt
 - **call (label)**
   - was: The call · next 18 months, to Apr 15, 2028
   - now: The call · next 18 months, to Apr 30, 2028
@@ -22,10 +22,8 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.08913
 - **liquidity**
   - was: $6,235MM
   - was: $4,985MM
-  - was: Not counted: up to $800MM of uncommitted incremental term loans to finance certain acquisitions.
   - now: $5,729MM
   - now: $4,479MM
-  - now: Not counted: up to $800MM of incremental term loans to finance certain acquisitions.
 - **footnote**
   - was: Face total $3,800MM. Balance sheet $3,769MM, after $31MM of deferred debt issuance costs. Every figure links to the sentence it came from.
   - now: Face total $3,800MM. Balance sheet $3,771MM, after $29MM of deferred debt issuance costs. Every figure links to the sentence it came from.

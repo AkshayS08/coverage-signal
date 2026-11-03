@@ -2721,7 +2721,7 @@
    "status": [
     {
      "k": "text",
-     "t": "New this week: this 10-Q, filed Oct 29, 2026, is the position"
+     "t": "new this week"
     },
     {
      "k": "text",
@@ -3123,7 +3123,7 @@
      },
      {
       "k": "text",
-      "t": " · Issued, confirmed by 10-Q"
+      "t": " · Issued, confirmed by 8-K"
      }
     ],
     "title": [
@@ -3180,7 +3180,7 @@
        "t": "cash on hand",
        "stated": "cash on hand",
        "src": {
-        "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
+        "sentence": "Financing activities in 2026 also included the issuance of our 2034 Senior Notes, the net proceeds from which, together with cash on hand, were used to finance the redemption of all of our 2027 Senior Secured First Lien Notes and the partial redemption of our 2028 Senior Notes.",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
         "doc": "10-Q 2026-10-29"
        }
@@ -3706,7 +3706,7 @@
       },
       {
        "k": "label",
-       "t": "revolver",
+       "t": "secured revolver",
        "stated": "revolv",
        "src": {
         "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200  million subfacility for standby letters of credit.",

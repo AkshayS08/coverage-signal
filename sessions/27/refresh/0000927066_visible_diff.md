@@ -12,7 +12,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.09192
   - was: No new debt filings this week
   - now: Position as of September 30, 2026
   - now: 10-Q filed Oct 29, 2026
-  - now: New this week: this 10-Q, filed Oct 29, 2026, is the position · 2 other filings, none affecting debt
+  - now: new this week · 2 other filings, none affecting debt
 - **call (label)**
   - was: The call · next 18 months, to Apr 15, 2028
   - now: The call · next 18 months, to Apr 30, 2028

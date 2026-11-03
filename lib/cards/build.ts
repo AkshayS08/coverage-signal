@@ -26,6 +26,8 @@ import { deltaLabelOf, deltaIdentityOf, deltaStatedSpan } from "../events/rollDe
 import { briefWeek } from "./briefDate";
 import { locateMoveSentences, uncoveredMoves } from "./moveSentences";
 import { NEW_DEBT_SOURCE } from "./moveIntegrity";
+import { withQualifiers } from "./qualifiers";
+import { COMPLETED, NOT_DONE, usdIn } from "./refreshRulings";
 import { scaledAmountString, locatorFor } from "../agent/tableScale";
 /** A fact's value in the unit its source declares (Rule 67's single scale function). */
 export function scaledFactValue(value: string, sentence: string, filingText: string): string {
@@ -726,14 +728,40 @@ export function buildCard(i: CardInputs): Card {
   // retirement — Tenet's "issuance proceeds" never paired, and its funding line kept only "cash on hand".
   const NEW_DEBT = (x: string) => /net proceeds/i.test(x) || NEW_DEBT_SOURCE.test(x);
   const heldSentences = [...i.textByUrl.keys()].flatMap((u) => sentencesOf(u));
+  const pairingFlags: Line[] = [];
   for (const r of movesAll.filter((m) => RETIRES.has(m.type))) {
     const own = couponsIn(r.instrument)[0]?.rate;
     const year = (/\b(20\d\d)\b/.exec(r.instrument) ?? [])[1];
     const naming = own === undefined ? [] : heldSentences.filter((x) => /\bredeem\w*|redemption|repurchas\w*|repa(?:y|id)\b/i.test(x.sentence) && couponsIn(x.sentence).some((c) => Math.abs(c.rate - own) < 1e-9) && (!year || x.sentence.includes(year)) && !/\b(?:may|intends? to)\b/i.test(x.sentence)).map((x) => x.sentence);
     const linked = [r.sentence, r.instSeg.k === "label" ? r.instSeg.src.sentence : "", r.dateSeg.k === "label" ? r.dateSeg.src.sentence : "", r.fundFact?.src.sentence ?? "", ...naming];
+    const issuances = movesAll.filter((m) => m.type === "issuance");
+    // SESSION 27 (Nov 3): A FUNDING SENTENCE PAIRS WITH THE ISSUANCE IT NAMES — its coupon and maturity year, a
+    // "<year> … Notes" term for it ("2034 Senior Notes"), or, in the issuance's own document, the defined term that
+    // document gives it ("(the “Notes”)") — wherever the sentence also states this retirement. No proceeds wording needed.
+    const rYear = (/\bdue\s+(?:[A-Z][a-z]+\s+)?(?:\d{1,2},\s*)?(20\d\d)/.exec(r.instrument) ?? [])[1] ?? year;
+    const statesR = (s: string) => /\bredeem\w*|redemption|repurchas\w*|repa(?:y|id)|retire\w*/i.test(s) && ((own !== undefined && couponsIn(s).some((c) => Math.abs(c.rate - own) < 1e-9) && (!rYear || s.includes(rYear))) || (!!rYear && new RegExp(`\\b${rYear}\\s+(?:[A-Z][a-z]+\\s+){0,4}Notes\\b`).test(s)));
+    const FUNDS = /\b(?:used|use|finance[ds]?|financing|fund(?:ed|s)?)\b/i;
+    const namesIssuance = (s: Source, iss: Move): boolean => {
+      const c = couponsIn(iss.instrument)[0]?.rate;
+      const y = (/\bdue\s+(?:[A-Z][a-z]+\s+)?(?:\d{1,2},\s*)?(20\d\d)/.exec(iss.instrument) ?? [])[1];
+      if (!y || y === rYear) return false;
+      if (c !== undefined && couponsIn(s.sentence).some((x) => Math.abs(x.rate - c) < 1e-9) && s.sentence.includes(y)) return true;
+      if (new RegExp(`\\b${y}\\s+(?:[A-Z][a-z]+\\s+){0,4}Notes\\b`).test(s.sentence)) return true;
+      // The defined term the issuance's own document gives it, used in that document.
+      const defining = sentencesOf(s.url).find((x) => c !== undefined && couponsIn(x.sentence).some((z) => Math.abs(z.rate - c) < 1e-9) && x.sentence.includes(y) && COMPLETED.test(x.sentence));
+      // The term the document gives THIS note: the first "(the “X”)" after its coupon, never "(the “Company”)" before it.
+      const at = defining ? couponsIn(defining.sentence).find((z) => Math.abs(z.rate - c!) < 1e-9)!.at : 0;
+      const term = defining ? (/\(the\s+[“"]([A-Z][\w ]{1,30}?)[”"]\)/.exec(defining.sentence.slice(at)) ?? [])[1] : undefined;
+      return !!term && !/\b20\d\d\b/.test(term) && new RegExp(`\\bthe\\s+${term}\\b(?![”"])`).test(s.sentence.replace(defining!.sentence, ""));
+    };
+    const fundingSentences = heldSentences.filter((x) => FUNDS.test(x.sentence) && statesR(x.sentence) && !/\bmay\s+[a-z]/.test(x.sentence));
+    const named = issuances.map((iss) => ({ iss, s: fundingSentences.find((x) => namesIssuance(x, iss)) })).filter((x) => x.s);
+    if (named.length === 1 && !r.fundedBy) {
+      r.fundedBy = named[0].iss; named[0].iss.retires.push(r); r.spendSrc = named[0].s!;
+      continue;
+    }
     // A stated funding fact keeps the move unpaired only when it names no new debt (Nov 1, rule (d)).
     if (!linked.some(NEW_DEBT) || (r.fundFact && !NEW_DEBT(r.fundFact.value) && !NEW_DEBT(r.fundFact.src.sentence))) continue;
-    const issuances = movesAll.filter((m) => m.type === "issuance");
     const sameDoc = issuances.filter((m) => m.url === r.url);
     const before = issuances.filter((m) => m.sort <= r.sort);
     const by = (sameDoc.length === 1 ? sameDoc[0] : null) ?? issuances.find((m) => m.use.some((x) => x.k === "label" && sameNote(x.stated, r.instrument))) ?? (before.length === 1 ? before[0] : null);
@@ -744,6 +772,8 @@ export function buildCard(i: CardInputs): Card {
     r.fundedBy = by;
     by.retires.push(r);
     r.spendSrc = spendSrc;
+    // The proceeds-wording fallback pairs, and flags that no sentence names the issuance (Nov 3).
+    pairingFlags.push([t(`Paired by its proceeds wording only: the ${tidyCoupon(r.instrument)} with the ${tidyCoupon(by.instrument)}; no sentence this card holds names the issuance as its funding.`)]);
   }
   for (const is of movesAll.filter((m) => m.type === "issuance" && !m.use.length)) {
     if (movesAll.filter((m) => m.type === "issuance" && m.url === is.url).length !== 1) continue;
@@ -871,11 +901,12 @@ export function buildCard(i: CardInputs): Card {
       const by = m.fundedBy;
       const spend = m.spendSrc ?? (m.instSeg.k === "label" ? m.instSeg.src : null);
       const sources = spend ? fundSources(spend.sentence) : [];
+      // Paired by the issuance's name (Nov 3), the new notes are a source even where the sentence has no proceeds wording.
+      if (!sources.some((s) => s.newDebt)) sources.unshift({ stated: "", at: -1, newDebt: true });
       const out: Line = [t(", ")];
-      if (!sources.length) return [t(", funded by the "), instPhrase(by), t(` issued ${by.when}`)];
       sources.forEach((s, n) => {
         out.push(t(n === 0 ? "" : n === sources.length - 1 ? " and " : ", "));
-        if (s.newDebt) out.push(spend ? { k: "label", t: n === 0 ? "funded by" : "the proceeds of", stated: s.stated, src: spend } : t("funded by"), t(" the "), instPhrase(by), t(` issued ${by.when}`));
+        if (s.newDebt) out.push(spend && s.stated ? { k: "label", t: n === 0 ? "funded by" : "the proceeds of", stated: s.stated, src: spend } : t(n === 0 ? "funded by" : "the proceeds of"), t(" the "), instPhrase(by), t(` issued ${by.when}`));
         else out.push(...(n === 0 ? [t("funded by ")] : []), { k: "label", t: s.stated.toLowerCase(), stated: s.stated, src: spend! });
       });
       return out;
@@ -1250,7 +1281,7 @@ export function buildCard(i: CardInputs): Card {
     liqLines.push(line);
   }
   for (const u of (facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
-    const line: Line = [...(/^uncommitted/i.test(u.description.value) ? [] : [t("Uncommitted: ")]), { k: "label", t: u.description.value, stated: u.description.value, src: src(u.description.src.sentence, u.description.src.url) }];
+    const line: Line = [...(/^uncommitted\b/i.test(u.description.value) ? [] : [t("Uncommitted: ")]), { k: "label", t: u.description.value, stated: u.description.value, src: src(u.description.src.sentence, u.description.src.url) }];
     if (u.amount && liqPermitted(u.amount.src.url)) line.push(t(", up to "), liqFig(u.amount));
     line.push(t(". Uncommitted, not counted in liquidity."));
     liqLines.push(line);
@@ -1748,7 +1779,8 @@ export function buildCard(i: CardInputs): Card {
     position: [t("Position as of "), periodDate()],
     filing: { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url },
     status: anchorThisWeek
-      ? [t(`New this week: this ${anchor.form}, filed ${shortDate(anchor.date)}, is the position`), ...(actionable.length ? [t(` · ${actionable.length} other filing${actionable.length === 1 ? "" : "s"} may affect debt`)] : otherCount ? [t(` · ${otherCount} other filing${otherCount === 1 ? "" : "s"}, none affecting debt`)] : [])]
+      // Session 27 (Nov 3): beside "[form] filed [date]", the date once — "10-Q filed Oct 29, 2026 · new this week · …".
+      ? [t("new this week"), ...(actionable.length ? [t(` · ${actionable.length} other filing${actionable.length === 1 ? "" : "s"} may affect debt`)] : otherCount ? [t(` · ${otherCount} other filing${otherCount === 1 ? "" : "s"}, none affecting debt`)] : [])]
       : actionable.length
       ? [t(`${actionable.length} filing${actionable.length === 1 ? "" : "s"} this week may affect debt`)]
       : otherCount
@@ -1871,12 +1903,37 @@ export function buildCard(i: CardInputs): Card {
     if (!RETIRES.has(m.type) || !m.faceUsd) return [];
     const item = allDebtItems.find((it) => retirementsOf(it).includes(m));
     if (!item) return [];
-    const usd = m.inPeriod ? faceUsdOf(item) : faceUsdOf(item) - m.faceUsd;
+    // Session 27 (Nov 3): what remained IMMEDIATELY AFTER this move — the position's face (the filer's balance column),
+    // plus the same note's in-period retirements after it, or less its post-period retirements up to and including it.
+    // The ladder table keeps the as-of-position remainder. CHS: Feb 2 "$1,780MM remains", May 6 "$1,549MM remains".
+    const others = retirementsOf(item).filter((x) => x.faceUsd && x.face);
+    const adjust = m.inPeriod ? others.filter((x) => x.inPeriod && x.sort > m.sort) : others.filter((x) => !x.inPeriod && x.sort <= m.sort);
+    const sign = m.inPeriod ? 1 : -1;
+    const usd = faceUsdOf(item) + sign * adjust.reduce((a, x) => a + x.faceUsd!, 0);
     if (usd <= 0.5e6) return [];
-    const parts = m.inPeriod ? partOf(item) : [...partOf(item), { printed: (m.face as any).printed, usd: -m.faceUsd, src: (m.face as any).src }];
+    const parts = [...partOf(item), ...adjust.map((x) => ({ printed: (x.face as any).printed, usd: sign * x.faceUsd!, src: (x.face as any).src }))];
     return [t(" · "), { k: "computed", t: displayUsd(usd, false, dp(parts)), usd, parts }, t(" remains")];
   };
-  const formOfUrl = (url: string) => (docs.get(url) ?? "").split(" ")[0] || "filing";
+  // A held document the result does not cite (a debt-item 8-K kept for move detail) is named from its own cover.
+  const labelOf = (url: string): string => {
+    if (docs.has(url)) return docs.get(url)!;
+    const head = (i.textByUrl.get(url) ?? "").slice(0, 8000).replace(/\s+/g, " ");
+    const form = (/\bFORM\s+(8-K|10-Q|10-K)\b/i.exec(head) ?? [])[1]?.toUpperCase();
+    const d = /Date of Report[^:]{0,60}:?\s*([A-Z][a-z]+)\s+(\d{1,2}),\s*(\d{4})/i.exec(head);
+    const mo = d ? MON.findIndex((x) => d[1].toLowerCase().startsWith(x.toLowerCase().slice(0, 3))) + 1 : 0;
+    return form ? `${form}${d && mo ? ` ${d[3]}-${String(mo).padStart(2, "0")}-${d[2].padStart(2, "0")}` : ""}` : "";
+  };
+  const formOfUrl = (url: string) => labelOf(url).split(" ")[0] || "filing";
+  // Session 27 (Nov 3): an issuance cites the FIRST filing whose sentence states it completed — the same issue (its
+  // coupon, maturity year and face), not a notice, plan or press release. Tenet's 2034 notes: the Sept 22 8-K.
+  const confirmingUrl = (m: Move): string => {
+    const own = couponsIn(m.instrument)[0]?.rate;
+    const year = (/\bdue\s+(?:[A-Z][a-z]+\s+)?(?:\d{1,2},\s*)?(20\d\d)/.exec(m.instrument) ?? /\b(20\d\d)\b/.exec(m.instrument) ?? [])[1];
+    if (own === undefined || !year) return m.url;
+    const stating = [...i.textByUrl.keys()].filter((u) => sentencesOf(u).some((x) => x.sentence.length < 900 && COMPLETED.test(x.sentence) && !NOT_DONE.test(x.sentence) && !/\bmay\s+[a-z]/.test(x.sentence) && couponsIn(x.sentence).some((c) => Math.abs(c.rate - own) < 1e-9) && x.sentence.includes(year) && (!m.faceUsd || usdIn(x.sentence).some((u) => Math.abs(u - m.faceUsd!) < 0.5e6))));
+    const dated = (u: string) => (/(\d{4}-\d{2}-\d{2})/.exec(labelOf(u)) ?? [])[1] ?? "9999";
+    return stating.sort((a, b) => dated(a).localeCompare(dated(b)))[0] ?? m.url;
+  };
   const moveCards: CardV3["moves"] = [];
   for (const ms of evs) {
     const issuance = ms.find((m) => m.type === "issuance");
@@ -1894,7 +1951,7 @@ export function buildCard(i: CardInputs): Card {
       continue;
     }
     if (issuance) {
-      const left: CardV3["moves"][number] = { meta: [dateOf(issuance), t(` · Issued, confirmed by ${formOfUrl(issuance.url)}`)], title: [faceInst(issuance)], detail: null, retires: null };
+      const left: CardV3["moves"][number] = { meta: [dateOf(issuance), t(` · Issued, confirmed by ${formOfUrl(confirmingUrl(issuance))}`)], title: [faceInst(issuance)], detail: null, retires: null };
       // v3.2 §2.3: a price attaches to the issuance it describes, in its own sentence: "Issued at 98.75% of principal, adding to the existing notes."
       const pr = priceClause(issuance).filter((x) => !(x.k === "text" && x.t === ", "));
       const issuedLine: Line = pr.length ? [t("Issued "), ...pr, ...issuance.extra, t(".")] : [];
@@ -1931,7 +1988,7 @@ export function buildCard(i: CardInputs): Card {
     if (m.type === "paydown") return "Repaid";
     if (m.type === "tender or repurchase") return "Repurchased";
     if (m.type === "special call" || m.type === "redemption") return m.fundedBy ? "Refinanced" : m.status === "pending" ? "Redemption announced, awaiting confirmation in a filing" : "Redeemed";
-    if (m.type === "issuance") return `Issued, confirmed by ${formOfUrl(m.url)}`;
+    if (m.type === "issuance") return `Issued, confirmed by ${formOfUrl(confirmingUrl(m))}`;
     if (m.type === "draw") return "Drew";
     return (TYPE_WORD[m.type]?.[0] ?? m.type).replace(/^./, (c) => c.toUpperCase());
   }
@@ -2036,7 +2093,7 @@ export function buildCard(i: CardInputs): Card {
     // An uncertain component is flagged, never omitted.
     if (ud.basis === "computed") liqNotes.push([t(`Undrawn ${type.t} computed as size less drawn and letters of credit; no availability stated${ud.flags.length ? `, and ${ud.flags.join(", ")}, so it may be lower` : ""}.`)]);
     if (ud.basis === "not-stated") liqNotes.push([t(`Undrawn ${type.t}: availability not stated, and its size cannot be reduced to an undrawn figure (borrowing-base limited or no size stated).`)]);
-    if (backsCp) liqNotes.push([t(`Undrawn ${type.t} shown net of `), { k: "figure", t: displayAmount(backsCp.value, backsCp.src.sentence), printed: backsCp.value, src: src(backsCp.src.sentence, backsCp.src.url) }, t(" commercial paper it "), { k: "label", t: "backs", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(". Commercial paper itself is not counted as liquidity.")]);
+    if (backsCp) liqNotes.push([t("Undrawn "), type, t(" shown net of "),{ k: "figure", t: displayAmount(backsCp.value, backsCp.src.sentence), printed: backsCp.value, src: src(backsCp.src.sentence, backsCp.src.url) }, t(" commercial paper it "), { k: "label", t: "backs", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(". Commercial paper itself is not counted as liquidity.")]);
     if (borrowingBaseOf(f)) liqNotes.push([t("Borrowing-base limited; stated availability shown.")]);
   }
   for (const u of (facts?.uncommitted ?? []).filter((x) => liqPermitted(x.description.src.url))) {
@@ -2283,6 +2340,7 @@ export function buildCard(i: CardInputs): Card {
   const possibleMoves: Line[] = uncoveredMoves(located, moveCards)
     .map((m) => { const excerpt = m.sentence.length > 220 ? `${m.sentence.slice(0, 217)}…` : m.sentence; return [t("Possible move, not confirmed: "), { k: "label", t: `“${excerpt}”`, stated: m.sentence.slice(0, Math.min(m.sentence.length, 217)), src: src(m.sentence, m.url) } as Segment]; });
   // Session 27 (Oct 31): a trigger left unresolved by a refused dig is flagged, never silently answered.
+  notShown.push(...pairingFlags);
   for (const r of result.results as any[]) if (r.unresolved) notShown.push([t(`${String(r.triggerId).replace(/-/g, " ")}: unresolved — ${r.unresolved}.`)]);
   if (!factsRead) {
     liqNotes.push(notYetRead("Uncommitted capacity and parent cash"));
@@ -2295,10 +2353,11 @@ export function buildCard(i: CardInputs): Card {
     call: { label: `The call · next 18 months, to ${shortDate(windowEnd)}`, case: callCase, headline, tiles, nextTile, rows: callRows, notes: callNotes, legend: daggerUsed ? `${MARK} Year only stated; may fall inside the window.` : null },
     moves: moveCards,
     totalDebt: { figure: faceSeg(), segments: tdSegments, legend: tdLegend, notes: tdNotes },
-    liquidity: { figure: liqFigure, segments: liqSegments, legend: liqLegend, notes: liqNotes },
+    // Session 27 (Nov 3): meaning-bearing qualifiers come from each line's own cited sentence, by code (qualifiers.ts).
+    liquidity: { figure: liqFigure, segments: liqSegments, legend: liqLegend.map((l) => ({ ...l, label: withQualifiers(l.label) })), notes: liqNotes.map(withQualifiers) },
     chart: { bars, window: { endIndex, endFraction, label: `18-month window${callCase === "D" ? " · nothing due" : ""}` }, legend: chartLegend, captions },
     table: { rows: tableRows, visible, schedule: anchorSchedule ? ladderBlocks : null },
-    facilities: facLines,
+    facilities: facLines.map((f) => ({ bold: withQualifiers(f.bold), sub: f.sub ? withQualifiers(f.sub) : null })),
     notShown: notShown.length ? notShown : [[t("Nothing withheld this week.")]],
     footnote,
     stages: { facts: factsRead },

@@ -43,7 +43,7 @@
 .header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding: 24px 28px 18px; border-bottom: 1px solid var(--line); }
 .kicker { font-size: 11px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .company { font-size: 24px; font-weight: 700; margin: 2px 0 0; letter-spacing: -0.01em; }
-.headerRight { text-align: right; color: var(--muted); font-size: 13px; }
+.headerRight { margin-left: auto; text-align: right; color: var(--muted); font-size: 13px; }
 .actionable { padding: 10px 28px; border-bottom: 1px solid var(--line); }
 .actionLine { padding: 2px 0; }
 .rolledNote { margin: 12px 28px 4px; padding: 10px 14px; background: var(--wash); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }

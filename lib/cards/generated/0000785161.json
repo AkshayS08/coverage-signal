@@ -3012,7 +3012,7 @@
      },
      {
       "k": "text",
-      "t": " · Issued, confirmed by 10-Q"
+      "t": " · Issued, confirmed by 8-K"
      }
     ],
     "title": [
@@ -5659,6 +5659,18 @@
     {
      "k": "text",
      "t": "Seniority and security are stated only in an earlier annual report, which this card does not use for labels: “The Senior Notes are senior, unsecured obligations of Encompass Health and rank equally with our other senior indebtedness, senior to any of our subordinated indebtedness, and effectively junior to our secured indebtedness to the extent of the value of the collateral securing such indebtedness.”"
+    }
+   ],
+   [
+    {
+     "k": "text",
+     "t": "Paired by its proceeds wording only: the 4.50% Senior Notes due 2028 with the 5.875% Senior Notes due 2034; no sentence this card holds names the issuance as its funding."
+    }
+   ],
+   [
+    {
+     "k": "text",
+     "t": "Paired by its proceeds wording only: the 2026 Credit Agreement revolving credit facility with the 5.875% Senior Notes due 2034; no sentence this card holds names the issuance as its funding."
     }
    ]
   ],

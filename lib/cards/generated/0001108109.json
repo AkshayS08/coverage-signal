@@ -2998,14 +2998,23 @@
       },
       {
        "k": "computed",
-       "t": "$1,549MM",
-       "usd": 1549000000,
+       "t": "$1,780MM",
+       "usd": 1780000000,
        "parts": [
         {
          "printed": "$ 1,549 million",
          "usd": 1549000000,
          "src": {
           "sentence": "10 ⅞% Senior Secured Notes due 2032 1,549",
+          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+          "doc": "10-Q 2026-07-23"
+         }
+        },
+        {
+         "printed": "$ 231 million",
+         "usd": 231000000,
+         "src": {
+          "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
           "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
           "doc": "10-Q 2026-07-23"
          }

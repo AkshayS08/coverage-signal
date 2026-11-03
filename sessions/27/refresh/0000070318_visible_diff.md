@@ -12,7 +12,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - was: No new debt filings this week
   - now: Position as of September 30, 2026
   - now: 10-Q filed Oct 29, 2026
-  - now: New this week: this 10-Q, filed Oct 29, 2026, is the position · 1 other filing, none affecting debt
+  - now: new this week · 1 other filing, none affecting debt
 - **call (label)**
   - was: The call · next 18 months, to Apr 15, 2028
   - now: The call · next 18 months, to Apr 30, 2028
@@ -35,11 +35,9 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - now: Also in window: $265MM† of scheduled amortization and other principal.
   - now: Next after the window: $1,250MM 6.125% senior unsecured notes, October 2028.
 - **moves**
-  - was: Sept 22, 2026 · Issued, confirmed by 8-K
   - was: $2,000MM 6.250% senior notes due 2034
   - was: Refinanced · redemption set for Sept 23, 2026, awaiting confirmation in a filing, funded by the new notes and cash on hand
   - was: $1,500MM 5.125% senior secured notes due November 2027
-  - now: Sept 22, 2026 · Issued, confirmed by 10-Q
   - now: $2,000MM 6.250% senior unsecured notes due 2034
   - now: Refinanced · redeemed Sept 23, 2026, funded by the new notes and cash on hand
   - now: $1,500MM 5.125% senior secured first lien notes due November 2027
@@ -181,6 +179,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - now cited: 10-Q 2026-10-29 | We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amoun
   - now cited: 10-Q 2026-10-29 | In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 203
   - now cited: thc-20260908.htm | The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.
+  - now cited: 10-Q 2026-10-29 | Financing activities in 2026 also included the issuance of our 2034 Senior Notes, the net proceeds from which, together with cash on hand, w
   - now cited: 10-Q 2026-10-29 | 4.250 % due 2029 1,400
   - now cited: 10-Q 2026-10-29 | 4.375 % due 2030 1,450
   - now cited: 10-Q 2026-10-29 | 6.125 % due 2030 2,000

@@ -62,9 +62,10 @@ const ref = JSON.parse(readFileSync(join("baselines", "s27-molina-refresh.json")
 const anchor = ref.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling;
 const q3 = { form: "10-Q", filingDate: anchor.date, reportDate: anchor.reportDate, accessionNumber: "0001179929-26-000000", primaryDocument: anchor.url.split("/").pop(), primaryDocUrl: anchor.url, items: "" };
 const fresh = build("0001179929", ref, "2026-10-30", "2026-10-15", [q3]);
-const status = txt(fresh.v3.header.status);
+// Nov 3: the filing segment names the form and date, the status says "new this week" (the date once).
+const status = `${txt([fresh.v3.header.filing])} · ${txt(fresh.v3.header.status)}`;
 const all = JSON.stringify(fresh.v3);
-assert(/10-Q/.test(status) && /Oct 22/.test(status) && /position/i.test(status), `[W4] the header names the 10-Q filed Oct 22 as this week's filing and the position: "${status}"`);
+assert(/^10-Q filed Oct 22, 2026 · new this week\b/.test(status) && status.split("Oct 22, 2026").length === 2, `[W4] the header names the 10-Q filed Oct 22 as this week's filing, the date once: "${status}"`);
 // The line that calls a NEW filing unread ("Not yet read: this card's position is still …"); Session 27's missing-stage
 // lines ("Debt moves this year: not yet read from …") are a different statement and are tested in missingStage.test.
 const NEW_UNREAD = /Not yet read: this card's position is still/;

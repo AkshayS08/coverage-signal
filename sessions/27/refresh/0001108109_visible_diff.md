@@ -12,7 +12,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317
   - was: No new debt filings this week
   - now: Position as of September 30, 2026
   - now: 10-Q filed Oct 29, 2026
-  - now: New this week: this 10-Q, filed Oct 29, 2026, is the position · 1 other filing, none affecting debt
+  - now: new this week · 1 other filing, none affecting debt
 - **call (label)**
   - was: The call · next 18 months, to Apr 15, 2028
   - now: The call · next 18 months, to Apr 30, 2028
@@ -42,7 +42,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317
 - **footnote**
   - was: Face total $9,770MM. Balance sheet $9,578MM, after $192MM of unamortized deferred debt issuance costs. Every figure links to the sentence it came from.
   - now: Face total $9,766MM. Balance sheet $9,586MM, after $180MM of unamortized deferred debt issuance costs. Every figure links to the sentence it came from.
-- **cited sentences behind source links**: 167 out, 167 in
+- **cited sentences behind source links**: 168 out, 168 in
   - was cited: 10-Q 2026-07-23 | For the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-07-23 | 6 ⅞% Senior Notes due 2028 $ 42
   - was cited: 10-Q 2026-07-23 | 6 ⅞% Junior-Priority Secured Notes due 2029 1,244
@@ -87,11 +87,12 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317
   - now cited: 10-Q 2026-10-29 | Current maturities of long-term debt $ 18
   - now cited: 10-Q 2026-10-29 | Long-term debt 9,568
   - now cited: 10-Q 2026-10-29 | Less: Unamortized deferred debt issuance costs ( 180 )
-- **parts of computed figures (shown when a figure is opened)**: 72 shown differently
+- **parts of computed figures (shown when a figure is opened)**: 73 shown differently
   - was: $ 42 million
   - was: $ 1,244 million
   - was: $ 689 million
   - was: $ 1,549 million
+  - was: $ 231 million
   - was: $ 1,227 million
   - was: $ 644 million
   - was: $ 1,535 million
@@ -99,11 +100,11 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317
   - was: $ 1,790 million
   - was: $ 298 million
   - was: $ 52 million
-  - was: $ 149 million
   - now: $42MM
   - now: $1,244MM
   - now: $689MM
   - now: $1,549MM
+  - now: ~$231MM
   - now: $1,227MM
   - now: $644MM
   - now: $1,535MM
@@ -111,4 +112,3 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317
   - now: $1,790MM
   - now: $300MM
   - now: $46MM
-  - now: $155MM

@@ -808,6 +808,13 @@ function moveRowAgree(card: Card): string[] {
   const v = card.v3!;
   const bad: string[] = [];
   const rows = v.table.rows.map((r) => ({ r, key: couponYear(`${text(r.instrument)} ${text(r.matures)}`) }));
+  // Nov 3 ruling: a move states what remained IMMEDIATELY AFTER it; the row keeps the as-of-position remainder. So the
+  // move's remainder is the row's plus the same note's later retirements on the card up to the position date.
+  const MON3 = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  const isoIn = (x: string) => { const d = /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)[a-z]*\.?\s+(?:(\d{1,2}),\s*)?(\d{4})/.exec(x); return d ? `${d[3]}-${String(MON3.indexOf(d[1].slice(0, 3).toLowerCase()) + 1).padStart(2, "0")}-${String(d[2] ?? 1).padStart(2, "0")}` : ""; };
+  const periodEnd = isoIn(text(v.header.position)) || "9999-12-31";
+  const dated = v.moves.flatMap((m) => (m.retires ? m.retires.items.map((it) => ({ it, d: isoIn(text(m.retires!.meta)) })) : /Refinanced|Repurchased|Redeemed|Repaid/.test(text(m.meta)) ? m.title.map((it) => ({ it, d: isoIn(text(m.meta)) })) : []));
+  const laterRetired = (key: string, d: string) => dated.filter((x) => couponYear(text(x.it)) === key && x.d > d && x.d <= periodEnd).reduce((a, x) => a + segUsd(x.it.find((y) => y.k === "figure" || y.k === "computed") ?? ({ k: "text", t: "" } as Segment)), 0);
   for (const m of v.moves) {
     const retiring: Line[] = m.retires ? m.retires.items : /Refinanced|Repurchased|Redeemed|Repaid/.test(text(m.meta)) ? m.title : [];
     const pending = /redemption set for|awaiting confirmation/.test(text(m.retires?.meta ?? m.meta));
@@ -822,7 +829,8 @@ function moveRowAgree(card: Card): string[] {
       const moveRemains = remainsIn(it);
       if (rowRemains === null) bad.push(`"${text(row.r.instrument)}" (${key}) is retired in part by a move, but its row states no remainder`);
       if (moveRemains === null) bad.push(`the move retiring ${key} states no remainder`);
-      if (rowRemains !== null && moveRemains !== null && Math.abs(rowRemains - moveRemains) > 0.5e6) bad.push(`${key}: the move says $${moveRemains / 1e6}MM remains, the row $${rowRemains / 1e6}MM`);
+      const after = rowRemains === null ? null : rowRemains + laterRetired(key!, isoIn(text(m.retires?.meta ?? m.meta)));
+      if (after !== null && moveRemains !== null && Math.abs(after - moveRemains) > 0.5e6) bad.push(`${key}: the move says $${moveRemains / 1e6}MM remains, but $${after / 1e6}MM remained after it (the row's $${rowRemains! / 1e6}MM plus later retirements)`);
     }
   }
   return bad;
