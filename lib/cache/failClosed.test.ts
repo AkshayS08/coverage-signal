@@ -44,6 +44,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { Agent, setGlobalDispatcher } from "undici";
 import { runAgentLoop } from "../agent";
 import { checkFree } from "./freeRun";
+import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 import { cachedBaseClassification } from "./answerCache";
 import { Messages } from "@anthropic-ai/sdk/resources/messages";
 
@@ -163,7 +164,10 @@ const verdict = (c: Case, o: Outcome, company = ""): string[] => {
 
 (async () => {
   if (process.env.ANTHROPIC_API_KEY !== "") { console.error('REFUSING: run with ANTHROPIC_API_KEY=""'); process.exit(1); }
-  const names = readdirSync("baselines/golden").map((f) => JSON.parse(readFileSync(`baselines/golden/${f}`, "utf-8"))).filter((g) => g.extractionVersion === 31).map((g) => ({ company: g.state.company as string, cik: g.state.cik as string }));
+  const names = readdirSync("baselines/golden").map((f) => JSON.parse(readFileSync(`baselines/golden/${f}`, "utf-8"))).filter((g) => g.extractionVersion === EXTRACTION_PROMPT_VERSION).map((g) => ({ company: g.state.company as string, cik: g.state.cik as string }));
+  // Session 27 (Nov 3): the signed goldens at the CURRENT extraction version. Pinned to v31, it ran over no names once
+  // CHS and Molina were re-signed at v33, and passed asserting nothing (Rule 44). A run over no names fails.
+  if (names.length === 0) { console.log("FAIL: no signed golden at the current extraction version; a fail-closed check over no names is not a check"); process.exit(1); }
   let passed = 0, failed = 0, controls = 0, controlsFailedAsRequired = 0;
   const failures: string[] = [];
   // ONLY=R1,R6,CONTROL runs a subset (for a slow before-run); the default is every case.
