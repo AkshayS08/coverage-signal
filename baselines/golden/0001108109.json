@@ -1,16 +1,16 @@
 {
-  "extractionVersion": 31,
+  "extractionVersion": 33,
   "signature": {
     "signedBy": "Akshay Sahani",
-    "signedOn": "2026-09-09",
-    "basis": "RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the CHS 9¾% notes was an interest date read as a maturity. (1) SIX MATURITIES MOVE FROM DAY TO YEAR — the 6%, 5¼%, 4¾%, 10⅞% and 10¾% senior secured notes and the 6⅞% senior notes. Each row cites its line in the anchor's debt table (\"6 % Senior Secured Notes due 2029 644\"), which prints the year only; the days had come from the 10-K. A date may not be finer than the sentence it links to (Rules 76, 77), and pulling a day from a prior 10-K is a separate question under Rule 66, logged as a post-demo candidate. (2) THE 9¾% NOTES STAY AT 2034, which is what the anchor states. The Session 24 signature called this \"a loss of precision\"; read against the filings it is a correction — no filing states 2034-09-15 as a maturity, September 15 is an interest payment date, and the filed day (January 15, 2034) is only in the pre-anchor 2025-08-12 8-K. (3) THE ABL's MATURITY now cites its own sentence (\"…will be due and payable in full on June 5, 2029\"), not the size sentence (Rule 78); the date is unchanged. (4) NOTHING ELSE MOVED: twelve rows, the same amounts, statuses, provenance and capacity flags; coverage unchanged; the ABL still undrawn capacity with the borrowing-base sentence on its facility line. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.2833; re-read at $0 after each fix): 12 rows in every run, identical across all three under compareToGolden; coverage identical; the cited position documents identical. Facility figures measured separately and identical across all three, labels included. WHAT WAS DIAGNOSED AS CITATION DRIFT WAS TWO SEPARATE DEFECTS, both ours: the ABL reached the ladder twice — once from the debt note's schedule and once, on some runs only, as a prose instrument stating the same facts about the same facility (Rule 49 on the ladder) — and the answer's identity moved when an `asset-sale` citation entered the fifteen-trigger union (Rule 65). Neither was the model disagreeing with itself. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
+    "signedOn": "2026-11-03",
+    "basis": "RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v31 signature of 2026-09-09. Cleared by Akshay Sahani on Nov 3, 2026, after he viewed its rendered refresh card (screenshots_v10), to sign at v33 on its refresh read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31). Its card at the published brief still renders from its v31 input until the next brief. Signed over the refresh batch's canonical v33 answer on read set 75cc5d22d6722f4293860c27 (as of 2026-10-31, the refresh batch's read set; the $0 replay through the loop gives the same state). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set, at 2026-10-31; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. NOTHING WAS TOLERATED BY THE 9b GATE. Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the CHS 9¾% notes was an interest date read as a maturity. (1) SIX MATURITIES MOVE FROM DAY TO YEAR — the 6%, 5¼%, 4¾%, 10⅞% and 10¾% senior secured notes and the 6⅞% senior notes. Each row cites its line in the anchor's debt table (\"6 % Senior Secured Notes due 2029 644\"), which prints the year only; the days had come from the 10-K. A date may not be finer than the sentence it links to (Rules 76, 77), and pulling a day from a prior 10-K is a separate question under Rule 66, logged as a post-demo candidate. (2) THE 9¾% NOTES STAY AT 2034, which is what the anchor states. The Session 24 signature called this \"a loss of precision\"; read against the filings it is a correction — no filing states 2034-09-15 as a maturity, September 15 is an interest payment date, and the filed day (January 15, 2034) is only in the pre-anchor 2025-08-12 8-K. (3) THE ABL's MATURITY now cites its own sentence (\"…will be due and payable in full on June 5, 2029\"), not the size sentence (Rule 78); the date is unchanged. (4) NOTHING ELSE MOVED: twelve rows, the same amounts, statuses, provenance and capacity flags; coverage unchanged; the ABL still undrawn capacity with the borrowing-base sentence on its facility line. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 (bought 2026-09-25, $0.2833; re-read at $0 after each fix): 12 rows in every run, identical across all three under compareToGolden; coverage identical; the cited position documents identical. Facility figures measured separately and identical across all three, labels included. WHAT WAS DIAGNOSED AS CITATION DRIFT WAS TWO SEPARATE DEFECTS, both ours: the ABL reached the ladder twice — once from the debt note's schedule and once, on some runs only, as a prose instrument stating the same facts about the same facility (Rule 49 on the ladder) — and the answer's identity moved when an `asset-sale` citation entered the fifteen-trigger union (Rule 65). Neither was the model disagreeing with itself. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
   },
   "attestation": {
     "rowsCorrect": true,
     "instrumentTypeFaithful": true,
     "reproducedThreeTimes": true,
     "by": "Akshay Sahani",
-    "on": "2026-09-09"
+    "on": "2026-11-03"
   },
   "criteria": [
     {
@@ -18,7 +18,7 @@
       "name": "every row's amount, maturity and instrument correct against the filing",
       "kind": "attested",
       "pass": true,
-      "detail": "attested by Akshay Sahani on 2026-09-09 against 10-Q 2026-07-23",
+      "detail": "attested by Akshay Sahani on 2026-11-03 against 10-Q 2026-10-29",
       "defends": "a ladder that ties to itself and to nothing in the world"
     },
     {
@@ -26,7 +26,7 @@
       "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
       "kind": "computed",
       "pass": true,
-      "detail": "all 12 row(s) carry a printed unit; no narrative instruments, so no basis to state",
+      "detail": "all 12 row(s) carry a printed unit; all 1 narrative instrument(s) state a basis (commitment) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
       "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
     },
     {
@@ -50,7 +50,7 @@
       "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
       "kind": "computed",
       "pass": true,
-      "detail": "the filer's own XBRL tags, $9,578,000,000",
+      "detail": "the filer's own XBRL tags, $9,586,000,000",
       "defends": "a coverage percentage whose denominator nobody could name"
     },
     {
@@ -66,7 +66,7 @@
       "name": "capacity separated and excluded from the debt sum",
       "kind": "computed",
       "pass": true,
-      "detail": "1 capacity row(s) held out of captured face and reported separately: ABL Facility",
+      "detail": "1 capacity item(s) held out of captured face and reported separately: ABL Facility",
       "defends": "a $1.25B facility with nothing drawn counted as debt, reading 134% coverage"
     },
     {
@@ -115,18 +115,17 @@
     "cik": "0001108109",
     "anchor": {
       "form": "10-Q",
-      "date": "2026-07-23",
-      "reportDate": "2026-06-30",
-      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+      "date": "2026-10-29",
+      "reportDate": "2026-09-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     },
     "filingSet": [
-      "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+      "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     ],
     "otherCitations": [
-      "https://www.sec.gov/Archives/edgar/data/1108109/000119312526138026/cyh-20260401.htm",
       "https://www.sec.gov/Archives/edgar/data/1108109/000119312526251540/cyh-20260601.htm"
     ],
-    "asOf": "2026-09-09",
+    "asOf": "2026-10-31",
     "rows": [
       {
         "instrument": "6 ⅞% Junior-Priority Secured Notes due 2029",
@@ -233,39 +232,39 @@
         "maturityDate": "2029-06-05",
         "dateGranularity": "day",
         "status": "live",
-        "provenance": "note",
+        "provenance": "note-narrative",
         "isCapacity": true,
         "sourceLine": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\").",
         "maturitySourceLine": "Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029."
       },
       {
         "instrument": "Finance lease and financing obligations",
-        "amount": "$ 298 million",
+        "amount": "$ 300 million",
         "maturityDate": null,
         "dateGranularity": null,
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Finance lease and financing obligations 298",
+        "sourceLine": "Finance lease and financing obligations 300",
         "maturitySourceLine": null
       },
       {
         "instrument": "Other",
-        "amount": "$ 52 million",
+        "amount": "$ 46 million",
         "maturityDate": null,
         "dateGranularity": null,
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Other 52",
+        "sourceLine": "Other 46",
         "maturitySourceLine": null
       }
     ],
     "coverage": {
       "denominatorSource": "xbrl",
-      "statedTotalDebt": 9578000000,
-      "capturedFace": 9770000000,
-      "statedBridge": -192000000,
+      "statedTotalDebt": 9586000000,
+      "capturedFace": 9766000000,
+      "statedBridge": -180000000,
       "residualPercent": 0,
       "residualPasses": true
     },
@@ -280,7 +279,20 @@
     "ticker": "CYH",
     "results": [
       {
-        "proseInstruments": [],
+        "proseInstruments": [
+          {
+            "category": "revolver",
+            "name": "ABL Facility",
+            "amount": "$ 1.0 billion",
+            "amountBasis": "commitment",
+            "asOfDate": "2026-09-30",
+            "dateGranularity": "day",
+            "maturityDate": "2029-06-05",
+            "rate": null,
+            "sourceLine": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\").",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+          }
+        ],
         "facilities": [
           {
             "name": "ABL Facility",
@@ -290,33 +302,33 @@
               "sourceLine": "Pursuant to the Amended and Restated ABL Credit Agreement, the lenders have extended to CHS a revolving asset-based loan facility in the maximum aggregate principal amount of $ 1.0 billion, subject to borrowing base capacity (the \"ABL Facility\")."
             },
             "drawn": {
-              "value": "$ 0 million",
-              "sourceLine": "At June 30, 2026 , the Company had no outstanding borrowings and approximately $ 751 million of additional borrowing capacity (after taking into consideration the $ 32 million of outstanding letters of credit) under the ABL Facility."
+              "value": "$0",
+              "sourceLine": "At September 30, 2026 , the Company had no outstanding borrowings and approximately $ 745 million of additional borrowing capacity (after taking into consideration the $ 32 million of outstanding letters of credit) under the ABL Facility."
             },
             "lettersOfCredit": {
               "value": "$ 32 million",
-              "sourceLine": "At June 30, 2026 , the Company had no outstanding borrowings and approximately $ 751 million of additional borrowing capacity (after taking into consideration the $ 32 million of outstanding letters of credit) under the ABL Facility."
+              "sourceLine": "At September 30, 2026 , the Company had no outstanding borrowings and approximately $ 745 million of additional borrowing capacity (after taking into consideration the $ 32 million of outstanding letters of credit) under the ABL Facility."
             },
             "available": {
-              "value": "$ 751 million",
-              "sourceLine": "At June 30, 2026 , the Company had no outstanding borrowings and approximately $ 751 million of additional borrowing capacity (after taking into consideration the $ 32 million of outstanding letters of credit) under the ABL Facility."
+              "value": "$ 745 million",
+              "sourceLine": "At September 30, 2026 , the Company had no outstanding borrowings and approximately $ 745 million of additional borrowing capacity (after taking into consideration the $ 32 million of outstanding letters of credit) under the ABL Facility."
             },
             "maturity": {
               "value": "June 5, 2029",
               "sourceLine": "Principal amounts outstanding under the ABL Facility will be due and payable in full on June 5, 2029."
             },
-            "asOfDate": "2026-06-30",
+            "asOfDate": "2026-09-30",
             "availabilityBasis": {
               "statement": "subject to borrowing base capacity",
               "limitedBy": "borrowing base capacity"
             },
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "figureSources": {
-              "facilitySize": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-              "drawn": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-              "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-              "available": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-              "maturity": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+              "facilitySize": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+              "drawn": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+              "lettersOfCredit": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+              "available": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+              "maturity": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
             }
           }
         ],
@@ -329,16 +341,16 @@
         "triggerName": "Debt maturity approaching",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "6⅞% Senior Notes due 2028 mature on April 1, 2028, with approximately $42 million principal amount outstanding as of June 30, 2026. Additionally, 6% Senior Secured Notes due 2029 mature on January 15, 2029, with $644 million outstanding.",
+        "evidence": "6⅞% Senior Notes due 2028 mature on April 1, 2028, with $42 million principal amount outstanding as of September 30, 2026. Additionally, 6% Senior Secured Notes due 2029 mature on January 15, 2029, with $644 million outstanding.",
         "mappedNeed": "Refinancing",
         "needType": "credit",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -354,13 +366,230 @@
             "label": "6 ⅞% Senior Notes due 2028",
             "amount": "$ 42 million",
             "rate": "6.875%",
-            "seniority": null,
             "maturityDate": "2028",
             "dateGranularity": "year",
+            "seniority": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "6 % Senior Secured Notes due 2029",
+            "amount": "$ 644 million",
+            "rate": "6%",
+            "maturityDate": "2029",
+            "dateGranularity": "year",
+            "seniority": "senior-priority secured",
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "6 % Senior Secured Notes due 2029 644",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "6 % Senior Secured Notes due 2029 644",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "5 ¼% Senior Secured Notes due 2030",
+            "amount": "$ 1,535 million",
+            "rate": "5.250%",
+            "maturityDate": "2030",
+            "dateGranularity": "year",
+            "seniority": "senior-priority secured",
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "4 ¾% Senior Secured Notes due 2031",
+            "amount": "$ 689 million",
+            "rate": "4.750%",
+            "maturityDate": "2031",
+            "dateGranularity": "year",
+            "seniority": "senior-priority secured",
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "4 ¾% Senior Secured Notes due 2031 689",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "4 ¾% Senior Secured Notes due 2031 689",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "10 ⅞% Senior Secured Notes due 2032",
+            "amount": "$ 1,549 million",
+            "rate": "10.875%",
+            "maturityDate": "2032",
+            "dateGranularity": "year",
+            "seniority": "senior-priority secured",
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "10 ¾% Senior Secured Notes due 2033",
+            "amount": "$ 700 million",
+            "rate": "10.750%",
+            "maturityDate": "2033",
+            "dateGranularity": "year",
+            "seniority": "senior-priority secured",
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "10 ¾% Senior Secured Notes due 2033 700",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "9 ¾% Senior Secured Notes due 2034",
+            "amount": "$ 1,790 million",
+            "rate": "9.750%",
+            "maturityDate": "2034",
+            "dateGranularity": "year",
+            "seniority": "senior-priority secured",
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "6 ⅞% Junior-Priority Secured Notes due 2029",
+            "amount": "$ 1,244 million",
+            "rate": "6.875%",
+            "maturityDate": "2029",
+            "dateGranularity": "year",
+            "seniority": "junior-priority secured",
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "6 ⅛% Junior-Priority Secured Notes due 2030",
+            "amount": "$ 1,227 million",
+            "rate": "6.125%",
+            "maturityDate": "2030",
+            "dateGranularity": "year",
+            "seniority": "junior-priority secured",
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "maturitySourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "Finance lease and financing obligations",
+            "amount": "$ 300 million",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Finance lease and financing obligations 300",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "Other",
+            "amount": "$ 46 million",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Other 46",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+            "printedHeading": null
+          },
+          {
+            "kind": "adjustment",
+            "label": "Less: Unamortized deferred debt issuance costs",
+            "amount": "( $ 180 million )",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Less: Unamortized deferred debt issuance costs ( 180 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": "Total debt",
+            "amount": "$ 9,586 million",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Total debt 9,586",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+          },
+          {
+            "kind": "adjustment",
+            "label": "Less: Current maturities",
+            "amount": "( $ 18 million )",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Less: Current maturities ( 18 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": "Total long-term debt",
+            "amount": "$ 9,568 million",
+            "rate": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "seniority": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Total long-term debt $ 9,568",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+          }
+        ],
+        "priorScheduleSequence": [
+          {
+            "kind": "row",
+            "label": "6 ⅞% Senior Notes due 2028",
+            "amount": "$ 42 million",
+            "rate": "6.875%",
+            "maturityDate": "2028",
+            "dateGranularity": "year",
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "6 ⅞% Senior Notes due 2028 $ 42",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "6 ⅞% Senior Notes due 2028 $ 42"
           },
           {
@@ -368,41 +597,41 @@
             "label": "6 % Senior Secured Notes due 2029",
             "amount": "$ 644 million",
             "rate": "6%",
-            "seniority": "senior-priority secured",
             "maturityDate": "2029",
             "dateGranularity": "year",
+            "seniority": "senior-priority secured",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "6 % Senior Secured Notes due 2029 644",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "6 % Senior Secured Notes due 2029 644"
           },
           {
             "kind": "row",
             "label": "5 ¼% Senior Secured Notes due 2030",
             "amount": "$ 1,535 million",
-            "rate": "5.25%",
-            "seniority": "senior-priority secured",
+            "rate": "5.250%",
             "maturityDate": "2030",
             "dateGranularity": "year",
+            "seniority": "senior-priority secured",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "5 ¼% Senior Secured Notes due 2030 1,535"
           },
           {
             "kind": "row",
             "label": "4 ¾% Senior Secured Notes due 2031",
             "amount": "$ 689 million",
-            "rate": "4.75%",
-            "seniority": "senior-priority secured",
+            "rate": "4.750%",
             "maturityDate": "2031",
             "dateGranularity": "year",
+            "seniority": "senior-priority secured",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "4 ¾% Senior Secured Notes due 2031 689",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "4 ¾% Senior Secured Notes due 2031 689"
           },
           {
@@ -410,41 +639,41 @@
             "label": "10 ⅞% Senior Secured Notes due 2032",
             "amount": "$ 1,549 million",
             "rate": "10.875%",
-            "seniority": "senior-priority secured",
             "maturityDate": "2032",
             "dateGranularity": "year",
+            "seniority": "senior-priority secured",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "10 ⅞% Senior Secured Notes due 2032 1,549"
           },
           {
             "kind": "row",
             "label": "10 ¾% Senior Secured Notes due 2033",
             "amount": "$ 700 million",
-            "rate": "10.75%",
-            "seniority": "senior-priority secured",
+            "rate": "10.750%",
             "maturityDate": "2033",
             "dateGranularity": "year",
+            "seniority": "senior-priority secured",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "10 ¾% Senior Secured Notes due 2033 700"
           },
           {
             "kind": "row",
             "label": "9 ¾% Senior Secured Notes due 2034",
             "amount": "$ 1,790 million",
-            "rate": "9.75%",
-            "seniority": "senior-priority secured",
+            "rate": "9.750%",
             "maturityDate": "2034",
             "dateGranularity": "year",
+            "seniority": "senior-priority secured",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "9 ¾% Senior Secured Notes due 2034 1,790"
           },
           {
@@ -452,13 +681,13 @@
             "label": "6 ⅞% Junior-Priority Secured Notes due 2029",
             "amount": "$ 1,244 million",
             "rate": "6.875%",
-            "seniority": "junior-priority secured",
             "maturityDate": "2029",
             "dateGranularity": "year",
+            "seniority": "junior-priority secured",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244"
           },
           {
@@ -466,37 +695,23 @@
             "label": "6 ⅛% Junior-Priority Secured Notes due 2030",
             "amount": "$ 1,227 million",
             "rate": "6.125%",
-            "seniority": "junior-priority secured",
             "maturityDate": "2030",
             "dateGranularity": "year",
+            "seniority": "junior-priority secured",
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
             "maturitySourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227"
-          },
-          {
-            "kind": "row",
-            "label": "ABL Facility",
-            "amount": "$ 0 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "ABL Facility —",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": null
           },
           {
             "kind": "row",
             "label": "Finance lease and financing obligations",
             "amount": "$ 298 million",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "Finance lease and financing obligations 298",
@@ -507,9 +722,9 @@
             "label": "Other",
             "amount": "$ 52 million",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "Other 52",
@@ -520,9 +735,9 @@
             "label": "Less: Unamortized deferred debt issuance costs",
             "amount": "( $ 192 million )",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "Less: Unamortized deferred debt issuance costs ( 192 )",
@@ -533,9 +748,9 @@
             "label": "Total debt",
             "amount": "$ 9,578 million",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "Total debt 9,578",
@@ -546,9 +761,9 @@
             "label": "Less: Current maturities",
             "amount": "( $ 26 million )",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "Less: Current maturities ( 26 )",
@@ -559,268 +774,48 @@
             "label": "Total long-term debt",
             "amount": "$ 9,552 million",
             "rate": null,
-            "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
+            "seniority": null,
             "section": null,
             "periodColumn": "June 30, 2026",
             "sourceLine": "Total long-term debt $ 9,552",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
           }
         ],
-        "priorScheduleSequence": [
-          {
-            "kind": "row",
-            "label": "6 ⅞% Senior Notes due 2028",
-            "amount": "42 million",
-            "rate": "6.875%",
-            "seniority": null,
-            "maturityDate": "2028",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "6 ⅞% Senior Notes due 2028 42",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": "6 ⅞% Senior Notes due 2028 42"
-          },
-          {
-            "kind": "row",
-            "label": "6 % Senior Secured Notes due 2029",
-            "amount": "644 million",
-            "rate": "6%",
-            "seniority": "senior-priority secured",
-            "maturityDate": "2029",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "6 % Senior Secured Notes due 2029 644",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": "6 % Senior Secured Notes due 2029 644"
-          },
-          {
-            "kind": "row",
-            "label": "5 ¼% Senior Secured Notes due 2030",
-            "amount": "1,535 million",
-            "rate": "5.25%",
-            "seniority": "senior-priority secured",
-            "maturityDate": "2030",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "5 ¼% Senior Secured Notes due 2030 1,535",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": "5 ¼% Senior Secured Notes due 2030 1,535"
-          },
-          {
-            "kind": "row",
-            "label": "4 ¾% Senior Secured Notes due 2031",
-            "amount": "1,058 million",
-            "rate": "4.75%",
-            "seniority": "senior-priority secured",
-            "maturityDate": "2031",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "4 ¾% Senior Secured Notes due 2031 1,058",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm",
-            "maturitySourceLine": "4 ¾% Senior Secured Notes due 2031 1,058"
-          },
-          {
-            "kind": "row",
-            "label": "10 ⅞% Senior Secured Notes due 2032",
-            "amount": "1,780 million",
-            "rate": "10.875%",
-            "seniority": "senior-priority secured",
-            "maturityDate": "2032",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "10 ⅞% Senior Secured Notes due 2032 1,780",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm",
-            "maturitySourceLine": "10 ⅞% Senior Secured Notes due 2032 1,780"
-          },
-          {
-            "kind": "row",
-            "label": "10 ¾% Senior Secured Notes due 2033",
-            "amount": "700 million",
-            "rate": "10.75%",
-            "seniority": "senior-priority secured",
-            "maturityDate": "2033",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "10 ¾% Senior Secured Notes due 2033 700",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": "10 ¾% Senior Secured Notes due 2033 700"
-          },
-          {
-            "kind": "row",
-            "label": "9 ¾% Senior Secured Notes due 2034",
-            "amount": "1,790 million",
-            "rate": "9.75%",
-            "seniority": "senior-priority secured",
-            "maturityDate": "2034",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "9 ¾% Senior Secured Notes due 2034 1,790",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": "9 ¾% Senior Secured Notes due 2034 1,790"
-          },
-          {
-            "kind": "row",
-            "label": "6 ⅞% Junior-Priority Secured Notes due 2029",
-            "amount": "1,244 million",
-            "rate": "6.875%",
-            "seniority": "junior-priority secured",
-            "maturityDate": "2029",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": "6 ⅞% Junior-Priority Secured Notes due 2029 1,244"
-          },
-          {
-            "kind": "row",
-            "label": "6 ⅛% Junior-Priority Secured Notes due 2030",
-            "amount": "1,227 million",
-            "rate": "6.125%",
-            "seniority": "junior-priority secured",
-            "maturityDate": "2030",
-            "dateGranularity": "year",
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": "6 ⅛% Junior-Priority Secured Notes due 2030 1,227"
-          },
-          {
-            "kind": "row",
-            "label": "ABL Facility",
-            "amount": "$ 0 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "ABL Facility —",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
-            "maturitySourceLine": null
-          },
-          {
-            "kind": "row",
-            "label": "Finance lease and financing obligations",
-            "amount": "299 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Finance lease and financing obligations 299",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
-          },
-          {
-            "kind": "row",
-            "label": "Other",
-            "amount": "42 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Other 42",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
-          },
-          {
-            "kind": "adjustment",
-            "label": "Less: Unamortized deferred debt issuance costs",
-            "amount": "( 205 million )",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Less: Unamortized deferred debt issuance costs ( 205 )",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
-          },
-          {
-            "kind": "subtotal",
-            "label": "Total debt",
-            "amount": "10,156 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Total debt 10,156",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
-          },
-          {
-            "kind": "adjustment",
-            "label": "Less: Current maturities",
-            "amount": "( 29 million )",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Less: Current maturities ( 29 )",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
-          },
-          {
-            "kind": "subtotal",
-            "label": "Total long-term debt",
-            "amount": "$ 10,127 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Total long-term debt $ 10,127",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
-          }
-        ],
         "balanceSheetDebtCaptions": [
           {
             "label": "Current maturities of long-term debt",
-            "amount": "$ 26 million",
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "Current maturities of long-term debt $ 26",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "amount": "$ 18 million",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Current maturities of long-term debt $ 18",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           },
           {
             "label": "Long-term debt",
-            "amount": "$ 9,552 million",
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "Long-term debt 9,552",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "amount": "$ 9,568 million",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Long-term debt 9,568",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "debtScheduleSourceFiling": {
+          "form": "10-Q",
+          "date": "2026-10-29",
+          "reportDate": "2026-09-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+        },
+        "debtSchedulePriorFiling": {
           "form": "10-Q",
           "date": "2026-07-23",
           "reportDate": "2026-06-30",
           "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
         },
-        "debtSchedulePriorFiling": {
-          "form": "10-Q",
-          "date": "2026-04-22",
-          "reportDate": "2026-03-31",
-          "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526170557/cyh-20260331.htm"
-        },
         "anchorNoteShape": "tabular",
         "priorPeriodBase": null,
         "noteLocatorVersion": 1,
         "rowsExtracted": 34,
-        "rowsVerified": 34,
+        "rowsVerified": 32,
         "baseRowsExtracted": 16,
         "columnReadFailure": false,
         "scheduleCompleteness": {
@@ -842,23 +837,23 @@
             "eventDate": "2026-02-02",
             "dateGranularity": "day",
             "sourceLine": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           },
           {
             "instrument": "4.750% Senior Secured Notes due 2031",
             "amount": "$ 368 million",
             "eventDate": "2026-05-06",
             "dateGranularity": "day",
-            "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           },
           {
             "instrument": "10.875% Senior Secured Notes due 2032",
             "amount": "$ 231 million",
             "eventDate": "2026-05-06",
             "dateGranularity": "day",
-            "sourceLine": "and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "sourceLine": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "projectCompletionDate": null,
@@ -868,16 +863,16 @@
         "eventStatus": "upcoming",
         "proceedsUse": null,
         "xbrlDebtTotal": {
-          "total": 9578000000,
-          "asOf": "2026-06-30",
+          "total": 9586000000,
+          "asOf": "2026-09-30",
           "parts": [
             {
               "tag": "LongTermDebtAndCapitalLeaseObligationsCurrent",
-              "value": 26000000
+              "value": 18000000
             },
             {
               "tag": "LongTermDebtNoncurrent",
-              "value": 9552000000
+              "value": 9568000000
             }
           ],
           "separateLeases": [
@@ -887,14 +882,14 @@
             },
             {
               "tag": "FinanceLeaseLiabilityNoncurrent",
-              "value": 185000000
+              "value": 187000000
             }
           ],
           "unavailableReason": null
         },
         "xbrlMaturityBuckets": {
           "buckets": [],
-          "asOf": "2026-06-30"
+          "asOf": "2026-09-30"
         }
       },
       {
@@ -909,16 +904,16 @@
         "triggerName": "New debt issuance / notes pricing",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No new debt issuance in the current period. The 10-Q for June 30, 2026 shows no new debt issuances during the six months ended June 30, 2026. Recent issuances occurred in 2025 (10¾% Senior Secured Notes due 2033 in May 2025 and 9¾% Senior Secured Notes due 2034 in August 2025), but these are outside the current reporting period.",
+        "evidence": "No new debt issuance in the current period (nine months ended September 30, 2026). The company repurchased and redeemed existing debt but did not issue new debt tranches.",
         "mappedNeed": "Refi or add-on financing",
         "needType": "credit",
-        "confidence": 0.9,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -950,7 +945,7 @@
         "projectCompletionGranularity": null,
         "cashAmount": null,
         "projectName": null,
-        "eventStatus": "completed",
+        "eventStatus": "standing",
         "proceedsUse": null
       },
       {
@@ -965,16 +960,16 @@
         "triggerName": "Acquisition announced",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No acquisitions announced in the current period. The company completed acquisitions of physician practices and clinics and controlling interests in ambulatory surgery centers for approximately $53 million during the six months ended June 30, 2026, but these were small asset acquisitions, not business acquisitions. The company is primarily focused on divestitures, not acquisitions.",
+        "evidence": "No acquisition announced by Community Health Systems in the current period. The company completed divestitures of hospitals and acquired certain physician practices and clinics ($54 million for nine months ended September 30, 2026), but these are small acquisitions of physician practices, not material business acquisitions.",
         "mappedNeed": "Bridge financing, then permanent",
         "needType": "credit",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1006,7 +1001,7 @@
         "projectCompletionGranularity": null,
         "cashAmount": null,
         "projectName": null,
-        "eventStatus": "completed",
+        "eventStatus": "standing",
         "proceedsUse": null
       },
       {
@@ -1021,21 +1016,21 @@
         "triggerName": "Capex program / new facility or construction",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Capital expenditures totaled $152 million for the six months ended June 30, 2026, with expected total capital expenditures of approximately $350 million to $400 million in 2026. Capital expenditures relate primarily to expansion and renovation of existing facilities, construction of additional access points such as free-standing emergency departments and ambulatory surgery centers, investments in higher acuity service lines and information technology infrastructure.",
+        "evidence": "Capital expenditures totaled $239 million for the nine months ended September 30, 2026, with expected total capital expenditures of approximately $350 million to $400 million in 2026. Capital expenditures relate primarily to expansion and renovation of existing facilities, construction of additional access points such as free-standing emergency departments and ambulatory surgery centers, investments in higher acuity service lines and information technology infrastructure.",
         "mappedNeed": "Term loan or capex facility",
         "needType": "credit",
         "confidence": 0.9,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "Capital expenditures relate primarily to expansion and renovation of existing facilities, construction of additional access points such as free-standing emergency departments and ambulatory surgery centers, investments in higher acuity service lines and information technology infrastructure, as well as routine expenditures for equipment, minor renovations and other upgrades.",
-        "verifiedQuoteNormalized": "Capital expenditures relate primarily to expansion and renovation of existing facilities, construction of additional access points such as free-standing emergency departments and ambulatory surgery centers, investments in higher acuity service lines and information technology infrastructure, as well as routine expenditures for equipment, minor renovations and other upgrades.",
+        "verifiedQuote": "Capital expenditures totaled $239 million and $241 million for the nine months ended September 30, 2026 and 2025, respectively. We expect total capital expenditures of approximately $350 million to $400 million in 2026.",
+        "verifiedQuoteNormalized": "Capital expenditures totaled $239 million and $241 million for the nine months ended September 30, 2026 and 2025, respectively. We expect total capital expenditures of approximately $350 million to $400 million in 2026.",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
         "eventDate": null,
@@ -1060,7 +1055,7 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$350 million to $400 million",
+        "cashAmount": "$ 350 million to $ 400 million",
         "projectName": null,
         "eventStatus": "standing",
         "proceedsUse": null
@@ -1077,16 +1072,16 @@
         "triggerName": "Revolver near capacity + growth",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "The ABL Facility has $751 million of available borrowing capacity out of a $1.0 billion maximum, with no outstanding borrowings and $32 million in letters of credit as of June 30, 2026. The revolver is not near capacity.",
+        "evidence": "ABL Facility has $1.0 billion maximum capacity with $745 million available borrowing capacity (after $32 million of letters of credit) as of September 30, 2026. No outstanding borrowings. The revolver is not near capacity.",
         "mappedNeed": "Revolver upsize",
         "needType": "credit",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1133,16 +1128,16 @@
         "triggerName": "Dividend recap / buyback authorization",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No dividend or share buyback authorization announced. The company repurchased restricted stock shares for payroll tax withholding requirements ($2 million for the six months ended June 30, 2026), but this is not a buyback authorization.",
+        "evidence": "No dividend or share buyback authorization announced in the current period. The company repurchased restricted stock shares for payroll tax withholding requirements ($2 million for nine months ended September 30, 2026), but this is not a buyback authorization.",
         "mappedNeed": "Leverage capacity conversation",
         "needType": "credit",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1189,16 +1184,16 @@
         "triggerName": "Large cash balance building",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "Cash and cash equivalents were $149 million at June 30, 2026, down from $260 million at December 31, 2025. This represents a decline in cash balance, not a large or growing cash position.",
+        "evidence": "Cash and cash equivalents were $155 million at September 30, 2026, compared to $260 million at December 31, 2025. Cash decreased by $105 million during the nine months ended September 30, 2026. This is not a large or growing cash balance.",
         "mappedNeed": "Liquidity management, earning on idle cash",
         "needType": "treasury",
-        "confidence": 0.9,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1245,37 +1240,25 @@
         "triggerName": "Asset sale / divestiture closing",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "The company completed multiple hospital divestitures during the six months ended June 30, 2026, including the sale of Crestwood Medical Center in Huntsville, Alabama for $459 million (completed April 1, 2026) and the sale of four hospitals in Arkansas to Freeman Health System for $110 million (completed June 1, 2026). The company also divested controlling interests in hospitals in Tennessee and Pennsylvania.",
+        "evidence": "On June 1, 2026, the company completed the sale of four hospitals (Northwest Medical Center - Bentonville, Northwest Medical Center - Springdale, Northwest Medical Center - Willow Creek Women's Hospital, and Siloam Springs Regional Hospital) and associated outpatient centers and practices to Freeman Health System for $110 million in cash. Additionally, the company recorded a net gain of approximately $248 million during the nine months ended September 30, 2026 related to divestitures of hospitals.",
         "mappedNeed": "Proceeds deposit + sweep",
         "needType": "treasury",
         "confidence": 0.95,
         "citations": [
           {
-            "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
-          },
-          {
             "form": "8-K",
             "date": "2026-06-01",
             "reportDate": "2026-06-01",
             "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526251540/cyh-20260601.htm"
-          },
-          {
-            "form": "8-K",
-            "date": "2026-04-01",
-            "reportDate": "2026-04-01",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526138026/cyh-20260401.htm"
           }
         ],
-        "quoteVerified": false,
-        "verifiedQuote": null,
-        "verifiedQuoteNormalized": null,
-        "quoteMatchType": null,
-        "quoteHasFigure": false,
-        "eventDate": null,
-        "dateGranularity": null,
+        "quoteVerified": true,
+        "verifiedQuote": "The purchase price paid to CHS in connection with the closing of the Transaction, after giving effect to estimated working capital, the assumption of finance leases by the Purchaser and before certain transaction expenses, was $110 million in cash (subject to a post-closing working capital adjustment).",
+        "verifiedQuoteNormalized": "The purchase price paid to CHS in connection with the closing of the Transaction, after giving effect to estimated working capital, the assumption of finance leases by the Purchaser and before certain transaction expenses, was $110 million in cash (subject to a post-closing working capital adjustment).",
+        "quoteMatchType": "literal",
+        "quoteHasFigure": true,
+        "eventDate": "2026-06-01",
+        "dateGranularity": "day",
         "scheduleSequence": [],
         "priorScheduleSequence": [],
         "balanceSheetDebtCaptions": [],
@@ -1294,64 +1277,19 @@
         "issuedTranches": [],
         "eventInstances": [
           {
-            "description": "Sale of Crestwood Medical Center in Huntsville, Alabama",
-            "amount": "$ 459 million",
-            "eventDate": "2026-04-01",
-            "dateGranularity": "day",
-            "eventStatus": "completed",
-            "sourceLine": "The purchase price paid to CHS in connection with the closing of the Transaction, after giving effect to estimated working capital and before certain transaction expenses, was $459 million in cash (subject to a post-closing working capital adjustment).",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526138026/cyh-20260401.htm"
-          },
-          {
-            "description": "Sale of four hospitals in Arkansas (Northwest Medical Center - Bentonville, Northwest Medical Center - Springdale, Northwest Medical Center - Willow Creek Women's Hospital, and Siloam Springs Regional Hospital) to Freeman Health System",
+            "description": "Sale of four hospitals (Northwest Medical Center - Bentonville, Northwest Medical Center - Springdale, Northwest Medical Center - Willow Creek Women's Hospital, and Siloam Springs Regional Hospital) and associated outpatient centers and practices to Freeman Health System",
             "amount": "$ 110 million",
             "eventDate": "2026-06-01",
             "dateGranularity": "day",
             "eventStatus": "completed",
             "sourceLine": "The purchase price paid to CHS in connection with the closing of the Transaction, after giving effect to estimated working capital, the assumption of finance leases by the Purchaser and before certain transaction expenses, was $110 million in cash (subject to a post-closing working capital adjustment).",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526251540/cyh-20260601.htm"
-          },
-          {
-            "description": "Divestiture of Tennova Healthcare - Clarksville (80% ownership interest sale to Vanderbilt University Medical Center)",
-            "amount": null,
-            "eventDate": "2026-02-01",
-            "dateGranularity": "day",
-            "eventStatus": "completed",
-            "sourceLine": "Tennova Healthcare - Clarksville Vanderbilt University Medical Center Clarksville, Tennessee 270 February 1, 2026",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
-          },
-          {
-            "description": "Divestiture of Wilkes-Barre General Hospital to Tenor Health Foundation",
-            "amount": null,
-            "eventDate": "2026-02-01",
-            "dateGranularity": "day",
-            "eventStatus": "completed",
-            "sourceLine": "Wilkes-Barre General Hospital Tenor Health Foundation Wilkes-Barre, Pennsylvania 369 February 1, 2026",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
-          },
-          {
-            "description": "Divestiture of Regional Hospital of Scranton to Tenor Health Foundation",
-            "amount": null,
-            "eventDate": "2026-02-01",
-            "dateGranularity": "day",
-            "eventStatus": "completed",
-            "sourceLine": "Regional Hospital of Scranton Tenor Health Foundation Scranton, Pennsylvania 186 February 1, 2026",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
-          },
-          {
-            "description": "Divestiture of Moses Taylor Hospital to Tenor Health Foundation",
-            "amount": null,
-            "eventDate": "2026-02-01",
-            "dateGranularity": "day",
-            "eventStatus": "completed",
-            "sourceLine": "Moses Taylor Hospital Tenor Health Foundation Scranton, Pennsylvania 122 February 1, 2026",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
           }
         ],
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": null,
+        "cashAmount": "$ 110 million",
         "projectName": null,
         "eventStatus": "completed",
         "proceedsUse": null
@@ -1368,16 +1306,16 @@
         "triggerName": "International expansion / rising foreign revenue",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No international expansion disclosed. The company operates exclusively in the United States across 36 distinct markets in 14 states. No foreign revenue or international operations are mentioned in the filings.",
+        "evidence": "No international expansion disclosed. The company operates healthcare facilities in 36 distinct markets across 14 states within the United States only. No foreign revenue or international operations are mentioned.",
         "mappedNeed": "FX hedging, cross-border cash management",
         "needType": "treasury",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1427,8 +1365,15 @@
         "evidence": "No new subsidiary formation disclosed in public filings. Formation of new subsidiaries is typically an internal matter not disclosed in SEC filings unless tied to a reported acquisition.",
         "mappedNeed": "New operating accounts",
         "needType": "treasury",
-        "confidence": 0.5,
-        "citations": [],
+        "confidence": 0.9,
+        "citations": [
+          {
+            "form": "10-Q",
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+          }
+        ],
         "quoteVerified": true,
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
@@ -1473,16 +1418,16 @@
         "triggerName": "IPO / secondary raise",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No IPO or secondary equity offering announced or completed. The company is already a public company trading on the NYSE under ticker CYH.",
+        "evidence": "No IPO or secondary equity offering announced or completed. The company is already a public company trading on the New York Stock Exchange under ticker CYH.",
         "mappedNeed": "Proceeds management, treasury build-out",
         "needType": "treasury",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1529,16 +1474,16 @@
         "triggerName": "Floating-rate debt + rate exposure",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "The company's outstanding debt consists entirely of fixed-rate senior and junior-priority secured notes. The ABL Facility is a floating-rate revolver, but it has no outstanding borrowings as of June 30, 2026. No material floating-rate debt exposure is present.",
+        "evidence": "All outstanding debt tranches disclosed are fixed-rate instruments. No floating-rate debt tied to SOFR or similar benchmarks is disclosed in the debt schedule.",
         "mappedNeed": "Interest-rate hedging",
         "needType": "credit",
-        "confidence": 0.9,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1585,16 +1530,16 @@
         "triggerName": "Commodity / input-cost exposure",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material commodity or input-cost exposure disclosed in the risk factors or MD&A. The company's primary cost drivers are labor (salaries and benefits), medical supplies, and other operating expenses, but no specific commodity hedging or exposure management is disclosed.",
+        "evidence": "No material commodity or input-cost exposure disclosed in risk factors or MD&A. The company's primary operating expenses are salaries and benefits, supplies, and other operating expenses related to healthcare delivery, but no specific commodity hedging or exposure management is disclosed.",
         "mappedNeed": "Commodity hedging",
         "needType": "credit",
-        "confidence": 0.85,
+        "confidence": 0.9,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1641,16 +1586,16 @@
         "triggerName": "Large FX exposure disclosed",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material foreign-currency exposure disclosed. The company operates exclusively in the United States and has no foreign operations or foreign-currency denominated debt or revenues.",
+        "evidence": "No material foreign-currency exposure disclosed. The company operates exclusively within the United States across 14 states, with no international operations or foreign revenue.",
         "mappedNeed": "FX hedging program",
         "needType": "treasury",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1697,16 +1642,16 @@
         "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. The company states it is not subject to the consolidated fixed charge coverage ratio covenant as of June 30, 2026, and management believes current liquidity is sufficient for the foreseeable future.",
+        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. The company states it is not subject to the consolidated fixed charge coverage ratio covenant as of September 30, 2026.",
         "mappedNeed": "Restructuring or amendment support",
         "needType": "distress",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-07-23",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm"
+            "date": "2026-10-29",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1743,6 +1688,81 @@
       }
     ],
     "verdict": "CALL",
-    "relationshipFlags": []
-  }
+    "relationshipFlags": [],
+    "recordedReadSet": [
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+        "form": "10-Q",
+        "filingDate": "2026-10-29",
+        "accessionNumber": "0001193125-26-437869",
+        "contentHash": "716ebf48e5c2e19e3fd28da14f2bc515f34e34a5e7d3124d1bc9947e118bc568",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526314196/cyh-20260630.htm",
+        "form": "10-Q",
+        "filingDate": "2026-07-23",
+        "accessionNumber": "0001193125-26-314196",
+        "contentHash": "c462116e5dba03035f41f7cf18bdb456d82fd9cf102cb1b39f48f699807abdbd",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526059509/cyh-20251231.htm",
+        "form": "10-K",
+        "filingDate": "2026-02-19",
+        "accessionNumber": "0001193125-26-059509",
+        "contentHash": "0a1a44ddf429f55823c101f94fbb5f11fb7681cbb8f63f0b268f26d46089d7eb",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526436229/cyh-20261028.htm",
+        "form": "8-K",
+        "filingDate": "2026-10-28",
+        "accessionNumber": "0001193125-26-436229",
+        "contentHash": "91699c65d832489c4344548a6c819cb8dd7db20f40381963073222bfe1685083",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526312454/cyh-20260722.htm",
+        "form": "8-K",
+        "filingDate": "2026-07-22",
+        "accessionNumber": "0001193125-26-312454",
+        "contentHash": "be6152593644e02da1d72d0a2aa06e502b331250c6a4c147dca05876f3e602c8",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526251540/cyh-20260601.htm",
+        "form": "8-K",
+        "filingDate": "2026-06-01",
+        "accessionNumber": "0001193125-26-251540",
+        "contentHash": "bdc0171bc9708fdfdc4341b73f1fea6a28be555d0b0cb3172cbd2a04f2843e76",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526208926/d107670d8k.htm",
+        "form": "8-K",
+        "filingDate": "2026-05-06",
+        "accessionNumber": "0001193125-26-208926",
+        "contentHash": "b6e43c46446181490b88738d22dce5280949b5ce44768945f3a14faae24ecf89",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526171305/d31708d8k.htm",
+        "form": "8-K",
+        "filingDate": "2026-04-23",
+        "accessionNumber": "0001193125-26-171305",
+        "contentHash": "4cb2b87bd13fccf8618967a54e4a139cdf37592148422867060aee300558b37e",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526167000/cyh-20260421.htm",
+        "form": "8-K",
+        "filingDate": "2026-04-21",
+        "accessionNumber": "0001193125-26-167000",
+        "contentHash": "e13b249b2b97add82379fc1402139f2811fcec5b889e43c6a23a7ea5419372a5",
+        "via": "base"
+      }
+    ]
+  },
+  "readSetAsOf": "2026-10-31"
 }
