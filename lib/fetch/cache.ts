@@ -94,6 +94,8 @@ export async function readCache<T>(
 }
 
 export async function writeCache(relPath: string, data: unknown): Promise<void> {
+  // Session 27 (Nov 3): a run that must not write the shared cache (CACHE_NO_WRITE=1) persists nothing, on every path.
+  if (process.env.CACHE_NO_WRITE === "1") return;
   const token = requireBlobToken();
   const envelope: CacheEnvelope<unknown> = { cachedAt: new Date().toISOString(), data };
   // SESSION 27: the write and at most two retries, then a named error.
@@ -124,12 +126,24 @@ export async function cachedFetch<T>(
   fetcher: () => Promise<T>,
   ttlMs: number | null = FILING_CACHE_TTL_MS
 ): Promise<{ data: T; fromCache: boolean }> {
-  const cached = await readCache<T>(relPath, ttlMs);
+  return cachedFetchWith({ read: (p) => readCache<T>(p, ttlMs), write: writeCache }, relPath, fetcher);
+}
+
+/**
+ * SESSION 27 (Nov 3): the same, over a given store. With CACHE_NO_WRITE=1 a miss is fetched and returned but never
+ * persisted, so a local pricing run cannot write the shared cache production reads (cacheNoWrite.test).
+ */
+export async function cachedFetchWith<T>(
+  store: { read: (relPath: string) => Promise<T | null>; write: (relPath: string, data: unknown) => Promise<void> },
+  relPath: string,
+  fetcher: () => Promise<T>
+): Promise<{ data: T; fromCache: boolean }> {
+  const cached = await store.read(relPath);
   if (cached !== null) {
     return { data: cached, fromCache: true };
   }
   const data = await fetcher();
-  await writeCache(relPath, data);
+  if (process.env.CACHE_NO_WRITE !== "1") await store.write(relPath, data);
   return { data, fromCache: false };
 }
 
