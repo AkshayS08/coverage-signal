@@ -25,6 +25,7 @@ import { classifyOneTrigger } from "../agent/claude";
 import { setPriceOnly, pricedCalls } from "../agent/spendGuard";
 import { priceOf } from "../agent/costMeter";
 import { getFilingText, getRecentFilings } from "../fetch";
+import { assertFilingListCurrent } from "../fetch/freshFilings";
 import { readSetOf, digCandidatesOf, anchorOf } from "./readSet";
 import { checkFree } from "./freeRun";
 import { buildExtractionText } from "../fetch/noteLocation";
@@ -47,6 +48,8 @@ const ceilCent = (x: number) => Math.ceil(x * 100 - 1e-9) / 100;
   mkdirSync("sessions/27/refresh_inputs", { recursive: true });
   const rows: any[] = [];
   for (const company of NAMES) {
+    // Stage 2 rule (Nov 3): never price on a filing list older than the request (lib/fetch/freshFilings.ts).
+    await quiet(() => assertFilingListCurrent(company));
     const f = await quiet(() => getRecentFilings(company, ["8-K", "10-Q", "10-K"]));
     const rs = readSetOf(f.filings), anchor = anchorOf(rs)!;
     for (const b of BUSTS) { const v = await checkFree(company, b); if (v.cached) throw new Error(`${company} [${b ?? "canonical"}] is already cached on the new read set — not a forced miss`); }

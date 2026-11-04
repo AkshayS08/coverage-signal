@@ -24,6 +24,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { execFileSync, execSync } from "node:child_process";
 import { runAgentLoop } from "../agent";
 import { checkFree, spendTracker } from "./freeRun";
+import { assertFilingListCurrent } from "../fetch/freshFilings";
 import { setSpendLimits, beginGuardRun, setDigAllowance, spentThisRun } from "../agent/spendGuard";
 import { captureCardInput } from "../cards/capture/snapshot";
 import { briefDateArg } from "../cards/briefDate";
@@ -45,6 +46,8 @@ const stop = (why: string): never => { console.error(`STOPPED: ${why}`); process
   const out: any = { approvedTotal: APPROVED_TOTAL, cap: CAP, names: [] };
   for (const p of pricing) {
     const company = p.company as string;
+    // Stage 2 rule (Nov 3): never extract on a filing list older than the request (lib/fetch/freshFilings.ts).
+    try { await assertFilingListCurrent(company); } catch (e) { stop((e as Error).message); }
     const bound = await checkFree(company);
     for (const b of BUSTS) { const v = await checkFree(company, b); if (v.cached) stop(`${company} [${b ?? "canonical"}] is already cached: the forced misses do not equal the declared runs`); }
     // The dig allowance: the cap less the other stages' counted worst case (base and proceeds-use x3, facts).
