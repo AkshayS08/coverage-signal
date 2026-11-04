@@ -1,19 +1,19 @@
 {
  "cik": "0001179929",
- "anchorUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm",
+ "anchorUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
  "promptVersion": 1,
  "asks": 3,
- "costUsd": 0.064356,
+ "costUsd": 0.089136,
  "schedule": [],
  "subFacilities": [
   {
    "facility": "Credit Agreement",
    "kind": "swingline",
    "amount": {
-    "value": "$ 15 million",
+    "value": "$15 million",
     "src": {
-     "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
@@ -21,10 +21,10 @@
    "facility": "Credit Agreement",
    "kind": "letter-of-credit",
    "amount": {
-    "value": "$ 100 million",
+    "value": "$100 million",
     "src": {
-     "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   }
@@ -32,17 +32,17 @@
  "uncommitted": [
   {
    "description": {
-    "value": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+    "value": "incremental term loans to finance certain acquisitions",
     "src": {
-     "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    },
    "amount": {
-    "value": "$ 800 million",
+    "value": "$800 million",
     "src": {
-     "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million.",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   }
@@ -53,102 +53,102 @@
   {
    "instrument": "4.375 % Notes due June 15, 2028",
    "face": {
-    "value": "$ 800",
+    "value": "$800 million",
     "src": {
-     "sentence": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
   {
    "instrument": "3.875 % Notes due November 15, 2030",
    "face": {
-    "value": "650",
+    "value": "$650 million",
     "src": {
-     "sentence": "3.875 % Notes due November 15, 2030 650   650",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800   3.875 % Notes due November 15, 2030 650   650",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
   {
    "instrument": "6.500 % Notes due February 15, 2031",
    "face": {
-    "value": "850",
+    "value": "$850 million",
     "src": {
-     "sentence": "6.500 % Notes due February 15, 2031 850   850",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800   3.875 % Notes due November 15, 2030 650   650   6.500 % Notes due February 15, 2031 850   850",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
   {
    "instrument": "3.875 % Notes due May 15, 2032",
    "face": {
-    "value": "750",
+    "value": "$750 million",
     "src": {
-     "sentence": "3.875 % Notes due May 15, 2032 750   750",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800   3.875 % Notes due November 15, 2030 650   650   6.500 % Notes due February 15, 2031 850   850   3.875 % Notes due May 15, 2032 750   750",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
   {
    "instrument": "6.250 % Notes due January 15, 2033",
    "face": {
-    "value": "750",
+    "value": "$750 million",
     "src": {
-     "sentence": "6.250 % Notes due January 15, 2033 750   750",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800   3.875 % Notes due November 15, 2030 650   650   6.500 % Notes due February 15, 2031 850   850   3.875 % Notes due May 15, 2032 750   750   6.250 % Notes due January 15, 2033 750   750",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   }
  ],
  "maturities": [
   {
-   "instrument": "4.375 % Notes",
+   "instrument": "4.375 % Notes due June 15, 2028",
    "maturity": {
     "value": "June 15, 2028",
     "src": {
-     "sentence": "4.375 % Notes due June 15, 2028 $ 800   $ 800",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
   {
-   "instrument": "3.875 % Notes",
+   "instrument": "3.875 % Notes due November 15, 2030",
    "maturity": {
     "value": "November 15, 2030",
     "src": {
-     "sentence": "3.875 % Notes due November 15, 2030 650   650",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800   3.875 % Notes due November 15, 2030 650   650",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
   {
-   "instrument": "6.500 % Notes",
+   "instrument": "6.500 % Notes due February 15, 2031",
    "maturity": {
     "value": "February 15, 2031",
     "src": {
-     "sentence": "6.500 % Notes due February 15, 2031 850   850",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800   3.875 % Notes due November 15, 2030 650   650   6.500 % Notes due February 15, 2031 850   850",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
   {
-   "instrument": "3.875 % Notes",
+   "instrument": "3.875 % Notes due May 15, 2032",
    "maturity": {
     "value": "May 15, 2032",
     "src": {
-     "sentence": "3.875 % Notes due May 15, 2032 750   750",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800   3.875 % Notes due November 15, 2030 650   650   6.500 % Notes due February 15, 2031 850   850   3.875 % Notes due May 15, 2032 750   750",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   },
   {
-   "instrument": "6.250 % Notes",
+   "instrument": "6.250 % Notes due January 15, 2033",
    "maturity": {
     "value": "January 15, 2033",
     "src": {
-     "sentence": "6.250 % Notes due January 15, 2033 750   750",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "sentence": "The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800   $ 800   3.875 % Notes due November 15, 2030 650   650   6.500 % Notes due February 15, 2031 850   850   3.875 % Notes due May 15, 2032 750   750   6.250 % Notes due January 15, 2033 750   750",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    }
   }
@@ -159,7 +159,7 @@
     "value": "February 4, 2026",
     "src": {
      "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    },
    "type": "facility amendment",
@@ -168,7 +168,7 @@
     "value": "Credit Agreement",
     "src": {
      "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000039/moh-20260630.htm"
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
     }
    },
    "face": null,
@@ -179,27 +179,37 @@
  ],
  "residual": [
   {
-   "fact": "schedule 2028 $ 800",
+   "fact": "schedule 2027 $0",
    "why": "not verified: not a printed schedule: no caption naming maturities or principal payments introduces its table",
    "variation": []
   },
   {
-   "fact": "schedule 2030 650",
+   "fact": "schedule 2028 $800",
    "why": "not verified: not a printed schedule: no caption naming maturities or principal payments introduces its table",
    "variation": []
   },
   {
-   "fact": "schedule 2031 850",
+   "fact": "schedule 2029 $0",
    "why": "not verified: not a printed schedule: no caption naming maturities or principal payments introduces its table",
    "variation": []
   },
   {
-   "fact": "schedule 2032 750",
+   "fact": "schedule 2030 $650",
    "why": "not verified: not a printed schedule: no caption naming maturities or principal payments introduces its table",
    "variation": []
   },
   {
-   "fact": "schedule 2033 750",
+   "fact": "schedule 2031 $850",
+   "why": "not verified: not a printed schedule: no caption naming maturities or principal payments introduces its table",
+   "variation": []
+  },
+  {
+   "fact": "schedule 2032 $750",
+   "why": "not verified: not a printed schedule: no caption naming maturities or principal payments introduces its table",
+   "variation": []
+  },
+  {
+   "fact": "schedule 2033 $750",
    "why": "not verified: not a printed schedule: no caption naming maturities or principal payments introduces its table",
    "variation": []
   }

@@ -1,10 +1,10 @@
 {
  "cik": "0001739940",
  "company": "Cigna Group",
- "briefDate": "2026-10-15",
- "weekFrom": "2026-10-05",
- "weekTo": "2026-10-15",
- "previousBrief": "2026-10-04",
+ "briefDate": "2026-11-03",
+ "weekFrom": "2026-10-16",
+ "weekTo": "2026-11-03",
+ "previousBrief": "2026-10-15",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Oct 5 to Oct 15, 2026"
+    "t": "Brief week: Oct 16 to Nov 3, 2026"
    }
   ],
   [
@@ -42,22 +42,7 @@
    [
     {
      "k": "text",
-     "t": "No new filings affecting debt since Oct 4, 2026."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "1 Form 8-K (Item 5.02, officer or director change) "
-    },
-    {
-     "k": "filing",
-     "t": "[Oct 9, 2026]",
-     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126039271/ef20083475_8k.htm"
-    },
-    {
-     "k": "text",
-     "t": ", none affecting debt."
+     "t": "No new filings affecting debt since Oct 15, 2026."
     }
    ]
   ]
@@ -1051,7 +1036,7 @@
    ]
   },
   "refi": {
-   "heading": "Potential refinance opportunities (to Apr 15, 2028)",
+   "heading": "Potential refinance opportunities (to May 3, 2028)",
    "lines": [
     [
      {
@@ -1380,7 +1365,7 @@
     [
      {
       "k": "text",
-      "t": "Next, after Apr 15, 2028: "
+      "t": "Next, after May 3, 2028: "
      },
      {
       "k": "figure",
@@ -4491,7 +4476,7 @@
  },
  "v3": {
   "header": {
-   "label": "Weekly coverage brief · Oct 5 to Oct 15, 2026",
+   "label": "Weekly coverage brief · Oct 16 to Nov 3, 2026",
    "company": "CIGNA GROUP",
    "position": [
     {
@@ -4518,12 +4503,7 @@
    "status": [
     {
      "k": "text",
-     "t": "1 filing this week, none affecting debt: "
-    },
-    {
-     "k": "filing",
-     "t": "Form 8-K Oct 9, 2026",
-     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126039271/ef20083475_8k.htm"
+     "t": "No new debt filings this week"
     }
    ],
    "actionable": []
@@ -4544,7 +4524,7 @@
    }
   ],
   "call": {
-   "label": "The call · next 18 months, to Apr 15, 2028",
+   "label": "The call · next 18 months, to May 3, 2028",
    "case": "A",
    "headline": [
     {
@@ -6561,7 +6541,7 @@
    ],
    "window": {
     "endIndex": 3,
-    "endFraction": 0.2903225806451613,
+    "endFraction": 0.34139784946236557,
     "label": "18-month window"
    },
    "legend": [

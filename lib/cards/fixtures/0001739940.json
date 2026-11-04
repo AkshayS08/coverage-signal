@@ -1,7 +1,7 @@
 {
  "cik": "0001739940",
  "company": "Cigna Group",
- "briefDate": "2026-10-15",
+ "briefDate": "2026-11-03",
  "positionSource": "signed golden's stored result",
  "anchor": {
   "form": "10-Q",
@@ -204,13 +204,13 @@
   "label": "as of 2025-12-31, per 10-K debt note, rolled to 2026-06-30",
   "changes": [
    {
-    "instrument": "1.250 % senior notes",
+    "instrument": "1.250% notes due March 2026",
     "amountMillions": -550,
     "statedAs": "$ 550 million",
     "sourceLine": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026."
    },
    {
-    "instrument": "commercial paper program",
+    "instrument": "commercial paper",
     "amountMillions": 1000,
     "statedAs": "$ 1.0 billion at 2026-06-30 against $— at 2025-12-31",
     "sourceLine": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %."
