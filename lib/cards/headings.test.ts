@@ -11,6 +11,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { kindOf, printedBefore, printedHeadings } from "./headings";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const failures: string[] = [];
@@ -20,7 +21,7 @@ function assert(c: boolean, label: string) {
 }
 
 const FIX = join(process.cwd(), "lib", "cards", "fixtures");
-const fixtures = readdirSync(FIX).filter((f) => /^\d+\.json$/.test(f)).map((f) => JSON.parse(readFileSync(join(FIX, f), "utf-8")));
+const fixtures = nonEmpty("the heading fixtures", readdirSync(FIX).filter((f) => /^\d+\.json$/.test(f)).map((f) => JSON.parse(readFileSync(join(FIX, f), "utf-8"))));
 
 console.log("=== [1] THE NAMED CASE: DaVita's \"Senior Notes:\" ===");
 {

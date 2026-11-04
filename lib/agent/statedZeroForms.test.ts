@@ -23,6 +23,7 @@ import { join } from "node:path";
 import * as statedZero from "./statedZero";
 const { isZeroValue } = statedZero;
 import { verifyFacilities } from "./verifyFacility";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -35,7 +36,7 @@ const FIELDS = ["facilitySize", "drawn", "lettersOfCredit", "available"] as cons
 const IN = join(process.cwd(), "lib", "cards", "inputs");
 console.log("\n=== Z2: over all six, a stated zero written as \"$ —\" still verifies ===");
 let zeros = 0, quantities = 0;
-for (const f of readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x))) {
+for (const f of nonEmpty("the card input snapshots", readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x)))) {
   const s = JSON.parse(readFileSync(join(IN, f), "utf-8"));
   const textByUrl = new Map<string, string>(Object.entries(s.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
   const dm = s.result.results.find((t: any) => t.triggerId === "debt-maturity");
@@ -65,7 +66,8 @@ if (existsSync(replayPath)) {
   const dm = chs.results.find((t: any) => t.triggerId === "debt-maturity");
   // As the answer wrote it: in the rejections under the old verifier, on the verified facility once the replay re-verifies it.
   const rej = (dm.facilityRejections ?? []).find((x: any) => x.facility === "ABL Facility" && x.field === "drawn") ?? dm.facilities.find((x: any) => x.name === "ABL Facility")?.drawn;
-  const snap = JSON.parse(readFileSync(join(IN, "0001108109.json"), "utf-8"));
+  // Nov 3: the published brief moved to Nov 3; this fixture is the Oct 15 brief, read from its archive.
+  const snap = JSON.parse(readFileSync(join("lib", "cards", "archive", "2026-10-15", "inputs", "0001108109.json"), "utf-8"));
   const textByUrl = new Map<string, string>(Object.entries(snap.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
   const fac = { ...dm.facilities.find((x: any) => x.name === "ABL Facility"), drawn: { value: rej?.value, sourceLine: rej?.sourceLine } };
   const r = verifyFacilities({ facilities: [fac], textByUrl, anchorReportDate: dm.debtScheduleSourceFiling?.reportDate ?? null });
@@ -83,7 +85,7 @@ assert(!!canonical && canonical("$ 32 million") !== CANON, `[Z4 control] a quant
 
 console.log("\n=== Z5: over all six, every stored facility zero is canonical, every quantity untouched ===");
 const canonFacilities = (statedZero as any).canonicalizeFacilityZeros as ((f: any[]) => any[]) | undefined;
-for (const f of readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x))) {
+for (const f of nonEmpty("the card input snapshots", readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x)))) {
   const s0 = JSON.parse(readFileSync(join(IN, f), "utf-8"));
   const facs = s0.result.results.find((t: any) => t.triggerId === "debt-maturity")?.facilities ?? [];
   const out = canonFacilities ? canonFacilities(facs) : facs;

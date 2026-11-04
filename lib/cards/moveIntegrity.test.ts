@@ -23,11 +23,12 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { moveIntegrityViolations } from "./moveIntegrity";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const read = (p: string) => JSON.parse(readFileSync(p, "utf-8"));
-const CIKS = read(join("lib", "cards", "generated", "index.json")).ciks as string[];
+const CIKS = nonEmpty("the published cards", read(join("lib", "cards", "generated", "index.json")).ciks as string[]);
 const cards: { label: string; card: any; input: any }[] = [
   ...CIKS.map((c) => ({ label: "committed", card: read(join("lib", "cards", "generated", `${c}.json`)), input: read(join("lib", "cards", "inputs", `${c}.json`)) })),
   ...["0000070318", "0000927066", "0001108109"].map((c) => ({ label: "refresh", card: read(join("sessions", "27", "refresh", `${c}_review_card.json`)), input: read(join("sessions", "27", "refresh", `${c}_input.json`)) })),

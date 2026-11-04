@@ -24,12 +24,13 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fillStatedNothingOutstanding } from "./verifyFacility";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const read = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf-8")) : null);
 const CIKS = ["0000070318", "0000785161", "0000927066", "0001108109", "0001179929", "0001739940"];
-const canon = read("baselines/s27-replay.json")?.results ?? [], re = read("baselines/s27-retaste.json")?.results ?? [];
+const canon = nonEmpty("the v33 replay samples (baselines/s27-replay.json)", read("baselines/s27-replay.json")?.results), re = nonEmpty("the v33 re-taste samples (baselines/s27-retaste.json)", read("baselines/s27-retaste.json")?.results);
 const clone = (x: any) => JSON.parse(JSON.stringify(x));
 
 for (const cik of CIKS) {

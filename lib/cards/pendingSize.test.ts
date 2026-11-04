@@ -22,20 +22,21 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { classifyRedeemsClaims } from "../events/position";
 import { claimSizingMove, sameNoteOf } from "./build";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const CIKS = ["0000070318", "0000785161", "0000927066", "0001108109", "0001179929", "0001739940"];
-const replay = existsSync("baselines/s27-replay.json") ? JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")) : { results: [] };
+const replay = { results: nonEmpty("the v33 replay samples (baselines/s27-replay.json)", existsSync("baselines/s27-replay.json") ? JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results : null) };
 const sources: { label: string; result: any; cik: string }[] = [];
 for (const cik of CIKS) {
-  sources.push({ label: "v31 snapshot", cik, result: JSON.parse(readFileSync(join("lib", "cards", "inputs", `${cik}.json`), "utf-8")).result });
+  sources.push({ label: "v31 snapshot", cik, result: JSON.parse(readFileSync(join("lib", "cards", "archive", "2026-10-15", "inputs", `${cik}.json`), "utf-8")).result }); // the Oct 15 brief, archived (Nov 3)
   const r = replay.results.find((x: any) => x.result.cik === cik);
   if (r) sources.push({ label: "v33 replay", cik, result: r.result });
 }
 let pendingChecked = 0;
 for (const s of sources) {
-  const factsPath = join("lib", "cards", "inputs", "facts", `${s.cik}.json`);
+  const factsPath = join("lib", "cards", "archive", "2026-10-15", "inputs", "facts", `${s.cik}.json`); // the Oct 15 brief, archived (Nov 3)
   if (!existsSync(factsPath)) continue;
   const moves = JSON.parse(readFileSync(factsPath, "utf-8")).moves ?? [];
   const dm = s.result.results.find((t: any) => t.triggerId === "debt-maturity");

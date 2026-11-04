@@ -24,12 +24,14 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { compareToGolden, deriveGoldenState, sourceLineCheckFor, type GoldenFile } from "./golden";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 // Every signed golden with a card snapshot, at whatever version it is signed (Session 27: Tenet and Encompass re-signed at v33).
-const goldens = readdirSync("baselines/golden").map((f) => JSON.parse(readFileSync(`baselines/golden/${f}`, "utf-8")) as GoldenFile).filter((g) => existsSync(join("lib", "cards", "inputs", `${g.state.cik}.json`)));
-const snap = (cik: string) => JSON.parse(readFileSync(join("lib", "cards", "inputs", `${cik}.json`), "utf-8"));
+const goldens = nonEmpty("the signed goldens", readdirSync("baselines/golden")).map((f) => JSON.parse(readFileSync(`baselines/golden/${f}`, "utf-8")) as GoldenFile).filter((g) => existsSync(join("lib", "cards", "inputs", `${g.state.cik}.json`)));
+// Nov 3: the published brief moved to Nov 3; this fixture is the Oct 15 brief, read from its archive.
+const snap = (cik: string) => JSON.parse(readFileSync(join("lib", "cards", "archive", "2026-10-15", "inputs", `${cik}.json`), "utf-8"));
 const docsOf = (cik: string) => new Map<string, string>(Object.entries(snap(cik).docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
 
 console.log("\n=== L1: Tenet, signed v31 against the replayed v33 answer ===");

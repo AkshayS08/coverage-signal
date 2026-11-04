@@ -24,11 +24,13 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { buildCard } from "./build";
 import { movesSectionText } from "./sections";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
-const IN = join("lib", "cards", "inputs");
-const CIKS = JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[];
+// Nov 3: the published brief moved to Nov 3; this fixture is the Oct 15 brief, read from its archive.
+const IN = join("lib", "cards", "archive", "2026-10-15", "inputs");
+const CIKS = nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[]);
 const txt = (l: any[]) => l.map((s: any) => s.t ?? s.printed ?? "").join("");
 const UNREAD = /not yet read from/i;
 const ABSENT_MOVES = /No debt moves stated/i;

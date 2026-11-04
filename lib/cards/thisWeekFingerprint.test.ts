@@ -20,6 +20,7 @@ import { join } from "node:path";
 import { checkFree } from "../cache/freeRun";
 import { liveFilingsBetween } from "../fetch/thisWeek";
 import { EXTRACTION_PROMPT_VERSION } from "../cache/promptVersion";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const failures: string[] = [];
@@ -34,6 +35,7 @@ function assert(c: boolean, label: string) {
     .map((f) => JSON.parse(readFileSync(join(dir, f), "utf-8")))
     .filter((g) => g.extractionVersion === EXTRACTION_PROMPT_VERSION)
     .map((g) => ({ company: g.state.company as string, cik: g.state.cik as string }));
+  nonEmpty("the signed goldens at the current extraction version", signed);
 
   console.log("=== [1] BEFORE: every signed name is cached ===");
   const before = new Map<string, string>();

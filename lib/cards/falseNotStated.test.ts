@@ -18,10 +18,11 @@
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
-const CIKS = JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[];
+const CIKS = nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[]);
 const txt = (l: any[] | null) => (l ?? []).map((s: any) => s.t ?? s.printed ?? "").join("");
 /** How each facility field reads on the card when it claims the filing states nothing. */
 const NOT_STATED: Record<string, RegExp> = {
@@ -58,8 +59,9 @@ for (const cik of CIKS) {
   const v = violations(card, result);
   assert(v.length === 0, `[N1:${card.company}] no field with a figure found in a read document renders "not stated"${v.length ? ` — ${v.join("; ")}` : ""}`);
 }
-const ehc = JSON.parse(readFileSync(join("lib", "cards", "generated", "0000785161.json"), "utf-8"));
-const ehcResult = JSON.parse(readFileSync(join("lib", "cards", "inputs", "0000785161.json"), "utf-8")).result;
+// Nov 3: the published brief moved to Nov 3; this fixture is the Oct 15 brief, read from its archive.
+const ehc = JSON.parse(readFileSync(join("lib", "cards", "archive", "2026-10-15", "generated", "0000785161.json"), "utf-8"));
+const ehcResult = JSON.parse(readFileSync(join("lib", "cards", "archive", "2026-10-15", "inputs", "0000785161.json"), "utf-8")).result;
 const all = ehc.v3.facilities.map((f: any) => `${txt(f.bold)} ${txt(f.sub)}`).join(" | ");
 assert(/Letters of credit outstanding: stated only as of December 31, 2025 in the 10-K; not shown\./.test(all), `[N2:Encompass] "Letters of credit outstanding: stated only as of December 31, 2025 in the 10-K; not shown." (facilities: ${all.slice(0, 220)})`);
 const bad = JSON.parse(JSON.stringify(ehc));

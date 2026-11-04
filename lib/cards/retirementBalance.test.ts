@@ -26,6 +26,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { retirementBalanceViolations } from "./retirementBalance";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -33,7 +34,7 @@ const txt = (l: any[]) => (l ?? []).map((s: any) => s.t ?? s.printed ?? "").join
 
 const docsOf = (path: string) => new Map<string, string>(Object.entries(JSON.parse(readFileSync(path, "utf-8")).docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
 const all: { label: string; card: any; result: any; docs: Map<string, string> }[] = [
-  ...(JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[]).map((c) => ({ label: "committed", card: JSON.parse(readFileSync(join("lib", "cards", "generated", `${c}.json`), "utf-8")), result: JSON.parse(readFileSync(join("lib", "cards", "inputs", `${c}.json`), "utf-8")).result, docs: docsOf(join("lib", "cards", "inputs", `${c}.json`)) })),
+  ...(nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[])).map((c) => ({ label: "committed", card: JSON.parse(readFileSync(join("lib", "cards", "generated", `${c}.json`), "utf-8")), result: JSON.parse(readFileSync(join("lib", "cards", "inputs", `${c}.json`), "utf-8")).result, docs: docsOf(join("lib", "cards", "inputs", `${c}.json`)) })),
   ...["0000070318", "0000927066", "0001108109"].map((c) => ({ label: "refresh", card: JSON.parse(readFileSync(join("sessions", "27", "refresh", `${c}_review_card.json`), "utf-8")), result: JSON.parse(readFileSync("baselines/s27-refresh-batch.json", "utf-8")).names.find((n: any) => n.cik === c).samples.find((s: any) => s.bust === null).result, docs: docsOf(join("sessions", "27", "refresh", `${c}_input.json`)) })),
   { label: "refresh", card: JSON.parse(readFileSync(join("sessions", "27", "molina_review_card.json"), "utf-8")), result: JSON.parse(readFileSync("baselines/s27-molina-refresh.json", "utf-8")).results.find((x: any) => x.bust === null).result, docs: docsOf(join("sessions", "27", "molina_review_input.json")) },
 ];

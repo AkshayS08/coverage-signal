@@ -21,6 +21,7 @@ import { assemblePosition, ladderCapacityFor, facilityCategoriesOnLadder } from 
 import { computeCoverage } from "./coverage";
 import { rolledCoverageFor } from "./rolledCoverage";
 import { capacitySeparation, evaluateGoldenCriteria } from "./goldenCriteria";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -33,8 +34,8 @@ const parts = (result: any, asOf: Date) => quiet(() => {
 });
 
 const cases: { label: string; result: any; asOf: Date }[] = [
-  ...readdirSync(join("baselines", "golden")).map((f) => read(join("baselines", "golden", f))).map((g: any) => ({ label: `${g.state.company} golden v${g.extractionVersion}`, result: g.sourceResult, asOf: new Date(`${g.state.asOf}T00:00:00Z`) })),
-  ...read("baselines/s27-refresh-batch.json").names.map((n: any) => ({ label: `${n.company} refresh`, result: n.samples.find((s: any) => s.bust === null).result, asOf: new Date("2026-10-31T00:00:00Z") })),
+  ...nonEmpty("the signed goldens", readdirSync(join("baselines", "golden"))).map((f) => read(join("baselines", "golden", f))).map((g: any) => ({ label: `${g.state.company} golden v${g.extractionVersion}`, result: g.sourceResult, asOf: new Date(`${g.state.asOf}T00:00:00Z`) })),
+  ...nonEmpty("the refresh batch", read("baselines/s27-refresh-batch.json").names).map((n: any) => ({ label: `${n.company} refresh`, result: n.samples.find((s: any) => s.bust === null).result, asOf: new Date("2026-10-31T00:00:00Z") })),
   ...[read("baselines/s27-molina-refresh.json").results.find((x: any) => x.bust === null)].map((x: any) => ({ label: `${x.result.company} refresh`, result: x.result, asOf: new Date("2026-10-29T00:00:00Z") })),
 ];
 for (const c of cases) {

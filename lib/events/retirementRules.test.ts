@@ -21,6 +21,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { assemblePosition, parseMoneyAmount, redemptionRetiresRow } from "./position";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -28,7 +29,7 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
 const longDate = (iso: string) => { const [y, m, d] = iso.split("-").map(Number); return `${MONTHS[m - 1]} ${d}, ${y}`; };
 const addDays = (iso: string, n: number) => new Date(Date.parse(`${iso}T00:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
 const IN = join(process.cwd(), "lib", "cards", "inputs");
-const snaps = readdirSync(IN).filter((f) => /^\d{10}\.json$/.test(f)).map((f) => JSON.parse(readFileSync(join(IN, f), "utf-8")));
+const snaps = nonEmpty("the card input snapshots", readdirSync(IN).filter((f) => /^\d{10}\.json$/.test(f))).map((f) => JSON.parse(readFileSync(join(IN, f), "utf-8")));
 
 interface Claim { instrument: string; amount: string; status: "completed" | "intended"; sourceLine: string; verified: boolean; foundIn?: { url: string; filingDate: string } }
 function withClaims(result: any, claims: Claim[], citedDate: string): any {

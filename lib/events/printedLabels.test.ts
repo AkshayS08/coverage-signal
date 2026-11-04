@@ -32,9 +32,9 @@ let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const read = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf-8")) : null);
 const CIKS = ["0000070318", "0000785161", "0000927066", "0001108109", "0001179929", "0001739940"];
-const canon = read("baselines/s27-replay.json")?.results ?? [], re = read("baselines/s27-retaste.json")?.results ?? [];
+const canon = nonEmpty("the v33 replay samples (baselines/s27-replay.json)", read("baselines/s27-replay.json")?.results), re = nonEmpty("the v33 re-taste samples (baselines/s27-retaste.json)", read("baselines/s27-retaste.json")?.results);
 const samples = (cik: string) => [
-  { label: "v31", result: read(join("lib", "cards", "inputs", `${cik}.json`)).result },
+  { label: "v31", result: read(join("lib", "cards", "archive", "2026-10-15", "inputs", `${cik}.json`)).result }, // the Oct 15 brief, archived (Nov 3)
   ...canon.filter((x: any) => x.result.cik === cik).map((x: any) => ({ label: "v33", result: x.result })),
   ...re.filter((x: any) => x.result.cik === cik).map((x: any) => ({ label: x.bust, result: x.result })),
 ];
@@ -44,6 +44,7 @@ const strip = (seq: any[]) => seq.map((e) => (e.kind === "row" ? { ...e, section
 const nullSubtotals = (seq: any[]) => seq.map((e) => (e.kind === "subtotal" ? { ...e, label: null } : e));
 /** The pre-Session-27 annotation: recorded headings only, checked against print. Reproduced here as the control. */
 import { printedHeadings, headingFor, tableTextAround, printedBefore } from "./printedHeadings";
+import { nonEmpty } from "../testing/nonEmpty";
 const recordedOnly = (seq: any[], text: string, find: (l: string) => number | null) => {
   const rows = seq.filter((e) => e.kind === "row");
   const tt = tableTextAround(text, rows.map((e) => e.sourceLine), find);
@@ -52,7 +53,7 @@ const recordedOnly = (seq: any[], text: string, find: (l: string) => number | nu
 };
 
 for (const cik of CIKS) {
-  const snap = read(join("lib", "cards", "inputs", `${cik}.json`));
+  const snap = read(join("lib", "cards", "archive", "2026-10-15", "inputs", `${cik}.json`)); // the Oct 15 brief, archived (Nov 3)
   const ss = samples(cik);
   const byLabel = (r: any) => {
     const dm = dmOf(r); const text = snap.docs[dm.debtScheduleSourceFiling.url]?.text ?? null;

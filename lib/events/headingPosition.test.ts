@@ -22,13 +22,14 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { annotatePrintedHeadings, printedHeadings, headingFor, tableTextAround, printedBefore } from "./printedHeadings";
 import { createTextLocator } from "../agent/verifyQuote";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const dmOf = (r: any) => r.results.find((t: any) => t.triggerId === "debt-maturity");
 const strip = (seq: any[]) => seq.map((e) => (e.kind === "row" ? { ...e, printedHeading: undefined } : e));
 
-const tr = JSON.parse(readFileSync("baselines/s27-refresh-batch.json", "utf-8")).names.find((n: any) => n.cik === "0000070318").samples.find((s: any) => s.bust === null).result;
+const tr = nonEmpty("the refresh batch", JSON.parse(readFileSync("baselines/s27-refresh-batch.json", "utf-8")).names).find((n: any) => n.cik === "0000070318").samples.find((s: any) => s.bust === null).result;
 const tin = JSON.parse(readFileSync("sessions/27/refresh/0000070318_input.json", "utf-8"));
 const tdm = dmOf(tr), ttext = tin.docs[tdm.debtScheduleSourceFiling.url].text;
 const loc = createTextLocator(ttext);

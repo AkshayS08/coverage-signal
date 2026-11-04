@@ -22,6 +22,7 @@ import { containsWord } from "./labels";
 import { isZeroValue, zeroSupportFor } from "../agent/statedZero";
 import { sentenceStatesFigure } from "../agent/verifyFacility";
 import type { Card, Line, Segment } from "./types";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const failures: string[] = [];
@@ -32,7 +33,7 @@ function assert(c: boolean, label: string) {
 
 const DIR = join(process.cwd(), "lib", "cards", "generated");
 const index = existsSync(join(DIR, "index.json")) ? JSON.parse(readFileSync(join(DIR, "index.json"), "utf-8")) : { ciks: [] };
-const cards: Card[] = (index.ciks as string[]).map((c) => JSON.parse(readFileSync(join(DIR, `${c}.json`), "utf-8")));
+const cards: Card[] = (nonEmpty("the published cards", index.ciks as string[])).map((c) => JSON.parse(readFileSync(join(DIR, `${c}.json`), "utf-8")));
 
 function allLines(card: Card): { where: string; line: Line }[] {
   const out: { where: string; line: Line }[] = [];

@@ -133,6 +133,9 @@ for (const suite of suites) {
     console.log(`        passing quietly: "could not check" and "checked and fine" must not print the same way.`);
     console.log(out.split("\n").filter((l) => /Blob cache read failed|fetch failed|Error/i.test(l)).slice(0, 4).map((l) => `        ${l}`).join("\n"));
   }
+  // SESSION 27 (Nov 3): A SUITE THAT ASSERTED NOTHING DID NOT PASS. Exit 0 with no assertion count, or with "0 passed",
+  // is VACUOUS and fails the run (Rule 44; lib/testing/nonEmpty.ts guards the sets inside each suite).
+  else if (ok && (!m || Number(m[1]) === 0)) { failed.push(suite); console.log(`\n  ✗ VACUOUS  ${suite}  — exited 0 having asserted nothing${m ? ` (${m[0]})` : " (no assertion count printed)"}`); }
   else if (!ok) { failed.push(suite); console.log(`\n  ✗ FAIL  ${suite}${m ? `  (${m[0]})` : ""}`); console.log(out.split("\n").filter((l) => /FAIL|Error|✗/.test(l)).slice(0, 12).map((l) => `        ${l}`).join("\n")); }
   else console.log(`  ✓ ${suite.padEnd(52)} ${m ? m[0] : "(no assertion count printed)"}`);
 }

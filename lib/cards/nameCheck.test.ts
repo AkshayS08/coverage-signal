@@ -24,6 +24,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import * as build from "./build";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -46,7 +47,7 @@ assert(!!noWord && noWord.every((x: any) => x.k !== "label" || nameIn(x.stated, 
 console.log("\n=== M3: every table row name on the six cards, committed and v33 ===");
 const CIKS = ["0000070318", "0000785161", "0000927066", "0001108109", "0001179929", "0001739940"];
 const week = JSON.parse(readFileSync("lib/cards/inputs/week/2026-10-15.json", "utf-8"));
-const replay = existsSync("baselines/s27-replay.json") ? JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")) : { results: [] };
+const replay = { results: nonEmpty("the v33 replay samples (baselines/s27-replay.json)", existsSync("baselines/s27-replay.json") ? JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results : null) };
 for (const cik of CIKS) {
   const snap = JSON.parse(readFileSync(join("lib", "cards", "inputs", `${cik}.json`), "utf-8"));
   const factsPath = join("lib", "cards", "inputs", "facts", `${cik}.json`);

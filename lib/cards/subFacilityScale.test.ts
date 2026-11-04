@@ -32,6 +32,7 @@ import { join } from "node:path";
 import { placedInsideParent } from "./subFacility";
 import { scaledFactValue } from "./build";
 import { isZeroValue } from "../agent/statedZero";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -63,7 +64,7 @@ function zeroViolations(c: any): string[] {
   return out;
 }
 const all: [string, any][] = [
-  ...(JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[]).map((c) => [c, JSON.parse(readFileSync(join("lib", "cards", "generated", `${c}.json`), "utf-8"))] as [string, any]),
+  ...(nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[])).map((c) => [c, JSON.parse(readFileSync(join("lib", "cards", "generated", `${c}.json`), "utf-8"))] as [string, any]),
   ...["0000070318", "0000927066", "0001108109"].map((c) => [`${c} refresh`, JSON.parse(readFileSync(join("sessions", "27", "refresh", `${c}_review_card.json`), "utf-8"))] as [string, any]),
   ["Molina refresh", JSON.parse(readFileSync(join("sessions", "27", "molina_review_card.json"), "utf-8"))],
 ];

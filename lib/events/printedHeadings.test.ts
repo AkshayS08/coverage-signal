@@ -12,6 +12,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { assemblePosition } from "./position";
 import { annotatePrintedHeadings } from "./printedHeadings";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -25,8 +26,8 @@ console.log("\n=== every loop-derived row records its printed heading ===");
 // corpus moved renders from its signed golden's stored result (Cigna, and
 // Encompass since Oct 21), which predates the field and keeps its recorded
 // headings. Only a loop-derived snapshot is the loop's output.
-const ALL = readdirSync(join(process.cwd(), "lib", "cards", "inputs")).filter((f) => /^\d{10}\.json$/.test(f)).map((f) => f.slice(0, 10));
-const loopDerived = ALL.filter((cik) => /^re-derived through the loop/.test(snap(cik).source));
+const ALL = nonEmpty("the card input snapshots", readdirSync(join(process.cwd(), "lib", "cards", "inputs")).filter((f) => /^\d{10}\.json$/.test(f)).map((f) => f.slice(0, 10)));
+const loopDerived = nonEmpty("the snapshots re-derived through the loop", ALL.filter((cik) => /^re-derived through the loop/.test(snap(cik).source)));
 assert(loopDerived.length > 0, `[1] ${loopDerived.length} of ${ALL.length} snapshots are loop-derived (by their recorded source)`);
 const carries = (cik: string) => { const rows = snap(cik).result.results.find((r: any) => r.triggerId === "debt-maturity").scheduleSequence.filter((e: any) => e.kind === "row"); return rows.length > 0 && rows.every((e: any) => e.printedHeading !== undefined); };
 // Negative control: a golden-derived snapshot predates the field, so it would fail [1]; the selection is what keeps it out.

@@ -62,7 +62,7 @@ console.log("  statement that the signatures survive an extraction change.");
 
 console.log("\n=== [1] EVERY SIGNED GOLDEN FILE REPRODUCES FROM ITS OWN CAPTURED INPUT ===");
 {
-  const files = existsSync(GOLDEN_DIR) ? readdirSync(GOLDEN_DIR).filter((f) => f.endsWith(".json")) : [];
+  const files = nonEmpty("the signed golden files", existsSync(GOLDEN_DIR) ? readdirSync(GOLDEN_DIR).filter((f) => f.endsWith(".json")) : []);
   assert(files.length > 0,
     `[1a] there is at least one signed golden file (found ${files.length} in baselines/golden). A suite that silently passes on an empty directory proves nothing`);
 
@@ -234,12 +234,13 @@ console.log("\n=== [4] An unchanged state matches, and matching is the only sile
 // ===========================================================================
 import { evaluateGoldenCriteria } from "./goldenCriteria";
 import type { CompanyResult } from "../agent";
+import { nonEmpty } from "../testing/nonEmpty";
 
 const byId = (r: ReturnType<typeof evaluateGoldenCriteria>, id: string) => r.criteria.find((c) => c.id === id)!;
 
 console.log("\n=== [5] THE NINE CRITERIA — each asserted by name, on the signed UHS file ===");
 {
-  const files = existsSync(GOLDEN_DIR) ? readdirSync(GOLDEN_DIR).filter((f) => f.endsWith(".json")) : [];
+  const files = nonEmpty("the signed golden files", existsSync(GOLDEN_DIR) ? readdirSync(GOLDEN_DIR).filter((f) => f.endsWith(".json")) : []);
   for (const f of files) {
     const g = JSON.parse(readFileSync(join(GOLDEN_DIR, f), "utf-8")) as GoldenFile & { criteria?: unknown };
     const name = g.state.company;

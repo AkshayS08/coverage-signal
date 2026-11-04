@@ -22,6 +22,8 @@ import { createTextLocator } from "../../agent/verifyQuote";
 import { statementHead } from "../../events/instrumentClass";
 import { printedBefore, printedHeadings, type TableRow } from "../headings";
 import { briefDateArg } from "../briefDate";
+import { EXTRACTION_PROMPT_VERSION } from "../../cache/promptVersion";
+import { nonEmpty } from "../../testing/nonEmpty";
 
 const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one is given
 const P = process.cwd();
@@ -115,9 +117,10 @@ function detectSchedule(text: string): { entries: { period: string; amount: stri
 
 (async () => {
   mkdirSync(OUT, { recursive: true });
-  for (const f of readdirSync(join(P, "baselines", "golden"))) {
-    const g = JSON.parse(readFileSync(join(P, "baselines", "golden", f), "utf-8"));
-    if (g.extractionVersion !== 31) continue;
+  // Session 27 (Nov 3): the signed goldens at the CURRENT extraction version. Pinned to v31, it wrote nothing once the six
+  // were re-signed at v33 and exited 0, so the acceptance oracle stayed on the v31 answers (Rule 44: nonEmpty).
+  const signed = nonEmpty("the signed goldens at the current extraction version", readdirSync(join(P, "baselines", "golden")).map((f) => JSON.parse(readFileSync(join(P, "baselines", "golden", f), "utf-8"))).filter((g) => g.extractionVersion === EXTRACTION_PROMPT_VERSION));
+  for (const g of signed) {
     const result = g.sourceResult;
     const dm = result.results.find((r: any) => r.triggerId === "debt-maturity");
     const anchor = dm.debtScheduleSourceFiling;

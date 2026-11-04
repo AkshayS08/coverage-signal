@@ -26,11 +26,13 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { buildCard } from "./build";
 import { briefDateFor, briefWeek } from "./briefDate";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const txt = (l: any[]) => l.map((s: any) => s.t ?? s.printed ?? "").join("");
-const IN = join("lib", "cards", "inputs");
+// Nov 3: the published brief moved to Nov 3; this fixture is the Oct 15 brief, read from its archive.
+const IN = join("lib", "cards", "archive", "2026-10-15", "inputs");
 const snapOf = (cik: string) => JSON.parse(readFileSync(join(IN, `${cik}.json`), "utf-8"));
 const build = (cik: string, result: any, briefDate: string, previousBrief: string | null, weekFilings: any[]) => {
   const snap = snapOf(cik);
@@ -47,7 +49,7 @@ const w0 = briefWeek("2026-10-30", null);
 assert(w0.from === "2026-10-24" && w0.to === "2026-10-30", `[W2] a first brief is the trailing seven days (${w0.from} to ${w0.to})`);
 
 console.log("\n=== W3: every committed card follows its brief date ===");
-const CIKS = JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[];
+const CIKS = nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[]);
 for (const cik of CIKS) {
   const r = snapOf(cik).result;
   const a = build(cik, r, "2026-10-15", "2026-10-04", []), b = build(cik, r, "2026-10-30", "2026-10-15", []);

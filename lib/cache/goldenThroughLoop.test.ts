@@ -50,6 +50,7 @@ import { runAgentLoop } from "../agent";
 import { deriveGoldenState, compareToGolden, positionFilingSetOf, type GoldenFile } from "../events/golden";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 import { assertFree, checkFree, spendTracker } from "./freeRun";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const failures: string[] = [];
@@ -65,7 +66,7 @@ const snapshotOf = (cik: string): { result: unknown; extractionVersion: number }
 };
 
 (async () => {
-  const files = existsSync(GOLDEN_DIR) ? readdirSync(GOLDEN_DIR).filter((f) => f.endsWith(".json")) : [];
+  const files = nonEmpty("the signed golden files", existsSync(GOLDEN_DIR) ? readdirSync(GOLDEN_DIR).filter((f) => f.endsWith(".json")) : []);
   const goldens = files.map((f) => JSON.parse(readFileSync(join(GOLDEN_DIR, f), "utf-8")) as GoldenFile);
   const current = goldens.filter((g) => (g.extractionVersion ?? 0) === EXTRACTION_PROMPT_VERSION);
 

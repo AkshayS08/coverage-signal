@@ -23,6 +23,7 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import * as vf from "./verifyFacility";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -43,7 +44,7 @@ for (const [v, s, want] of CASES) assert(!!predicate && predicate(v, s) === want
 const IN = join(process.cwd(), "lib", "cards", "inputs");
 const replay = existsSync("baselines/s27-replay.json") ? JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")) : { results: [] };
 console.log("\n=== C2: over all six names, v31 and v33 ===");
-for (const f of readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x))) {
+for (const f of nonEmpty("the card input snapshots", readdirSync(IN).filter((x) => /^\d{10}\.json$/.test(x)))) {
   const snap = JSON.parse(readFileSync(join(IN, f), "utf-8"));
   const textByUrl = new Map<string, string>(Object.entries(snap.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text]));
   const sources = [{ label: "v31", result: snap.result }, ...replay.results.filter((x: any) => x.result.cik === snap.cik).map((x: any) => ({ label: "v33", result: x.result }))];

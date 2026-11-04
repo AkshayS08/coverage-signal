@@ -7,13 +7,14 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { rulingViolations } from "./refreshRulings";
 import { buildCard } from "./build";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const read = (p: string) => JSON.parse(readFileSync(p, "utf-8"));
 const txt = (l: any[] | null | undefined) => (l ?? []).map((s: any) => s.t ?? s.printed ?? "").join("");
 const clone = (o: any) => JSON.parse(JSON.stringify(o));
-const CIKS = read(join("lib", "cards", "generated", "index.json")).ciks as string[];
+const CIKS = nonEmpty("the published cards", read(join("lib", "cards", "generated", "index.json")).ciks as string[]);
 const cards: { label: string; card: any; input: any }[] = [
   ...CIKS.map((c) => ({ label: "committed", card: read(join("lib", "cards", "generated", `${c}.json`)), input: read(join("lib", "cards", "inputs", `${c}.json`)) })),
   ...["0000070318", "0000927066", "0001108109"].map((c) => ({ label: "refresh", card: read(join("sessions", "27", "refresh", `${c}_review_card.json`)), input: read(join("sessions", "27", "refresh", `${c}_input.json`)) })),
@@ -59,13 +60,14 @@ assert(!!pair && pair.retires!.items.length === 2 && /2034/.test(txt(pair.title[
 console.log("\n=== P2: a reference inside a one-issuance document pairs by identity (Nov 3) ===");
 // "this offering", "the offering" and "the Notes" in a document that reports exactly one issuance refer to that
 // issuance: paired, no flag. The proceeds-wording flag applies only where the document reports more than one.
-const enc = cards.find((x) => x.label === "committed" && x.card.cik === "0000785161")!;
+// Nov 3: the published brief moved to Nov 3; this fixture is the Oct 15 brief, read from its archive.
+const enc = { card: read(join("lib", "cards", "archive", "2026-10-15", "generated", "0000785161.json")), input: read(join("lib", "cards", "archive", "2026-10-15", "inputs", "0000785161.json")) };
 const flags = (c: any) => (c.v3.notShown ?? []).map(txt).filter((l: string) => /^Paired by/.test(l));
 const may = enc.card.v3.moves.find((m: any) => /May 29, 2026 · Issued/.test(txt(m.meta)));
 assert(flags(enc.card).length === 0 && !!may?.retires && may.retires.items.length === 2, `[P2] Encompass: both retirements pair with the May 29 issue, no "Paired by" line (${flags(enc.card).length} flag line(s); ${may?.retires?.items.map(txt).join(" / ") ?? "no pair"})`);
 const encResult = read(join("baselines", "golden", "0000785161.json")).sourceResult;
-const encFacts = read(join("lib", "cards", "inputs", "facts", "0000785161.json"));
-const encWeek = read(join("lib", "cards", "inputs", "week", `${enc.card.briefDate}.json`)).names["0000785161"];
+const encFacts = read(join("lib", "cards", "archive", "2026-10-15", "inputs", "facts", "0000785161.json"));
+const encWeek = read(join("lib", "cards", "archive", "2026-10-15", "inputs", "week-2026-10-15.json")).names["0000785161"];
 const encBuild = (docs: Record<string, { text: string }>) => buildCard({ result: enc.input.result ?? encResult, briefDate: enc.card.briefDate, previousBrief: encWeek?.previousBrief ?? null, weekFilings: encWeek?.filings ?? [], cash: enc.input.cash, textByUrl: new Map(Object.entries(docs).map(([u, d]) => [u, d.text])), periodSentence: enc.input.periodSentence, laterUrls: (enc.input.laterFilings ?? []).filter((x: any) => x.filingDate <= enc.card.briefDate).map((x: any) => x.url), facts: encFacts });
 // The 10-Q's "this offering" as the only link: without the 8-Ks that name the May notes by their defined term.
 const only10Q = clone(enc.input.docs) as Record<string, { label: string; text: string }>;

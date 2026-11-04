@@ -28,16 +28,17 @@ import { join } from "node:path";
 import { assemblePosition } from "./position";
 import { computeCoverage } from "./coverage";
 import { deriveGoldenState } from "./golden";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const AS_OF = new Date("2026-10-15T00:00:00Z");
 const CIKS = ["0000070318", "0000785161", "0000927066", "0001108109", "0001179929", "0001739940"];
 const read = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf-8")) : null);
-const replay = read("baselines/s27-replay.json")?.results ?? [];
-const retaste = read("baselines/s27-retaste.json")?.results ?? [];
+const replay = nonEmpty("the v33 replay samples (baselines/s27-replay.json)", read("baselines/s27-replay.json")?.results);
+const retaste = nonEmpty("the v33 re-taste samples (baselines/s27-retaste.json)", read("baselines/s27-retaste.json")?.results);
 const samples = (cik: string) => [
-  { label: "v31", result: read(join("lib", "cards", "inputs", `${cik}.json`)).result },
+  { label: "v31", result: read(join("lib", "cards", "archive", "2026-10-15", "inputs", `${cik}.json`)).result }, // the Oct 15 brief, archived (Nov 3)
   ...replay.filter((x: any) => x.result.cik === cik).map((x: any) => ({ label: "v33", result: x.result })),
   ...retaste.filter((x: any) => x.result.cik === cik).map((x: any) => ({ label: x.bust, result: x.result })),
 ];
@@ -58,7 +59,7 @@ for (const cik of CIKS) for (const s of samples(cik)) {
 
 console.log("\n=== F2-F3: injected prose instruments, each name ===");
 for (const cik of CIKS) {
-  const base = read(join("lib", "cards", "inputs", `${cik}.json`)).result;
+  const base = read(join("lib", "cards", "archive", "2026-10-15", "inputs", `${cik}.json`)).result; // the Oct 15 brief, archived (Nov 3)
   const cov0 = computeCoverage(base).capturedFace;
   const withProse = (p: any) => { const r = clone(base); dmOf(r).proseInstruments = [...(dmOf(r).proseInstruments ?? []), p]; return r; };
   const lcProse = { category: "other", name: "standby letters of credit", amount: "$ 77 million", amountBasis: "outstanding", sourceLine: "The Company had $ 77 million of standby letters of credit outstanding." };

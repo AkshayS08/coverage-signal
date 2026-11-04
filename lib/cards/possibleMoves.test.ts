@@ -32,6 +32,7 @@ import { join } from "node:path";
 import { locateMoveSentences, uncoveredMoves } from "./moveSentences";
 import { movesSectionText } from "./sections";
 import { buildCard } from "./build";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -66,7 +67,7 @@ function violations(card: any, docs: { url: string; label: string; text: string 
 }
 
 console.log("\n=== P2: the six committed cards ===");
-const CIKS = JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[];
+const CIKS = nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[]);
 for (const cik of CIKS) {
   const card = JSON.parse(readFileSync(join("lib", "cards", "generated", `${cik}.json`), "utf-8"));
   const snap = JSON.parse(readFileSync(join(IN, `${cik}.json`), "utf-8"));

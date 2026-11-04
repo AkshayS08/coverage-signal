@@ -22,6 +22,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { buildCard } from "./build";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -51,9 +52,10 @@ for (const cik of CIKS) {
 }
 
 console.log("\n=== Q3: Cigna as its v33 answer has it ===");
-const replay = existsSync("baselines/s27-replay.json") ? JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")) : null;
-const cr = replay?.results.find((x: any) => x.result.cik === "0001739940")?.result;
-if (cr) {
+// Nov 3: a missing replay used to skip Q3 silently (if (cr)); now it fails, named.
+const replay = { results: nonEmpty("the v33 replay samples (baselines/s27-replay.json)", existsSync("baselines/s27-replay.json") ? JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results : null) };
+const cr = nonEmpty("Cigna's v33 replay sample", replay.results.filter((x: any) => x.result.cik === "0001739940"))[0].result;
+{
   const card = build("0001739940", undefined, cr);
   assert(undrawnEntries(card).length >= 1, `[Q3] the undrawn revolver renders (${undrawnEntries(card).map((e: any) => text(e.label)).join("; ")})`);
   assert(nettingNote(card), `[Q3] the CP netting note renders`);

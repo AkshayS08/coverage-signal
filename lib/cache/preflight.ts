@@ -28,11 +28,12 @@ import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
 import { checkFree } from "./freeRun";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
+import { nonEmpty } from "../testing/nonEmpty";
 const ALL=["DaVita","HCA Healthcare","Tenet Healthcare","Universal Health Services","Encompass Health","Community Health Systems","Quest Diagnostics","Centene Corporation","Cigna Group","Molina Healthcare"];
 async function main(){
   console.log("company                       read set                  base answer");
   let missing=0;
-  for(const c of ALL){
+  for(const c of nonEmpty("the preflight names", ALL)){
     // Rule 12 audit, Session 27: checkFree resolves the read set and builds
     // the key exactly as the loop does (lib/cache/readSet.ts). A hand-copied
     // key here would let preflight report "cached" about a key nothing reads.
