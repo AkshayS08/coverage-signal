@@ -1,0 +1,19 @@
+{
+ "pricedAt": "2026-11-05T03:11:55.189Z",
+ "rows": [
+  {
+   "company": "Encompass Health Corp",
+   "anchor": "10-Q 2026-11-03 (period 2026-09-30)",
+   "baseInputTokens": 74565,
+   "baseWorst": 0.174565,
+   "digWorst": 0.279015,
+   "digCandidate": "10-Q 2026-05-01",
+   "proceedsEstimate": 0.093612,
+   "factsWorst": 0.1517,
+   "worst": 1.793276,
+   "declared": 1.8
+  }
+ ],
+ "batchDeclaredUsd": 1.8,
+ "molinaSpentUsd": 0.6739
+}

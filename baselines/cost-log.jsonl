@@ -190,6 +190,15 @@
 {"at":"2026-09-04T19:23:30.429Z","company":"Centene Corporation","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-04T19:23:34.913Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-04T19:23:39.031Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"session":21,"stage":"6-criterion-9b","company":"Quest Diagnostics","reask":1,"costUsd":0.1684,"at":"2026-09-06"}
+{"session":21,"stage":"6-criterion-9b","company":"Quest Diagnostics","reask":2,"costUsd":0,"at":"2026-09-06"}
+{"session":21,"stage":"6-criterion-9b","company":"Quest Diagnostics","reask":3,"costUsd":0,"at":"2026-09-06"}
+{"session":21,"stage":"6-criterion-9b","company":"Centene Corporation","reask":1,"costUsd":0.1038,"at":"2026-09-06"}
+{"session":21,"stage":"6-criterion-9b","company":"Centene Corporation","reask":2,"costUsd":0.0016,"at":"2026-09-06"}
+{"session":21,"stage":"6-criterion-9b","company":"Centene Corporation","reask":3,"costUsd":0,"at":"2026-09-06"}
+{"session":21,"stage":"6-criterion-9b","company":"Molina Healthcare","reask":1,"costUsd":0.1564,"at":"2026-09-06"}
+{"session":21,"stage":"6-criterion-9b","company":"Molina Healthcare","reask":2,"costUsd":0,"at":"2026-09-06"}
+{"session":21,"stage":"6-criterion-9b","company":"Molina Healthcare","reask":3,"costUsd":0,"at":"2026-09-06"}
 {"at":"2026-09-06T17:30:24.248Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T17:30:55.200Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T17:31:30.495Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
@@ -225,25 +234,20 @@
 {"at":"2026-09-06T22:14:40.599Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:14:49.055Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:14:51.589Z","company":"Quest Diagnostics","totalUsd":0.168388,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":59895,"outputTokens":10013,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.10996},{"model":"claude-sonnet-5","calls":1,"inputTokens":19261,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058428}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Quest Diagnostics","reask":1,"costUsd":0.1684,"at":"2026-09-06"}
 {"at":"2026-09-06T22:14:52.046Z","company":"Quest Diagnostics","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:14:55.195Z","company":"Centene Corporation","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:14:59.736Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:15:02.109Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:16:20.875Z","company":"Quest Diagnostics","totalUsd":0.168388,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":59895,"outputTokens":10013,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.10996},{"model":"claude-sonnet-5","calls":1,"inputTokens":19261,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058428}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Quest Diagnostics","reask":2,"costUsd":0,"at":"2026-09-06"}
 {"at":"2026-09-06T22:17:49.381Z","company":"Quest Diagnostics","totalUsd":0.168388,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":59895,"outputTokens":10013,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.10996},{"model":"claude-sonnet-5","calls":1,"inputTokens":19261,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058428}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Quest Diagnostics","reask":3,"costUsd":0,"at":"2026-09-06"}
 {"at":"2026-09-06T22:17:54.976Z","company":"Quest Diagnostics","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:18:40.736Z","company":"Centene Corporation","totalUsd":0.103843,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":69108,"outputTokens":6947,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.103843}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Centene Corporation","reask":1,"costUsd":0.1038,"at":"2026-09-06"}
 {"at":"2026-09-06T22:18:46.557Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:18:52.789Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:19:02.246Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:19:13.273Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:19:19.188Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:19:23.485Z","company":"Centene Corporation","totalUsd":0.105478,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":69108,"outputTokens":7274,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.105478}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Centene Corporation","reask":2,"costUsd":0.0016,"at":"2026-09-06"}
 {"at":"2026-09-06T22:19:25.384Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:19:30.116Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:19:38.462Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
@@ -252,7 +256,6 @@
 {"at":"2026-09-06T22:19:56.252Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:20:01.134Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:20:05.361Z","company":"Centene Corporation","totalUsd":0.105093,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":69108,"outputTokens":7197,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.105093}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Centene Corporation","reask":3,"costUsd":0,"at":"2026-09-06"}
 {"at":"2026-09-06T22:20:10.503Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:20:11.579Z","company":"Centene Corporation","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:20:17.057Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
@@ -265,7 +268,6 @@
 {"at":"2026-09-06T22:21:03.029Z","company":"Community Health Systems","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:21:08.093Z","company":"Quest Diagnostics","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:21:08.979Z","company":"Molina Healthcare","totalUsd":0.156445,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":66313,"outputTokens":6303,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.097828},{"model":"claude-sonnet-5","calls":1,"inputTokens":19324,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058617}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Molina Healthcare","reask":1,"costUsd":0.1564,"at":"2026-09-06"}
 {"at":"2026-09-06T22:21:13.662Z","company":"Centene Corporation","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:21:17.960Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:21:21.417Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
@@ -278,11 +280,9 @@
 {"at":"2026-09-06T22:21:56.872Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:22:04.971Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:22:05.999Z","company":"Molina Healthcare","totalUsd":0.156445,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":66313,"outputTokens":6303,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.097828},{"model":"claude-sonnet-5","calls":1,"inputTokens":19324,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058617}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Molina Healthcare","reask":2,"costUsd":0,"at":"2026-09-06"}
 {"at":"2026-09-06T22:22:11.022Z","company":"Universal Health Services","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:22:16.282Z","company":"Encompass Health","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:23:02.642Z","company":"Molina Healthcare","totalUsd":0.156445,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":66313,"outputTokens":6303,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.097828},{"model":"claude-sonnet-5","calls":1,"inputTokens":19324,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.058617}],"unpricedModels":[]}
-{"session":21,"stage":"6-criterion-9b","company":"Molina Healthcare","reask":3,"costUsd":0,"at":"2026-09-06"}
 {"at":"2026-09-06T22:23:06.700Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:25:43.417Z","company":"Quest Diagnostics","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-06T22:25:59.380Z","company":"Molina Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
@@ -2728,6 +2728,9 @@
 {"at":"2026-09-30T04:18:17.613Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-30T04:18:20.704Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-30T04:18:23.900Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-09-30T20:18:42.476Z","company":"Cigna Group","totalUsd":0.198555,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":77374,"outputTokens":6625,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.110499},{"model":"claude-sonnet-5","calls":1,"inputTokens":29137,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.088056}],"unpricedModels":[],"restoredNote":"RESTORED 2026-10-01 from dropped git stash ab631f0. Billed at the stated time; the ledger line was destroyed by a git stash/drop cycle during the same session and recovered from the unreachable stash commit rather than reconstructed. Rule 75."}
+{"at":"2026-09-30T20:20:47.905Z","company":"Cigna Group","totalUsd":0.200086,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":77374,"outputTokens":6909,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.111919},{"model":"claude-sonnet-5","calls":1,"inputTokens":29174,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.088167}],"unpricedModels":[],"restoredNote":"RESTORED 2026-10-01 from dropped git stash ab631f0. Billed at the stated time; the ledger line was destroyed by a git stash/drop cycle during the same session and recovered from the unreachable stash commit rather than reconstructed. Rule 75."}
+{"at":"2026-09-30T20:21:42.821Z","company":"Cigna Group","totalUsd":0.172726,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":77374,"outputTokens":6045,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.107599},{"model":"claude-sonnet-5","calls":1,"inputTokens":21494,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.065127}],"unpricedModels":[],"restoredNote":"RESTORED 2026-10-01 from dropped git stash ab631f0. Billed at the stated time; the ledger line was destroyed by a git stash/drop cycle during the same session and recovered from the unreachable stash commit rather than reconstructed. Rule 75."}
 {"at":"2026-09-30T20:39:46.496Z","company":"DaVita","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-30T20:39:54.695Z","company":"HCA Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-09-30T20:40:06.065Z","company":"Tenet Healthcare","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
@@ -2788,9 +2791,6 @@
 {"at":"2026-10-01T01:54:14.640Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-01T01:54:18.557Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-01T01:54:24.745Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
-{"at":"2026-09-30T20:18:42.476Z","company":"Cigna Group","totalUsd":0.198555,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":77374,"outputTokens":6625,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.110499},{"model":"claude-sonnet-5","calls":1,"inputTokens":29137,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.088056}],"unpricedModels":[],"restoredNote":"RESTORED 2026-10-01 from dropped git stash ab631f0. Billed at the stated time; the ledger line was destroyed by a git stash/drop cycle during the same session and recovered from the unreachable stash commit rather than reconstructed. Rule 75."}
-{"at":"2026-09-30T20:20:47.905Z","company":"Cigna Group","totalUsd":0.200086,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":77374,"outputTokens":6909,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.111919},{"model":"claude-sonnet-5","calls":1,"inputTokens":29174,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.088167}],"unpricedModels":[],"restoredNote":"RESTORED 2026-10-01 from dropped git stash ab631f0. Billed at the stated time; the ledger line was destroyed by a git stash/drop cycle during the same session and recovered from the unreachable stash commit rather than reconstructed. Rule 75."}
-{"at":"2026-09-30T20:21:42.821Z","company":"Cigna Group","totalUsd":0.172726,"totalCalls":2,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":77374,"outputTokens":6045,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.107599},{"model":"claude-sonnet-5","calls":1,"inputTokens":21494,"outputTokens":43,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.065127}],"unpricedModels":[],"restoredNote":"RESTORED 2026-10-01 from dropped git stash ab631f0. Billed at the stated time; the ledger line was destroyed by a git stash/drop cycle during the same session and recovered from the unreachable stash commit rather than reconstructed. Rule 75."}
 {"at":"2026-10-01T03:55:40.379Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-01T03:55:47.088Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-10-01T03:55:53.746Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
@@ -3900,3 +3900,4 @@
 {"at":"2026-11-04T03:26:04.512Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-11-04T03:26:12.616Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-11-04T03:26:20.384Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-05T03:11:37.562Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
