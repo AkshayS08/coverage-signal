@@ -135,7 +135,12 @@
   {
    "doc": "10-Q 2026-10-29",
    "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
-   "sentence": "Upon completion of the tender offer, approximately $689 million principal amount of the 4.750% Senior Secured Notes due 2031 remained outstanding and approximately $1.549 billion principal amount of the 10.875% Senior Secured Notes due 2032 remained outstanding. 33 For additional information regarding the repurchase of the 4.750% Senior Secured Notes due 2031 and 10.875% Senior Secured Notes due 2032, in connection with this tender offer, see the Current Reports on Form 8-K filed by the Company with the SEC on April 23, 2026 and May 6, 2026."
+   "sentence": "Upon completion of the tender offer, approximately $689 million principal amount of the 4.750% Senior Secured Notes due 2031 remained outstanding and approximately $1.549 billion principal amount of the 10.875% Senior Secured Notes due 2032 remained outstanding."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
+   "sentence": "For additional information regarding the repurchase of the 4.750% Senior Secured Notes due 2031 and 10.875% Senior Secured Notes due 2032, in connection with this tender offer, see the Current Reports on Form 8-K filed by the Company with the SEC on April 23, 2026 and May 6, 2026."
   }
  ],
  "moveSentences": [

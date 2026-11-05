@@ -118,7 +118,7 @@
       },
       {
        "k": "label",
-       "t": "6.250% senior unsecured notes due 2034",
+       "t": "6.250% senior unsecured notes due September 2034",
        "stated": "6.250 %",
        "src": {
         "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
@@ -1022,7 +1022,7 @@
      },
      {
       "k": "text",
-      "t": " September 23, 2026"
+      "t": " September 2026"
      }
     ],
     [
@@ -1360,7 +1360,7 @@
       },
       {
        "k": "text",
-       "t": " September 23, 2026"
+       "t": " September 2026"
       }
      ],
      [
@@ -2196,11 +2196,11 @@
       },
       {
        "k": "date",
-       "t": "2034",
-       "date": "2034",
-       "granularity": "year",
+       "t": "September 2034",
+       "date": "2034-09-01",
+       "granularity": "month",
        "src": {
-        "sentence": "6.250 % due 2034 2,000",
+        "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
         "doc": "10-Q 2026-10-29"
        }
@@ -3144,7 +3144,7 @@
       },
       {
        "k": "label",
-       "t": "6.250% senior unsecured notes due 2034",
+       "t": "6.250% senior unsecured notes due September 2034",
        "stated": "6.250 %",
        "src": {
         "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
@@ -3163,13 +3163,31 @@
       },
       {
        "k": "label",
-       "t": "redeemed Sept 23, 2026",
+       "t": "redeemed Sept 2026",
+       "stated": "September 2026",
+       "src": {
+        "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+        "doc": "10-Q 2026-10-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " (scheduled for "
+      },
+      {
+       "k": "label",
+       "t": "Sept 23",
        "stated": "September 23, 2026",
        "src": {
         "sentence": "The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
         "doc": "thc-20260908.htm"
        }
+      },
+      {
+       "k": "text",
+       "t": ")"
       },
       {
        "k": "text",
@@ -4930,11 +4948,11 @@
      "matures": [
       {
        "k": "date",
-       "t": "2034",
-       "date": "2034",
-       "granularity": "year",
+       "t": "Sept 2034",
+       "date": "2034-09-01",
+       "granularity": "month",
        "src": {
-        "sentence": "6.250 % due 2034 2,000",
+        "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
         "doc": "10-Q 2026-10-29"
        }
@@ -5340,7 +5358,7 @@
        },
        {
         "k": "text",
-        "t": " September 23, 2026"
+        "t": " September 2026"
        }
       ],
       [
@@ -6176,11 +6194,11 @@
        },
        {
         "k": "date",
-        "t": "2034",
-        "date": "2034",
-        "granularity": "year",
+        "t": "September 2034",
+        "date": "2034-09-01",
+        "granularity": "month",
         "src": {
-         "sentence": "6.250 % due 2034 2,000",
+         "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
