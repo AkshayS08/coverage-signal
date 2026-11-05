@@ -468,7 +468,8 @@ export function buildCard(i: CardInputs): Card {
       }
       if (stretch === null && aliasOk && cs.every((c) => own !== null && Math.abs(c.rate - own) < 1e-9) && new RegExp(`\\bthe ${year} Notes\\b`, "i").test(s.sentence)) stretch = s.sentence;
       if (stretch === null) continue;
-      for (const m of stretch.matchAll(new RegExp(`\\b(?:due|matur\\w*(?:\\s+on)?)\\s+(${MONTHS})(?:\\s+(\\d{1,2}),)?\\s+(${year})\\b`, "g"))) {
+      // Nov 4 (Rules 76-78): "due in September 2034", "maturing on June 1, 2034" state the same maturity as "due September 2034".
+      for (const m of stretch.matchAll(new RegExp(`\\b(?:due|matur\\w*)(?:\\s+(?:on|in))?\\s+(${MONTHS})(?:\\s+(\\d{1,2}),)?\\s+(${year})\\b`, "g"))) {
         const mm = String(MONTH_NAMES.indexOf(m[1]) + 1).padStart(2, "0");
         const granularity: DateGranularity = m[2] ? "day" : "month";
         const date = m[2] ? `${year}-${mm}-${m[2].padStart(2, "0")}` : `${year}-${mm}-01`;
@@ -584,6 +585,8 @@ export function buildCard(i: CardInputs): Card {
     fundedBy?: Move; retires: Move[]; spendSrc?: Source;
     /** Another filing sentence stating the same move, linked from the move's verb. */
     altSrc?: Source;
+    /** Nov 4: a scheduled day for a completed move, shown labelled, never as its date. */
+    scheduled?: Segment;
   };
   const fyStart = `${periodEnd.slice(0, 4)}-01-01`;
   // A fact's sentence is linked as the FILER printed it: the document's own
@@ -710,9 +713,22 @@ export function buildCard(i: CardInputs): Card {
         if (!namesCoupon && !namesTerm) continue;
         for (const d of s.sentence.matchAll(DAY)) if (+d[3] === y && MONTH_NAMES.indexOf(d[1]) + 1 === mo) hits.push({ day: +d[2], text: d[0], src: s });
       }
-      const days = [...new Set(hits.map((h) => h.day))];
-      if (days.length !== 1) continue; // one day stated for the move, or the month stands
-      const h = hits[0];
+      // Nov 4 (correcting Nov 1's ruling (b)): the more precise statement wins only when it states the SAME fact. A
+      // scheduled or expected day ("expected to be redeemed on September 23") never dates a completed move; it is shown
+      // labelled, "Redeemed Sept 2026 (scheduled for Sept 23)". Every move type.
+      const SCHEDULED = /\bexpected to\b|\bscheduled\b|\bwill be\b|\bset for\b|\bconditional\b|\banticipat\w*/i;
+      const done = hits.filter((x) => !SCHEDULED.test(x.src.sentence));
+      const sched = hits.filter((x) => SCHEDULED.test(x.src.sentence));
+      const days = [...new Set(done.map((h) => h.day))];
+      const schedDays = [...new Set(sched.map((h) => h.day))];
+      if (days.length !== 1) {
+        if (mv.status === "completed" && schedDays.length === 1) {
+          const SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+          mv.scheduled = { k: "label", t: `${SHORT[mo - 1]} ${schedDays[0]}`, stated: sched[0].text, src: sched[0].src };
+        }
+        continue; // one day stated done for the move, or the month stands
+      }
+      const h = done[0];
       const iso = `${y}-${String(mo).padStart(2, "0")}-${String(h.day).padStart(2, "0")}`;
       mv.when = `${MONTH_NAMES[mo - 1]} ${h.day}, ${y}`;
       mv.sort = iso;
@@ -1738,6 +1754,8 @@ export function buildCard(i: CardInputs): Card {
   const MON = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
   /** A move's date as the card shows it: "Sept 22, 2026" where a day is stated, "May 2026" where only a month is. */
   const whenShort = (m: Move): string => (/\d{1,2},\s*\d{4}/.test(m.when) ? shortDate(m.sort) : /^[A-Z][a-z]+ \d{4}$/.test(m.when) ? `${MON[Number(m.sort.slice(5, 7)) - 1]} ${m.sort.slice(0, 4)}` : m.when);
+  /** Nov 4: " (scheduled for Sept 23)" beside a completed move's month, where only a scheduled day is stated. */
+  const schedNote = (m: Move): Line => (m.scheduled ? [t(" (scheduled for "), m.scheduled, t(")")] : []);
   const dateOf = (m: Move, text?: string): Segment => (m.dateSeg.k === "label" ? { ...m.dateSeg, t: text ?? whenShort(m) } : t(text ?? whenShort(m)));
   /** First letter up, for display only: what a label states is unchanged. */
   const capFirst = (l: Line): Line => l.map((x, n) => (n === 0 ? { ...x, t: x.t.replace(/^[,;\s]+/, "").replace(/^./, (c) => c.toUpperCase()) } : x));
@@ -1988,7 +2006,7 @@ export function buildCard(i: CardInputs): Card {
       continue;
     }
     if (issuance) {
-      const left: CardV3["moves"][number] = { meta: [dateOf(issuance), t(` · Issued, confirmed by ${formOfUrl(confirmingUrl(issuance))}`)], title: [faceInst(issuance)], detail: null, retires: null };
+      const left: CardV3["moves"][number] = { meta: [dateOf(issuance), ...schedNote(issuance), t(` · Issued, confirmed by ${formOfUrl(confirmingUrl(issuance))}`)], title: [faceInst(issuance)], detail: null, retires: null };
       // v3.2 §2.3: a price attaches to the issuance it describes, in its own sentence: "Issued at 98.75% of principal, adding to the existing notes."
       const pr = priceClause(issuance).filter((x) => !(x.k === "text" && x.t === ", "));
       const issuedLine: Line = pr.length ? [t("Issued "), ...pr, ...issuance.extra, t(".")] : [];
@@ -1998,7 +2016,7 @@ export function buildCard(i: CardInputs): Card {
         const r0 = issuance.retires[0];
         left.retires = {
           meta: [
-            ...(pending ? [t("Refinanced · "), dateOf(r0, `redemption set for ${whenShort(r0)}`), t(", awaiting confirmation in a filing")] : [t("Refinanced · "), dateOf(r0, `redeemed ${whenShort(r0)}`)]),
+            ...(pending ? [t("Refinanced · "), dateOf(r0, `redemption set for ${whenShort(r0)}`), t(", awaiting confirmation in a filing")] : [t("Refinanced · "), dateOf(r0, `redeemed ${whenShort(r0)}`), ...schedNote(r0)]),
             // Session 27 (Nov 1): every source the funding sentence names, in its order (the new notes, then cash on hand).
             ...(() => { const sp = r0.spendSrc; const others = sp ? fundSources(sp.sentence).filter((s) => !s.newDebt) : []; return others.length ? [t(", funded by the new notes and "), ...others.flatMap((s, n) => [...(n ? [t(" and ")] : []), { k: "label", t: s.stated.toLowerCase(), stated: s.stated, src: sp! } as Segment])] : []; })(),
           ],
@@ -2012,12 +2030,12 @@ export function buildCard(i: CardInputs): Card {
         if (issuedLine.length || d.length) left.detail = [...issuedLine, ...(d.length ? [...(issuedLine.length ? [t(" ")] : []), ...capFirst(d), t(".")] : [])];
       }
       moveCards.push(left);
-      for (const o of ms.filter((m) => m !== issuance && !issuance.retires.includes(m))) moveCards.push({ meta: [dateOf(o), t(` · ${vocab(o)}`)], title: [[...faceInst(o), ...remainsClause(o)]], detail: detailOf(o), retires: null });
+      for (const o of ms.filter((m) => m !== issuance && !issuance.retires.includes(m))) moveCards.push({ meta: [dateOf(o), ...schedNote(o), t(` · ${vocab(o)}`)], title: [[...faceInst(o), ...remainsClause(o)]], detail: detailOf(o), retires: null });
       continue;
     }
     const sorted = [...ms].sort((a, b) => a.sort.localeCompare(b.sort));
     const shared = sorted.every((m) => m.fundFact && m.fundFact.value === sorted[0].fundFact?.value);
-    moveCards.push({ meta: [dateOf(sorted[0]), t(` · ${vocab(sorted[0])}`)], title: sorted.map((m) => [...faceInstOrName(m), ...remainsClause(m)]), detail: shared || sorted.length === 1 ? detailOf(sorted[0]) : null, retires: null });
+    moveCards.push({ meta: [dateOf(sorted[0]), ...schedNote(sorted[0]), t(` · ${vocab(sorted[0])}`)], title: sorted.map((m) => [...faceInstOrName(m), ...remainsClause(m)]), detail: shared || sorted.length === 1 ? detailOf(sorted[0]) : null, retires: null });
   }
   function vocab(m: Move): string {
     if (m.type === "facility amendment") return "Amended";

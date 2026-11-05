@@ -32,7 +32,9 @@ const flat = (s: string) => s.replace(/[\s ]+/g, " ");
 // A sentence may begin with a year ("2026 Financing Activity On February 2…"):
 // splitting only before a capital merged it into the sentence before, and the
 // merged span carried one instrument's class onto another.
-const sentences = (t: string) => flat(t).split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)/).filter((s) => s.length > 25 && s.length < 1500);
+// Nov 4: a page number between two sentences ("…of 2026. 28 In August 2026, we issued…") is a boundary too; run together,
+// Encompass's loss on extinguishment rode on the August add-on's sentence and became a move-card requirement.
+const sentences = (t: string) => flat(t).split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)|(?<=[.;])\s+\d{1,3}\s+(?=[A-Z])/).filter((s) => s.length > 25 && s.length < 1500);
 
 const CLASS_WORD = /\b(?:senior|junior|subordinated|secured|unsecured|first[- ]lien|first[- ]priority|second[- ]lien)\b/i;
 const DEBT_NOUN = /\bnotes?\b|\bdebentures?\b|\bfacilit(?:y|ies)\b|\bterm loans?\b|\bcommercial paper\b|\bborrowings\b|\bcredit agreement\b|\bindebtedness\b/i;

@@ -27,6 +27,7 @@ import { buildCard } from "./build";
 import { kindOf } from "./headings";
 import type { BarSegment, Card, Line, Segment } from "./types";
 import { reachable as reach } from "./reach";
+import { RULED, applyRuled } from "./ruledResiduals";
 const reachable = (entry: string, read?: (p: string) => string | null) => reach(entry, ROOT, read);
 const readDisk = undefined;
 
@@ -84,8 +85,12 @@ const squash = (s: string) => s.toLowerCase().replace(/[\s ]+/g, "");
 
 /** Does this line stand for the filer row `label`? Its `row` tag, or a label segment carrying the full filer label. */
 function represents(l: Line, label: string): boolean {
+  // Nov 4: commercial paper is one instrument per issuer, identified by its kind, not its wording ("Commercial Paper
+  // Program" in the position, "commercial paper" in the v33 answer's rolled change): Cigna's row never left the card.
+  if (CP.test(label)) return l.some((s) => ((s.k === "figure" || s.k === "computed") && CP.test(s.row ?? "")) || (s.k === "label" && CP.test(s.t)));
   return l.some((s) => ((s.k === "figure" || s.k === "computed") && s.row === label) || (s.k === "label" && norm(s.t) === norm(label)));
 }
+const CP = /\bcommercial paper\b/i;
 const amountSeg = (l: Line) => l.find((s) => s.k === "figure" || s.k === "computed") as Extract<Segment, { k: "figure" | "computed" }> | undefined;
 
 /** A displayed amount as dollars: "$1,549MM", "~$1.0B", "$396.9M", "<$1MM", "$0", "nil". */
@@ -643,10 +648,13 @@ const V4_VOCAB: Test = {
       const meta = text(m.meta);
       if (!MOVE_WORD.test(meta)) bad.push(`move word in "${meta}" is not in the vocabulary`);
       const r = m.retires ? text(m.retires.meta) : "";
-      // Session 27 (Nov 1): the retire line states its day where a held document does (Rules 76-78), and every funding
-      // source its sentence names, in order (ruling (d)): "Refinanced · redeemed Sept 23, 2026, funded by the new notes and cash on hand".
-      if (r && !/^Refinanced · (?:redemption set for .+, awaiting confirmation in a filing|redeemed [A-Z][a-z]+ (?:\d{1,2}, )?\d{4})(?:, funded by the new notes(?:,? and [a-z ]+)+)?$/.test(r)) bad.push(`retire line "${r}" off vocabulary`);
-      if (/\bredeemed\b/.test(r) && m.retires!.meta.some((x) => x.k === "label" && /\bintends?\b|\bwill be\b|\bexpected to be\b|\bnotice of\b/i.test(x.src.sentence))) bad.push(`"${r}" without a confirming sentence`);
+      // Session 27: every funding source its sentence names, in order (Nov 1, ruling (d)). Nov 4 (correcting ruling (b)): a
+      // completed move takes the precision of the sentence stating it done; a scheduled day is shown labelled, exactly
+      // "Refinanced · redeemed Sept 2026 (scheduled for Sept 23), funded by the new notes and cash on hand".
+      if (r && !/^Refinanced · (?:redemption set for .+, awaiting confirmation in a filing|redeemed [A-Z][a-z]+ (?:\d{1,2}, )?\d{4}(?: \(scheduled for [A-Z][a-z]+ \d{1,2}\))?)(?:, funded by the new notes(?:,? and [a-z ]+)+)?$/.test(r)) bad.push(`retire line "${r}" off vocabulary`);
+      // An intention or schedule never confirms "redeemed"; inside the labelled "(scheduled for …)" note it is what it says.
+      const scheduledNote = (n: number) => /\(scheduled for\s*$/.test(text(m.retires!.meta.slice(0, n)));
+      if (/\bredeemed\b/.test(r) && m.retires!.meta.some((x, n) => x.k === "label" && !scheduledNote(n) && /\bintends?\b|\bwill be\b|\bexpected to be\b|\bnotice of\b/i.test(x.src.sentence))) bad.push(`"${r}" without a confirming sentence`);
     }
     return bad;
   },
@@ -715,7 +723,7 @@ const V7_TABLE: Test = {
     for (const e of expectedRows(f)) {
       // An undrawn facility row is capacity, not debt (§2.5): it is in Facilities, never a $0 table row.
       if (e.faceUsd === 0 && e.kind === "facility") continue;
-      const n = tb.rows.filter((r) => norm(r.name) === norm(e.label)).length;
+      const n = tb.rows.filter((r) => norm(r.name) === norm(e.label) || (CP.test(e.label) && CP.test(r.name ?? ""))).length;
       if (n !== 1) bad.push(`"${e.label}" appears ${n} times in the table`);
     }
     return bad;
@@ -1292,10 +1300,12 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     { const c = clone(dva); const r = reconOf(c); const segs = r?.filter((x) => x.k === "computed" || x.k === "figure") as any[] | undefined; if (segs?.[1]) segs[1].t = "$100MM"; out.push({ id: "5.7", failed: !!segs?.[1] && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 stating a difference that does not close the year" }); }
     { const c = clone(dva); const r = reconOf(c); const segs = r?.filter((x) => x.k === "computed" || x.k === "figure") as any[] | undefined; if (segs?.[0]) segs[0].t = "$4,000MM"; out.push({ id: "5.7", failed: !!segs?.[0] && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 stating a schedule figure the filer does not print" }); }
     { const c = clone(dva); const b = (c.ladder.blocks ?? []).find((x) => text(x.heading).startsWith("2030")); if (b) b.lines = b.lines.filter((l) => !/ less than the lines above\./.test(text(l))); out.push({ id: "5.7", failed: !!b && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 with its reconciliation sentence removed" }); }
-    const real = T8_MOVES.run(dva, fd);
-    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, []).counted.length > 0, what: "the ruled $65MM residual no longer failing" });
-    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, real.map((x) => x.replace("$65MM", "$66MM"))).counted.length > 0, what: "the ruled residual with its amount moved to $66MM" });
-    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, [...real, ...real]).counted.length > 0, what: "the ruled residual failing twice" });
+    // Nov 4: the mechanism is checked on the ruling's own anchor, from the ruled failure itself.
+    const own = RULED.find((r) => r.cik === dva.cik)!.anchor!;
+    const real = [`not on a move card: $65MM in "Significant sources of cash during the period included the incurrence of …"`];
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, []).counted.length > 0, what: "the ruled $65MM residual no longer failing" });
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, real.map((x) => x.replace("$65MM", "$66MM"))).counted.length > 0, what: "the ruled residual with its amount moved to $66MM" });
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, [...real, ...real]).counted.length > 0, what: "the ruled residual failing twice" });
   }
 
   // ── N1: a name its sentence does not contain (a paraphrase) is not verbatim. Re-casing no longer is (Oct 23). ──
@@ -1317,30 +1327,7 @@ function controls(): { id: string; failed: boolean; what: string }[] {
   return out;
 }
 
-/**
- * RULED RESIDUALS (Oct 22, 2026). A failure Akshay has ruled on stays in the
- * suite as an EXPECTED failure: it is reported, not counted, and only while
- * it fails exactly as ruled. If it stops failing, fails more than once, or its
- * amount moves, it is counted again, loudly, because the ruling was about
- * that failure and no other. Never deleted.
- */
-const RULED: { id: string; cik: string; failure: RegExp; amount: string; ruling: string }[] = [
-  {
-    id: "5.8",
-    cik: "0000927066",
-    failure: /^not on a move card: \$65MM in "Significant sources of cash during the period included the incurrence/,
-    amount: "$65MM",
-    ruling: "Akshay's ruling, Session 26 (\"DaVita's ruled residuals\", sessions/26/prompt_card_review_2.md), re-confirmed Oct 22, 2026: the $65MM of revolver draws DaVita's 10-Q states as a source of cash is not shown on a move card",
-  },
-];
-function applyRuled(id: string, cik: string, fails: string[]): { counted: string[]; ruled: string[] } {
-  const r = RULED.find((x) => x.id === id && x.cik === cik);
-  if (!r) return { counted: fails, ruled: [] };
-  const hits = fails.filter((x) => r.failure.test(x));
-  const counted = fails.filter((x) => !r.failure.test(x));
-  if (hits.length !== 1) counted.push(`RULED RESIDUAL ${hits.length === 0 ? "NO LONGER FAILS AS RULED" : `FAILS ${hits.length} TIMES`}: ${id} expected exactly one ${r.amount} failure (${r.ruling}). ${hits.length === 0 ? "It now passes, or its amount moved: the ruling must be revisited before this is green." : ""}`);
-  return { counted, ruled: hits.length === 1 ? hits.map((h) => `${id} ${h} — ${r.ruling}`) : [] };
-}
+// RULED RESIDUALS: lib/cards/ruledResiduals.ts (Nov 4: each binds to the anchor it was ruled on).
 
 // ── run ──────────────────────────────────────────────────────────────────
 const order = ["0000070318", "0000785161", "0001179929", "0000927066", "0001108109", "0001739940"];
@@ -1360,7 +1347,7 @@ const genBad = [...new Set(reachable(join(ROOT, "lib", "cards", "generate.ts"), 
 for (const t of TESTS) {
   counts[t.id] = {};
   for (const { cik, card, f } of run) {
-    const { counted: fails, ruled } = applyRuled(t.id, cik, t.run(card, f));
+    const { counted: fails, ruled } = applyRuled(t.id, cik, f.anchor ? { form: f.anchor.form, filingDate: f.anchor.date } : null, t.run(card, f));
     RULED_SEEN.push(...ruled.map((r) => `${short[cik].padEnd(9)} ${r}`));
     counts[t.id][cik] = fails.length;
     totalFail += fails.length;

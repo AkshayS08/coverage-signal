@@ -87,6 +87,7 @@ Covered: issuance; redemption, full or partial, including special calls; tender 
 - An amended agreement with no other detail on the card says plainly that its terms are not covered in this version.
 - **(v3.2) A move and its row agree.** When a move retires part of an instrument that still appears on the card, the move card states what remains: "$400MM redeemed · $400MM remains" (for a pending retirement, the face less the retirement; for one inside the period, the row's face at the position date). The row's status carries the same partial note (2.10), and where the call box headlines that instrument, it adds one clause naming the earlier partial retirement. A move matches its row by instrument identity (coupon, labels, maturity year), never by the exact date string: a year-only row matches a move dated to the month.
 - **(v3.2) A price phrase attaches to the issuance or redemption it describes:** "Issued at 98.75% of principal, adding to the existing notes. Used to repay part of the revolver." "Redeemed at 103% of principal."
+- **(Nov 4, 2026) A move card states the debt change and its funding, never its effect on profit and loss.** A loss or gain on extinguishment, a write-off of issuance costs, or a premium paid is not a move-card fact and no acceptance check requires one (Encompass's "$3.2 million Loss on early extinguishment" on redeeming its 2028 Notes).
 
 ### 2.4 Total debt and Liquidity
 
@@ -200,6 +201,8 @@ Every amount, date and label links to the exact sentence, table row or heading i
 - A displayed date never claims more precision than its source (Rules 76 to 78).
 - **One instrument, one maturity, everywhere on the card**: the most precise maturity stated for it in the anchor or a later filing, linked to that sentence. Every mention (call box, moves, chart, table) uses that one value.
 - Pre-anchor filings and prior-period annual reports supply days only where Rule 66 directs to them.
+- **(Nov 4, 2026) A maturity keeps the precision its sentence states, in any wording:** "due September 2034", "due in September 2034", "maturing on June 1, 2034". Tenet's 6.250% notes are Sept 2034 in the table, not 2034.
+- **(Nov 4, 2026) The more precise statement wins only when it states the same fact.** A completed move takes the precision of the sentence that states it done. A scheduled or expected date ("expected to be redeemed on September 23") never dates a completed move; where one exists for the same move it is shown labelled: "Redeemed Sept 2026 (scheduled for Sept 23)". Every move type: redemptions, repurchases, issuances, repayments. (Corrects the Nov 1 reading of Rules 76 to 78.)
 - "[N] months away" is whole calendar months from the brief date, and only for a maturity stated to the month or day.
 
 ### 3.5 Instrument type, seniority, security

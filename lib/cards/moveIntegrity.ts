@@ -31,6 +31,8 @@ export function moveIntegrityViolations(card: any, input: any): { M1: string[]; 
   const dayStatements: { coupons: number[]; y: number; m: number; d: number; sentence: string }[] = [];
   for (const d of Object.values(docs)) for (const s of d.text.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"])/)) {
     if (s.length > 700 || !/\b(?:issued|priced|redeem\w*|repurchas\w*|repaid|retired)\b/i.test(s)) continue;
+    // Nov 4 (correcting ruling (b)): a scheduled or expected day states another fact; it never dates a completed move.
+    if (/\bexpected to\b|\bscheduled\b|\bwill be\b|\bset for\b|\bconditional\b|\banticipat\w*/i.test(s)) continue;
     const cs = couponsIn(s).map((c) => c.rate);
     if (!cs.length) continue;
     for (const m of s.matchAll(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s*(\d{4})/g)) dayStatements.push({ coupons: cs, y: +m[3], m: monthOf(m[1]), d: +m[2], sentence: s });
