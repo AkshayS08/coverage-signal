@@ -30,6 +30,7 @@ import { readSetOf, digCandidatesOf, anchorOf } from "./readSet";
 import { checkFree } from "./freeRun";
 import { buildExtractionText } from "../fetch/noteLocation";
 import { TRIGGERS } from "../agent/triggers";
+import { pricingSummary, summaryNamesRun } from "./pricingSummary";
 
 // Names and output from the command line (Nov 3: Encompass on its Q3 10-Q); the Oct 31 batch by default.
 const NAMES_ARG = process.argv.find((x) => x.startsWith("--names="));
@@ -88,6 +89,10 @@ const ceilCent = (x: number) => Math.ceil(x * 100 - 1e-9) / 100;
     console.log(`${company.padEnd(30)} ${anchor.form} ${anchor.filingDate}: base ${base?.inputTokens} in → $${base?.worstUsd.toFixed(4)}/ask; dig $${dig.toFixed(4)}/ask${cand ? ` (${cand.form} ${cand.filingDate})` : ""}; proceeds-use $${proceeds.toFixed(4)}/ask (estimate); ×3 asks; facts $${facts.toFixed(4)} (3 asks) → worst $${total.toFixed(4)}, declared $${ceilCent(total).toFixed(2)}`);
   }
   const batch = rows.reduce((a, r) => a + r.declared, 0);
-  console.log(`\nBatch (Tenet, DaVita, CHS) declared: $${batch.toFixed(2)}. Molina, already run: extraction $0.6165 + facts $0.0574 = $0.6739, nothing further.`);
-  writeFileSync(OUT, JSON.stringify({ pricedAt: new Date().toISOString(), rows, batchDeclaredUsd: Number(batch.toFixed(2)), molinaSpentUsd: 0.6739 }, null, 1) + "\n");
+  // Nov 4: the summary names the run it priced, checked (pricingSummary.test); a wrong one stops the script.
+  const summary = pricingSummary(rows);
+  const wrong = summaryNamesRun(summary, rows);
+  if (wrong.length) { console.error(`PRICING SUMMARY CHECK FAILED: ${wrong.join("; ")}`); process.exit(1); }
+  console.log(`\n${summary}`);
+  writeFileSync(OUT, JSON.stringify({ pricedAt: new Date().toISOString(), rows, batchDeclaredUsd: Number(batch.toFixed(2)), summary }, null, 1) + "\n");
 })().catch((e) => { console.error(e); process.exit(1); });
