@@ -31,7 +31,8 @@ import { visibleDiff } from "../../cache/s27cardDiff";
   const which = process.argv[2];
   if (!which) { console.error("usage: preview.ts molina | <cik>"); process.exit(1); }
   const isMolina = which === "molina";
-  const refresh = isMolina ? JSON.parse(readFileSync("baselines/s27-molina-refresh.json", "utf-8")) : (() => { const b = JSON.parse(readFileSync("baselines/s27-refresh-batch.json", "utf-8")).names.find((n: any) => n.cik === which); if (!b) throw new Error(`${which} is not in the refresh batch`); return { boundFingerprint: b.boundFingerprint, results: b.samples }; })();
+  // Nov 6: a refresh run may have its own record (Encompass: baselines/s27-encompass-refresh.json).
+  const refresh = isMolina ? JSON.parse(readFileSync("baselines/s27-molina-refresh.json", "utf-8")) : (() => { const b = ["baselines/s27-refresh-batch.json", "baselines/s27-encompass-refresh.json"].filter((p) => existsSync(p)).flatMap((p) => JSON.parse(readFileSync(p, "utf-8")).names).find((n: any) => n.cik === which); if (!b) throw new Error(`${which} is not in the refresh batch`); return { boundFingerprint: b.boundFingerprint, results: b.samples }; })();
   const result = refresh.results.find((x: any) => x.bust === null).result;
   const dir = isMolina ? "sessions/27" : "sessions/27/refresh";
   const stem = isMolina ? "molina" : result.cik;
