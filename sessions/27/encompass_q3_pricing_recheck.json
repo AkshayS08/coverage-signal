@@ -1,0 +1,19 @@
+{
+ "pricedAt": "2026-11-06T17:22:37.931Z",
+ "rows": [
+  {
+   "company": "Encompass Health Corp",
+   "anchor": "10-Q 2026-11-03 (period 2026-09-30)",
+   "baseInputTokens": 73589,
+   "baseWorst": 0.173589,
+   "digWorst": 0.279015,
+   "digCandidate": "10-Q 2026-05-01",
+   "proceedsEstimate": 0.093612,
+   "factsWorst": 0.1517,
+   "worst": 1.790348,
+   "declared": 1.8
+  }
+ ],
+ "batchDeclaredUsd": 1.8,
+ "summary": "Priced: Encompass Health Corp $1.80. Declared in all: $1.80, worst case, before any call."
+}

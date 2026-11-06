@@ -30,7 +30,11 @@ import { captureCardInput } from "../cards/capture/snapshot";
 import { briefDateArg } from "../cards/briefDate";
 
 const CAP = 2.0;
-const APPROVED_TOTAL = 5.41;
+// Nov 6: one script for any approved refresh. The Oct 31 batch is the default; another run names its pricing, its
+// approved total and its own record (never the Oct 31 record), e.g. Encompass on its Nov 3 10-Q, approved up to $1.80.
+const PRICING = process.env.S27_PRICING ?? "sessions/27/refresh_batch_pricing.json";
+const APPROVED_TOTAL = Number(process.env.S27_APPROVED_TOTAL ?? "5.41");
+const RECORD = process.env.S27_RECORD ?? "baselines/s27-refresh-batch.json";
 const BUSTS: (string | null)[] = [null, "s27-refresh-retaste-1", "s27-refresh-retaste-2"];
 const stop = (why: string): never => { console.error(`STOPPED: ${why}`); process.exit(1); };
 
@@ -38,7 +42,10 @@ const stop = (why: string): never => { console.error(`STOPPED: ${why}`); process
   if (process.env.S27_APPROVED !== "refresh-batch") stop("this bills; set S27_APPROVED=refresh-batch only after approval");
   if (!process.env.ANTHROPIC_API_KEY) stop("no API key in the environment");
   if (process.env.READ_SET_AS_OF) stop("a refresh reads the CURRENT read set; unset READ_SET_AS_OF");
-  const pricing = JSON.parse(readFileSync("sessions/27/refresh_batch_pricing.json", "utf-8")).rows as any[];
+  const pricing = JSON.parse(readFileSync(PRICING, "utf-8")).rows as any[];
+  const declared = pricing.reduce((a, r) => a + r.declared, 0);
+  if (!(APPROVED_TOTAL > 0) || declared > APPROVED_TOTAL + 1e-9) stop(`declared $${declared.toFixed(2)} exceeds the approved $${APPROVED_TOTAL.toFixed(2)}: re-declare first`);
+  if (PRICING !== "sessions/27/refresh_batch_pricing.json" && RECORD === "baselines/s27-refresh-batch.json") stop("another run must name its own record (S27_RECORD), never the Oct 31 batch's");
   mkdirSync("sessions/27/refresh/facts", { recursive: true });
   const spend = spendTracker();
   const ledgerAt = (since: string) => readFileSync("baselines/cost-log.jsonl", "utf-8").trim().split("\n").map((l) => JSON.parse(l)).filter((j) => j.at >= since).reduce((a, j) => a + (j.totalUsd ?? 0), 0);
@@ -84,7 +91,7 @@ const stop = (why: string): never => { console.error(`STOPPED: ${why}`); process
     const fm = /\$([\d.]+) \((\d+) calls\)\s+kept: ([^\n]+)/.exec(factsOut);
     console.log(`  facts: ${fm ? `$${fm[1]} (${fm[2]} calls), kept ${fm[3]}` : factsOut.split("\n").filter((l) => /STOP|Error|REFUS/.test(l)).join(" ") || "see output"}`);
     out.names.push({ company, cik: canonical.cik, boundFingerprint: bound.fingerprint, allowance, samples, factsUsd: fm ? Number(fm[1]) : null });
-    writeFileSync("baselines/s27-refresh-batch.json", JSON.stringify(out, null, 1) + "\n");
+    writeFileSync(RECORD, JSON.stringify(out, null, 1) + "\n");
   }
   console.log(`\nBATCH SPEND (ledger since start): $${ledgerAt(started).toFixed(4)} of $${APPROVED_TOTAL.toFixed(2)} approved.`);
 })().catch((e) => { console.error(e); process.exit(1); });
