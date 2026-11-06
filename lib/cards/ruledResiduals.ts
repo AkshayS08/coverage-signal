@@ -3,13 +3,14 @@
  * suite as an EXPECTED failure: it is reported, not counted, and only while
  * it fails exactly as ruled. If it stops failing, fails more than once, or its
  * amount moves, it is counted again, loudly, because the ruling was about
- * that failure and no other. Never deleted.
+ * that failure and no other. Never deleted: a ruling that no longer applies is
+ * marked retired, with why, and is never applied.
  *
  * (Moved from acceptance.test.ts, Nov 4, so the rulings test can read them.) Each records the anchor it was ruled on
  * (form and filing date); on a new anchor the plain check governs (Akshay, Nov 4).
  */
 export type Anchor = { form: string; filingDate: string };
-export type Ruled = { id: string; cik: string; failure: RegExp; amount: string; ruling: string; anchor?: Anchor };
+export type Ruled = { id: string; cik: string; failure: RegExp; amount: string; ruling: string; anchor?: Anchor; retired?: string };
 
 export const RULED: Ruled[] = [
   {
@@ -19,11 +20,12 @@ export const RULED: Ruled[] = [
     amount: "$65MM",
     anchor: { form: "10-Q", filingDate: "2026-08-04" }, // DaVita's Q2 10-Q, the anchor it was ruled on
     ruling: "Akshay's ruling, Session 26 (\"DaVita's ruled residuals\", sessions/26/prompt_card_review_2.md), re-confirmed Oct 22, 2026: the $65MM of revolver draws DaVita's 10-Q states as a source of cash is not shown on a move card",
+    retired: "Nov 6, 2026 (Akshay): replaced by a rule over the class. Routine draws and repayments on a revolving facility stated only as period totals are covered by the facility's drawn balance on the card, where it ties to the anchor; they are not move cards (acceptance 5.8).",
   },
 ];
 
-export function applyRuled(id: string, cik: string, anchor: Anchor | null, fails: string[]): { counted: string[]; ruled: string[] } {
-  const r = RULED.find((x) => x.id === id && x.cik === cik);
+export function applyRuled(id: string, cik: string, anchor: Anchor | null, fails: string[], rules: Ruled[] = RULED): { counted: string[]; ruled: string[] } {
+  const r = rules.find((x) => x.id === id && x.cik === cik && !x.retired);
   if (!r) return { counted: fails, ruled: [] };
   // Nov 4: a ruling binds to the anchor it was ruled on (form and filing date). On another anchor, or with none
   // recorded, the plain check governs.

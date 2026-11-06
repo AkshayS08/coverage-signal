@@ -116,7 +116,11 @@ console.log("\n=== R5: ruled residuals bind to their anchor ===");
 for (const r of nonEmpty("the ruled residuals", RULED)) assert(!!r.anchor?.form && /^\d{4}-\d{2}-\d{2}$/.test(r.anchor?.filingDate ?? ""), `[R5] the ${r.id} ruling for ${r.cik} records its anchor (${r.anchor?.form} ${r.anchor?.filingDate})`);
 const dvRuling = RULED.find((r) => r.cik === "0000927066")!;
 const fail = [`not on a move card: ${dvRuling.amount} in "Significant sources of cash during the period included the incurrence of …"`];
-assert(applyRuled("5.8", "0000927066", dvRuling.anchor!, fail).counted.length === 0, `[R5] on its own anchor (${dvRuling.anchor?.form} ${dvRuling.anchor?.filingDate}), the ruled residual is reported, not counted`);
+// Nov 6: DaVita's ruling is retired (replaced by the revolver period-total rule in 5.8); a retired ruling never applies.
+assert(!!dvRuling.retired && applyRuled("5.8", "0000927066", dvRuling.anchor!, fail).counted.length === 1, `[R5] DaVita's Q2 ruling is retired and no longer suppresses, even on its own anchor (${dvRuling.retired?.slice(0, 60)}…)`);
+// The binding, on a synthetic active ruling: reported, not counted, on its own anchor.
+const synth = [{ ...dvRuling, retired: undefined }];
+assert(applyRuled("5.8", "0000927066", dvRuling.anchor!, fail, synth).counted.length === 0, `[R5] an active ruling on its own anchor (${dvRuling.anchor?.form} ${dvRuling.anchor?.filingDate}) is reported, not counted`);
 assert(applyRuled("5.8", "0000927066", { form: "10-Q", filingDate: "2026-10-29" }, []).counted.length === 0, `[R5] on DaVita's Q3 anchor the ruling drops and the plain check governs (it passes: nothing counted)`);
 
 console.log("\n=== controls ===");
@@ -129,7 +133,7 @@ const cig = cards.find((x) => x.label === "published" && x.card.cik === "0001739
 const c3 = clone(cig.card); c3.v3.table.rows = c3.v3.table.rows.filter((r: any) => !/commercial paper/i.test(txt(r.instrument)));
 assert(r3(c3, cig.input).length > 0, `[R3 control] Cigna's card with its commercial paper row removed is flagged`);
 assert(r4({ moveSentences: [{ sentence: "As a result of the redemption of the 2028 Notes, we recorded a $3.2 million Loss on early extinguishment of debt." }] }).length > 0, `[R4 control] a fixture requiring Encompass's $3.2MM loss on extinguishment is flagged`);
-assert(applyRuled("5.8", "0000927066", { form: "10-Q", filingDate: "2026-10-29" }, fail).counted.length > 0, `[R5 control] the $65MM ruling applied on a different anchor than its own does not suppress the failure`);
+assert(applyRuled("5.8", "0000927066", { form: "10-Q", filingDate: "2026-10-29" }, fail, synth).counted.length > 0, `[R5 control] the $65MM ruling applied on a different anchor than its own does not suppress the failure`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

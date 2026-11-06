@@ -433,6 +433,24 @@ function moveAmounts(sentence: string, scale: number): number[] {
   }
   return out.filter((v) => v >= 1e6);
 }
+/** Nov 6: the amount is a revolving facility's period-total draws or repayments, with no purpose tied to it in its sentence. */
+const REVOLVER = /\b(?:revolving (?:line of credit|credit facility|facility)|revolver|line of credit|ABL)\b/i;
+const PURPOSE = /\bto (?:fund|finance|repay|redeem|refinance|acquire|purchase|pay for)\b|\bused (?:to|for)\b|\bin connection with\b|\bfor the (?:acquisition|redemption|repurchase|purchase)\b/i;
+function routineRevolverTotal(sentence: string, usd: number): boolean {
+  if (PURPOSE.test(sentence)) return false;
+  for (const m of sentence.matchAll(/\$\s?([\d,.]+)\s*(million|billion|thousand)?/gi)) {
+    const v = Number(m[1].replace(/,/g, "")) * ({ million: 1e6, billion: 1e9, thousand: 1e3 } as Record<string, number>)[(m[2] ?? "").toLowerCase()];
+    if (!(Math.abs(v - usd) <= Math.max(0.6e6, usd * 0.005))) continue;
+    const around = sentence.slice(Math.max(0, m.index! - 120), m.index! + m[0].length + 40);
+    if (/\b(?:net\s+)?(?:draws?|borrowings?|repayments?)\b/i.test(around) && REVOLVER.test(around)) return true;
+  }
+  return false;
+}
+/** Nov 6: the card shows a revolving facility's drawn balance, stated in the anchor. */
+function revolverDrawnAtAnchor(v: NonNullable<Card["v3"]>, f: any): boolean {
+  return v.facilities.some((x) => REVOLVER.test(text(x.bold)) && [...x.bold, ...(x.sub ?? [])].some((s: any) => (s.k === "figure" || s.k === "computed") && s.field === "drawn" && (s.src?.url ?? s.parts?.[0]?.src?.url) === f.anchor?.url));
+}
+
 const T8_MOVES: Test = {
   id: "5.8", name: "moves are complete — every stated debt move is on a move card: date, word, face, instrument, funding or use",
   run: (card, f) => {
@@ -459,6 +477,14 @@ const T8_MOVES: Test = {
       }
       const amounts = moveAmounts(s0, scale);
       for (const amt of amounts) {
+        // Nov 6 (Akshay): routine draws and repayments on a revolving facility stated only as period totals ("net draws on
+        // our revolving line of credit of $80 million") are covered by the facility's drawn balance on the card, where that
+        // balance ties to the anchor; they are not move cards. A draw or repayment tied to a purpose (funding a retirement,
+        // an acquisition, another named use) is a move.
+        if (routineRevolverTotal(s0, amt)) {
+          if (!revolverDrawnAtAnchor(v, f)) bad.push(`period-total revolver draw with no drawn balance at the anchor on the card: $${amt / 1e6}MM in "${s0.slice(0, 80)}"`);
+          continue;
+        }
         const hit = cards.find(({ lines }) => figuresOf(lines).some((x) => Math.abs(x - amt) <= Math.max(0.6e6, amt * 0.005)));
         if (!hit) { bad.push(`not on a move card: $${amt / 1e6}MM in "${s0.slice(0, 80)}"`); continue; }
         if (/net proceeds|cash on hand|proceeds from/i.test(s0) && !hit.m.retires && !(hit.m.detail && /^(?:With |Used |Funded |At )|used to|, with /i.test(text(hit.m.detail)))) bad.push(`funding or use not shown for $${amt / 1e6}MM: "${s0.slice(0, 70)}"`);
@@ -1300,12 +1326,18 @@ function controls(): { id: string; failed: boolean; what: string }[] {
     { const c = clone(dva); const r = reconOf(c); const segs = r?.filter((x) => x.k === "computed" || x.k === "figure") as any[] | undefined; if (segs?.[1]) segs[1].t = "$100MM"; out.push({ id: "5.7", failed: !!segs?.[1] && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 stating a difference that does not close the year" }); }
     { const c = clone(dva); const r = reconOf(c); const segs = r?.filter((x) => x.k === "computed" || x.k === "figure") as any[] | undefined; if (segs?.[0]) segs[0].t = "$4,000MM"; out.push({ id: "5.7", failed: !!segs?.[0] && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 stating a schedule figure the filer does not print" }); }
     { const c = clone(dva); const b = (c.ladder.blocks ?? []).find((x) => text(x.heading).startsWith("2030")); if (b) b.lines = b.lines.filter((l) => !/ less than the lines above\./.test(text(l))); out.push({ id: "5.7", failed: !!b && T7_SCHEDULE.run(c, fd).length > 0, what: "DaVita 2030 with its reconciliation sentence removed" }); }
-    // Nov 4: the mechanism is checked on the ruling's own anchor, from the ruled failure itself.
-    const own = RULED.find((r) => r.cik === dva.cik)!.anchor!;
+    // Nov 6: routine revolver period totals are covered by the drawn balance at the anchor; a purpose-tied draw is a move.
+    // (a) DaVita's "net draws … of $80 million" with the revolver's drawn balance removed from the card.
+    { const c = clone(dva); for (const x of c.v3!.facilities) { x.bold = x.bold.filter((s: any) => s.field !== "drawn"); if (x.sub) x.sub = x.sub.filter((s: any) => s.field !== "drawn"); } out.push({ id: "5.8", failed: T8_MOVES.run(c, fd).some((x) => /\$80MM/.test(x)), what: "a period-total net draw with no drawn balance on the card" }); }
+    // (b) a draw tied to a purpose, with no move card.
+    { const f = clone(fd); f.moveSentences.push({ doc: "x", url: "x", sentence: "In June 2026, we drew $250 million on our revolving line of credit to fund the redemption of our 2027 notes." }); out.push({ id: "5.8", failed: T8_MOVES.run(dva, f).some((x) => /\$250MM/.test(x)), what: "a purpose-tied revolver draw with no move card" }); }
+    // The ruled-residual mechanism, on a synthetic active ruling (DaVita's Q2 ruling is retired, Nov 6).
+    const synth = { id: "5.8", cik: dva.cik, failure: /^not on a move card: \$65MM in "Significant sources/, amount: "$65MM", ruling: "a synthetic ruling, for the mechanism's controls", anchor: { form: "10-Q", filingDate: "2026-08-04" } };
+    const own = synth.anchor;
     const real = [`not on a move card: $65MM in "Significant sources of cash during the period included the incurrence of …"`];
-    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, []).counted.length > 0, what: "the ruled $65MM residual no longer failing" });
-    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, real.map((x) => x.replace("$65MM", "$66MM"))).counted.length > 0, what: "the ruled residual with its amount moved to $66MM" });
-    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, [...real, ...real]).counted.length > 0, what: "the ruled residual failing twice" });
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, [], [synth]).counted.length > 0, what: "the ruled $65MM residual no longer failing" });
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, real.map((x) => x.replace("$65MM", "$66MM")), [synth]).counted.length > 0, what: "the ruled residual with its amount moved to $66MM" });
+    out.push({ id: "5.8 ruled", failed: applyRuled("5.8", dva.cik, own, [...real, ...real], [synth]).counted.length > 0, what: "the ruled residual failing twice" });
   }
 
   // ── N1: a name its sentence does not contain (a paraphrase) is not verbatim. Re-casing no longer is (Oct 23). ──

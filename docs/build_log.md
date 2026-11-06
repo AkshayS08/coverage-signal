@@ -7341,3 +7341,20 @@ CHS filed Q3 earnings 8-Ks on Oct 28, between the pricing and the resumed
 run, and the gate's pre-run check (done keys cached) would have let it
 re-extract them as "re-tastes". It now drops, at run time, any name whose
 canonical answer is not cached under its current read set.
+
+### Session 27: the Nov 4 acceptance findings, and a lesson about checks (Nov 6, 2026)
+
+Six acceptance findings appeared once the oracle was recaptured from the signed v33 answers (the fixture capture had
+been pinned to v31 and wrote nothing). Ruled Nov 4 and Nov 6: Tenet's "2034" was a real precision loss ("due in
+September 2034" was not matched); a scheduled day ("expected to be redeemed on September 23") never dates a completed
+move, and shows labelled ("Redeemed Sept 2026 (scheduled for Sept 23)"); ruled residuals bind to the anchor they were
+ruled on; routine revolver draws stated only as period totals are covered by the drawn balance at the anchor, not move
+cards (DaVita's Q2 $65MM ruling retired; its Q3 "$80 million" is covered by "$80MM drawn").
+
+**Lesson: before calling a card wrong, confirm the check matches by meaning, not exact wording.** Two of the six
+findings were not card faults. Cigna's commercial paper row was on the card throughout; the check matched rows by exact
+label, and the v33 answer named it "commercial paper" where the position says "Commercial Paper Program". Encompass's
+"$3.2 million Loss on early extinguishment" was never a move: the fixture's sentence splitter ran it into the August
+add-on's sentence across a page number. Both were check-matching or text-splitting errors, and both were reported to
+Akshay as card regressions before the matcher was read. A failing check is a claim about the card only once the check
+is shown to match what it means to match.
