@@ -66,7 +66,10 @@ export function moveIntegrityViolations(card: any, input: any): { M1: string[]; 
   for (const p of retirementParts) {
     // The retirement's own meta line is part of the move ("Refinanced · redeemed …, with the new notes' proceeds and cash on hand").
     const rendered = [p.meta, ...p.segs.map((s: any) => s.t ?? "")].join(" ");
-    const sentences = [...new Set(p.segs.map((s: any) => s.src?.sentence).filter((x: any) => typeof x === "string" && /\b(?:used|use|finance|fund)\w*\b/i.test(x) && /proceeds|cash on hand|borrowings/i.test(x)))] as string[];
+    // Nov 7: a sentence funding something other than debt (a share repurchase authorization, dividends) is not this
+    // move's funding line, even where the card cites it for another fact (Encompass's "$1 billion revolving credit
+    // facility", stated in its buyback sentence).
+    const sentences = [...new Set(p.segs.map((s: any) => s.src?.sentence).filter((x: any) => typeof x === "string" && /\b(?:used|use|finance|fund)\w*\b/i.test(x) && /proceeds|cash on hand|borrowings/i.test(x) && !/\bshares?\b|\bcommon stock\b|\bdividends?\b|\bauthorization\b/i.test(x)))] as string[];
     for (const s of sentences) {
       if (NEW_DEBT_SOURCE.test(s) && !/Refinanced/.test(p.meta)) out.M5.push(`"${s.slice(0, 80)}…" names new debt as a source, but the retirement reads "${p.meta}"`);
       for (const [name, re] of OTHER_SOURCES) if (re.test(s) && !new RegExp(name, "i").test(rendered)) out.M5.push(`"${s.slice(0, 80)}…" names ${name}, which the card does not state`);

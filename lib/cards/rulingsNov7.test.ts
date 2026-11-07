@@ -18,6 +18,7 @@
 import { readFileSync } from "node:fs";
 import { couponsIn } from "./labels";
 import { shownCards } from "./shownCards";
+import { nonEmpty } from "../testing/nonEmpty";
 import { COMPLETED, NOT_DONE, usdIn } from "./refreshRulings";
 import { scaledAmountString, locatorFor } from "../agent/tableScale";
 import { parseMoneyAmount } from "../events/position";
@@ -76,7 +77,7 @@ function t1(card: any, input: any): string[] {
         if (!FUNDS.test(s) || !REFERRING.test(s) || NOT_DONE.test(s)) return;
         const year = (/\b(20\d\d)\b/.exec(line) ?? [])[1];
         const states = facility
-          ? REVOLVER.test(s) && /\brepa(?:y|id)\b/i.test(s) && (amt ? usdIn(s).some((u) => Math.abs(u / 1e6 - Number(amt.replace(/,/g, ""))) < 0.5) : !usdIn(s.split(/to repay/i)[1] ?? "").length)
+          ? REVOLVER.test(s) && /\brepa(?:y|id)\b/i.test(s) && (amt ? usdIn(s).some((u) => Math.abs(u / 1e6 - Number(amt.replace(/,/g, ""))) < 0.5) : !usdIn(s.split(/\brepa(?:y|id)\b/i).slice(1).join(" ")).length)
           : couponsIn(line).some((c) => couponsIn(s).some((d) => Math.abs(c.rate - d.rate) < 1e-9)) && !!year && s.includes(year);
         if (!states) return;
         const a = antecedent(ss, n);
@@ -125,7 +126,7 @@ function t4(card: any, input: any): string[] {
   return out;
 }
 
-const shown = shownCards();
+const shown = nonEmpty("the cards that can be shown or signed", shownCards());
 console.log(`=== T1-T4 over the ${shown.length} cards that can be shown or signed ===`);
 for (const s of shown) {
   const tag = `${s.card.company} ${s.label}`;
@@ -135,7 +136,7 @@ const enc = shown.find((s) => s.cik === "0000785161" && s.label === "review")!;
 const row = enc.card.v3.table.rows.find((r: any) => /5\.875/.test(r.name));
 assert(!!row && /^600$/.test(txt([row.face])), `[T3] Encompass's 5.875% 2034 notes read 600 in the table ("${row ? txt([row.face]) : "no row"}")`);
 const seg = enc.card.v3.totalDebt.legend.map((l: any) => `${txt(l.label)} ${txt([l.amount])}`).join(" | ");
-assert(/Senior notes \$1,000MM/.test(seg), `[T3] and $1,000MM of senior notes in the total-debt segments (400 + 600): "${seg}"`);
+assert(/senior notes \$1,000MM/i.test(seg), `[T3] and $1,000MM of senior notes in the total-debt segments (400 + 600): "${seg}"`);
 
 console.log("\n=== controls ===");
 // T1/T2 control: Encompass's Q3 pairing as rendered on Nov 6 (the Aug revolver repayment attached to the May issue).

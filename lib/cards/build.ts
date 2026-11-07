@@ -757,7 +757,10 @@ export function buildCard(i: CardInputs): Card {
     const rYear = (/\bdue\s+(?:[A-Z][a-z]+\s+)?(?:\d{1,2},\s*)?(20\d\d)/.exec(r.instrument) ?? [])[1] ?? year;
     // A facility repaid ("repay $100 million … under our revolving credit facility") is named by its kind.
     const FACILITY = /revolv|credit facility|term loan/i;
-    const statesR = (s: string) => /\bredeem\w*|redemption|repurchas\w*|repa(?:y|id)|retire\w*/i.test(s) && ((own !== undefined && couponsIn(s).some((c) => Math.abs(c.rate - own) < 1e-9) && (!rYear || s.includes(rYear))) || (!!rYear && own !== undefined && new RegExp(`\\b${rYear}\\s+(?:[A-Z][a-z]+\\s+){0,4}Notes\\b`).test(s)) || (own === undefined && FACILITY.test(r.instrument) && FACILITY.test(s) && /\brepa(?:y|id)\b/i.test(s)));
+    const statesR = (s: string) => /\bredeem\w*|redemption|repurchas\w*|repa(?:y|id)|retire\w*/i.test(s) && ((own !== undefined && couponsIn(s).some((c) => Math.abs(c.rate - own) < 1e-9) && (!rYear || s.includes(rYear))) || (!!rYear && own !== undefined && new RegExp(`\\b${rYear}\\s+(?:[A-Z][a-z]+\\s+){0,4}Notes\\b`).test(s)) || (own === undefined && FACILITY.test(r.instrument) && FACILITY.test(s) && /\brepa(?:y|id)\b/i.test(s) && repaysThis(s)));
+    // Nov 7: one revolver sentence is not every revolver repayment: by its own amount, or, with none, a repayment of no
+    // stated amount ("to repay a portion of the amounts outstanding").
+    function repaysThis(s: string): boolean { const after = s.split(/\brepa(?:y|id)\b/i).slice(1).join(" "); return r.faceUsd ? usdIn(after).some((u) => Math.abs(u - r.faceUsd!) < 0.5e6) : !usdIn(after).length; }
     /** The issuances a document reports done in the year (its coupon, maturity year and face), once each. */
     const issuesReportedIn = (url: string) => {
       const seen = new Map<string, Source>();
@@ -791,18 +794,53 @@ export function buildCard(i: CardInputs): Card {
     const fundingSentences = heldSentences.filter((x) => FUNDS.test(x.sentence) && statesR(x.sentence) && !/\bmay\s+[a-z]/.test(x.sentence));
     // An issuance cannot fund a retirement completed before it was issued (by month: a month-only date is not a day).
     const eligible = issuances.filter((iss) => r.status === "pending" || iss.sort.slice(0, 7) <= r.sort.slice(0, 7));
-    // Every sentence pairing this retirement with an issuance: by its name or defined term, or (Nov 3) by "this
-    // offering", "the offering" or "the Notes" inside a document that reports exactly one issuance. A document reporting
-    // more than one leaves it to the flagged fallback.
+    // Every sentence pairing this retirement with an issuance: by its name or defined term, or (Nov 7) by a referring
+    // phrase ("this borrowing", "this offering", "the Notes") resolved to the issuance named in the same sentence or,
+    // failing that, the nearest preceding sentence naming one in the same paragraph (the stored text has no paragraph
+    // breaks: at most three sentences back, stopping at a note heading). A scope holding none or more than one issuance
+    // flags rather than pairs.
+    const REFERS = /\b(?:this|the)\s+(?:borrowing|offering|issuance)\b|\bthe\s+Notes\b/;
+    const HEADING = /^\d{1,2}\.\s+[A-Z][a-z]+/;
+    /** The issuances a sentence names as done (null: it names none), and which of them are this card's issuance moves. */
+    const issuesNamedIn = (sentence: string): { named: number; onCard: Move[] } | null => {
+      if (!COMPLETED.test(sentence) || NOT_DONE.test(sentence) || /\bmay\s+[a-z]/.test(sentence)) return null;
+      let named = 0;
+      const onCard = new Set<Move>();
+      for (const m of sentence.matchAll(/\$\s?([\d,]+(?:\.\d+)?)\s*(million|billion)?\s+(?:in aggregate principal amount\s+)?of\s+(?:our\s+|its\s+)?(?:existing\s+)?((?:[^.;]|\.(?=\d)){0,80}?\bNotes\b)/gi)) {
+        const n = Number(m[1].replace(/,/g, "")), face = m[2] ? n * (/billion/i.test(m[2]) ? 1e9 : 1e6) : n;
+        if (face < 1e6) continue;
+        named++;
+        const c = couponsIn(m[3])[0]?.rate, y = (/\b(20\d\d)\b/.exec(m[3]) ?? [])[1];
+        for (const iss of issuances) {
+          const ic = couponsIn(iss.instrument)[0]?.rate, iy = (/\bdue\s+(?:[A-Z][a-z]+\s+)?(?:\d{1,2},\s*)?(20\d\d)/.exec(iss.instrument) ?? [])[1];
+          if (iss.faceUsd && Math.abs(iss.faceUsd - face) < 0.5e6 && (c === undefined || ic === undefined || Math.abs(c - ic) < 1e-9) && (!y || !iy || y === iy)) onCard.add(iss);
+        }
+      }
+      return named ? { named, onCard: [...onCard] } : null;
+    };
+    /** The antecedent's issuance: the nearest sentence naming ANY issuance decides; one named, and on this card, or none. */
+    const antecedentOf = (x: Source): Move[] | null => {
+      const ss = sentencesOf(x.url);
+      const at = ss.findIndex((q) => q.sentence === x.sentence);
+      const decide = (h: { named: number; onCard: Move[] }) => (h.named === 1 && h.onCard.length === 1 ? h.onCard : []);
+      const own = issuesNamedIn(x.sentence);
+      if (own) return decide(own);
+      for (let k = at - 1; at > 0 && k >= Math.max(0, at - 3); k--) {
+        const h = issuesNamedIn(ss[k].sentence);
+        if (h) return decide(h);
+        if (HEADING.test(ss[k].sentence)) break;
+      }
+      return null;
+    };
     const pairs: { iss: Move; s: Source }[] = [];
+    let unresolved: Source | null = null;
     for (const x of fundingSentences) {
       for (const iss of eligible) if (namesIssuance(x, iss)) pairs.push({ iss, s: x });
-      if (/\b(?:this|the)\s+offering\b|\bthe\s+Notes\b/.test(x.sentence)) {
-        const reported = issuesReportedIn(x.url);
-        if (reported.length !== 1) continue;
-        const [c, y, face] = reported[0].split("|");
-        const iss = eligible.filter((m) => couponsIn(m.instrument).some((z) => Math.abs(z.rate - Number(c)) < 1e-9) && m.instrument.includes(y) && (!face || !m.faceUsd || Math.abs(m.faceUsd - Number(face)) < 0.5e6));
-        if (iss.length === 1) pairs.push({ iss: iss[0], s: x });
+      if (REFERS.test(x.sentence) && !NOT_DONE.test(x.sentence)) {
+        const a = antecedentOf(x);
+        const inScope = (a ?? []).filter((m) => eligible.includes(m));
+        if (inScope.length === 1) pairs.push({ iss: inScope[0], s: x });
+        else if (!pairs.some((q) => q.s === x)) unresolved = unresolved ?? x;
       }
     }
     const fundedByOne = [...new Set(pairs.map((x) => x.iss))];
@@ -811,6 +849,12 @@ export function buildCard(i: CardInputs): Card {
       const done = pairs.find((x) => !NOT_DONE.test(x.s.sentence));
       const chosen = r.status === "completed" ? done ?? pairs[0] : pairs[0];
       r.fundedBy = fundedByOne[0]; fundedByOne[0].retires.push(r); r.spendSrc = chosen.s;
+      continue;
+    }
+    // Two issuances claimed, or a reference that resolves to none or more than one: flag, never pair.
+    if (fundedByOne.length > 1 || (unresolved && !fundedByOne.length)) {
+      const why = fundedByOne.length > 1 ? `its funding sentences name ${fundedByOne.length} issuances` : `"${unresolved!.sentence.slice(0, 90)}…" refers to an issuance it does not identify`;
+      pairingFlags.push([t(`Not paired: the ${tidyCoupon(r.instrument)}; ${why}.`)]);
       continue;
     }
     // A stated funding fact keeps the move unpaired only when it names no new debt (Nov 1, rule (d)).
@@ -1103,11 +1147,17 @@ export function buildCard(i: CardInputs): Card {
   // issued $500 million of 5.875% Senior Notes due 2034 … at par"), where no
   // retirement of them in the period is stated.
   for (const it of allDebtItems.filter((x) => x.basis === "carrying" && couponOf(x.name))) {
-    const iss = movesAll.find((m) => m.type === "issuance" && m.inPeriod && m.face && m.face.k === "figure" && m.faceUsd && sameNote(m.instrument, it.name));
+    // Nov 7: an issuance of ADDITIONAL notes of the same instrument (same coupon and maturity, stated as additional, an
+    // add-on or a further issuance) inside the period adds to its face, wherever it is stated: Encompass's $500MM May
+    // issue and $100MM August add-on are one $600MM instrument.
+    const isAddOn = (m: Move) => /\badditional\b|\badd-on\b|\bfurther issuance\b/i.test(`${m.sentence} ${m.instrument}`) || m.extra.some((x) => x.k === "label" && /further issuance/i.test(x.stated ?? ""));
+    const sameIssue = movesAll.filter((m) => m.type === "issuance" && (m.inPeriod || m.sort <= periodEnd) && m.face && m.face.k === "figure" && m.faceUsd && sameNote(m.instrument, it.name));
+    const iss = sameIssue.find((m) => m.inPeriod && !isAddOn(m)) ?? sameIssue.find((m) => !isAddOn(m));
     if (!iss || movesAll.some((m) => RETIRES.has(m.type) && m.inPeriod && sameNote(m.instrument, it.name))) continue;
+    const addOns = sameIssue.filter((m) => m !== iss && isAddOn(m) && m.sort >= iss.sort);
     it.amountPrinted = (iss.face as any).printed;
     it.amountSrc = (iss.face as any).src;
-    it.amountParts = undefined;
+    it.amountParts = addOns.length ? [iss, ...addOns].map((m) => ({ printed: (m.face as any).printed, usd: m.faceUsd!, src: (m.face as any).src })) : undefined;
     it.basis = "face";
   }
 
