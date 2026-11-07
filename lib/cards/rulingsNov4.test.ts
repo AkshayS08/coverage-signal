@@ -19,6 +19,7 @@ import { join } from "node:path";
 import { couponsIn } from "./labels";
 import { nonEmpty } from "../testing/nonEmpty";
 import { RULED, applyRuled } from "./ruledResiduals";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -29,11 +30,8 @@ const norm = (s: string) => s.replace(/[\s ]+/g, " ").replace(/ %/g, "%");
 const MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December";
 
 const CIKS = nonEmpty("the published cards", read(join("lib", "cards", "generated", "index.json")).ciks as string[]);
-const cards: { label: string; card: any; input: any }[] = nonEmpty("the ten cards", [
-  ...CIKS.map((c) => ({ label: "published", card: read(join("lib", "cards", "generated", `${c}.json`)), input: read(join("lib", "cards", "inputs", `${c}.json`)) })),
-  ...["0000070318", "0000927066", "0001108109"].map((c) => ({ label: "refresh", card: read(join("sessions", "27", "refresh", `${c}_review_card.json`)), input: read(join("sessions", "27", "refresh", `${c}_input.json`)) })),
-  { label: "refresh", card: read(join("sessions", "27", "molina_review_card.json")), input: read(join("sessions", "27", "molina_review_input.json")) },
-]);
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+const cards: { label: string; card: any; input: any }[] = shownCards().map((s) => ({ label: s.label === "published" ? "published" : "refresh", card: s.card, input: s.input }));
 const docsFor = (input: any, card: any) => {
   const dm = input.result.results.find((t: any) => t.triggerId === "debt-maturity");
   const urls = [dm.debtScheduleSourceFiling.url, ...(input.laterFilings ?? []).filter((x: any) => x.filingDate <= card.briefDate).map((x: any) => x.url)];

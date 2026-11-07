@@ -1,0 +1,214 @@
+{
+ "cik": "0000070318",
+ "company": "TENET HEALTHCARE CORP",
+ "briefDate": "2026-10-31",
+ "positionSource": "the refresh canonical (review render)",
+ "anchor": {
+  "form": "10-Q",
+  "date": "2026-10-29",
+  "reportDate": "2026-09-30",
+  "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+ },
+ "table": {
+  "basis": "face (the table prints its own bridge line)",
+  "rows": [
+   {
+    "label": "6.125 % due 2028",
+    "amount": "$ 1,250   million",
+    "sourceLine": "Senior unsecured notes:     6.125 % due 2028 $ 1,250",
+    "recordedHeading": "Senior unsecured notes"
+   },
+   {
+    "label": "6.875 % due 2031",
+    "amount": "$ 362   million",
+    "sourceLine": "6.875 % due 2031 362",
+    "recordedHeading": "Senior unsecured notes"
+   },
+   {
+    "label": "6.000 % due 2033",
+    "amount": "$ 750   million",
+    "sourceLine": "6.000 % due 2033 750",
+    "recordedHeading": "Senior unsecured notes"
+   },
+   {
+    "label": "6.250 % due 2034",
+    "amount": "$ 2,000   million",
+    "sourceLine": "6.250 % due 2034 2,000",
+    "recordedHeading": "Senior unsecured notes"
+   },
+   {
+    "label": "4.625 % due 2028",
+    "amount": "$ 600   million",
+    "sourceLine": "4.625 % due 2028 600",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "4.250 % due 2029",
+    "amount": "$ 1,400   million",
+    "sourceLine": "4.250 % due 2029 1,400",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "4.375 % due 2030",
+    "amount": "$ 1,450   million",
+    "sourceLine": "4.375 % due 2030 1,450",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "6.125 % due 2030",
+    "amount": "$ 2,000   million",
+    "sourceLine": "6.125 % due 2030 2,000",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "6.750 % due 2031",
+    "amount": "$ 1,350   million",
+    "sourceLine": "6.750 % due 2031 1,350",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "5.500 % due 2032",
+    "amount": "$ 1,500   million",
+    "sourceLine": "5.500 % due 2032 1,500",
+    "recordedHeading": "Senior secured first lien notes"
+   },
+   {
+    "label": "Finance leases, mortgages and other notes",
+    "amount": "$ 679   million",
+    "sourceLine": "Finance leases, mortgages and other notes 679",
+    "recordedHeading": null
+   }
+  ],
+  "scale": "million",
+  "bridge": [
+   {
+    "label": "Unamortized issue costs and note discounts",
+    "amount": "( 98 ) million"
+   }
+  ],
+  "text": "g of $ 33 million of restructuring charges, $ 20 million of acquisition‑related transaction costs and impairment charges totaling $ 13 million. Restructuring charges during this period included $ 12 million of contract and lease termination fees, $ 10 million related to the transition of various administrative functions to our GBC, $ 5 million of employee severance costs, and $ 6 million of other restructuring costs. NOTE 5. LONG-TERM DEBT The table below presents our long‑term debt included in the accompanying Condensed Consolidated Balance Sheets: September 30, 2026 December 31, 2025 Senior unsecured notes: 6.125 % due 2028 $ 1,250 $ 1,750 6.875 % due 2031 362 362 6.000 % due 2033 750 750 6.250 % due 2034 2,000 — Senior secured first lien notes: 5.125 % due 2027 — 1,500 4.625 % due 2028 600 600 4.250 % due 2029 1,400 1,400 4.375 % due 2030 1,450 1,450 6.125 % due 2030 2,000 2,000 6.750 % due 2031 1,350 1,350 5.500 % due 2032 1,500 1,500 Finance leases, mortgages and other notes 679 603 Unamortized issue costs and note discounts ( 98 ) ( 94 ) Total long-term debt 13,243 13,171 Less: Current portion 164 79 Long-term debt, net of current portion $ 13,079 $ 13,092 At September 30, 2026, we had senior unsecured notes and"
+ },
+ "headings": [
+  {
+   "text": "Senior unsecured notes",
+   "governs": [
+    "6.125 % due 2028",
+    "6.875 % due 2031",
+    "6.000 % due 2033",
+    "6.250 % due 2034",
+    "4.625 % due 2028",
+    "4.250 % due 2029",
+    "4.375 % due 2030",
+    "6.125 % due 2030",
+    "6.750 % due 2031",
+    "5.500 % due 2032"
+   ]
+  }
+ ],
+ "rolled": null,
+ "schedule": {
+  "doc": "10-Q 2026-10-29",
+  "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+  "entries": [
+   {
+    "period": "2026",
+    "amount": "27"
+   },
+   {
+    "period": "2027",
+    "amount": "157"
+   },
+   {
+    "period": "2028",
+    "amount": "1,931"
+   },
+   {
+    "period": "2029",
+    "amount": "1,464"
+   },
+   {
+    "period": "2030",
+    "amount": "3,493"
+   },
+   {
+    "period": "Thereafter",
+    "amount": "6,269"
+   }
+  ],
+  "excerpt": "Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269 $ 13,341 $ 12,886 Average effective interest rates 7.3 % 7.8 % 5.7 % 4.4 % 5.4 % 6.3 % 5.8 % We have no affiliation with partnerships, trusts or other entities (sometimes referred to as “special-pu"
+ },
+ "classSentences": [
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "LONG-TERM DEBT The table below presents our long‑term debt included in the accompanying Condensed Consolidated Balance Sheets: September 30, 2026 December 31, 2025 Senior unsecured notes: 6.125 % due 2028 $ 1,250 $ 1,750 6.875 % due 2031 362 362 6.000 % due 2033 750 750 6.250 % due 2034 2,000 — Senior secured first lien notes: 5.125 % due 2027 — 1,500 4.625 % due 2028 600 600 4.250 % due 2029 1,400 1,400 4.375 % due 2030 1,450 1,450 6.125 % due 2030 2,000 2,000 6.750 % due 2031 1,350 1,350 5.500 % due 2032 1,500 1,500 Finance leases, mortgages and other notes 679 603 Unamortized issue costs and note discounts ( 98 ) ( 94 ) Total long-term debt 13,243 13,171 Less: Current portion 164 79 Long-term debt, net of current portion $ 13,079 $ 13,092 At September 30, 2026, we had senior unsecured notes and senior secured first lien notes with aggregate principal amounts outstanding of $ 12.662 billion."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”)."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "We will pay interest on the 2034 Senior Notes semi-annually in arrears on March 15 and September 15 of each year, commencing on March 15, 2027."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "We have a senior secured revolving credit facility (the “Credit Agreement”) that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200 million subfacility for standby letters of credit."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "Significant cash flow items in the three months ended September 30, 2026 included: • Net cash provided by operating activities before payments for interest, taxes, restructuring charges, acquisition‑related costs, and litigation costs and settlements of $1.562 billion; • Net proceeds from the issuance of an aggregate principal amount of $2.000 billion of our 6.250% senior unsecured notes due September 2034 (the “2034 Senior Notes”); • The redemption, using the issuance proceeds and cash on hand, of all $1.500 billion in aggregate principal amount of our 5.125% senior secured first lien notes due November 2027 (the “2027 Senior Secured First Lien Notes”) and the redemption of $500 million of the then-outstanding $1.750 billion aggregate principal amount of our 6.125% senior unsecured notes due October 2028 (the “2028 Senior Notes”); • Aggregate payments of $255 million to purchase 970 thousand shares of our common stock; • Distributions paid to noncontrolling interests totaling $216 million; • Capital expenditures totaling $198 million; • Income tax payments of $163 million; and • Interest payments of $99 million."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "Our senior secured revolving credit facility (the “Credit Agreement”) provides additional liquidity to manage fluctuations in operating cash caused by these factors."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "Financing activities in 2026 also included the issuance of our 2034 Senior Notes, the net proceeds from which, together with cash on hand, were used to finance the redemption of all of our 2027 Senior Secured First Lien Notes and the partial redemption of our 2028 Senior Notes."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "These transactions reduced our secured debt and refinanced a portion of our near-term maturities with notes due in 2034."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "DEBT INSTRUMENTS, GUARANTEES AND RELATED COVENANTS At September 30, 2026, we had outstanding senior unsecured notes and senior secured first lien notes with aggregate principal amounts outstanding of $12.662 billion."
+  },
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "Our Credit Agreement, letter of credit facility, and senior unsecured and senior secured first lien notes contain certain covenants and conditions."
+  }
+ ],
+ "moveSentences": [
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+   "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”)."
+  }
+ ],
+ "docs": [
+  {
+   "doc": "10-Q 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+  },
+  {
+   "doc": "8-K 2026-10-29",
+   "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000045/thc-20261029.htm"
+  }
+ ]
+}

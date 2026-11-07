@@ -19,6 +19,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { nonEmpty } from "../testing/nonEmpty";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -53,11 +54,12 @@ function violations(card: any, result: any): string[] {
   return out;
 }
 
-for (const cik of CIKS) {
-  const card = JSON.parse(readFileSync(join("lib", "cards", "generated", `${cik}.json`), "utf-8"));
-  const result = JSON.parse(readFileSync(join("lib", "cards", "inputs", `${cik}.json`), "utf-8")).result;
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+for (const shown of shownCards()) {
+  const card = shown.card;
+  const result = shown.input.result;
   const v = violations(card, result);
-  assert(v.length === 0, `[N1:${card.company}] no field with a figure found in a read document renders "not stated"${v.length ? ` — ${v.join("; ")}` : ""}`);
+  assert(v.length === 0, `[N1:${card.company}${shown.label === "review" ? " review" : ""}] no field with a figure found in a read document renders "not stated"${v.length ? ` — ${v.join("; ")}` : ""}`);
 }
 // Nov 3: the published brief moved to Nov 3; this fixture is the Oct 15 brief, read from its archive.
 const ehc = JSON.parse(readFileSync(join("lib", "cards", "archive", "2026-10-15", "generated", "0000785161.json"), "utf-8"));

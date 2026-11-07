@@ -28,6 +28,7 @@ import { kindOf } from "./headings";
 import type { BarSegment, Card, Line, Segment } from "./types";
 import { reachable as reach } from "./reach";
 import { RULED, applyRuled } from "./ruledResiduals";
+import { shownCards } from "./shownCards";
 const reachable = (entry: string, read?: (p: string) => string | null) => reach(entry, ROOT, read);
 const readDisk = undefined;
 
@@ -184,6 +185,9 @@ const T2_LINKS: Test = {
   },
 };
 
+/** Nov 7: one definition of a face source for a figure and for every part of a computed face (an add-on's face sums
+ * two issuance statements: "we issued $500 million" and "$100 million in aggregate principal amount"). */
+const FACE_SOURCE = /principal|face amount|\bwe issued \$|issuance and sale of \$/i;
 const T3_TABLE: Test = {
   id: "5.3", name: "table reconciliation — every filer row once, at face, with its label; face total = sum",
   run: (card, f) => {
@@ -202,7 +206,7 @@ const T3_TABLE: Test = {
         const dec = ((/\.(\d+)MM/.exec(a?.t ?? "") ?? [])[1] ?? "").length;
         const tol = Math.max(1, 0.5 * 10 ** -dec * 1e6 + 1);
         if (shown === null || Math.abs(shown - e.faceUsd) > tol) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"}, face is ${e.faceUsd}`);
-      } else if (!/carrying value/i.test(text(reps[0])) && !(a && a.k === "computed" && a.parts.length > 0 && a.parts.every((p) => /principal|face amount/i.test(p.src.sentence))) && !(a && a.k === "figure" && (/principal|face amount|\bwe issued \$/i.test(a.src.sentence) || (a.field === "drawn" && /\bdrawn\b|borrowings? outstanding/i.test(a.src.sentence))))) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"} with no face source and no "carrying value" label`);
+      } else if (!/carrying value/i.test(text(reps[0])) && !(a && a.k === "computed" && a.parts.length > 0 && a.parts.every((p) => FACE_SOURCE.test(p.src.sentence))) && !(a && a.k === "figure" && (/principal|face amount|\bwe issued \$/i.test(a.src.sentence) || (a.field === "drawn" && /\bdrawn\b|borrowings? outstanding/i.test(a.src.sentence))))) bad.push(`"${e.label}" shows ${a?.t ?? "no amount"} with no face source and no "carrying value" label`);
     }
     const faceTotal = exp.every((e) => e.faceUsd !== null)
       ? exp.reduce((s, e) => s + (e.faceUsd ?? 0), 0)
@@ -272,7 +276,7 @@ const T4_NOTSTATED: Test = {
  */
 const MONTH = "January|February|March|April|May|June|July|August|September|October|November|December";
 function mostPreciseMaturity(f: any, label: string): { shown: string; precision: number } | null {
-  const snapPath = join(ROOT, "lib", "cards", "inputs", `${f.cik}.json`);
+  const snapPath = f.inputPath ?? join(ROOT, "lib", "cards", "inputs", `${f.cik}.json`); // Nov 7: the card's own input
   if (!existsSync(snapPath)) return null;
   const snap = JSON.parse(readFileSync(snapPath, "utf-8"));
   const year = (/\b(20\d\d)\b/.exec(label) ?? [])[1];
@@ -1364,7 +1368,10 @@ function controls(): { id: string; failed: boolean; what: string }[] {
 // ── run ──────────────────────────────────────────────────────────────────
 const order = ["0000070318", "0000785161", "0001179929", "0000927066", "0001108109", "0001739940"];
 const short: Record<string, string> = { "0000070318": "Tenet", "0000785161": "Encompass", "0001179929": "Molina", "0000927066": "DaVita", "0001108109": "CHS", "0001739940": "Cigna" };
-const run = order.map((cik) => ({ cik, card: cards.find((c) => c.cik === cik)!, f: fixtureOf(cik) }));
+// Nov 7: every card that can be shown or signed (lib/cards/shownCards.ts), each against its own fixture and input;
+// the published cards in the spec's order, then the review renders (marked *).
+const shown = shownCards().sort((a, b) => (a.label === b.label ? order.indexOf(a.cik) - order.indexOf(b.cik) : a.label === "published" ? -1 : 1));
+const run = shown.map((x) => ({ cik: x.cik, key: x.key, name: `${short[x.cik] ?? x.cik}${x.label === "review" ? "*" : ""}`, card: x.card as Card, f: { ...JSON.parse(readFileSync(x.fixturePath, "utf-8")), inputPath: x.inputPath } }));
 const counts: Record<string, Record<string, number>> = {};
 const RULED_SEEN: string[] = [];
 const details: string[] = [];
@@ -1378,23 +1385,23 @@ const pageBad = [...new Set(["page.tsx", "[cik]/page.tsx", "CardView.tsx"].flatM
 const genBad = [...new Set(reachable(join(ROOT, "lib", "cards", "generate.ts"), readDisk))];
 for (const t of TESTS) {
   counts[t.id] = {};
-  for (const { cik, card, f } of run) {
+  for (const { cik, key, name, card, f } of run) {
     const { counted: fails, ruled } = applyRuled(t.id, cik, f.anchor ? { form: f.anchor.form, filingDate: f.anchor.date } : null, t.run(card, f));
-    RULED_SEEN.push(...ruled.map((r) => `${short[cik].padEnd(9)} ${r}`));
-    counts[t.id][cik] = fails.length;
+    RULED_SEEN.push(...ruled.map((r) => `${name.padEnd(10)} ${r}`));
+    counts[t.id][key] = fails.length;
     totalFail += fails.length;
-    for (const x of fails.slice(0, 4)) details.push(`  ${t.id} ${short[cik].padEnd(9)} ${x}`);
-    if (fails.length > 4) details.push(`  ${t.id} ${short[cik].padEnd(9)} … and ${fails.length - 4} more`);
+    for (const x of fails.slice(0, 4)) details.push(`  ${t.id} ${name.padEnd(10)} ${x}`);
+    if (fails.length > 4) details.push(`  ${t.id} ${name.padEnd(10)} … and ${fails.length - 4} more`);
   }
 }
 const reported = [...new Set(NOT_COMPARABLE)];
 const ctl = controls();
 
 console.log("§5 ACCEPTANCE — failures per test per card (0 = passes)\n");
-console.log(`  test  ${order.map((c) => short[c].padStart(9)).join("")}   control`);
+console.log(`  test  ${run.map((r) => r.name.padStart(10)).join("")}   control`);
 for (const t of TESTS) {
   const c = ctl.find((x) => x.id === t.id);
-  console.log(`  ${t.id.padEnd(5)} ${order.map((cik) => String(counts[t.id][cik]).padStart(9)).join("")}   ${c ? (c.failed ? "fails ✓" : "PASSES ✗ (cannot fail)") : "—"}   ${t.name}`);
+  console.log(`  ${t.id.padEnd(5)} ${run.map((r) => String(counts[t.id][r.key]).padStart(10)).join("")}   ${c ? (c.failed ? "fails ✓" : "PASSES ✗ (cannot fail)") : "—"}   ${t.name}`);
 }
 const pageCtl = ctl.find((c) => c.id === "5.1 page")!;
 console.log(`\n  5.1 page   the card page reaches ${pageBad.length} model, cache or network module(s)   control ${pageCtl.failed ? "fails ✓" : "PASSES ✗"}`);

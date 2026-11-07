@@ -33,6 +33,7 @@ import { placedInsideParent } from "./subFacility";
 import { scaledFactValue } from "./build";
 import { isZeroValue } from "../agent/statedZero";
 import { nonEmpty } from "../testing/nonEmpty";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -63,11 +64,8 @@ function zeroViolations(c: any): string[] {
   walk(c.v3);
   return out;
 }
-const all: [string, any][] = [
-  ...(nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[])).map((c) => [c, JSON.parse(readFileSync(join("lib", "cards", "generated", `${c}.json`), "utf-8"))] as [string, any]),
-  ...["0000070318", "0000927066", "0001108109"].map((c) => [`${c} refresh`, JSON.parse(readFileSync(join("sessions", "27", "refresh", `${c}_review_card.json`), "utf-8"))] as [string, any]),
-  ["Molina refresh", JSON.parse(readFileSync(join("sessions", "27", "molina_review_card.json"), "utf-8"))],
-];
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+const all: [string, any][] = shownCards().map((x) => [x.label === "published" ? x.cik : `${x.cik} refresh`, x.card] as [string, any]);
 for (const [label, c] of all) { const v = zeroViolations(c); assert(v.length === 0, `[F4:${c.company}${/refresh/.test(label) ? " refresh" : ""}] no non-zero source renders as zero${v.length ? ` — ${v.join("; ")}` : ""}`); }
 const bad = JSON.parse(JSON.stringify(all[0][1])); bad.v3.facilities[0].bold.push({ k: "figure", t: "~$0MM", printed: "$ 184,758", src: { sentence: "x", url: "u", doc: "d" } });
 assert(zeroViolations(bad).length > 0, `[F4 control] "$ 184,758" rendered "~$0MM" is flagged`);

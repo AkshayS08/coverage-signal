@@ -33,6 +33,7 @@ import { locateMoveSentences, uncoveredMoves } from "./moveSentences";
 import { movesSectionText } from "./sections";
 import { buildCard } from "./build";
 import { nonEmpty } from "../testing/nonEmpty";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -68,9 +69,10 @@ function violations(card: any, docs: { url: string; label: string; text: string 
 
 console.log("\n=== P2: the six committed cards ===");
 const CIKS = nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[]);
-for (const cik of CIKS) {
-  const card = JSON.parse(readFileSync(join("lib", "cards", "generated", `${cik}.json`), "utf-8"));
-  const snap = JSON.parse(readFileSync(join(IN, `${cik}.json`), "utf-8"));
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+for (const shown of shownCards()) {
+  const card = shown.card;
+  const snap = shown.input;
   const period = snap.result.results.find((t: any) => t.triggerId === "debt-maturity").debtScheduleSourceFiling.reportDate as string;
   const v = violations(card, docsOf(snap), `${period.slice(0, 4)}-01-01`, card.briefDate);
   assert(v.length === 0, `[P2:${card.company}] every located move sentence is confirmed or listed as possible (${(card.v3.possibleMoves ?? []).length} possible)${v.length ? ` — ${v.join("; ")}` : ""}`);

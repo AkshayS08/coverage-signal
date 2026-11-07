@@ -18,6 +18,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { partText } from "./format";
 import { nonEmpty } from "../testing/nonEmpty";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -44,8 +45,9 @@ function renderedFigures(card: any, part: (p: any) => string): { where: string; 
 }
 const raw = (figs: { where: string; text: string }[]) => figs.filter((f) => RAW_SOURCE.test(f.text));
 
-for (const cik of CIKS) {
-  const card = cardOf(cik), figs = renderedFigures(card, partText), bad = raw(figs);
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+for (const shown of shownCards()) {
+  const card = shown.card, figs = renderedFigures(card, partText), bad = raw(figs);
   assert(bad.length === 0, `[R1:${card.company}] ${figs.length} rendered figures, all in the card's format${bad.length ? ` — raw: ${bad.slice(0, 3).map((b) => `"${b.text}" at ${b.where}`).join("; ")}` : ""}`);
 }
 const ehc = cardOf("0000785161");

@@ -8,6 +8,7 @@ import { join } from "node:path";
 import { rulingViolations } from "./refreshRulings";
 import { buildCard } from "./build";
 import { nonEmpty } from "../testing/nonEmpty";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -15,11 +16,9 @@ const read = (p: string) => JSON.parse(readFileSync(p, "utf-8"));
 const txt = (l: any[] | null | undefined) => (l ?? []).map((s: any) => s.t ?? s.printed ?? "").join("");
 const clone = (o: any) => JSON.parse(JSON.stringify(o));
 const CIKS = nonEmpty("the published cards", read(join("lib", "cards", "generated", "index.json")).ciks as string[]);
-const cards: { label: string; card: any; input: any }[] = [
-  ...CIKS.map((c) => ({ label: "committed", card: read(join("lib", "cards", "generated", `${c}.json`)), input: read(join("lib", "cards", "inputs", `${c}.json`)) })),
-  ...["0000070318", "0000927066", "0001108109"].map((c) => ({ label: "refresh", card: read(join("sessions", "27", "refresh", `${c}_review_card.json`)), input: read(join("sessions", "27", "refresh", `${c}_input.json`)) })),
-  { label: "refresh", card: read(join("sessions", "27", "molina_review_card.json")), input: read(join("sessions", "27", "molina_review_input.json")) },
-];
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+const cards: { label: string; card: any; input: any }[] = shownCards().map((s) => ({ label: s.label === "published" ? "committed" : "refresh", card: s.card, input: s.input }));
+void CIKS;
 for (const x of cards) {
   const v = rulingViolations(x.card, x.input);
   for (const k of ["Q", "R", "H", "C", "P"] as const) assert(v[k].length === 0, `[${k}:${x.card.company} ${x.label}]${v[k].length ? ` — ${v[k].join("; ")}` : " holds"}`);
@@ -62,7 +61,8 @@ console.log("\n=== P2: a reference inside a one-issuance document pairs by ident
 // issuance: paired, no flag. The proceeds-wording flag applies only where the document reports more than one.
 // Nov 3: the published brief moved to Nov 3; this fixture is the Oct 15 brief, read from its archive.
 const enc = { card: read(join("lib", "cards", "archive", "2026-10-15", "generated", "0000785161.json")), input: read(join("lib", "cards", "archive", "2026-10-15", "inputs", "0000785161.json")) };
-const flags = (c: any) => (c.v3.notShown ?? []).map(txt).filter((l: string) => /^Paired by/.test(l));
+// Nov 7: an unresolved reference now flags "Not paired: …" (and never pairs); the proceeds-only fallback flags "Paired by …".
+const flags = (c: any) => (c.v3.notShown ?? []).map(txt).filter((l: string) => /^(?:Paired by|Not paired)/.test(l));
 const may = enc.card.v3.moves.find((m: any) => /May 29, 2026 · Issued/.test(txt(m.meta)));
 assert(flags(enc.card).length === 0 && !!may?.retires && may.retires.items.length === 2, `[P2] Encompass: both retirements pair with the May 29 issue, no "Paired by" line (${flags(enc.card).length} flag line(s); ${may?.retires?.items.map(txt).join(" / ") ?? "no pair"})`);
 const encResult = read(join("baselines", "golden", "0000785161.json")).sourceResult;
@@ -78,7 +78,8 @@ assert(flags(one).length === 0 && oneMay?.retires?.items.length === 2, `[P2] wit
 // Control: the same 10-Q reporting a second issuance in the year — "this offering" no longer identifies one.
 const two = clone(only10Q);
 const q2 = Object.keys(two).find((u) => /^10-Q 2026-08-07/.test(two[u].label))!;
-two[q2].text = two[q2].text.replace(/We used the net proceeds from this offering/, "In June 2026, we issued $300 million of 6.000% Senior Notes due 2036 (the “2036 Notes”) at par. We used the net proceeds from this offering");
+// Nov 7: the 10-Q prints this passage twice; the second issuance precedes every copy.
+two[q2].text = two[q2].text.replace(/We used the net proceeds from this offering/g, "In June 2026, we issued $300 million of 6.000% Senior Notes due 2036 (the “2036 Notes”) at par. We used the net proceeds from this offering");
 const twoCard = encBuild(two);
 assert(flags(twoCard).length > 0, `[P2 control] with a second issuance reported in the same 10-Q, "this offering" pairs only by the fallback and flags (${flags(twoCard).length} flag line(s))`);
 

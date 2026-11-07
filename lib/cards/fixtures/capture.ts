@@ -24,6 +24,18 @@ import { printedBefore, printedHeadings, type TableRow } from "../headings";
 import { briefDateArg } from "../briefDate";
 import { EXTRACTION_PROMPT_VERSION } from "../../cache/promptVersion";
 import { nonEmpty } from "../../testing/nonEmpty";
+import { reviewRenders } from "../shownCards";
+import { deriveGoldenState } from "../../events/golden";
+
+/** A review render's answer: the canonical sample of its refresh record. */
+function refreshCanonical(cik: string): any {
+  for (const f of ["baselines/s27-refresh-batch.json", "baselines/s27-encompass-refresh.json"]) {
+    try { const n = JSON.parse(readFileSync(join(P, f), "utf-8")).names.find((x: any) => x.cik === cik); if (n) return n.samples.find((x: any) => x.bust === null).result; } catch { /* no such record */ }
+  }
+  const m = JSON.parse(readFileSync(join(P, "baselines", "s27-molina-refresh.json"), "utf-8")).results.find((x: any) => x.bust === null && x.result.cik === cik);
+  if (m) return m.result;
+  throw new Error(`no refresh record for ${cik}`);
+}
 
 const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one is given
 const P = process.cwd();
@@ -122,8 +134,20 @@ function detectSchedule(text: string): { entries: { period: string; amount: stri
   // Session 27 (Nov 3): the signed goldens at the CURRENT extraction version. Pinned to v31, it wrote nothing once the six
   // were re-signed at v33 and exited 0, so the acceptance oracle stayed on the v31 answers (Rule 44: nonEmpty).
   const signed = nonEmpty("the signed goldens at the current extraction version", readdirSync(join(P, "baselines", "golden")).map((f) => JSON.parse(readFileSync(join(P, "baselines", "golden", f), "utf-8"))).filter((g) => g.extractionVersion === EXTRACTION_PROMPT_VERSION));
-  for (const g of signed) {
-    const result = g.sourceResult;
+  // Nov 7: every card that can be shown or signed has an oracle. The published cards' from their signed goldens; with
+  // --review, each review render's from its refresh canonical, at that render's own brief, into fixtures/review/.
+  type Target = { result: any; deltas: any[]; brief: string; out: string; source: string };
+  const targets: Target[] = process.argv.includes("--review")
+    ? nonEmpty("the review renders", reviewRenders()).map((r) => {
+        const card = JSON.parse(readFileSync(r.cardPath, "utf-8"));
+        const canon = refreshCanonical(r.cik);
+        return { result: canon, deltas: deriveGoldenState(canon, new Date(`${card.briefDate}T00:00:00Z`)).rolled?.deltas ?? [], brief: card.briefDate, out: join(OUT, "review", `${r.cik}.json`), source: "the refresh canonical (review render)" };
+      })
+    : signed.map((g) => ({ result: g.sourceResult, deltas: g.state.rolled?.deltas ?? [], brief: BRIEF, out: join(OUT, `${g.sourceResult.cik}.json`), source: "signed golden's stored result" }));
+  mkdirSync(join(OUT, "review"), { recursive: true });
+  for (const tg of targets) {
+    const result = tg.result;
+    const BRIEF = tg.brief;
     const dm = result.results.find((r: any) => r.triggerId === "debt-maturity");
     const anchor = dm.debtScheduleSourceFiling;
     const anchorText: string = (await getFilingText(anchor.url)).text;
@@ -147,7 +171,7 @@ function detectSchedule(text: string): { entries: { period: string; amount: stri
           rows: (base.rows ?? []).filter((r: any) => r.kind === "row").map((r: any) => ({ label: r.label ?? r.instrument, amount: r.amount, sourceLine: r.sourceLine })),
           label: base.label,
           // The stated changes between the base date and the position date, as the signature pins them.
-          changes: (g.state.rolled?.deltas ?? []).map((d: any) => ({ instrument: d.instrument, amountMillions: d.amountMillions, statedAs: d.statedAs, sourceLine: d.sourceLine })),
+          changes: (tg.deltas ?? []).map((d: any) => ({ instrument: d.instrument, amountMillions: d.amountMillions, statedAs: d.statedAs, sourceLine: d.sourceLine })),
         }
       : null;
 
@@ -179,7 +203,7 @@ function detectSchedule(text: string): { entries: { period: string; amount: stri
       cik: result.cik,
       company: result.company,
       briefDate: BRIEF,
-      positionSource: "signed golden's stored result",
+      positionSource: tg.source,
       anchor,
       table: {
         basis: rolled ? "rolled: referenced-table labels state face, cells carry carrying value" : bridge.length ? "face (the table prints its own bridge line)" : "carrying (no bridge line; face must come from a stated source or be labelled carrying value)",
@@ -196,7 +220,7 @@ function detectSchedule(text: string): { entries: { period: string; amount: stri
       moveSentences,
       docs: docs.map((d) => ({ doc: d.doc, url: d.url })),
     };
-    writeFileSync(join(OUT, `${result.cik}.json`), JSON.stringify(fixture, null, 1) + "\n", "utf-8");
+    writeFileSync(tg.out, JSON.stringify(fixture, null, 1) + "\n", "utf-8");
     console.log(`${result.company}: ${rows.length} table rows, ${fixture.headings.length} printed heading(s), schedule ${schedule ? schedule.entries.length + " periods" : "none"}, ${classSentences.length} class sentence(s), ${moveSentences.length} move sentence(s), ${docs.length} doc(s)`);
   }
 })();

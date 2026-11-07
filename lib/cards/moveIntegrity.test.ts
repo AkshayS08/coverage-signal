@@ -24,16 +24,15 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { moveIntegrityViolations } from "./moveIntegrity";
 import { nonEmpty } from "../testing/nonEmpty";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const read = (p: string) => JSON.parse(readFileSync(p, "utf-8"));
 const CIKS = nonEmpty("the published cards", read(join("lib", "cards", "generated", "index.json")).ciks as string[]);
-const cards: { label: string; card: any; input: any }[] = [
-  ...CIKS.map((c) => ({ label: "committed", card: read(join("lib", "cards", "generated", `${c}.json`)), input: read(join("lib", "cards", "inputs", `${c}.json`)) })),
-  ...["0000070318", "0000927066", "0001108109"].map((c) => ({ label: "refresh", card: read(join("sessions", "27", "refresh", `${c}_review_card.json`)), input: read(join("sessions", "27", "refresh", `${c}_input.json`)) })),
-  { label: "refresh", card: read(join("sessions", "27", "molina_review_card.json")), input: read(join("sessions", "27", "molina_review_input.json")) },
-];
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+const cards: { label: string; card: any; input: any }[] = shownCards().map((s) => ({ label: s.label === "published" ? "committed" : "refresh", card: s.card, input: s.input }));
+void CIKS;
 for (const x of cards) {
   const v = moveIntegrityViolations(x.card, x.input);
   for (const k of ["M1", "M2", "M3", "M4", "M5"] as const) assert(v[k].length === 0, `[${k}:${x.card.company} ${x.label}]${v[k].length ? ` — ${v[k].join("; ")}` : " holds"}`);

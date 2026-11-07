@@ -28,6 +28,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { nonEmpty } from "../testing/nonEmpty";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -57,8 +58,9 @@ const violations = (card: any, snap: any) => {
   return out;
 };
 
-for (const cik of CIKS) {
-  const snap = snapOf(cik), card = cardOf(cik), v = violations(card, snap);
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+for (const shown of shownCards()) {
+  const snap = shown.input, card = shown.card, v = violations(card, snap);
   assert(v.length === 0, `[A1:${card.company}] ${rule66(snap) ? "Rule 66 applies (anchor not-located, directs to the 10-K)" : "Rule 66 does not apply"}; rendered 10-K citations outside it: ${v.length}${v.length ? ` (${v.slice(0, 2).join("; ")})` : ""}`);
 }
 const tenet = cardOf("0000070318");

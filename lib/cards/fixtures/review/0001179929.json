@@ -1,0 +1,118 @@
+{
+ "cik": "0001179929",
+ "company": "MOLINA HEALTHCARE, INC.",
+ "briefDate": "2026-10-31",
+ "positionSource": "the refresh canonical (review render)",
+ "anchor": {
+  "form": "10-Q",
+  "date": "2026-10-22",
+  "reportDate": "2026-09-30",
+  "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+ },
+ "table": {
+  "basis": "face (the table prints its own bridge line)",
+  "rows": [
+   {
+    "label": "4.375 % Notes due June 15, 2028",
+    "amount": "$ 800 million",
+    "sourceLine": "4.375 % Notes due June 15, 2028 $ 800",
+    "recordedHeading": "Non-current long-term debt"
+   },
+   {
+    "label": "3.875 % Notes due November 15, 2030",
+    "amount": "$ 650 million",
+    "sourceLine": "3.875 % Notes due November 15, 2030 $ 650",
+    "recordedHeading": "Non-current long-term debt"
+   },
+   {
+    "label": "6.500 % Notes due February 15, 2031",
+    "amount": "$ 850 million",
+    "sourceLine": "6.500 % Notes due February 15, 2031 $ 850",
+    "recordedHeading": "Non-current long-term debt"
+   },
+   {
+    "label": "3.875 % Notes due May 15, 2032",
+    "amount": "$ 750 million",
+    "sourceLine": "3.875 % Notes due May 15, 2032 $ 750",
+    "recordedHeading": "Non-current long-term debt"
+   },
+   {
+    "label": "6.250 % Notes due January 15, 2033",
+    "amount": "$ 750 million",
+    "sourceLine": "6.250 % Notes due January 15, 2033 $ 750",
+    "recordedHeading": "Non-current long-term debt"
+   }
+  ],
+  "scale": "million",
+  "bridge": [
+   {
+    "label": "Deferred debt issuance costs",
+    "amount": "( $ 29 million )"
+   }
+  ],
+  "text": "September 30, 2026 was primarily attributable to reserving under moderately adverse conditions, lower than expected utilization of medical services by our members and improved operating performance, mainly in the Medicaid and Medicare segments. Consequently, the ultimate costs recognized in 2026, as claims payments were processed, were lower than our estimates in 2025. Molina Healthcare, Inc. September 30, 2026 Form 10-Q | 14 Table of Contents 7. Debt The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800 $ 800 3.875 % Notes due November 15, 2030 650 650 6.500 % Notes due February 15, 2031 850 850 3.875 % Notes due May 15, 2032 750 750 6.250 % Notes due January 15, 2033 750 750 Deferred debt issuance costs ( 29 ) ( 34 ) Total $ 3,771 $ 3,766 Senior Notes Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future "
+ },
+ "headings": [
+  {
+   "text": "Non-current long-term debt",
+   "governs": [
+    "4.375 % Notes due June 15, 2028",
+    "3.875 % Notes due November 15, 2030",
+    "6.500 % Notes due February 15, 2031",
+    "3.875 % Notes due May 15, 2032",
+    "6.250 % Notes due January 15, 2033"
+   ]
+  }
+ ],
+ "rolled": null,
+ "schedule": null,
+ "classSentences": [
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+   "sentence": "Debt The following table summarizes our outstanding debt obligations: September 30, 2026 December 31, 2025 (In millions) Non-current long-term debt: 4.375 % Notes due June 15, 2028 $ 800 $ 800 3.875 % Notes due November 15, 2030 650 650 6.500 % Notes due February 15, 2031 850 850 3.875 % Notes due May 15, 2032 750 750 6.250 % Notes due January 15, 2033 750 750 Deferred debt issuance costs ( 29 ) ( 34 ) Total $ 3,771 $ 3,766 Senior Notes Each of these notes are senior unsecured obligations of the parent corporation, Molina Healthcare, Inc., and rank equally in right of payment with all existing and future senior debt, and senior to all existing and future subordinated debt of Molina Healthcare, Inc."
+  },
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+   "sentence": "The senior note indentures contain customary non-financial covenants and change of control provisions."
+  },
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+   "sentence": "As of September 30, 2026, we were in compliance with all non-financial covenants in the indentures governing the senior notes."
+  },
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+   "sentence": "The indentures governing the senior notes contain cross-default provisions that are triggered upon default by us or any of our subsidiaries on any indebtedness in excess of the amount specified in the applicable indenture."
+  },
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+   "sentence": "As discussed below, no amounts were outstanding under the Credit Agreement as of September 30, 2026, so there is no risk of a cross-default under the senior notes."
+  },
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+   "sentence": "Debt Ratings In April 2026, Standard & Poor’s (“S&P”) lowered the rating of our senior notes to “BB-” from “BB”."
+  },
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+   "sentence": "Our senior notes are currently rated “Ba2” by Moody’s Investor Service, Inc."
+  },
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
+   "sentence": "In addition, the indentures governing each of our outstanding senior notes contain cross-default provisions that are triggered upon default by us or any of our subsidiaries on any indebtedness in excess of the amount specified in the applicable indenture."
+  }
+ ],
+ "moveSentences": [],
+ "docs": [
+  {
+   "doc": "10-Q 2026-10-22",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+  }
+ ]
+}

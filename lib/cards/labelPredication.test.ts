@@ -25,6 +25,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { sentenceClass, predicatedSpan, couponsIn } from "./labels";
 import { nonEmpty } from "../testing/nonEmpty";
+import { shownCards } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -55,10 +56,8 @@ function violations(card: any): string[] {
   }
   return out;
 }
-const cards: [string, any][] = [
-  ...(nonEmpty("the published cards", JSON.parse(readFileSync(join("lib", "cards", "generated", "index.json"), "utf-8")).ciks as string[])).map((c) => [`${c} committed`, JSON.parse(readFileSync(join("lib", "cards", "generated", `${c}.json`), "utf-8"))] as [string, any]),
-  ...["0000070318", "0000927066", "0001108109"].map((c) => [`${c} refresh`, JSON.parse(readFileSync(join("sessions", "27", "refresh", `${c}_review_card.json`), "utf-8"))] as [string, any]),
-];
+// Nov 7: over every card that can be shown or signed (lib/cards/shownCards.ts), never only the published ones.
+const cards: [string, any][] = shownCards().map((x) => [`${x.cik} ${x.label === "published" ? "committed" : "refresh"}`, x.card] as [string, any]);
 for (const [label, card] of cards) {
   const v = violations(card);
   assert(v.length === 0, `[S4:${card.company} ${label.split(" ")[1]}] every sentence-sourced class label is predicated of its debt${v.length ? ` — ${v.join("; ")}` : ""}`);
