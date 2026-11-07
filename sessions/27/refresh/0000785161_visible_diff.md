@@ -24,15 +24,18 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - now: Next after the window: $789.2MM 4.75% senior notes (carrying value), 2030.
 - **moves**
   - was: Issued at 98.75% of principal, adding to the existing notes. Used to repay part of the revolver.
+  - now: Refinanced · redeemed Aug 2026, funded by the new notes and cash on hand
   - now: of the revolver, repaid
 - **totalDebt**
   - was: $2,663.7MM
   - was: $200MM
+  - was: $900MM
   - was: $1,563.7MM
   - was: At carrying value, not in the bar: senior notes $1,182.5MM; Other notes payable $81.9MM; Finance lease obligations $281.7MM.
   - now: $2,630MM
   - now: $75MM
-  - now: $1,655MM
+  - now: $1,000MM
+  - now: $1,555MM
   - now: At carrying value, not in the bar: senior notes $1,183.6MM; Other notes payable $80MM; Finance lease obligations $274.9MM.
 - **liquidity**
   - was: ~$853.7MM
@@ -58,6 +61,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - was: 788.4 (carrying value)
   - was: 394.1 (carrying value)
   - was: 200
+  - was: 500
   - was: 81.9 (carrying value)
   - was: 281.7 (carrying value)
   - was: $18.4MM other scheduled principal, per the filer's schedule for July 1 through December 31, 2026
@@ -68,11 +72,13 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - was: $394.1MM (carrying value) 4.625% senior notes, due 2031 · security not stated, please refer to sources
   - was: $200MM senior secured Advances under revolving credit facility, due March 9, 2031
   - was: The filer's schedule shows $640.1MM principal for 2031. Not comparable at face, stated only at carrying value: the 4.625% notes due 2031.
+  - was: $500MM 5.875% senior notes, due June 1, 2034 · security not stated, please refer to sources
   - was: $81.9MM (carrying value) Other notes payable, no maturity stated
   - was: $281.7MM (carrying value) Finance lease obligations, no maturity stated
   - now: 789.2 (carrying value)
   - now: 394.4 (carrying value)
   - now: 75
+  - now: 600
   - now: 80 (carrying value)
   - now: 274.9 (carrying value)
   - now: $9.2MM other scheduled principal, per the filer's schedule for October 1 through December 31, 2026
@@ -83,6 +89,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - now: $394.4MM (carrying value) 4.625% senior notes, due 2031 · security not stated, please refer to sources
   - now: $75MM senior secured Advances under revolving credit facility, due March 9, 2031
   - now: The filer's schedule shows $515.1MM principal for 2031. Not comparable at face, stated only at carrying value: the 4.625% notes due 2031.
+  - now: $600MM 5.875% senior notes, due June 1, 2034 · security not stated, please refer to sources
   - now: $80MM (carrying value) Other notes payable, no maturity stated
   - now: $274.9MM (carrying value) Finance lease obligations, no maturity stated
 - **facilities**
@@ -93,11 +100,10 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
 - **notShown**
   - was: Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the period this card reports. See the sentence offered.
   - was: 1 filing this week affecting debt: text not read, so amount and instrument are not shown.
-  - now: Paired by its proceeds wording only: the 2026 Credit Agreement revolving credit facility with the 5.875% Senior Notes due 2034; no sentence this card holds names the issuance as its funding.
 - **footnote**
   - was: Face total $2,663.7MM. Balance sheet $2,634MM. The filer's schedule prints $2,663.7MM face and $2,634MM net, side by side; the net figure is the balance sheet's. Every figure links to the sentence it came from.
   - now: Face total $2,630MM. Balance sheet $2,599.1MM. The filer's schedule prints $2,630MM face and $2,599.1MM net, side by side; the net figure is the balance sheet's. Every figure links to the sentence it came from.
-- **cited sentences behind source links**: 200 out, 198 in
+- **cited sentences behind source links**: 200 out, 204 in
   - was cited: 10-Q 2026-08-07 | For the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-08-07 | We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400 million in aggregate principal amount of
   - was cited: 10-Q 2026-08-07 | 4.50 % Senior Notes due 2028 396.9   792.0
@@ -136,8 +142,8 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - now cited: 10-Q 2026-11-03 | 4.75 % Senior Notes due 2030 789.2
   - now cited: 10-Q 2026-11-03 | In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which result
   - now cited: 10-Q 2026-11-03 | As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health C
-  - now cited: 8-K 2026-06-01 | On May 29, 2026, Encompass Health Corporation (the “Company”) completed the issuance and sale of $500 million in aggregate principal amount 
   - now cited: 10-Q 2026-11-03 | We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving 
+  - now cited: 8-K 2026-06-01 | On May 29, 2026, Encompass Health Corporation (the “Company”) completed the issuance and sale of $500 million in aggregate principal amount 
   - now cited: 10-Q 2026-11-03 | On March 9, 2026 (the "Closing Date"), we entered into a credit agreement (the "2026 Credit Agreement"), by and among us, certain of our sub
   - now cited: 10-Q 2026-11-03 | Future repurchases under this authorization generally are expected to be funded using a combination of cash on hand and availability under o
   - now cited: 10-Q 2026-11-03 | In connection with the execution of the 2026 Credit Agreement, we paid off all outstanding amounts, and terminated the commitments, as of th

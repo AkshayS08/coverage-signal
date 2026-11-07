@@ -114,6 +114,24 @@
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
         "doc": "10-Q 2026-11-03"
        }
+      },
+      {
+       "k": "text",
+       "t": ", used to "
+      },
+      {
+       "k": "text",
+       "t": "repay "
+      },
+      {
+       "k": "label",
+       "t": "revolver",
+       "stated": "revolving credit facility",
+       "src": {
+        "sentence": "We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving credit facility. 5.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+        "doc": "10-Q 2026-11-03"
+       }
       }
      ],
      [
@@ -223,24 +241,6 @@
        "stated": "revolving credit facility",
        "src": {
         "sentence": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the “2028 Notes”), (ii) repay $ 100 million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses.",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
-        "doc": "10-Q 2026-11-03"
-       }
-      },
-      {
-       "k": "text",
-       "t": " and "
-      },
-      {
-       "k": "text",
-       "t": "repay "
-      },
-      {
-       "k": "label",
-       "t": "revolver",
-       "stated": "revolving credit facility",
-       "src": {
-        "sentence": "We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving credit facility. 5.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
         "doc": "10-Q 2026-11-03"
        }
@@ -530,8 +530,8 @@
      },
      {
       "k": "computed",
-      "t": "$2,083.6MM",
-      "usd": 2083600000,
+      "t": "$2,183.6MM",
+      "usd": 2183600000,
       "parts": [
        {
         "printed": "$ 800 million",
@@ -574,6 +574,15 @@
         "usd": 500000000,
         "src": {
          "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+         "doc": "10-Q 2026-11-03"
+        }
+       },
+       {
+        "printed": "$ 100 million",
+        "usd": 100000000,
+        "src": {
+         "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
          "doc": "10-Q 2026-11-03"
         }
@@ -693,8 +702,8 @@
      },
      {
       "k": "computed",
-      "t": "$116.5MM",
-      "usd": 116500000,
+      "t": "$16.5MM",
+      "usd": 16500000,
       "parts": [
        {
         "printed": "$ 9.2",
@@ -800,6 +809,15 @@
         "usd": -500000000,
         "src": {
          "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+         "doc": "10-Q 2026-11-03"
+        }
+       },
+       {
+        "printed": "$ 100 million",
+        "usd": -100000000,
+        "src": {
+         "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
          "doc": "10-Q 2026-11-03"
         }
@@ -1916,14 +1934,29 @@
     "lines": [
      [
       {
-       "k": "figure",
-       "t": "$500MM",
-       "printed": "$ 500 million",
-       "src": {
-        "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
-        "doc": "10-Q 2026-11-03"
-       },
+       "k": "computed",
+       "t": "$600MM",
+       "usd": 600000000,
+       "parts": [
+        {
+         "printed": "$ 500 million",
+         "usd": 500000000,
+         "src": {
+          "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+          "doc": "10-Q 2026-11-03"
+         }
+        },
+        {
+         "printed": "$ 100 million",
+         "usd": 100000000,
+         "src": {
+          "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+          "doc": "10-Q 2026-11-03"
+         }
+        }
+       ],
        "row": "5.875 % Senior Notes due 2034"
       },
       {
@@ -2927,7 +2960,60 @@
      ]
     ],
     "detail": null,
-    "retires": null
+    "retires": {
+     "meta": [
+      {
+       "k": "text",
+       "t": "Refinanced · "
+      },
+      {
+       "k": "label",
+       "t": "redeemed Aug 2026",
+       "stated": "August 2026",
+       "src": {
+        "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+        "doc": "10-Q 2026-11-03"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", funded by the new notes and "
+      },
+      {
+       "k": "label",
+       "t": "cash on hand",
+       "stated": "cash on hand",
+       "src": {
+        "sentence": "We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving credit facility. 5.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+        "doc": "10-Q 2026-11-03"
+       }
+      }
+     ],
+     "items": [
+      [
+       {
+        "k": "text",
+        "t": "of the "
+       },
+       {
+        "k": "label",
+        "t": "revolver",
+        "stated": "revolving credit facility",
+        "src": {
+         "sentence": "We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving credit facility. 5.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+         "doc": "10-Q 2026-11-03"
+        }
+       },
+       {
+        "k": "text",
+        "t": ", repaid"
+       }
+      ]
+     ]
+    }
    },
    {
     "meta": [
@@ -3091,26 +3177,6 @@
         "stated": "revolving credit facility",
         "src": {
          "sentence": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the “2028 Notes”), (ii) repay $ 100 million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses.",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
-         "doc": "10-Q 2026-11-03"
-        }
-       },
-       {
-        "k": "text",
-        "t": ", repaid"
-       }
-      ],
-      [
-       {
-        "k": "text",
-        "t": "of the "
-       },
-       {
-        "k": "label",
-        "t": "revolver",
-        "stated": "revolving credit facility",
-        "src": {
-         "sentence": "We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving credit facility. 5.",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
          "doc": "10-Q 2026-11-03"
         }
@@ -3300,7 +3366,7 @@
      ]
     },
     {
-     "usd": 900000000,
+     "usd": 1000000000,
      "color": "#9AA3AD",
      "title": "senior notes",
      "rows": [
@@ -3309,7 +3375,7 @@
      ]
     },
     {
-     "usd": 1655000000,
+     "usd": 1555000000,
      "color": "#C9CED4",
      "title": "Senior notes and other debt, face per the filer's schedule (individual face not stated)",
      "rows": [
@@ -3410,8 +3476,8 @@
      ],
      "amount": {
       "k": "computed",
-      "t": "$900MM",
-      "usd": 900000000,
+      "t": "$1,000MM",
+      "usd": 1000000000,
       "parts": [
        {
         "printed": "$ 800 million",
@@ -3439,6 +3505,15 @@
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
          "doc": "10-Q 2026-11-03"
         }
+       },
+       {
+        "printed": "$ 100 million",
+        "usd": 100000000,
+        "src": {
+         "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+         "doc": "10-Q 2026-11-03"
+        }
        }
       ]
      }
@@ -3453,8 +3528,8 @@
      ],
      "amount": {
       "k": "computed",
-      "t": "$1,655MM",
-      "usd": 1655000000,
+      "t": "$1,555MM",
+      "usd": 1555000000,
       "parts": [
        {
         "printed": "$ 9.2",
@@ -3551,6 +3626,15 @@
         "usd": -500000000,
         "src": {
          "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+         "doc": "10-Q 2026-11-03"
+        }
+       },
+       {
+        "printed": "$ 100 million",
+        "usd": -100000000,
+        "src": {
+         "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
          "doc": "10-Q 2026-11-03"
         }
@@ -4000,7 +4084,7 @@
      },
      "segments": [
       {
-       "usd": 500000000,
+       "usd": 600000000,
        "color": "#9AA3AD",
        "title": "5.875 % Senior Notes due 2034",
        "rows": [
@@ -4008,7 +4092,7 @@
        ]
       },
       {
-       "usd": 741900000,
+       "usd": 641900000,
        "color": "#C9CED4",
        "title": "scheduled other principal",
        "rows": [
@@ -4582,14 +4666,23 @@
      "tenK": false,
      "face": {
       "k": "computed",
-      "t": "500",
-      "usd": 500000000,
+      "t": "600",
+      "usd": 600000000,
       "parts": [
        {
         "printed": "$ 500 million",
         "usd": 500000000,
         "src": {
          "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+         "doc": "10-Q 2026-11-03"
+        }
+       },
+       {
+        "printed": "$ 100 million",
+        "usd": 100000000,
+        "src": {
+         "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
          "doc": "10-Q 2026-11-03"
         }
@@ -5294,14 +5387,29 @@
      "lines": [
       [
        {
-        "k": "figure",
-        "t": "$500MM",
-        "printed": "$ 500 million",
-        "src": {
-         "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
-         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
-         "doc": "10-Q 2026-11-03"
-        },
+        "k": "computed",
+        "t": "$600MM",
+        "usd": 600000000,
+        "parts": [
+         {
+          "printed": "$ 500 million",
+          "usd": 500000000,
+          "src": {
+           "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+           "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+           "doc": "10-Q 2026-11-03"
+          }
+         },
+         {
+          "printed": "$ 100 million",
+          "usd": 100000000,
+          "src": {
+           "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+           "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+           "doc": "10-Q 2026-11-03"
+          }
+         }
+        ],
         "row": "5.875 % Senior Notes due 2034"
        },
        {
@@ -5609,12 +5717,6 @@
     {
      "k": "text",
      "t": "Seniority and security are stated only in an earlier annual report, which this card does not use for labels: “The Senior Notes are senior, unsecured obligations of Encompass Health and rank equally with our other senior indebtedness, senior to any of our subordinated indebtedness, and effectively junior to our secured indebtedness to the extent of the value of the collateral securing such indebtedness.”"
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "Paired by its proceeds wording only: the 2026 Credit Agreement revolving credit facility with the 5.875% Senior Notes due 2034; no sentence this card holds names the issuance as its funding."
     }
    ]
   ],
