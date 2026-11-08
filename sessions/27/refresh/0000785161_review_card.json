@@ -132,6 +132,34 @@
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
         "doc": "10-Q 2026-11-03"
        }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "label",
+       "t": "at 98.75% of principal",
+       "stated": "98.75 %",
+       "src": {
+        "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+        "doc": "10-Q 2026-11-03"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "label",
+       "t": "adding to the existing notes",
+       "stated": "additional",
+       "src": {
+        "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+        "doc": "10-Q 2026-11-03"
+       }
       }
      ],
      [
@@ -2959,7 +2987,40 @@
       }
      ]
     ],
-    "detail": null,
+    "detail": [
+     {
+      "k": "text",
+      "t": "Issued "
+     },
+     {
+      "k": "label",
+      "t": "at 98.75% of principal",
+      "stated": "98.75 %",
+      "src": {
+       "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+       "doc": "10-Q 2026-11-03"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", "
+     },
+     {
+      "k": "label",
+      "t": "adding to the existing notes",
+      "stated": "additional",
+      "src": {
+       "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+       "doc": "10-Q 2026-11-03"
+      }
+     },
+     {
+      "k": "text",
+      "t": "."
+     }
+    ],
     "retires": {
      "meta": [
       {
@@ -2968,7 +3029,7 @@
       },
       {
        "k": "label",
-       "t": "redeemed Aug 2026",
+       "t": "repaid Aug 2026",
        "stated": "August 2026",
        "src": {
         "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
@@ -2994,12 +3055,8 @@
      "items": [
       [
        {
-        "k": "text",
-        "t": "of the "
-       },
-       {
         "k": "label",
-        "t": "revolver",
+        "t": "Revolver",
         "stated": "revolving credit facility",
         "src": {
          "sentence": "We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving credit facility. 5.",
@@ -3009,7 +3066,7 @@
        },
        {
         "k": "text",
-        "t": ", repaid"
+        "t": ": repaid"
        }
       ]
      ]
@@ -3165,11 +3222,7 @@
        },
        {
         "k": "text",
-        "t": " "
-       },
-       {
-        "k": "text",
-        "t": "of the "
+        "t": " of the "
        },
        {
         "k": "label",
@@ -5701,12 +5754,13 @@
       "t": " "
      },
      {
-      "k": "notStated",
-      "t": "Letters of credit outstanding not stated.",
+      "k": "label",
+      "t": "Letters of credit outstanding: stated only as of March 9, 2026 in an 8-K; not shown.",
+      "stated": "$53.6 million",
       "src": {
-       "sentence": "Future repurchases under this authorization generally are expected to be funded using a combination of cash on hand and availability under our $1 billion revolving credit facility.",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
-       "doc": "10-Q 2026-11-03"
+       "sentence": "As of March 9, 2026, the Company had drawn $250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement and $53.6 million on the new letter of credit subfacility.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+       "doc": "ehc-20260309.htm"
       }
      }
     ]

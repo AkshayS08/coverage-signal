@@ -24,8 +24,9 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - now: Next after the window: $789.2MM 4.75% senior notes (carrying value), 2030.
 - **moves**
   - was: Issued at 98.75% of principal, adding to the existing notes. Used to repay part of the revolver.
-  - now: Refinanced · redeemed Aug 2026, funded by the new notes and cash on hand
-  - now: of the revolver, repaid
+  - now: Issued at 98.75% of principal, adding to the existing notes.
+  - now: Refinanced · repaid Aug 2026, funded by the new notes and cash on hand
+  - now: Revolver: repaid
 - **totalDebt**
   - was: $2,663.7MM
   - was: $200MM
@@ -96,14 +97,14 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - was: senior secured revolver · $1,000MM size · $200MM drawn · matures March 9, 2031
   - was: Swingline sub-facility $40MM, capacity only. Letters of credit withheld, see Not shown.
   - now: senior secured revolver · $1,000MM size · $75MM drawn · matures March 9, 2031
-  - now: Swingline sub-facility $40MM, capacity only. Letters of credit outstanding not stated.
+  - now: Swingline sub-facility $40MM, capacity only. Letters of credit outstanding: stated only as of March 9, 2026 in an 8-K; not shown.
 - **notShown**
   - was: Senior secured revolver letters of credit, $46.3MM: withheld. Stated as of a date other than the period this card reports. See the sentence offered.
   - was: 1 filing this week affecting debt: text not read, so amount and instrument are not shown.
 - **footnote**
   - was: Face total $2,663.7MM. Balance sheet $2,634MM. The filer's schedule prints $2,663.7MM face and $2,634MM net, side by side; the net figure is the balance sheet's. Every figure links to the sentence it came from.
   - now: Face total $2,630MM. Balance sheet $2,599.1MM. The filer's schedule prints $2,630MM face and $2,599.1MM net, side by side; the net figure is the balance sheet's. Every figure links to the sentence it came from.
-- **cited sentences behind source links**: 200 out, 204 in
+- **cited sentences behind source links**: 200 out, 206 in
   - was cited: 10-Q 2026-08-07 | For the quarterly period ended June 30, 2026
   - was cited: 10-Q 2026-08-07 | We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400 million in aggregate principal amount of
   - was cited: 10-Q 2026-08-07 | 4.50 % Senior Notes due 2028 396.9   792.0
@@ -161,6 +162,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - now cited: 10-Q 2026-11-03 | The 2034 Notes mature on June 1, 2034 and interest is payable semiannually in arrears on June 1 and December 1 of each year.
   - now cited: 10-Q 2026-11-03 | 5.875 % Senior Notes due 2034 588.2
   - now cited: 10-Q 2026-11-03 | the swingline loan sublimit has been increased from $ 25 million to $ 40 million.
+  - now cited: ehc-20260309.htm | As of March 9, 2026, the Company had drawn $250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full 
   - now cited: 10-Q 2026-11-03 | Current portion of long-term debt $ 47.8
   - now cited: 10-Q 2026-11-03 | Long-term debt, net of current portion 2,551.3
   - now cited: 10-Q 2026-11-03 | Face Amount Net Amount October 1 through December 31, 2026 $ 9.2 $ 9.2 2027 47.0 47.0 2028 436.0 433.4 2029 45.1 45.1 2030 850.8 839.9 2031 
