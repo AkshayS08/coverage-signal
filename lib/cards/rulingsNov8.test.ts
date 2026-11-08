@@ -95,6 +95,9 @@ assert(/Letters of credit outstanding: stated only as of March 9, 2026 in an 8-K
 const aug = enc.card.v3.moves.find((m: any) => /Aug 13, 2026 · Issued/.test(txt(m.meta)));
 assert(!!aug && /Issued at 98\.75% of principal, adding to the existing notes/.test(txt(aug.detail)), `[RT] Encompass's Aug 13 issue reads "Issued at 98.75% of principal, adding to the existing notes" ("${aug ? txt(aug.detail) : "no move"}")`);
 
+const mayIss = enc.card.v3.moves.find((m: any) => /May 29, 2026 · Issued/.test(txt(m.meta)));
+assert(!!mayIss && !/98\.75%|adding to the existing notes/.test(txt(mayIss.detail)), `[RT] and the May 29 issue (at par) does not take the add-on's price or wording ("${mayIss ? txt(mayIss.detail) : "no move"}")`);
+
 console.log("\n=== controls ===");
 const c1 = clone(enc.card); for (const f of c1.v3.facilities) if (f.sub) f.sub = [...f.sub.filter((x: any) => !/Letters of credit/.test(x.t ?? "")), { k: "notStated", t: "Letters of credit outstanding not stated." }];
 assert(ns(c1, enc.input).length > 0, `[NS control] "Letters of credit outstanding not stated." on Encompass's refresh is flagged`);

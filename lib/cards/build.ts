@@ -27,6 +27,7 @@ import { briefWeek } from "./briefDate";
 import { locateMoveSentences, uncoveredMoves } from "./moveSentences";
 import { NEW_DEBT_SOURCE } from "./moveIntegrity";
 import { withQualifiers } from "./qualifiers";
+import { readSetStatement, formPhrase, type ReadSetItem } from "./readSetStatements";
 import { COMPLETED, NOT_DONE, usdIn } from "./refreshRulings";
 import { scaledAmountString, locatorFor } from "../agent/tableScale";
 /** A fact's value in the unit its source declares (Rule 67's single scale function). */
@@ -879,11 +880,20 @@ export function buildCard(i: CardInputs): Card {
   }
   // (Oct 19, 2026) An offering's launch and pricing dates appear nowhere on the card; the move's own date is the one shown.
   // An add-on: the further-issuance sentence and the price, from the same filing.
+  // Nov 8 (a refresh never loses a stated fact): the move's own sentence is read too, and an
+  // add-on or price is recognised in any of its wordings ("an additional $100 million of our existing 2034 Notes at a
+  // price of 98.75% of the principal amount", the Q3 10-Q's own sentence for Encompass's August add-on).
   for (const is of movesAll.filter((m) => m.type === "issuance")) {
-    for (const sx of sentencesOf(is.url)) {
-      if (sx.sentence === is.sentence || !sameNote(sx.sentence, is.instrument) && !/additional notes/i.test(sx.sentence)) continue;
-      if (/further issuance/i.test(sx.sentence)) is.extra.push(t(", "), { k: "label", t: "adding to the existing notes", stated: "further issuance", src: sx });
-      else if (!is.price && /purchase price|issue price|offering price/i.test(sx.sentence)) {
+    const own = sentencesOf(is.url).find((x) => x.sentence === is.sentence) ?? src(is.sentence, is.url);
+    // Its own sentence first, then its own document. (Not other documents that merely mention the issue: Encompass's
+    // Aug 13 8-K names the May issue, and its add-on price is not the May issue's.)
+    const pool = [own, ...sentencesOf(is.url).filter((x) => x.sentence !== is.sentence)];
+    for (const sx of pool) {
+      const isOwn = sx === own;
+      if (!isOwn && !sameNote(sx.sentence, is.instrument) && !/additional notes/i.test(sx.sentence)) continue;
+      const addOn = /further issuance/i.test(sx.sentence) || /\badditional\b[^.;]{0,40}\bof (?:our|its) existing\b/i.test(sx.sentence);
+      if (addOn && !is.extra.some((x) => x.k === "label" && /adding to the existing notes/.test(x.t))) is.extra.push(t(", "), { k: "label", t: "adding to the existing notes", stated: /further issuance/i.test(sx.sentence) ? "further issuance" : "additional", src: sx });
+      if (!is.price && /purchase price|issue price|offering price|at a price of/i.test(sx.sentence)) {
         const pct = /\b\d{1,3}(?:\.\d+)?\s?%/.exec(sx.sentence);
         if (pct) is.price = { k: "label", t: `at ${pct[0].replace(/\s+%/, "%")} of principal`, stated: pct[0], src: sx };
       }
@@ -2066,11 +2076,12 @@ export function buildCard(i: CardInputs): Card {
         const r0 = issuance.retires[0];
         left.retires = {
           meta: [
-            ...(pending ? [t("Refinanced · "), dateOf(r0, `redemption set for ${whenShort(r0)}`), t(", awaiting confirmation in a filing")] : [t("Refinanced · "), dateOf(r0, `redeemed ${whenShort(r0)}`), ...schedNote(r0)]),
+            ...(pending ? [t("Refinanced · "), dateOf(r0, `redemption set for ${whenShort(r0)}`), t(", awaiting confirmation in a filing")] : [t("Refinanced · "), dateOf(r0, `${issuance.retires.every((r) => r.type === "paydown") ? "repaid" : "redeemed"} ${whenShort(r0)}`), ...schedNote(r0)]),
             // Session 27 (Nov 1): every source the funding sentence names, in its order (the new notes, then cash on hand).
             ...(() => { const sp = r0.spendSrc; const others = sp ? fundSources(sp.sentence).filter((s) => !s.newDebt) : []; return others.length ? [t(", funded by the new notes and "), ...others.flatMap((s, n) => [...(n ? [t(" and ")] : []), { k: "label", t: s.stated.toLowerCase(), stated: s.stated, src: sp! } as Segment])] : []; })(),
           ],
-          items: issuance.retires.map((r) => (r.type === "paydown" ? [...(r.face ? [r.face, t(" ")] : []), t("of the "), instPhrase(r), t(", repaid")] : [...faceInst(r), ...remainsClause(r)])),
+          // Nov 8: a facility repayment reads "repaid"; a line with no face opens on the facility, sentence case ("Revolver: repaid").
+          items: issuance.retires.map((r) => (r.type === "paydown" ? (r.face ? [r.face, t(" of the "), instPhrase(r), t(", repaid")] : [(() => { const seg = instPhrase(r); return { ...seg, t: seg.t.charAt(0).toUpperCase() + seg.t.slice(1) } as Segment; })(), t(": repaid")]) : [...faceInst(r), ...remainsClause(r)])),
         };
         const use = issuance.retires.length ? [] : useClause(issuance);
         if (issuedLine.length || extras.length || use.length) left.detail = [...issuedLine, ...(use.length || extras.length ? [...(issuedLine.length ? [t(" ")] : []), ...capFirst([...use, ...extras]), t(".")] : [])];
@@ -2427,8 +2438,16 @@ export function buildCard(i: CardInputs): Card {
       const d = ((f as any).removedUnderRule66Detail ?? []).find((x: any) => x.field === field);
       return d ? { k: "label", t: `${label}: stated only ${d.statedAsOf ? `as of ${displayDate(d.statedAsOf, "day")} ` : ""}in the 10-K; not shown.`, stated: d.value, src: src(d.sourceLine, d.url) } : null;
     };
-    if (kind === "facility" && !f.lettersOfCredit) sub.push(...(sub.length ? [t(" ")] : []), lcWithheld ? t("Letters of credit withheld, see Not shown.") : removedNote("lettersOfCredit", "Letters of credit outstanding") ?? { k: "notStated", t: "Letters of credit outstanding not stated.", src: own });
-    if (kind === "facility" && !f.available && !statedAvailabilityOf(f)) sub.push(...(sub.length ? [t(" ")] : []), removedNote("available", "Availability") ?? { k: "notStated", t: "Availability not stated.", src: own });
+    // SESSION 27 (Akshay, Nov 8): "not stated" is forbidden where any read sentence states an amount for the item; one
+    // stated as of another date reads "stated only as of [date] in [form]; not shown" (Rules 70/71, the Oct 31 ruling).
+    const readSetNote = (item: ReadSetItem, label: string): Segment | null => {
+      const st = readSetStatement(item, [...i.textByUrl.entries()].map(([url, text]) => ({ url, text })));
+      if (!st) return null;
+      const form = formPhrase(labelOf(st.url).split(" ")[0] || "filing");
+      return { k: "label", t: `${label}: stated only ${st.asOf ? `as of ${displayDate(st.asOf, "day")} ` : ""}in ${form}; not shown.`, stated: st.amount, src: src(st.sentence, st.url) };
+    };
+    if (kind === "facility" && !f.lettersOfCredit) sub.push(...(sub.length ? [t(" ")] : []), lcWithheld ? t("Letters of credit withheld, see Not shown.") : removedNote("lettersOfCredit", "Letters of credit outstanding") ?? readSetNote("lettersOfCredit", "Letters of credit outstanding") ?? { k: "notStated", t: "Letters of credit outstanding not stated.", src: own });
+    if (kind === "facility" && !f.available && !statedAvailabilityOf(f)) sub.push(...(sub.length ? [t(" ")] : []), removedNote("available", "Availability") ?? readSetNote("available", "Availability") ?? { k: "notStated", t: "Availability not stated.", src: own });
     const bb = borrowingBaseOf(f);
     if (bb) sub.push(...(sub.length ? [t(" ")] : []), { k: "label", t: "Borrowing-base limited", stated: bb.limitedBy, src: src(widen(bb.statement, [f.facilitySize, f.drawn, f.lettersOfCredit, f.available, f.maturity].filter((x): x is NonNullable<typeof x> => !!x).map((x) => x.sourceLine)), f.figureSources?.facilitySize ?? f.citedUrl) }, t("; stated availability shown."));
     facLines.push({ bold, sub: sub.length ? sub : null });

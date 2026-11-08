@@ -681,7 +681,7 @@ const V4_VOCAB: Test = {
       // Session 27: every funding source its sentence names, in order (Nov 1, ruling (d)). Nov 4 (correcting ruling (b)): a
       // completed move takes the precision of the sentence stating it done; a scheduled day is shown labelled, exactly
       // "Refinanced · redeemed Sept 2026 (scheduled for Sept 23), funded by the new notes and cash on hand".
-      if (r && !/^Refinanced · (?:redemption set for .+, awaiting confirmation in a filing|redeemed [A-Z][a-z]+ (?:\d{1,2}, )?\d{4}(?: \(scheduled for [A-Z][a-z]+ \d{1,2}\))?)(?:, funded by the new notes(?:,? and [a-z ]+)+)?$/.test(r)) bad.push(`retire line "${r}" off vocabulary`);
+      if (r && !/^Refinanced · (?:redemption set for .+, awaiting confirmation in a filing|(?:redeemed|repaid) [A-Z][a-z]+ (?:\d{1,2}, )?\d{4}(?: \(scheduled for [A-Z][a-z]+ \d{1,2}\))?)(?:, funded by the new notes(?:,? and [a-z ]+)+)?$/.test(r)) bad.push(`retire line "${r}" off vocabulary`);
       // An intention or schedule never confirms "redeemed"; inside the labelled "(scheduled for …)" note it is what it says.
       const scheduledNote = (n: number) => /\(scheduled for\s*$/.test(text(m.retires!.meta.slice(0, n)));
       if (/\bredeemed\b/.test(r) && m.retires!.meta.some((x, n) => x.k === "label" && !scheduledNote(n) && /\bintends?\b|\bwill be\b|\bexpected to be\b|\bnotice of\b/i.test(x.src.sentence))) bad.push(`"${r}" without a confirming sentence`);
