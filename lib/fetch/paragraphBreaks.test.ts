@@ -26,7 +26,13 @@ assert(paras.some((p) => /^4\.75% Senior Notes due 2030 788\.4$/.test(p)), `[P1]
 assert(paras.some((p) => flat(p) === "We used the net proceeds from this offering, together with cash on hand, to redeem the 2028 Notes."), `[P1] a <br> does not end a paragraph (the proceeds sentence is one paragraph)`);
 assert(flat(t) === flat(stripHtmlV2(html)), `[P2] flattened, the text is the old text word for word`);
 const src = readFileSync("lib/fetch/filingText.ts", "utf-8");
-assert(/edgar\/filing-text-v3\//.test(src), `[P3] the text cache is versioned filing-text-v3`);
+const fnBody = (name: string) => src.slice(src.indexOf(`export async function ${name}(`), src.indexOf("\n}\n", src.indexOf(`export async function ${name}(`)));
+assert(/edgar\/filing-text-v3\//.test(fnBody("getFilingParagraphs")) && /stripHtml\(/.test(fnBody("getFilingParagraphs")), `[P3] the paragraph text is cached as filing-text-v3`);
+// P4: what the model reads does not move. The read-set key hashes each document's text and the excerpts are cut from
+// it, so the extraction (readSet, the dig, pricing) keeps the v2 text; only the card input reads paragraphs.
+assert(/edgar\/filing-text-v2\//.test(fnBody("getFilingText")) && /stripHtmlV2\(/.test(fnBody("getFilingText")) && !/filing-text-v3/.test(fnBody("getFilingText")), `[P4] the model-facing text (getFilingText) is unchanged: v2 cache, v2 text step`);
+const snap = readFileSync("lib/cards/capture/snapshot.ts", "utf-8");
+assert(/getFilingParagraphs\(/.test(snap) && !/getFilingText\(/.test(snap), `[P4] the card input (captureCardInput) reads the paragraph text`);
 assert(!/\n\n/.test(stripHtmlV2(html)), `[control] the old regime's output has no paragraph break`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);
