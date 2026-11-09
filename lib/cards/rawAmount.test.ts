@@ -50,7 +50,8 @@ for (const shown of shownCards()) {
   const card = shown.card, figs = renderedFigures(card, partText), bad = raw(figs);
   assert(bad.length === 0, `[R1:${card.company}] ${figs.length} rendered figures, all in the card's format${bad.length ? ` — raw: ${bad.slice(0, 3).map((b) => `"${b.text}" at ${b.where}`).join("; ")}` : ""}`);
 }
-const ehc = cardOf("0000785161");
+// Nov 9: R2 is about the Oct 15 Encompass card's availability part (Q2: ~$746MM); the published card is now Q3.
+const ehc = JSON.parse(readFileSync(join("lib", "cards", "archive", "2026-10-15", "generated", "0000785161.json"), "utf-8"));
 const parts = renderedFigures(ehc, partText).filter((f) => /parts/.test(f.where)).map((f) => f.text);
 assert(parts.includes("~$746MM"), `[R2:Encompass] the availability part renders "~$746MM" (parts: ${parts.join(", ")})`);
 assert(raw(renderedFigures(ehc, (p) => p.printed)).length > 0, `[R3 control] the pre-fix view, showing a part's raw printed text, fails R1 on Encompass`);

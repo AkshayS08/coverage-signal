@@ -133,6 +133,14 @@ const snapshotOf = (cik: string): { result: unknown; extractionVersion: number }
     }
     if (g.readSetAsOf && g.readSetAsOf !== PUBLISHED_AS_OF) {
       process.env.READ_SET_AS_OF = PUBLISHED_AS_OF;
+      // Nov 9: where the published brief's read set has moved past the golden's (Molina: a filing since Oct 29), nothing
+      // is cached for it and the snapshot capture uses the signed golden's stored result; checked byte for byte, never
+      // re-extracted.
+      if (!(await checkFree(name)).cached) {
+        assert(!!snap && JSON.stringify(snap.result) === JSON.stringify(g.sourceResult) && snap.extractionVersion === EXTRACTION_PROMPT_VERSION,
+          `[3snap:${name}] the published brief's read set (${PUBLISHED_AS_OF}) has moved past the golden's (${g.readSetAsOf}), so its card input snapshot is the signed golden's stored result, byte for byte`);
+        continue;
+      }
       await assertFree([{ company: name }]);
       delete process.env.CACHE_BUST;
       published = await runAgentLoop(name);
