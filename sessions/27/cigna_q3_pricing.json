@@ -1,5 +1,5 @@
 {
- "pricedAt": "2026-11-09T20:23:05.422Z",
+ "pricedAt": "2026-11-09T22:38:51.172Z",
  "rows": [
   {
    "company": "Cigna Group",
@@ -10,10 +10,85 @@
    "digCandidate": "10-Q 2026-04-30",
    "proceedsEstimate": 0.083484,
    "factsWorst": 0.1384,
-   "worst": 1.7440510000000002,
-   "declared": 1.75
+   "directsToTenK": true,
+   "noteCached": {
+    "canonical": false,
+    "s27-refresh-retaste-1": false,
+    "s27-refresh-retaste-2": false
+   },
+   "noteWorst": 0.063429,
+   "notesBilled": 3,
+   "calls": [
+    {
+     "sample": "canonical",
+     "stage": "base",
+     "count": 1
+    },
+    {
+     "sample": "canonical",
+     "stage": "referenced-note",
+     "count": 1
+    },
+    {
+     "sample": "canonical",
+     "stage": "dig",
+     "count": 5
+    },
+    {
+     "sample": "canonical",
+     "stage": "proceeds-use",
+     "count": 1
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "stage": "base",
+     "count": 1
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "stage": "referenced-note",
+     "count": 1
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "stage": "dig",
+     "count": 5
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "stage": "proceeds-use",
+     "count": 1
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "stage": "base",
+     "count": 1
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "stage": "referenced-note",
+     "count": 1
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "stage": "dig",
+     "count": 5
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "stage": "proceeds-use",
+     "count": 1
+    },
+    {
+     "sample": "facts",
+     "stage": "facts",
+     "count": 3
+    }
+   ],
+   "worst": 1.9343380000000003,
+   "declared": 1.94
   }
  ],
- "batchDeclaredUsd": 1.75,
- "summary": "Priced: Cigna Group $1.75. Declared in all: $1.75, worst case, before any call."
+ "batchDeclaredUsd": 1.94,
+ "summary": "Priced: Cigna Group $1.94. Declared in all: $1.94, worst case, before any call."
 }

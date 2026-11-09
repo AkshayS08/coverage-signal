@@ -31,6 +31,10 @@ import { checkFree } from "./freeRun";
 import { buildExtractionText } from "../fetch/noteLocation";
 import { TRIGGERS } from "../agent/triggers";
 import { pricingSummary, summaryNamesRun } from "./pricingSummary";
+import { callSetFor, unpricedCalls, type Call } from "./callSet";
+import { createHash } from "node:crypto";
+import { readCache } from "../fetch/cache";
+import { transcribeReferencedNote, REFERENCED_NOTE_PROMPT_VERSION } from "../agent/referencedNote";
 
 // Names and output from the command line (Nov 3: Encompass on its Q3 10-Q); the Oct 31 batch by default.
 const NAMES_ARG = process.argv.find((x) => x.startsWith("--names="));
@@ -83,9 +87,34 @@ const ceilCent = (x: number) => Math.ceil(x * 100 - 1e-9) / 100;
     const out = execFileSync("npx", ["tsx", "lib/cards/capture/facts.ts", "--input", inPath, "--price"], { encoding: "utf-8", shell: true });
     const fm = /worst \$([\d.]+)\/ask, \$([\d.]+) for 3 asks/.exec(out);
     const facts = fm ? Number(fm[2]) : NaN;
+    // Nov 9: THE REFERENCED 10-K NOTE, per sample. The run reads it where the anchor directs to the latest 10-K (as the
+    // signed answer for this name did: its priorPeriodBase), keyed per sample (CACHE_BUST), so a sample whose note
+    // answer is stored makes no call. Priced with its real prompt over that 10-K, in price-only mode.
+    const golden = (() => { try { return JSON.parse(readFileSync(`baselines/golden/${f.cik}.json`, "utf-8")); } catch { return null; } })();
+    const directsToTenK = !!golden?.sourceResult?.results?.find((t: any) => t.triggerId === "debt-maturity")?.priorPeriodBase;
+    const tenK = rs.find((x) => x.form === "10-K") ?? f.filings.find((x) => x.form === "10-K");
+    const noteCached: Record<string, boolean> = {};
+    let noteWorst = 0;
+    if (directsToTenK && tenK) {
+      for (const b of BUSTS) {
+        const key = `answer/${f.cik}/referenced-note/${createHash("sha256").update(tenK.primaryDocUrl).digest("hex")}${b ? `-bust${b}` : ""}/rn-v${REFERENCED_NOTE_PROMPT_VERSION}.json`;
+        noteCached[b ?? "canonical"] = (await readCache(key, null)) !== null;
+      }
+      const { text } = await getFilingText(tenK.primaryDocUrl);
+      const n0 = pricedCalls().length;
+      await transcribeReferencedNote({ companyName: f.company, filingUrl: tenK.primaryDocUrl, filingForm: tenK.form, periodOfReport: tenK.reportDate ?? "", filingText: text, xbrlTotalForScale: null }).catch((e) => { if (e?.name !== "PricedOnlyError") throw e; });
+      noteWorst = pricedCalls().slice(n0)[0]?.worstUsd ?? NaN;
+    }
+    const notesBilled = BUSTS.filter((b) => directsToTenK && !noteCached[b ?? "canonical"]).length;
     const perAsk = (base?.worstUsd ?? NaN) + dig + proceeds;
-    const total = 3 * perAsk + facts;
-    rows.push({ company, anchor: `${anchor.form} ${anchor.filingDate} (period ${anchor.reportDate})`, baseInputTokens: base?.inputTokens, baseWorst: base?.worstUsd, digWorst: dig, digCandidate: cand ? `${cand.form} ${cand.filingDate}` : null, proceedsEstimate: proceeds, factsWorst: facts, worst: total, declared: ceilCent(total) });
+    const total = 3 * perAsk + facts + notesBilled * noteWorst;
+    const calls: Call[] = [
+      ...BUSTS.flatMap((b) => [{ sample: b ?? "canonical", stage: "base", count: 1 }, ...(directsToTenK && !noteCached[b ?? "canonical"] ? [{ sample: b ?? "canonical", stage: "referenced-note", count: 1 }] : []), { sample: b ?? "canonical", stage: "dig", count: 5 }, { sample: b ?? "canonical", stage: "proceeds-use", count: 1 }] as Call[]),
+      { sample: "facts", stage: "facts", count: 3 },
+    ];
+    const missing = unpricedCalls(calls, callSetFor({ samples: BUSTS, directsToTenK, noteCached, digBudget: 5, factsAsks: 3 }));
+    if (missing.length) throw new Error(`PRICING INCOMPLETE for ${company}: ${missing.join("; ")}`);
+    rows.push({ company, anchor: `${anchor.form} ${anchor.filingDate} (period ${anchor.reportDate})`, baseInputTokens: base?.inputTokens, baseWorst: base?.worstUsd, digWorst: dig, digCandidate: cand ? `${cand.form} ${cand.filingDate}` : null, proceedsEstimate: proceeds, factsWorst: facts, directsToTenK, noteCached, noteWorst, notesBilled, calls, worst: total, declared: ceilCent(total) });
     console.log(`${company.padEnd(30)} ${anchor.form} ${anchor.filingDate}: base ${base?.inputTokens} in → $${base?.worstUsd.toFixed(4)}/ask; dig $${dig.toFixed(4)}/ask${cand ? ` (${cand.form} ${cand.filingDate})` : ""}; proceeds-use $${proceeds.toFixed(4)}/ask (estimate); ×3 asks; facts $${facts.toFixed(4)} (3 asks) → worst $${total.toFixed(4)}, declared $${ceilCent(total).toFixed(2)}`);
   }
   const batch = rows.reduce((a, r) => a + r.declared, 0);

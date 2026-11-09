@@ -29,7 +29,7 @@ import { deriveGoldenState } from "../../events/golden";
 
 /** A review render's answer: the canonical sample of its refresh record. */
 function refreshCanonical(cik: string): any {
-  for (const f of ["baselines/s27-refresh-batch.json", "baselines/s27-encompass-refresh.json"]) {
+  for (const f of ["baselines/s27-refresh-batch.json", "baselines/s27-encompass-refresh.json", "baselines/s27-cigna-refresh.json"]) {
     try { const n = JSON.parse(readFileSync(join(P, f), "utf-8")).names.find((x: any) => x.cik === cik); if (n) return n.samples.find((x: any) => x.bust === null).result; } catch { /* no such record */ }
   }
   const m = JSON.parse(readFileSync(join(P, "baselines", "s27-molina-refresh.json"), "utf-8")).results.find((x: any) => x.bust === null && x.result.cik === cik);

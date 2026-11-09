@@ -58,7 +58,8 @@ const stop = (why: string): never => { console.error(`STOPPED: ${why}`); process
     const bound = await checkFree(company);
     for (const b of BUSTS) { const v = await checkFree(company, b); if (v.cached) stop(`${company} [${b ?? "canonical"}] is already cached: the forced misses do not equal the declared runs`); }
     // The dig allowance: the cap less the other stages' counted worst case (base and proceeds-use x3, facts).
-    const others = 3 * (p.baseWorst + p.proceedsEstimate) + p.factsWorst;
+    // Nov 9: the referenced 10-K note calls the pricing counted (per uncached sample) are other stages' worst case too.
+    const others = 3 * (p.baseWorst + p.proceedsEstimate) + p.factsWorst + (p.notesBilled ?? 0) * (p.noteWorst ?? 0);
     const allowance = Math.max(0, CAP - others);
     const leftInBatch = APPROVED_TOTAL - ledgerAt(started);
     setSpendLimits({ perRunUsd: CAP, totalUsd: Math.min(leftInBatch, APPROVED_TOTAL) });
