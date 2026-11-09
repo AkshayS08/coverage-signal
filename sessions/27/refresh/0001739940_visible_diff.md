@@ -1,0 +1,413 @@
+# Cigna Group: the refreshed card against the committed card
+
+Review render, not committed (REVIEW RENDER of the refreshed v33 answer (10-Q filed 2026-11-05); not the committed card). Brief 2026-11-09 (week 2026-11-04 to 2026-11-09; previous brief 2026-11-03). Week filings: 8-K 2026-11-05 [2.02,9.01]; 10-Q 2026-11-05.
+Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046).
+
+- **header**
+  - was: Position as of June 30, 2026
+  - was: 10-Q filed July 30, 2026
+  - was: 1 filing this week may affect debt
+  - was: Form 10-Q · Nov 5, 2026 — a new 10-Q, which carries a new position. Not yet read: this card's position is still the 10-Q for June 30, 2026.
+  - now: Position as of September 30, 2026
+  - now: 10-Q filed Nov 5, 2026
+  - now: new this week · 1 other filing, none affecting debt
+- **rolledNote**
+  - was: This company's 10-Q does not list its notes. This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026. Rows from the 10-K carry a 10-K tag.
+- **call (label)**
+  - was: Due in window
+  - was: Refinanced
+  - was: Not yet refinanced
+- **call (case)**
+  - was: A
+  - now: D
+- **call**
+  - was: $2,359MM of notes and debentures due in 2027 are not yet refinanced. About $1,000MM of commercial paper is also outstanding, backed by the $6,500MM revolver.
+  - was: $2,359MM
+  - was: 3 issues, all in 2027
+  - was: $0
+  - was: None stated in any filing
+  - was: $2,359MM
+  - was: The refinancing conversation
+  - was: ~$1,000MM unsecured commercial paper, 3.92% average rate
+  - was: Mar 2027
+  - was: $1,500MM 3.400% notes
+  - was: Not yet refinanced
+  - was: May 2027
+  - was: $259MM 7.875% debentures
+  - was: Not yet refinanced
+  - was: Oct 2027
+  - was: $600MM 3.050% notes
+  - was: Not yet refinanced
+  - was: Next after the window: $3,800MM 4.375% notes, October 2028.
+  - now: Nothing matures in the next 18 months. About $500MM of commercial paper is also outstanding, backed by the $6,500MM revolver.
+  - now: $1,000MM
+  - now: 4.500% senior notes
+  - now: September 15, 2030
+  - now: ~$500MM unsecured commercial paper, 4.09% average rate
+- **call (key)**
+  - was: due
+  - was: refinanced
+  - was: notYet
+- **moves**
+  - was: $550MM 1.250% notes due March 2026
+  - now: $550MM 1.250% senior notes
+- **totalDebt**
+  - was: ~$32,043MM
+  - was: ~$1,000MM
+  - was: notes, seniority not stated
+  - was: $26,284MM
+  - was: debentures, seniority not stated
+  - was: $259MM
+  - was: Plus, at carrying value and not in the bar: Other, including finance leases $111MM.
+  - now: ~$5,000MM
+  - now: ~$500MM
+- **totalDebt (tooltip)**
+  - was: notes, seniority not stated
+  - was: debentures, seniority not stated
+- **totalDebt (0)**
+  - was: Commercial Paper Program
+  - was: $1,000 million, 4.500% Notes due September 2030
+  - was: $1,500 million, 3.400% Notes due March 2027
+  - was: $259 million, 7.875% Debentures due May 2027
+  - now: Commercial paper program
+  - now: 4.500% Senior Notes due 2030
+- **totalDebt (1)**
+  - was: $1,250 million, 4.875% Notes due September 2032
+  - was: $600 million, 3.050% Notes due October 2027
+  - now: 4.875% Senior Notes due 2032
+- **totalDebt (2)**
+  - was: $1,500 million, 5.250% Notes due January 2036
+  - was: $3,800 million, 4.375% Notes due October 2028
+  - now: 5.250% Senior Notes due 2036
+- **totalDebt (3)**
+  - was: $750 million, 6.000% Notes due January 2056
+  - was: $1,000 million, 5.000% Notes due May 2029
+  - now: 6.000% Senior Notes due 2056
+- **totalDebt (4)**
+  - was: $1,400 million, 2.400% Notes due March 2030
+- **totalDebt (5)**
+  - was: $1,500 million, 2.375% Notes due March 2031
+- **totalDebt (6)**
+  - was: $750 million, 5.125% Notes due May 2031
+- **totalDebt (7)**
+  - was: $45 million, 8.080% Step Down Notes due January 2033
+- **totalDebt (8)**
+  - was: $800 million, 5.400% Notes due March 2033
+- **totalDebt (9)**
+  - was: $1,250 million, 5.250% Notes due February 2034
+- **totalDebt (10)**
+  - was: $190 million, 6.150% Notes due November 2036
+- **totalDebt (11)**
+  - was: $2,200 million, 4.800% Notes due August 2038
+- **totalDebt (12)**
+  - was: $750 million, 3.200% Notes due March 2040
+- **totalDebt (13)**
+  - was: $121 million, 5.875% Notes due March 2041
+- **totalDebt (14)**
+  - was: $448 million, 6.125% Notes due November 2041
+- **totalDebt (15)**
+  - was: $317 million, 5.375% Notes due February 2042
+- **totalDebt (16)**
+  - was: $1,500 million, 4.800% Notes due July 2046
+- **totalDebt (17)**
+  - was: $1,000 million, 3.875% Notes due October 2047
+- **totalDebt (18)**
+  - was: $3,000 million, 4.900% Notes due December 2048
+- **totalDebt (19)**
+  - was: $1,184 million, 3.400% Notes due March 2050
+- **totalDebt (20)**
+  - was: $1,429 million, 3.400% Notes due March 2051
+- **totalDebt (21)**
+  - was: $1,500 million, 5.600% Notes due February 2054
+- **liquidity**
+  - was: ~$11,798MM
+  - was: $6,298MM
+  - was: ~$5,500MM
+  - was: Undrawn committed revolver shown net of ~$1,000MM commercial paper it backs. Commercial paper itself is not counted as liquidity.
+  - now: $6,186MM
+  - now: ~$6,000MM
+  - now: No liquidity total: cash and every facility's availability are not all stated as of the position date.
+  - now: Undrawn committed revolver shown net of ~$500MM commercial paper it backs. Commercial paper itself is not counted as liquidity.
+- **liquidity (tooltip)**
+  - was: Revolving Credit Agreement
+  - now: $ 6.5 billion, five-year revolving credit and letter of credit agreement
+- **chart (label)**
+  - was: 18-month window
+  - was: Due in window, not yet refinanced
+  - now: 18-month window · nothing due
+- **chart**
+  - was: ~1,000
+  - was: 2,359
+  - was: 3,800
+  - was: 2,400
+  - was: 21,484
+  - was: Color shows seniority. Orange shows debt due inside the window that is not yet refinanced.
+  - was: The 2031+ bar holds 20 instruments and is cut to fit; its full height would be about 5.7 times the 2028 bar.
+  - was: At carrying value, not counted in the chart: $111MM Other, including finance leases.
+  - was: For the notes, seniority and security are not stated.
+  - was: This company's filings state labels for few of these instruments.
+  - now: ~500
+  - now: 0
+  - now: 0
+  - now: 0
+  - now: 3,500
+  - now: Color shows seniority.
+  - now: The 2031+ bar holds 3 instruments and is cut to fit; its full height would be about 3.5 times the 2030 bar.
+- **chart (tooltip)**
+  - was: $1,500 million, 3.400% Notes due March 2027, not yet refinanced
+  - was: $3,800 million, 4.375% Notes due October 2028
+  - was: $1,000 million, 5.000% Notes due May 2029
+- **chart (0)**
+  - was: $1,500 million, 3.400% Notes due March 2027
+  - was: $3,800 million, 4.375% Notes due October 2028
+  - was: $1,000 million, 5.000% Notes due May 2029
+  - was: $1,000 million, 4.500% Notes due September 2030
+  - was: $1,250 million, 4.875% Notes due September 2032
+  - now: 4.500% Senior Notes due 2030
+  - now: 4.875% Senior Notes due 2032
+- **chart (1)**
+  - was: $259 million, 7.875% Debentures due May 2027
+  - was: $1,400 million, 2.400% Notes due March 2030
+  - was: $1,500 million, 5.250% Notes due January 2036
+  - now: 5.250% Senior Notes due 2036
+- **chart (2)**
+  - was: $600 million, 3.050% Notes due October 2027
+  - was: $750 million, 6.000% Notes due January 2056
+  - now: 6.000% Senior Notes due 2056
+- **chart (3)**
+  - was: $1,500 million, 2.375% Notes due March 2031
+- **chart (4)**
+  - was: $750 million, 5.125% Notes due May 2031
+- **chart (5)**
+  - was: $45 million, 8.080% Step Down Notes due January 2033
+- **chart (6)**
+  - was: $800 million, 5.400% Notes due March 2033
+- **chart (7)**
+  - was: $1,250 million, 5.250% Notes due February 2034
+- **chart (8)**
+  - was: $190 million, 6.150% Notes due November 2036
+- **chart (9)**
+  - was: $2,200 million, 4.800% Notes due August 2038
+- **chart (10)**
+  - was: $750 million, 3.200% Notes due March 2040
+- **chart (11)**
+  - was: $121 million, 5.875% Notes due March 2041
+- **chart (12)**
+  - was: $448 million, 6.125% Notes due November 2041
+- **chart (13)**
+  - was: $317 million, 5.375% Notes due February 2042
+- **chart (14)**
+  - was: $1,500 million, 4.800% Notes due July 2046
+- **chart (15)**
+  - was: $1,000 million, 3.875% Notes due October 2047
+- **chart (16)**
+  - was: $3,000 million, 4.900% Notes due December 2048
+- **chart (17)**
+  - was: $1,184 million, 3.400% Notes due March 2050
+- **chart (18)**
+  - was: $1,429 million, 3.400% Notes due March 2051
+- **chart (19)**
+  - was: $1,500 million, 5.600% Notes due February 2054
+- **table (name)**
+  - was: Commercial Paper Program
+  - was: $1,500 million, 3.400% Notes due March 2027
+  - was: $259 million, 7.875% Debentures due May 2027
+  - was: $600 million, 3.050% Notes due October 2027
+  - was: $3,800 million, 4.375% Notes due October 2028
+  - was: $1,000 million, 5.000% Notes due May 2029
+  - was: $1,400 million, 2.400% Notes due March 2030
+  - was: $1,000 million, 4.500% Notes due September 2030
+  - was: $1,500 million, 2.375% Notes due March 2031
+  - was: $750 million, 5.125% Notes due May 2031
+  - was: $1,250 million, 4.875% Notes due September 2032
+  - was: $45 million, 8.080% Step Down Notes due January 2033
+  - was: $800 million, 5.400% Notes due March 2033
+  - was: $1,250 million, 5.250% Notes due February 2034
+  - was: $1,500 million, 5.250% Notes due January 2036
+  - was: $190 million, 6.150% Notes due November 2036
+  - was: $2,200 million, 4.800% Notes due August 2038
+  - was: $750 million, 3.200% Notes due March 2040
+  - was: $121 million, 5.875% Notes due March 2041
+  - was: $448 million, 6.125% Notes due November 2041
+  - was: $317 million, 5.375% Notes due February 2042
+  - was: $1,500 million, 4.800% Notes due July 2046
+  - was: $1,000 million, 3.875% Notes due October 2047
+  - was: $3,000 million, 4.900% Notes due December 2048
+  - was: $1,184 million, 3.400% Notes due March 2050
+  - was: $1,429 million, 3.400% Notes due March 2051
+  - was: $1,500 million, 5.600% Notes due February 2054
+  - was: $750 million, 6.000% Notes due January 2056
+  - was: Other, including finance leases
+  - now: Commercial paper program
+  - now: 4.500% Senior Notes due 2030
+  - now: 4.875% Senior Notes due 2032
+  - now: 5.250% Senior Notes due 2036
+  - now: 6.000% Senior Notes due 2056
+- **table**
+  - was: ~1,000
+  - was: Mar 2027
+  - was: 3.400% notes
+  - was: Not yet refinanced
+  - was: May 2027
+  - was: 7.875% debentures
+  - was: 259
+  - was: Not yet refinanced
+  - was: Oct 2027
+  - was: 3.050% notes
+  - was: 600
+  - was: Not yet refinanced
+  - was: Oct 2028
+  - was: 4.375% notes
+  - was: 3,800
+  - was: May 2029
+  - was: 5.000% notes
+  - was: Mar 2030
+  - was: 2.400% notes
+  - was: 1,400
+  - was: 1,000
+  - was: Mar 2031
+  - was: 2.375% notes
+  - was: 1,500
+  - was: May 2031
+  - was: 5.125% notes
+  - was: Jan 2033
+  - was: 8.080% notes
+  - was: 45
+  - was: Mar 2033
+  - was: 5.400% notes
+  - was: 800
+  - was: Feb 2034
+  - was: 5.250% notes
+  - was: 1,250
+  - was: 1,500
+  - was: Nov 2036
+  - was: 6.150% notes
+  - was: 190
+  - was: Aug 2038
+  - was: 4.800% notes
+  - was: 2,200
+  - was: Mar 2040
+  - was: 3.200% notes
+  - was: 750
+  - was: Mar 2041
+  - was: 5.875% notes
+  - was: 121
+  - was: Nov 2041
+  - was: 6.125% notes
+  - was: 448
+  - was: Feb 2042
+  - was: 5.375% notes
+  - was: 317
+  - was: July 2046
+  - was: 4.800% notes
+  - was: 1,500
+  - was: Oct 2047
+  - was: 3.875% notes
+  - was: 1,000
+  - was: Dec 2048
+  - was: 4.900% notes
+  - was: 3,000
+  - was: Mar 2050
+  - was: 3.400% notes
+  - was: 1,184
+  - was: Mar 2051
+  - was: 3.400% notes
+  - was: 1,429
+  - was: Feb 2054
+  - was: 5.600% notes
+  - was: 1,500
+  - was: 750
+  - was: Various
+  - was: Other, including finance leases (carrying value)
+  - was: 111 (carrying value)
+  - now: ~500
+- **facilities**
+  - was: commercial paper program · $6,500MM size · ~$1,000MM outstanding · 3.92% average rate
+  - now: commercial paper program · $6,500MM size · ~$500MM outstanding · 4.09% average rate
+- **notShown**
+  - was: 1 filing this week affecting debt: text not read, so amount and instrument are not shown.
+  - now: Commercial paper drawn, $0: withheld. Claimed zero, but the sentence asserts nothing about this figure. See the sentence offered.
+- **footnote**
+  - was: Face total ~$32,043MM, plus $111MM at carrying value. Balance sheet $31,878MM. The filer states its debt table is net of issuance costs, discounts or premiums. At carrying value, the lines match the balance sheet within $35MM. Using the Dec 31, 2025 10-K, updated through June 30, 2026. Every figure links to the sentence it came from.
+  - now: Face total ~$5,000MM. Balance sheet $31,142MM. $26,142MM is not accounted for. Every figure links to the sentence it came from.
+- **call (away)**
+  - now: 46 months away · 28 months past the window
+- **cited sentences behind source links**: 302 out, 53 in
+  - was cited: 10-Q 2026-07-30 | For the quarterly period ended June 30, 2026
+  - was cited: 10-K for Dec 31, 2025 | $1,500 million, 3.400 % Notes due March 2027 1,481
+  - was cited: 10-K for Dec 31, 2025 | $259 million, 7.875 % Debentures due May 2027 260
+  - was cited: 10-K for Dec 31, 2025 | $600 million, 3.050 % Notes due October 2027 599
+  - was cited: 10-Q 2026-07-30 | The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.
+  - was cited: 10-Q 2026-07-30 | As of June 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are available for
+  - was cited: 10-Q 2026-07-30 | The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an opt
+  - was cited: 10-Q 2026-07-30 | Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through
+  - was cited: 10-K for Dec 31, 2025 | $3,800 million, 4.375 % Notes due October 2028 3,792
+  - was cited: 10-Q 2026-07-30 | During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.
+  - was cited: 10-K for Dec 31, 2025 | $1,000 million, 5.000 % Notes due May 2029 996
+  - was cited: 10-K for Dec 31, 2025 | $1,400 million, 2.400 % Notes due March 2030 (1) 1,406
+  - was cited: 10-K for Dec 31, 2025 | $1,500 million, 2.375 % Notes due March 2031 (1) 1,420
+  - was cited: 10-K for Dec 31, 2025 | $750 million, 5.125 % Notes due May 2031 (1) 750
+  - was cited: 10-K for Dec 31, 2025 | $45 million, 8.080 % Step Down Notes due January 2033 45
+  - was cited: 10-K for Dec 31, 2025 | $800 million, 5.400 % Notes due March 2033 (1) 796
+  - was cited: 10-K for Dec 31, 2025 | $1,250 million, 5.250 % Notes due February 2034 (1) 1,250
+  - was cited: 10-K for Dec 31, 2025 | $190 million, 6.150 % Notes due November 2036 190
+  - was cited: 10-K for Dec 31, 2025 | $2,200 million, 4.800 % Notes due August 2038 (1) 2,194
+  - was cited: 10-K for Dec 31, 2025 | $750 million, 3.200 % Notes due March 2040 748
+  - was cited: 10-K for Dec 31, 2025 | $121 million, 5.875 % Notes due March 2041 119
+  - was cited: 10-K for Dec 31, 2025 | $448 million, 6.125 % Notes due November 2041 484
+  - was cited: 10-K for Dec 31, 2025 | $317 million, 5.375 % Notes due February 2042 315
+  - was cited: 10-K for Dec 31, 2025 | $1,500 million, 4.800 % Notes due July 2046 1,469
+  - was cited: 10-K for Dec 31, 2025 | $1,000 million, 3.875 % Notes due October 2047 990
+  - was cited: 10-K for Dec 31, 2025 | $3,000 million, 4.900 % Notes due December 2048 2,972
+  - was cited: 10-K for Dec 31, 2025 | $1,184 million, 3.400 % Notes due March 2050 1,172
+  - was cited: 10-K for Dec 31, 2025 | $1,429 million, 3.400 % Notes due March 2051 1,410
+  - was cited: 10-K for Dec 31, 2025 | $1,500 million, 5.600 % Notes due February 2054 1,486
+  - was cited: 10-K for Dec 31, 2025 | Other, including finance leases 43
+  - was cited: 10-K for Dec 31, 2025 | Other, including finance leases 68
+  - was cited: 10-Q 2026-07-30 | Cash and cash equivalents $ 6,298 $ 7,676
+  - was cited: 10-Q 2026-07-30 | As of June 30, 2026, there was no outstanding balance under the Credit Agreement.
+  - was cited: 10-Q 2026-07-30 | Short-term debt $ 2,792   $ 592
+  - was cited: 10-Q 2026-07-30 | Long-term debt 29,086   30,871
+  - was cited: 10-K for Dec 31, 2025 | 9 Note 7 – Debt The outstanding amounts of debt (net of issuance costs, discounts or premiums) and finance leases were as follows:
+  - was cited: 10-K for Dec 31, 2025 | $550 million, 1.250 % Notes due March 2026 549
+  - was cited: 10-K for Dec 31, 2025 | $1,000 million, 4.500 % Notes due September 2030 993
+  - was cited: 10-K for Dec 31, 2025 | $1,250 million, 4.875 % Notes due September 2032 1,243
+  - was cited: 10-K for Dec 31, 2025 | $1,500 million, 5.250 % Notes due January 2036 1,488
+  - was cited: 10-K for Dec 31, 2025 | $750 million, 6.000 % Notes due January 2056 735
+  - now cited: 10-Q 2026-11-05 | For the quarterly period ended September 30, 2026
+  - now cited: 10-Q 2026-11-05 | The commercial paper program had approximately $ 0.5 billion outstanding as of September 30, 2026 and an average interest rate of 4.09 %.
+  - now cited: 10-Q 2026-11-05 | As of September 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are availabl
+  - now cited: 10-Q 2026-11-05 | The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an opt
+  - now cited: 10-Q 2026-11-05 | Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through
+  - now cited: 10-Q 2026-11-05 | During the nine months ended September 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.
+  - now cited: 10-Q 2026-11-05 | Cash and cash equivalents $ 6,186 $ 7,676
+  - now cited: 8-K 2025-09-04 | On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% S
+  - now cited: 8-K 2025-09-04 | The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beg
+  - now cited: 10-Q 2026-11-05 | As of September 30, 2026, there was no outstanding balance under the Credit Agreement.
+  - now cited: 10-K for Dec 31, 2025 | There was no commercial paper balance as of December 31, 2025.
+  - now cited: 8-K 2025-09-04 | On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its
+  - now cited: 10-Q 2026-11-05 | Short-term debt $ 2,293   $ 592
+  - now cited: 10-Q 2026-11-05 | Long-term debt 28,849   30,871
+  - now cited: 8-K 2025-09-04 | 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032
+  - now cited: 8-K 2025-09-04 | Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and
+- **parts of computed figures (shown when a figure is opened)**: 204 shown differently
+  - was: $1,500 million
+  - was: $259 million
+  - was: $600 million
+  - was: $ 1.0 billion
+  - was: $3,800 million
+  - was: $ 1,000 million
+  - was: $ 1,250 million
+  - was: $ 1,500 million
+  - was: $ 750 million
+  - was: $1,000 million
+  - was: $1,400 million
+  - was: $750 million
+  - now: ~$500MM
+  - now: $1,000MM
+  - now: $1,250MM
+  - now: $1,500MM
+  - now: $750MM
+  - now: $6,500MM
+  - now: $2,293MM
+  - now: $28,849MM
