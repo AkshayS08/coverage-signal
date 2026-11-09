@@ -650,7 +650,9 @@ const V3_TILES: Test = {
     if (Math.abs(due.usd - refi.usd - nyUsd) > 0.5e6) bad.push(`due ${due.usd / 1e6} ≠ refinanced ${refi.usd / 1e6} + not yet ${nyUsd / 1e6}`);
     if (ny && ny.usd <= 0.5e6) bad.push("the orange tile shows at zero");
     if (!ny && due.usd - refi.usd > 0.5e6) bad.push("not yet refinanced is above zero but has no tile");
-    if (refi.usd === 0 && !/none stated in any filing/i.test(text(refi.sub))) bad.push('refinanced is $0 without "none stated in any filing"');
+    // Nov 9: beside an earlier partial refinancing of the same instrument, $0 is of the remainder: "None of the remaining $400MM".
+    const partly = card.v3.call.rows.some((r) => /refinanced · .*remains/i.test(text(r.tag?.text ?? [])));
+    if (refi.usd === 0 && !(partly ? /^None of the remaining \$[\d,.]+MM$/.test(text(refi.sub)) : /none stated in any filing/i.test(text(refi.sub)))) bad.push(`refinanced is $0 without "${partly ? "None of the remaining …" : "none stated in any filing"}"`);
     const inWindow = card.v3.table.rows.filter((r) => r.inWindow && !/^Short-term$/.test(text(r.matures))).reduce((a, r) => a + (num(r.face) ?? 0), 0);
     if (Math.abs(inWindow - due.usd) > 0.5e6) bad.push(`due ${due.usd / 1e6} but the in-window table rows sum to ${inWindow / 1e6} (commercial paper is never counted)`);
     if (tl.some((x) => x.value.k === "computed" && x.value.parts.some((p) => /commercial paper/i.test(p.src.sentence) && !/notes/i.test(p.src.sentence)))) bad.push("a tile counts commercial paper");

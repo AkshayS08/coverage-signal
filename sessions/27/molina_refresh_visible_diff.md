@@ -4,10 +4,13 @@ Review render, not committed (REVIEW RENDER of the refreshed v33 answer (10-Q fi
 Verified card facts: read from this anchor (the 10-Q filed 2026-10-22) ($0.089136).
 
 - **header (label)**
-  - was: Weekly coverage brief · Oct 16 to Nov 3, 2026
+  - was: Weekly coverage brief · Nov 4 to Nov 9, 2026
   - now: Weekly coverage brief · Oct 16 to Oct 31, 2026
+- **header**
+  - was: 1 filing this week, none affecting debt: Form 8-K Nov 6, 2026
+  - now: new this week · 3 other filings, none affecting debt
 - **call (label)**
-  - was: The call · next 18 months, to May 3, 2028
+  - was: The call · next 18 months, to May 9, 2028
   - now: The call · next 18 months, to Apr 30, 2028
 - **parts of computed figures (shown when a figure is opened)**: 29 shown differently
   - was: $ 800 million

@@ -1967,7 +1967,9 @@ export function buildCard(i: CardInputs): Card {
     const by = named.flatMap(retirementsOf).find((m) => m.fundedBy)?.fundedBy;
     tiles.push(refiParts.length
       ? { key: "refinanced", label: "Refinanced", value: usdSeg(refiParts), usd: sum(refiParts), sub: [t(by ? `With the ${whenShort(by).replace(/, \d{4}$/, "")} notes` : "With stated proceeds of new debt"), t(named.flatMap(retirementsOf).some((m) => m.status === "pending") ? " · redemption awaiting confirmation" : "")] }
-      : { key: "refinanced", label: "Refinanced", value: { k: "computed", t: "$0", usd: 0, parts: [] }, usd: 0, sub: [t("None stated in any filing")] });
+      // Nov 9: where part of the same instrument was refinanced earlier, $0 is of the REMAINDER ("None of the remaining
+      // $400MM"), not "none ever" (Encompass: the other $400MM of its 4.50% notes was refinanced in May 2026).
+      : { key: "refinanced", label: "Refinanced", value: { k: "computed", t: "$0", usd: 0, parts: [] }, usd: 0, sub: named.some((it) => retirementsOf(it).some((m) => m.status === "completed")) ? [t("None of the remaining "), usdSeg(dueParts)] : [t("None stated in any filing")] });
     if (notYetUsd > 0.5e6) tiles.push({ key: "notYet", label: "Not yet refinanced", value: { k: "computed", t: displayUsd(notYetUsd, false, Math.max(dp(dueParts), dp(refiParts))), usd: notYetUsd, parts: [...dueParts, ...refiParts.map((p) => ({ ...p, usd: -p.usd }))] }, usd: notYetUsd, sub: [t("The refinancing conversation")] });
   }
   const afterItem = allDebtItems.filter((it) => it.maturity && spanOf(it.maturity.date, it.maturity.granularity)[0] > windowEnd).sort((a, b) => a.maturity!.date.localeCompare(b.maturity!.date))[0];
