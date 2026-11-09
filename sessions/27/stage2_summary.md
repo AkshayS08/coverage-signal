@@ -1,6 +1,6 @@
 # Stage 2 in one page: build a card for any company
 
-**Status:** design for approval. Nothing is built and nothing bills until you approve. Full detail: `sessions/27/pipeline_design.md`.
+**Status:** approved by Akshay on Nov 9, 2026, with the six recommendations below except the approval screen, which is replaced for the demo by a funded allowance. Build order: decision 11, then paragraph breaks, then Stage 2, with a checkpoint (a $0 replay of every golden) after the first two. Full detail: `sessions/27/pipeline_design.md`.
 
 ## What happens when someone asks for a card
 
@@ -11,7 +11,7 @@
 | 3. Choose the anchor | The latest 10-Q or 10-K. | $0 |
 | 4. Decide what to read | The anchor, the filings after it, and debt 8-Ks since the latest 10-K. | $0 |
 | 5. Check the cache | A card built before on the same documents is rebuilt free. | $0 |
-| 6. Show the price | Count the tokens, price the worst case, ask before anything bills. | $0 |
+| 6. Price it | Count the tokens and price the worst case, every call the run would make. Within the user's daily allowance it simply runs; above it, the approval screen. | $0 |
 | 7. Read the debt (3 samples) | The main extraction, run three times to prove it is stable. | $0.37 to $0.70 |
 | 8. Extra reads, only when needed | The 10-K note the 10-Q points to; up to 5 targeted "digs"; how new money was used. | ~$0.21 typical (worst case ~$1.20 if all five digs fire in all three samples; none has yet) |
 | 9. Read the card facts | Moves, sub-limits and maturities, from the anchor. | ~$0.10 |
@@ -51,13 +51,13 @@
 12. **Never price or bill on a stale filing list.**
 13. **"This offering" looks back at most three sentences**, until paragraph breaks are kept. (A stated approximation.)
 
-## Open decisions, with my recommendation
+## Open decisions (decided Nov 9: all six as recommended, except 6)
 
 1. **Build decision 11 before Stage 2 opens.** *Recommend yes.* Today the card facts can miss a move's day or price that only an 8-K states. It needs a facts re-run per name, about $0.10 each, declared first.
 2. **Keep paragraph breaks in the text step** and retire decision 13's approximation. *Recommend yes.* It is a $0 code change, but every cached document must be re-read once.
 3. **Seniority and security from the 10-K, tagged** (your Nov 9 question). *Recommend yes.* Only Encompass changes: its four senior notes become "senior unsecured", tagged 10-K, and its bars move from grey to the unsecured colour.
 4. **Who may sign.** *Recommend:* only you, for now. New companies show "Checks passed" until you have seen the card.
 5. **Narration on new cards.** *Recommend:* off by default; on per card at ~$0.03 once its checks pass.
-6. **What a new user sees before paying.** *Recommend:* the price and the worst case on one screen, with a single Approve button; nothing bills without it.
+6. **What a new user sees before paying.** *Decided (Nov 9):* for the demo, an allowance Akshay funds (a per-user daily budget inside the existing caps) with no approval screen under it; the screen appears only above the allowance. Paying users keep the approval screen.
 
-**Next, if you approve:** build steps 1 to 6 first, at $0 (lookup, filing list, read set, cache check, pricing), then the paid steps behind the approval screen.
+**Build order (approved Nov 9):** (1) decision 11, the card facts reading the debt 8-Ks; (2) paragraph breaks kept in the text step, retiring decision 13's approximation; checkpoint, with a $0 replay of every golden; (3) Stage 2: steps 1 to 6 at $0, then the paid steps, under the demo allowance.
