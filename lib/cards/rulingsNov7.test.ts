@@ -136,7 +136,7 @@ const enc = shown.find((s) => s.cik === "0000785161" && s.label === "review")!;
 const row = enc.card.v3.table.rows.find((r: any) => /5\.875/.test(r.name));
 assert(!!row && /^600$/.test(txt([row.face])), `[T3] Encompass's 5.875% 2034 notes read 600 in the table ("${row ? txt([row.face]) : "no row"}")`);
 const seg = enc.card.v3.totalDebt.legend.map((l: any) => `${txt(l.label)} ${txt([l.amount])}`).join(" | ");
-assert(/senior notes \$1,000MM/i.test(seg), `[T3] and $1,000MM of senior notes in the total-debt segments (400 + 600): "${seg}"`);
+assert(/senior (?:unsecured )?notes \$1,000MM/i.test(seg), `[T3] and $1,000MM of senior notes in the total-debt segments (400 + 600): "${seg}"`);
 
 console.log("\n=== controls ===");
 // T1/T2 control: Encompass's Q3 pairing as rendered on Nov 6 (the Aug revolver repayment attached to the May issue).

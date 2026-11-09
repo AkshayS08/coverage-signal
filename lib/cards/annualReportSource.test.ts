@@ -48,7 +48,8 @@ const tenKCited = (card: any, snap: any) => {
   return out;
 };
 /** A standing term may cite the 10-K when the card tags it: a facility maturity (a date) or a size figure. */
-const taggedStandingTerm = (o: any) => o?.tenK === true && (o.k === "date" || o.term === "facilitySize");
+// Nov 9: a seniority or security label from the 10-K's statement is a standing term too, tagged.
+const taggedStandingTerm = (o: any) => o?.tenK === true && (o.k === "date" || o.k === "label" || o.term === "facilitySize");
 const violations = (card: any, snap: any) => {
   if (rule66(snap)) return [];
   const isTenK = (src: any) => /^10-K/.test(src?.doc ?? "") || /^10-K/.test(snap.docs?.[src?.url]?.label ?? "");

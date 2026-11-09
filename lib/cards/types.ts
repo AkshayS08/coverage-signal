@@ -36,7 +36,8 @@ export type Segment =
   /** `tenK`: a standing term stated only in the latest 10-K, shown with the "10-K" tag (Session 27, Oct 30). */
   | { k: "date"; t: string; date: string; granularity: DateGranularity; src: Source; tenK?: true }
   /** A label word (type, seniority, security). `stated` is the filer's word, which the sentence must contain. */
-  | { k: "label"; t: string; stated: string; src: Source }
+  /** `tenK` (Nov 9): a seniority or security label from the latest 10-K's statement, a standing term, tagged. */
+  | { k: "label"; t: string; stated: string; src: Source; tenK?: true }
   /** Arithmetic over stated figures. `usd` must equal the sum of the parts' signed values. */
   | { k: "computed"; t: string; usd: number; parts: { printed: string; usd: number; src: Source }[]; row?: string }
   /** "seniority not stated" and its kin: links to the instrument's own sentence so the reader can judge. */

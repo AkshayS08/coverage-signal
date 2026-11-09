@@ -21,7 +21,7 @@ export function Seg({ s }: { s: Segment }) {
           <a className={styles[s.k]} href={sentenceUrl(s.src.url, s.src.sentence)} target="_blank" rel="noreferrer" title={`${s.src.doc}: “${s.src.sentence}”`}>
             {s.t}
           </a>
-          {s.k === "date" && s.tenK ? <span className={styles.tenK} title="A standing term stated only in the latest 10-K; no later filing amends it">10-K</span> : null}
+          {(s.k === "date" || s.k === "label") && s.tenK ? <span className={styles.tenK} title="A standing term stated only in the latest 10-K; no later filing amends it">10-K</span> : null}
         </>
       );
     case "notStated":

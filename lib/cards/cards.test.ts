@@ -150,7 +150,7 @@ const ehc = cards.find((c) => /encompass/i.test(c.company));
 if (ehc) {
   const due = (ehc.headlines.refi ?? ehc.headlines.due24)!.lines.map(text);
   // v2.1 §2.4 rule 5: the flag is a marker on the date, with one legend line under the box.
-  assert(due.some((l) => /4\.50% senior notes, due 2028†/.test(l)) && due.some((l) => /^† .*may fall within 18 months, see source/.test(l)), "[6f] Encompass's 4.50% notes due 2028 are in the 18-month refinance window, marked † for year only, with the legend (card_spec v2.1 §2.4)");
+  assert(due.some((l) => /4\.50% senior (?:unsecured )?notes, due 2028†/.test(l)) /* Nov 9: "unsecured", a 10-K standing term */ && due.some((l) => /^† .*may fall within 18 months, see source/.test(l)), "[6f] Encompass's 4.50% notes due 2028 are in the 18-month refinance window, marked † for year only, with the legend (card_spec v2.1 §2.4)");
 }
 for (const c of cards) {
   const cap = c.ladder.lines.map(text).join(" ");

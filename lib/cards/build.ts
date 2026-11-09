@@ -208,13 +208,36 @@ export function buildCard(i: CardInputs): Card {
     const text = i.textByUrl.get(anchor.url);
     return !!s && !!text && createTextLocator(text).find(s.statement) !== null;
   };
-  const statement: NoteSeniorityStatement | null = statementInAnchor(rawStatement) ? rawStatement : null;
+  // SESSION 27 (Akshay, Nov 9): SENIORITY AND SECURITY ARE STANDING TERMS (the Nov 1 rule). A statement found only in
+  // the latest 10-K the card holds labels the notes, tagged 10-K, unless a later filing in the read set amends them
+  // (states a contradicting class for the same notes). Encompass: "The Senior Notes are senior, unsecured obligations".
+  const flatText = (x: string) => x.replace(/[\s ]+/g, " ");
+  const isTenK = (u: string) => /\bFORM\s+10-K\b|ANNUAL REPORT PURSUANT TO SECTION 13/i.test(flatText((i.textByUrl.get(u) ?? "").slice(0, 8000)));
+  const statementTenK = rawStatement && !statementInAnchor(rawStatement)
+    ? [...i.textByUrl.keys()].find((u) => isTenK(u) && flatText(i.textByUrl.get(u)!).includes(flatText(rawStatement.statement).slice(0, 80))) ?? null
+    : null;
+  const amendedLater = (() => {
+    if (!rawStatement || !statementTenK) return false;
+    const applies = (rawStatement as any).appliesTo as string | undefined;
+    if (!applies) return false;
+    const says = (s: string) => ({ unsecured: /\bunsecured\b/i.test(s), secured: /(?<!un)secured\b/i.test(s), subordinated: /\bsubordinated\b/i.test(s) });
+    const own = says(rawStatement.statement);
+    return [...i.textByUrl.entries()].some(([u, t]) => u !== statementTenK && flatText(t).split(/(?<=[.;])\s+(?=[A-Z])/).some((s) => s.toLowerCase().includes(applies.toLowerCase()) && /\bobligations?\b|\brank\b/i.test(s) && ((own.unsecured && says(s).secured && !says(s).unsecured) || (!own.subordinated && says(s).subordinated))));
+  })();
+  const statementUrl = statementInAnchor(rawStatement) ? anchor.url : statementTenK && !amendedLater ? statementTenK : null;
+  const statementFrom10K = !!statementUrl && statementUrl !== anchor.url;
+  const statement: NoteSeniorityStatement | null = statementUrl ? rawStatement : null;
 
   // ── document labels: every URL the result cites, named for the reader ──
   const docs = new Map<string, string>();
   for (const r of result.results) for (const c of (r as any).citations ?? []) if (c?.url) docs.set(c.url, `${c.form} ${c.date}`);
   docs.set(anchor.url, `${anchor.form} ${anchor.date}`);
   if (dm?.priorPeriodBase?.filingUrl) docs.set(dm.priorPeriodBase.filingUrl, `10-K for ${shortDate(dm.priorPeriodBase.periodOfReport)}`);
+  // Nov 9: a held 10-K the result does not cite (the one a standing term comes from) is named from its own cover.
+  for (const u of i.textByUrl.keys()) if (!docs.has(u) && isTenK(u)) {
+    const fy = /fiscal year ended\s+([A-Z][a-z]+\s+\d{1,2},\s*\d{4})/i.exec(flatText((i.textByUrl.get(u) ?? "").slice(0, 8000)));
+    docs.set(u, fy ? `10-K for ${fy[1]}` : "10-K");
+  }
   // RULE 44 ON THE CARD — a sentence's document is the one it is FOUND in.
   // The URL a caller proposes is tried first; where the sentence is not in it
   // but is in another document this card holds, that document is cited. The
@@ -323,7 +346,7 @@ export function buildCard(i: CardInputs): Card {
     const found = nameSentence ?? findSentenceWith(i.textByUrl.get(nameUrl), row.instrument);
     const nameSrc = found ? (found === amtSentence ? amountSrc : found === maturity?.src.sentence ? maturity!.src : src(found, nameUrl)) : amountSrc;
     const typeSrc = [amountSrc, maturity?.src, nameSrc].find((s) => s && stated && containsWord(s.sentence, stated)) ?? (heading && containsWord(heading, stated) ? anchorSrc(heading) : nameSrc);
-    const st = statementReaches(statement, row) && statement ? { s: statement, src: anchorSrc(statement.statement) } : null;
+    const st = statementReaches(statement, row) && statement ? { s: statement, src: src(statement.statement, statementUrl!) } : null;
     const fromName = classLabels(row.instrument, nameSrc, null);
     const named = withSources(row.instrument, fromName, row.citedUrl || null);
     const fromStatement = classLabels(row.instrument, nameSrc, st);
@@ -2503,6 +2526,12 @@ export function buildCard(i: CardInputs): Card {
       for (const v of Object.values(o)) tag(v);
     };
     tag(v3); tag(header); tag(liqLines); tag(facBlocks);
+  }
+  // Nov 9: a seniority or security label from the 10-K's statement carries the same "10-K" tag.
+  if (statementFrom10K && statement) {
+    const want = flatText(statement.statement);
+    const tagLabel = (o: any) => { if (!o || typeof o !== "object") return; if (o.k === "label" && o.src?.sentence && flatText(o.src.sentence) === want) o.tenK = true; for (const v of Object.values(o)) tagLabel(v); };
+    tagLabel(v3);
   }
 
   return {
