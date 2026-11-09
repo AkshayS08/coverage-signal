@@ -132,6 +132,12 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/snapshot.ts")) (async
       delete process.env.CACHE_BUST;
       result = JSON.parse(JSON.stringify(await runAgentLoop(name)));
       source = "re-derived through the loop from the cached answer, $0";
+      // Session 27 (Nov 9): the card is built from the SIGNED answer. A newer answer cached at this read set (a refresh
+      // billed but not signed: Cigna's Sept 30) is not it; re-derivation is then only a check (snapshotSource.test).
+      if (JSON.stringify(result) !== JSON.stringify(g.sourceResult)) {
+        result = g.sourceResult;
+        source = "the signed golden's stored result — the answer cached at this read set is not the signed one (a refresh not yet signed)";
+      }
     } else {
       result = g.sourceResult;
       source = `the signed golden's stored result — corpus moved to ${v.fingerprint.slice(0, 8)}, so the answer it was signed from is not re-derivable without re-extraction`;
