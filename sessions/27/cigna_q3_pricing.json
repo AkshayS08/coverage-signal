@@ -1,0 +1,19 @@
+{
+ "pricedAt": "2026-11-09T20:23:05.422Z",
+ "rows": [
+  {
+   "company": "Cigna Group",
+   "anchor": "10-Q 2026-11-05 (period 2026-09-30)",
+   "baseInputTokens": 69113,
+   "baseWorst": 0.169113,
+   "digWorst": 0.28262,
+   "digCandidate": "10-Q 2026-04-30",
+   "proceedsEstimate": 0.083484,
+   "factsWorst": 0.1384,
+   "worst": 1.7440510000000002,
+   "declared": 1.75
+  }
+ ],
+ "batchDeclaredUsd": 1.75,
+ "summary": "Priced: Cigna Group $1.75. Declared in all: $1.75, worst case, before any call."
+}
