@@ -54,6 +54,17 @@ export function readSetOf(filings: FilingEntry[]): FilingEntry[] {
   return selectBaselineFilings([...filings].sort(newestFirst));
 }
 
+/**
+ * SESSION 27 (decision 11, Nov 9): THE DEBT-ITEM 8-KS SINCE THE LATEST 10-K — one deciding function for the card input
+ * and the facts stage. An 8-K carrying Item 1.01, 1.02, 2.03, 2.04 or 8.01, filed on or after the latest 10-K in the
+ * list, states move detail (the day, the amount, the funding) a 10-Q may give only by month. No second list exists.
+ */
+export const DEBT_8K_ITEMS = ["1.01", "1.02", "2.03", "2.04", "8.01"];
+export function debtEightKsSinceTenK<T extends { form: string; filingDate: string; items?: string }>(filings: T[], since?: string): T[] {
+  const lastTenK = since ?? [...filings].filter((f) => f.form === "10-K").sort((a, b) => (a.filingDate < b.filingDate ? 1 : -1))[0]?.filingDate ?? "";
+  return filings.filter((x) => x.form === "8-K" && x.filingDate >= lastTenK && String(x.items ?? "").split(",").some((it) => DEBT_8K_ITEMS.includes(it.trim())));
+}
+
 /** The anchor: the most recent 10-Q or 10-K in the read set. */
 export function anchorOf(readSet: FilingEntry[]): FilingEntry | undefined {
   return [...readSet].filter((f) => f.form === "10-Q" || f.form === "10-K").sort(newestFirst)[0];

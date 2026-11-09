@@ -147,6 +147,11 @@ function inputFor(snap: any): string {
     .filter((s) => s.length > 30 && s.length < 1200 && INSTR.test(s) && /\$\s?[\d]/.test(s) && (s.match(/\d[\d,.]*/g) ?? []).length <= 14 && !shown.includes(s.slice(0, 80)));
   if (extra.length) block(`${anchor.form} ${anchor.date}, other sentences naming a debt instrument and an amount`, anchor.url, [...new Set(extra)].join("\n").slice(0, 16000));
   for (const f of snap.laterFilings ?? []) if (f.filingDate <= BRIEF && snap.docs[f.url]) block(`${f.form} ${f.filingDate}`, f.url, at(snap.docs[f.url].text, 0, 20000));
+  // Decision 11 (Nov 9): the same read set as extraction — the debt-item 8-Ks filed since the latest 10-K, even those
+  // before the anchor, which state move detail (the day, the amount, the funding) a 10-Q may give only by month. The
+  // card input records them through the one deciding function (debtEightKsSinceTenK).
+  const later = new Set((snap.laterFilings ?? []).map((f: any) => f.url));
+  for (const f of snap.debtEightKs ?? []) if (f.filingDate <= BRIEF && snap.docs[f.url] && !later.has(f.url)) block(`${f.form} ${f.filingDate}, a debt-item 8-K since the latest 10-K`, f.url, at(snap.docs[f.url].text, 0, 20000));
   const base = dm.priorPeriodBase;
   if (base?.filingUrl && snap.docs[base.filingUrl]) {
     const t = snap.docs[base.filingUrl].text as string;

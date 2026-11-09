@@ -30,6 +30,7 @@ import { fetchXbrlCash } from "../../fetch/xbrlDebt";
 import { locatorFor, scaledAmountString } from "../../agent/tableScale";
 import { assemblePosition, parseMoneyAmount } from "../../events/position";
 import { briefDateArg } from "../briefDate";
+import { debtEightKsSinceTenK } from "../../cache/readSet";
 
 const ROOT = process.cwd();
 const OUT = join(ROOT, "lib", "cards", "inputs");
@@ -81,8 +82,8 @@ export async function captureCardInput(result: any, opts: { fingerprint: string;
   const yearBack = `${Number(BRIEF.slice(0, 4)) - 1}${BRIEF.slice(4)}`;
   const recent = await liveFilingsBetween(result.cik, yearBack, BRIEF);
   const lastTenK = recent.find((x) => x.form === "10-K")?.filingDate ?? yearBack;
-  const DEBT_ITEMS = ["1.01", "1.02", "2.03", "2.04", "8.01"];
-  const debtEightKs = recent.filter((x) => x.form === "8-K" && x.filingDate >= lastTenK && String(x.items).split(",").some((it) => DEBT_ITEMS.includes(it.trim())));
+  // Decision 11 (Nov 9): the one deciding function, shared with the facts stage.
+  const debtEightKs = debtEightKsSinceTenK(recent, lastTenK);
   for (const x of debtEightKs) if (!urls.has(x.primaryDocUrl)) urls.set(x.primaryDocUrl, `${x.form} ${x.filingDate}`);
   const docs: Record<string, { label: string; text: string }> = {};
   for (const [u, label] of urls) docs[u] = { label, text: (await getFilingText(u)).text };
