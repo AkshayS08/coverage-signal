@@ -119,9 +119,9 @@
       {
        "k": "label",
        "t": "6.250% senior unsecured notes due September 2034",
-       "stated": "6.250 %",
+       "stated": "6.250%",
        "src": {
-        "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
+        "sentence": "• Net proceeds from the issuance of an aggregate principal amount of $2.000 billion of our 6.250% senior unsecured notes due September 2034 (the “2034 Senior Notes”);",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
         "doc": "10-Q 2026-10-29"
        }
@@ -3145,9 +3145,9 @@
       {
        "k": "label",
        "t": "6.250% senior unsecured notes due September 2034",
-       "stated": "6.250 %",
+       "stated": "6.250%",
        "src": {
-        "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the “2034 Senior Notes”).",
+        "sentence": "• Net proceeds from the issuance of an aggregate principal amount of $2.000 billion of our 6.250% senior unsecured notes due September 2034 (the “2034 Senior Notes”);",
         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
         "doc": "10-Q 2026-10-29"
        }
