@@ -62,7 +62,8 @@ function decodeEntities(html: string): string {
     .replace(/&([a-zA-Z]+);/g, (match, name: string) => NAMED_ENTITIES[name.toLowerCase()] ?? match);
 }
 
-function stripHtml(html: string): string {
+/** The v2 text step: every break collapsed. Kept for comparison (paragraphBreaks.test); not used to fetch. */
+export function stripHtmlV2(html: string): string {
   return decodeEntities(
     html
       .replace(/<ix:header[\s\S]*?<\/ix:header>/gi, " ")
@@ -73,6 +74,31 @@ function stripHtml(html: string): string {
   )
     .replace(/[ \t]+/g, " ")
     .replace(/\n\s*\n+/g, "\n")
+    .trim();
+}
+
+/**
+ * SESSION 27 (Nov 9, decision 13 retired): PARAGRAPH BREAKS ARE KEPT. Each block element (p, div, tr, li, h1-h6,
+ * table) ends in a paragraph break ("\n\n"); a <br> is a line break ("\n") inside its paragraph; inline elements still become a space, so a sentence's words are the v2
+ * text's words (flattened, the two are equal). Source newlines inside a paragraph are spaces. The antecedent rule reads
+ * "the same paragraph" from these breaks.
+ */
+export function stripHtml(html: string): string {
+  return decodeEntities(
+    html
+      .replace(/<ix:header[\s\S]*?<\/ix:header>/gi, " ")
+      .replace(/<ix:hidden[\s\S]*?<\/ix:hidden>/gi, " ")
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<br\s*\/?>/gi, " @@LINE@@ ")
+      .replace(/<\/(?:p|div|tr|li|h[1-6]|table|thead|tbody)\s*>/gi, " @@PARA@@ ")
+      .replace(/<[^>]+>/g, " ")
+  )
+    .replace(/\s+/g, " ")
+    .replace(/ ?@@PARA@@ ?(?:@@(?:PARA|LINE)@@ ?)*/g, "\n\n")
+    .replace(/ ?@@LINE@@ ?(?:@@LINE@@ ?)*/g, "\n")
+    .replace(/\n\n\n+/g, "\n\n")
+    .replace(/^\n+|\n+$/g, "")
     .trim();
 }
 
@@ -100,7 +126,8 @@ function urlToCacheKey(url: string): string {
  * the answer/wording caches.
  */
 export async function getFilingText(url: string): Promise<{ text: string; fromCache: boolean }> {
-  const cachePath = `edgar/filing-text-v2/${urlToCacheKey(url)}.json`;
+  // Nov 9: v3 keeps paragraph breaks (stripHtml); v2 entries are never replayed as v3.
+  const cachePath = `edgar/filing-text-v3/${urlToCacheKey(url)}.json`;
   const { data, fromCache } = await cachedFetch<{ text: string }>(
     cachePath,
     async () => {
