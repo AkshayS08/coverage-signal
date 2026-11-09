@@ -65,10 +65,13 @@ assert(row("0001108109", "Other")?.classification.priorityClass === null, `[4] C
 console.log("\n=== negative control: a heading printed nowhere in the text is never recorded as printed ===");
 const tenet = snap("0000070318").result.results.find((r: any) => r.triggerId === "debt-maturity");
 const forged = tenet.scheduleSequence.map((e: any) => (e.kind === "row" ? { ...e, section: "Junior subordinated debentures", seniority: null } : e));
-const text = snap("0000070318").docs[tenet.debtScheduleSourceFiling.url].text;
-const flat = text.replace(/\s+/g, " ");
-const out = annotatePrintedHeadings(forged, text, (l: string) => { const i = flat.indexOf(l.replace(/\s+/g, " ")); return i < 0 ? null : i; });
-assert(out.filter((e: any) => e.kind === "row").every((e: any) => e.printedHeading === null), `[5] a forged recorded heading ("Junior subordinated debentures") is recorded as not printed on every row`);
+// Nov 9: the locator's offsets are into the flattened text, so the flattened text is what is passed (passing the raw
+// text shifted the table window off the table, which is how "every row null" used to pass). Since Oct 29 a row may
+// carry a heading the table really prints (read from the print); the forged one must never be recorded.
+const flat = snap("0000070318").docs[tenet.debtScheduleSourceFiling.url].text.replace(/\s+/g, " ");
+const out = annotatePrintedHeadings(forged, flat, (l: string) => { const i = flat.indexOf(l.replace(/\s+/g, " ")); return i < 0 ? null : i; });
+const outRows = out.filter((e: any) => e.kind === "row");
+assert(!/Junior subordinated/i.test(flat) && outRows.some((e: any) => e.printedHeading) && outRows.every((e: any) => !/Junior subordinated/i.test(e.printedHeading ?? "")), `[5] a forged recorded heading ("Junior subordinated debentures"), printed nowhere, is recorded on no row (the table was found: ${[...new Set(outRows.map((e: any) => e.printedHeading).filter(Boolean))].join(", ")})`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 if (failed) process.exit(1);
