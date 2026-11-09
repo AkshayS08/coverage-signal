@@ -1,10 +1,10 @@
 {
  "cik": "0000070318",
  "company": "TENET HEALTHCARE CORP",
- "briefDate": "2026-11-03",
- "weekFrom": "2026-10-16",
- "weekTo": "2026-11-03",
- "previousBrief": "2026-10-15",
+ "briefDate": "2026-11-09",
+ "weekFrom": "2026-11-04",
+ "weekTo": "2026-11-09",
+ "previousBrief": "2026-11-03",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Oct 16 to Nov 3, 2026"
+    "t": "Brief week: Nov 4 to Nov 9, 2026"
    }
   ],
   [
@@ -35,34 +35,8 @@
   "lines": [
    [
     {
-     "k": "filing",
-     "t": "Form 10-Q · Oct 29, 2026",
-     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
-    },
-    {
      "k": "text",
-     "t": " — this card's position: the 10-Q for the quarter ended September 30, 2026, filed this week and read for this card."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "No new filings affecting debt since Oct 15, 2026."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "1 Form 8-K (Item 2.02, results; Item 9.01, exhibits) "
-    },
-    {
-     "k": "filing",
-     "t": "[Oct 29, 2026]",
-     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000045/thc-20261029.htm"
-    },
-    {
-     "k": "text",
-     "t": ", none affecting debt."
+     "t": "No new filings affecting debt since Nov 3, 2026."
     }
    ]
   ]
@@ -719,7 +693,7 @@
    ]
   },
   "refi": {
-   "heading": "Potential refinance opportunities (to May 3, 2028)",
+   "heading": "Potential refinance opportunities (to May 9, 2028)",
    "lines": [
     [
      {
@@ -908,7 +882,7 @@
     [
      {
       "k": "text",
-      "t": "Next, after May 3, 2028: "
+      "t": "Next, after May 9, 2028: "
      },
      {
       "k": "figure",
@@ -2694,7 +2668,7 @@
  },
  "v3": {
   "header": {
-   "label": "Weekly coverage brief · Oct 16 to Nov 3, 2026",
+   "label": "Weekly coverage brief · Nov 4 to Nov 9, 2026",
    "company": "TENET HEALTHCARE CORP",
    "position": [
     {
@@ -2721,18 +2695,14 @@
    "status": [
     {
      "k": "text",
-     "t": "new this week"
-    },
-    {
-     "k": "text",
-     "t": " · 1 other filing, none affecting debt"
+     "t": "No new debt filings this week"
     }
    ],
    "actionable": []
   },
   "rolledNote": null,
   "call": {
-   "label": "The call · next 18 months, to May 3, 2028",
+   "label": "The call · next 18 months, to May 9, 2028",
    "case": "A",
    "headline": [
     {
@@ -4013,7 +3983,7 @@
    ],
    "window": {
     "endIndex": 2,
-    "endFraction": 0.34139784946236557,
+    "endFraction": 0.35752688172043007,
     "label": "18-month window"
    },
    "legend": [

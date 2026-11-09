@@ -1,0 +1,75 @@
+{
+ "briefDate": "2026-11-09",
+ "capturedOn": "2026-11-09",
+ "names": {
+  "0000070318": {
+   "previousBrief": "2026-11-03",
+   "from": "2026-11-04",
+   "filings": []
+  },
+  "0000785161": {
+   "previousBrief": "2026-11-03",
+   "from": "2026-11-04",
+   "filings": [
+    {
+     "form": "8-K",
+     "filingDate": "2026-11-06",
+     "reportDate": "2026-11-06",
+     "accessionNumber": "0000785161-26-000242",
+     "primaryDocument": "ehc-20261106.htm",
+     "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000242/ehc-20261106.htm",
+     "items": "7.01,9.01"
+    }
+   ]
+  },
+  "0000927066": {
+   "previousBrief": "2026-11-03",
+   "from": "2026-11-04",
+   "filings": []
+  },
+  "0001108109": {
+   "previousBrief": "2026-11-03",
+   "from": "2026-11-04",
+   "filings": []
+  },
+  "0001179929": {
+   "previousBrief": "2026-11-03",
+   "from": "2026-11-04",
+   "filings": [
+    {
+     "form": "8-K",
+     "filingDate": "2026-11-06",
+     "reportDate": "2026-11-06",
+     "accessionNumber": "0001437749-26-035576",
+     "primaryDocument": "moh20261106_8k.htm",
+     "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1179929/000143774926035576/moh20261106_8k.htm",
+     "items": "7.01"
+    }
+   ]
+  },
+  "0001739940": {
+   "previousBrief": "2026-11-03",
+   "from": "2026-11-04",
+   "filings": [
+    {
+     "form": "8-K",
+     "filingDate": "2026-11-05",
+     "reportDate": "2026-11-05",
+     "accessionNumber": "0001140361-26-042030",
+     "primaryDocument": "ef20084818_8k.htm",
+     "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126042030/ef20084818_8k.htm",
+     "items": "2.02,9.01"
+    },
+    {
+     "form": "10-Q",
+     "filingDate": "2026-11-05",
+     "reportDate": "2026-09-30",
+     "accessionNumber": "0001739940-26-000071",
+     "primaryDocument": "ci-20260930.htm",
+     "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
+     "items": ""
+    }
+   ]
+  }
+ }
+}

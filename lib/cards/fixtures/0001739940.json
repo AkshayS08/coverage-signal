@@ -1,7 +1,7 @@
 {
  "cik": "0001739940",
  "company": "Cigna Group",
- "briefDate": "2026-11-03",
+ "briefDate": "2026-11-09",
  "positionSource": "signed golden's stored result",
  "anchor": {
   "form": "10-Q",
@@ -260,6 +260,16 @@
    "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion."
   },
   {
+   "doc": "10-Q 2026-11-05",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
+   "sentence": "During the nine months ended September 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026."
+  },
+  {
+   "doc": "10-Q 2026-11-05",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
+   "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion."
+  },
+  {
    "doc": "10-K for 2025-12-31",
    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm",
    "sentence": "In September 2025, we issued $4.5 billion of new senior notes."
@@ -300,12 +310,25 @@
    "doc": "10-Q 2026-07-30",
    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
    "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026."
+  },
+  {
+   "doc": "10-Q 2026-11-05",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
+   "sentence": "During the nine months ended September 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026."
   }
  ],
  "docs": [
   {
    "doc": "10-Q 2026-07-30",
    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+  },
+  {
+   "doc": "8-K 2026-11-05",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126042030/ef20084818_8k.htm"
+  },
+  {
+   "doc": "10-Q 2026-11-05",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm"
   },
   {
    "doc": "8-K 2026-10-09",

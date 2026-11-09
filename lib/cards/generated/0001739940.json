@@ -1,10 +1,10 @@
 {
  "cik": "0001739940",
  "company": "Cigna Group",
- "briefDate": "2026-11-03",
- "weekFrom": "2026-10-16",
- "weekTo": "2026-11-03",
- "previousBrief": "2026-10-15",
+ "briefDate": "2026-11-09",
+ "weekFrom": "2026-11-04",
+ "weekTo": "2026-11-09",
+ "previousBrief": "2026-11-03",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Oct 16 to Nov 3, 2026"
+    "t": "Brief week: Nov 4 to Nov 9, 2026"
    }
   ],
   [
@@ -41,8 +41,28 @@
   "lines": [
    [
     {
+     "k": "filing",
+     "t": "Form 10-Q · Nov 5, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm"
+    },
+    {
      "k": "text",
-     "t": "No new filings affecting debt since Oct 15, 2026."
+     "t": " — a new 10-Q, which carries a new position. Not yet read: this card's position is still the 10-Q for June 30, 2026."
+    }
+   ],
+   [
+    {
+     "k": "text",
+     "t": "1 Form 8-K (Item 2.02, results; Item 9.01, exhibits) "
+    },
+    {
+     "k": "filing",
+     "t": "[Nov 5, 2026]",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126042030/ef20084818_8k.htm"
+    },
+    {
+     "k": "text",
+     "t": ", none affecting debt."
     }
    ]
   ]
@@ -75,8 +95,14 @@
        "t": ": "
       },
       {
-       "k": "text",
-       "t": "Repaid at maturity"
+       "k": "label",
+       "t": "Repaid at maturity",
+       "stated": "repaid",
+       "src": {
+        "sentence": "During the nine months ended September 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
+        "doc": "ci-20260930.htm"
+       }
       },
       {
        "k": "text",
@@ -1036,7 +1062,7 @@
    ]
   },
   "refi": {
-   "heading": "Potential refinance opportunities (to May 3, 2028)",
+   "heading": "Potential refinance opportunities (to May 9, 2028)",
    "lines": [
     [
      {
@@ -1365,7 +1391,7 @@
     [
      {
       "k": "text",
-      "t": "Next, after May 3, 2028: "
+      "t": "Next, after May 9, 2028: "
      },
      {
       "k": "figure",
@@ -3790,7 +3816,7 @@
    [
     {
      "k": "text",
-     "t": "Nothing withheld this week."
+     "t": "1 filing this week affecting debt: text not read, so amount and instrument are not shown."
     }
    ]
   ]
@@ -4476,7 +4502,7 @@
  },
  "v3": {
   "header": {
-   "label": "Weekly coverage brief · Oct 16 to Nov 3, 2026",
+   "label": "Weekly coverage brief · Nov 4 to Nov 9, 2026",
    "company": "CIGNA GROUP",
    "position": [
     {
@@ -4503,10 +4529,22 @@
    "status": [
     {
      "k": "text",
-     "t": "No new debt filings this week"
+     "t": "1 filing this week may affect debt"
     }
    ],
-   "actionable": []
+   "actionable": [
+    [
+     {
+      "k": "filing",
+      "t": "Form 10-Q · Nov 5, 2026",
+      "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm"
+     },
+     {
+      "k": "text",
+      "t": " — a new 10-Q, which carries a new position. Not yet read: this card's position is still the 10-Q for June 30, 2026."
+     }
+    ]
+   ]
   },
   "rolledNote": [
    {
@@ -4524,7 +4562,7 @@
    }
   ],
   "call": {
-   "label": "The call · next 18 months, to May 3, 2028",
+   "label": "The call · next 18 months, to May 9, 2028",
    "case": "A",
    "headline": [
     {
@@ -6541,7 +6579,7 @@
    ],
    "window": {
     "endIndex": 3,
-    "endFraction": 0.34139784946236557,
+    "endFraction": 0.35752688172043007,
     "label": "18-month window"
    },
    "legend": [
@@ -8684,7 +8722,7 @@
    [
     {
      "k": "text",
-     "t": "Nothing withheld this week."
+     "t": "1 filing this week affecting debt: text not read, so amount and instrument are not shown."
     }
    ]
   ],

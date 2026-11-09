@@ -1,7 +1,7 @@
 {
  "cik": "0001179929",
  "company": "MOLINA HEALTHCARE, INC.",
- "briefDate": "2026-11-03",
+ "briefDate": "2026-11-09",
  "positionSource": "signed golden's stored result",
  "anchor": {
   "form": "10-Q",
@@ -113,6 +113,10 @@
   {
    "doc": "10-Q 2026-10-22",
    "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm"
+  },
+  {
+   "doc": "8-K 2026-11-06",
+   "url": "https://www.sec.gov/Archives/edgar/data/1179929/000143774926035576/moh20261106_8k.htm"
   }
  ]
 }
