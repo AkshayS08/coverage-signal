@@ -7358,3 +7358,26 @@ label, and the v33 answer named it "commercial paper" where the position says "C
 add-on's sentence across a page number. Both were check-matching or text-splitting errors, and both were reported to
 Akshay as card regressions before the matcher was read. A failing check is a claim about the card only once the check
 is shown to match what it means to match.
+
+### Session 27: decision 11 and paragraph breaks — the checkpoint (Nov 9, 2026)
+
+Decision 11 built: one function (`debtEightKsSinceTenK`) decides the debt-item 8-Ks for both the card input and the
+facts stage. Paragraph breaks kept: the card input reads `getFilingParagraphs` (v3 text, block elements end in a
+paragraph break); the antecedent window is the real paragraph. The model-facing text stays v2, deliberately: the
+read-set key hashes it, so changing it would have orphaned every cached answer and made the "$0 replay of every golden"
+a full re-extraction. Every input was recaptured at $0 and checked equal to its predecessor in everything but document
+text (words unchanged). Card changes are cited sentences only: whole sentences replace run-ons across page footers.
+
+**Finding: a capture preferred any cached answer over the signed one.** Recapturing the published inputs, Cigna's
+became its Sept 30 refresh, billed and not signed, because `snapshot.ts` re-derived through the loop whenever an answer
+was cached at the brief's read set. A published input is now its signed golden's result; re-derivation is a check
+(`snapshotSource.test`).
+
+**Lesson: a passing control can be passing by accident.** printedHeadings [5] ("a forged heading is recorded on no
+row") passed because its locator's offsets were into the flattened text while the raw text was passed, which moved the
+table window off the table. With consistent offsets it failed on the old text too. A control is evidence only once it
+is shown to have looked at what it claims to look at; [5] now also requires the table to have been found.
+
+**Lesson: a review render belongs to its own brief date.** Recaptured at today's date, Tenet's review header lost "new
+this week" and Molina's gained a later 8-K; recaptured at their own dates (Oct 31, Nov 6, Nov 9) each equals its
+predecessor in everything but text.

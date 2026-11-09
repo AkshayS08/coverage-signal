@@ -47,9 +47,9 @@
 8. **A section not yet read** from the new filing says so; it never claims absence.
 9. **Standing terms vs balances:** a 10-K-only standing term shows with a "10-K" tag; a 10-K-only balance never shows.
 10. **Serving from the last build** reads the filing list as it stood at that build.
-11. **The card-facts step reads the same documents as the main extraction**, debt 8-Ks included. (Agreed, not yet built.)
+11. **The card-facts step reads the same documents as the main extraction**, debt 8-Ks included. (Built Nov 9; the facts re-run for Tenet, Encompass, DaVita and CHS is declared at $0.71, awaiting approval.)
 12. **Never price or bill on a stale filing list.**
-13. **"This offering" looks back at most three sentences**, until paragraph breaks are kept. (A stated approximation.)
+13. **"This offering" looks back through its own paragraph.** (Built Nov 9; the three-sentence approximation is retired.)
 
 ## Open decisions (decided Nov 9: all six as recommended, except 6)
 
