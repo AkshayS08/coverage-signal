@@ -24,7 +24,7 @@ import { execSync } from "node:child_process";
 import { runAgentLoop } from "../../agent";
 import { checkFree, assertFree } from "../../cache/freeRun";
 import { EXTRACTION_PROMPT_VERSION } from "../../cache/promptVersion";
-import { getFilingText } from "../../fetch/filingText";
+import { getFilingParagraphs } from "../../fetch/filingText";
 import { liveFilingsBetween } from "../../fetch/thisWeek";
 import { fetchXbrlCash } from "../../fetch/xbrlDebt";
 import { locatorFor, scaledAmountString } from "../../agent/tableScale";
@@ -86,13 +86,13 @@ export async function captureCardInput(result: any, opts: { fingerprint: string;
   const debtEightKs = debtEightKsSinceTenK(recent, lastTenK);
   for (const x of debtEightKs) if (!urls.has(x.primaryDocUrl)) urls.set(x.primaryDocUrl, `${x.form} ${x.filingDate}`);
   const docs: Record<string, { label: string; text: string }> = {};
-  for (const [u, label] of urls) docs[u] = { label, text: (await getFilingText(u)).text };
+  for (const [u, label] of urls) docs[u] = { label, text: (await getFilingParagraphs(u)).text };
   // Session 27 (Nov 9): seniority and security are standing terms. A note's seniority statement not in the anchor is
   // read from the latest 10-K, which the card then holds, so its labels link to that sentence (tagged 10-K).
   const st = dm.seniorityStatement?.statement as string | undefined;
   const flat = (x: string) => x.replace(/[\s ]+/g, " ");
   const latestTenK = recent.find((x) => x.form === "10-K");
-  if (st && latestTenK && !flat(docs[anchor.url].text).includes(flat(st).slice(0, 80)) && !docs[latestTenK.primaryDocUrl]) docs[latestTenK.primaryDocUrl] = { label: `${latestTenK.form} ${latestTenK.filingDate}`, text: (await getFilingText(latestTenK.primaryDocUrl)).text };
+  if (st && latestTenK && !flat(docs[anchor.url].text).includes(flat(st).slice(0, 80)) && !docs[latestTenK.primaryDocUrl]) docs[latestTenK.primaryDocUrl] = { label: `${latestTenK.form} ${latestTenK.filingDate}`, text: (await getFilingParagraphs(latestTenK.primaryDocUrl)).text };
 
   const xc = await fetchXbrlCash(result.cik, anchor.reportDate);
   const pc = xc.value !== null ? printedCash(docs[anchor.url].text, xc.value) : null;

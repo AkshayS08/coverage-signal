@@ -126,7 +126,26 @@ function urlToCacheKey(url: string): string {
  * the answer/wording caches.
  */
 export async function getFilingText(url: string): Promise<{ text: string; fromCache: boolean }> {
-  // Nov 9: v3 keeps paragraph breaks (stripHtml); v2 entries are never replayed as v3.
+  // Nov 9: the model-facing text stays v2. The read-set key hashes it and the excerpts are cut from it, so changing it
+  // would orphan every cached answer; paragraph text is a separate read (getFilingParagraphs) for the card input.
+  const cachePath = `edgar/filing-text-v2/${urlToCacheKey(url)}.json`;
+  const { data, fromCache } = await cachedFetch<{ text: string }>(
+    cachePath,
+    async () => {
+      const html = await secFetchText(url);
+      const text = stripHtmlV2(html).slice(0, SANITY_CEILING_CHARS);
+      return { text };
+    },
+    null
+  );
+  return { text: data.text, fromCache };
+}
+
+/**
+ * SESSION 27 (Nov 9): the same document with its paragraph breaks kept (stripHtml), cached as v3 so no v2 entry is
+ * replayed as paragraph text. Read by the card input, where "the same paragraph" decides an antecedent.
+ */
+export async function getFilingParagraphs(url: string): Promise<{ text: string; fromCache: boolean }> {
   const cachePath = `edgar/filing-text-v3/${urlToCacheKey(url)}.json`;
   const { data, fromCache } = await cachedFetch<{ text: string }>(
     cachePath,
