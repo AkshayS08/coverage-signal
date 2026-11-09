@@ -49,6 +49,7 @@ import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, s
 import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
+import { antecedentWindow, paragraphSentences } from "./antecedent";
 
 export interface CardInputs {
   result: CompanyResult;
@@ -288,11 +289,18 @@ export function buildCard(i: CardInputs): Card {
   // The sentences a label may come from: the anchor, every later filing through
   // the brief date, and the row's own cited document (§3.5, Rule 66).
   const sentencePools = new Map<string, Source[]>();
+  // Session 27 (Nov 9): each sentence's paragraph, where the document's text keeps paragraph breaks (antecedent.ts).
+  const paraOf = new Map<Source, number>();
+  const brokenUrls = new Set<string>();
   const sentencesOf = (url: string): Source[] => {
     if (!sentencePools.has(url)) {
-      const text = i.textByUrl.get(url) ?? "";
-      const ss = text.replace(/[\s\u00a0]+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(\u201c"])/).filter((x) => x.length < 900);
-      sentencePools.set(url, ss.map((x) => ({ sentence: x, url, doc: docs.get(url) ?? url.split("/").pop() ?? url })));
+      const { sentences, hasBreaks } = paragraphSentences(i.textByUrl.get(url) ?? "");
+      if (hasBreaks) brokenUrls.add(url);
+      sentencePools.set(url, sentences.map((x) => {
+        const s: Source = { sentence: x.sentence, url, doc: docs.get(url) ?? url.split("/").pop() ?? url };
+        paraOf.set(s, x.para);
+        return s;
+      }));
     }
     return sentencePools.get(url)!;
   };
@@ -820,9 +828,9 @@ export function buildCard(i: CardInputs): Card {
     const eligible = issuances.filter((iss) => r.status === "pending" || iss.sort.slice(0, 7) <= r.sort.slice(0, 7));
     // Every sentence pairing this retirement with an issuance: by its name or defined term, or (Nov 7) by a referring
     // phrase ("this borrowing", "this offering", "the Notes") resolved to the issuance named in the same sentence or,
-    // failing that, the nearest preceding sentence naming one in the same paragraph (the stored text has no paragraph
-    // breaks: at most three sentences back, stopping at a note heading). A scope holding none or more than one issuance
-    // flags rather than pairs.
+    // failing that, the nearest preceding sentence naming one in the same paragraph (Nov 9: the real paragraph where the
+    // card input keeps paragraph breaks; at most three sentences back where it does not; either way stopping at a note
+    // heading). A scope holding none or more than one issuance flags rather than pairs.
     const REFERS = /\b(?:this|the)\s+(?:borrowing|offering|issuance)\b|\bthe\s+Notes\b/;
     const HEADING = /^\d{1,2}\.\s+[A-Z][a-z]+/;
     /** The issuances a sentence names as done (null: it names none), and which of them are this card's issuance moves. */
@@ -849,10 +857,12 @@ export function buildCard(i: CardInputs): Card {
       const decide = (h: { named: number; onCard: Move[] }) => (h.named === 1 && h.onCard.length === 1 ? h.onCard : []);
       const own = issuesNamedIn(x.sentence);
       if (own) return decide(own);
-      for (let k = at - 1; at > 0 && k >= Math.max(0, at - 3); k--) {
+      if (at < 0) return null;
+      // The same paragraph where the text keeps its breaks; three sentences back where it does not (antecedent.ts).
+      const byPara = ss.map((q) => ({ sentence: q.sentence, para: paraOf.get(q) ?? 0 }));
+      for (const k of antecedentWindow(byPara, at, brokenUrls.has(x.url), (s) => HEADING.test(s))) {
         const h = issuesNamedIn(ss[k].sentence);
         if (h) return decide(h);
-        if (HEADING.test(ss[k].sentence)) break;
       }
       return null;
     };
