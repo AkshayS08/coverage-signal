@@ -2,15 +2,15 @@
   "extractionVersion": 33,
   "signature": {
     "signedBy": "Akshay Sahani",
-    "signedOn": "2026-10-29",
-    "basis": "RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v31 signature of 2026-09-09. Cleared by Akshay Sahani on Oct 29, 2026, at its pre-Oct 28 read set (its Q3 earnings 8-K of Oct 28 moved the read set after the samples were taken; by ruling, an earnings 8-K alone is not a refresh). Signed over the canonical v33 answer on the read set the canonical and both re-tastes were taken on (since moved; not a refresh by ruling). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (2): (1) non-position citations moved: 1 added, 1 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are recorded and do not make this answer incomparable. (+ https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm) (− https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm) (2) rows[\"Advances under revolving credit facility\"].maturitySourceLine: expected \"the maturity date has been changed to March 9, 2031\", got \"the maturity date is March 9, 2031, rather than October 7, 2027\" — both sentences state the row's maturity at the precision shown, so this is which sentence was cited, not a changed fact Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the CHS 9¾% notes was an interest date read as a maturity. (1) FOUR MATURITIES MOVE FROM DAY TO YEAR — the 4.50% notes due 2028, 4.75% due 2030, 4.625% due 2031 and 5.875% due 2034. Each row cites its line in the anchor's debt table (\"4.50 % Senior Notes due 2028 396.9 792.0\"), which prints the year only. The first three days are stated in the 10-K (\"The 2028 Notes mature on February 1, 2028…\"); the 5.875% notes' June 1, 2034 is printed elsewhere in the anchor, not in the row's own line. A date may not be finer than the sentence it links to (Rules 76, 77); taking a day from another sentence or filing is the post-demo candidate logged with Rule 66. (2) THE REVOLVER'S MATURITY now cites its own sentence (\"the maturity date is March 9, 2031, rather than October 7, 2027\"), not the amount line (Rule 78); the date is unchanged. (3) ONE CHANGE IS A LOSS AND IS SIGNED KNOWINGLY: THE REFI CARD IS GONE. The Session 23 state carded the 4.50% notes on 2028-02-01, inside the 18-month window. At year precision the row cannot card — a bare year never does, because there is no day to be inside a window (BRD 6.2) — so the state carries no card. The notes, their amount and their year are unchanged on the ladder. The day exists in the 10-K, and whether a card may rest on it is the Rule 66 candidate, not something this signature decides. (4) NOTHING ELSE MOVED: seven rows, the same amounts, statuses, provenance and capacity flags; coverage unchanged; the letter-of-credit figure still null, because the anchor states no LC balance and the $53.6 million once claimed was rejected against its own sentence. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.3897): 7 rows in every run, identical across all three under compareToGolden; coverage identical; cited document set identical. Facility figures measured separately and identical across all three, labels included — which is the measurement that matters most on this name, because the letter-of-credit field is the one the Session 23 refresh roster was watching for a reproducing drop. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
+    "signedOn": "2026-11-09",
+    "basis": "RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v33 signature of 2026-10-29. Cleared by Akshay Sahani on Nov 9, 2026, after he viewed its rendered refresh card (screenshots_v13), to sign at v33 on its Nov 3 read set (its 10-Q filed Nov 3, 2026, the refresh of Nov 6; $0.6510 billed of $1.80 approved). Signed over the refresh batch's canonical v33 answer on read set 8ed102356861d01c61a0cfba (as of 2026-11-06, the refresh batch's read set; the $0 replay through the loop gives the same state). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set, at 2026-11-06; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (2): (1) non-position citations moved: 1 added, 2 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are recorded and do not make this answer incomparable. (+ https://www.sec.gov/Archives/edgar/data/785161/000078516126000183/ehc-20260805.htm) (− https://www.sec.gov/Archives/edgar/data/785161/000078516126000161/ehc-20260529.htm) (− https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm) (2) rows[\"Advances under revolving credit facility\"].sourceLine: expected \"Advances under revolving credit facility $ 75.0\", got \"As of September 30, 2026, $ 75.0 million was drawn under the revolving credit facility with an interest rate of 5.2 %.\" — both sentences state the row's amount, so this is which document was cited, not a changed fact Previously signed 2026-10-29 on the basis: RE-SIGNED at extraction v33 under the read-set key (Session 27), replacing the v31 signature of 2026-09-09. Cleared by Akshay Sahani on Oct 29, 2026, at its pre-Oct 28 read set (its Q3 earnings 8-K of Oct 28 moved the read set after the samples were taken; by ruling, an earnings 8-K alone is not a refresh). Signed over the canonical v33 answer on the read set the canonical and both re-tastes were taken on (since moved; not a refresh by ruling). 9b: 3/3 (the canonical and two CACHE_BUST re-tastes at v33 on that read set; s27compare, with the coverage tie required). Rule 58: every amount stated by its sentence. All computed criteria hold. TOLERATED BY THE 9b GATE, RECORDED RATHER THAN DROPPED (2): (1) non-position citations moved: 1 added, 1 removed. These are documents cited by triggers OTHER than the position — no ladder row cites them and no facility figure's sentence is in them — so they are recorded and do not make this answer incomparable. (+ https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm) (− https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm) (2) rows[\"Advances under revolving credit facility\"].maturitySourceLine: expected \"the maturity date has been changed to March 9, 2031\", got \"the maturity date is March 9, 2031, rather than October 7, 2027\" — both sentences state the row's maturity at the precision shown, so this is which sentence was cited, not a changed fact Previously signed 2026-09-09 on the basis: RE-BASELINE (replaces an earlier signature), at PINNED_AS_OF 2026-09-09, extraction v31. Re-baselined in Session 26: date display clamped to cited-sentence precision; the prior v29 2034-09-15 for the CHS 9¾% notes was an interest date read as a maturity. (1) FOUR MATURITIES MOVE FROM DAY TO YEAR — the 4.50% notes due 2028, 4.75% due 2030, 4.625% due 2031 and 5.875% due 2034. Each row cites its line in the anchor's debt table (\"4.50 % Senior Notes due 2028 396.9 792.0\"), which prints the year only. The first three days are stated in the 10-K (\"The 2028 Notes mature on February 1, 2028…\"); the 5.875% notes' June 1, 2034 is printed elsewhere in the anchor, not in the row's own line. A date may not be finer than the sentence it links to (Rules 76, 77); taking a day from another sentence or filing is the post-demo candidate logged with Rule 66. (2) THE REVOLVER'S MATURITY now cites its own sentence (\"the maturity date is March 9, 2031, rather than October 7, 2027\"), not the amount line (Rule 78); the date is unchanged. (3) ONE CHANGE IS A LOSS AND IS SIGNED KNOWINGLY: THE REFI CARD IS GONE. The Session 23 state carded the 4.50% notes on 2028-02-01, inside the 18-month window. At year precision the row cannot card — a bare year never does, because there is no day to be inside a window (BRD 6.2) — so the state carries no card. The notes, their amount and their year are unchanged on the ladder. The day exists in the 10-K, and whether a card may rest on it is the Rule 66 candidate, not something this signature decides. (4) NOTHING ELSE MOVED: seven rows, the same amounts, statuses, provenance and capacity flags; coverage unchanged; the letter-of-credit figure still null, because the anchor states no LC balance and the $53.6 million once claimed was rejected against its own sentence. Ladder amounts, subtotals and totals hand-verified against the filings; no wrong number found. Every displayed figure checked against the sentence shown beside it, not merely present somewhere in the corpus (Rule 46) — belonging clean, 0 composites. Facility maturities verified against their own sentences; where the instrument's own cited sentence does not state the date, it is taken from the facility's own maturity sentence and labelled when that sits outside the anchor. Canonical v31 answer plus CACHE_BUST x2 on 2026-09-25 (lib/cache/s23sign9b.ts, $0.3897): 7 rows in every run, identical across all three under compareToGolden; coverage identical; cited document set identical. Facility figures measured separately and identical across all three, labels included — which is the measurement that matters most on this name, because the letter-of-credit field is the one the Session 23 refresh roster was watching for a reproducing drop. NOTHING WAS TOLERATED BY THE 9b GATE — the three runs agreed on every compared field, labels included."
   },
   "attestation": {
     "rowsCorrect": true,
     "instrumentTypeFaithful": true,
     "reproducedThreeTimes": true,
     "by": "Akshay Sahani",
-    "on": "2026-10-29"
+    "on": "2026-11-09"
   },
   "criteria": [
     {
@@ -18,7 +18,7 @@
       "name": "every row's amount, maturity and instrument correct against the filing",
       "kind": "attested",
       "pass": true,
-      "detail": "attested by Akshay Sahani on 2026-10-29 against 10-Q 2026-08-07",
+      "detail": "attested by Akshay Sahani on 2026-11-09 against 10-Q 2026-11-03",
       "defends": "a ladder that ties to itself and to nothing in the world"
     },
     {
@@ -26,7 +26,7 @@
       "name": "every amount in the filing's unit and basis, or explicitly absent from the filing — verified either way",
       "kind": "computed",
       "pass": true,
-      "detail": "all 7 row(s) carry a printed unit; no narrative instruments, so no basis to state",
+      "detail": "all 7 row(s) carry a printed unit; all 1 narrative instrument(s) state a basis (outstanding) — NOTE: the basis is carried on the extracted instrument and is DROPPED on the assembled row, so neither the pinned row nor the rendered ladder states it",
       "defends": "a bare table cell read at a guessed scale — the $1.448 TRILLION line, and a facility size counted as a drawn balance"
     },
     {
@@ -50,7 +50,7 @@
       "name": "stated total triangulates to the filer's XBRL tag, or is labelled model-read",
       "kind": "computed",
       "pass": true,
-      "detail": "the filer's own XBRL tags, $2,634,000,000",
+      "detail": "the filer's own XBRL tags, $2,599,100,000",
       "defends": "a coverage percentage whose denominator nobody could name"
     },
     {
@@ -82,7 +82,7 @@
       "name": "structure faithful in PRIORITY CLASS — every row carries its class or explicitly states it has none",
       "kind": "computed",
       "pass": true,
-      "detail": "4 of 7 row(s) carry a class; the remaining 3 state \"class not stated on this row\" explicitly (Advances under revolving credit facility; Other notes payable; Finance lease obligations). Sections printed: Credit Agreement; Bonds payable",
+      "detail": "4 of 7 row(s) carry a class; the remaining 3 state \"class not stated on this row\" explicitly (Advances under revolving credit facility; Other notes payable; Finance lease obligations). Sections printed: Credit Agreement—; Bonds payable—",
       "defends": "a note that prints senior secured and senior unsecured as separate sections, flattened into one list — and silence defaulting to unsecured"
     },
     {
@@ -115,103 +115,101 @@
     "cik": "0000785161",
     "anchor": {
       "form": "10-Q",
-      "date": "2026-08-07",
-      "reportDate": "2026-06-30",
-      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+      "date": "2026-11-03",
+      "reportDate": "2026-09-30",
+      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
     },
     "filingSet": [
-      "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-      "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+      "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
     ],
     "otherCitations": [
-      "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm",
       "https://www.sec.gov/Archives/edgar/data/785161/000078516126000161/ehc-20260529.htm",
       "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm"
     ],
-    "asOf": "2026-09-09",
+    "asOf": "2026-11-06",
     "rows": [
       {
         "instrument": "4.50 % Senior Notes due 2028",
-        "amount": "$ 396.9 million",
+        "amount": "$ 397.4 million",
         "maturityDate": "2028",
         "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4.50 % Senior Notes due 2028 396.9   792.0",
-        "maturitySourceLine": "4.50 % Senior Notes due 2028 396.9   792.0"
+        "sourceLine": "4.50 % Senior Notes due 2028 397.4",
+        "maturitySourceLine": "4.50 % Senior Notes due 2028 397.4"
       },
       {
         "instrument": "4.75 % Senior Notes due 2030",
-        "amount": "$ 788.4 million",
+        "amount": "$ 789.2 million",
         "maturityDate": "2030",
         "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4.75 % Senior Notes due 2030 788.4   787.0",
-        "maturitySourceLine": "4.75 % Senior Notes due 2030 788.4   787.0"
+        "sourceLine": "4.75 % Senior Notes due 2030 789.2",
+        "maturitySourceLine": "4.75 % Senior Notes due 2030 789.2"
       },
       {
         "instrument": "4.625 % Senior Notes due 2031",
-        "amount": "$ 394.1 million",
+        "amount": "$ 394.4 million",
         "maturityDate": "2031",
         "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "4.625 % Senior Notes due 2031 394.1   393.6",
-        "maturitySourceLine": "4.625 % Senior Notes due 2031 394.1   393.6"
+        "sourceLine": "4.625 % Senior Notes due 2031 394.4",
+        "maturitySourceLine": "4.625 % Senior Notes due 2031 394.4"
       },
       {
         "instrument": "5.875 % Senior Notes due 2034",
-        "amount": "$ 491.0 million",
+        "amount": "$ 588.2 million",
         "maturityDate": "2034",
         "dateGranularity": "year",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "5.875 % Senior Notes due 2034 491.0   —",
-        "maturitySourceLine": "5.875 % Senior Notes due 2034 491.0   —"
+        "sourceLine": "5.875 % Senior Notes due 2034 588.2",
+        "maturitySourceLine": "5.875 % Senior Notes due 2034 588.2"
       },
       {
         "instrument": "Advances under revolving credit facility",
-        "amount": "$ 200.0 million",
+        "amount": "$ 75.0 million",
         "maturityDate": "2031-03-09",
         "dateGranularity": "day",
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Advances under revolving credit facility $ 200.0   $ 130.0",
+        "sourceLine": "Advances under revolving credit facility $ 75.0",
         "maturitySourceLine": "the maturity date has been changed to March 9, 2031"
       },
       {
         "instrument": "Other notes payable",
-        "amount": "$ 81.9 million",
+        "amount": "$ 80.0 million",
         "maturityDate": null,
         "dateGranularity": null,
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Other notes payable 81.9   93.6",
+        "sourceLine": "Other notes payable 80.0",
         "maturitySourceLine": null
       },
       {
         "instrument": "Finance lease obligations",
-        "amount": "$ 281.7 million",
+        "amount": "$ 274.9 million",
         "maturityDate": null,
         "dateGranularity": null,
         "status": "live",
         "provenance": "note",
         "isCapacity": false,
-        "sourceLine": "Finance lease obligations 281.7   294.6",
+        "sourceLine": "Finance lease obligations 274.9",
         "maturitySourceLine": null
       }
     ],
     "coverage": {
       "denominatorSource": "xbrl",
-      "statedTotalDebt": 2634000000,
-      "capturedFace": 2634000000,
+      "statedTotalDebt": 2599100000,
+      "capturedFace": 2599100000,
       "statedBridge": 0,
       "residualPercent": 0,
       "residualPasses": true
@@ -227,50 +225,53 @@
     "ticker": "EHC",
     "results": [
       {
-        "proseInstruments": [],
+        "proseInstruments": [
+          {
+            "category": "revolver",
+            "name": "senior secured revolving credit facility",
+            "amount": "$ 75.0 million",
+            "amountBasis": "outstanding",
+            "asOfDate": "2026-09-30",
+            "dateGranularity": "day",
+            "maturityDate": "2031-03-09",
+            "rate": "5.2 %",
+            "sourceLine": "As of September 30, 2026, $ 75.0 million was drawn under the revolving credit facility with an interest rate of 5.2 %.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+          }
+        ],
         "facilities": [
           {
             "name": "senior secured revolving credit facility",
             "category": "revolver",
             "facilitySize": {
               "value": "$ 1 billion",
-              "sourceLine": "In summary, the 2026 Credit Agreement provides for a revolving credit facility of $ 1 billion, including a $ 260 million letter of credit subfacility and the Swingline Subfacility."
+              "sourceLine": "Future repurchases under this authorization generally are expected to be funded using a combination of cash on hand and availability under our $1 billion revolving credit facility."
             },
             "drawn": {
-              "value": "$ 200.0 million",
-              "sourceLine": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %."
+              "value": "$ 75.0 million",
+              "sourceLine": "As of September 30, 2026, $ 75.0 million was drawn under the revolving credit facility with an interest rate of 5.2 %."
             },
             "lettersOfCredit": null,
             "available": {
-              "value": "approximately $ 746 million",
-              "sourceLine": "In addition to Cash and cash equivalents , as of June 30, 2026, we had approximately $ 746 million available to us under our revolving credit facility."
+              "value": "approximately $ 871 million",
+              "sourceLine": "In addition to Cash and cash equivalents , as of September 30, 2026, we had approximately $871 million available to us under our revolving credit facility."
             },
             "maturity": {
               "value": "March 9, 2031",
               "sourceLine": "the maturity date has been changed to March 9, 2031"
             },
-            "asOfDate": "2026-06-30",
+            "asOfDate": "2026-09-30",
             "availabilityBasis": null,
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
             "figureSources": {
-              "facilitySize": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-              "drawn": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-              "available": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-              "maturity": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+              "facilitySize": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+              "drawn": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+              "available": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+              "maturity": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
             }
           }
         ],
-        "facilityRejections": [
-          {
-            "facility": "senior secured revolving credit facility",
-            "field": "lettersOfCredit",
-            "value": "$ 46.3 million",
-            "reason": "stated as of a date other than the anchor's period",
-            "sourceLine": "As of December 31, 2025 and 2024, $ 46.3  million and $ 36.3  million , respectively, was being utilized under the letter of credit subfacility, which were being used in the ordinary course of business to secure workers' compensation and other insurance coverages and for general corporate purposes.",
-            "statedPeriod": "2025-12-31",
-            "modelAsOfDisagreed": "2026-06-30"
-          }
-        ],
+        "facilityRejections": [],
         "seniorityStatement": {
           "statement": "The Senior Notes are senior, unsecured obligations of Encompass Health and rank equally with our other senior indebtedness, senior to any of our subordinated indebtedness, and effectively junior to our secured indebtedness to the extent of the value of the collateral securing such indebtedness.",
           "appliesTo": "the Senior Notes"
@@ -282,22 +283,16 @@
         "triggerName": "Debt maturity approaching",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "4.50% Senior Notes due February 1, 2028 with $396.9 million outstanding as of June 30, 2026; scheduled principal payment of $435.8 million due in 2028.",
+        "evidence": "4.50% Senior Notes due 2028 with $397.4 million outstanding as of September 30, 2026; maturity date February 1, 2028.",
         "mappedNeed": "Refinancing",
         "needType": "credit",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
-          },
-          {
-            "form": "10-Q",
-            "date": "2026-05-01",
-            "reportDate": "2026-03-31",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -311,77 +306,216 @@
           {
             "kind": "row",
             "label": "Advances under revolving credit facility",
-            "amount": "$ 200.0 million",
-            "rate": "4.9 %",
+            "amount": "$ 75.0 million",
+            "rate": "5.2 %",
             "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "section": "Credit Agreement",
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "Advances under revolving credit facility $ 200.0   $ 130.0",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+            "section": "Credit Agreement—",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Advances under revolving credit facility $ 75.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
             "maturitySourceLine": null,
             "printedHeading": "Credit Agreement"
           },
           {
             "kind": "row",
             "label": "4.50 % Senior Notes due 2028",
-            "amount": "$ 396.9 million",
+            "amount": "$ 397.4 million",
             "rate": "4.50 %",
-            "seniority": "senior unsecured",
+            "seniority": null,
             "maturityDate": "2028",
             "dateGranularity": "year",
-            "section": "Bonds payable",
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "4.50 % Senior Notes due 2028 396.9   792.0",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-            "maturitySourceLine": "4.50 % Senior Notes due 2028 396.9   792.0",
+            "section": "Bonds payable—",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "4.50 % Senior Notes due 2028 397.4",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+            "maturitySourceLine": "4.50 % Senior Notes due 2028 397.4",
             "printedHeading": "Bonds payable"
+          },
+          {
+            "kind": "row",
+            "label": "4.75 % Senior Notes due 2030",
+            "amount": "$ 789.2 million",
+            "rate": "4.75 %",
+            "seniority": null,
+            "maturityDate": "2030",
+            "dateGranularity": "year",
+            "section": "Bonds payable—",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "4.75 % Senior Notes due 2030 789.2",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+            "maturitySourceLine": "4.75 % Senior Notes due 2030 789.2",
+            "printedHeading": "Bonds payable"
+          },
+          {
+            "kind": "row",
+            "label": "4.625 % Senior Notes due 2031",
+            "amount": "$ 394.4 million",
+            "rate": "4.625 %",
+            "seniority": null,
+            "maturityDate": "2031",
+            "dateGranularity": "year",
+            "section": "Bonds payable—",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "4.625 % Senior Notes due 2031 394.4",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+            "maturitySourceLine": "4.625 % Senior Notes due 2031 394.4",
+            "printedHeading": "Bonds payable"
+          },
+          {
+            "kind": "row",
+            "label": "5.875 % Senior Notes due 2034",
+            "amount": "$ 588.2 million",
+            "rate": "5.875 %",
+            "seniority": null,
+            "maturityDate": "2034",
+            "dateGranularity": "year",
+            "section": "Bonds payable—",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "5.875 % Senior Notes due 2034 588.2",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+            "maturitySourceLine": "5.875 % Senior Notes due 2034 588.2",
+            "printedHeading": "Bonds payable"
+          },
+          {
+            "kind": "row",
+            "label": "Other notes payable",
+            "amount": "$ 80.0 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Bonds payable—",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Other notes payable 80.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+            "printedHeading": null
+          },
+          {
+            "kind": "row",
+            "label": "Finance lease obligations",
+            "amount": "$ 274.9 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Bonds payable—",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Finance lease obligations 274.9",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+            "printedHeading": null
+          },
+          {
+            "kind": "subtotal",
+            "label": null,
+            "amount": "$ 2,599.1 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "2,599.1",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+          },
+          {
+            "kind": "adjustment",
+            "label": "Less: Current portion",
+            "amount": "( 47.8 ) million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Less: Current portion ( 47.8 )",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+          },
+          {
+            "kind": "subtotal",
+            "label": "Long-term debt, net of current portion",
+            "amount": "$ 2,551.3 million",
+            "rate": null,
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": null,
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Long-term debt, net of current portion $ 2,551.3",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+          }
+        ],
+        "priorScheduleSequence": [
+          {
+            "kind": "row",
+            "label": "Advances under revolving credit facility",
+            "amount": "$ 200.0 million",
+            "rate": "4.9 %",
+            "seniority": null,
+            "maturityDate": null,
+            "dateGranularity": null,
+            "section": "Credit Agreement—",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "Advances under revolving credit facility $ 200.0",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+            "maturitySourceLine": null
+          },
+          {
+            "kind": "row",
+            "label": "4.50 % Senior Notes due 2028",
+            "amount": "$ 396.9 million",
+            "rate": "4.50 %",
+            "seniority": null,
+            "maturityDate": "2028",
+            "dateGranularity": "year",
+            "section": "Bonds payable—",
+            "periodColumn": "June 30, 2026",
+            "sourceLine": "4.50 % Senior Notes due 2028 396.9",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+            "maturitySourceLine": "4.50 % Senior Notes due 2028 396.9"
           },
           {
             "kind": "row",
             "label": "4.75 % Senior Notes due 2030",
             "amount": "$ 788.4 million",
             "rate": "4.75 %",
-            "seniority": "senior unsecured",
+            "seniority": null,
             "maturityDate": "2030",
             "dateGranularity": "year",
-            "section": "Bonds payable",
+            "section": "Bonds payable—",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "4.75 % Senior Notes due 2030 788.4   787.0",
+            "sourceLine": "4.75 % Senior Notes due 2030 788.4",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-            "maturitySourceLine": "4.75 % Senior Notes due 2030 788.4   787.0",
-            "printedHeading": "Bonds payable"
+            "maturitySourceLine": "4.75 % Senior Notes due 2030 788.4"
           },
           {
             "kind": "row",
             "label": "4.625 % Senior Notes due 2031",
             "amount": "$ 394.1 million",
             "rate": "4.625 %",
-            "seniority": "senior unsecured",
+            "seniority": null,
             "maturityDate": "2031",
             "dateGranularity": "year",
-            "section": "Bonds payable",
+            "section": "Bonds payable—",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "4.625 % Senior Notes due 2031 394.1   393.6",
+            "sourceLine": "4.625 % Senior Notes due 2031 394.1",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-            "maturitySourceLine": "4.625 % Senior Notes due 2031 394.1   393.6",
-            "printedHeading": "Bonds payable"
+            "maturitySourceLine": "4.625 % Senior Notes due 2031 394.1"
           },
           {
             "kind": "row",
             "label": "5.875 % Senior Notes due 2034",
             "amount": "$ 491.0 million",
             "rate": "5.875 %",
-            "seniority": "senior unsecured",
+            "seniority": null,
             "maturityDate": "2034",
             "dateGranularity": "year",
-            "section": "Bonds payable",
+            "section": "Bonds payable—",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "5.875 % Senior Notes due 2034 491.0   —",
+            "sourceLine": "5.875 % Senior Notes due 2034 491.0",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-            "maturitySourceLine": "5.875 % Senior Notes due 2034 491.0   —",
-            "printedHeading": "Bonds payable"
+            "maturitySourceLine": "5.875 % Senior Notes due 2034 491.0"
           },
           {
             "kind": "row",
@@ -391,11 +525,10 @@
             "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "section": "Bonds payable",
+            "section": "Bonds payable—",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Other notes payable 81.9   93.6",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-            "printedHeading": null
+            "sourceLine": "Other notes payable 81.9",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
           },
           {
             "kind": "row",
@@ -405,11 +538,10 @@
             "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
-            "section": "Bonds payable",
+            "section": "Bonds payable—",
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Finance lease obligations 281.7   294.6",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-            "printedHeading": null
+            "sourceLine": "Finance lease obligations 281.7",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
           },
           {
             "kind": "subtotal",
@@ -421,20 +553,20 @@
             "dateGranularity": null,
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "2,634.0   2,490.8",
+            "sourceLine": "2,634.0",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
           },
           {
             "kind": "adjustment",
             "label": "Less: Current portion",
-            "amount": "( $ 35.9 million )",
+            "amount": "( 35.9 ) million",
             "rate": null,
             "seniority": null,
             "maturityDate": null,
             "dateGranularity": null,
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Less: Current portion ( 35.9 ) ( 43.6 )",
+            "sourceLine": "Less: Current portion ( 35.9 )",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
           },
           {
@@ -447,166 +579,43 @@
             "dateGranularity": null,
             "section": null,
             "periodColumn": "June 30, 2026",
-            "sourceLine": "Long-term debt, net of current portion $ 2,598.1   $ 2,447.2",
+            "sourceLine": "Long-term debt, net of current portion $ 2,598.1",
             "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
-          }
-        ],
-        "priorScheduleSequence": [
-          {
-            "kind": "row",
-            "label": "Advances under revolving credit facility",
-            "amount": "$ 220.0 million",
-            "rate": "4.9 %",
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": "Credit Agreement",
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Advances under revolving credit facility $ 220.0   $ 130.0",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm",
-            "maturitySourceLine": null
-          },
-          {
-            "kind": "row",
-            "label": "4.50 % Senior Notes due 2028",
-            "amount": "$ 792.9 million",
-            "rate": "4.50 %",
-            "seniority": "senior unsecured",
-            "maturityDate": "2028",
-            "dateGranularity": "year",
-            "section": "Bonds payable",
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "4.50 % Senior Notes due 2028 792.9   792.0",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm",
-            "maturitySourceLine": "4.50 % Senior Notes due 2028 792.9   792.0"
-          },
-          {
-            "kind": "row",
-            "label": "4.75 % Senior Notes due 2030",
-            "amount": "$ 787.7 million",
-            "rate": "4.75 %",
-            "seniority": "senior unsecured",
-            "maturityDate": "2030",
-            "dateGranularity": "year",
-            "section": "Bonds payable",
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "4.75 % Senior Notes due 2030 787.7   787.0",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm",
-            "maturitySourceLine": "4.75 % Senior Notes due 2030 787.7   787.0"
-          },
-          {
-            "kind": "row",
-            "label": "4.625 % Senior Notes due 2031",
-            "amount": "$ 393.8 million",
-            "rate": "4.625 %",
-            "seniority": "senior unsecured",
-            "maturityDate": "2031",
-            "dateGranularity": "year",
-            "section": "Bonds payable",
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "4.625 % Senior Notes due 2031 393.8   393.6",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm",
-            "maturitySourceLine": "4.625 % Senior Notes due 2031 393.8   393.6"
-          },
-          {
-            "kind": "row",
-            "label": "Other notes payable",
-            "amount": "$ 91.2 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": "Bonds payable",
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Other notes payable 91.2   93.6",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
-          },
-          {
-            "kind": "row",
-            "label": "Finance lease obligations",
-            "amount": "$ 288.2 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": "Bonds payable",
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Finance lease obligations 288.2   294.6",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
-          },
-          {
-            "kind": "subtotal",
-            "label": null,
-            "amount": "$ 2,573.8 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "2,573.8   2,490.8",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
-          },
-          {
-            "kind": "adjustment",
-            "label": "Less: Current portion",
-            "amount": "( $ 42.9 million )",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Less: Current portion ( 42.9 ) ( 43.6 )",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
-          },
-          {
-            "kind": "subtotal",
-            "label": "Long-term debt, net of current portion",
-            "amount": "$ 2,530.9 million",
-            "rate": null,
-            "seniority": null,
-            "maturityDate": null,
-            "dateGranularity": null,
-            "section": null,
-            "periodColumn": "March 31, 2026",
-            "sourceLine": "Long-term debt, net of current portion $ 2,530.9   $ 2,447.2",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
           }
         ],
         "balanceSheetDebtCaptions": [
           {
             "label": "Current portion of long-term debt",
-            "amount": "$ 35.9 million",
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "Current portion of long-term debt $ 35.9   $ 43.6",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "amount": "$ 47.8 million",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Current portion of long-term debt $ 47.8",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           },
           {
             "label": "Long-term debt, net of current portion",
-            "amount": "$ 2,598.1 million",
-            "periodColumn": "June 30, 2026",
-            "sourceLine": "Long-term debt, net of current portion 2,598.1   2,447.2",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "amount": "$ 2,551.3 million",
+            "periodColumn": "September 30, 2026",
+            "sourceLine": "Long-term debt, net of current portion 2,551.3",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "debtScheduleSourceFiling": {
+          "form": "10-Q",
+          "date": "2026-11-03",
+          "reportDate": "2026-09-30",
+          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+        },
+        "debtSchedulePriorFiling": {
           "form": "10-Q",
           "date": "2026-08-07",
           "reportDate": "2026-06-30",
           "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
         },
-        "debtSchedulePriorFiling": {
-          "form": "10-Q",
-          "date": "2026-05-01",
-          "reportDate": "2026-03-31",
-          "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm"
-        },
         "anchorNoteShape": "tabular",
         "priorPeriodBase": null,
         "noteLocatorVersion": 1,
-        "rowsExtracted": 21,
-        "rowsVerified": 21,
+        "rowsExtracted": 22,
+        "rowsVerified": 22,
         "baseRowsExtracted": 10,
         "columnReadFailure": false,
         "scheduleCompleteness": {
@@ -614,7 +623,7 @@
           "subtotalsTranscribed": 2,
           "labeledTotalCandidatesInSource": 1,
           "missingLabeledTotals": [
-            "Total $ 2,663"
+            "Total $ 2,630"
           ],
           "trailingUnconsumedText": null,
           "complete": false
@@ -629,40 +638,40 @@
             "amount": "$ 400 million",
             "eventDate": "2026-05-29",
             "dateGranularity": "day",
-            "sourceLine": "redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "sourceLine": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100  million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$396.9 million",
+        "cashAmount": "$397.4 million",
         "projectName": null,
         "eventStatus": "upcoming",
         "proceedsUse": null,
         "xbrlDebtTotal": {
-          "total": 2634000000,
-          "asOf": "2026-06-30",
+          "total": 2599100000,
+          "asOf": "2026-09-30",
           "parts": [
             {
               "tag": "LongTermDebtAndCapitalLeaseObligationsCurrent",
-              "value": 35900000
+              "value": 47800000
             },
             {
               "tag": "LongTermDebtAndCapitalLeaseObligations",
-              "value": 2598100000
+              "value": 2551300000
             }
           ],
           "separateLeases": [
             {
               "tag": "FinanceLeaseLiability",
-              "value": 281700000
+              "value": 274900000
             }
           ],
           "unavailableReason": null
         },
         "xbrlMaturityBuckets": {
           "buckets": [],
-          "asOf": "2026-06-30"
+          "asOf": "2026-09-30"
         }
       },
       {
@@ -677,16 +686,16 @@
         "triggerName": "New debt issuance / notes pricing",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Issued $500 million of 5.875% Senior Notes due 2034 on May 29, 2026 at par, resulting in approximately $491 million in net proceeds. Additionally issued $100 million of 5.875% Senior Notes due 2034 on August 13, 2026 at 98.75% of par, resulting in approximately $96.9 million in net proceeds.",
+        "evidence": "Issued $500 million of 5.875% Senior Notes due 2034 in May 2026 at par, resulting in approximately $491 million in net proceeds. Additionally issued $100 million of the same notes in August 2026 at 98.75% of principal amount, resulting in approximately $97 million in net proceeds.",
         "mappedNeed": "Refi or add-on financing",
         "needType": "credit",
         "confidence": 0.98,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           },
           {
             "form": "8-K",
@@ -725,66 +734,61 @@
           {
             "instrument": "4.50 % Senior Notes due 2028",
             "amount": "$ 400 million",
-            "status": "intended",
-            "sourceLine": "redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")",
+            "status": "completed",
+            "sourceLine": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100  million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses.",
             "verified": true,
             "foundIn": {
-              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
-              "filingDate": "2026-08-07"
+              "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+              "filingDate": "2026-11-03"
             }
           }
         ],
         "proceedsUses": [
           {
-            "use": "redeem at par $400 million in aggregate principal amount of the $800 million in principal amount outstanding of the Company's 4.500% senior notes due 2028",
+            "use": "redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028",
             "amount": "$ 400 million",
-            "sourceLine": "The Company intends to use the net proceeds from the sale of the Notes, together with available cash on hand, to redeem at par $ 400 million of the $ 800 million in principal amount outstanding of the Company's 4.500% senior notes due 2028, to repay $ 100 million of outstanding amounts under the Company's revolving credit facility, and to pay certain related fees and expenses."
+            "sourceLine": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100  million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses."
           },
           {
-            "use": "repay $100 million of outstanding amounts under the Company's revolving credit facility",
+            "use": "repay $ 100  million of outstanding amounts under our revolving credit facility",
             "amount": "$ 100 million",
-            "sourceLine": "The Company intends to use the net proceeds from the sale of the Notes, together with available cash on hand, to redeem at par $ 400 million of the $ 800 million in principal amount outstanding of the Company's 4.500% senior notes due 2028, to repay $ 100 million of outstanding amounts under the Company's revolving credit facility, and to pay certain related fees and expenses."
+            "sourceLine": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100  million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses."
           },
           {
             "use": "pay certain related fees and expenses",
             "amount": null,
-            "sourceLine": "The Company intends to use the net proceeds from the sale of the Notes, together with available cash on hand, to redeem at par $ 400 million of the $ 800 million in principal amount outstanding of the Company's 4.500% senior notes due 2028, to repay $ 100 million of outstanding amounts under the Company's revolving credit facility, and to pay certain related fees and expenses."
-          },
-          {
-            "use": "repay a portion of the outstanding amounts under the Company's revolving credit facility",
-            "amount": null,
-            "sourceLine": "The Company used the net proceeds from the sale of the Additional Notes, together with cash on hand, to repay a portion of the outstanding amounts under the Company's revolving credit facility."
+            "sourceLine": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400  million in aggregate principal amount of the $ 800  million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100  million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses."
           }
         ],
         "issuedTranches": [
           {
-            "instrument": "5.875% Senior Notes due 2034",
+            "instrument": "5.875 % Senior Notes due 2034",
             "amount": "$ 500 million",
             "rate": "5.875 %",
             "seniority": "senior unsecured",
             "maturityDate": "2034",
             "dateGranularity": "year",
             "sourceLine": "In May 2026, we issued $ 500  million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par, which resulted in approximately $ 491  million in net proceeds from the private offering.",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
             "maturitySourceLine": "In May 2026, we issued $ 500  million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par, which resulted in approximately $ 491  million in net proceeds from the private offering."
           },
           {
-            "instrument": "5.875% Senior Notes due 2034",
+            "instrument": "5.875 % Senior Notes due 2034",
             "amount": "$ 100 million",
             "rate": "5.875 %",
             "seniority": "senior unsecured",
             "maturityDate": "2034",
             "dateGranularity": "year",
-            "sourceLine": "On August 13, 2026, Encompass Health Corporation (the \"Company\") completed the issuance and sale of $ 100 million in aggregate principal amount of its 5.875% Senior Notes due 2034 (the \"Additional Notes\"), along with the related guarantees of the Additional Notes by certain of the Company's subsidiaries, in a private offering.",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm",
-            "maturitySourceLine": "On August 13, 2026, Encompass Health Corporation (the \"Company\") completed the issuance and sale of $ 100 million in aggregate principal amount of its 5.875% Senior Notes due 2034 (the \"Additional Notes\"), along with the related guarantees of the Additional Notes by certain of the Company's subsidiaries, in a private offering."
+            "sourceLine": "In August 2026, we issued an additional $ 100  million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97  million in net proceeds.",
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+            "maturitySourceLine": "In August 2026, we issued an additional $ 100  million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97  million in net proceeds."
           }
         ],
         "eventInstances": [],
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$491 million",
+        "cashAmount": "$ 491 million",
         "projectName": null,
         "eventStatus": "completed",
         "proceedsUse": "refinancing_only"
@@ -801,16 +805,16 @@
         "triggerName": "Acquisition announced",
         "fired": false,
         "dataAvailable": true,
-        "evidence": null,
+        "evidence": "No acquisition announced. The company sold its 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to its joint venture partner for $17.9 million effective January 1, 2026, which is a divestiture, not an acquisition.",
         "mappedNeed": "Bridge financing, then permanent",
         "needType": "credit",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -857,21 +861,21 @@
         "triggerName": "Capex program / new facility or construction",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Company expects to spend approximately $920 million to $995 million for capital expenditures during 2026, with approximately $225 million to $240 million considered nondiscretionary maintenance expenditures. Projects under construction have an estimated additional cost to complete over the next two years of approximately $441 million.",
+        "evidence": "Capital expenditure program for 2026 estimated at $920 million to $995 million, including approximately $225 million to $240 million in nondiscretionary maintenance expenditures. Projects under construction have estimated additional cost to complete over the next two years of approximately $441 million.",
         "mappedNeed": "Term loan or capex facility",
         "needType": "credit",
         "confidence": 0.92,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "During 2026, we expect to spend approximately $ 920 million to $ 995 million for capital expenditures using cash on hand and borrowings under our revolving credit facility.",
-        "verifiedQuoteNormalized": "During 2026, we expect to spend approximately $ 920 million to $ 995 million for capital expenditures using cash on hand and borrowings under our revolving credit facility.",
+        "verifiedQuote": "During 2026, we expect to spend approximately $920 million to $995 million for capital expenditures using cash on hand and borrowings under our revolving credit facility.",
+        "verifiedQuoteNormalized": "During 2026, we expect to spend approximately $920 million to $995 million for capital expenditures using cash on hand and borrowings under our revolving credit facility.",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
         "eventDate": null,
@@ -896,7 +900,7 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$920 million to $995 million",
+        "cashAmount": "$ 920 million to $ 995 million",
         "projectName": null,
         "eventStatus": "standing",
         "proceedsUse": null
@@ -913,16 +917,16 @@
         "triggerName": "Revolver near capacity + growth",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "As of June 30, 2026, $200 million was drawn under the $1 billion revolving credit facility, leaving approximately $746 million available. Drawn balance represents only 20% of facility capacity, well below near-capacity threshold.",
+        "evidence": "As of September 30, 2026, $75.0 million was drawn under the $1 billion revolving credit facility, leaving approximately $871 million available. Drawn balance represents only 7.5% of facility capacity, well below near-capacity threshold.",
         "mappedNeed": "Revolver upsize",
         "needType": "credit",
-        "confidence": 0.9,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -969,21 +973,21 @@
         "triggerName": "Dividend recap / buyback authorization",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "Board declared quarterly cash dividends of $0.19 per share in July 2025 and again in July 2025 (paid in October 2025 and January 2026 respectively). Company repurchased 1.4 million shares for $145.2 million during the six months ended June 30, 2026. Approximately $332 million remained under the $500 million repurchase authorization as of December 31, 2025.",
+        "evidence": "Quarterly dividend increased to $0.19 per share in July 2025 and maintained through the nine months ended September 30, 2026. Share repurchase authorization of $500 million approved July 24, 2024, with approximately $332 million remaining as of December 31, 2025. During the nine months ended September 30, 2026, the company repurchased 1.9 million shares for $204.2 million.",
         "mappedNeed": "Leverage capacity conversation",
         "needType": "credit",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "In July 2025, our board of directors approved an increase in our quarterly dividend and declared a cash dividend of $ 0.19 per share paid in October 2025.",
-        "verifiedQuoteNormalized": "In July 2025, our board of directors approved an increase in our quarterly dividend and declared a cash dividend of $ 0.19 per share paid in October 2025.",
+        "verifiedQuote": "In July 2025, our board of directors approved an increase in our quarterly dividend and declared a cash dividend of $0.19 per share paid in October 2025.",
+        "verifiedQuoteNormalized": "In July 2025, our board of directors approved an increase in our quarterly dividend and declared a cash dividend of $0.19 per share paid in October 2025.",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
         "eventDate": "2025",
@@ -1008,7 +1012,7 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$145.2 million",
+        "cashAmount": null,
         "projectName": null,
         "eventStatus": "standing",
         "proceedsUse": null
@@ -1025,16 +1029,16 @@
         "triggerName": "Large cash balance building",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "Cash and cash equivalents of $107.7 million as of June 30, 2026, compared to $72.2 million as of December 31, 2025, representing an increase of $35.5 million. However, this is not a large absolute cash balance relative to the company's $7.5 billion in total assets and $2.6 billion in debt.",
+        "evidence": "Cash and cash equivalents of $76.2 million as of September 30, 2026, compared to $72.2 million as of December 31, 2025. This represents a modest increase and is not a large cash balance relative to the company's $7.6 billion in total assets and $2.6 billion in debt.",
         "mappedNeed": "Liquidity management, earning on idle cash",
         "needType": "treasury",
-        "confidence": 0.88,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1081,16 +1085,16 @@
         "triggerName": "Asset sale / divestiture closing",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "On December 31, 2025, company entered into an agreement to sell its 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to its existing joint venture partner for $17.9 million effective January 1, 2026. Transaction was completed and $17.5 million pre-tax gain was recorded in Other income during the six months ended June 30, 2026.",
+        "evidence": "Sale of 50% membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC to joint venture partner Barnes-Jewish Hospital, LLC for $17.9 million, effective January 1, 2026. Transaction completed and $17.9 million proceeds received in February 2026.",
         "mappedNeed": "Proceeds deposit + sweep",
         "needType": "treasury",
         "confidence": 0.92,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1124,14 +1128,14 @@
             "dateGranularity": "day",
             "eventStatus": "completed",
             "sourceLine": "On December 31, 2025, we entered into an agreement to sell our 50 % membership interest in Gamma Knife Center at Barnes-Jewish Hospital, LLC (\"Gamma Knife\") to our existing joint venture partner, Barnes-Jewish Hospital, LLC, for $ 17.9  million effective January 1, 2026.",
-            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "citedUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
         "cashAmount": "$ 17.9 million",
-        "projectName": "Gamma Knife Center at Barnes-Jewish Hospital, LLC",
+        "projectName": null,
         "eventStatus": "completed",
         "proceedsUse": null
       },
@@ -1147,16 +1151,16 @@
         "triggerName": "International expansion / rising foreign revenue",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "Company operates hospitals in 39 states and Puerto Rico with no disclosed international operations or foreign revenue segments. No evidence of international expansion or rising foreign revenue as a share of total revenue.",
+        "evidence": "No evidence of international expansion. The company operates hospitals in 39 states and Puerto Rico. No segment or geographic footnote disclosing foreign revenue growth is provided in the filings.",
         "mappedNeed": "FX hedging, cross-border cash management",
         "needType": "treasury",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1202,19 +1206,12 @@
         "triggerId": "new-subsidiary",
         "triggerName": "New subsidiary / entity formation",
         "fired": false,
-        "dataAvailable": true,
-        "evidence": "No disclosure of new subsidiary or entity formation in the filings provided.",
+        "dataAvailable": false,
+        "evidence": "No disclosure of new subsidiary formation in the public filings. Formation of new subsidiaries is typically not disclosed unless tied to a reported acquisition or material transaction.",
         "mappedNeed": "New operating accounts",
         "needType": "treasury",
-        "confidence": 0.9,
-        "citations": [
-          {
-            "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
-          }
-        ],
+        "confidence": 0.85,
+        "citations": [],
         "quoteVerified": true,
         "verifiedQuote": null,
         "verifiedQuoteNormalized": null,
@@ -1259,16 +1256,16 @@
         "triggerName": "IPO / secondary raise",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No IPO or secondary equity offering disclosed. Company is an established public company trading on NYSE under symbol EHC.",
+        "evidence": "No IPO or secondary equity offering announced or completed. The company is an established public company trading on the NYSE under symbol EHC.",
         "mappedNeed": "Proceeds management, treasury build-out",
         "needType": "treasury",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1315,25 +1312,25 @@
         "triggerName": "Floating-rate debt + rate exposure",
         "fired": true,
         "dataAvailable": true,
-        "evidence": "$200 million drawn on revolving credit facility at 4.9% interest rate as of June 30, 2026, which bears interest at SOFR plus applicable margin. This represents approximately 7.6% of total debt outstanding.",
+        "evidence": "Revolving credit facility of $75.0 million drawn as of September 30, 2026 bears floating interest rate of 5.2% (SOFR-based). This represents approximately 2.9% of total debt outstanding of $2,599.1 million. The credit agreement provides for SOFR or prime rate-based borrowings with applicable margin.",
         "mappedNeed": "Interest-rate hedging",
         "needType": "credit",
         "confidence": 0.9,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
-        "verifiedQuote": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
-        "verifiedQuoteNormalized": "As of June 30, 2026, $ 200.0 million was drawn under the revolving credit facility with an interest rate of 4.9 %.",
+        "verifiedQuote": "As of September 30, 2026, $ 75.0 million was drawn under the revolving credit facility with an interest rate of 5.2 %.",
+        "verifiedQuoteNormalized": "As of September 30, 2026, $ 75.0 million was drawn under the revolving credit facility with an interest rate of 5.2 %.",
         "quoteMatchType": "literal",
         "quoteHasFigure": true,
-        "eventDate": null,
-        "dateGranularity": null,
+        "eventDate": "2026-09-30",
+        "dateGranularity": "day",
         "scheduleSequence": [],
         "priorScheduleSequence": [],
         "balanceSheetDebtCaptions": [],
@@ -1354,7 +1351,7 @@
         "noteRetirements": [],
         "projectCompletionDate": null,
         "projectCompletionGranularity": null,
-        "cashAmount": "$ 200.0 million",
+        "cashAmount": "$ 75.0 million",
         "projectName": null,
         "eventStatus": "standing",
         "proceedsUse": null
@@ -1371,16 +1368,16 @@
         "triggerName": "Commodity / input-cost exposure",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material disclosure of commodity or input-cost exposure in the risk factors or MD&A sections provided. Company operates inpatient rehabilitation hospitals with primary exposure to healthcare labor costs and Medicare reimbursement rates, not commodity prices.",
+        "evidence": "No material commodity or input-cost exposure disclosed in risk factors. The company's primary cost drivers are labor (salaries and benefits) and occupancy costs, not commodities.",
         "mappedNeed": "Commodity hedging",
         "needType": "credit",
-        "confidence": 0.85,
+        "confidence": 0.9,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1427,16 +1424,16 @@
         "triggerName": "Large FX exposure disclosed",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No material foreign-currency exposure disclosed in the quantitative/qualitative market risk section. Company operates primarily in the United States with operations in 39 states and Puerto Rico only.",
+        "evidence": "No material foreign-currency exposure disclosed. The company operates primarily in the United States (39 states and Puerto Rico) with no significant international operations or foreign-currency-denominated debt.",
         "mappedNeed": "FX hedging program",
         "needType": "treasury",
-        "confidence": 0.9,
+        "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1483,16 +1480,16 @@
         "triggerName": "Covenant breach / waiver, or going-concern / liquidity warning",
         "fired": false,
         "dataAvailable": true,
-        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. Company states it was in compliance with all financial covenants as of June 30, 2026, with maximum leverage ratio requirement of 4.50x and minimum interest coverage ratio requirement of 3.0x.",
+        "evidence": "No covenant breach, waiver, going-concern qualification, or liquidity warning disclosed. As of September 30, 2026, the company was in compliance with all financial covenants under its credit agreement, with maximum leverage ratio requirement of 4.50x and minimum interest coverage ratio requirement of 3.0x.",
         "mappedNeed": "Restructuring or amendment support",
         "needType": "distress",
         "confidence": 0.95,
         "citations": [
           {
             "form": "10-Q",
-            "date": "2026-08-07",
-            "reportDate": "2026-06-30",
-            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm"
+            "date": "2026-11-03",
+            "reportDate": "2026-09-30",
+            "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
           }
         ],
         "quoteVerified": true,
@@ -1532,6 +1529,14 @@
     "relationshipFlags": [],
     "recordedReadSet": [
       {
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+        "form": "10-Q",
+        "filingDate": "2026-11-03",
+        "accessionNumber": "0000785161-26-000239",
+        "contentHash": "e0ac254628329ef7977437ca9ef78548914d14049d2a3e08650a46b31b1074ca",
+        "via": "base"
+      },
+      {
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000186/ehc-20260630.htm",
         "form": "10-Q",
         "filingDate": "2026-08-07",
@@ -1540,19 +1545,27 @@
         "via": "base"
       },
       {
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000130/ehc-20260331.htm",
-        "form": "10-Q",
-        "filingDate": "2026-05-01",
-        "accessionNumber": "0000785161-26-000130",
-        "contentHash": "9ecaaca80e4c02a1b2c08dd11ffaa8d683a79ac9164d00b95516fded66f65e1b",
-        "via": "base"
-      },
-      {
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm",
         "form": "10-K",
         "filingDate": "2026-02-26",
         "accessionNumber": "0000785161-26-000081",
         "contentHash": "85bb5af33ed4dbc46e9d03f9fccfba0a9cc2df80709c5dec856fe8b4c6ff2851",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000242/ehc-20261106.htm",
+        "form": "8-K",
+        "filingDate": "2026-11-06",
+        "accessionNumber": "0000785161-26-000242",
+        "contentHash": "f67469723898d6e9665e373d81818ea61c26e656d7376394509be634a5ed0f03",
+        "via": "base"
+      },
+      {
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000236/ehc-20261028.htm",
+        "form": "8-K",
+        "filingDate": "2026-10-28",
+        "accessionNumber": "0000785161-26-000236",
+        "contentHash": "a8eb010ed5071260f33733156512002a7deddcaafded29482819cef40cfc0332",
         "via": "base"
       },
       {
@@ -1586,23 +1599,8 @@
         "accessionNumber": "0000785161-26-000156",
         "contentHash": "6c31e39ad821d5d0a4a1dafb01bab7453d7871d4b8ef28ff8a7d1211b4c6bd97",
         "via": "base"
-      },
-      {
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000128/ehc-20260430.htm",
-        "form": "8-K",
-        "filingDate": "2026-04-30",
-        "accessionNumber": "0000785161-26-000128",
-        "contentHash": "dc2e7586b837d9eb5cdb75ca1fdf5efb52760ddaa76fcae34617a8d46a902fbe",
-        "via": "base"
-      },
-      {
-        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-        "form": "8-K",
-        "filingDate": "2026-03-10",
-        "accessionNumber": "0000785161-26-000100",
-        "contentHash": "3a02b47f1784e6370136453963776f04766e1f07c36e623836e2dc3b05b0bed1",
-        "via": "base"
       }
     ]
-  }
+  },
+  "readSetAsOf": "2026-11-06"
 }
