@@ -2,6 +2,8 @@ import type { Card, CardSection, Line, Segment } from "@/lib/cards/types";
 import { partText, sentenceUrl } from "@/lib/cards/format";
 import styles from "./cards.module.css";
 import CardV3View from "./CardV3View";
+import { Fragment } from "react";
+import { tagPositions } from "@/lib/cards/tagPlacement";
 
 /**
  * One card, rendered from its generated JSON. Every figure, date and label is
@@ -9,7 +11,10 @@ import CardV3View from "./CardV3View";
  * the sentence and its document. A computed figure opens to the figures it
  * was computed from, each linked the same way.
  */
-export function Seg({ s }: { s: Segment }) {
+/** The "10-K" tag on a standing term read from the latest 10-K. Where it renders in a line: tagPlacement.ts. */
+export const TenKTag = () => <span className={styles.tenK} title="A standing term stated only in the latest 10-K; no later filing amends it">10-K</span>;
+
+export function Seg({ s, tag = true }: { s: Segment; tag?: boolean }) {
   switch (s.k) {
     case "text":
       return <>{s.t}</>;
@@ -21,7 +26,7 @@ export function Seg({ s }: { s: Segment }) {
           <a className={styles[s.k]} href={sentenceUrl(s.src.url, s.src.sentence)} target="_blank" rel="noreferrer" title={`${s.src.doc}: “${s.src.sentence}”`}>
             {s.t}
           </a>
-          {(s.k === "date" || s.k === "label") && s.tenK ? <span className={styles.tenK} title="A standing term stated only in the latest 10-K; no later filing amends it">10-K</span> : null}
+          {tag && (s.k === "date" || s.k === "label") && s.tenK ? <TenKTag /> : null}
         </>
       );
     case "notStated":
@@ -57,10 +62,15 @@ export function Seg({ s }: { s: Segment }) {
 }
 
 export function LineView({ line, className }: { line: Line; className?: string }) {
+  // Session 27 (Nov 9): a tag follows the full instrument label, never mid-label (tagPlacement.ts).
+  const tagsAfter = new Set(tagPositions(line));
   return (
     <div className={className ?? styles.line}>
       {line.map((s, n) => (
-        <Seg key={n} s={s} />
+        <Fragment key={n}>
+          <Seg s={s} tag={false} />
+          {tagsAfter.has(n) ? <TenKTag /> : null}
+        </Fragment>
       ))}
     </div>
   );
