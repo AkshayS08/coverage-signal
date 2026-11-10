@@ -17,7 +17,7 @@
  */
 import { readFileSync } from "node:fs";
 import { couponsIn } from "./labels";
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard } from "./shownCards";
 import { nonEmpty } from "../testing/nonEmpty";
 import { COMPLETED, NOT_DONE, usdIn } from "./refreshRulings";
 import { scaledAmountString, locatorFor } from "../agent/tableScale";
@@ -132,11 +132,15 @@ for (const s of shown) {
   const tag = `${s.card.company} ${s.label}`;
   for (const [id, v] of [["T1", t1(s.card, s.input)], ["T2", t2(s.card)], ["T4", t4(s.card, s.input)]] as const) assert(v.length === 0, `[${id}:${tag}]${v.length ? ` — ${v.join("; ")}` : " holds"}`);
 }
-const enc = shown.find((s) => s.cik === "0000785161" && s.label === "review")!;
-const row = enc.card.v3.table.rows.find((r: any) => /5\.875/.test(r.name));
-assert(!!row && /^600$/.test(txt([row.face])), `[T3] Encompass's 5.875% 2034 notes read 600 in the table ("${row ? txt([row.face]) : "no row"}")`);
-const seg = enc.card.v3.totalDebt.legend.map((l: any) => `${txt(l.label)} ${txt([l.amount])}`).join(" | ");
-assert(/senior (?:unsecured )?notes \$1,000MM/i.test(seg), `[T3] and $1,000MM of senior notes in the total-debt segments (400 + 600): "${seg}"`);
+const encShown = shown.find((s) => s.cik === "0000785161" && s.label === "review");
+if (encShown) {
+  const row = encShown.card.v3.table.rows.find((r: any) => /5\.875/.test(r.name));
+  assert(!!row && /^600$/.test(txt([row.face])), `[T3] Encompass's 5.875% 2034 notes read 600 in the table ("${row ? txt([row.face]) : "no row"}")`);
+  const seg = encShown.card.v3.totalDebt.legend.map((l: any) => `${txt(l.label)} ${txt([l.amount])}`).join(" | ");
+  assert(/senior (?:unsecured )?notes \$1,000MM/i.test(seg), `[T3] and $1,000MM of senior notes in the total-debt segments (400 + 600): "${seg}"`);
+} else console.log(`  — NOT IN SCOPE (SHOWN_SCOPE=${process.env.SHOWN_SCOPE}): [T3] Encompass's review card`);
+// Control material: read from every card, whatever the scope (releaseGate.test R4).
+const enc = everyShownCard().find((s) => s.cik === "0000785161" && s.label === "review") as any;
 
 console.log("\n=== controls ===");
 // T1/T2 control: Encompass's Q3 pairing as rendered on Nov 6 (the Aug revolver repayment attached to the May issue).

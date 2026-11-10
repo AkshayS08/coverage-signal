@@ -28,6 +28,8 @@ import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { spawnSync } from "node:child_process";
+import { SHOWN_SUITES } from "../cards/shownCards";
 import { runAgentLoop } from "../agent";
 import { checkFree } from "./freeRun";
 import { deriveGoldenState, unsupportedAmountRows, type GoldenFile } from "../events/golden";
@@ -88,6 +90,12 @@ export function cardFrom(cik: string, result: any): string {
   for (const cik of ciks) {
     if (REFRESH && !REFRESH_OF[cik]) { console.log(`
 ${cik}: REFUSED — no refresh recorded`); continue; }
+    // Nov 9 (releaseGate.test): a refresh signs only if its own review card passes every shown-card suite. A failing
+    // review card blocks its own signing, never another name's and never the release.
+    if (REFRESH) {
+      const failing = SHOWN_SUITES.filter((t) => spawnSync("npx", ["tsx", t], { encoding: "utf-8", shell: true, env: { ...process.env, ANTHROPIC_API_KEY: "", SHOWN_SCOPE: `review:${cik}` } }).status !== 0);
+      if (failing.length) { console.log(`\n${cik}: REFUSING to sign — its review card fails ${failing.join(", ")} (SHOWN_SCOPE=review:${cik})`); continue; }
+    }
     const REFRESH_AS_OF = REFRESH ? REFRESH_OF[cik].asOf : "";
     const clearedOn = REFRESH ? REFRESH_CLEARED_ON[cik] ?? "" : CLEARED_ON;
     if (REFRESH) process.env.READ_SET_AS_OF = REFRESH_AS_OF;

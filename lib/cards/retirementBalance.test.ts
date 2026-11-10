@@ -27,7 +27,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { retirementBalanceViolations } from "./retirementBalance";
 import { nonEmpty } from "../testing/nonEmpty";
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard, inScope } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -40,10 +40,12 @@ for (const x of all) {
   const v = retirementBalanceViolations(x.card, x.result, x.docs);
   assert(v.length === 0, `[R1:${x.card.company} ${x.label}] every stated retirement balances against its table's two columns${v.length ? ` — ${v.join("; ")}` : ""}`);
 }
-const chs = all.find((x) => x.label === "refresh" && x.card.cik === "0001108109")!;
+// Control material reads every card; [R2] is about CHS's review card and counts where it is in scope (releaseGate.test).
+const chs = (() => { const x = everyShownCard().find((s) => s.label === "review" && s.cik === "0001108109")!; return { card: x.card, result: x.input.result, docs: new Map<string, string>(Object.entries(x.input.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text])) }; })();
+const aboutChs = (ok: boolean, msg: string) => (inScope("0001108109", "review") ? assert(ok, msg) : console.log(`  — NOT IN SCOPE (SHOWN_SCOPE=${process.env.SHOWN_SCOPE}): ${msg.slice(0, 60)}`));
 const rows = chs.card.v3.table.rows.map((r: any) => txt(r.status?.text)).filter(Boolean).join(" | ");
 const moves = chs.card.v3.moves.filter((m: any) => /4¾%/.test(m.title.map(txt).join(" ")));
-assert(/~\$368MM repurchased in 2026 · \$689MM remains/.test(rows) && moves.length === 1 && /May 6, 2026/.test(txt(moves[0].meta)), `[R2] CHS: "~$368MM repurchased", one move card dated May 6 (statuses: ${rows}; ${moves.length} move card(s) for the 4¾% notes)`);
+aboutChs(/~\$368MM repurchased in 2026 · \$689MM remains/.test(rows) && moves.length === 1 && /May 6, 2026/.test(txt(moves[0].meta)), `[R2] CHS: "~$368MM repurchased", one move card dated May 6 (statuses: ${rows}; ${moves.length} move card(s) for the 4¾% notes)`);
 const bad = JSON.parse(JSON.stringify(chs.card));
 for (const r of bad.v3.table.rows) for (const s of r.status?.text ?? []) if (typeof s.t === "string") s.t = s.t.replace("~$368MM", "~$736MM");
 for (const r of bad.v3.table.rows) for (const s of r.status?.text ?? []) if (s.k === "figure" && s.t === "~$368MM") s.t = "~$736MM";

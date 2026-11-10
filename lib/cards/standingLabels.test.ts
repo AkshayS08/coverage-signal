@@ -12,7 +12,7 @@
  *
  * Offline, $0. Run: npx tsx lib/cards/standingLabels.test.ts
  */
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard } from "./shownCards";
 import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
@@ -54,7 +54,8 @@ for (const s of shown.filter((x) => x.cik === "0000785161")) {
 }
 
 console.log("\n=== controls ===");
-const enc = shown.find((s) => s.cik === "0000785161" && s.label === "published")!;
+// Control material: read from every card, whatever the scope (releaseGate.test R4).
+const enc = everyShownCard().find((s) => s.cik === "0000785161" && s.label === "published") as any;
 const c1 = clone(enc.card); (function strip(o: any) { if (!o || typeof o !== "object") return; if (o.k === "label") delete o.tenK; for (const v of Object.values(o)) strip(v); })(c1.v3);
 c1.v3.table.rows[0].instrument.push({ k: "label", t: "senior unsecured", stated: "senior, unsecured", src: { sentence: "The Senior Notes are senior, unsecured obligations…", url: "u", doc: "10-K 2026-02-20" } });
 assert(l1(c1).length > 0, `[L1 control] a 10-K-sourced label without its tag is flagged`);

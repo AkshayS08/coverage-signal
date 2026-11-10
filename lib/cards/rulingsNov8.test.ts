@@ -12,7 +12,7 @@
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard } from "./shownCards";
 import { nonEmpty } from "../testing/nonEmpty";
 import { readSetStatement, type ReadSetItem } from "./readSetStatements";
 import { couponsIn } from "./labels";
@@ -89,14 +89,17 @@ for (const s of shown) {
     assert(b.length === 0, `[RT:${tag}] against the published card${b.length ? ` — ${b.join("; ")}` : " holds"}`);
   }
 }
-const enc = shown.find((s) => s.cik === "0000785161" && s.label === "review")!;
-const lc = (enc.card.v3.facilities ?? []).map((f: any) => txt(f.sub)).join(" ");
-assert(/Letters of credit outstanding: stated only as of March 9, 2026 in an 8-K; not shown\./.test(lc), `[NS] Encompass reads "Letters of credit outstanding: stated only as of March 9, 2026 in an 8-K; not shown." ("${lc.slice(0, 160)}")`);
-const aug = enc.card.v3.moves.find((m: any) => /Aug 13, 2026 · Issued/.test(txt(m.meta)));
-assert(!!aug && /Issued at 98\.75% of principal, adding to the existing notes/.test(txt(aug.detail)), `[RT] Encompass's Aug 13 issue reads "Issued at 98.75% of principal, adding to the existing notes" ("${aug ? txt(aug.detail) : "no move"}")`);
-
-const mayIss = enc.card.v3.moves.find((m: any) => /May 29, 2026 · Issued/.test(txt(m.meta)));
-assert(!!mayIss && !/98\.75%|adding to the existing notes/.test(txt(mayIss.detail)), `[RT] and the May 29 issue (at par) does not take the add-on's price or wording ("${mayIss ? txt(mayIss.detail) : "no move"}")`);
+const encShown = shown.find((s) => s.cik === "0000785161" && s.label === "review");
+if (encShown) {
+  const lc = (encShown.card.v3.facilities ?? []).map((f: any) => txt(f.sub)).join(" ");
+  assert(/Letters of credit outstanding: stated only as of March 9, 2026 in an 8-K; not shown\./.test(lc), `[NS] Encompass reads "Letters of credit outstanding: stated only as of March 9, 2026 in an 8-K; not shown." ("${lc.slice(0, 160)}")`);
+  const aug = encShown.card.v3.moves.find((m: any) => /Aug 13, 2026 · Issued/.test(txt(m.meta)));
+  assert(!!aug && /Issued at 98\.75% of principal, adding to the existing notes/.test(txt(aug.detail)), `[RT] Encompass's Aug 13 issue reads "Issued at 98.75% of principal, adding to the existing notes" ("${aug ? txt(aug.detail) : "no move"}")`);
+  const mayIss = encShown.card.v3.moves.find((m: any) => /May 29, 2026 · Issued/.test(txt(m.meta)));
+  assert(!!mayIss && !/98\.75%|adding to the existing notes/.test(txt(mayIss.detail)), `[RT] and the May 29 issue (at par) does not take the add-on's price or wording ("${mayIss ? txt(mayIss.detail) : "no move"}")`);
+} else console.log(`  — NOT IN SCOPE (SHOWN_SCOPE=${process.env.SHOWN_SCOPE}): [NS], [RT] Encompass's review card`);
+// Control material: read from every card, whatever the scope (releaseGate.test R4).
+const enc = everyShownCard().find((s) => s.cik === "0000785161" && s.label === "review") as any;
 
 console.log("\n=== controls ===");
 const c1 = clone(enc.card); for (const f of c1.v3.facilities) if (f.sub) f.sub = [...f.sub.filter((x: any) => !/Letters of credit/.test(x.t ?? "")), { k: "notStated", t: "Letters of credit outstanding not stated." }];

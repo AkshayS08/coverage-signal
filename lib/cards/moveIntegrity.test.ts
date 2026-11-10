@@ -24,7 +24,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { moveIntegrityViolations } from "./moveIntegrity";
 import { nonEmpty } from "../testing/nonEmpty";
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -39,7 +39,8 @@ for (const x of cards) {
 }
 
 console.log("\n=== controls (Tenet's refresh, each defect re-introduced) ===");
-const ten = cards.find((x) => x.label === "refresh" && x.card.cik === "0000070318")!;
+// Control material: read from every card, whatever the scope (releaseGate.test R4).
+const ten = everyShownCard().find((x) => x.label === "review" && x.cik === "0000070318") as any;
 const clone = (o: any) => JSON.parse(JSON.stringify(o));
 const c1 = clone(ten.input); c1.debtEightKs = [...(c1.debtEightKs ?? []), { form: "8-K", filingDate: "2026-09-08", items: "8.01", url: "https://example.invalid/8k.htm" }];
 assert(moveIntegrityViolations(ten.card, c1).M1.length > 0, `[M1 control] a debt-item 8-K since the 10-K missing from the documents is flagged`);

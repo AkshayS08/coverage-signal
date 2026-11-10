@@ -25,7 +25,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { sentenceClass, predicatedSpan, couponsIn } from "./labels";
 import { nonEmpty } from "../testing/nonEmpty";
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -62,7 +62,8 @@ for (const [label, card] of cards) {
   const v = violations(card);
   assert(v.length === 0, `[S4:${card.company} ${label.split(" ")[1]}] every sentence-sourced class label is predicated of its debt${v.length ? ` — ${v.join("; ")}` : ""}`);
 }
-const bad = JSON.parse(JSON.stringify(cards.find(([l]) => l === "0000927066 refresh")![1]));
+// Control material: read from every card, whatever the scope (releaseGate.test R4).
+const bad = JSON.parse(JSON.stringify(everyShownCard().find((x) => x.cik === "0000927066" && x.label === "review")!.card));
 const row = bad.v3.table.rows.find((r: any) => /6\.75%/.test(txt(r.instrument)));
 row.instrument.splice(2, 0, { k: "label", t: "secured", stated: "secured", src: { sentence: dva, url: "u", doc: "10-Q" } }, { k: "text", t: " " });
 assert(violations(bad).some((x) => /secured/.test(x)), `[S5 control] "secured" taken from the term loan's clause is flagged`);

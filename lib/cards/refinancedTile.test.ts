@@ -12,7 +12,7 @@
  *
  * Offline, $0. Run: npx tsx lib/cards/refinancedTile.test.ts
  */
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard } from "./shownCards";
 import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
@@ -33,9 +33,13 @@ function f1(card: any): string[] {
 
 const shown = nonEmpty("the cards that can be shown or signed", shownCards());
 for (const s of shown) { const v = f1(s.card); assert(v.length === 0, `[F1:${s.card.company} ${s.label}]${v.length ? ` — ${v.join("; ")}` : " holds"}`); }
-const enc = shown.find((s) => s.cik === "0000785161" && s.label === "published")!;
-const refi = enc.card.v3.call.tiles.find((x: any) => x.key === "refinanced");
-assert(`${txt(refi.value)} · ${txt(refi.sub)}` === "$0 · None of the remaining $400MM", `[F2] Encompass's Refinanced tile reads "${txt(refi.value)} · ${txt(refi.sub)}"`);
+const encShown = shown.find((s) => s.cik === "0000785161" && s.label === "published");
+if (encShown) {
+  const refi = encShown.card.v3.call.tiles.find((x: any) => x.key === "refinanced");
+  assert(`${txt(refi.value)} · ${txt(refi.sub)}` === "$0 · None of the remaining $400MM", `[F2] Encompass's Refinanced tile reads "${txt(refi.value)} · ${txt(refi.sub)}"`);
+} else console.log(`  — NOT IN SCOPE (SHOWN_SCOPE=${process.env.SHOWN_SCOPE}): [F2] Encompass's published card`);
+// Control material: read from every card, whatever the scope (releaseGate.test R4).
+const enc = everyShownCard().find((s) => s.cik === "0000785161" && s.label === "published") as any;
 const c = clone(enc.card); c.v3.call.tiles.find((x: any) => x.key === "refinanced").sub = [{ k: "text", t: "None stated in any filing" }];
 assert(f1(c).length > 0, `[F3 control] Encompass's tile with the old wording "None stated in any filing" is flagged`);
 

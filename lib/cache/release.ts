@@ -9,7 +9,9 @@
  *                             just rewrote (build log, Oct 21: read-after-overwrite)
  *   3. goldenThroughLoop      every signed name reproduces at $0, or is reported
  *                             not comparable with its reason; no failed read
- *   4. the offline suite      every suite in lib/ that needs no network
+ *   4. the offline suite      every suite in lib/ that needs no network, its shown-card checks over the
+ *                             published cards (all must pass); 4b runs them over the review cards and reports
+ *                             (a failing review card blocks only its own signing: releaseGate.test)
  *   5. failClosed             a failed or hung read stops the build, named, at $0
  *
  * Then it records the commit it cleared in .git/release-checked, commits any
@@ -26,19 +28,33 @@
 import { execSync, spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { SHOWN_SUITES } from "../cards/shownCards";
 
 const HEALTH = "https://coverage-signal.vercel.app/api/health";
 const LEDGER = "baselines/cost-log.jsonl";
 const sh = (cmd: string) => execSync(cmd, { encoding: "utf-8" }).trim();
 const fail = (why: string): never => { console.error(`\nRELEASE REFUSED: ${why}`); process.exit(1); };
 
-function check(label: string, script: string): void {
+function check(label: string, script: string, env: Record<string, string> = {}): void {
   console.log(`\n=== ${label} ===`);
   const started = Date.now();
-  const r = spawnSync("npx", ["tsx", script], { stdio: "inherit", shell: true, env: { ...process.env, ANTHROPIC_API_KEY: "" } });
+  const r = spawnSync("npx", ["tsx", script], { stdio: "inherit", shell: true, env: { ...process.env, ANTHROPIC_API_KEY: "", ...env } });
   const secs = Math.round((Date.now() - started) / 1000);
   if (r.status !== 0) fail(`${label} exited ${r.status} after ${secs}s. Nothing was pushed.`);
   console.log(`=== ${label}: passed (${secs}s) ===`);
+}
+
+/** Every shown-card suite over the review cards: reported, never gating. A failing review card cannot be signed. */
+function reviewReport(): void {
+  console.log(`\n=== 4b. the review cards (reported, not gating) ===`);
+  const failing: string[] = [];
+  for (const t of SHOWN_SUITES) {
+    const r = spawnSync("npx", ["tsx", t], { encoding: "utf-8", shell: true, env: { ...process.env, ANTHROPIC_API_KEY: "", SHOWN_SCOPE: "review" } });
+    const tally = (/(\d+ passed, \d+ failed)/.exec(r.stdout ?? "") ?? [])[1] ?? `exit ${r.status}`;
+    console.log(`  ${r.status === 0 ? "✓" : "✗"} ${t}  ${tally}`);
+    if (r.status !== 0) failing.push(...(r.stdout ?? "").split("\n").filter((l) => /✗ FAIL/.test(l)).map((l) => `    ${l.trim().slice(0, 200)}`));
+  }
+  console.log(failing.length ? `  Review cards with failures cannot be signed until they pass:\n${failing.join("\n")}` : "  Every review card passes.");
 }
 
 (async () => {
@@ -52,7 +68,10 @@ function check(label: string, script: string): void {
   console.log("\n(60s pause: no check reads a blob preflight just rewrote)");
   await new Promise((r) => setTimeout(r, 60_000));
   check("3. goldenThroughLoop", "lib/cache/goldenThroughLoop.test.ts");
-  check("4. offline suite", "lib/cache/runOffline.ts");
+  // Nov 9 (releaseGate.test): the release is gated on the published cards, which must all pass, and on every check
+  // that is not about a card. The review cards are checked too, and reported: a failing one blocks only its own signing.
+  check("4. offline suite (shown cards: the published)", "lib/cache/runOffline.ts", { SHOWN_SCOPE: "published" });
+  reviewReport();
   check("5. failClosed", "lib/cache/failClosed.test.ts");
 
   // The checks write $0 lines to the ledger. Any line that billed stops the release.
@@ -62,7 +81,7 @@ function check(label: string, script: string): void {
   const changed = sh("git status --porcelain");
   if (changed && changed.split("\n").some((l) => !l.endsWith(LEDGER))) fail(`the checks changed files other than the ledger:\n${changed}`);
 
-  writeFileSync(join(sh("git rev-parse --git-dir"), "release-checked"), `${sha}\n${new Date().toISOString()}\npreflight, goldenThroughLoop, offline suite, failClosed\n`);
+  writeFileSync(join(sh("git rev-parse --git-dir"), "release-checked"), `${sha}\n${new Date().toISOString()}\npreflight, goldenThroughLoop, offline suite (published cards), review cards reported, failClosed\n`);
   if (changed) {
     sh(`git add ${LEDGER}`);
     sh(`git commit -q -m "Ledger: $0 scopes from the release checks (${added.length} lines)" -m "Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>"`);

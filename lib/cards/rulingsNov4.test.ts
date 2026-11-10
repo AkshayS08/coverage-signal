@@ -19,7 +19,7 @@ import { join } from "node:path";
 import { couponsIn } from "./labels";
 import { nonEmpty } from "../testing/nonEmpty";
 import { RULED, applyRuled } from "./ruledResiduals";
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard, inScope } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -97,11 +97,13 @@ for (const x of cards) {
   assert(b.length === 0, `[R2:${x.card.company} ${x.label}] no move is dated by a scheduled sentence${b.length ? ` — ${b.join("; ")}` : ""}`);
   assert(c.length === 0, `[R3:${x.card.company} ${x.label}] outstanding commercial paper is the first row${c.length ? ` — ${c.join("; ")}` : ""}`);
 }
-const ten = cards.find((x) => x.label === "refresh" && x.card.cik === "0000070318")!;
+// R1/R2 are about Tenet's review card: they count where it is in scope (releaseGate.test).
+const ten = everyShownCard().find((x) => x.label === "review" && x.cik === "0000070318") as any;
+const aboutTen = (ok: boolean, msg: string) => (inScope("0000070318", "review") ? assert(ok, msg) : console.log(`  — NOT IN SCOPE (SHOWN_SCOPE=${process.env.SHOWN_SCOPE}): ${msg.slice(0, 60)}`));
 const pair = ten.card.v3.moves.find((m: any) => m.retires);
-assert(!!pair && /^Refinanced · redeemed Sept 2026 \(scheduled for Sept 23\)/.test(txt(pair.retires.meta)), `[R2] Tenet's redemption reads "Refinanced · redeemed Sept 2026 (scheduled for Sept 23)…" ("${pair ? txt(pair.retires.meta) : "no pair"}")`);
+aboutTen(!!pair && /^Refinanced · redeemed Sept 2026 \(scheduled for Sept 23\)/.test(txt(pair.retires.meta)), `[R2] Tenet's redemption reads "Refinanced · redeemed Sept 2026 (scheduled for Sept 23)…" ("${pair ? txt(pair.retires.meta) : "no pair"}")`);
 const tenRow = ten.card.v3.table.rows.find((r: any) => /6\.250\s?%/.test(r.name ?? ""));
-assert(!!tenRow && /^Sept(ember)? 2034$/.test(txt(tenRow.matures)), `[R1] Tenet's 6.250% notes mature "Sept 2034" in the table ("${tenRow ? txt(tenRow.matures) : "no row"}")`);
+aboutTen(!!tenRow && /^Sept(ember)? 2034$/.test(txt(tenRow.matures)), `[R1] Tenet's 6.250% notes mature "Sept 2034" in the table ("${tenRow ? txt(tenRow.matures) : "no row"}")`);
 
 console.log("\n=== R4: the fixtures ===");
 for (const c of CIKS) {
@@ -127,7 +129,8 @@ assert(r1(c1, ten.input).length > 0, `[R1 control] the 6.250% notes shown at "20
 const c2 = clone(ten.card); const p2 = c2.v3.moves.find((m: any) => m.retires);
 p2.retires.meta = [{ k: "text", t: "Refinanced · " }, { k: "label", t: "redeemed Sept 23, 2026", stated: "September 23, 2026", src: { sentence: "The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.", url: "u", doc: "8-K" } }];
 assert(r2(c2).length > 0, `[R2 control] "redeemed Sept 23" taken from an intention-only sentence is flagged`);
-const cig = cards.find((x) => x.label === "published" && x.card.cik === "0001739940")!;
+// Control material: read from every card, whatever the scope (releaseGate.test R4).
+const cig = (() => { const s = everyShownCard().find((x) => x.label === "published" && x.cik === "0001739940") as any; return { card: s.card, input: s.input }; })();
 const c3 = clone(cig.card); c3.v3.table.rows = c3.v3.table.rows.filter((r: any) => !/commercial paper/i.test(txt(r.instrument)));
 assert(r3(c3, cig.input).length > 0, `[R3 control] Cigna's card with its commercial paper row removed is flagged`);
 assert(r4({ moveSentences: [{ sentence: "As a result of the redemption of the 2028 Notes, we recorded a $3.2 million Loss on early extinguishment of debt." }] }).length > 0, `[R4 control] a fixture requiring Encompass's $3.2MM loss on extinguishment is flagged`);

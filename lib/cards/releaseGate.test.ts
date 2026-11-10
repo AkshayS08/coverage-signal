@@ -34,7 +34,9 @@ const sign = readFileSync(join("lib", "cache", "s27sign.ts"), "utf-8");
 assert(/SHOWN_SCOPE:\s*`review:\$\{cik\}`/.test(sign) && /SHOWN_SUITES/.test(sign) && /REFUSING[^\n]*review card/.test(sign), `[R3] s27sign.ts refuses a refresh signing unless the shown-card suites pass on that name's review card`);
 
 const listed = readdirSync(join("lib", "cards")).filter((f) => f.endsWith(".test.ts") && /shownCards\(\)/.test(readFileSync(join("lib", "cards", f), "utf-8"))).map((f) => `lib/cards/${f}`).filter((f) => f !== "lib/cards/releaseGate.test.ts");
-const trusting = listed.filter((f) => /\b(?:shown|cards)\.find\([^)]*\)!/.test(readFileSync(f, "utf-8")));
+// A list built from shownCards() is scoped; a `.find(...)!` on it assumes a card the scope may not hold.
+const scopedLists = (src: string) => [...src.matchAll(/const (\w+)\b[^=\n]*=\s*(?:nonEmpty\([^,]+,\s*)?shownCards\(\)/g)].map((m) => m[1]);
+const trusting = listed.filter((f) => { const src = readFileSync(f, "utf-8"); return scopedLists(src).some((n) => new RegExp(`\\b${n}\\.find\\(.*?\\)!`).test(src)); });
 assert(!trusting.length && listed.every((f) => SHOWN_SUITES.includes(f)), `[R4] ${listed.length} shown-card suites, all in SHOWN_SUITES, none takes a scoped card on trust${trusting.length ? ` (trusting: ${trusting.join(", ")})` : ""}${listed.filter((f) => !SHOWN_SUITES.includes(f)).map((f) => `; not listed: ${f}`).join("")}`);
 
 const acc = (scope: string) => spawnSync("npx", ["tsx", "lib/cards/acceptance.test.ts"], { encoding: "utf-8", shell: true, env: { ...process.env, ANTHROPIC_API_KEY: "", SHOWN_SCOPE: scope } });

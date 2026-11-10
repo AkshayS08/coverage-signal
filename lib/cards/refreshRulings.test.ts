@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { rulingViolations } from "./refreshRulings";
 import { buildCard } from "./build";
 import { nonEmpty } from "../testing/nonEmpty";
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard, inScope } from "./shownCards";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -23,19 +23,21 @@ for (const x of cards) {
   const v = rulingViolations(x.card, x.input);
   for (const k of ["Q", "R", "H", "C", "P"] as const) assert(v[k].length === 0, `[${k}:${x.card.company} ${x.label}]${v[k].length ? ` — ${v[k].join("; ")}` : " holds"}`);
 }
-const ref = (cik: string) => cards.find((x) => x.label === "refresh" && x.card.cik === cik)!;
+// Control material reads every card; a named case counts only where its card is in scope (releaseGate.test).
+const ref = (cik: string) => everyShownCard().find((x) => x.label === "review" && x.cik === cik) as any;
+const about = (cik: string, ok: boolean, msg: string) => (inScope(cik, "review") ? assert(ok, msg) : console.log(`  — NOT IN SCOPE (SHOWN_SCOPE=${process.env.SHOWN_SCOPE}): ${msg.slice(0, 60)}`));
 const ten = ref("0000070318"), chs = ref("0001108109"), mol = ref("0001179929");
 
 console.log("\n=== the named cases ===");
 const liq = txt((mol.card.v3.liquidity.notes ?? []).flat());
-assert(/up to \$800MM of uncommitted incremental term loans/.test(liq), `[Q] Molina reads "up to $800MM of uncommitted incremental term loans…" ("${liq.slice(0, 140)}")`);
+about("0001179929", /up to \$800MM of uncommitted incremental term loans/.test(liq), `[Q] Molina reads "up to $800MM of uncommitted incremental term loans…" ("${liq.slice(0, 140)}")`);
 const chsMoves = chs.card.v3.moves.map((m: any) => `${txt(m.meta)} | ${m.title.map(txt).join(" / ")}`);
-assert(chsMoves.some((l: string) => /^Feb 2, 2026/.test(l) && /10⅞%[^/]*\$1,780MM remains/.test(l)) && chsMoves.some((l: string) => /^May 6, 2026/.test(l) && /10⅞%[^/]*\$1,549MM remains/.test(l)), `[R] CHS: Feb 2 "$1,780MM remains", May 6 "$1,549MM remains" (${chsMoves.join(" || ")})`);
+about("0001108109", chsMoves.some((l: string) => /^Feb 2, 2026/.test(l) && /10⅞%[^/]*\$1,780MM remains/.test(l)) && chsMoves.some((l: string) => /^May 6, 2026/.test(l) && /10⅞%[^/]*\$1,549MM remains/.test(l)), `[R] CHS: Feb 2 "$1,780MM remains", May 6 "$1,549MM remains" (${chsMoves.join(" || ")})`);
 const head = `${txt([ten.card.v3.header.filing])} · ${txt(ten.card.v3.header.status)}`;
-assert(/^10-Q filed Oct 29, 2026 · new this week · 1 other filing, none affecting debt$/.test(head), `[H] Tenet's header: "${head}"`);
+about("0000070318", /^10-Q filed Oct 29, 2026 · new this week · 1 other filing, none affecting debt$/.test(head), `[H] Tenet's header: "${head}"`);
 const css = readFileSync(join("app", "cards", "cardsV3.module.css"), "utf-8");
 assert(/\.headerRight\s*\{[^}]*margin-left:\s*auto/.test(css) && /\.headerRight\s*\{[^}]*text-align:\s*right/.test(css), `[H] the right-hand header block stays right-aligned when it wraps (margin-left: auto; text-align: right)`);
-assert(ten.card.v3.moves.some((m: any) => /Sept 22, 2026 · Issued, confirmed by 8-K/.test(txt(m.meta))), `[C] Tenet's issuance cites the Sept 22 8-K (${ten.card.v3.moves.map((m: any) => txt(m.meta)).join(" | ")})`);
+about("0000070318", ten.card.v3.moves.some((m: any) => /Sept 22, 2026 · Issued, confirmed by 8-K/.test(txt(m.meta))), `[C] Tenet's issuance cites the Sept 22 8-K (${ten.card.v3.moves.map((m: any) => txt(m.meta)).join(" | ")})`);
 
 console.log("\n=== controls ===");
 const q = clone(mol.card); for (const l of q.v3.liquidity.notes) for (const s of l) if (s.k === "label" && /incremental term loans/.test(s.t)) { s.t = "incremental term loans to finance certain acquisitions"; s.stated = s.t; }

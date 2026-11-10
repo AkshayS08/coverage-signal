@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
-import { shownCards } from "./shownCards";
+import { shownCards, everyShownCard } from "./shownCards";
 import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
@@ -47,7 +47,8 @@ for (const s of shown) {
 }
 
 console.log("\n=== control ===");
-const ten = shown.find((s) => s.cik === "0000070318" && s.label === "review")!;
+// Control material: read from every card, whatever the scope (releaseGate.test R4).
+const ten = everyShownCard().find((s) => s.cik === "0000070318" && s.label === "review") ?? everyShownCard().find((s) => s.cik === "0000070318")!;
 const stripped = JSON.parse(JSON.stringify(ten.input)); const want = (stripped.debtEightKs ?? []).map((e: any) => e.url); delete stripped.debtEightKs;
 const p = join(dir, "control-input.json"); writeFileSync(p, JSON.stringify(stripped));
 assert(blocksFor(factsInput(p, "control"), want).length > 0, `[D3 control] Tenet's facts input built without its debt-item 8-Ks is flagged`);
