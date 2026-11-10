@@ -3,7 +3,7 @@
  "anchorUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
  "promptVersion": 1,
  "asks": 3,
- "costUsd": 0.101886,
+ "costUsd": 0.091923,
  "schedule": [
   {
    "period": "2026 (remainder of the year)",
@@ -86,7 +86,7 @@
    "face": {
     "value": "$ 1,962,500",
     "src": {
-     "sentence": "Term Loan A-2 (2) $ 1,962,500 $ 2,000,000 11/24/2030",
+     "sentence": "Term Loan A-2 (2) $ 1,962,500   $ 2,000,000   11/24/2030",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -96,7 +96,7 @@
    "face": {
     "value": "2,351,956",
     "src": {
-     "sentence": "Term Loan B-2 2,351,956 1,868,559 5/9/2031",
+     "sentence": "Term Loan B-2 2,351,956   1,868,559   5/9/2031",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -106,7 +106,7 @@
    "face": {
     "value": "80,000",
     "src": {
-     "sentence": "Revolving line of credit (2) 80,000 — 11/24/2030",
+     "sentence": "Revolving line of credit (2) 80,000   —   11/24/2030",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -116,7 +116,7 @@
    "face": {
     "value": "2,750,000",
     "src": {
-     "sentence": "4.625% Senior Notes 2,750,000 2,750,000 6/1/2030",
+     "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -126,7 +126,7 @@
    "face": {
     "value": "1,500,000",
     "src": {
-     "sentence": "3.75% Senior Notes 1,500,000 1,500,000 2/15/2031",
+     "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -136,7 +136,7 @@
    "face": {
     "value": "1,000,000",
     "src": {
-     "sentence": "6.875% Senior Notes 1,000,000 1,000,000 9/1/2032",
+     "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -146,7 +146,7 @@
    "face": {
     "value": "1,000,000",
     "src": {
-     "sentence": "6.75% Senior Notes 1,000,000 1,000,000 7/15/2033",
+     "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -156,7 +156,7 @@
    "face": {
     "value": "36,176",
     "src": {
-     "sentence": "Acquisition obligations and other notes payable (3) 36,176 40,904 2026-2038",
+     "sentence": "Acquisition obligations and other notes payable (3) 36,176   40,904   2026-2038",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -166,7 +166,7 @@
    "face": {
     "value": "151,611",
     "src": {
-     "sentence": "Financing lease obligations (4) 151,611 185,120 2027-2039",
+     "sentence": "Financing lease obligations (4) 151,611   185,120   2027-2039",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -178,7 +178,7 @@
    "maturity": {
     "value": "11/24/2030",
     "src": {
-     "sentence": "Term Loan A-2 (2) $ 1,962,500 $ 2,000,000 11/24/2030 SOFR + 1.50%",
+     "sentence": "Term Loan A-2 (2) $ 1,962,500   $ 2,000,000   11/24/2030",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -188,7 +188,7 @@
    "maturity": {
     "value": "5/9/2031",
     "src": {
-     "sentence": "Term Loan B-2 2,351,956 1,868,559 5/9/2031 SOFR + 1.75%",
+     "sentence": "Term Loan B-2 2,351,956   1,868,559   5/9/2031",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -198,7 +198,7 @@
    "maturity": {
     "value": "11/24/2030",
     "src": {
-     "sentence": "Revolving line of credit (2) 80,000 — 11/24/2030 SOFR + 1.50%",
+     "sentence": "Revolving line of credit (2) 80,000   —   11/24/2030",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -208,7 +208,7 @@
    "maturity": {
     "value": "6/1/2030",
     "src": {
-     "sentence": "4.625% Senior Notes 2,750,000 2,750,000 6/1/2030 4.625 %",
+     "sentence": "4.625% Senior Notes 2,750,000   2,750,000   6/1/2030",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -218,7 +218,7 @@
    "maturity": {
     "value": "2/15/2031",
     "src": {
-     "sentence": "3.75% Senior Notes 1,500,000 1,500,000 2/15/2031 3.75 %",
+     "sentence": "3.75% Senior Notes 1,500,000   1,500,000   2/15/2031",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -228,7 +228,7 @@
    "maturity": {
     "value": "9/1/2032",
     "src": {
-     "sentence": "6.875% Senior Notes 1,000,000 1,000,000 9/1/2032 6.875 %",
+     "sentence": "6.875% Senior Notes 1,000,000   1,000,000   9/1/2032",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -238,7 +238,7 @@
    "maturity": {
     "value": "7/15/2033",
     "src": {
-     "sentence": "6.75% Senior Notes 1,000,000 1,000,000 7/15/2033 6.75 %",
+     "sentence": "6.75% Senior Notes 1,000,000   1,000,000   7/15/2033",
      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    }
@@ -271,10 +271,10 @@
    },
    "funding": null,
    "use": {
-    "value": "to repay a portion of its outstanding senior secured revolving loan facility terminating in November 2030",
+    "value": "to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees",
     "src": {
-     "sentence": "The Company has used or will use the proceeds of the Incremental Tranche B-2 Term Loans (i) to repay a portion of its outstanding senior secured revolving loan facility terminating in November 2030",
-     "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677426000316/dva4647631-8k.htm"
+     "sentence": "The Company used the net proceeds from this transaction to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees.",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
     }
    },
    "price": null
@@ -282,7 +282,7 @@
  ],
  "residual": [
   {
-   "fact": "sub-facility swingline $1,500,000",
+   "fact": "sub-facility other $ 1,500,000",
    "why": "not verified: its sentence does not place it inside the parent facility (a sub-facility, sub-limit or swingline, or capacity the parent provides for letters of credit; never a separate facility)",
    "variation": []
   },
@@ -292,8 +292,8 @@
    "variation": []
   },
   {
-   "fact": "uncommitted incremental borrowing capacity under the Credit Agreement",
-   "why": "not verified: its sentence does not state description \"incremental borrowing capacity under the Credit Agreement\"",
+   "fact": "uncommitted incremental principal amount on Term Loan B-2",
+   "why": "not verified: its sentence does not state description \"incremental principal amount on Term Loan B-2\"",
    "variation": []
   }
  ]

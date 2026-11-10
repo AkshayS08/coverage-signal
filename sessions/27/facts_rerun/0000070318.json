@@ -1,0 +1,305 @@
+{
+ "cik": "0000070318",
+ "anchorUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+ "promptVersion": 1,
+ "asks": 3,
+ "costUsd": 0.114528,
+ "schedule": [
+  {
+   "period": "2027",
+   "amount": {
+    "value": "$ 157",
+    "src": {
+     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "2028",
+   "amount": {
+    "value": "$ 1,931",
+    "src": {
+     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "2029",
+   "amount": {
+    "value": "$ 1,464",
+    "src": {
+     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "2030",
+   "amount": {
+    "value": "$ 3,493",
+    "src": {
+     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "Thereafter",
+   "amount": {
+    "value": "$ 6,269",
+    "src": {
+     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  }
+ ],
+ "subFacilities": [
+  {
+   "facility": "Credit Agreement",
+   "kind": "letter-of-credit",
+   "amount": {
+    "value": "$ 200 million",
+    "src": {
+     "sentence": "We have a senior secured revolving credit facility (the \"Credit Agreement\") that provides for revolving loans in an aggregate principal amount of up to $ 1.900 billion with a $ 200 million subfacility for standby letters of credit.",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  }
+ ],
+ "uncommitted": [],
+ "commercialPaper": null,
+ "cash": [],
+ "faces": [
+  {
+   "instrument": "senior unsecured notes and senior secured first lien notes",
+   "face": {
+    "value": "$ 12.662 billion",
+    "src": {
+     "sentence": "At September 30, 2026, we had senior unsecured notes and senior secured first lien notes with aggregate principal amounts outstanding of $ 12.662 billion.",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  }
+ ],
+ "maturities": [
+  {
+   "instrument": "6.125 % senior unsecured notes",
+   "maturity": {
+    "value": "October 2028",
+    "src": {
+     "sentence": "the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  },
+  {
+   "instrument": "5.125 % senior secured first lien notes",
+   "maturity": {
+    "value": "November 2027",
+    "src": {
+     "sentence": "the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  },
+  {
+   "instrument": "6.250 % senior unsecured notes",
+   "maturity": {
+    "value": "September 2034",
+    "src": {
+     "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the \"2034 Senior Notes\").",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  }
+ ],
+ "moves": [
+  {
+   "date": {
+    "value": "September 2026",
+    "src": {
+     "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the \"2034 Senior Notes\").",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   },
+   "type": "issuance",
+   "status": "completed",
+   "instrument": {
+    "value": "6.250 % senior unsecured notes due 2034",
+    "src": {
+     "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the \"2034 Senior Notes\").",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   },
+   "face": {
+    "value": "$ 2.000 billion",
+    "src": {
+     "sentence": "In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 2034 (the \"2034 Senior Notes\").",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   },
+   "funding": null,
+   "use": {
+    "value": "to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028",
+    "src": {
+     "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   },
+   "price": null
+  },
+  {
+   "date": {
+    "value": "September 22, 2026",
+    "src": {
+     "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the \"Company\") issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the \"Notes\").",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+    }
+   },
+   "type": "issuance",
+   "status": "completed",
+   "instrument": {
+    "value": "6.250% senior notes due 2034",
+    "src": {
+     "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the \"Company\") issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the \"Notes\").",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+    }
+   },
+   "face": {
+    "value": "$2,000,000,000",
+    "src": {
+     "sentence": "On September 22, 2026, Tenet Healthcare Corporation (the \"Company\") issued $2,000,000,000 in aggregate principal amount of 6.250% senior notes due 2034 (the \"Notes\").",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+    }
+   },
+   "funding": null,
+   "use": {
+    "value": "to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\")",
+    "src": {
+     "sentence": "The Company intends to use the net proceeds from the sale of the Notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the \"2027 Notes\") and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the \"2028 Notes\").",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526397901/d104323d8k.htm"
+    }
+   },
+   "price": null
+  },
+  {
+   "date": {
+    "value": "September 8, 2026",
+    "src": {
+     "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm"
+    }
+   },
+   "type": "redemption",
+   "status": "pending",
+   "instrument": {
+    "value": "5.125% senior secured first lien notes due November 2027",
+    "src": {
+     "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm"
+    }
+   },
+   "face": null,
+   "funding": null,
+   "use": null,
+   "price": null
+  },
+  {
+   "date": {
+    "value": "September 8, 2026",
+    "src": {
+     "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm"
+    }
+   },
+   "type": "redemption",
+   "status": "pending",
+   "instrument": {
+    "value": "6.125% senior notes due October 2028",
+    "src": {
+     "sentence": "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm"
+    }
+   },
+   "face": null,
+   "funding": null,
+   "use": null,
+   "price": null
+  }
+ ],
+ "residual": [
+  {
+   "fact": "uncommitted accordion capacity under Credit Agreement",
+   "why": "not verified: its sentence does not state description \"accordion capacity under Credit Agreement\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 6.125 % senior unsecured notes due 2028",
+   "why": "not verified: its sentence does not state instrument \"6.125 % senior unsecured notes due 2028\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 6.875 % senior unsecured notes due 2031",
+   "why": "not verified: its sentence does not state instrument \"6.875 % senior unsecured notes due 2031\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 6.000 % senior unsecured notes due 2033",
+   "why": "not verified: its sentence does not state instrument \"6.000 % senior unsecured notes due 2033\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 6.250 % senior unsecured notes due 2034",
+   "why": "not verified: its sentence does not state instrument \"6.250 % senior unsecured notes due 2034\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 5.125 % senior secured first lien notes due 2027",
+   "why": "not verified: its sentence does not state instrument \"5.125 % senior secured first lien notes due 2027\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 4.625 % senior secured first lien notes due 2028",
+   "why": "not verified: its sentence does not state instrument \"4.625 % senior secured first lien notes due 2028\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 4.250 % senior secured first lien notes due 2029",
+   "why": "not verified: its sentence does not state instrument \"4.250 % senior secured first lien notes due 2029\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 4.375 % senior secured first lien notes due 2030",
+   "why": "not verified: its sentence does not state instrument \"4.375 % senior secured first lien notes due 2030\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 6.125 % senior secured first lien notes due 2030",
+   "why": "not verified: its sentence does not state instrument \"6.125 % senior secured first lien notes due 2030\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 6.750 % senior secured first lien notes due 2031",
+   "why": "not verified: its sentence does not state instrument \"6.750 % senior secured first lien notes due 2031\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 5.500 % senior secured first lien notes due 2032",
+   "why": "not verified: its sentence does not state instrument \"5.500 % senior secured first lien notes due 2032\"",
+   "variation": []
+  },
+  {
+   "fact": "face of move redemption 5.125% senior secured first lien notes due November 2027 September 8, 2026",
+   "why": "not verified: no sentence in its paragraph states \"$1.5 billion\"",
+   "variation": []
+  },
+  {
+   "fact": "face of move redemption 6.125% senior notes due October 2028 September 8, 2026",
+   "why": "not verified: no sentence in its paragraph states \"$0.5 billion\"",
+   "variation": []
+  }
+ ]
+}
