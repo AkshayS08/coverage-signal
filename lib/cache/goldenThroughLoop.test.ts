@@ -145,6 +145,13 @@ const snapshotOf = (cik: string): { result: unknown; extractionVersion: number }
       delete process.env.CACHE_BUST;
       published = await runAgentLoop(name);
       spend.record(name);
+      // Nov 9 (snapshotSource.test): an answer cached at the published read set that is not the signed one (Cigna's
+      // Sept 30 refresh, billed and not signed) is not the card's input; the input is the signed golden's stored result.
+      if (JSON.stringify(JSON.parse(JSON.stringify(published))) !== JSON.stringify(g.sourceResult)) {
+        assert(!!snap && JSON.stringify(snap.result) === JSON.stringify(g.sourceResult) && snap.extractionVersion === EXTRACTION_PROMPT_VERSION,
+          `[3snap:${name}] the answer cached at the published brief's read set (${PUBLISHED_AS_OF}) is not the signed one (an unsigned refresh), so its card input snapshot is the signed golden's stored result, byte for byte`);
+        continue;
+      }
     }
     assert(!!snap && JSON.stringify(JSON.parse(JSON.stringify(published))) === JSON.stringify(snap.result) && snap.extractionVersion === EXTRACTION_PROMPT_VERSION,
       `[3snap:${name}] its card input snapshot is byte-identical to the answer reproduced ${published === result ? "here" : `at the published brief's read set (${PUBLISHED_AS_OF}; the golden is pinned at ${g.readSetAsOf})`}, at v${EXTRACTION_PROMPT_VERSION}`);
