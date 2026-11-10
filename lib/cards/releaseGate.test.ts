@@ -17,12 +17,13 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { shownCards, everyShownCard, SHOWN_SUITES } from "./shownCards";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
 const withScope = <T>(scope: string | undefined, fn: () => T): T => { const was = process.env.SHOWN_SCOPE; if (scope === undefined) delete process.env.SHOWN_SCOPE; else process.env.SHOWN_SCOPE = scope; try { return fn(); } finally { if (was === undefined) delete process.env.SHOWN_SCOPE; else process.env.SHOWN_SCOPE = was; } };
 
-const all = everyShownCard();
+const all = nonEmpty("the cards that can be shown or signed", everyShownCard());
 const pub = withScope("published", shownCards), rev = withScope("review", shownCards), cig = withScope("review:0001739940", shownCards), none = withScope(undefined, shownCards);
 assert(pub.length > 0 && pub.every((s) => s.label === "published") && rev.length > 0 && rev.every((s) => s.label === "review") && cig.length === 1 && cig[0].key === "0001739940:review" && none.length === all.length && pub.length + rev.length === all.length,
   `[R1] SHOWN_SCOPE: published ${pub.length}, review ${rev.length}, review:<cik> ${cig.length}, unset ${none.length} of ${all.length}`);

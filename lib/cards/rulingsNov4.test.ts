@@ -42,7 +42,7 @@ const docsFor = (input: any, card: any) => {
 function r1(card: any, input: any): string[] {
   const out: string[] = [];
   const texts = docsFor(input, card);
-  for (const row of card.v3.table.rows) {
+  for (const row of card.v3.table?.rows ?? []) {
     const shown = txt(row.matures);
     const year = (/\b(20\d\d)\b/.exec(shown) ?? [])[1];
     const c = couponsIn(row.name ?? txt(row.instrument))[0]?.rate;
@@ -82,7 +82,7 @@ function r3(card: any, input: any): string[] {
   const dm = input.result.results.find((t: any) => t.triggerId === "debt-maturity");
   const cp = (dm.proseInstruments ?? []).filter((p: any) => p.category === "commercial-paper" && p.amount && !/^\$?\s*[—–-]\s*$/.test(p.amount) && !/^\$?\s*0(\.0+)?\b/.test(p.amount));
   if (!cp.length) return [];
-  const first = card.v3.table.rows[0];
+  const first = card.v3.table?.rows[0];
   return first && /commercial paper/i.test(txt(first.instrument)) && /^Short-term$/.test(txt(first.matures)) ? [] : [`the signed answer states ${cp.map((p: any) => `${p.name} (${p.amount})`).join(", ")} outstanding, but the table's first row is "${first ? `${txt(first.matures)} | ${txt(first.instrument)}` : "none"}"`];
 }
 

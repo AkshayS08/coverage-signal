@@ -113,7 +113,7 @@ function t4(card: any, input: any): string[] {
   const dm = input.result.results.find((t: any) => t.triggerId === "debt-maturity");
   const anchorText = input.docs[dm.debtScheduleSourceFiling.url]?.text ?? "";
   const loc = locatorFor(anchorText);
-  for (const r of card.v3.table.rows) {
+  for (const r of card.v3.table?.rows ?? []) {
     if (!r.face || /carrying value/i.test(txt([r.face])) || typeof r.face.usd !== "number" && r.face.k !== "figure") continue;
     const face = typeof r.face.usd === "number" ? r.face.usd : parseMoneyAmount(r.face.printed) ?? 0;
     const row = (dm.scheduleSequence ?? []).find((e: any) => e.kind === "row" && e.label === r.name);

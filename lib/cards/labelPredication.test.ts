@@ -40,7 +40,7 @@ assert(sentenceClass("6.75% Senior Notes due 2033", [S("In 2025 we issued our 6.
 const txt = (l: any[]) => l.map((s: any) => s.t ?? "").join("");
 function violations(card: any): string[] {
   const out: string[] = [];
-  for (const r of card.v3.table.rows) {
+  for (const r of card.v3.table?.rows ?? []) {
     const name = r.name ?? txt(r.instrument);
     for (const seg of r.instrument) {
       if (seg.k !== "label" || !/^(senior|junior|subordinated|secured|unsecured|first[- ]lien|second[- ]lien)$/i.test(seg.t)) continue;

@@ -21,10 +21,10 @@ const txt = (l: any) => (Array.isArray(l) ? l : l ? [l] : []).map((s: any) => s.
 const clone = (o: any) => JSON.parse(JSON.stringify(o));
 
 function f1(card: any): string[] {
-  const tiles = card.v3.call.tiles ?? [];
+  const tiles = card.v3.call?.tiles ?? [];
   const refi = tiles.find((x: any) => x.key === "refinanced"), due = tiles.find((x: any) => x.key === "due");
   if (!refi || refi.usd !== 0 || !due) return [];
-  const partly = (card.v3.call.rows ?? []).some((r: any) => /refinanced · .*remains/i.test(txt(r.tag?.text)));
+  const partly = (card.v3.call?.rows ?? []).some((r: any) => /refinanced · .*remains/i.test(txt(r.tag?.text)));
   const sub = txt(refi.sub);
   if (partly && sub !== `None of the remaining ${txt(due.value)}`) return [`the $0 Refinanced tile reads "${sub}" beside an earlier partial refinancing; it should read "None of the remaining ${txt(due.value)}"`];
   if (!partly && sub !== "None stated in any filing") return [`the $0 Refinanced tile reads "${sub}" with no earlier refinancing`];
