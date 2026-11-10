@@ -653,15 +653,24 @@ export function buildCard(i: CardInputs): Card {
   /** The instrument as a label linked to a sentence that prints it: its own sentence, else one in a filing that names it, else the longest end of the name that sentence does print. */
   const instrumentSeg = (value: string, own: Source): Segment => {
     if (containsWord(own.sentence, filerSpan(value, own.sentence))) return { k: "label", t: tidyCoupon(value), stated: filerSpan(value, own.sentence), src: own };
+    const words = value.split(/\s+/);
+    const ownPart = (): Segment | null => {
+      for (let n = words.length - 1; n > 0; n--) {
+        for (const part of [words.slice(words.length - n).join(" "), words.slice(0, n).join(" ")]) if (containsWord(own.sentence, part)) return { k: "label", t: tidyCoupon(part), stated: part, src: own };
+      }
+      return null;
+    };
+    // Session 27 (Nov 9, moveCitation.test): the sentence stating the move is cited over a summary or bullet stating
+    // the same note. Where the move's own sentence names the note (its coupon, and its year where the name has one),
+    // it is the source, though it words the name differently ("notes, which are due in September 2034").
+    const c = couponOf(value), y = (/\b(20\d\d)\b/.exec(value) ?? [])[1];
+    if (c && containsWord(own.sentence, filerSpan(c.printed, own.sentence)) && (!y || own.sentence.includes(y))) { const p = ownPart(); if (p) return p; }
     for (const u of [own.url, ...moveDocs()]) {
-      const hit = sentencesOf(u).find((x) => containsWord(x.sentence, value));
+      const hits = sentencesOf(u).filter((x) => containsWord(x.sentence, value));
+      const hit = hits.find((x) => !SUMMARY_LINE.test(x.sentence.trim())) ?? hits[0];
       if (hit) return { k: "label", t: tidyCoupon(value), stated: value, src: hit };
     }
-    const words = value.split(/\s+/);
-    for (let n = words.length - 1; n > 0; n--) {
-      for (const part of [words.slice(words.length - n).join(" "), words.slice(0, n).join(" ")]) if (containsWord(own.sentence, part)) return { k: "label", t: tidyCoupon(part), stated: part, src: own };
-    }
-    return t(tidyCoupon(value));
+    return ownPart() ?? t(tidyCoupon(value));
   };
   // A bare figure in a note printed "in thousands" carries the caption's scale (Rule 67).
   const scaled = (value: string, url: string) => (url === anchor.url && !/thousand|million|billion/i.test(value) && /\d/.test(value) ? `${value.trim()} ${tableScale}` : value);
@@ -2627,6 +2636,9 @@ function tidyCoupon(s: string): string {
 }
 
 /** A coupon as the filer printed it, and as the card shows it: no stray spaces ("5.125 %" → "5.125%", "10 ⅞%" → "10⅞%"). */
+/** A summary or bullet line: a list item, or a cash-flow line ("Net proceeds from …"). A move cites the sentence stating it over one. */
+const SUMMARY_LINE = /^[•·▪●◦\-–]\s|^(?:Net\s+(?:cash\s+)?)?proceeds\s+from\b/i;
+
 function couponOf(name: string): { printed: string; shown: string } | null {
   const m = /\b\d{1,2}(?:\.\d+|\s*[⅛¼⅜½⅝¾⅞])?\s?%/.exec(name);
   return m ? { printed: m[0], shown: m[0].replace(/[\s\u00a0]+/g, "") } : null;
