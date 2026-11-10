@@ -12,12 +12,23 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317
 - **call (label)**
   - was: The call · next 18 months, to May 9, 2028
   - now: The call · next 18 months, to Apr 30, 2028
-- **parts of computed figures (shown when a figure is opened)**: 73 shown differently
+- **moves**
+  - now: Feb 2, 2026 · Redeemed
+  - now: ~$223MM 10⅞% senior secured notes due 2032 · $1,780MM remains
+  - now: Redeemed at 103% of principal.
+- **table**
+  - was: ~$231MM repurchased in 2026 · $1,549MM remains
+  - now: ~$454MM retired in 2026 · $1,549MM remains
+- **cited sentences behind source links**: 9 out, 16 in
+  - was cited: 10-Q 2026-10-29 | The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million princi
+  - now cited: 10-Q 2026-10-29 | The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million prin
+  - now cited: 10-Q 2026-10-29 | On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 
+  - now cited: 10-Q 2026-10-29 | 10 ⅞% Senior Secured Notes due 2032 1,549
+- **parts of computed figures (shown when a figure is opened)**: 70 shown differently
   - was: $ 42 million
   - was: $ 1,244 million
   - was: $ 689 million
   - was: $ 1,549 million
-  - was: approximately $231 million principal amount
   - was: $ 1,227 million
   - was: $ 644 million
   - was: $ 1,535 million
@@ -25,6 +36,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10317
   - was: $ 1,790 million
   - was: $ 300 million
   - was: $ 46 million
+  - was: $ 155 million
   - now: $42MM
   - now: $1,244MM
   - now: $689MM

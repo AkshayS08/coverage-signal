@@ -15,6 +15,9 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.09192
 - **call (away)**
   - was: 42 months away · 24 months past the window
   - now: 43 months away · 25 months past the window
+- **cited sentences behind source links**: 1 out, 1 in
+  - was cited: 8-K 2026-06-08 | The Company has used or will use the proceeds of the Incremental Tranche B-2 Term Loans (i) to repay a portion of its outstanding senior sec
+  - now cited: 10-Q 2026-10-29 | The Company used the net proceeds from this transaction to repay a portion of the balance outstanding on its revolving line of credit and re
 - **parts of computed figures (shown when a figure is opened)**: 66 shown differently
   - was: $ 31,412 thousand
   - was: $ 112,997 thousand

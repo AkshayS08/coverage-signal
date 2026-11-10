@@ -2183,6 +2183,8 @@
    "actionable": []
   },
   "rolledNote": null,
+  "breakage": null,
+  "checks": null,
   "call": {
    "label": "The call · next 18 months, to May 9, 2028",
    "case": "C",

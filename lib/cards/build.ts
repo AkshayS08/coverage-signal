@@ -1772,6 +1772,8 @@ export function buildCard(i: CardInputs): Card {
   const capParts: Part[] = caps.map((c) => ({ printed: c.amount as string, usd: parseMoneyAmount(c.amount) ?? 0, src: src(c.sourceLine, c.citedUrl || anchor.url) }));
   const capSum = sum(capParts);
   const coverageLines: Line[] = [];
+  /** The footnote's unexplained difference, where it reports one (the trust rule reads it). */
+  let unaccountedSeg: Segment | null = null;
   if (capParts.length === 0) {
     coverageLines.push([t("Face total "), faceSeg(), t(". Balance sheet: not measured, the anchor states no balance-sheet debt caption.")]);
   } else {
@@ -1840,7 +1842,8 @@ export function buildCard(i: CardInputs): Card {
     if (!explained && Math.abs(residual) >= 0.5 * 10 ** -decimals * 1e6) {
       const neg = (ps: Part[]) => ps.map((p) => ({ ...p, usd: -p.usd }));
       const parts = [...capParts, ...neg(faceTotalParts), ...neg(carryingBeside), ...neg(bridge)];
-      line.push(t(" "), { k: "computed", t: displayUsd(Math.abs(residual), false, decimals), usd: Math.abs(residual), parts: residual < 0 ? neg(parts) : parts }, t(" is not accounted for."));
+      unaccountedSeg = { k: "computed", t: displayUsd(Math.abs(residual), false, decimals), usd: Math.abs(residual), parts: residual < 0 ? neg(parts) : parts };
+      line.push(t(" "), unaccountedSeg, t(" is not accounted for."));
     }
     if (rolledLabel) line.push(t(` ${rolledFootnote(rolledLabel)}`));
     coverageLines.push(line);
@@ -1960,7 +1963,7 @@ export function buildCard(i: CardInputs): Card {
   const notYetUsd = sum(dueParts) - sum(refiParts);
   const leftoverSegs = [...otherScheduled.entries()].filter(([y]) => `${y}-12-31` >= briefDate && `${y}-01-01` <= windowEnd).map(([, o]) => o.seg).filter((x): x is Extract<Segment, { k: "computed" }> => x.k === "computed");
   const leftoverMaybe = [...otherScheduled.keys()].some((y) => `${y}-12-31` >= briefDate && `${y}-01-01` <= windowEnd && (`${y}-01-01` < briefDate || `${y}-12-31` > windowEnd));
-  const callCase: CardV3["call"]["case"] = named.length ? (notYetItems.length ? "A" : "B") : leftoverSegs.length ? "C" : "D";
+  const callCase: NonNullable<CardV3["call"]>["case"] = named.length ? (notYetItems.length ? "A" : "B") : leftoverSegs.length ? "C" : "D";
   let daggerUsed = false;
   const phraseFor = (its: Item[]): string => {
     if (its.length === 1) {
@@ -2002,7 +2005,7 @@ export function buildCard(i: CardInputs): Card {
     if (cpBacker?.facilitySize) headline.push(t(", "), { k: "label", t: "backed by", stated: cpb!.value, src: src(cpb!.src.sentence, cpb!.src.url) }, t(" the "), { k: "figure", t: displayAmount(cpBacker.facilitySize.value, cpBacker.facilitySize.sourceLine), printed: cpBacker.facilitySize.value, src: src(cpBacker.facilitySize.sourceLine, cpBacker.figureSources?.facilitySize ?? cpBacker.citedUrl) }, t(" revolver"));
     headline.push(t("."));
   }
-  const tiles: CardV3["call"]["tiles"] = [];
+  const tiles: NonNullable<CardV3["call"]>["tiles"] = [];
   if (callCase === "A" || callCase === "B") {
     const years = [...new Set(named.map((x) => x.maturity?.date.slice(0, 4)))];
     tiles.push({ key: "due", label: "Due in window", value: usdSeg(dueParts), usd: sum(dueParts), sub: [t(`${named.length} ${named.every((x) => x.labels.type.t === "notes") ? "note issue" : "issue"}${named.length === 1 ? "" : "s"}${years.length === 1 && years[0] ? `, all in ${years[0]}` : ""}`)] });
@@ -2016,7 +2019,7 @@ export function buildCard(i: CardInputs): Card {
   }
   const afterItem = allDebtItems.filter((it) => it.maturity && spanOf(it.maturity.date, it.maturity.granularity)[0] > windowEnd).sort((a, b) => a.maturity!.date.localeCompare(b.maturity!.date))[0];
   const monthsFrom = (from: string, to: string) => (Number(to.slice(0, 4)) - Number(from.slice(0, 4))) * 12 + Number(to.slice(5, 7)) - Number(from.slice(5, 7)) - (Number(to.slice(8, 10)) < Number(from.slice(8, 10)) ? 1 : 0);
-  const nextTile: CardV3["call"]["nextTile"] = (callCase === "C" || callCase === "D") && afterItem
+  const nextTile: NonNullable<CardV3["call"]>["nextTile"] = (callCase === "C" || callCase === "D") && afterItem
     ? {
         value: usdSeg(partOf(afterItem)),
         instrument: instrumentWords(afterItem),
@@ -2028,7 +2031,7 @@ export function buildCard(i: CardInputs): Card {
         })(),
       }
     : null;
-  const callRows: CardV3["call"]["rows"] = [];
+  const callRows: NonNullable<CardV3["call"]>["rows"] = [];
   for (const cp of cpItems) {
     const body: Line = [usdSeg(partOf(cp)), t(" "), ...(cp.labels.security ? [cp.labels.security, t(" ")] : []), cp.labels.type];
     const rate = facts?.commercialPaper?.averageRate;
@@ -2190,7 +2193,7 @@ export function buildCard(i: CardInputs): Card {
     })
     .sort((a, b) => a.tier - b.tier || a.g.first - b.g.first);
   const tdSegments: BarSegment[] = [];
-  const tdLegend: CardV3["totalDebt"]["legend"] = [];
+  const tdLegend: NonNullable<CardV3["totalDebt"]>["legend"] = [];
   const carryNotes: Line = [];
   for (const { g, sen, sec, color } of tdGroups) {
     const faceIt = g.items.filter((it) => it.basis === "face");
@@ -2351,14 +2354,14 @@ export function buildCard(i: CardInputs): Card {
   let endFraction = (Number(windowEnd.slice(5, 7)) - 1 + Number(windowEnd.slice(8, 10)) / 31) / 12;
   if (endIndex < 0) { endIndex = bars.findIndex((b) => /^\d{4}$/.test(b.label) && Number(b.label) > wy); endFraction = 0; if (endIndex < 0) { endIndex = bars.length - 1; endFraction = 1; } }
   const usedColors = new Set(bars.flatMap((b) => b.segments.map((s) => `${s.color}${s.pattern ? "|stripes" : ""}`)));
-  const LEGEND: [string, CardV3["chart"]["legend"][number]][] = [
+  const LEGEND: [string, NonNullable<CardV3["chart"]>["legend"][number]][] = [
     [PALETTE.seniorSecured, { color: PALETTE.seniorSecured, label: "Secured" }],
     [PALETTE.juniorSecured, { color: PALETTE.juniorSecured, label: "Junior-priority secured" }],
     [PALETTE.unsecured, { color: PALETTE.unsecured, label: "Unsecured" }],
     [PALETTE.notStated, { color: PALETTE.notStated, label: "Seniority not stated" }],
     [PALETTE.scheduledOther, { color: PALETTE.scheduledOther, label: "Scheduled other" }],
   ];
-  const chartLegend: CardV3["chart"]["legend"] = LEGEND.filter(([c]) => usedColors.has(c)).map(([, e]) => e);
+  const chartLegend: NonNullable<CardV3["chart"]>["legend"] = LEGEND.filter(([c]) => usedColors.has(c)).map(([, e]) => e);
   const striped = [...usedColors].filter((k) => k.endsWith("|stripes"));
   if (striped.length) chartLegend.push({ color: striped[0].split("|")[0] as PaletteColor, pattern: "stripes", label: "Refinanced, redemption pending confirmation" });
   if (usedColors.has(PALETTE.notRefinanced)) chartLegend.push({ color: PALETTE.notRefinanced, label: "Due in window, not yet refinanced" });
@@ -2426,7 +2429,7 @@ export function buildCard(i: CardInputs): Card {
 
   // ── 2.6 the table ──
   const tableItems = [...cpItems, ...allDebtItems.filter((it) => it.maturity && !isCP(it)).sort((a, b) => a.maturity!.date.localeCompare(b.maturity!.date)), ...allDebtItems.filter((it) => !it.maturity && !isCP(it)).sort((a, b) => (a.range ? 0 : 1) - (b.range ? 0 : 1))];
-  const tableRows: CardV3["table"]["rows"] = tableItems.map((it) => {
+  const tableRows: NonNullable<CardV3["table"]>["rows"] = tableItems.map((it) => {
     const st = statusOf(it);
     const ns = !st && !mostlyNotStated ? notStatedPhrase(it) : null;
     return {
@@ -2515,16 +2518,51 @@ export function buildCard(i: CardInputs): Card {
     captions.push(notYetRead("The filer's printed maturity schedule"));
     facLines.push({ bold: [t("Sub-facilities and commercial paper details")], sub: notYetRead("Sub-facilities, sub-limits and commercial paper") });
   }
+  // SESSION 27 (Akshay, Nov 9): THE TRUST RULE. Where the coverage tie fails beyond its earned band
+  // (COVERAGE_RESIDUAL_LIMIT), or the footnote reports debt it cannot account for, the card states no call, tiles,
+  // total or ladder: it states the breakage (the gap, its cause, its sources) under "Checks failed" (trustRule.test).
+  // Cigna's refresh: its 10-K base rolled to $31,413MM against a $31,142MM balance sheet, outside the ±$50MM band, and
+  // the card fell back to the ~$5,000MM its 10-Q names while still saying "Nothing matures in the next 18 months".
+  const breakage: CardV3["breakage"] = cov.residualPasses === false || unaccountedSeg ? (() => {
+    const mm = (n: number) => `$${Math.abs(n).toLocaleString("en-US")}MM`;
+    const fig = (printed: string, sentence: string, url: string): Segment => ({ k: "figure", t: displayAmount(printed, sentence), printed, src: src(sentence, url) });
+    const capSeg: Segment = { k: "computed", t: displayUsd(capSum, false, dp(capParts)), usd: capSum, parts: capParts };
+    const gap: Segment = unaccountedSeg ?? { k: "computed", t: displayUsd(Math.abs(capSum - faceTotal), false, dp(capParts)), usd: Math.abs(capSum - faceTotal), parts: [...capParts, ...faceTotalParts.map((p) => ({ ...p, usd: -p.usd }))] };
+    const base = dm?.priorPeriodBase;
+    const baseTotals = (base?.rows ?? []).filter((r: any) => r.kind === "subtotal" && r.sourceLine && r.amount);
+    const deltas = (rc.movements ?? []).filter((m) => m.placement === "delta");
+    const cause: Line = [];
+    if (!rc.counts && rc.rollTie && !rc.rollTie.ties && rc.rollTie.residualMillions !== null) {
+      const tol = deltas.some((d) => /\b(approximately|about|roughly)\b/i.test(d.sourceLine)) ? 50 : 0;
+      cause.push(t(`The ${base?.periodOfReport ? `${base.periodOfReport.slice(0, 4)} ` : ""}10-K's debt table, carried forward to this balance sheet: ${mm(rc.rollTie.computedMillions - deltas.reduce((a, d) => a + d.amountMillions, 0))}`));
+      for (const d of deltas) cause.push(t(` ${d.amountMillions < 0 ? "−" : "+"} ${mm(d.amountMillions)}`));
+      cause.push(t(` = ${mm(rc.rollTie.computedMillions)}, against `), capSeg, t(`: ${mm(rc.rollTie.residualMillions)} apart, outside the ${tol ? `±$${tol}MM its approximate figures allow` : "exact match its exact figures require"}. So its notes are not carried to ${displayDate(anchor.reportDate, "day")}, and this card does not state a position.`));
+    } else if (!rc.counts && rc.baseTie && !rc.baseTie.ties) {
+      cause.push(t("The earlier 10-K's debt table does not add up to its own printed totals, so it is not carried forward, and the notes this filing names fall short of "), capSeg, t("."));
+    } else {
+      cause.push(t("The notes and borrowings this card's filings state come to "), faceSeg(), t(" against "), capSeg, t("; no filing it holds states the rest."));
+    }
+    const sources: Line[] = [
+      ...capParts.map((p) => [t("Balance sheet: "), fig(p.printed, p.src.sentence, p.src.url)] as Line),
+      // The base table's cells carry its caption's scale (Rule 67): the resolved millions, as the carrying-basis check reads them.
+      ...baseTotals.map((r: any) => [t(`${base!.periodOfReport} 10-K, ${String(r.instrument).toLowerCase()}: `), fig(printedIn(r.sourceLine, Math.abs(r.amountMillions) * 1e6) ?? `$ ${Math.abs(r.amountMillions).toLocaleString("en-US")} million`, r.sourceLine, base!.filingUrl)] as Line),
+      ...deltas.map((d) => [t(`${d.amountMillions < 0 ? "Repaid" : "Added"}: `), fig(printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, d.sourceLine, d.citedUrl || anchor.url)] as Line),
+      [t("Stated on this card's filings: "), faceSeg()],
+    ];
+    return { gap, cause, sources };
+  })() : null;
   const v3: CardV3 = {
     header: v3header,
     rolledNote,
-    call: { label: `The call · next 18 months, to ${shortDate(windowEnd)}`, case: callCase, headline, tiles, nextTile, rows: callRows, notes: callNotes, legend: daggerUsed ? `${MARK} Year only stated; may fall inside the window.` : null },
+    breakage,
+    checks: breakage ? "failed" : null,
+    call: breakage ? null : { label: `The call · next 18 months, to ${shortDate(windowEnd)}`, case: callCase, headline, tiles, nextTile, rows: callRows, notes: callNotes, legend: daggerUsed ? `${MARK} Year only stated; may fall inside the window.` : null },
     moves: moveCards,
-    totalDebt: { figure: faceSeg(), segments: tdSegments, legend: tdLegend, notes: tdNotes },
+    totalDebt: breakage ? null : { figure: faceSeg(), segments: tdSegments, legend: tdLegend, notes: tdNotes },
     // Session 27 (Nov 3): meaning-bearing qualifiers come from each line's own cited sentence, by code (qualifiers.ts).
     liquidity: { figure: liqFigure, segments: liqSegments, legend: liqLegend.map((l) => ({ ...l, label: withQualifiers(l.label) })), notes: liqNotes.map(withQualifiers) },
-    chart: { bars, window: { endIndex, endFraction, label: `18-month window${callCase === "D" ? " · nothing due" : ""}` }, legend: chartLegend, captions },
-    table: { rows: tableRows, visible, schedule: anchorSchedule ? ladderBlocks : null },
+    chart: breakage ? null : { bars, window: { endIndex, endFraction, label: `18-month window${callCase === "D" ? " · nothing due" : ""}` }, legend: chartLegend, captions },
+    table: breakage ? null : { rows: tableRows, visible, schedule: anchorSchedule ? ladderBlocks : null },
     facilities: facLines.map((f) => ({ bold: withQualifiers(f.bold), sub: f.sub ? withQualifiers(f.sub) : null })),
     notShown: notShown.length ? notShown : [[t("Nothing withheld this week.")]],
     footnote,

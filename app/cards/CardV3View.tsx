@@ -39,7 +39,7 @@ function Swatch({ color, pattern }: { color: string; pattern?: "stripes" }) {
   return <span className={styles.swatch} style={pattern === "stripes" ? { background: `repeating-linear-gradient(135deg, ${color} 0 3px, #ffffff 3px 5px)` } : { background: color }} />;
 }
 
-function Chart({ chart }: { chart: CardV3["chart"] }) {
+function Chart({ chart }: { chart: NonNullable<CardV3["chart"]> }) {
   const max = Math.max(1, ...chart.bars.map((b) => b.drawUsd));
   const n = chart.bars.length;
   const bandPct = ((chart.window.endIndex + chart.window.endFraction) / Math.max(1, n)) * 100;
@@ -82,7 +82,7 @@ function Chart({ chart }: { chart: CardV3["chart"] }) {
   );
 }
 
-function Rows({ rows }: { rows: CardV3["table"]["rows"] }) {
+function Rows({ rows }: { rows: NonNullable<CardV3["table"]>["rows"] }) {
   return (
     <tbody>
       {rows.map((r, i) => (
@@ -100,7 +100,7 @@ function Rows({ rows }: { rows: CardV3["table"]["rows"] }) {
   );
 }
 
-function Table({ table }: { table: CardV3["table"] }) {
+function Table({ table }: { table: NonNullable<CardV3["table"]> }) {
   const head = (
     <thead>
       <tr>
@@ -146,6 +146,24 @@ function Table({ table }: { table: CardV3["table"] }) {
   );
 }
 
+/** Session 27 (Nov 9, the trust rule): the coverage tie failed, so the card states the breakage, not a call. */
+function Breakage({ b }: { b: NonNullable<CardV3["breakage"]> }) {
+  return (
+    <section className={styles.breakage}>
+      <div className={styles.callLabel}>Why this card states no call</div>
+      <div className={styles.breakageGap}>
+        <Seg s={b.gap} /> of the balance sheet's debt is not accounted for
+      </div>
+      <L line={b.cause} className={styles.breakageCause} />
+      <ul className={styles.breakageSources}>
+        {b.sources.map((l, i) => (
+          <li key={i}><L line={l} /></li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export default function CardV3View({ card }: { card: Card }) {
   const v = card.v3!;
   const c = v.call;
@@ -158,6 +176,7 @@ export default function CardV3View({ card }: { card: Card }) {
           <h2 className={styles.company}>{v.header.company}</h2>
         </div>
         <div className={styles.headerRight}>
+          {v.checks === "failed" ? <div className={styles.badgeFailed}>Checks failed</div> : null}
           <L line={v.header.position} />
           <div>
             <Seg s={v.header.filing} /> · <L line={v.header.status} />
@@ -177,7 +196,9 @@ export default function CardV3View({ card }: { card: Card }) {
           <L line={v.rolledNote} />
         </div>
       ) : null}
-      {/* 3. The call box */}
+      {/* 3. The call box, or (trust rule) the breakage panel in its place */}
+      {v.breakage ? <Breakage b={v.breakage} /> : null}
+      {c ? (
       <section className={styles.call} data-case={c.case}>
         <div className={styles.callLabel}>{c.label}</div>
         <L line={c.headline} className={styles.callHeadline} />
@@ -222,6 +243,7 @@ export default function CardV3View({ card }: { card: Card }) {
         ))}
         {c.legend ? <div className={styles.callNote}>{c.legend}</div> : null}
       </section>
+      ) : null}
       {/* 4. Recent debt moves */}
       <section className={styles.section}>
         <h3 className={styles.sectionHead}>Recent debt moves</h3>
@@ -256,7 +278,7 @@ export default function CardV3View({ card }: { card: Card }) {
       </section>
       {/* 5. Total debt and liquidity */}
       <section className={`${styles.section} ${styles.split}`}>
-        {[{ head: "Total debt, at face", d: v.totalDebt }, { head: "Liquidity", d: v.liquidity }].map(({ head, d }) => (
+        {[{ head: "Total debt, at face", d: v.totalDebt }, { head: "Liquidity", d: v.liquidity }].flatMap(({ head, d }) => (d ? [{ head, d }] : [])).map(({ head, d }) => (
           <div key={head}>
             <h3 className={styles.sectionHead}>{head}</h3>
             <div className={styles.bigFigure}>{d.figure ? <Seg s={d.figure} /> : "—"}</div>
@@ -277,11 +299,13 @@ export default function CardV3View({ card }: { card: Card }) {
         ))}
       </section>
       {/* 6. Maturity ladder: chart, then table */}
-      <section className={styles.section}>
-        <h3 className={styles.sectionHead}>Maturity ladder, $MM face</h3>
-        <Chart chart={v.chart} />
-        <Table table={v.table} />
-      </section>
+      {v.chart && v.table ? (
+        <section className={styles.section}>
+          <h3 className={styles.sectionHead}>Maturity ladder, $MM face</h3>
+          <Chart chart={v.chart} />
+          <Table table={v.table} />
+        </section>
+      ) : null}
       {/* 7. Facilities, and what was not shown */}
       <section className={`${styles.section} ${styles.split} ${styles.small}`}>
         <div>

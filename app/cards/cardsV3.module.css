@@ -161,3 +161,11 @@
 .table td a, .table td summary { text-decoration: none; }
 .plot .value a:hover, .plot .value summary:hover,
 .table td a:hover, .table td summary:hover { text-decoration: underline; text-decoration-style: dotted; }
+
+/* Session 27 (Nov 9, the trust rule): the coverage tie failed; the card states the breakage in the call's place. */
+.badgeFailed { display: inline-block; margin-bottom: 6px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: var(--orangeTint); color: var(--orange); }
+.breakage { background: var(--orangeTint); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 20px 28px 18px; }
+.breakage .callLabel { color: var(--orange); }
+.breakageGap { margin-top: 8px; font-size: 20px; line-height: 1.35; color: var(--ink, inherit); }
+.breakageCause { display: block; margin-top: 10px; font-size: 14px; line-height: 1.5; }
+.breakageSources { margin: 10px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.6; color: var(--muted); }

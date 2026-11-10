@@ -9,7 +9,80 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
 - **call (label)**
   - was: The call · next 18 months, to May 9, 2028
   - now: The call · next 18 months, to May 6, 2028
-- **parts of computed figures (shown when a figure is opened)**: 94 shown differently
+- **call**
+  - was: $400MM of 4.50% senior unsecured notes due 2028 are not yet refinanced; the other $400MM was retired in May 2026.
+  - was: $400MM retired in 2026 · $400MM remains, not yet refinanced
+  - now: $400MM of 4.50% senior unsecured notes due 2028 are not yet refinanced; the other $400MM was refinanced in May 2026.
+  - now: $400MM refinanced · $400MM remains, not yet refinanced
+- **moves**
+  - was: May 2026 · Redeemed
+  - was: Redeemed at at par. With net proceeds and cash on hand.
+  - now: Aug 13, 2026 · Issued, confirmed by 8-K
+  - now: $100MM 5.875% senior unsecured notes due June 1, 2034
+  - now: Issued at 98.75% of principal, adding to the existing notes.
+  - now: Refinanced · repaid Aug 2026, funded by the new notes and cash on hand
+  - now: Revolver: repaid
+  - now: May 29, 2026 · Issued, confirmed by 8-K
+  - now: $500MM 5.875% senior unsecured notes due June 1, 2034
+  - now: Refinanced · redeemed May 2026, funded by the new notes and cash on hand
+  - now: $100MM of the revolver, repaid
+  - now: Mar 9, 2026 · Refinanced
+  - now: Revolver: new $1,000MM credit agreement replaced the 2022 agreement
+  - now: $250MM drawn to retire it.
+- **totalDebt**
+  - was: $400MM
+  - was: $2,155MM
+  - was: At carrying value, not in the bar: senior unsecured notes $1,771.8MM; Other notes payable $80MM; Finance lease obligations $274.9MM.
+  - now: $1,000MM
+  - now: $1,555MM
+  - now: At carrying value, not in the bar: senior unsecured notes $1,183.6MM; Other notes payable $80MM; Finance lease obligations $274.9MM.
+- **totalDebt (1)**
+  - now: 5.875 % Senior Notes due 2034
+- **totalDebt (2)**
+  - was: 5.875 % Senior Notes due 2034
+  - now: Other notes payable
+- **totalDebt (3)**
+  - was: Other notes payable
+  - now: Finance lease obligations
+- **totalDebt (4)**
+  - was: Finance lease obligations
+- **chart (tooltip)**
+  - now: 5.875 % Senior Notes due 2034
+- **chart (0)**
+  - now: 5.875 % Senior Notes due 2034
+- **chart (1)**
+  - was: 5.875 % Senior Notes due 2034
+- **table**
+  - was: $400MM retired in 2026 · $400MM remains, not yet refinanced
+  - was: 5.875% senior unsecured notes (carrying value)
+  - was: 588.2 (carrying value)
+  - was: $588.2MM (carrying value) 5.875% senior unsecured notes, due June 1, 2034
+  - now: $400MM refinanced · $400MM remains, not yet refinanced
+  - now: 5.875% senior unsecured notes
+  - now: 600
+  - now: $600MM 5.875% senior unsecured notes, due June 1, 2034
+- **notShown**
+  - was: A letter of credit sub-facility of $260MM: stated only in an earlier annual report, which this card does not use for facility terms.
+  - was: Not paired: the 4.50% Senior Notes due 2028; "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at …" refers to an issuance it does not identify.
+  - now: Nothing withheld this week.
+- **possibleMoves**
+  - was: Possible move, not confirmed: “On March 9, 2026, we entered into a new credit agreement (the “2026 Credit Agreement”).”
+- **cited sentences behind source links**: 5 out, 26 in
+  - was cited: 10-Q 2026-11-03 | 5.875 % Senior Notes due 2034 588.2
+  - was cited: 10-Q 2026-11-03 | the swingline loan sublimit has been increased from $ 25 million to $ 40 million
+  - was cited: 10-Q 2026-11-03 | On March 9, 2026, we entered into a new credit agreement (the “2026 Credit Agreement”).
+  - now cited: 8-K 2026-08-13 | On August 13, 2026, Encompass Health Corporation (the “Company”) completed the issuance and sale of $100 million in aggregate principal amou
+  - now cited: 10-Q 2026-11-03 | In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which result
+  - now cited: 10-Q 2026-11-03 | 5.875 % Senior Notes due 2034
+  - now cited: 10-Q 2026-11-03 | We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving 
+  - now cited: 8-K 2026-06-01 | On May 29, 2026, Encompass Health Corporation (the “Company”) completed the issuance and sale of $500 million in aggregate principal amount 
+  - now cited: 10-Q 2026-11-03 | In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 milli
+  - now cited: 10-Q 2026-11-03 | On March 9, 2026 (the “Closing Date”), we entered into a credit agreement (the “2026 Credit Agreement”), by and among us, certain of our sub
+  - now cited: 10-Q 2026-11-03 | In connection with the execution of the 2026 Credit Agreement, we paid off all outstanding amounts, and terminated the commitments, as of th
+  - now cited: 10-Q 2026-11-03 | During March 2026, we drew $ 250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the 
+  - now cited: 10-Q 2026-11-03 | Future repurchases under this authorization generally are expected to be funded using a combination of cash on hand and availability under o
+  - now cited: 10-Q 2026-11-03 | the swingline loan sublimit has been increased from $ 25 million to $ 40 million.
+- **parts of computed figures (shown when a figure is opened)**: 88 shown differently
   - was: $ 800 million
   - was: $ 400 million in aggregate principal amount
   - was: $ 9.2
@@ -21,7 +94,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-03) ($0.09603
   - was: $ 515.1 million
   - was: $ 726.8 million
   - was: $ 75.0 million
-  - was: $ 500 million
+  - was: $ 394.4 million
   - now: $800MM
   - now: $400MM
   - now: $9.2MM

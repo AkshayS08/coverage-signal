@@ -25,7 +25,25 @@ import { sentenceStatesFigure } from "../agent/verifyFacility";
 import { containsWord } from "./labels";
 import { buildCard } from "./build";
 import { kindOf } from "./headings";
-import type { BarSegment, Card, Line, Segment } from "./types";
+import type { BarSegment, Card as CardBase, CardV3, Line, Segment } from "./types";
+/**
+ * Session 27 (Nov 9, the trust rule): a card whose coverage tie fails withholds its call, total and ladder. These
+ * checks read those sections as present; on a withheld card, reading one raises WithheldSection, and the check is
+ * recorded as not applicable to that card (trustRule.test asserts the withholding itself). Any other error fails.
+ */
+type Present<T> = { [K in keyof T]: K extends "call" | "totalDebt" | "chart" | "table" ? NonNullable<T[K]> : T[K] };
+type Card = Omit<CardBase, "v3"> & { v3?: Present<CardV3> };
+class WithheldSection extends Error {}
+/** The card's sections without the guard: the line walker reads what is present and skips what is withheld. */
+const RAW = Symbol("raw");
+const rawV3 = (v: any): any => (v && v[RAW]) || v;
+const WITHHELD_SECTIONS = new Set(["call", "totalDebt", "chart", "table"]);
+const viewOf = (card: Card): Card => (card.v3 && (card.v3 as any).breakage
+  ? { ...card, v3: new Proxy(card.v3, { get(target: any, k: string | symbol) { if (k === RAW) return target; if (typeof k === "string" && WITHHELD_SECTIONS.has(k) && target[k] == null) throw new WithheldSection(k); return target[k]; } }) }
+  : card);
+const NOT_APPLICABLE: string[] = [];
+/** A check whose subject is a section the trust rule withholds says so: on a withheld card it does not apply. */
+const requires = (card: Card, section: string) => { if (rawV3(card.v3)?.breakage) throw new WithheldSection(section); };
 import { reachable as reach } from "./reach";
 import { RULED, applyRuled } from "./ruledResiduals";
 import { shownCards } from "./shownCards";
@@ -66,8 +84,17 @@ function linesOf(card: Card): Where[] {
 }
 /** card_spec v3.0: every line of the redesigned card, so the link, lint, precision and hedge checks reach every tile, bar label and cell. */
 function v3Lines(card: Card): Line[] {
-  const v = card.v3;
+  const v = rawV3(card.v3) as NonNullable<Card["v3"]>;
   if (!v) return [];
+  // Nov 9 (trust rule): a withheld card has no call, total or ladder; its breakage panel is read like any other line.
+  if (v.breakage) {
+    const out: Line[] = [v.header.position, [v.header.filing], v.header.status, ...v.header.actionable, [v.breakage.gap], v.breakage.cause, ...v.breakage.sources];
+    for (const m of v.moves) out.push(m.meta, ...m.title, ...(m.detail ? [m.detail] : []), ...(m.retires ? [m.retires.meta, ...m.retires.items] : []));
+    const d = v.liquidity; out.push(...(d.figure ? [[d.figure]] : []), ...d.legend.flatMap((l: any) => [l.label, [l.amount]]), ...d.notes);
+    for (const f of v.facilities) out.push(f.bold, ...(f.sub ? [f.sub] : []));
+    out.push(...v.notShown, v.footnote);
+    return out;
+  }
   const out: Line[] = [v.header.position, [v.header.filing], v.header.status, ...v.header.actionable];
   if (v.rolledNote) out.push(v.rolledNote);
   out.push(v.call.headline, ...v.call.tiles.flatMap((x) => [[x.value], x.sub]), ...v.call.rows.flatMap((r) => [r.when, r.body, ...(r.tag ? [r.tag.text] : [])]), ...v.call.notes);
@@ -162,7 +189,7 @@ const T1_PURITY: Test = {
     try {
       const quiet = buildCard({ ...base, weekFilings: [] } as any);
       const busy = buildCard({ ...base, weekFilings: [{ form: "8-K", filingDate: card.briefDate, reportDate: "", accessionNumber: "x", primaryDocument: "x.htm", primaryDocUrl: "https://www.sec.gov/x.htm", items: "1.01,2.03" }] } as any);
-      return sameOutsideThisWeek(quiet, busy) ? [] : ["a new filing changed something other than This week (and its count in the trust section)"];
+      return sameOutsideThisWeek(quiet as unknown as Card, busy as unknown as Card) ? [] : ["a new filing changed something other than This week (and its count in the trust section)"];
     } catch (e) {
       return [`building from the pinned answer failed: ${(e as Error).message.slice(0, 120)}`];
     }
@@ -191,6 +218,7 @@ const FACE_SOURCE = /principal|face amount|\bwe issued \$|issuance and sale of \
 const T3_TABLE: Test = {
   id: "5.3", name: "table reconciliation — every filer row once, at face, with its label; face total = sum",
   run: (card, f) => {
+    requires(card, "table");
     const bad: string[] = [];
     const ladder = linesOf(card).filter((w) => w.section === "ladder").map((w) => w.line);
     const exp = expectedRows(f);
@@ -363,6 +391,7 @@ const NOT_COMPARABLE: string[] = [];
 const T7_SCHEDULE: Test = {
   id: "5.7", name: "schedule reconciliation — per-year amounts tie to the filer's schedule, remainder shown",
   run: (card, f) => {
+    requires(card, "chart");
     if (!f.schedule) return [];
     const bad: string[] = [];
     const scale = f.table.scale === "thousand" ? 1e3 : 1e6;
@@ -1388,7 +1417,9 @@ const genBad = [...new Set(reachable(join(ROOT, "lib", "cards", "generate.ts"), 
 for (const t of TESTS) {
   counts[t.id] = {};
   for (const { cik, key, name, card, f } of run) {
-    const { counted: fails, ruled } = applyRuled(t.id, cik, f.anchor ? { form: f.anchor.form, filingDate: f.anchor.date } : null, t.run(card, f));
+    let raw: string[];
+    try { raw = t.run(viewOf(card), f); } catch (e) { if (!(e instanceof WithheldSection)) throw e; NOT_APPLICABLE.push(`${t.id} ${name} (reads the withheld ${e.message})`); raw = []; }
+    const { counted: fails, ruled } = applyRuled(t.id, cik, f.anchor ? { form: f.anchor.form, filingDate: f.anchor.date } : null, raw);
     RULED_SEEN.push(...ruled.map((r) => `${name.padEnd(10)} ${r}`));
     counts[t.id][key] = fails.length;
     totalFail += fails.length;
@@ -1413,6 +1444,7 @@ genBad.slice(0, 4).forEach((b) => console.log(`             ${b.replace(ROOT, ""
 totalFail += pageBad.length + genBad.length;
 console.log("\nFirst failures:\n" + details.join("\n"));
 if (reported.length) console.log("\nReported, not failed (ruling, Oct 16):\n" + reported.map((r) => `  ${r}`).join("\n"));
+if (NOT_APPLICABLE.length) console.log("\nNot applicable — the card withholds the section the check reads (trust rule):\n" + NOT_APPLICABLE.map((r) => `  ${r}`).join("\n"));
 if (RULED_SEEN.length) console.log("\nRuled residuals, failing exactly as ruled (expected, not counted):\n" + RULED_SEEN.map((r) => `  ${r.slice(0, 260)}`).join("\n"));
 const broken = ctl.filter((c) => !c.failed);
 for (const c of broken) console.log(`\n  ✗ NEGATIVE CONTROL ${c.id} DID NOT FAIL — ${c.what}: this test cannot fail as written`);

@@ -149,7 +149,7 @@ export interface ChartBar {
 export interface CardV3 {
   header: { label: string; company: string; position: Line; filing: Segment; status: Line; actionable: Line[] };
   rolledNote: Line | null;
-  call: {
+  call: null | {
     label: string;
     case: "A" | "B" | "C" | "D";
     headline: Line;
@@ -160,16 +160,16 @@ export interface CardV3 {
     legend: string | null;
   };
   moves: { meta: Line; title: Line[]; detail: Line | null; retires: { meta: Line; items: Line[] } | null }[];
-  totalDebt: { figure: Segment; segments: BarSegment[]; legend: { color: PaletteColor; label: Line; amount: Segment }[]; notes: Line[] };
+  totalDebt: null | { figure: Segment; segments: BarSegment[]; legend: { color: PaletteColor; label: Line; amount: Segment }[]; notes: Line[] };
   liquidity: { figure: Segment | null; segments: BarSegment[]; legend: { color: PaletteColor; label: Line; amount: Segment }[]; notes: Line[] };
-  chart: {
+  chart: null | {
     bars: ChartBar[];
     /** The 18-month band: it runs from the left edge to `endFraction` of the way through bar `endIndex`. */
     window: { endIndex: number; endFraction: number; label: string };
     legend: { color: PaletteColor; pattern?: "stripes"; label: string }[];
     captions: Line[];
   };
-  table: {
+  table: null | {
     rows: { matures: Line; instrument: Line; tenK: boolean; face: Segment | null; status: Tag | null; inWindow: boolean; name: string }[];
     visible: number;
     /** The filer's schedule by year, kept reachable (§2.6): the v2.2 ladder blocks. */
@@ -184,4 +184,11 @@ export interface CardV3 {
   movesUnread: Line | null;
   /** Session 27 (Oct 31): debt-move sentences located in code that no confirmed move covers — never fact, never "none". */
   possibleMoves: Line[];
+  /**
+   * Session 27 (Nov 9, the trust rule): where the coverage tie fails beyond its earned band, the card withholds its
+   * call, tiles, total and ladder (call, totalDebt, chart and table are null) and states the breakage instead.
+   */
+  breakage: { gap: Segment; cause: Line; sources: Line[] } | null;
+  /** "failed" where the breakage panel renders: the "Checks failed" badge. */
+  checks: "failed" | null;
 }

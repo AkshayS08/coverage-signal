@@ -55,7 +55,7 @@ for (const cik of CIKS) {
   for (const [label, result] of [["committed", snap.result], ["v33", replay.results.find((x: any) => x.result.cik === cik)?.result]] as const) {
     if (!result) continue;
     const card = build.buildCard({ result, briefDate: "2026-10-15", previousBrief: w?.previousBrief ?? null, weekFilings: w?.filings ?? [], cash: snap.cash, textByUrl: new Map(Object.entries(snap.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text])), periodSentence: snap.periodSentence, laterUrls: (snap.laterFilings ?? []).filter((x: any) => x.filingDate <= "2026-10-15").map((x: any) => x.url), facts: existsSync(factsPath) ? JSON.parse(readFileSync(factsPath, "utf-8")) : null } as any);
-    const bad = card.v3!.table.rows.flatMap((r) => r.instrument as any[]).filter((x) => x.k === "label" && !nameIn(x.stated, x.src.sentence));
+    const bad = (card.v3!.table?.rows ?? []).flatMap((r) => r.instrument as any[]).filter((x) => x.k === "label" && !nameIn(x.stated, x.src.sentence));
     assert(bad.length === 0, `[M3:${snap.company} ${label}] every table name is in its sentence${bad.length ? `: ${bad.map((x) => `"${x.stated}"`).join(", ")}` : ""}`);
   }
 }

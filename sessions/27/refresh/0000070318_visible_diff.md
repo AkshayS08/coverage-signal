@@ -12,9 +12,39 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
 - **call (label)**
   - was: The call · next 18 months, to May 9, 2028
   - now: The call · next 18 months, to Apr 30, 2028
-- **parts of computed figures (shown when a figure is opened)**: 78 shown differently
+- **call**
+  - was: Also in window: $238MM† of scheduled amortization and other principal.
+  - now: Also in window: $265MM† of scheduled amortization and other principal.
+- **moves**
+  - was: Used to finance the redemption of all $ 1.500 billion in aggregate principal amount of our ….
+  - now: Refinanced · redeemed Sept 2026 (scheduled for Sept 23), funded by the new notes and cash on hand
+  - now: $1,500MM 5.125% senior secured first lien notes due November 2027
+  - now: $500MM 6.125% senior unsecured notes due October 2028 · $1,250MM remains
+- **chart**
+  - was: 0
+  - was: Not shown on the chart, with no single maturity: $679MM Finance leases, mortgages and other notes.
+  - now: 27
+  - now: The principal of $679MM Finance leases, mortgages and other notes is included in scheduled other principal.
+- **chart (tooltip)**
+  - now: scheduled other principal
+- **table**
+  - was: $1,250MM 6.125% senior unsecured notes, due October 2028
+  - now: $500MM refinanced · $1,250MM remains
+  - now: 2026
+  - now: $27MM other scheduled principal, per the filer's schedule
+  - now: $1,250MM 6.125% senior unsecured notes, due October 2028 · $500MM redeemed September 2026
+- **possibleMoves**
+  - was: Possible move, not confirmed: “On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.”
+- **cited sentences behind source links**: 1 out, 14 in
+  - was cited: thc-20260908.htm | On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of condition
+  - now cited: thc-20260908.htm | The 2027 Notes and 2028 Notes are expected to be redeemed on September 23, 2026.
+  - now cited: 10-Q 2026-10-29 | Financing activities in 2026 also included the issuance of our 2034 Senior Notes, the net proceeds from which, together with cash on hand, w
+  - now cited: 10-Q 2026-10-29 | We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amoun
+  - now cited: 10-Q 2026-10-29 |  Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term de
+  - now cited: 10-Q 2026-10-29 | Senior unsecured notes:     6.125 % due 2028 $ 1,250
+  - now cited: 10-Q 2026-10-29 | In September 2026, we issued $ 2.000 billion in aggregate principal amount of 6.250 % senior unsecured notes, which are due in September 203
+- **parts of computed figures (shown when a figure is opened)**: 72 shown differently
   - was: $ 600   million
-  - was: $ 27
   - was: $ 157 million
   - was: $ 1,931 million
   - was: $ 1,250   million
@@ -25,6 +55,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - was: $ 1,500   million
   - was: $ 362   million
   - was: $ 750   million
+  - was: $ 679   million
   - now: $600MM
   - now: $27MM
   - now: $157MM
