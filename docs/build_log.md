@@ -7381,3 +7381,10 @@ is shown to have looked at what it claims to look at; [5] now also requires the 
 **Lesson: a review render belongs to its own brief date.** Recaptured at today's date, Tenet's review header lost "new
 this week" and Molina's gained a later 8-K; recaptured at their own dates (Oct 31, Nov 6, Nov 9) each equals its
 predecessor in everything but text.
+
+**Finding: a spend guard I passed an empty value to was off (Nov 9, facts re-run).** I ran the four names one by one,
+each with `--limit` set to the approval remaining. The shell arithmetic that reduced it after each name failed (an
+escaping error), so names two to four ran with `--limit` given no value, which `facts.ts` reads as no limit. The
+per-ask and per-name bands still held, and the run billed $0.4569 of the $0.71 approved, each call under its priced
+worst case. A billed loop must fail closed when its remaining approval cannot be computed; `--limit` with no number
+should refuse, not mean "no limit".
