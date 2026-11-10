@@ -65,5 +65,5 @@ export const SHOWN_SUITES = [
   "lib/cards/acceptance.test.ts", "lib/cards/annualReportSource.test.ts", "lib/cards/factsReadSet.test.ts", "lib/cards/falseNotStated.test.ts",
   "lib/cards/labelPredication.test.ts", "lib/cards/moveCitation.test.ts", "lib/cards/moveIntegrity.test.ts", "lib/cards/possibleMoves.test.ts", "lib/cards/rawAmount.test.ts",
   "lib/cards/refinancedTile.test.ts", "lib/cards/refreshRulings.test.ts", "lib/cards/retirementBalance.test.ts", "lib/cards/rulingsNov4.test.ts",
-  "lib/cards/rulingsNov7.test.ts", "lib/cards/rulingsNov8.test.ts", "lib/cards/standingLabels.test.ts", "lib/cards/subFacilityScale.test.ts",
+  "lib/cards/rulingsNov7.test.ts", "lib/cards/rulingsNov8.test.ts", "lib/cards/standingLabels.test.ts", "lib/cards/subFacilityScale.test.ts", "lib/cards/trustRule.test.ts",
 ];
