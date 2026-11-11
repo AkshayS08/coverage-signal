@@ -2523,7 +2523,10 @@ export function buildCard(i: CardInputs): Card {
   // total or ladder: it states the breakage (the gap, its cause, its sources) under "Checks failed" (trustRule.test).
   // Cigna's refresh: its 10-K base rolled to $31,413MM against a $31,142MM balance sheet, outside the ±$50MM band, and
   // the card fell back to the ~$5,000MM its 10-Q names while still saying "Nothing matures in the next 18 months".
-  const breakage: CardV3["breakage"] = cov.residualPasses === false || unaccountedSeg ? (() => {
+  // Nov 11 (rollFallback.test): NO ROLL FALLBACK. A roll that fired and failed fails the card, whatever the debt the
+  // anchor names happens to cover; the panel shows the roll and its gap, and no partial position renders anywhere.
+  const rollFailed = !rc.counts && rc.fired === true;
+  const breakage: CardV3["breakage"] = rollFailed || cov.residualPasses === false || unaccountedSeg ? (() => {
     const mm = (n: number) => `$${Math.abs(n).toLocaleString("en-US")}MM`;
     const fig = (printed: string, sentence: string, url: string): Segment => ({ k: "figure", t: displayAmount(printed, sentence), printed, src: src(sentence, url) });
     const capSeg: Segment = { k: "computed", t: displayUsd(capSum, false, dp(capParts)), usd: capSum, parts: capParts };
@@ -2531,6 +2534,18 @@ export function buildCard(i: CardInputs): Card {
     const base = dm?.priorPeriodBase;
     const baseTotals = (base?.rows ?? []).filter((r: any) => r.kind === "subtotal" && r.sourceLine && r.amount);
     const deltas = (rc.movements ?? []).filter((m) => m.placement === "delta");
+    // A failed roll's gap is the roll's own: the 10-K's totals and each movement, against the balance sheet.
+    let rollGap: Segment | null = null;
+    if (rollFailed && rc.rollTie && rc.rollTie.residualMillions !== null && baseTotals.length) {
+      const parts: Part[] = [
+        ...baseTotals.map((r: any) => ({ printed: printedIn(r.sourceLine, Math.abs(r.amountMillions) * 1e6) ?? `$ ${Math.abs(r.amountMillions).toLocaleString("en-US")} million`, usd: r.amountMillions * 1e6, src: src(r.sourceLine, base!.filingUrl) })),
+        ...deltas.map((d) => ({ printed: printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, usd: d.amountMillions * 1e6, src: src(d.sourceLine, d.citedUrl || anchor.url) })),
+        ...capParts.map((p) => ({ ...p, usd: -p.usd })),
+      ];
+      const net = sum(parts);
+      const signed = net < 0 ? parts.map((p) => ({ ...p, usd: -p.usd })) : parts;
+      rollGap = { k: "computed", t: displayUsd(Math.abs(net), false, 0), usd: Math.abs(net), parts: signed };
+    }
     const cause: Line = [];
     if (!rc.counts && rc.rollTie && !rc.rollTie.ties && rc.rollTie.residualMillions !== null) {
       const tol = deltas.some((d) => /\b(approximately|about|roughly)\b/i.test(d.sourceLine)) ? 50 : 0;
@@ -2538,7 +2553,7 @@ export function buildCard(i: CardInputs): Card {
       for (const d of deltas) cause.push(t(` ${d.amountMillions < 0 ? "−" : "+"} ${mm(d.amountMillions)}`));
       cause.push(t(` = ${mm(rc.rollTie.computedMillions)}, against `), capSeg, t(`: ${mm(rc.rollTie.residualMillions)} apart, outside the ${tol ? `±$${tol}MM its approximate figures allow` : "exact match its exact figures require"}. So its notes are not carried to ${displayDate(anchor.reportDate, "day")}, and this card does not state a position.`));
     } else if (!rc.counts && rc.baseTie && !rc.baseTie.ties) {
-      cause.push(t("The earlier 10-K's debt table does not add up to its own printed totals, so it is not carried forward, and the notes this filing names fall short of "), capSeg, t("."));
+      cause.push(t("The earlier 10-K's debt table does not add up to its own printed totals, so it cannot be carried forward to this balance sheet's "), capSeg, t(", and this card does not state a position."));
     } else {
       cause.push(t("The notes and borrowings this card's filings state come to "), faceSeg(), t(" against "), capSeg, t("; no filing it holds states the rest."));
     }
@@ -2547,9 +2562,10 @@ export function buildCard(i: CardInputs): Card {
       // The base table's cells carry its caption's scale (Rule 67): the resolved millions, as the carrying-basis check reads them.
       ...baseTotals.map((r: any) => [t(`${base!.periodOfReport} 10-K, ${String(r.instrument).toLowerCase()}: `), fig(printedIn(r.sourceLine, Math.abs(r.amountMillions) * 1e6) ?? `$ ${Math.abs(r.amountMillions).toLocaleString("en-US")} million`, r.sourceLine, base!.filingUrl)] as Line),
       ...deltas.map((d) => [t(`${d.amountMillions < 0 ? "Repaid" : "Added"}: `), fig(printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, d.sourceLine, d.citedUrl || anchor.url)] as Line),
-      [t("Stated on this card's filings: "), faceSeg()],
+      // A failed roll states no anchor-only total: that partial position is what this rule withholds.
+      ...(rollFailed ? [] : [[t("Stated on this card's filings: "), faceSeg()] as Line]),
     ];
-    return { gap, cause, sources };
+    return { gap: rollGap ?? gap, cause, sources };
   })() : null;
   const v3: CardV3 = {
     header: v3header,
@@ -2565,7 +2581,7 @@ export function buildCard(i: CardInputs): Card {
     table: breakage ? null : { rows: tableRows, visible, schedule: anchorSchedule ? ladderBlocks : null },
     facilities: facLines.map((f) => ({ bold: withQualifiers(f.bold), sub: f.sub ? withQualifiers(f.sub) : null })),
     notShown: notShown.length ? notShown : [[t("Nothing withheld this week.")]],
-    footnote,
+    footnote: rollFailed ? [t("Every figure links to the sentence it came from.")] : footnote,
     stages: { facts: factsRead },
     possibleMoves,
     movesUnread: factsRead ? null : notYetRead("Debt moves this year"),

@@ -110,7 +110,8 @@ export interface RolledCoverageEntry {
 }
 
 export type RolledCoverage =
-  | { counts: false; reason: string; baseTie: BaseRowTie | null; rollTie: TieResult | null; movements: PlacedMovement[] }
+  /** `fired`: a base was read to roll (Nov 11: a fired roll that fails fails the card; it never falls back). */
+  | { counts: false; fired: boolean; reason: string; baseTie: BaseRowTie | null; rollTie: TieResult | null; movements: PlacedMovement[] }
   | {
       counts: true;
       label: string;
@@ -136,11 +137,11 @@ export interface RolledCoverageInput {
 
 export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
   const gate = rollForwardFires({ crossReference: i.crossReference, anchorHasLadder: i.anchorHasLadder });
-  if (!gate.fires) return { counts: false, reason: gate.reason, baseTie: null, rollTie: null, movements: [] };
+  if (!gate.fires) return { counts: false, fired: false, reason: gate.reason, baseTie: null, rollTie: null, movements: [] };
 
   const tie = baseRowTie(i.base);
   if (!tie) {
-    return { counts: false, reason: "the roll fires but no prior-period base was transcribed, so there is nothing to roll", baseTie: null, rollTie: null, movements: [] };
+    return { counts: false, fired: true, reason: "the roll fires but no prior-period base was transcribed, so there is nothing to roll", baseTie: null, rollTie: null, movements: [] };
   }
 
   const rows = (i.base?.rows ?? []).filter((r) => r.kind === "row");
@@ -165,7 +166,8 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
   if (!tie.ties) {
     return {
       counts: false,
-      reason: `the prior-period base does NOT tie to the totals its own table prints, so no roll is attempted: ${tie.detail}. Coverage stays on the rows the anchor states directly.`,
+      fired: true,
+      reason: `the prior-period base does NOT tie to the totals its own table prints, so no roll is attempted: ${tie.detail}. The card fails its checks and shows this; no partial position renders.`,
       baseTie: tie, rollTie: null, movements,
     };
   }
@@ -174,7 +176,8 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
   if (!rollTie.ties) {
     return {
       counts: false,
-      reason: `the base ties but the roll does not: ${rollTie.detail}. The base renders as prior-period context with this gap stated, and coverage stays on the anchor's own rows.`,
+      fired: true,
+      reason: `the base ties but the roll does not: ${rollTie.detail}. The card fails its checks and shows the roll with its gap; no partial position renders.`,
       baseTie: tie, rollTie, movements,
     };
   }
@@ -214,7 +217,7 @@ export function rolledCoverageFor(result: { results: readonly TriggerResultLike[
   const rowsAtAnchor = (dm?.scheduleSequence ?? []).filter((e) => e.kind === "row").length;
 
   if (!anchorDate) {
-    return { counts: false, reason: "the anchor states no reporting period, so there is no date to roll to. Nothing is excluded on an input that could not be read.", baseTie: null, rollTie: null, movements: [] };
+    return { counts: false, fired: false, reason: "the anchor states no reporting period, so there is no date to roll to. Nothing is excluded on an input that could not be read.", baseTie: null, rollTie: null, movements: [] };
   }
   const xbrl = dm?.xbrlDebtTotal?.total ?? null;
 

@@ -337,9 +337,9 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - now: Commercial paper drawn, $0: withheld. Claimed zero, but the sentence asserts nothing about this figure. See the sentence offered.
 - **footnote**
   - was: Face total ~$32,043MM, plus $111MM at carrying value. Balance sheet $31,878MM. The filer states its debt table is net of issuance costs, discounts or premiums. At carrying value, the lines match the balance sheet within $35MM. Using the Dec 31, 2025 10-K, updated through June 30, 2026. Every figure links to the sentence it came from.
-  - now: Face total ~$5,000MM. Balance sheet $31,142MM. $26,142MM is not accounted for. Every figure links to the sentence it came from.
+  - now: Every figure links to the sentence it came from.
 - **breakage**
-  - now: $26,142MM
+  - now: $271MM
   - now: The 2025 10-K's debt table, carried forward to this balance sheet: $31,463MM − $550MM + $500MM = $31,413MM, against $31,142MM: $271MM apart, outside the ±$50MM its approximate figures allow. So its notes are not carried to September 30, 2026, and this card does not state a position.
   - now: Balance sheet: $2,293MM
   - now: Balance sheet: $28,849MM
@@ -347,8 +347,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - now: 2025-12-31 10-K, total long-term debt: $30,871MM
   - now: Repaid: $550MM
   - now: Added: ~$500MM
-  - now: Stated on this card's filings: ~$5,000MM
-- **cited sentences behind source links**: 326 out, 40 in
+- **cited sentences behind source links**: 342 out, 36 in
   - was cited: 10-Q 2026-07-30 | For the quarterly period ended June 30, 2026
   - was cited: 10-K for Dec 31, 2025 | $1,500 million, 3.400 % Notes due March 2027 1,481
   - was cited: 10-K for Dec 31, 2025 | $259 million, 7.875 % Debentures due May 2027 260
@@ -359,6 +358,9 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was cited: 10-Q 2026-07-30 | Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through
   - was cited: 10-K for Dec 31, 2025 | $3,800 million, 4.375 % Notes due October 2028 3,792
   - was cited: 10-Q 2026-07-30 | During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.
+  - was cited: 8-K 2025-09-04 | On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its
+  - was cited: 8-K 2025-09-04 | 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032
+  - was cited: 8-K 2025-09-04 | Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and
   - was cited: 10-K for Dec 31, 2025 | $1,000 million, 5.000 % Notes due May 2029 996
   - was cited: 10-K for Dec 31, 2025 | $1,400 million, 2.400 % Notes due March 2030 (1) 1,406
   - was cited: 10-K for Dec 31, 2025 | $1,500 million, 2.375 % Notes due March 2031 (1) 1,420
@@ -383,12 +385,9 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was cited: 10-K for Dec 31, 2025 | Other, including finance leases 43
   - was cited: 10-K for Dec 31, 2025 | Other, including finance leases 68
   - was cited: 10-Q 2026-07-30 | Cash and cash equivalents $ 6,298 $ 7,676
-  - was cited: 8-K 2025-09-04 | On September 4, 2025, The Cigna Group (the “Company”) completed its offering of $1,000,000,000 in aggregate principal amount of its
   - was cited: 8-K 2025-09-04 | The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beg
-  - was cited: 8-K 2025-09-04 | 4.500% Senior Notes due 2030 (the “2030 Notes”), $1,250,000,000 in aggregate principal amount of its 4.875% Senior Notes due 2032 (the “2032
   - was cited: 8-K 2025-09-04 | The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginn
   - was cited: 8-K 2025-09-04 | The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginn
-  - was cited: 8-K 2025-09-04 | Notes”) and $750,000,000 in aggregate principal amount of its 6.000% Senior Notes due 2056 (together with the 2030 Notes, the 2032 Notes and
   - was cited: 10-Q 2026-07-30 | As of June 30, 2026, there was no outstanding balance under the Credit Agreement.
   - was cited: 10-Q 2026-07-30 | Short-term debt $ 2,792   $ 592
   - was cited: 10-Q 2026-07-30 | Long-term debt 29,086   30,871
@@ -399,12 +398,12 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was cited: 10-K for Dec 31, 2025 | $1,500 million, 5.250 % Notes due January 2036 1,488
   - was cited: 10-K for Dec 31, 2025 | $750 million, 6.000 % Notes due January 2056 735
   - now cited: 10-Q 2026-11-05 | For the quarterly period ended September 30, 2026
-  - now cited: 10-Q 2026-11-05 | Short-term debt $ 2,293   $ 592
-  - now cited: 10-Q 2026-11-05 | Long-term debt 28,849   30,871
-  - now cited: 10-Q 2026-11-05 | The commercial paper program had approximately $ 0.5 billion outstanding as of September 30, 2026 and an average interest rate of 4.09 %.
   - now cited: 10-K for Dec 31, 2025 | Total short-term debt $ 592
   - now cited: 10-K for Dec 31, 2025 | Total long-term debt $ 30,871
   - now cited: 10-Q 2026-11-05 | During the nine months ended September 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.
+  - now cited: 10-Q 2026-11-05 | The commercial paper program had approximately $ 0.5 billion outstanding as of September 30, 2026 and an average interest rate of 4.09 %.
+  - now cited: 10-Q 2026-11-05 | Short-term debt $ 2,293   $ 592
+  - now cited: 10-Q 2026-11-05 | Long-term debt 28,849   30,871
   - now cited: 10-Q 2026-11-05 | Cash and cash equivalents $ 6,186 $ 7,676
   - now cited: 10-Q 2026-11-05 | The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an opt
   - now cited: 10-Q 2026-11-05 | As of September 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are availabl
@@ -424,11 +423,10 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was: $1,000 million
   - was: $1,400 million
   - was: $750 million
+  - now: $592MM
+  - now: $30,871MM
+  - now: $550MM
+  - now: ~$500MM
   - now: $2,293MM
   - now: $28,849MM
-  - now: $1,000MM
-  - now: $1,250MM
-  - now: $1,500MM
-  - now: $750MM
-  - now: ~$500MM
   - now: $6,500MM
