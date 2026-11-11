@@ -7388,3 +7388,14 @@ escaping error), so names two to four ran with `--limit` given no value, which `
 per-ask and per-name bands still held, and the run billed $0.4569 of the $0.71 approved, each call under its priced
 worst case. A billed loop must fail closed when its remaining approval cannot be computed; `--limit` with no number
 should refuse, not mean "no limit".
+
+### Session 27: the trust rule, and no roll fallback (Nov 9–11, 2026)
+
+Cigna's refresh render said "Nothing matures in the next 18 months" over ~$5,000MM of debt against a $31,142MM
+balance sheet, its own footnote reporting $26,142MM not accounted for. The roll from the 2025 10-K had missed by $271MM
+(outside ±$50MM), and the build fell back to the debt the 10-Q names. I reported the $271MM and missed the $26,142MM:
+the residual that rejected the roll, not what the card did with the rejection.
+
+**Lesson: report what the card shows, not what the engine computed.** A diagnosis of a check's residual is incomplete
+until the rendered card has been read against it. Now a failed roll fails the card (the roll shown, its gap), and a
+card whose coverage fails states no call at all.
