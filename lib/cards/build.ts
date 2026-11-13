@@ -147,6 +147,15 @@ export function verbatimNameSegments(segs: Segment[], instrument: string): Segme
   });
 }
 
+/**
+ * A move's price as the card states it (Nov 13, doubledWords.test): "at 103%", or the filer's own phrase where it
+ * already begins with "at" ("at par"), never "at at par".
+ */
+export function priceLabelText(value: string): string {
+  const v = value.trim().replace(/\s+%/, "%");
+  return /^at\s/i.test(v) ? v : `at ${v}`;
+}
+
 /** The same note: its coupon, and its year where it states one. */
 export function sameNoteOf(text: string, instrument: string): boolean {
   const cb = couponsIn(instrument)[0]?.rate;
@@ -714,7 +723,7 @@ export function buildCard(i: CardInputs): Card {
       sentence: instSrc.sentence, url,
       funding: m.funding ? [t("funded by "), factLabel(m.funding.value, m.funding)] : [],
       use: m.use ? [t("used "), factLabel(m.use.value, m.use)] : [],
-      price: m.price ? factLabel(`at ${m.price.value.replace(/\s+%/, "%")}`, m.price) : null,
+      price: m.price ? factLabel(priceLabelText(m.price.value), m.price) : null,
       extra: [], retires: [],
       fundFact: m.funding ?? undefined, useFact: m.use ?? undefined, priceFact: m.price ?? undefined,
     });
