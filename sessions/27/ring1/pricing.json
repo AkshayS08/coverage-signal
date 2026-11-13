@@ -1,0 +1,228 @@
+{
+ "pricedAt": "2026-11-13T20:15:03.801Z",
+ "asOf": "2026-11-09",
+ "commit": "4c3a374db69eb489d3bfe849d0acbed8258c97ca",
+ "rows": [
+  {
+   "company": "TENET HEALTHCARE CORP",
+   "cik": "0000070318",
+   "anchor": "10-Q 2026-10-29 (period 2026-09-30)",
+   "samples": [
+    {
+     "sample": "canonical",
+     "cached": true,
+     "fingerprint": "36207eefb857ae1543a2229d"
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "cached": true,
+     "fingerprint": "36207eefb857ae1543a2229d"
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "cached": true,
+     "fingerprint": "36207eefb857ae1543a2229d"
+    }
+   ],
+   "uncachedSamples": 0,
+   "basePerSampleWorst": 0,
+   "digWorstPerSample": 0,
+   "proceedsEstimatePerSample": 0,
+   "referencedNote": null,
+   "facts": {
+    "inputHash": "0ac13d8573aed13c653f14d1",
+    "uncachedAsks": 0,
+    "worstPerAsk": 0,
+    "worst": 0,
+    "pricedOnPublishedInputAsStandIn": false
+   },
+   "worst": 0,
+   "declared": 0
+  },
+  {
+   "company": "Encompass Health Corp",
+   "cik": "0000785161",
+   "anchor": "10-Q 2026-11-03 (period 2026-09-30)",
+   "samples": [
+    {
+     "sample": "canonical",
+     "cached": true,
+     "fingerprint": "8ed102356861d01c61a0cfba"
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "cached": true,
+     "fingerprint": "8ed102356861d01c61a0cfba"
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "cached": true,
+     "fingerprint": "8ed102356861d01c61a0cfba"
+    }
+   ],
+   "uncachedSamples": 0,
+   "basePerSampleWorst": 0,
+   "digWorstPerSample": 0,
+   "proceedsEstimatePerSample": 0,
+   "referencedNote": null,
+   "facts": {
+    "inputHash": "315001246e01bd2820829511",
+    "uncachedAsks": 3,
+    "worstPerAsk": 0.0614,
+    "worst": 0.1842,
+    "pricedOnPublishedInputAsStandIn": false
+   },
+   "worst": 0.1842,
+   "declared": 0.19
+  },
+  {
+   "company": "DAVITA INC.",
+   "cik": "0000927066",
+   "anchor": "10-Q 2026-10-29 (period 2026-09-30)",
+   "samples": [
+    {
+     "sample": "canonical",
+     "cached": true,
+     "fingerprint": "744968d3c0f19f4619c61cb4"
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "cached": true,
+     "fingerprint": "744968d3c0f19f4619c61cb4"
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "cached": true,
+     "fingerprint": "744968d3c0f19f4619c61cb4"
+    }
+   ],
+   "uncachedSamples": 0,
+   "basePerSampleWorst": 0,
+   "digWorstPerSample": 0,
+   "proceedsEstimatePerSample": 0,
+   "referencedNote": null,
+   "facts": {
+    "inputHash": "124daea6988fab8de6cc23a2",
+    "uncachedAsks": 0,
+    "worstPerAsk": 0,
+    "worst": 0,
+    "pricedOnPublishedInputAsStandIn": false
+   },
+   "worst": 0,
+   "declared": 0
+  },
+  {
+   "company": "COMMUNITY HEALTH SYSTEMS INC",
+   "cik": "0001108109",
+   "anchor": "10-Q 2026-10-29 (period 2026-09-30)",
+   "samples": [
+    {
+     "sample": "canonical",
+     "cached": true,
+     "fingerprint": "75cc5d22d6722f4293860c27"
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "cached": true,
+     "fingerprint": "75cc5d22d6722f4293860c27"
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "cached": true,
+     "fingerprint": "75cc5d22d6722f4293860c27"
+    }
+   ],
+   "uncachedSamples": 0,
+   "basePerSampleWorst": 0,
+   "digWorstPerSample": 0,
+   "proceedsEstimatePerSample": 0,
+   "referencedNote": null,
+   "facts": {
+    "inputHash": "cac7c38ec8ef498e56452e44",
+    "uncachedAsks": 0,
+    "worstPerAsk": 0,
+    "worst": 0,
+    "pricedOnPublishedInputAsStandIn": false
+   },
+   "worst": 0,
+   "declared": 0
+  },
+  {
+   "company": "MOLINA HEALTHCARE, INC.",
+   "cik": "0001179929",
+   "anchor": "10-Q 2026-10-22 (period 2026-09-30)",
+   "samples": [
+    {
+     "sample": "canonical",
+     "cached": false,
+     "fingerprint": "1cdaee36c65952bc01cec4c6"
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "cached": false,
+     "fingerprint": "1cdaee36c65952bc01cec4c6"
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "cached": false,
+     "fingerprint": "1cdaee36c65952bc01cec4c6"
+    }
+   ],
+   "uncachedSamples": 3,
+   "basePerSampleWorst": 0.160501,
+   "digWorstPerSample": 0.275935,
+   "proceedsEstimatePerSample": 0.075492,
+   "referencedNote": null,
+   "facts": {
+    "inputHash": null,
+    "uncachedAsks": 3,
+    "worstPerAsk": 0.0508,
+    "worst": 0.15239999999999998,
+    "pricedOnPublishedInputAsStandIn": true
+   },
+   "worst": 1.6881839999999997,
+   "declared": 1.69
+  },
+  {
+   "company": "Cigna Group",
+   "cik": "0001739940",
+   "anchor": "10-Q 2026-11-05 (period 2026-09-30)",
+   "samples": [
+    {
+     "sample": "canonical",
+     "cached": true,
+     "fingerprint": "1db66a3cdcff95cbb061c496"
+    },
+    {
+     "sample": "s27-refresh-retaste-1",
+     "cached": true,
+     "fingerprint": "1db66a3cdcff95cbb061c496"
+    },
+    {
+     "sample": "s27-refresh-retaste-2",
+     "cached": true,
+     "fingerprint": "1db66a3cdcff95cbb061c496"
+    }
+   ],
+   "uncachedSamples": 0,
+   "basePerSampleWorst": 0,
+   "digWorstPerSample": 0,
+   "proceedsEstimatePerSample": 0,
+   "referencedNote": {
+    "uncached": 0,
+    "worstEach": 0
+   },
+   "facts": {
+    "inputHash": "ed143fe476fb9e0181f5988f",
+    "uncachedAsks": 3,
+    "worstPerAsk": 0.0552,
+    "worst": 0.1656,
+    "pricedOnPublishedInputAsStandIn": false
+   },
+   "worst": 0.1656,
+   "declared": 0.17
+  }
+ ],
+ "worstUsd": 2.038,
+ "declaredUsd": 2.04
+}

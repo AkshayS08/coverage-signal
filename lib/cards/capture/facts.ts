@@ -43,6 +43,7 @@ import { briefDateArg } from "../briefDate";
 import { locateMoveSentences } from "../moveSentences";
 import { placedInsideParent } from "../subFacility";
 import { cachedCardFacts, cardFactsKey } from "../../cache/answerCache";
+import { readCache } from "../../fetch/cache";
 import { beginCompanyCostScope, currentCompanySpend, persistCompanySpend, recordUsage } from "../../agent/costMeter";
 import { locateDebtNoteSection } from "../../fetch/noteLocation";
 import { locateLiquiditySection } from "../../fetch/liquiditySection";
@@ -251,6 +252,16 @@ const LIMIT = argOf("--limit");
       console.log(`  ${p.s.company.padEnd(30)} kept: ${facts.moves.length} moves, ${facts.schedule.length} schedule, ${facts.subFacilities.length} sub-facilities, ${facts.maturities.length} maturities, ${facts.faces.length} faces; residual ${facts.residual.length}`);
     }
     console.log("\nRe-verified from saved answers. $0, no client constructed.");
+    return;
+  }
+  // --status (Nov 13, Ring 1): which asks are already cached for this input, so a price counts only the calls the run
+  // would make (the call-set rule). Reads the cache only; $0.
+  if (process.argv.includes("--status")) {
+    for (const p of plan) {
+      const asks: number[] = [];
+      for (let ask = 1; ask <= ASKS; ask++) if ((await readCache(cardFactsKey(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, ask), null)) === null) asks.push(ask);
+      console.log(`STATUS ${p.s.cik} hash ${p.hash} uncached-asks ${asks.length ? asks.join(",") : "none"}`);
+    }
     return;
   }
   // --price: each ask's real input counted by the Messages API (the guard in price-only mode), worst case at max_tokens.
