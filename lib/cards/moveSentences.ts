@@ -16,6 +16,9 @@
  * 140 characters of that verb. A conditional ("may redeem", "will be repaid")
  * is not a move, and neither is an exhibit or press-release description.
  */
+import { paragraphSentences, antecedentWindow, REFERS, HEADING } from "./antecedent";
+import { quoteFound } from "./moveEvidence";
+
 export interface LocatedMove { sentence: string; url: string; label: string; date: string; kind: "amendment" | "issuance" | "retirement" | "facility" }
 
 const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
@@ -26,6 +29,10 @@ const KINDS: { kind: LocatedMove["kind"]; re: RegExp }[] = [
   { kind: "retirement", re: new RegExp(String.raw`\bissued\s+(?:a\s+)?notices?\s+of\s+(?:conditional\s+)?(?:full\s+|partial\s+)?(?:and\s+(?:conditional\s+)?(?:full\s+|partial\s+)?)?redemption\b|\b(?:redeemed|repurchased|repaid|retired|prepaid)\b${GAP(160)}\b(?:notes|debentures|bonds|term loans?|loans)\b`, "i") },
   { kind: "issuance", re: new RegExp(String.raw`\b(?:issued\s+(?:\$|an\s+aggregate|aggregate|additional)|completed\s+(?:an?|the|its)\s+(?:private\s+|registered\s+)?offering\s+of|priced\s+(?:an?|its|the)\s+(?:private\s+)?offering\s+of)${GAP(160)}\b(?:notes|debentures|bonds)\b`, "i") },
   { kind: "facility", re: new RegExp(String.raw`\b(?:entered into|terminated|refinanced)\b${GAP(80)}\b(?:credit agreement|credit facility|revolving credit|term loan)\b`, "i") },
+  // Nov 13: a PURPOSE-TIED revolver draw or repayment is a move (routine period totals are not: Nov 6). A draw made to
+  // repay, retire, redeem, fund or finance; or proceeds used to repay the revolver.
+  { kind: "facility", re: new RegExp(String.raw`\b(?:drew|borrowed)\b${GAP(120)}\b(?:revolving credit facility|revolver|credit facility)\b${GAP(200)}\bto\s+(?:repay|retire|redeem|fund|finance|refinance)\b`, "i") },
+  { kind: "facility", re: new RegExp(String.raw`\bused\s+(?:the\s+)?(?:net\s+)?proceeds\b${GAP(400)}\brepay\b${GAP(200)}\b(?:revolving credit facility|revolver)\b`, "i") },
 ];
 const CONDITIONAL = /\b(?:may|will|would|could|can|shall|might|intends? to|expects? to)\s+(?:be\s+)?(?:\w+\s+){0,2}(?:redeem|repurchase|repay|retire|prepay|issue|amend|refinance|terminate)|\bto be (?:redeemed|repaid|repurchased|retired|issued)\b/i;
 const NOT_A_STATEMENT = /\bpress release\b|\bexhibit\b|^description\b/i;
@@ -48,6 +55,21 @@ const sentencesOf = (t: string) => t.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=
 export function locateMoveSentences(docs: { url: string; label: string; text: string }[], from: string, to: string): LocatedMove[] {
   const out: LocatedMove[] = [];
   const seen = new Set<string>();
+  // Nov 13: a referring sentence ("this offering") that prints no date of its own is dated by its antecedent (the
+  // card's rule): the nearest earlier sentence of its paragraph that prints an in-window date.
+  const paras = new Map<string, ReturnType<typeof paragraphSentences>>();
+  const antecedentDate = (url: string, text: string, s: string): string | null => {
+    if (!REFERS.test(s)) return null;
+    if (!paras.has(url)) paras.set(url, paragraphSentences(text));
+    const { sentences, hasBreaks } = paras.get(url)!;
+    const at = sentences.findIndex((x) => quoteFound(x.sentence, s.slice(0, 120)));
+    if (at < 0) return null;
+    for (const k of antecedentWindow(sentences, at, hasBreaks, (x) => HEADING.test(x))) {
+      const d = datesIn(sentences[k].sentence).find((x) => x.to >= from && x.from <= to);
+      if (d) return d.iso;
+    }
+    return null;
+  };
   for (const d of docs) for (const raw of sentencesOf(d.text)) {
     if (NOT_A_STATEMENT.test(raw) || CONDITIONAL.test(raw)) continue;
     let hit: { kind: LocatedMove["kind"]; at: number } | null = null;
@@ -60,12 +82,13 @@ export function locateMoveSentences(docs: { url: string; label: string; text: st
     if (opener > 0 && (raw.slice(0, opener).match(/\d[\d,.]*/g) ?? []).length >= 4) { s = raw.slice(opener + 1); hit = { ...hit, at: hit.at - opener - 1 }; }
     // A period marker ("six months ended June 30", "as of", "at") is not the move's date.
     const near = datesIn(s).filter((x) => x.to >= from && x.from <= to && Math.abs(x.at - hit!.at) <= 140 && !/\b(?:ended|as of|at)\s*$/i.test(s.slice(Math.max(0, x.at - 12), x.at)));
-    if (!near.length) continue;
+    const viaAntecedent = near.length ? null : antecedentDate(d.url, d.text, s);
+    if (!near.length && !viaAntecedent) continue;
     const key = s.slice(0, 80);
     if (seen.has(key)) continue;
     seen.add(key);
-    // The move's own date: the in-window date printed nearest its verb.
-    const date = near.sort((a, b) => Math.abs(a.at - hit!.at) - Math.abs(b.at - hit!.at))[0].iso;
+    // The move's own date: the in-window date printed nearest its verb (or, for a referring sentence, its antecedent's).
+    const date = viaAntecedent ?? near.sort((a, b) => Math.abs(a.at - hit!.at) - Math.abs(b.at - hit!.at))[0].iso;
     out.push({ sentence: s, url: d.url, label: d.label, date, kind: hit.kind });
   }
   // A run of flattened text that swallows a located sentence is not a second move: keep the shorter.

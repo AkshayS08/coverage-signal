@@ -37,7 +37,8 @@ const rv = join("sessions", "27", "facts_rerun", "reverified", "cards", "0000785
 if (existsSync(rv)) {
   const card = JSON.parse(readFileSync(rv, "utf-8"));
   const pm = (card.v3.possibleMoves ?? []).map(txt).join(" | ");
-  assert(/we drew \$ ?250\.0 million/.test(pm) && /repay \$ ?100 million/.test(pm) && /this borrowing, together with cash on hand, to repay a portion/.test(pm), `[R3] the re-verified card flags all three as possible moves`);
+  // A long sentence shows excerpted (220 characters): the May repayment is matched by its opening.
+  assert(/we drew \$ ?250\.0 million/.test(pm) && /net proceeds from this offering, together with cash on hand, to \(i\) redeem/.test(pm) && /this borrowing, together with cash on hand, to repay a portion/.test(pm), `[R3] the re-verified card flags all three as possible moves`);
 }
 if (inScope("0000785161", "published")) {
   const pm = (enc.card.v3.possibleMoves ?? []).map(txt).join(" | ");
