@@ -45,3 +45,6 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# Ring 1 run artifacts: card inputs the pipeline builds ($0, rebuildable), large
+sessions/27/ring1/inputs/
