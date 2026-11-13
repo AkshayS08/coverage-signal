@@ -24,6 +24,7 @@
  * baselines/s27-refresh-batch.json, at that batch's as-of (REFRESH_AS_OF), with the read set pinned there. The
  * golden records readSetAsOf so the through-loop check re-derives it on that read set, not the published brief's.
  */
+import { anchorTextOf } from "./anchorText";
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -117,9 +118,10 @@ ${cik}: REFUSED — no ${REFRESH ? "refresh" : "canonical"} sample`); continue; 
     const samples = re.filter((x) => x.result.cik === cik).map((x) => ({ bust: x.bust, ...compareSample(c.result, x.result, asOf) }));
     const n = 1 + samples.filter((x) => x.tie.counts).length;
     if (n !== 3) problems.push(`9b ${n}/3 at ${asOf.toISOString().slice(0, 10)}`);
-    const state = deriveGoldenState(c.result, asOf);
+    const anchorText = await anchorTextOf(c.result);
+    const state = deriveGoldenState(c.result, asOf, { anchorText });
     for (const u of unsupportedAmountRows(state)) problems.push(`Rule 58 — ${u}`);
-    const crit = evaluateGoldenCriteria(c.result, asOf, { rowsCorrect: true, instrumentTypeFaithful: true, reproducedThreeTimes: n === 3, by: SIGNER, on: clearedOn });
+    const crit = evaluateGoldenCriteria(c.result, asOf, { rowsCorrect: true, instrumentTypeFaithful: true, reproducedThreeTimes: n === 3, by: SIGNER, on: clearedOn }, { anchorText });
     for (const k of crit.criteria) if (k.kind === "computed" && !k.pass) problems.push(`criterion ${k.id} does not hold: ${k.detail.slice(0, 140)}`);
     const live = await checkFree(c.company);
     let readSetNote: string;
@@ -127,7 +129,7 @@ ${cik}: REFUSED — no ${REFRESH ? "refresh" : "canonical"} sample`); continue; 
       const quiet = console.log; console.log = () => {};
       const replay = await runAgentLoop(c.company);
       console.log = quiet;
-      if (JSON.stringify(deriveGoldenState(replay, asOf)) !== JSON.stringify(state)) problems.push("Rule 75: the $0 replay through the loop does not give the stored canonical's state");
+      if (JSON.stringify(deriveGoldenState(replay, asOf, { anchorText })) !== JSON.stringify(state)) problems.push("Rule 75: the $0 replay through the loop does not give the stored canonical's state");
       readSetNote = `read set ${live.fingerprint} (${process.env.READ_SET_AS_OF ? `as of ${process.env.READ_SET_AS_OF}${REFRESH ? ", the refresh batch's read set" : ", the published brief"}` : "current"}; the $0 replay through the loop gives the same state)`;
     } else readSetNote = "the read set the canonical and both re-tastes were taken on (since moved; not a refresh by ruling)";
     if (CARD_CONDITION.has(cik)) {

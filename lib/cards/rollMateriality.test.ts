@@ -39,7 +39,7 @@ const cpOf = (rc: any) => (rc.movements ?? []).find((m: any) => m.placement === 
 assert(rj.counts === true && cpOf(rj)?.amountMillions === 975 && rj.unattributedMillions === 10 && (!inScope("0001739940", "published") || (DISCLOSED.test(cardText(june.card)) && /\$10MM \(0\.03%\) not attributed/.test(cardText(june.card)) && !june.card.v3.breakage)),
   `[E1] June: CP ${cpOf(rj)?.amountMillions}, unattributed ${rj.unattributedMillions}MM, counts ${rj.counts}; the card discloses "${(/\$[\d,]+MM \([\d.]+%\) not attributed to a stated cause/.exec(cardText(june.card)) ?? ["none"])[0]}"`);
 const attr = (rs.attributions ?? []) as { amountMillions: number; sourceLine: string }[];
-assert(rs.counts === false && cpOf(rs)?.amountMillions === 463 && attr.some((a) => a.amountMillions === -40 && /Repayment of long-term debt/.test(a.sourceLine)) && rs.unattributedMillions === -194 && (!inScope("0001739940", "review") || (sept.card.v3.checks === "failed" && /\$194MM \(0\.62%\) not attributed to a stated cause/.test(cardText(sept.card)))),
+assert(rs.counts === false && cpOf(rs)?.amountMillions === 463 && attr.some((a) => a.amountMillions === -40 && /Repayment of long-term debt/.test(a.sourceLine)) && rs.unattributedMillions === 194 && (!inScope("0001739940", "review") || (sept.card.v3.checks === "failed" && /\$194MM \(0\.62%\) not attributed to a stated cause/.test(cardText(sept.card)))),
   `[E2] Sept: CP ${cpOf(rs)?.amountMillions}, attributed ${attr.map((a) => `${a.amountMillions} ("${a.sourceLine.slice(0, 40)}")`).join(", ") || "none"}, unattributed ${rs.unattributedMillions}MM, counts ${rs.counts}`);
 
 for (const s of shownCards()) {

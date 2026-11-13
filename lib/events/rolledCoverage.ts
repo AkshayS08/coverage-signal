@@ -33,8 +33,44 @@
  * a reader has to be able to see the walk.
  */
 import type { PriorPeriodBase } from "../agent/loop";
-import { decideTie, computeRollTie, toleranceFor, rollForwardFires, type RollDelta, type TieResult } from "./rollForward";
-import { derivePlacedMovements, toRollDeltas, type PlacedMovement } from "./rollDeltas";
+import { decideTie, computeRollTie, materialityFor, rollForwardFires, type RollDelta, type TieResult } from "./rollForward";
+import { derivePlacedMovements, toRollDeltas, statesApproximation, type PlacedMovement } from "./rollDeltas";
+
+/** A part of the roll's residual a read sentence states, quoted (Nov 13: attribution only to a stated cause). */
+export interface RollAttribution { label: string; amountMillions: number; sourceLine: string }
+
+/**
+ * SESSION 27 (Akshay, Nov 13): EXACT FIGURES, AND ATTRIBUTION ONLY TO A STATED CAUSE, read from the anchor's own
+ * cash-flow statement.
+ *  - Commercial paper stated as an approximation ("approximately $0.5 billion outstanding") takes the cash-flow line for
+ *    the same fact, "Net change in short-term debt", exact and quoted.
+ *  - Long-term debt the cash-flow statement says was repaid beyond the repayments stated by name is attributed to that
+ *    line, quoted. Nothing else is attributed: an amortization, hedge or currency effect counts only where a read
+ *    sentence states its amount.
+ * `unread`: an approximate figure has an exact counterpart in a text this call was not given (fail closed).
+ */
+const NET_SHORT_TERM = /Net (?:change|increase \(decrease\)|\(decrease\) increase|increase|decrease) in short-term debt(?:, excluding term loan)?\s*\$?\s*(\(\s*[\d,]+\s*\)|[\d,]+)/i;
+const LTD_REPAID = /Repayments? of long-term debt\s*\$?\s*\(\s*([\d,]+)\s*\)/i;
+function exactAndAttributed(movements: PlacedMovement[], anchorText: string | null | undefined): { movements: PlacedMovement[]; attributions: RollAttribution[]; unread: boolean } {
+  const flat = anchorText ? anchorText.replace(/[\s\u00a0]+/g, " ") : null;
+  let unread = false;
+  const out = movements.map((m) => {
+    if (m.placement !== "delta" || !statesApproximation(m.sourceLine) || !/commercial paper/i.test(`${m.instrument} ${m.sourceLine}`)) return m;
+    if (flat === null) { unread = true; return m; }
+    const hit = NET_SHORT_TERM.exec(flat);
+    if (!hit) return m;
+    const n = Number(hit[1].replace(/[(),\s]/g, "")), amount = /\(/.test(hit[1]) ? -n : n;
+    return { ...m, amountMillions: amount, statedAs: `$ ${n.toLocaleString("en-US")} million`, sourceLine: hit[0].trim(), why: `the cash-flow statement's exact figure for the same fact, over "${m.statedAs}"` };
+  });
+  const attributions: RollAttribution[] = [];
+  const repaid = flat ? LTD_REPAID.exec(flat) : null;
+  if (repaid) {
+    const total = Number(repaid[1].replace(/,/g, ""));
+    const named = -out.filter((m) => m.placement === "delta" && m.kind === "repayment").reduce((a, m) => a + m.amountMillions, 0);
+    if (total - named >= 1) attributions.push({ label: "long-term debt repaid beyond the repayments stated by name", amountMillions: -(total - named), sourceLine: repaid[0].trim() });
+  }
+  return { movements: out, attributions, unread };
+}
 
 export interface BaseRowTie {
   /** One per printed subtotal, plus the grand total. */
@@ -111,7 +147,7 @@ export interface RolledCoverageEntry {
 
 export type RolledCoverage =
   /** `fired`: a base was read to roll (Nov 11: a fired roll that fails fails the card; it never falls back). */
-  | { counts: false; fired: boolean; reason: string; baseTie: BaseRowTie | null; rollTie: TieResult | null; movements: PlacedMovement[] }
+  | { counts: false; fired: boolean; reason: string; baseTie: BaseRowTie | null; rollTie: TieResult | null; movements: PlacedMovement[]; attributions?: RollAttribution[]; unattributedMillions?: number | null; materialityMillions?: number | null }
   | {
       counts: true;
       label: string;
@@ -121,6 +157,10 @@ export type RolledCoverage =
       rollTie: TieResult;
       movements: PlacedMovement[];
       toleranceMillions: number;
+      /** Nov 13: what read sentences explain, quoted; what remains, always disclosed; the 0.2% line it is held to. */
+      attributions: RollAttribution[];
+      unattributedMillions: number;
+      materialityMillions: number;
     };
 
 export interface RolledCoverageInput {
@@ -133,6 +173,8 @@ export interface RolledCoverageInput {
   /** The anchor's stated total, in millions. The roll's target. */
   anchorTotalMillions: number | null;
   movementInputs: Omit<Parameters<typeof derivePlacedMovements>[0], "baseDate" | "anchorDate" | "baseRows" | "parseMillions">;
+  /** The anchor's own text, for its cash-flow statement (Nov 13). Absent: an approximate figure cannot be made exact. */
+  anchorText?: string | null;
 }
 
 export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
@@ -145,7 +187,7 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
   }
 
   const rows = (i.base?.rows ?? []).filter((r) => r.kind === "row");
-  const movements = derivePlacedMovements({
+  const movementsRaw = derivePlacedMovements({
     ...i.movementInputs,
     baseDate: i.baseDate,
     anchorDate: i.anchorDate,
@@ -159,7 +201,10 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
       return parseStatedMillions(amount);
     },
   });
+  const exact = exactAndAttributed(movementsRaw, i.anchorText);
+  const movements = exact.movements;
   const deltas = toRollDeltas(movements);
+  const attributionDeltas: RollDelta[] = exact.attributions.map((a) => ({ label: a.label, amountMillions: a.amountMillions, sourceLine: a.sourceLine, citedUrl: "", statedApproximate: false }));
 
   // THE BASE TIE RUNS FIRST AND A FAILED ONE PRODUCES NO ROLL. An untied base
   // rolled forward is two unknowns reported as one number.
@@ -172,9 +217,15 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
     };
   }
 
-  const rollTie = computeRollTie(tie.computedMillions, deltas, i.anchorTotalMillions);
+  // Fail closed: an approximate figure whose exact counterpart sits in a text this call was not given.
+  if (exact.unread) {
+    return { counts: false, fired: true, reason: "an approximate figure has an exact counterpart in the anchor's cash-flow statement, which this surface was not given, so the roll is not decided on the rounded figure", baseTie: tie, rollTie: null, movements };
+  }
+  const rollTie = computeRollTie(tie.computedMillions, [...deltas, ...attributionDeltas], i.anchorTotalMillions);
+  const residualFields = { attributions: exact.attributions, unattributedMillions: rollTie.residualMillions, materialityMillions: materialityFor(rollTie.computedMillions) };
   if (!rollTie.ties) {
     return {
+      ...residualFields,
       counts: false,
       fired: true,
       reason: `the base ties but the roll does not: ${rollTie.detail}. The card fails its checks and shows the roll with its gap; no partial position renders.`,
@@ -197,7 +248,10 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
     baseTie: tie,
     rollTie,
     movements,
-    toleranceMillions: toleranceFor(deltas),
+    toleranceMillions: materialityFor(rollTie.computedMillions),
+    attributions: exact.attributions,
+    unattributedMillions: rollTie.residualMillions ?? 0,
+    materialityMillions: materialityFor(rollTie.computedMillions),
   };
 }
 
@@ -209,7 +263,7 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
  * assembles the inputs itself, because three assemblies of one question is
  * how the three surfaces start disagreeing about the same company.
  */
-export function rolledCoverageFor(result: { results: readonly TriggerResultLike[] }): RolledCoverage {
+export function rolledCoverageFor(result: { results: readonly TriggerResultLike[] }, opts: { anchorText?: string | null } = {}): RolledCoverage {
   const dm = result.results.find((t) => t.triggerId === "debt-maturity");
   const nd = result.results.find((t) => t.triggerId === "new-debt-issuance");
   const base = (dm?.priorPeriodBase ?? null) as PriorPeriodBase | null;
@@ -228,6 +282,7 @@ export function rolledCoverageFor(result: { results: readonly TriggerResultLike[
     baseDate: base?.periodOfReport ?? "",
     anchorDate,
     anchorTotalMillions: xbrl === null ? null : Math.round(xbrl / 1e6),
+    anchorText: opts.anchorText,
     movementInputs: {
       noteRetirements: (dm?.noteRetirements ?? []) as never,
       issuedTranches: (nd?.issuedTranches ?? []) as never,

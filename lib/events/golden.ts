@@ -292,13 +292,14 @@ export function residualPercentOf(state: { coverage: { residualPercent: number |
   return state.coverage.residualPercent;
 }
 
-export function deriveGoldenState(result: CompanyResult, asOf: Date): GoldenState {
+export function deriveGoldenState(result: CompanyResult, asOf: Date, opts: { anchorText?: string | null } = {}): GoldenState {
   const dm = result.results.find((t) => t.triggerId === "debt-maturity");
   const nd = result.results.find((t) => t.triggerId === "new-debt-issuance");
   const pos = assemblePosition(result, asOf);
   // SESSION 25 — coverage is computed on the ROLLED position where one
   // reconciles, so a signed state pins what the page shows.
-  const rc = rolledCoverageFor(result);
+  // Nov 13: the roll reads the anchor's cash-flow statement (exact figures, stated causes); without it, it fails closed.
+  const rc = rolledCoverageFor(result, opts);
   const cov = computeCoverage(dm, undefined, undefined, rc);
   const anchor = dm?.debtScheduleSourceFiling ?? null;
   const cards = buildEvents([result], asOf).flashCardCandidates;

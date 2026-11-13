@@ -12,7 +12,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - now: 10-Q filed Nov 5, 2026
   - now: new this week · 1 other filing, none affecting debt
 - **rolledNote**
-  - was: This company's 10-Q does not list its notes. This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026. Rows from the 10-K carry a 10-K tag.
+  - was: This company's 10-Q does not list its notes. This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026. Rows from the 10-K carry a 10-K tag. $10MM (0.03%) not attributed to a stated cause, within the 0.2% materiality line.
 - **call (label)**
   - was: The call · next 18 months, to May 9, 2028
   - was: Due in window
@@ -336,18 +336,18 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was: 1 filing this week affecting debt: text not read, so amount and instrument are not shown.
   - now: Commercial paper drawn, $0: withheld. Claimed zero, but the sentence asserts nothing about this figure. See the sentence offered.
 - **footnote**
-  - was: Face total ~$32,043MM, plus $111MM at carrying value. Balance sheet $31,878MM. The filer states its debt table is net of issuance costs, discounts or premiums. At carrying value, the lines match the balance sheet within $35MM. Using the Dec 31, 2025 10-K, updated through June 30, 2026. Every figure links to the sentence it came from.
+  - was: Face total ~$32,043MM, plus $111MM at carrying value. Balance sheet $31,878MM. The filer states its debt table is net of issuance costs, discounts or premiums. At carrying value, the lines match the balance sheet within $10MM. Using the Dec 31, 2025 10-K, updated through June 30, 2026. Every figure links to the sentence it came from.
   - now: Every figure links to the sentence it came from.
 - **breakage**
-  - now: $271MM
-  - now: The 2025 10-K's debt table, carried forward to this balance sheet: $31,463MM − $550MM + $500MM = $31,413MM, against $31,142MM: $271MM apart, outside the ±$50MM its approximate figures allow. So its notes are not carried to September 30, 2026, and this card does not state a position.
+  - now: $194MM
+  - now: The 2025 10-K's debt table, carried forward to this balance sheet: $31,463MM − $550MM + $463MM − $40MM = $31,336MM, against $31,142MM. $40MM is long-term debt repaid beyond the repayments stated by name, per “Repayment of long-term debt ( 590 )”. $194MM (0.62%) not attributed to a stated cause, over the 0.2% materiality line. So its notes are not carried to September 30, 2026, and this card does not state a position.
   - now: Balance sheet: $2,293MM
   - now: Balance sheet: $28,849MM
   - now: 2025-12-31 10-K, total short-term debt: $592MM
   - now: 2025-12-31 10-K, total long-term debt: $30,871MM
   - now: Repaid: $550MM
-  - now: Added: ~$500MM
-- **cited sentences behind source links**: 342 out, 36 in
+  - now: Added: $463MM
+- **cited sentences behind source links**: 342 out, 37 in
   - was cited: 10-Q 2026-07-30 | For the quarterly period ended June 30, 2026
   - was cited: 10-K for Dec 31, 2025 | $1,500 million, 3.400 % Notes due March 2027 1,481
   - was cited: 10-K for Dec 31, 2025 | $259 million, 7.875 % Debentures due May 2027 260
@@ -397,15 +397,18 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was cited: 10-K for Dec 31, 2025 | $1,250 million, 4.875 % Notes due September 2032 1,243
   - was cited: 10-K for Dec 31, 2025 | $1,500 million, 5.250 % Notes due January 2036 1,488
   - was cited: 10-K for Dec 31, 2025 | $750 million, 6.000 % Notes due January 2056 735
+  - was cited: 10-Q 2026-07-30 | Net change in short-term debt 975
   - now cited: 10-Q 2026-11-05 | For the quarterly period ended September 30, 2026
   - now cited: 10-K for Dec 31, 2025 | Total short-term debt $ 592
   - now cited: 10-K for Dec 31, 2025 | Total long-term debt $ 30,871
-  - now cited: 10-Q 2026-11-05 | During the nine months ended September 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.
-  - now cited: 10-Q 2026-11-05 | The commercial paper program had approximately $ 0.5 billion outstanding as of September 30, 2026 and an average interest rate of 4.09 %.
+  - now cited: 10-Q 2026-11-05 | Net change in short-term debt, excluding term loan 463
+  - now cited: 10-Q 2026-11-05 | Repayment of long-term debt ( 590 )
   - now cited: 10-Q 2026-11-05 | Short-term debt $ 2,293   $ 592
   - now cited: 10-Q 2026-11-05 | Long-term debt 28,849   30,871
+  - now cited: 10-Q 2026-11-05 | During the nine months ended September 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.
   - now cited: 10-Q 2026-11-05 | Cash and cash equivalents $ 6,186 $ 7,676
   - now cited: 10-Q 2026-11-05 | The Company maintains a $ 6.5 billion, five-year revolving credit and letter of credit agreement that will mature in April 2030, with an opt
+  - now cited: 10-Q 2026-11-05 | The commercial paper program had approximately $ 0.5 billion outstanding as of September 30, 2026 and an average interest rate of 4.09 %.
   - now cited: 10-Q 2026-11-05 | As of September 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are availabl
   - now cited: 10-Q 2026-11-05 | As of September 30, 2026, there was no outstanding balance under the Credit Agreement.
   - now cited: 10-Q 2026-11-05 | Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through
@@ -425,8 +428,9 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was: $750 million
   - now: $592MM
   - now: $30,871MM
-  - now: $550MM
-  - now: ~$500MM
+  - now: $463MM
+  - now: $590MM
   - now: $2,293MM
   - now: $28,849MM
   - now: $6,500MM
+  - now: ~$500MM

@@ -87,10 +87,10 @@ export function capacitySeparation(pos: ReturnType<typeof assemblePosition>, cov
   };
 }
 
-export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: Attestation = {}): CriteriaResult {
+export function evaluateGoldenCriteria(result: CompanyResult, asOf: Date, att: Attestation = {}, opts: { anchorText?: string | null } = {}): CriteriaResult {
   const dm = result.results.find((t: TriggerResult) => t.triggerId === "debt-maturity");
   const pos = assemblePosition(result, asOf);
-  const cov = computeCoverage(dm, ladderCapacityFor(pos), facilityCategoriesOnLadder(pos, dm?.facilities), rolledCoverageFor(result));
+  const cov = computeCoverage(dm, ladderCapacityFor(pos), facilityCategoriesOnLadder(pos, dm?.facilities), rolledCoverageFor(result, opts));
   const seq = normalizeScheduleSequence(dm?.scheduleSequence);
   const walk = computeWalkChecksum(dm?.scheduleSequence);
   const anchor = dm?.debtScheduleSourceFiling ?? null;

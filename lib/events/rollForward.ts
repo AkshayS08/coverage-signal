@@ -255,13 +255,24 @@ export function toleranceFor(deltas: RollDelta[]): number {
   return deltas.some((d) => d.statedApproximate) ? APPROXIMATION_BAND_MILLIONS : 0;
 }
 
+/**
+ * THE MATERIALITY LINE (Akshay's ruling, Nov 13, 2026). A roll uses exact figures where the filer prints them, and a
+ * residual is attributed only to a cause a read sentence states. What remains unattributed is always disclosed; at or
+ * under 0.2% of rolled debt the roll reconciles, over it the card fails its checks. It replaces the ±$50MM band an
+ * approximate figure used to earn (toleranceFor, kept for the session scripts that read it).
+ */
+export const MATERIALITY_FRACTION = 0.002;
+export function materialityFor(rolledMillions: number): number {
+  return Math.abs(rolledMillions) * MATERIALITY_FRACTION;
+}
+
 export function computeRollTie(
   baseMillions: number,
   deltas: RollDelta[],
   anchorTotalMillions: number | null
 ): TieResult {
   const computed = deltas.reduce((a, d) => a + d.amountMillions, baseMillions);
-  const tol = toleranceFor(deltas);
+  const tol = materialityFor(computed);
   const { residual, ties } = decideTie(computed, anchorTotalMillions, tol);
   const walk = `${baseMillions}${deltas.map((d) => ` ${d.amountMillions < 0 ? "−" : "+"} ${Math.abs(d.amountMillions)}`).join("")} = ${computed}`;
   return {
@@ -276,8 +287,8 @@ export function computeRollTie(
           (residual === null
             ? ""
             : ties
-              ? ` — residual ${residual}, within the filer's stated approximation (±${tol})`
-              : ` — residual ${residual}, OUTSIDE the ±${tol} the filer's own approximation supports`),
+              ? ` — residual ${residual}, within the 0.2% materiality line (±${Math.round(tol)})`
+              : ` — residual ${residual}, OUTSIDE the 0.2% materiality line (±${Math.round(tol)})`),
   };
 }
 
@@ -340,8 +351,8 @@ export function rollForward(input: RollForwardInput): RollForwardOutcome {
     `, rolled forward to ${input.anchorPeriod}`;
 
   if (!baseTie.ties) {
-    return { fires: true, baseTie, rollTie: null, label, deltas: input.deltas, toleranceMillions: toleranceFor(input.deltas) };
+    return { fires: true, baseTie, rollTie: null, label, deltas: input.deltas, toleranceMillions: materialityFor(baseTie.computedMillions) };
   }
   const rollTie = computeRollTie(baseTie.computedMillions, input.deltas, input.anchorTotalMillions);
-  return { fires: true, baseTie, rollTie, label, deltas: input.deltas, toleranceMillions: toleranceFor(input.deltas) };
+  return { fires: true, baseTie, rollTie, label, deltas: input.deltas, toleranceMillions: materialityFor(rollTie.computedMillions) };
 }

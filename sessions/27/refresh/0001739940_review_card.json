@@ -1699,8 +1699,8 @@
   "breakage": {
    "gap": {
     "k": "computed",
-    "t": "$271MM",
-    "usd": 271000000,
+    "t": "$194MM",
+    "usd": 194000000,
     "parts": [
      {
       "printed": "$ 592 million",
@@ -1721,19 +1721,19 @@
       }
      },
      {
-      "printed": "$ 550 million",
-      "usd": -550000000,
+      "printed": "$ 463 million",
+      "usd": 463000000,
       "src": {
-       "sentence": "During the nine months ended September 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+       "sentence": "Net change in short-term debt, excluding term loan 463",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
        "doc": "10-Q 2026-11-05"
       }
      },
      {
-      "printed": "$ 0.5 billion",
-      "usd": 500000000,
+      "printed": "$ 590 million",
+      "usd": -590000000,
       "src": {
-       "sentence": "The commercial paper program had approximately $ 0.5 billion outstanding as of September 30, 2026 and an average interest rate of 4.09 %.",
+       "sentence": "Repayment of long-term debt ( 590 )",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
        "doc": "10-Q 2026-11-05"
       }
@@ -1769,11 +1769,15 @@
     },
     {
      "k": "text",
-     "t": " + $500MM"
+     "t": " + $463MM"
     },
     {
      "k": "text",
-     "t": " = $31,413MM, against "
+     "t": " − $40MM"
+    },
+    {
+     "k": "text",
+     "t": " = $31,336MM, against "
     },
     {
      "k": "computed",
@@ -1802,7 +1806,33 @@
     },
     {
      "k": "text",
-     "t": ": $271MM apart, outside the ±$50MM its approximate figures allow. So its notes are not carried to September 30, 2026, and this card does not state a position."
+     "t": "."
+    },
+    {
+     "k": "text",
+     "t": " $40MM is long-term debt repaid beyond the repayments stated by name, per "
+    },
+    {
+     "k": "label",
+     "t": "“Repayment of long-term debt ( 590 )”",
+     "stated": "Repayment of long-term debt",
+     "src": {
+      "sentence": "Repayment of long-term debt ( 590 )",
+      "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
+      "doc": "10-Q 2026-11-05"
+     }
+    },
+    {
+     "k": "text",
+     "t": "."
+    },
+    {
+     "k": "text",
+     "t": " $194MM (0.62%) not attributed to a stated cause, over the 0.2% materiality line."
+    },
+    {
+     "k": "text",
+     "t": " So its notes are not carried to September 30, 2026, and this card does not state a position."
     }
    ],
    "sources": [
@@ -1893,10 +1923,10 @@
      },
      {
       "k": "figure",
-      "t": "~$500MM",
-      "printed": "$ 0.5 billion",
+      "t": "$463MM",
+      "printed": "$ 463 million",
       "src": {
-       "sentence": "The commercial paper program had approximately $ 0.5 billion outstanding as of September 30, 2026 and an average interest rate of 4.09 %.",
+       "sentence": "Net change in short-term debt, excluding term loan 463",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
        "doc": "10-Q 2026-11-05"
       }

@@ -35,6 +35,7 @@
  *
  * Run: npx tsx lib/cache/goldenThroughLoop.test.ts
  */
+import { anchorTextOf } from "./anchorText";
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
 // Session 27 (Oct 30): Ring 1 checks the PUBLISHED brief — each name's read set as it stood on the published cards'
@@ -111,7 +112,7 @@ const snapshotOf = (cik: string): { result: unknown; extractionVersion: number }
     const result = await runAgentLoop(name);
     spend.record(name);
     const asOf = new Date(`${g.state.asOf}T00:00:00Z`);
-    const actual = deriveGoldenState(result, asOf);
+    const actual = deriveGoldenState(result, asOf, { anchorText: await anchorTextOf(result as any) });
     const verdict = compareToGolden(g.state, actual);
     assert(verdict.kind === "matches",
       `[3:${name}] REPRODUCES THROUGH THE LOOP${

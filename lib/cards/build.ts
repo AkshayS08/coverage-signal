@@ -197,7 +197,8 @@ export function buildCard(i: CardInputs): Card {
   const notYetRead = (what: string): Line => [t(`${what}: not yet read from `), anchorFiling, t(".")];
   const periodEnd = anchor.reportDate;
   const pos = assemblePosition(result, new Date(`${briefDate}T00:00:00Z`));
-  const rc = rolledCoverageFor(result);
+  // Nov 13: the roll reads the anchor's cash-flow statement for exact figures and stated causes.
+  const rc = rolledCoverageFor(result, { anchorText: i.textByUrl.get(anchor.url) ?? null });
   const cov = computeCoverage(dm, undefined, undefined, rc);
   const facilities: VerifiedFacility[] = dm?.facilities ?? [];
   // A note's seniority sentence is a label source only where the ANCHOR states
@@ -1949,8 +1950,24 @@ export function buildCard(i: CardInputs): Card {
     actionable,
   };
   const baseUrl = dm?.priorPeriodBase?.filingUrl as string | undefined;
+  // Nov 13 (rollMateriality.test): A ROLL'S RESIDUAL IS ALWAYS DISCLOSED. What a read sentence explains, quoted; what
+  // remains, "$X (Y%) not attributed to a stated cause", against the 0.2% materiality line (Akshay's ruling).
+  const rollAttributions = (rc as { attributions?: { label: string; amountMillions: number; sourceLine: string }[] }).attributions ?? [];
+  const residualDisclosure = (): Line => {
+    const u = (rc as { unattributedMillions?: number | null }).unattributedMillions, rolled = rc.rollTie?.computedMillions;
+    if (u === null || u === undefined || !rolled) return [];
+    const line: Line = [];
+    for (const a of rollAttributions) {
+      const head = (/^[A-Z][a-z]+(?: [a-z-]+)* of [a-z-]+(?: [a-z-]+)*/.exec(a.sourceLine) ?? [a.sourceLine])[0];
+      line.push(t(` $${Math.abs(a.amountMillions).toLocaleString("en-US")}MM is ${a.label}, per `), { k: "label", t: `“${a.sourceLine}”`, stated: head, src: src(a.sourceLine, anchor.url) }, t("."));
+    }
+    const pct = ((Math.abs(u) / Math.abs(rolled)) * 100).toFixed(2);
+    const within = Math.abs(u) <= ((rc as { materialityMillions?: number | null }).materialityMillions ?? 0);
+    line.push(t(` $${Math.abs(u).toLocaleString("en-US")}MM (${pct}%) not attributed to a stated cause, ${within ? "within" : "over"} the 0.2% materiality line.`));
+    return line;
+  };
   const rolledNote: Line | null = rolledLabel && baseUrl
-    ? [t(`This company's ${anchor.form} does not list its notes. This list comes from the `), { k: "filing", t: `${rolledFrom(rolledLabel)} 10-K`, url: baseUrl }, t(`, updated for changes through ${displayDate(periodEnd, "day")}. Rows from the 10-K carry a 10-K tag.`)]
+    ? [t(`This company's ${anchor.form} does not list its notes. This list comes from the `), { k: "filing", t: `${rolledFrom(rolledLabel)} 10-K`, url: baseUrl }, t(`, updated for changes through ${displayDate(periodEnd, "day")}. Rows from the 10-K carry a 10-K tag.`), ...residualDisclosure()]
     : null;
 
   // ── 2.2 the call box ──
@@ -2537,9 +2554,14 @@ export function buildCard(i: CardInputs): Card {
     // A failed roll's gap is the roll's own: the 10-K's totals and each movement, against the balance sheet.
     let rollGap: Segment | null = null;
     if (rollFailed && rc.rollTie && rc.rollTie.residualMillions !== null && baseTotals.length) {
+      // Every part is a figure its sentence prints: where the cash-flow statement's repayment total explains more than
+      // the repayments stated by name, that total stands in for them (the named ones and the attributed rest).
+      const cfRepaid = rollAttributions.find((a) => /Repayments? of long-term debt/i.test(a.sourceLine));
+      const cfTotal = cfRepaid ? Number((/\(\s*([\d,]+)\s*\)/.exec(cfRepaid.sourceLine) ?? ["", "0"])[1].replace(/,/g, "")) : 0;
       const parts: Part[] = [
         ...baseTotals.map((r: any) => ({ printed: printedIn(r.sourceLine, Math.abs(r.amountMillions) * 1e6) ?? `$ ${Math.abs(r.amountMillions).toLocaleString("en-US")} million`, usd: r.amountMillions * 1e6, src: src(r.sourceLine, base!.filingUrl) })),
-        ...deltas.map((d) => ({ printed: printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, usd: d.amountMillions * 1e6, src: src(d.sourceLine, d.citedUrl || anchor.url) })),
+        ...deltas.filter((d) => !(cfRepaid && d.kind === "repayment")).map((d) => ({ printed: printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, usd: d.amountMillions * 1e6, src: src(d.sourceLine, d.citedUrl || anchor.url) })),
+        ...(cfRepaid ? [{ printed: `$ ${cfTotal.toLocaleString("en-US")} million`, usd: -cfTotal * 1e6, src: src(cfRepaid.sourceLine, anchor.url) }] : []),
         ...capParts.map((p) => ({ ...p, usd: -p.usd })),
       ];
       const net = sum(parts);
@@ -2548,10 +2570,10 @@ export function buildCard(i: CardInputs): Card {
     }
     const cause: Line = [];
     if (!rc.counts && rc.rollTie && !rc.rollTie.ties && rc.rollTie.residualMillions !== null) {
-      const tol = deltas.some((d) => /\b(approximately|about|roughly)\b/i.test(d.sourceLine)) ? 50 : 0;
-      cause.push(t(`The ${base?.periodOfReport ? `${base.periodOfReport.slice(0, 4)} ` : ""}10-K's debt table, carried forward to this balance sheet: ${mm(rc.rollTie.computedMillions - deltas.reduce((a, d) => a + d.amountMillions, 0))}`));
-      for (const d of deltas) cause.push(t(` ${d.amountMillions < 0 ? "−" : "+"} ${mm(d.amountMillions)}`));
-      cause.push(t(` = ${mm(rc.rollTie.computedMillions)}, against `), capSeg, t(`: ${mm(rc.rollTie.residualMillions)} apart, outside the ${tol ? `±$${tol}MM its approximate figures allow` : "exact match its exact figures require"}. So its notes are not carried to ${displayDate(anchor.reportDate, "day")}, and this card does not state a position.`));
+      const steps = [...deltas.map((d) => d.amountMillions), ...rollAttributions.map((a) => a.amountMillions)];
+      cause.push(t(`The ${base?.periodOfReport ? `${base.periodOfReport.slice(0, 4)} ` : ""}10-K's debt table, carried forward to this balance sheet: ${mm(rc.rollTie.computedMillions - steps.reduce((a, d) => a + d, 0))}`));
+      for (const d of steps) cause.push(t(` ${d < 0 ? "−" : "+"} ${mm(d)}`));
+      cause.push(t(` = ${mm(rc.rollTie.computedMillions)}, against `), capSeg, t("."), ...residualDisclosure(), t(` So its notes are not carried to ${displayDate(anchor.reportDate, "day")}, and this card does not state a position.`));
     } else if (!rc.counts && rc.baseTie && !rc.baseTie.ties) {
       cause.push(t("The earlier 10-K's debt table does not add up to its own printed totals, so it cannot be carried forward to this balance sheet's "), capSeg, t(", and this card does not state a position."));
     } else {
