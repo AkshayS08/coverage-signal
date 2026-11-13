@@ -6,6 +6,11 @@
  * Text captured before Nov 9 has none: it is one paragraph, split as before.
  */
 
+/** A referring phrase: "this borrowing", "this offering", "the Notes" (Nov 7; shared with the facts verifier, Nov 13). */
+export const REFERS = /\b(?:this|the)\s+(?:borrowing|offering|issuance)\b|\bthe\s+Notes\b/;
+/** A note heading ("5. Redeemable Noncontrolling Interests"): an antecedent search stops there. */
+export const HEADING = /^\d{1,2}\.\s+[A-Z][a-z]+/;
+
 /** The splitter build.ts has always used, applied within each paragraph. */
 const splitSentences = (para: string): string[] => para.replace(/[\s ]+/g, " ").trim().split(/(?<=[.;])\s+(?=[A-Z(“"])/).filter((x) => x.length > 0 && x.length < 900);
 

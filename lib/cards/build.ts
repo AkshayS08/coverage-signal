@@ -49,7 +49,8 @@ import { classLabels, couponsIn, headingClass, notStatedSuffix, sentenceClass, s
 import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
-import { antecedentWindow, paragraphSentences } from "./antecedent";
+import { antecedentWindow, paragraphSentences, REFERS, HEADING } from "./antecedent";
+import { quoteKey, statesSameMove, SCHEDULED } from "./moveEvidence";
 
 export interface CardInputs {
   result: CompanyResult;
@@ -625,10 +626,10 @@ export function buildCard(i: CardInputs): Card {
   // A fact's sentence is linked as the FILER printed it: the document's own
   // sentence containing the copied text (typography aside), which also widens
   // a copied fragment to its whole sentence.
-  const normQ = (x: string) => x.toLowerCase().replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[\s\u00a0]+/g, " ").replace(/ %/g, "%").trim();
+  // Nov 13: quote matching is the shared spacing-normalised key (moveEvidence.ts), the verifier's too.
   const ownSentence = (fragment: string, url: string): Source | null => {
-    const want = normQ(fragment);
-    return sentencesOf(url).find((x) => normQ(x.sentence).includes(want)) ?? null;
+    const want = quoteKey(fragment);
+    return sentencesOf(url).find((x) => quoteKey(x.sentence).includes(want)) ?? null;
   };
   /** The value as the filer's sentence prints it (quotes, spacing): what a label states is the filer's text. */
   const filerSpan = (value: string, sentence: string): string => {
@@ -740,25 +741,16 @@ export function buildCard(i: CardInputs): Card {
     const allHeld = [...i.textByUrl.keys()].flatMap((u) => sentencesOf(u).map((s) => ({ s, docText: i.textByUrl.get(u) ?? "" })));
     for (const mv of movesAll) {
       if (!/^[A-Z][a-z]+ \d{4}$/.test(mv.when.trim())) continue;
-      const own = couponsIn(mv.instrument)[0]?.rate;
-      const year = (/\bdue\s+(?:[A-Z][a-z]+\s+)?(20\d\d)\b/.exec(mv.instrument) ?? /\b(20\d\d)\b/.exec(mv.instrument) ?? [])[1];
-      if (own === undefined) continue;
-      const verb = mv.type === "issuance" ? /\b(?:issued|completed\s+(?:the|an|its|our)\s+(?:sale|offering|issuance))\b/i : RETIRES.has(mv.type) ? /\b(?:redeem\w*|redemption|repurchas\w*|repaid|retired)\b/i : null;
-      if (!verb) continue;
       const [y, mo] = mv.sort.split("-").map(Number);
       const hits: { day: number; text: string; src: Source }[] = [];
       for (const { s, docText } of allHeld) {
-        // Issuing a DOCUMENT (a notice, a press release) dates the document, not the move.
-        if (!verb.test(s.sentence) || /\bnotice\b|\bpress release\b|\bannounc\w*|\bmay\s+redeem\b|\bintends?\s+to\b/i.test(s.sentence)) continue;
-        const namesCoupon = couponsIn(s.sentence).some((c) => Math.abs(c.rate - own) < 1e-9);
-        const namesTerm = !!year && new RegExp(`\\b${year}\\s+(?:Senior\\s+(?:Secured\\s+)?)?Notes\\b`).test(s.sentence) && couponsIn(docText).some((c) => Math.abs(c.rate - own) < 1e-9);
-        if (!namesCoupon && !namesTerm) continue;
+        // The same move, done (moveEvidence.ts): its verb and its note, never a notice or press release about it.
+        if (!statesSameMove(s.sentence, mv, docText)) continue;
         for (const d of s.sentence.matchAll(DAY)) if (+d[3] === y && MONTH_NAMES.indexOf(d[1]) + 1 === mo) hits.push({ day: +d[2], text: d[0], src: s });
       }
       // Nov 4 (correcting Nov 1's ruling (b)): the more precise statement wins only when it states the SAME fact. A
       // scheduled or expected day ("expected to be redeemed on September 23") never dates a completed move; it is shown
       // labelled, "Redeemed Sept 2026 (scheduled for Sept 23)". Every move type.
-      const SCHEDULED = /\bexpected to\b|\bscheduled\b|\bwill be\b|\bset for\b|\bconditional\b|\banticipat\w*/i;
       const done = hits.filter((x) => !SCHEDULED.test(x.src.sentence));
       const sched = hits.filter((x) => SCHEDULED.test(x.src.sentence));
       const days = [...new Set(done.map((h) => h.day))];
@@ -841,8 +833,6 @@ export function buildCard(i: CardInputs): Card {
     // failing that, the nearest preceding sentence naming one in the same paragraph (Nov 9: the real paragraph where the
     // card input keeps paragraph breaks; at most three sentences back where it does not; either way stopping at a note
     // heading). A scope holding none or more than one issuance flags rather than pairs.
-    const REFERS = /\b(?:this|the)\s+(?:borrowing|offering|issuance)\b|\bthe\s+Notes\b/;
-    const HEADING = /^\d{1,2}\.\s+[A-Z][a-z]+/;
     /** The issuances a sentence names as done (null: it names none), and which of them are this card's issuance moves. */
     const issuesNamedIn = (sentence: string): { named: number; onCard: Move[] } | null => {
       if (!COMPLETED.test(sentence) || NOT_DONE.test(sentence) || /\bmay\s+[a-z]/.test(sentence)) return null;
@@ -988,8 +978,8 @@ export function buildCard(i: CardInputs): Card {
   for (const m of movesAll) {
     const dateText = m.dateSeg.k === "label" ? m.dateSeg.stated : null;
     if (!dateText || !couponsIn(m.instrument).length) continue;
-    const seen = new Set([m.sentence, m.dateSeg.k === "label" ? m.dateSeg.src.sentence : ""].map(normQ));
-    const again = moveDocs().flatMap(sentencesOf).filter((x) => !seen.has(normQ(x.sentence)) && containsWord(x.sentence, dateText) && sameNote(x.sentence, m.instrument) && !movesAll.some((o) => o !== m && sameNote(x.sentence, o.instrument) && o.when === m.when && o.type !== m.type));
+    const seen = new Set([m.sentence, m.dateSeg.k === "label" ? m.dateSeg.src.sentence : ""].map(quoteKey));
+    const again = moveDocs().flatMap(sentencesOf).filter((x) => !seen.has(quoteKey(x.sentence)) && containsWord(x.sentence, dateText) && sameNote(x.sentence, m.instrument) && !movesAll.some((o) => o !== m && sameNote(x.sentence, o.instrument) && o.when === m.when && o.type !== m.type));
     if (again.length) m.altSrc = again[0];
   }
   // v2.1 §2.3 CARD FORMAT: date, type, face in $MM, coupon, labels, instrument,
