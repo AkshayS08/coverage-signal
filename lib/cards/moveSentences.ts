@@ -49,7 +49,9 @@ function datesIn(sentence: string): { iso: string; from: string; to: string; at:
   return out;
 }
 
-const sentencesOf = (t: string) => t.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)|\s*[•●▪]\s*/).filter((x) => x.length > 30 && x.length < 900);
+// Nov 13 (excerptEnds.test): a sentence ends where it ends — a note number or "Note N." heading after its period
+// ("… revolving credit facility. 5.") belongs to the next section, not to the quote.
+const sentencesOf = (t: string) => t.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)|\s*[•●▪]\s*/).map((x) => x.replace(/([.;])\s+(?:Note\s+)?\d{1,2}\.\s*$/, "$1")).filter((x) => x.length > 30 && x.length < 900);
 
 /** Debt-move sentences in these documents dated inside [from, to] (ISO dates), once each. */
 export function locateMoveSentences(docs: { url: string; label: string; text: string }[], from: string, to: string): LocatedMove[] {
