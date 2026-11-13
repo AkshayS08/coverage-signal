@@ -39,7 +39,7 @@ export type Segment =
   /** `tenK` (Nov 9): a seniority or security label from the latest 10-K's statement, a standing term, tagged. */
   | { k: "label"; t: string; stated: string; src: Source; tenK?: true }
   /** Arithmetic over stated figures. `usd` must equal the sum of the parts' signed values. */
-  | { k: "computed"; t: string; usd: number; parts: { printed: string; usd: number; src: Source }[]; row?: string }
+  | { k: "computed"; t: string; usd: number; parts: { printed: string; usd: number; src: Source; basis?: "cash" }[]; row?: string }
   /** "seniority not stated" and its kin: links to the instrument's own sentence so the reader can judge. */
   | { k: "notStated"; t: string; src: Source }
   /** A filing named by its EDGAR metadata (form, date, items), linked to the filing itself. No sentence is claimed. */

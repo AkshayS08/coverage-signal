@@ -51,16 +51,22 @@ export interface RollAttribution { label: string; amountMillions: number; source
  */
 const NET_SHORT_TERM = /Net (?:change|increase \(decrease\)|\(decrease\) increase|increase|decrease) in short-term debt(?:, excluding term loan)?\s*\$?\s*(\(\s*[\d,]+\s*\)|[\d,]+)/i;
 const LTD_REPAID = /Repayments? of long-term debt\s*\$?\s*\(\s*([\d,]+)\s*\)/i;
-function exactAndAttributed(movements: PlacedMovement[], anchorText: string | null | undefined): { movements: PlacedMovement[]; attributions: RollAttribution[]; unread: boolean } {
+/** A movement with, where the cash-flow statement states it exactly, its cash figure beside its stated face. */
+export type CashMovement = PlacedMovement & { cashMillions?: number; cashSourceLine?: string };
+/** A step of the carrying-value roll: cash where the cash-flow statement states it (labelled), the stated figure otherwise. */
+export type RollStep = RollDelta & { cash?: boolean };
+function exactAndAttributed(movements: PlacedMovement[], anchorText: string | null | undefined): { movements: CashMovement[]; attributions: RollAttribution[]; unread: boolean } {
   const flat = anchorText ? anchorText.replace(/[\s\u00a0]+/g, " ") : null;
   let unread = false;
-  const out = movements.map((m) => {
+  const out = movements.map((m): CashMovement => {
     if (m.placement !== "delta" || !statesApproximation(m.sourceLine) || !/commercial paper/i.test(`${m.instrument} ${m.sourceLine}`)) return m;
     if (flat === null) { unread = true; return m; }
     const hit = NET_SHORT_TERM.exec(flat);
     if (!hit) return m;
     const n = Number(hit[1].replace(/[(),\s]/g, "")), amount = /\(/.test(hit[1]) ? -n : n;
-    return { ...m, amountMillions: amount, statedAs: `$ ${n.toLocaleString("en-US")} million`, sourceLine: hit[0].trim(), why: `the cash-flow statement's exact figure for the same fact, over "${m.statedAs}"` };
+    // Nov 13 (cashNotFace.test): the cash-flow figure is cash, not face. It travels beside the stated outstanding and
+    // feeds only the carrying-value roll; the face (coverage, every displayed amount) stays the stated figure.
+    return { ...m, cashMillions: amount, cashSourceLine: hit[0].trim() };
   });
   const attributions: RollAttribution[] = [];
   const repaid = flat ? LTD_REPAID.exec(flat) : null;
@@ -147,7 +153,7 @@ export interface RolledCoverageEntry {
 
 export type RolledCoverage =
   /** `fired`: a base was read to roll (Nov 11: a fired roll that fails fails the card; it never falls back). */
-  | { counts: false; fired: boolean; reason: string; baseTie: BaseRowTie | null; rollTie: TieResult | null; movements: PlacedMovement[]; attributions?: RollAttribution[]; unattributedMillions?: number | null; materialityMillions?: number | null }
+  | { counts: false; fired: boolean; reason: string; baseTie: BaseRowTie | null; rollTie: TieResult | null; movements: CashMovement[]; attributions?: RollAttribution[]; unattributedMillions?: number | null; materialityMillions?: number | null; rollDeltas?: RollStep[] }
   | {
       counts: true;
       label: string;
@@ -155,10 +161,13 @@ export type RolledCoverage =
       capturedFaceMillions: number;
       baseTie: BaseRowTie;
       rollTie: TieResult;
-      movements: PlacedMovement[];
+      movements: CashMovement[];
       toleranceMillions: number;
       /** Nov 13: what read sentences explain, quoted; what remains, always disclosed; the 0.2% line it is held to. */
       attributions: RollAttribution[];
+      /** The carrying-value roll's steps (cash where exact, labelled), and its entries for the carrying check. */
+      rollDeltas: RollStep[];
+      carryingEntries: (RolledCoverageEntry & { cash?: boolean })[];
       unattributedMillions: number;
       materialityMillions: number;
     };
@@ -204,7 +213,13 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
   const exact = exactAndAttributed(movementsRaw, i.anchorText);
   const movements = exact.movements;
   const deltas = toRollDeltas(movements);
-  const attributionDeltas: RollDelta[] = exact.attributions.map((a) => ({ label: a.label, amountMillions: a.amountMillions, sourceLine: a.sourceLine, citedUrl: "", statedApproximate: false }));
+  const attributionDeltas: RollStep[] = exact.attributions.map((a) => ({ label: a.label, amountMillions: a.amountMillions, sourceLine: a.sourceLine, citedUrl: "", statedApproximate: false, cash: true }));
+  // The carrying-value roll's steps: a movement's cash figure where the cash-flow statement states it.
+  const cashSteps: RollStep[] = deltas.map((d) => {
+    const m = movements.find((x) => x.placement === "delta" && x.sourceLine === d.sourceLine && x.amountMillions === d.amountMillions && x.cashMillions !== undefined);
+    return m ? { label: `${d.label} (cash proceeds)`, amountMillions: m.cashMillions!, sourceLine: m.cashSourceLine!, citedUrl: d.citedUrl, statedApproximate: false, cash: true } : d;
+  });
+  const rollSteps: RollStep[] = [...cashSteps, ...attributionDeltas];
 
   // THE BASE TIE RUNS FIRST AND A FAILED ONE PRODUCES NO ROLL. An untied base
   // rolled forward is two unknowns reported as one number.
@@ -221,8 +236,8 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
   if (exact.unread) {
     return { counts: false, fired: true, reason: "an approximate figure has an exact counterpart in the anchor's cash-flow statement, which this surface was not given, so the roll is not decided on the rounded figure", baseTie: tie, rollTie: null, movements };
   }
-  const rollTie = computeRollTie(tie.computedMillions, [...deltas, ...attributionDeltas], i.anchorTotalMillions);
-  const residualFields = { attributions: exact.attributions, unattributedMillions: rollTie.residualMillions, materialityMillions: materialityFor(rollTie.computedMillions) };
+  const rollTie = computeRollTie(tie.computedMillions, rollSteps, i.anchorTotalMillions);
+  const residualFields = { attributions: exact.attributions, unattributedMillions: rollTie.residualMillions, materialityMillions: materialityFor(rollTie.computedMillions), rollDeltas: rollSteps };
   if (!rollTie.ties) {
     return {
       ...residualFields,
@@ -250,6 +265,11 @@ export function rolledCoverage(i: RolledCoverageInput): RolledCoverage {
     movements,
     toleranceMillions: materialityFor(rollTie.computedMillions),
     attributions: exact.attributions,
+    rollDeltas: rollSteps,
+    carryingEntries: [
+      ...entries.filter((e) => e.kind === "base-row"),
+      ...rollSteps.map((d) => ({ label: d.label, amountMillions: d.amountMillions, kind: "movement" as const, sourceLine: d.sourceLine, citedUrl: d.citedUrl, cash: d.cash === true })),
+    ],
     unattributedMillions: rollTie.residualMillions ?? 0,
     materialityMillions: materialityFor(rollTie.computedMillions),
   };

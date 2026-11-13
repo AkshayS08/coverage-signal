@@ -51,6 +51,7 @@ export function Seg({ s, tag = true }: { s: Segment; tag?: boolean }) {
                 <a href={sentenceUrl(p.src.url, p.src.sentence)} target="_blank" rel="noreferrer" title={`${p.src.doc}: “${p.src.sentence}”`}>
                   {p.usd < 0 ? "− " : n ? "+ " : ""}
                   {partText(p)}
+                  {p.basis === "cash" ? " cash proceeds" : null}
                 </a>
                 <span className={styles.partDoc}> {p.src.doc}</span>
               </span>

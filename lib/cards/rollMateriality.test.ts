@@ -35,7 +35,8 @@ const sept = everyShownCard().find((s) => s.cik === "0001739940" && s.label === 
 const rj: any = rolledCoverageFor(june.input.result, { anchorText: anchorTextOf(june) });
 const rs: any = rolledCoverageFor(sept.input.result, { anchorText: anchorTextOf(sept) });
 
-const cpOf = (rc: any) => (rc.movements ?? []).find((m: any) => m.placement === "delta" && /commercial paper|short-term debt/i.test(`${m.instrument} ${m.sourceLine}`));
+// Nov 13 (cash, not face): the exact figure is the roll's step, labelled cash; the movement keeps its stated face.
+const cpOf = (rc: any) => (rc.rollDeltas ?? []).find((d: any) => d.cash === true && /short-term debt/i.test(d.sourceLine));
 assert(rj.counts === true && cpOf(rj)?.amountMillions === 975 && rj.unattributedMillions === 10 && (!inScope("0001739940", "published") || (DISCLOSED.test(cardText(june.card)) && /\$10MM \(0\.03%\) not attributed/.test(cardText(june.card)) && !june.card.v3.breakage)),
   `[E1] June: CP ${cpOf(rj)?.amountMillions}, unattributed ${rj.unattributedMillions}MM, counts ${rj.counts}; the card discloses "${(/\$[\d,]+MM \([\d.]+%\) not attributed to a stated cause/.exec(cardText(june.card)) ?? ["none"])[0]}"`);
 const attr = (rs.attributions ?? []) as { amountMillions: number; sourceLine: string }[];

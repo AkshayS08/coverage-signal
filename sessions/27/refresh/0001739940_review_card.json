@@ -1727,7 +1727,8 @@
        "sentence": "Net change in short-term debt, excluding term loan 463",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
        "doc": "10-Q 2026-11-05"
-      }
+      },
+      "basis": "cash"
      },
      {
       "printed": "$ 590 million",
@@ -1736,7 +1737,8 @@
        "sentence": "Repayment of long-term debt ( 590 )",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
        "doc": "10-Q 2026-11-05"
-      }
+      },
+      "basis": "cash"
      },
      {
       "printed": "$ 2,293 million",
@@ -1923,13 +1925,17 @@
      },
      {
       "k": "figure",
-      "t": "$463MM",
-      "printed": "$ 463 million",
+      "t": "~$500MM",
+      "printed": "$ 0.5 billion",
       "src": {
-       "sentence": "Net change in short-term debt, excluding term loan 463",
+       "sentence": "The commercial paper program had approximately $ 0.5 billion outstanding as of September 30, 2026 and an average interest rate of 4.09 %.",
        "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
        "doc": "10-Q 2026-11-05"
       }
+     },
+     {
+      "k": "text",
+      "t": "; in the roll at cash proceeds of $463MM, per “Net change in short-term debt, excluding term loan 463”"
      }
     ]
    ]

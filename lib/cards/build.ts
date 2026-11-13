@@ -1219,7 +1219,8 @@ export function buildCard(i: CardInputs): Card {
   // maturity schedule for the position date, where printed — otherwise the
   // face lines are totalled and the carrying lines stated beside them, never
   // added in.
-  type Part = { printed: string; usd: number; src: Source };
+  /** basis "cash": a cash-flow statement figure, which feeds a carrying-value roll and is never shown as face (Nov 13). */
+  type Part = { printed: string; usd: number; src: Source; basis?: "cash" };
   const partOf = (it: Item): Part[] => it.amountParts ?? [{ printed: it.amountPrinted!, usd: parseMoneyAmount(it.amountPrinted) ?? 0, src: it.amountSrc }];
   // v2.1 §2.4: ONE LINE PER TYPE. A type splits by seniority or security only
   // when every row of it carries the label; otherwise it groups by type alone
@@ -1830,7 +1831,9 @@ export function buildCard(i: CardInputs): Card {
       line.push(t(" The filer states its debt table is "), { k: "label", t: basisHit![1], stated: basisHit![1], src: where }, t("."));
       // The carrying-basis check: the lines as the table states them, against the balance sheet.
       const carryParts: Part[] = rc.counts
-        ? rc.entries.filter((e) => e.amountMillions !== 0).map((e) => ({ printed: printedIn(e.sourceLine, Math.abs(e.amountMillions) * 1e6) ?? `$ ${Math.abs(e.amountMillions).toLocaleString("en-US")} million`, usd: e.amountMillions * 1e6, src: src(e.sourceLine, e.citedUrl) }))
+        // Nov 13: the carrying-value check reads the roll's carrying entries: cash proceeds where the cash-flow statement
+        // states them exactly, labelled; never the face shown elsewhere.
+        ? rc.carryingEntries.filter((e) => e.amountMillions !== 0).map((e): Part => ({ printed: printedIn(e.sourceLine, Math.abs(e.amountMillions) * 1e6) ?? `$ ${Math.abs(e.amountMillions).toLocaleString("en-US")} million`, usd: e.amountMillions * 1e6, src: src(e.sourceLine, e.citedUrl || anchor.url), ...(e.cash ? { basis: "cash" as const } : {}) }))
         : [];
       if (carryParts.length && cov.residualPasses) {
         const gap = capSum - sum(carryParts);
@@ -2559,8 +2562,10 @@ export function buildCard(i: CardInputs): Card {
       const cfTotal = cfRepaid ? Number((/\(\s*([\d,]+)\s*\)/.exec(cfRepaid.sourceLine) ?? ["", "0"])[1].replace(/,/g, "")) : 0;
       const parts: Part[] = [
         ...baseTotals.map((r: any) => ({ printed: printedIn(r.sourceLine, Math.abs(r.amountMillions) * 1e6) ?? `$ ${Math.abs(r.amountMillions).toLocaleString("en-US")} million`, usd: r.amountMillions * 1e6, src: src(r.sourceLine, base!.filingUrl) })),
-        ...deltas.filter((d) => !(cfRepaid && d.kind === "repayment")).map((d) => ({ printed: printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, usd: d.amountMillions * 1e6, src: src(d.sourceLine, d.citedUrl || anchor.url) })),
-        ...(cfRepaid ? [{ printed: `$ ${cfTotal.toLocaleString("en-US")} million`, usd: -cfTotal * 1e6, src: src(cfRepaid.sourceLine, anchor.url) }] : []),
+        ...deltas.filter((d) => !(cfRepaid && d.kind === "repayment")).map((d): Part => (d.cashMillions !== undefined
+          ? { printed: `$ ${Math.abs(d.cashMillions).toLocaleString("en-US")} million`, usd: d.cashMillions * 1e6, src: src(d.cashSourceLine!, anchor.url), basis: "cash" }
+          : { printed: printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, usd: d.amountMillions * 1e6, src: src(d.sourceLine, d.citedUrl || anchor.url) })),
+        ...(cfRepaid ? [{ printed: `$ ${cfTotal.toLocaleString("en-US")} million`, usd: -cfTotal * 1e6, src: src(cfRepaid.sourceLine, anchor.url), basis: "cash" as const }] : []),
         ...capParts.map((p) => ({ ...p, usd: -p.usd })),
       ];
       const net = sum(parts);
@@ -2569,7 +2574,7 @@ export function buildCard(i: CardInputs): Card {
     }
     const cause: Line = [];
     if (!rc.counts && rc.rollTie && !rc.rollTie.ties && rc.rollTie.residualMillions !== null) {
-      const steps = [...deltas.map((d) => d.amountMillions), ...rollAttributions.map((a) => a.amountMillions)];
+      const steps = [...deltas.map((d) => d.cashMillions ?? d.amountMillions), ...rollAttributions.map((a) => a.amountMillions)];
       cause.push(t(`The ${base?.periodOfReport ? `${base.periodOfReport.slice(0, 4)} ` : ""}10-K's debt table, carried forward to this balance sheet: ${mm(rc.rollTie.computedMillions - steps.reduce((a, d) => a + d, 0))}`));
       for (const d of steps) cause.push(t(` ${d < 0 ? "−" : "+"} ${mm(d)}`));
       cause.push(t(` = ${mm(rc.rollTie.computedMillions)}, against `), capSeg, t("."), ...residualDisclosure(), t(` So its notes are not carried to ${displayDate(anchor.reportDate, "day")}, and this card does not state a position.`));
@@ -2582,7 +2587,7 @@ export function buildCard(i: CardInputs): Card {
       ...capParts.map((p) => [t("Balance sheet: "), fig(p.printed, p.src.sentence, p.src.url)] as Line),
       // The base table's cells carry its caption's scale (Rule 67): the resolved millions, as the carrying-basis check reads them.
       ...baseTotals.map((r: any) => [t(`${base!.periodOfReport} 10-K, ${String(r.instrument).toLowerCase()}: `), fig(printedIn(r.sourceLine, Math.abs(r.amountMillions) * 1e6) ?? `$ ${Math.abs(r.amountMillions).toLocaleString("en-US")} million`, r.sourceLine, base!.filingUrl)] as Line),
-      ...deltas.map((d) => [t(`${d.amountMillions < 0 ? "Repaid" : "Added"}: `), fig(printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, d.sourceLine, d.citedUrl || anchor.url)] as Line),
+      ...deltas.map((d) => [t(`${d.amountMillions < 0 ? "Repaid" : "Added"}: `), fig(printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, d.sourceLine, d.citedUrl || anchor.url), ...(d.cashMillions !== undefined ? [t(`; in the roll at cash proceeds of $${Math.abs(d.cashMillions).toLocaleString("en-US")}MM, per “${d.cashSourceLine}”`)] : [])] as Line),
       // A failed roll states no anchor-only total: that partial position is what this rule withholds.
       ...(rollFailed ? [] : [[t("Stated on this card's filings: "), faceSeg()] as Line]),
     ];

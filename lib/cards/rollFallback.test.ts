@@ -25,12 +25,15 @@ const txt = (l: any[] | null | undefined) => (l ?? []).map((s: any) => s.t ?? ""
 const clone = (o: any) => JSON.parse(JSON.stringify(o));
 
 /** The roll fired (a base was read to roll) and did not reconcile. */
-const rollFailed = (result: any) => { const rc: any = rolledCoverageFor(result); return !rc.counts && rc.fired === true; };
+// The roll reads its anchor's text, as the card does (Nov 13): without it an approximate figure fails closed.
+const textOf = (result: any, docs: Record<string, { text: string }>) => docs[result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.url]?.text ?? null;
+let DOCS: Record<string, { text: string }> = {};
+const rollFailed = (result: any) => { const rc: any = rolledCoverageFor(result, { anchorText: textOf(result, DOCS) }); return !rc.counts && rc.fired === true; };
 
 function f(card: any, result: any): string[] {
   if (!rollFailed(result)) return [];
   const v = card.v3, out: string[] = [];
-  const rc: any = rolledCoverageFor(result);
+  const rc: any = rolledCoverageFor(result, { anchorText: textOf(result, DOCS) });
   for (const k of ["call", "totalDebt", "chart", "table"]) if (v[k]) out.push(`states its ${k}`);
   if (!v.breakage || v.checks !== "failed") out.push("no breakage panel under \"Checks failed\"");
   const gap = rc.rollTie?.residualMillions ?? null;
@@ -40,16 +43,20 @@ function f(card: any, result: any): string[] {
   return out;
 }
 
-const fired = shownCards().filter((s) => rollFailed(s.input.result));
-for (const s of shownCards()) { const v = f(s.card, s.input.result); assert(v.length === 0, `[F1/F2:${s.card.company} ${s.label}]${rollFailed(s.input.result) ? " (roll failed)" : ""}${v.length ? ` — ${v.join("; ")}` : " holds"}`); }
+const fired = shownCards().filter((s) => { DOCS = s.input.docs; return rollFailed(s.input.result); });
+for (const s of shownCards()) { DOCS = s.input.docs; const v = f(s.card, s.input.result); assert(v.length === 0, `[F1/F2:${s.card.company} ${s.label}]${rollFailed(s.input.result) ? " (roll failed)" : ""}${v.length ? ` — ${v.join("; ")}` : " holds"}`); }
 console.log(`  (${fired.length} shown card(s) with a failed roll)`);
 
-// Control: Cigna's published input, whose roll reconciles, with a movement the roll no longer sees (its March note
-// retirement dropped), so the roll misses its balance sheet.
+// Control: Cigna's published input, whose roll reconciles, with its balance sheet moved $1,000MM (the tagged total and
+// its caption together), a miss no read sentence explains. (Dropping a named retirement no longer forces one: the
+// cash-flow statement's repayment line explains it, quoted — the Nov 13 attribution rule.)
 const pub = everyShownCard().find((s) => s.cik === "0001739940" && s.label === "published")!;
+DOCS = pub.input.docs;
 const forced = clone(pub.input.result);
 const dm = forced.results.find((r: any) => r.triggerId === "debt-maturity");
-dm.noteRetirements = [];
+dm.xbrlDebtTotal.total += 1e9;
+const cap = dm.balanceSheetDebtCaptions[dm.balanceSheetDebtCaptions.length - 1];
+cap.amount = String(cap.amount).replace(/[\d,]+(?:\.\d+)?/, (n) => (Number(n.replace(/,/g, "")) + 1000).toLocaleString("en-US"));
 const factsPath = join("lib", "cards", "inputs", "facts", "0001739940.json");
 const card = buildCard({ result: forced, briefDate: pub.card.briefDate, previousBrief: null, weekFilings: [], cash: pub.input.cash, textByUrl: new Map(Object.entries(pub.input.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text])), periodSentence: pub.input.periodSentence, laterUrls: [], facts: existsSync(factsPath) ? JSON.parse(readFileSync(factsPath, "utf-8")) : null });
 assert(rollFailed(forced) && f(card, forced).length === 0 && !card.v3!.totalDebt, `[control] a forced roll miss on Cigna's published input produces no card total (${f(card, forced).join("; ") || "Checks failed, roll shown"})`);
