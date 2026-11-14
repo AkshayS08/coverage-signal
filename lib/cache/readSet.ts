@@ -40,6 +40,7 @@ import { fetchXbrlDebtTotal, type XbrlDebtTotal } from "../fetch/xbrlDebt";
 import { buildExtractionText, NOTE_LOCATOR_VERSION, type FilingExtractionResult } from "../fetch/noteLocation";
 import { selectBaselineFilings, has8KSignal } from "../agent/selectFilings";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
+import { frozenFilings, lastTriggerDate, READ_SET_RULE_V2_FROM, selectEightKsV2 } from "./lastBuild";
 
 const sha = (s: string, n = 24) => createHash("sha256").update(s).digest("hex").slice(0, n);
 const newestFirst = (a: FilingEntry, b: FilingEntry) => (a.filingDate < b.filingDate ? 1 : a.filingDate > b.filingDate ? -1 : 0);
@@ -51,7 +52,15 @@ const newestFirst = (a: FilingEntry, b: FilingEntry) => (a.filingDate < b.filing
  * read (selectFilings.ts names them; three newest 8-Ks when none does).
  */
 export function readSetOf(filings: FilingEntry[]): FilingEntry[] {
-  return selectBaselineFilings([...filings].sort(newestFirst));
+  const sorted = [...filings].sort(newestFirst);
+  // Nov 14: from a trigger on or after READ_SET_RULE_V2_FROM, the 8-Ks are the debt-item 8-Ks since the latest 10-K
+  // (none if none); before it, the earlier selection, so answers built under it are served until the next trigger.
+  const trig = lastTriggerDate(sorted, sorted[0]?.filingDate ?? "");
+  if (trig && trig >= READ_SET_RULE_V2_FROM) {
+    const tenK = sorted.find((f) => f.form === "10-K");
+    return [...sorted.filter((f) => f.form === "10-Q").slice(0, 2), ...(tenK ? [tenK] : []), ...selectEightKsV2(sorted)];
+  }
+  return selectBaselineFilings(sorted);
 }
 
 /**
@@ -157,7 +166,11 @@ export interface ResolvedReadSet {
  * what was read. Every read in here fails closed (ReadFailedError).
  */
 export async function resolveReadSet(company: string): Promise<ResolvedReadSet> {
-  const filingsResult = await getRecentFilings(company, ["8-K", "10-Q", "10-K"]);
+  const listed = await getRecentFilings(company, ["8-K", "10-Q", "10-K"]);
+  // Nov 14: served from its last build between triggers. The read set sees the filing list as its last build did,
+  // unless a refresh trigger has come since (lastBuild.ts); later non-trigger filings are listed, not read.
+  const asOf = process.env.READ_SET_AS_OF ?? new Date().toISOString().slice(0, 10);
+  const filingsResult = { ...listed, filings: frozenFilings(listed.cik, listed.filings, asOf) };
   const readSet = readSetOf(filingsResult.filings);
   const anchor = anchorOf(readSet);
   const anchorXbrl = anchor ? await fetchXbrlDebtTotal(filingsResult.cik, anchor.reportDate) : null;
