@@ -36,7 +36,7 @@
    [
     {
      "k": "text",
-     "t": "No new filings affecting debt since Nov 3, 2026."
+     "t": "No new filings with a debt item since Nov 3, 2026."
     }
    ],
    [
@@ -51,7 +51,7 @@
     },
     {
      "k": "text",
-     "t": ", none affecting debt."
+     "t": ", none with a debt item."
     }
    ]
   ]
@@ -1426,7 +1426,7 @@
    "status": [
     {
      "k": "text",
-     "t": "1 filing this week, none affecting debt: "
+     "t": "1 filing this week, none with a debt item: "
     },
     {
      "k": "filing",

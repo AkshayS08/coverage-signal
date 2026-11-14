@@ -34,7 +34,7 @@ about("0001179929", /up to \$800MM of uncommitted incremental term loans/.test(l
 const chsMoves = chs.card.v3.moves.map((m: any) => `${txt(m.meta)} | ${m.title.map(txt).join(" / ")}`);
 about("0001108109", chsMoves.some((l: string) => /^Feb 2, 2026/.test(l) && /10⅞%[^/]*\$1,780MM remains/.test(l)) && chsMoves.some((l: string) => /^May 6, 2026/.test(l) && /10⅞%[^/]*\$1,549MM remains/.test(l)), `[R] CHS: Feb 2 "$1,780MM remains", May 6 "$1,549MM remains" (${chsMoves.join(" || ")})`);
 const head = `${txt([ten.card.v3.header.filing])} · ${txt(ten.card.v3.header.status)}`;
-about("0000070318", /^10-Q filed Oct 29, 2026 · new this week · 1 other filing, none affecting debt$/.test(head), `[H] Tenet's header: "${head}"`);
+about("0000070318", /^10-Q filed Oct 29, 2026 · new this week · 1 other filing, none with a debt item$/.test(head), `[H] Tenet's header: "${head}"`);
 const css = readFileSync(join("app", "cards", "cardsV3.module.css"), "utf-8");
 assert(/\.headerRight\s*\{[^}]*margin-left:\s*auto/.test(css) && /\.headerRight\s*\{[^}]*text-align:\s*right/.test(css), `[H] the right-hand header block stays right-aligned when it wraps (margin-left: auto; text-align: right)`);
 about("0000070318", ten.card.v3.moves.some((m: any) => /Sept 22, 2026 · Issued, confirmed by 8-K/.test(txt(m.meta))), `[C] Tenet's issuance cites the Sept 22 8-K (${ten.card.v3.moves.map((m: any) => txt(m.meta)).join(" | ")})`);
@@ -44,7 +44,7 @@ const q = clone(mol.card); for (const l of q.v3.liquidity.notes) for (const s of
 assert(rulingViolations(q, mol.input).Q.length > 0, `[Q control] "up to $800MM of incremental term loans…", without "uncommitted", is flagged`);
 const r = clone(chs.card); for (const m of r.v3.moves) for (const l of m.title) for (const s of l) if (s.k === "computed" && /1,780/.test(s.t)) s.t = "$1,549MM";
 assert(rulingViolations(r, chs.input).R.length > 0, `[R control] CHS's Feb 2 move reading "$1,549MM remains" is flagged`);
-const h = clone(ten.card); h.v3.header.status = [{ k: "text", t: "New this week: this 10-Q, filed Oct 29, 2026, is the position · 1 other filing, none affecting debt" }];
+const h = clone(ten.card); h.v3.header.status = [{ k: "text", t: "New this week: this 10-Q, filed Oct 29, 2026, is the position · 1 other filing, none with a debt item" }];
 assert(rulingViolations(h, ten.input).H.length > 0, `[H control] the date stated twice is flagged`);
 const c = clone(ten.card); for (const m of c.v3.moves) for (const s of m.meta) if (typeof s.t === "string") s.t = s.t.replace("confirmed by 8-K", "confirmed by 10-Q");
 assert(rulingViolations(c, ten.input).C.length > 0, `[C control] "confirmed by 10-Q" where the Sept 22 8-K states it first is flagged`);

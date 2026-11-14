@@ -8,7 +8,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-10-29) ($0.10505
   - now: Weekly coverage brief · Oct 16 to Oct 31, 2026
 - **header**
   - was: No new debt filings this week
-  - now: new this week · 1 other filing, none affecting debt
+  - now: new this week · 1 other filing, none with a debt item
 - **call (label)**
   - was: The call · next 18 months, to May 9, 2028
   - now: The call · next 18 months, to Apr 30, 2028

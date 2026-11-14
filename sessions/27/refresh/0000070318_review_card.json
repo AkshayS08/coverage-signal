@@ -47,7 +47,7 @@
    [
     {
      "k": "text",
-     "t": "No new filings affecting debt since Oct 15, 2026."
+     "t": "No new filings with a debt item since Oct 15, 2026."
     }
    ],
    [
@@ -62,7 +62,7 @@
     },
     {
      "k": "text",
-     "t": ", none affecting debt."
+     "t": ", none with a debt item."
     }
    ]
   ]
@@ -2725,7 +2725,7 @@
     },
     {
      "k": "text",
-     "t": " · 1 other filing, none affecting debt"
+     "t": " · 1 other filing, none with a debt item"
     }
    ],
    "actionable": []

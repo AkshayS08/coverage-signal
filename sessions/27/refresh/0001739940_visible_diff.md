@@ -10,7 +10,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was: Form 10-Q · Nov 5, 2026 — a new 10-Q, which carries a new position. Not yet read: this card's position is still the 10-Q for June 30, 2026.
   - now: Position as of September 30, 2026
   - now: 10-Q filed Nov 5, 2026
-  - now: new this week · 1 other filing, none affecting debt
+  - now: new this week · 1 other filing, none with a debt item
 - **rolledNote**
   - was: This company's 10-Q does not list its notes. This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026. Rows from the 10-K carry a 10-K tag. $10MM (0.03%) not attributed to a stated cause, within the 0.2% materiality line.
 - **call (label)**
@@ -331,7 +331,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was: commercial paper program · $6,500MM size · ~$1,000MM outstanding · 3.92% average rate
   - now: commercial paper program · $6,500MM size · ~$500MM outstanding · 4.09% average rate
 - **notShown**
-  - was: 1 filing this week affecting debt: text not read, so amount and instrument are not shown.
+  - was: 1 filing this week may affect debt: its text is not read, so amount and instrument are not shown.
   - now: Commercial paper drawn, $0: withheld. Claimed zero, but the sentence asserts nothing about this figure. See the sentence offered.
 - **footnote**
   - was: Face total ~$32,043MM, plus $111MM at carrying value. Balance sheet $31,878MM. The filer states its debt table is net of issuance costs, discounts or premiums. At carrying value, the lines match the balance sheet within $10MM. Using the Dec 31, 2025 10-K, updated through June 30, 2026. Every figure links to the sentence it came from.

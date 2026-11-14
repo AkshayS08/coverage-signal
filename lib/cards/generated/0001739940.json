@@ -62,7 +62,7 @@
     },
     {
      "k": "text",
-     "t": ", none affecting debt."
+     "t": ", none with a debt item."
     }
    ]
   ]
@@ -3816,7 +3816,7 @@
    [
     {
      "k": "text",
-     "t": "1 filing this week affecting debt: text not read, so amount and instrument are not shown."
+     "t": "1 filing this week may affect debt: its text is not read, so amount and instrument are not shown."
     }
    ]
   ]
@@ -8707,7 +8707,7 @@
    [
     {
      "k": "text",
-     "t": "1 filing this week affecting debt: text not read, so amount and instrument are not shown."
+     "t": "1 filing this week may affect debt: its text is not read, so amount and instrument are not shown."
     }
    ]
   ],

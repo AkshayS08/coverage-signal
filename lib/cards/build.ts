@@ -594,7 +594,7 @@ export function buildCard(i: CardInputs): Card {
     ...(anchorThisWeek ? [[{ k: "filing", t: `${formName(anchor.form)} · ${shortDate(anchor.date)}`, url: anchor.url } as Segment, t(` — this card's position: the ${anchor.form} for the ${anchor.form === "10-K" ? "year" : "quarter"} ended ${displayDate(periodEnd, "day")}, filed this week and read for this card.`)] as Line] : []),
     ...actionable,
   ];
-  if (actionable.length === 0) thisWeekLines.push([t(`No new filings affecting debt since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
+  if (actionable.length === 0) thisWeekLines.push([t(`No new filings with a debt item since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
   // §2.2: everything else in one line, grouped by form, each filing one click deeper.
   if (other.length > 0) {
     const byForm = new Map<string, FilingEntry[]>();
@@ -607,7 +607,7 @@ export function buildCard(i: CardInputs): Card {
       line.push(t(`${fs.length} ${formName(form)}${fs.length === 1 ? "" : "s"}${what ? ` (${what})` : ""} `));
       fs.forEach((f, k) => line.push(...(k ? [t(" ")] : []), { k: "filing", t: `[${shortDate(f.filingDate)}]`, url: f.primaryDocUrl }));
     });
-    line.push(t(", none affecting debt."));
+    line.push(t(", none with a debt item."));
     thisWeekLines.push(line);
   } else if (actionable.length > 0) thisWeekLines.push([t("No other filings this week.")]);
 
@@ -1747,7 +1747,7 @@ export function buildCard(i: CardInputs): Card {
   for (const u of unpermittedFacts) withheld.push([t(`A ${u}: stated only in an earlier annual report, which this card does not use for facility terms.`)]);
   if (i.cash.usd === null || !i.cash.printedLine) withheld.push([t(`Cash: ${i.cash.reason ?? "not stated for this date"}.`)]);
   const unread = actionable.length;
-  if (unread) withheld.push([t(`${unread} filing${unread === 1 ? "" : "s"} this week affecting debt: text not read, so amount and instrument are not shown.`)]);
+  if (unread) withheld.push([t(`${unread} filing${unread === 1 ? "" : "s"} this week may affect debt: its text is not read, so amount and instrument are not shown.`)]);
   if (allDebtItems.some((it) => /term loan/i.test(it.labels.type.t))) withheld.push([t(scheduleByYear.size ? "Term-loan amortization by instrument: not stated. The filer's schedule shows it only inside its yearly totals, which the ladder carries as other scheduled principal." : "Term-loan scheduled amortization: not stated in a schedule, so not shown.")]);
   // "Stated but not captured" is a claim about the card, so it is checked
   // against the card: a category any ladder row carries — debt or capacity —
@@ -1943,11 +1943,11 @@ export function buildCard(i: CardInputs): Card {
     filing: { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url },
     status: anchorThisWeek
       // Session 27 (Nov 3): beside "[form] filed [date]", the date once — "10-Q filed Oct 29, 2026 · new this week · …".
-      ? [t("new this week"), ...(actionable.length ? [t(` · ${actionable.length} other filing${actionable.length === 1 ? "" : "s"} may affect debt`)] : otherCount ? [t(` · ${otherCount} other filing${otherCount === 1 ? "" : "s"}, none affecting debt`)] : [])]
+      ? [t("new this week"), ...(actionable.length ? [t(` · ${actionable.length} other filing${actionable.length === 1 ? "" : "s"} may affect debt`)] : otherCount ? [t(` · ${otherCount} other filing${otherCount === 1 ? "" : "s"}, none with a debt item`)] : [])]
       : actionable.length
       ? [t(`${actionable.length} filing${actionable.length === 1 ? "" : "s"} this week may affect debt`)]
       : otherCount
-        ? [t(`${otherCount} filing${otherCount === 1 ? "" : "s"} this week, none affecting debt: `), ...other.flatMap((f, n) => [...(n ? [t(" ")] : []), { k: "filing", t: `${formName(f.form)} ${shortDate(f.filingDate)}`, url: f.primaryDocUrl } as Segment])]
+        ? [t(`${otherCount} filing${otherCount === 1 ? "" : "s"} this week, none with a debt item: `), ...other.flatMap((f, n) => [...(n ? [t(" ")] : []), { k: "filing", t: `${formName(f.form)} ${shortDate(f.filingDate)}`, url: f.primaryDocUrl } as Segment])]
         : [t("No new debt filings this week")],
     actionable,
   };
