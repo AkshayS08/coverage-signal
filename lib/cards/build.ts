@@ -144,6 +144,16 @@ export function priceLabelText(value: string): string {
   return /^at\s/i.test(v) ? v : `at ${v}`;
 }
 
+/**
+ * The maturity a sentence states for the note it names (Nov 14, identityMaturity.test): "due March 2026", "matured in
+ * March 2026", "maturing on June 1, 2034", "which mature in 2034". Returns the date as printed, or null.
+ */
+export function statedMaturityIn(sentence: string): string | null {
+  const M = "January|February|March|April|May|June|July|August|September|October|November|December";
+  const m = new RegExp(`\\b(?:due|matur(?:ed|es|ing|e))\\s+(?:in\\s+|on\\s+)?((?:(?:${M})\\s+(?:\\d{1,2},\\s*)?)?20\\d\\d)\\b`).exec(sentence);
+  return m ? m[1] : null;
+}
+
 /** The same note: its coupon, and its year where it states one. */
 export function sameNoteOf(text: string, instrument: string): boolean {
   const cb = couponsIn(instrument)[0]?.rate;
@@ -986,7 +996,9 @@ export function buildCard(i: CardInputs): Card {
       const item = allDebtItems.find((it) => sameNote(`${it.name} ${it.maturity?.date.slice(0, 4) ?? ""}`, m.instrument));
       const labels = item ? [item.labels.seniority?.t, item.labels.security?.t] : (m.instrument.match(/\b(senior|junior[- ]priority|subordinated|secured|unsecured|first[- ]lien)\b/gi) ?? []).map((x) => x.toLowerCase());
       const type = item && couponOf(item.name) ? item.labels.type.t : /debenture/i.test(m.instrument) ? "debentures" : "notes";
-      const due = item?.maturity ? displayDate(item.maturity.date, item.maturity.granularity) : (new RegExp(`due ((?:(?:${MONTHS})\\s+(?:\\d{1,2},\\s*)?)?20\\d\\d)`, "i").exec(m.instrument) ?? [])[1];
+      // Nov 14 (identityMaturity.test): the identity label carries the stated maturity — the table row's, the name's, or
+      // the one the move's own sentence states ("notes that matured in March 2026").
+      const due = item?.maturity ? displayDate(item.maturity.date, item.maturity.granularity) : (new RegExp(`due ((?:(?:${MONTHS})\\s+(?:\\d{1,2},\\s*)?)?20\\d\\d)`, "i").exec(m.instrument) ?? [])[1] ?? statedMaturityIn(own.sentence) ?? statedMaturityIn(m.sentence) ?? undefined;
       // v3.2 §3.7: one coupon format per card, the anchor's own (the row's "10⅞%", never the 8-K's "10.875%").
       const rowCoupon = item ? couponOf(item.name)?.shown : undefined;
       shown = [rowCoupon ?? c.shown, ...labels.filter(Boolean), type].join(" ") + (due ? ` due ${due}` : "");

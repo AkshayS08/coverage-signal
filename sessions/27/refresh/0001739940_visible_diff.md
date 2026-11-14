@@ -47,7 +47,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was: notYet
 - **moves**
   - was: $550MM 1.250% notes due March 2026
-  - now: $550MM 1.250% senior notes
+  - now: $550MM 1.250% senior notes due March 2026
 - **totalDebt**
   - was: ~$32,043MM
   - was: unsecured commercial paper
