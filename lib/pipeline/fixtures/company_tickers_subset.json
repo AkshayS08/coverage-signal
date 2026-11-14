@@ -1,0 +1,716 @@
+{
+ "capturedOn": "2026-11-14",
+ "note": "EDGAR company_tickers.json entries whose title names a test name or 'health' (for ambiguity)",
+ "entries": [
+  {
+   "cik_str": 731766,
+   "ticker": "UNH",
+   "title": "UNITEDHEALTH GROUP INC"
+  },
+  {
+   "cik_str": 64803,
+   "ticker": "CVS",
+   "title": "CVS HEALTH Corp"
+  },
+  {
+   "cik_str": 860730,
+   "ticker": "HCA",
+   "title": "HCA Healthcare, Inc."
+  },
+  {
+   "cik_str": 1156039,
+   "ticker": "ELV",
+   "title": "Elevance Health, Inc."
+  },
+  {
+   "cik_str": 1739940,
+   "ticker": "CI",
+   "title": "Cigna Group"
+  },
+  {
+   "cik_str": 721371,
+   "ticker": "CAH",
+   "title": "CARDINAL HEALTH INC"
+  },
+  {
+   "cik_str": 1738519,
+   "ticker": "SMMNY",
+   "title": "Siemens Healthineers AG/ADR"
+  },
+  {
+   "cik_str": 1932393,
+   "ticker": "GEHC",
+   "title": "GE HealthCare Technologies Inc."
+  },
+  {
+   "cik_str": 70318,
+   "ticker": "THC",
+   "title": "TENET HEALTHCARE CORP"
+  },
+  {
+   "cik_str": 1576280,
+   "ticker": "GH",
+   "title": "Guardant Health, Inc."
+  },
+  {
+   "cik_str": 888491,
+   "ticker": "OHI",
+   "title": "OMEGA HEALTHCARE INVESTORS INC"
+  },
+  {
+   "cik_str": 765880,
+   "ticker": "DOC",
+   "title": "HEALTHPEAK PROPERTIES, INC."
+  },
+  {
+   "cik_str": 1865782,
+   "ticker": "BTSG",
+   "title": "BrightSpring Health Services, Inc."
+  },
+  {
+   "cik_str": 785161,
+   "ticker": "EHC",
+   "title": "Encompass Health Corp"
+  },
+  {
+   "cik_str": 1632970,
+   "ticker": "AHR",
+   "title": "American Healthcare REIT, Inc."
+  },
+  {
+   "cik_str": 1739104,
+   "ticker": "ELAN",
+   "title": "Elanco Animal Health Inc"
+  },
+  {
+   "cik_str": 352915,
+   "ticker": "UHS",
+   "title": "UNIVERSAL HEALTH SERVICES INC"
+  },
+  {
+   "cik_str": 927066,
+   "ticker": "DVA",
+   "title": "DAVITA INC."
+  },
+  {
+   "cik_str": 1179929,
+   "ticker": "MOH",
+   "title": "MOLINA HEALTHCARE, INC."
+  },
+  {
+   "cik_str": 1568651,
+   "ticker": "OSCR",
+   "title": "Oscar Health, Inc."
+  },
+  {
+   "cik_str": 1673743,
+   "ticker": "HNGE",
+   "title": "Hinge Health, Inc."
+  },
+  {
+   "cik_str": 1428336,
+   "ticker": "HQY",
+   "title": "HEALTHEQUITY, INC."
+  },
+  {
+   "cik_str": 1360604,
+   "ticker": "HR",
+   "title": "Healthcare Realty Trust Inc"
+  },
+  {
+   "cik_str": 1492298,
+   "ticker": "SBRA",
+   "title": "Sabra Health Care REIT, Inc."
+  },
+  {
+   "cik_str": 1845257,
+   "ticker": "LFST",
+   "title": "LifeStance Health Group, Inc."
+  },
+  {
+   "cik_str": 1014739,
+   "ticker": "OPCH",
+   "title": "Option Care Health, Inc."
+  },
+  {
+   "cik_str": 1773751,
+   "ticker": "HIMS",
+   "title": "Hims & Hers Health, Inc."
+  },
+  {
+   "cik_str": 1822479,
+   "ticker": "SHC",
+   "title": "Sotera Health Co"
+  },
+  {
+   "cik_str": 1520697,
+   "ticker": "ACHC",
+   "title": "Acadia Healthcare Company, Inc."
+  },
+  {
+   "cik_str": 1047335,
+   "ticker": "NHC",
+   "title": "NATIONAL HEALTHCARE CORP"
+  },
+  {
+   "cik_str": 877860,
+   "ticker": "NHI",
+   "title": "NATIONAL HEALTH INVESTORS INC"
+  },
+  {
+   "cik_str": 885590,
+   "ticker": "BHC",
+   "title": "Bausch Health Companies Inc."
+  },
+  {
+   "cik_str": 1759655,
+   "ticker": "PRVA",
+   "title": "Privia Health Group, Inc."
+  },
+  {
+   "cik_str": 1832332,
+   "ticker": "AVAH",
+   "title": "Aveanna Healthcare Holdings, Inc."
+  },
+  {
+   "cik_str": 1801170,
+   "ticker": "CLOV",
+   "title": "CLOVER HEALTH INVESTMENTS, CORP. /DE"
+  },
+  {
+   "cik_str": 1756655,
+   "ticker": "ARDT",
+   "title": "Ardent Health, Inc."
+  },
+  {
+   "cik_str": 1295947,
+   "ticker": "PBH",
+   "title": "Prestige Consumer Healthcare Inc."
+  },
+  {
+   "cik_str": 1831097,
+   "ticker": "AGL",
+   "title": "agilon health, inc."
+  },
+  {
+   "cik_str": 1075415,
+   "ticker": "DHC",
+   "title": "DIVERSIFIED HEALTHCARE TRUST"
+  },
+  {
+   "cik_str": 731012,
+   "ticker": "HCSG",
+   "title": "HEALTHCARE SERVICES GROUP INC"
+  },
+  {
+   "cik_str": 1083446,
+   "ticker": "ASTH",
+   "title": "Astrana Health, Inc."
+  },
+  {
+   "cik_str": 1477449,
+   "ticker": "TDOC",
+   "title": "Teladoc Health, Inc."
+  },
+  {
+   "cik_str": 1832466,
+   "ticker": "ALHC",
+   "title": "Alignment Healthcare, Inc."
+  },
+  {
+   "cik_str": 1142750,
+   "ticker": "AMN",
+   "title": "AMN HEALTHCARE SERVICES INC"
+  },
+  {
+   "cik_str": 1069899,
+   "ticker": "PAHC",
+   "title": "PHIBRO ANIMAL HEALTH CORP"
+  },
+  {
+   "cik_str": 944809,
+   "ticker": "OPK",
+   "title": "OPKO HEALTH, INC."
+  },
+  {
+   "cik_str": 1479681,
+   "ticker": "NUTX",
+   "title": "Nutex Health Inc."
+  },
+  {
+   "cik_str": 1702318,
+   "ticker": "AHG",
+   "title": "Akso Health Group"
+  },
+  {
+   "cik_str": 1561032,
+   "ticker": "NHP",
+   "title": "National Healthcare Properties, Inc."
+  },
+  {
+   "cik_str": 1785971,
+   "ticker": "BMEZ",
+   "title": "BlackRock Health Sciences Term Trust"
+  },
+  {
+   "cik_str": 1569963,
+   "ticker": "LTGHY",
+   "title": "Life Healthcare Group Holdings Limited/ADR"
+  },
+  {
+   "cik_str": 1725255,
+   "ticker": "AHCO",
+   "title": "AdaptHealth Corp."
+  },
+  {
+   "cik_str": 1611115,
+   "ticker": "OMDA",
+   "title": "Omada Health, Inc."
+  },
+  {
+   "cik_str": 1095565,
+   "ticker": "HSTM",
+   "title": "HEALTHSTREAM INC"
+  },
+  {
+   "cik_str": 1826470,
+   "ticker": "WOOF",
+   "title": "Petco Health & Wellness Company, Inc."
+  },
+  {
+   "cik_str": 1604522,
+   "ticker": "THQ",
+   "title": "abrdn Healthcare Opportunities Fund"
+  },
+  {
+   "cik_str": 70487,
+   "ticker": "NRC",
+   "title": "NRC HEALTH"
+  },
+  {
+   "cik_str": 798783,
+   "ticker": "UHT",
+   "title": "UNIVERSAL HEALTH REALTY INCOME TRUST"
+  },
+  {
+   "cik_str": 1635977,
+   "ticker": "THW",
+   "title": "abrdn World Healthcare Fund"
+  },
+  {
+   "cik_str": 1628908,
+   "ticker": "EVH",
+   "title": "Evolent Health, Inc."
+  },
+  {
+   "cik_str": 1832511,
+   "ticker": "PIII",
+   "title": "P3 Health Partners Inc."
+  },
+  {
+   "cik_str": 1631569,
+   "ticker": "CHCT",
+   "title": "Community Healthcare Trust Inc"
+  },
+  {
+   "cik_str": 1729149,
+   "ticker": "VMD",
+   "title": "VIEMED HEALTHCARE, INC."
+  },
+  {
+   "cik_str": 1108109,
+   "ticker": "CYH",
+   "title": "COMMUNITY HEALTH SYSTEMS INC"
+  },
+  {
+   "cik_str": 1901203,
+   "ticker": "UCFI",
+   "title": "CN Healthy Food Tech Group Corp."
+  },
+  {
+   "cik_str": 896264,
+   "ticker": "USNA",
+   "title": "USANA HEALTH SCIENCES INC"
+  },
+  {
+   "cik_str": 1391437,
+   "ticker": "GRX",
+   "title": "Gabelli Healthcare & WellnessRx Trust"
+  },
+  {
+   "cik_str": 1861795,
+   "ticker": "DH",
+   "title": "Definitive Healthcare Corp."
+  },
+  {
+   "cik_str": 1636422,
+   "ticker": "HCAT",
+   "title": "Health Catalyst, Inc."
+  },
+  {
+   "cik_str": 1818093,
+   "ticker": "SKIN",
+   "title": "SkinHealth Systems Inc."
+  },
+  {
+   "cik_str": 1784440,
+   "ticker": "BHIC",
+   "title": "BioScience Health Innovations, Inc."
+  },
+  {
+   "cik_str": 1494891,
+   "ticker": "SRTS",
+   "title": "Sensus Healthcare, Inc."
+  },
+  {
+   "cik_str": 1847846,
+   "ticker": "EUDA",
+   "title": "EUDA Health Holdings Ltd"
+  },
+  {
+   "cik_str": 1979005,
+   "ticker": "AFJK",
+   "title": "Aimei Health Technology Co., Ltd."
+  },
+  {
+   "cik_str": 1720446,
+   "ticker": "ZEPP",
+   "title": "Zepp Health Corp"
+  },
+  {
+   "cik_str": 2019505,
+   "ticker": "HIT",
+   "title": "Health In Tech, Inc."
+  },
+  {
+   "cik_str": 2039072,
+   "ticker": "DAVI",
+   "title": "DAVION HEALTHCARE PLC"
+  },
+  {
+   "cik_str": 844856,
+   "ticker": "HCMC",
+   "title": "Healthier Choices Management Corp."
+  },
+  {
+   "cik_str": 1873875,
+   "ticker": "IXHL",
+   "title": "Incannex Healthcare Inc."
+  },
+  {
+   "cik_str": 1089815,
+   "ticker": "EHSI",
+   "title": "Elite Health Systems Inc."
+  },
+  {
+   "cik_str": 1474167,
+   "ticker": "COSM",
+   "title": "Cosmos Health Inc."
+  },
+  {
+   "cik_str": 1630176,
+   "ticker": "HYEX",
+   "title": "HEALTHY EXTRACTS INC."
+  },
+  {
+   "cik_str": 1533998,
+   "ticker": "DRIO",
+   "title": "DarioHealth Corp."
+  },
+  {
+   "cik_str": 1417663,
+   "ticker": "SNWV",
+   "title": "SANUWAVE Health, Inc."
+  },
+  {
+   "cik_str": 1138476,
+   "ticker": "PFHO",
+   "title": "PACIFIC HEALTH CARE ORGANIZATION INC"
+  },
+  {
+   "cik_str": 1333493,
+   "ticker": "EHTH",
+   "title": "eHealth, Inc."
+  },
+  {
+   "cik_str": 1872529,
+   "ticker": "MDXH",
+   "title": "MDxHealth SA"
+  },
+  {
+   "cik_str": 2027329,
+   "ticker": "OPTH",
+   "title": "Optimi Health Corp."
+  },
+  {
+   "cik_str": 1922335,
+   "ticker": "SYRA",
+   "title": "Syra Health Corp"
+  },
+  {
+   "cik_str": 1572616,
+   "ticker": "GUTS",
+   "title": "FRACTYL HEALTH, INC."
+  },
+  {
+   "cik_str": 1096938,
+   "ticker": "UEEC",
+   "title": "United Health Products, Inc."
+  },
+  {
+   "cik_str": 75252,
+   "ticker": "ACH",
+   "title": "ACCENDRA HEALTH INC/VA/"
+  },
+  {
+   "cik_str": 764630,
+   "ticker": "AETN",
+   "title": "AETERNUM HEALTH, INC."
+  },
+  {
+   "cik_str": 926617,
+   "ticker": "AWHL",
+   "title": "Aspira Women's Health Inc."
+  },
+  {
+   "cik_str": 1889352,
+   "ticker": "CMHSF",
+   "title": "COMPREHENSIVE HEALTHCARE SYSTEMS INC. (CANADA)"
+  },
+  {
+   "cik_str": 912061,
+   "ticker": "NHTC",
+   "title": "NATURAL HEALTH TRENDS CORP"
+  },
+  {
+   "cik_str": 1585608,
+   "ticker": "JAGX",
+   "title": "Jaguar Health, Inc."
+  },
+  {
+   "cik_str": 1840425,
+   "ticker": "OSRH",
+   "title": "OSR Health, Inc."
+  },
+  {
+   "cik_str": 1839285,
+   "ticker": "HCTI",
+   "title": "Healthcare Triangle, Inc."
+  },
+  {
+   "cik_str": 1265521,
+   "ticker": "PMHS",
+   "title": "Polomar Health Services, Inc."
+  },
+  {
+   "cik_str": 1004724,
+   "ticker": "RHEP",
+   "title": "REGIONAL HEALTH PROPERTIES, INC"
+  },
+  {
+   "cik_str": 1680139,
+   "ticker": "HLYK",
+   "title": "HealthLynked Corp"
+  },
+  {
+   "cik_str": 1642178,
+   "ticker": "AGNPF",
+   "title": "Grey Matters Health Inc."
+  },
+  {
+   "cik_str": 1819704,
+   "ticker": "MRM",
+   "title": "Medirom Healthcare Technologies Inc."
+  },
+  {
+   "cik_str": 1553788,
+   "ticker": "EDVA",
+   "title": "Endovia Health Sciences, Inc."
+  },
+  {
+   "cik_str": 1976695,
+   "ticker": "MNDR",
+   "title": "Mobile-health Network Solutions"
+  },
+  {
+   "cik_str": 1626644,
+   "ticker": "ODYY",
+   "title": "Odyssey Health, Inc."
+  },
+  {
+   "cik_str": 1954594,
+   "ticker": "HAO",
+   "title": "Haoxi Health Technology Ltd"
+  },
+  {
+   "cik_str": 1864531,
+   "ticker": "VSEE",
+   "title": "VSEE HEALTH, INC."
+  },
+  {
+   "cik_str": 1842939,
+   "ticker": "XAGE",
+   "title": "Longevity Health Holdings, Inc."
+  },
+  {
+   "cik_str": 1416876,
+   "ticker": "FCHS",
+   "title": "First Choice Healthcare Solutions, Inc."
+  },
+  {
+   "cik_str": 1314966,
+   "ticker": "BME",
+   "title": "BlackRock Health Sciences Trust"
+  },
+  {
+   "cik_str": 805267,
+   "ticker": "HQH",
+   "title": "abrdn Healthcare Investors"
+  },
+  {
+   "cik_str": 2000684,
+   "ticker": "DHGR",
+   "title": "Devonian Health Group Inc."
+  },
+  {
+   "cik_str": 2060863,
+   "ticker": "NHLTY",
+   "title": "Nightingale Health Plc"
+  },
+  {
+   "cik_str": 2045931,
+   "ticker": "AHJK",
+   "title": "Aimei Health Technology II Co., Ltd."
+  },
+  {
+   "cik_str": 2078895,
+   "ticker": "ASKRY",
+   "title": "Asker Healthcare Group AB/ADR"
+  },
+  {
+   "cik_str": 1569963,
+   "ticker": "LTGHF",
+   "title": "Life Healthcare Group Holdings Limited/ADR"
+  },
+  {
+   "cik_str": 1782999,
+   "ticker": "PTCHF",
+   "title": "PureTech Health plc"
+  },
+  {
+   "cik_str": 1420108,
+   "ticker": "GLUC",
+   "title": "Glucose Health, Inc."
+  },
+  {
+   "cik_str": 1350156,
+   "ticker": "PAXH",
+   "title": "PREAXIA HEALTH CARE PAYMENT SYSTEMS INC."
+  },
+  {
+   "cik_str": 1597892,
+   "ticker": "JRSS",
+   "title": "JRSIS HEALTH CARE Corp"
+  },
+  {
+   "cik_str": 2032609,
+   "ticker": "SHFH",
+   "title": "Scientist Home Future Health Ltd"
+  },
+  {
+   "cik_str": 1840425,
+   "ticker": "OSRHW",
+   "title": "OSR Health, Inc."
+  },
+  {
+   "cik_str": 1847846,
+   "ticker": "EUDAW",
+   "title": "EUDA Health Holdings Ltd"
+  },
+  {
+   "cik_str": 2000684,
+   "ticker": "DVHGF",
+   "title": "Devonian Health Group Inc."
+  },
+  {
+   "cik_str": 2060863,
+   "ticker": "NGHLF",
+   "title": "Nightingale Health Plc"
+  },
+  {
+   "cik_str": 1842939,
+   "ticker": "XAGEW",
+   "title": "Longevity Health Holdings, Inc."
+  },
+  {
+   "cik_str": 1738519,
+   "ticker": "SEMHF",
+   "title": "Siemens Healthineers AG/ADR"
+  },
+  {
+   "cik_str": 1781726,
+   "ticker": "ACAT",
+   "title": "NP Life Sciences Health Industry Group Inc."
+  },
+  {
+   "cik_str": 1075415,
+   "ticker": "DHCNI",
+   "title": "DIVERSIFIED HEALTHCARE TRUST"
+  },
+  {
+   "cik_str": 1075415,
+   "ticker": "DHCNL",
+   "title": "DIVERSIFIED HEALTHCARE TRUST"
+  },
+  {
+   "cik_str": 1782999,
+   "ticker": "PRTCY",
+   "title": "PureTech Health plc"
+  },
+  {
+   "cik_str": 1979005,
+   "ticker": "AFJKR",
+   "title": "Aimei Health Technology Co., Ltd."
+  },
+  {
+   "cik_str": 1979005,
+   "ticker": "AFJKU",
+   "title": "Aimei Health Technology Co., Ltd."
+  },
+  {
+   "cik_str": 1832511,
+   "ticker": "PIIIW",
+   "title": "P3 Health Partners Inc."
+  },
+  {
+   "cik_str": 1865782,
+   "ticker": "BTSGU",
+   "title": "BrightSpring Health Services, Inc."
+  },
+  {
+   "cik_str": 1901203,
+   "ticker": "UCFIW",
+   "title": "CN Healthy Food Tech Group Corp."
+  },
+  {
+   "cik_str": 1864531,
+   "ticker": "VSEEW",
+   "title": "VSEE HEALTH, INC."
+  },
+  {
+   "cik_str": 1004724,
+   "ticker": "RHEPB",
+   "title": "REGIONAL HEALTH PROPERTIES, INC"
+  },
+  {
+   "cik_str": 1004724,
+   "ticker": "RHEPZ",
+   "title": "REGIONAL HEALTH PROPERTIES, INC"
+  },
+  {
+   "cik_str": 1004724,
+   "ticker": "RHEPA",
+   "title": "REGIONAL HEALTH PROPERTIES, INC"
+  }
+ ]
+}
