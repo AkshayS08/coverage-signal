@@ -41,9 +41,9 @@ const cfg = (f: any) => ({ url: "https://example.upstash.io", token: "t", fetch:
   assert([a, b].filter(Boolean).length === 1, `[L1] two concurrent acquires: ${[a, b].filter(Boolean).length} won`);
   const owner = a ? "build-A" : "build-B", stranger = a ? "build-B" : "build-A";
   await releaseLease(key, stranger, cfg(u.fetchFn));
-  const heldAfterStranger = u.store.has(key);
+  const heldAfterStranger = u.store.has(`lease:${key}`);
   await releaseLease(key, owner, cfg(u.fetchFn));
-  assert(heldAfterStranger && !u.store.has(key), `[L2] a stranger's release leaves it held; the owner's releases it`);
+  assert(heldAfterStranger && !u.store.has(`lease:${key}`), `[L2] a stranger's release leaves it held; the owner's releases it`);
   let unconfigured = false, unreadable = false;
   try { await acquireLease(key, "x", { url: "", token: "", fetch: u.fetchFn }); } catch (e) { unconfigured = e instanceof LeaseUnavailableError; }
   try { await acquireLease(key, "x", cfg(async () => { throw new Error("network down"); })); } catch (e) { unreadable = e instanceof LeaseUnavailableError; }
