@@ -150,9 +150,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - was: 2031+ combines every maturity from 2031 on; the table below lists each.
   - was: The 2031+ bar holds 20 instruments and is cut to fit; its full height would be about 5.7 times the 2028 bar.
   - was: At carrying value, not counted in the chart: $111MM Other, including finance leases.
-  - was: The senior notes' security is not stated.
-  - was: For the notes, seniority and security are not stated.
-  - was: This company's filings state labels for few of these instruments.
+  - was: This company's filings state labels for few of these instruments. Not stated: security for the senior notes; seniority and security for the notes.
 - **chart (tooltip)**
   - was: commercial paper outstanding
   - was: $1,500 million, 3.400% Notes due March 2027, not yet refinanced
@@ -352,7 +350,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
 - **breakage (basis)**
   - now: cash
   - now: cash
-- **cited sentences behind source links**: 342 out, 37 in
+- **cited sentences behind source links**: 340 out, 37 in
   - was cited: 10-Q 2026-07-30 | For the quarterly period ended June 30, 2026
   - was cited: 10-K for Dec 31, 2025 | $1,500 million, 3.400 % Notes due March 2027 1,481
   - was cited: 10-K for Dec 31, 2025 | $259 million, 7.875 % Debentures due May 2027 260

@@ -2433,16 +2433,17 @@ export function buildCard(i: CardInputs): Card {
     const plural = absorbed.length > 1;
     causeLines.push([t(`${joinTypes(parts)} ${plural ? "appear" : "appears"} as scheduled principal: the filer's schedule doesn't split ${plural ? "them" : "it"} by instrument.`)]);
   }
-  if (securityOnly.length) {
+  // Nov 14 (captionCauses.test): ONE LINE PER CAUSE. The filer's missing labels are one cause, whatever is missing for
+  // each type: "Not stated by the filer: security for the senior notes; seniority and security for the notes."
+  if (securityOnly.length || neither.length) {
     // Told apart from unlabelled notes by the label they do state: "the senior notes".
-    const ts = [...new Set(securityOnly.map((it) => `${it.labels.seniority!.t} ${it.labels.type.t}`))];
-    causeLines.push([{ k: "notStated", t: ts.length === 1 ? `The ${ts[0]}' security is not stated.` : `For the ${joinTypes(ts)}, security is not stated.`, src: securityOnly[0].amountSrc }]);
-  }
-  if (neither.length) {
-    const ts = typesOf(neither);
-    causeLines.push([{ k: "notStated", t: ts.length === 1 ? `For the ${ts[0]}, seniority and security are not stated.` : `For the ${joinTypes(ts)}, seniority and security are not stated.`, src: neither[0].amountSrc }]);
+    const parts: string[] = [];
+    if (securityOnly.length) parts.push(`security for the ${joinTypes([...new Set(securityOnly.map((it) => `${it.labels.seniority!.t} ${it.labels.type.t}`))])}`);
+    if (neither.length) parts.push(`seniority and security for the ${joinTypes(typesOf(neither))}`);
     const neitherFace = neither.reduce((a, it) => a + (greyItems.get(it) ?? 0), 0);
-    if (neitherFace > charted / 2) causeLines.push([{ k: "notStated", t: "This company's filings state labels for few of these instruments.", src: neither[0].amountSrc }]);
+    const few = neither.length > 0 && neitherFace > charted / 2;
+    const lead = few ? "This company's filings state labels for few of these instruments. Not stated" : "Not stated by the filer";
+    causeLines.push([{ k: "notStated", t: `${lead}: ${parts.join("; ")}.`, src: (securityOnly[0] ?? neither[0]).amountSrc }]);
   }
   captions.push(...causeLines);
 
