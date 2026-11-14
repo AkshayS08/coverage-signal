@@ -4278,3 +4278,16 @@
 {"at":"2026-11-14T19:43:36.513Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-11-14T19:43:45.200Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
 {"at":"2026-11-14T19:43:58.667Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:05:51.777Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:06:07.261Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:06:21.367Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:06:36.169Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:06:49.481Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:07:03.024Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:08:58.352Z","company":"TENET HEALTHCARE CORP","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:09:19.059Z","company":"Encompass Health Corp","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:09:36.012Z","company":"DAVITA INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:09:51.990Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:10:07.322Z","company":"MOLINA HEALTHCARE, INC.","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:10:19.923Z","company":"Cigna Group","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-14T20:11:16.751Z","company":"Cigna Group","totalUsd":0.081457,"totalCalls":3,"byModel":[{"model":"claude-haiku-4-5","calls":3,"inputTokens":45657,"outputTokens":7160,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.081457}],"unpricedModels":[]}

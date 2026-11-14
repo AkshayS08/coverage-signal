@@ -48,6 +48,18 @@
   {
    "key": "answer/0001108109/card-facts/cac7c38ec8ef498e56452e44/cf-v1-ask3.json",
    "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0001739940/card-facts/ed143fe476fb9e0181f5988f/cf-v1-ask1.json",
+   "why": "Ring 1 (Nov 14): Cigna Sept 30 card facts, billed $0.0815; pending Akshay review, not adopted"
+  },
+  {
+   "key": "answer/0001739940/card-facts/ed143fe476fb9e0181f5988f/cf-v1-ask2.json",
+   "why": "Ring 1 (Nov 14): Cigna Sept 30 card facts, billed $0.0815; pending Akshay review, not adopted"
+  },
+  {
+   "key": "answer/0001739940/card-facts/ed143fe476fb9e0181f5988f/cf-v1-ask3.json",
+   "why": "Ring 1 (Nov 14): Cigna Sept 30 card facts, billed $0.0815; pending Akshay review, not adopted"
   }
  ]
 }

@@ -1,0 +1,360 @@
+{
+ "ranAt": "2026-11-14T20:11:18.956Z",
+ "asOf": "2026-11-09",
+ "commit": "3e393c6f746ac19437180891589f33e7af4bcf6c",
+ "approvedUsd": 0.4,
+ "spentUsd": 0.0815,
+ "names": [
+  {
+   "company": "TENET HEALTHCARE CORP",
+   "cik": "0000070318",
+   "readSet": "36207eefb857ae1543a2229d",
+   "answerIsProductions": true,
+   "factsSource": "production's adopted facts (same anchor), $0",
+   "deterministic": true,
+   "fieldsCompared": 34,
+   "differences": []
+  },
+  {
+   "company": "Encompass Health Corp",
+   "cik": "0000785161",
+   "readSet": "8ed102356861d01c61a0cfba",
+   "answerIsProductions": true,
+   "factsSource": "production's adopted facts (same anchor), $0",
+   "deterministic": true,
+   "fieldsCompared": 31,
+   "differences": []
+  },
+  {
+   "company": "DAVITA INC.",
+   "cik": "0000927066",
+   "readSet": "744968d3c0f19f4619c61cb4",
+   "answerIsProductions": true,
+   "factsSource": "production's adopted facts (same anchor), $0",
+   "deterministic": true,
+   "fieldsCompared": 29,
+   "differences": []
+  },
+  {
+   "company": "COMMUNITY HEALTH SYSTEMS INC",
+   "cik": "0001108109",
+   "readSet": "75cc5d22d6722f4293860c27",
+   "answerIsProductions": true,
+   "factsSource": "production's adopted facts (same anchor), $0",
+   "deterministic": true,
+   "fieldsCompared": 35,
+   "differences": []
+  },
+  {
+   "company": "MOLINA HEALTHCARE, INC.",
+   "cik": "0001179929",
+   "readSet": "6073bb101b30ab8b3345c48f",
+   "answerIsProductions": true,
+   "factsSource": "production's adopted facts (same anchor), $0",
+   "deterministic": true,
+   "fieldsCompared": 20,
+   "differences": []
+  },
+  {
+   "company": "Cigna Group",
+   "cik": "0001739940",
+   "readSet": "1db66a3cdcff95cbb061c496",
+   "answerIsProductions": false,
+   "factsSource": "the facts stage on the run's own input, billed $0.0815 (3 calls)",
+   "deterministic": true,
+   "fieldsCompared": 56,
+   "differences": [
+    {
+     "field": "position",
+     "production": "Position as of June 30, 2026",
+     "ring1": "Position as of September 30, 2026"
+    },
+    {
+     "field": "header status",
+     "production": "10-Q filed July 30, 2026 · 1 filing this week may affect debt",
+     "ring1": "10-Q filed Nov 5, 2026 · new this week · 1 other filing, none with a debt item"
+    },
+    {
+     "field": "checks",
+     "production": "(none)",
+     "ring1": "failed"
+    },
+    {
+     "field": "call: headline",
+     "production": "$2,359MM of notes and debentures due in 2027 are not yet refinanced. About $1,000MM of commercial paper is also outstanding, backed by the $6,500MM revolver.",
+     "ring1": null
+    },
+    {
+     "field": "call: tile Due in window",
+     "production": "$2,359MM · 3 issues, all in 2027",
+     "ring1": null
+    },
+    {
+     "field": "call: tile Refinanced",
+     "production": "$0 · None stated in any filing",
+     "ring1": null
+    },
+    {
+     "field": "call: tile Not yet refinanced",
+     "production": "$2,359MM · The refinancing conversation",
+     "ring1": null
+    },
+    {
+     "field": "call: row Short-term unsecured commercial paper, 3.92% averag",
+     "production": "~$1,000MM unsecured commercial paper, 3.92% average rate | Backed by revolver",
+     "ring1": null
+    },
+    {
+     "field": "call: row Mar 2027 3.400% notes",
+     "production": "$1,500MM 3.400% notes | Not yet refinanced",
+     "ring1": null
+    },
+    {
+     "field": "call: row May 2027 7.875% debentures",
+     "production": "$259MM 7.875% debentures | Not yet refinanced",
+     "ring1": null
+    },
+    {
+     "field": "call: row Oct 2027 3.050% notes",
+     "production": "$600MM 3.050% notes | Not yet refinanced",
+     "ring1": null
+    },
+    {
+     "field": "call: note 1",
+     "production": "Next after the window: $3,800MM 4.375% notes, October 2028.",
+     "ring1": null
+    },
+    {
+     "field": "total debt",
+     "production": "~$32,043MM",
+     "ring1": null
+    },
+    {
+     "field": "total debt: unsecured commercial paper",
+     "production": "~$1,000MM",
+     "ring1": null
+    },
+    {
+     "field": "total debt: senior notes",
+     "production": "$4,500MM",
+     "ring1": null
+    },
+    {
+     "field": "total debt: notes, seniority not stated",
+     "production": "$26,284MM",
+     "ring1": null
+    },
+    {
+     "field": "total debt: debentures, seniority not stated",
+     "production": "$259MM",
+     "ring1": null
+    },
+    {
+     "field": "total debt: note 1",
+     "production": "Plus, at carrying value and not in the bar: Other, including finance leases $111MM.",
+     "ring1": null
+    },
+    {
+     "field": "liquidity",
+     "production": "~$11,798MM",
+     "ring1": "—"
+    },
+    {
+     "field": "liquidity: Cash and cash equivalents",
+     "production": "$6,298MM",
+     "ring1": "$6,186MM"
+    },
+    {
+     "field": "liquidity: Undrawn revolver, matures April 2030",
+     "production": "~$5,500MM",
+     "ring1": "~$6,000MM"
+    },
+    {
+     "field": "liquidity: note 1",
+     "production": "Undrawn committed revolver shown net of ~$1,000MM commercial paper it backs. Commercial paper itself is not counted as liquidity.",
+     "ring1": "No liquidity total: cash and every facility's availability are not all stated as of the position date."
+    },
+    {
+     "field": "table: Short-term unsecured commercial paper",
+     "production": "~1,000 | Backed by revolver",
+     "ring1": null
+    },
+    {
+     "field": "table: Mar 2027 3.400% notes",
+     "production": "1,500 | Not yet refinanced",
+     "ring1": null
+    },
+    {
+     "field": "table: May 2027 7.875% debentures",
+     "production": "259 | Not yet refinanced",
+     "ring1": null
+    },
+    {
+     "field": "table: Oct 2027 3.050% notes",
+     "production": "600 | Not yet refinanced",
+     "ring1": null
+    },
+    {
+     "field": "table: Oct 2028 4.375% notes",
+     "production": "3,800 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: May 2029 5.000% notes",
+     "production": "1,000 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Mar 2030 2.400% notes",
+     "production": "1,400 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Sept 15, 2030 4.500% senior notes",
+     "production": "1,000 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Mar 2031 2.375% notes",
+     "production": "1,500 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: May 2031 5.125% notes",
+     "production": "750 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Sept 15, 2032 4.875% senior notes",
+     "production": "1,250 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Jan 2033 8.080% notes",
+     "production": "45 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Mar 2033 5.400% notes",
+     "production": "800 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Feb 2034 5.250% notes",
+     "production": "1,250 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Jan 15, 2036 5.250% senior notes",
+     "production": "1,500 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Nov 2036 6.150% notes",
+     "production": "190 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Aug 2038 4.800% notes",
+     "production": "2,200 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Mar 2040 3.200% notes",
+     "production": "750 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Mar 2041 5.875% notes",
+     "production": "121 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Nov 2041 6.125% notes",
+     "production": "448 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Feb 2042 5.375% notes",
+     "production": "317 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: July 2046 4.800% notes",
+     "production": "1,500 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Oct 2047 3.875% notes",
+     "production": "1,000 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Dec 2048 4.900% notes",
+     "production": "3,000 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Mar 2050 3.400% notes",
+     "production": "1,184 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Mar 2051 3.400% notes",
+     "production": "1,429 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Feb 2054 5.600% notes",
+     "production": "1,500 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Jan 15, 2056 6.000% senior notes",
+     "production": "750 | ",
+     "ring1": null
+    },
+    {
+     "field": "table: Various Other, including finance leases (carrying value)",
+     "production": "111 (carrying value) | ",
+     "ring1": null
+    },
+    {
+     "field": "move: Mar 2026 · Repaid at maturity",
+     "production": "$550MM 1.250% notes due March 2026 | Funding source not stated.",
+     "ring1": "$550MM 1.250% notes | Funding source not stated."
+    },
+    {
+     "field": "facility 2",
+     "production": "commercial paper program · $6,500MM size · ~$1,000MM outstanding · 3.92% average rate",
+     "ring1": "commercial paper program · $6,500MM size · ~$500MM outstanding · 4.09% average rate"
+    },
+    {
+     "field": "not shown 1",
+     "production": "1 filing this week may affect debt: its text is not read, so amount and instrument are not shown.",
+     "ring1": "Commercial paper drawn, $0: withheld. Claimed zero, but the sentence asserts nothing about this figure. See the sentence offered."
+    },
+    {
+     "field": "footnote",
+     "production": "Face total ~$32,043MM, plus $111MM at carrying value. Balance sheet $31,878MM. The filer states its debt table is net of issuance costs, discounts or premiums. At carrying value, the lines match the balance sheet within $10MM. Using the Dec 31, 2025 10-K, updated through June 30, 2026. Every figure links to the sentence it came from.",
+     "ring1": "Every figure links to the sentence it came from."
+    },
+    {
+     "field": "breakage",
+     "production": null,
+     "ring1": "$194MM — The 2025 10-K's debt table, carried forward to this balance sheet: $31,463MM − $550MM + $463MM − $40MM = $31,336MM, against $31,142MM. $40MM is long-term debt repaid beyond the repayments stated by name, per “Repayment of long-term debt ( 590 )”. $194MM (0.62%) not attributed to a stated cause, over the 0.2% materiality line. So its notes are not carried to September 30, 2026, and this card does not state a position."
+    },
+    {
+     "field": "liquidity: note 2",
+     "production": null,
+     "ring1": "Undrawn committed revolver shown net of ~$500MM commercial paper it backs. Commercial paper itself is not counted as liquidity."
+    },
+    {
+     "field": "liquidity: note 3",
+     "production": null,
+     "ring1": "Not counted: up to $2,000MM of uncommitted factoring facilities."
+    }
+   ]
+  }
+ ]
+}
