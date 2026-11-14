@@ -1,7 +1,7 @@
 {
- "pricedAt": "2026-11-13T20:15:03.801Z",
+ "pricedAt": "2026-11-14T20:07:13.975Z",
  "asOf": "2026-11-09",
- "commit": "4c3a374db69eb489d3bfe849d0acbed8258c97ca",
+ "commit": "d2f1e72e32788ba06e036d38d6ecbf342d19030f",
  "rows": [
   {
    "company": "TENET HEALTHCARE CORP",
@@ -67,13 +67,13 @@
    "referencedNote": null,
    "facts": {
     "inputHash": "315001246e01bd2820829511",
-    "uncachedAsks": 3,
-    "worstPerAsk": 0.0614,
-    "worst": 0.1842,
+    "uncachedAsks": 0,
+    "worstPerAsk": 0,
+    "worst": 0,
     "pricedOnPublishedInputAsStandIn": false
    },
-   "worst": 0.1842,
-   "declared": 0.19
+   "worst": 0,
+   "declared": 0
   },
   {
    "company": "DAVITA INC.",
@@ -154,34 +154,34 @@
    "samples": [
     {
      "sample": "canonical",
-     "cached": false,
-     "fingerprint": "1cdaee36c65952bc01cec4c6"
+     "cached": true,
+     "fingerprint": "6073bb101b30ab8b3345c48f"
     },
     {
      "sample": "s27-refresh-retaste-1",
-     "cached": false,
-     "fingerprint": "1cdaee36c65952bc01cec4c6"
+     "cached": true,
+     "fingerprint": "6073bb101b30ab8b3345c48f"
     },
     {
      "sample": "s27-refresh-retaste-2",
-     "cached": false,
-     "fingerprint": "1cdaee36c65952bc01cec4c6"
+     "cached": true,
+     "fingerprint": "6073bb101b30ab8b3345c48f"
     }
    ],
-   "uncachedSamples": 3,
-   "basePerSampleWorst": 0.160501,
-   "digWorstPerSample": 0.275935,
-   "proceedsEstimatePerSample": 0.075492,
+   "uncachedSamples": 0,
+   "basePerSampleWorst": 0,
+   "digWorstPerSample": 0,
+   "proceedsEstimatePerSample": 0,
    "referencedNote": null,
    "facts": {
-    "inputHash": null,
-    "uncachedAsks": 3,
-    "worstPerAsk": 0.0508,
-    "worst": 0.15239999999999998,
-    "pricedOnPublishedInputAsStandIn": true
+    "inputHash": "8e8038a71cc72bef0aa50a2f",
+    "uncachedAsks": 0,
+    "worstPerAsk": 0,
+    "worst": 0,
+    "pricedOnPublishedInputAsStandIn": false
    },
-   "worst": 1.6881839999999997,
-   "declared": 1.69
+   "worst": 0,
+   "declared": 0
   },
   {
    "company": "Cigna Group",
@@ -223,6 +223,6 @@
    "declared": 0.17
   }
  ],
- "worstUsd": 2.038,
- "declaredUsd": 2.04
+ "worstUsd": 0.1656,
+ "declaredUsd": 0.17
 }
