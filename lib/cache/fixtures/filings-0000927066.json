@@ -1,0 +1,1343 @@
+{
+ "cik": "0000927066",
+ "company": "DAVITA INC.",
+ "capturedOn": "2026-11-14",
+ "filings": [
+  {
+   "form": "10-Q",
+   "filingDate": "2026-10-29",
+   "reportDate": "2026-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-26-000134",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-10-29",
+   "reportDate": "2026-10-29",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-26-000132",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000132/dva-20261029.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2026-08-04",
+   "reportDate": "2026-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-26-000108",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000108/dva-20260630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-08-04",
+   "reportDate": "2026-08-04",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-26-000105",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000105/dva-20260804.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-06-08",
+   "reportDate": "2026-06-04",
+   "items": "1.01,2.03,5.07,9.01",
+   "accessionNumber": "0001206774-26-000316",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677426000316/dva4647631-8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2026-05-05",
+   "reportDate": "2026-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-26-000062",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000062/dva-20260331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-05-05",
+   "reportDate": "2026-05-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-26-000060",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000060/dva-20260505.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2026-02-11",
+   "reportDate": "2025-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-26-000012",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-02-02",
+   "reportDate": "2026-02-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-26-000004",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000004/dva-20260202.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-11-25",
+   "reportDate": "2025-11-24",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0001206774-25-000750",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000750/dva4564821-8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2025-10-29",
+   "reportDate": "2025-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-25-000165",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000165/dva-20250930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-10-29",
+   "reportDate": "2025-10-29",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-25-000163",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000163/dva-20251029.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-08-20",
+   "reportDate": "2025-08-20",
+   "items": "8.01",
+   "accessionNumber": "0000927066-25-000154",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000154/dva-20250820.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2025-08-05",
+   "reportDate": "2025-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-25-000124",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000124/dva-20250630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-08-05",
+   "reportDate": "2025-08-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-25-000122",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000122/dva-20250805.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-07-17",
+   "reportDate": "2025-07-17",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0001193125-25-160501",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312525160501/d75954d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-06-09",
+   "reportDate": "2025-06-05",
+   "items": "5.07",
+   "accessionNumber": "0000927066-25-000107",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000107/dva-20250605.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-05-23",
+   "reportDate": "2025-05-23",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0001206774-25-000378",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000378/dva4490761-8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-05-20",
+   "reportDate": "2025-05-20",
+   "items": "8.01,9.01",
+   "accessionNumber": "0001206774-25-000369",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000369/dva4487961-8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-05-20",
+   "reportDate": "2025-05-20",
+   "items": "8.01,9.01",
+   "accessionNumber": "0001206774-25-000368",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000368/dva4487951-8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2025-05-12",
+   "reportDate": "2025-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-25-000087",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000087/dva-20250331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-05-12",
+   "reportDate": "2025-05-12",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-25-000085",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000085/dva-20250512.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-04-14",
+   "reportDate": "2025-04-12",
+   "items": "8.01",
+   "accessionNumber": "0001193125-25-079593",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312525079593/d948299d8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2025-02-13",
+   "reportDate": "2024-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-25-000012",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000012/dva-20241231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-02-13",
+   "reportDate": "2025-02-13",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-25-000009",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706625000009/dva-20250213.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2024-10-29",
+   "reportDate": "2024-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-24-000179",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000179/dva-20240930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-10-29",
+   "reportDate": "2024-10-29",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-24-000177",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000177/dva-20241029.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-09-13",
+   "reportDate": "2024-09-09",
+   "items": "5.02,9.01",
+   "accessionNumber": "0001206774-24-000897",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677424000897/dva4379221-8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-09-05",
+   "reportDate": "2024-09-05",
+   "items": "5.03,8.01,9.01",
+   "accessionNumber": "0000927066-24-000162",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000162/dva-20240905.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-08-14",
+   "reportDate": "2024-08-13",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0001206774-24-000784",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677424000784/dva4366031-8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-08-09",
+   "reportDate": "2024-08-08",
+   "items": "8.01,9.01",
+   "accessionNumber": "0001206774-24-000776",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677424000776/dva4364011-8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-08-08",
+   "reportDate": "2024-08-08",
+   "items": "8.01,9.01",
+   "accessionNumber": "0001206774-24-000769",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000120677424000769/dva4364031-8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2024-08-06",
+   "reportDate": "2024-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-24-000128",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000128/dva-20240630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-08-06",
+   "reportDate": "2024-08-06",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-24-000126",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000126/dva-20240806.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-06-10",
+   "reportDate": "2024-06-06",
+   "items": "5.07",
+   "accessionNumber": "0000927066-24-000115",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000115/dva-20240606.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-05-13",
+   "reportDate": "2024-05-09",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0000927066-24-000093",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000093/dva-20240509.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2024-05-02",
+   "reportDate": "2024-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-24-000090",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000090/dva-20240331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-05-02",
+   "reportDate": "2024-05-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-24-000089",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000089/dva-20240502.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-05-01",
+   "reportDate": "2024-04-30",
+   "items": "1.01,9.01",
+   "accessionNumber": "0000927066-24-000083",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000083/dva-20240430.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-04-10",
+   "reportDate": "2024-04-06",
+   "items": "5.02",
+   "accessionNumber": "0000927066-24-000068",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000068/dva-20240406.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2024-02-14",
+   "reportDate": "2023-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-24-000013",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000013/dva-20231231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-02-13",
+   "reportDate": "2024-02-13",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-24-000005",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706624000005/dva-20240213.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2023-11-07",
+   "reportDate": "2023-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-23-000209",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000209/dva-20230930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-11-07",
+   "reportDate": "2023-11-07",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-23-000207",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000207/dva-20231107.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2023-08-03",
+   "reportDate": "2023-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-23-000178",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000178/dva-20230630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-08-03",
+   "reportDate": "2023-08-03",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-23-000175",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000175/dva-20230803.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-07-25",
+   "reportDate": "2023-07-19",
+   "items": "5.02",
+   "accessionNumber": "0000927066-23-000170",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000170/dva-20230719.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-07-13",
+   "reportDate": "2023-07-12",
+   "items": "5.02",
+   "accessionNumber": "0000927066-23-000162",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000162/dva-20230712.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-06-08",
+   "reportDate": "2023-06-06",
+   "items": "5.03,5.07,9.01",
+   "accessionNumber": "0000927066-23-000152",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000152/dva-20230606.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2023-05-08",
+   "reportDate": "2023-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-23-000104",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000104/dva-20230331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-05-08",
+   "reportDate": "2023-05-08",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-23-000102",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000102/dva-20230508.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-05-01",
+   "reportDate": "2023-04-28",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0000927066-23-000096",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000096/dva-20230428.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-03-21",
+   "reportDate": "2023-03-15",
+   "items": "5.02",
+   "accessionNumber": "0000927066-23-000070",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000070/dva-20230315.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2023-02-22",
+   "reportDate": "2022-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-23-000011",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000011/dva-20221231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-02-22",
+   "reportDate": "2023-02-22",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-23-000009",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706623000009/dva-20230222.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2022-10-31",
+   "reportDate": "2022-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-22-000167",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000167/dva-20220930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-10-28",
+   "reportDate": "2022-10-28",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-22-000164",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000164/dva-20221028.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-10-18",
+   "reportDate": "2022-10-14",
+   "items": "5.03,9.01",
+   "accessionNumber": "0000927066-22-000160",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000160/dva-20221014.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-09-13",
+   "reportDate": "2022-09-08",
+   "items": "5.02",
+   "accessionNumber": "0000927066-22-000152",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000152/dva-20220908.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2022-08-01",
+   "reportDate": "2022-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-22-000133",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000133/dva-20220630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-08-01",
+   "reportDate": "2022-08-01",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-22-000131",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000131/dva-20220801.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-06-14",
+   "reportDate": "2022-06-09",
+   "items": "5.07",
+   "accessionNumber": "0000927066-22-000121",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000121/dva-20220609.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-05-26",
+   "reportDate": "2022-05-25",
+   "items": "7.01",
+   "accessionNumber": "0000927066-22-000110",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000110/dva-20220525.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2022-05-05",
+   "reportDate": "2022-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-22-000077",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000077/dva-20220331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-05-05",
+   "reportDate": "2022-05-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-22-000075",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000075/dva-20220505.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-04-08",
+   "reportDate": "2022-04-06",
+   "items": "5.02",
+   "accessionNumber": "0000927066-22-000046",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000046/dva-20220406.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2022-02-11",
+   "reportDate": "2021-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-22-000012",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000012/dva-20211231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-02-10",
+   "reportDate": "2022-02-10",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-22-000006",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000006/dva-20220210.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-02-09",
+   "reportDate": "2022-02-09",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-22-000002",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706622000002/dva-20220209.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-12-17",
+   "reportDate": "2021-12-17",
+   "items": "8.01",
+   "accessionNumber": "0000927066-21-000189",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000189/dva-20211217.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2021-10-28",
+   "reportDate": "2021-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-21-000166",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000166/dva-20210930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-10-28",
+   "reportDate": "2021-10-28",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-21-000164",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000164/dva-20211028.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-09-09",
+   "reportDate": "2021-09-09",
+   "items": "5.02",
+   "accessionNumber": "0000927066-21-000159",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000159/dva-20210909.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2021-08-03",
+   "reportDate": "2021-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-21-000136",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000136/dva-20210630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-08-03",
+   "reportDate": "2021-08-03",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-21-000135",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000135/dva-20210803.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-06-14",
+   "reportDate": "2021-06-10",
+   "items": "5.07",
+   "accessionNumber": "0000927066-21-000127",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000127/dva-20210610.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-05-21",
+   "reportDate": "2021-05-19",
+   "items": "5.02",
+   "accessionNumber": "0000927066-21-000117",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000117/dva-20210519.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2021-04-29",
+   "reportDate": "2021-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-21-000074",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000074/dva-20210331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-04-29",
+   "reportDate": "2021-04-29",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-21-000072",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000072/dva-20210429.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-03-09",
+   "reportDate": "2021-03-09",
+   "items": "7.01",
+   "accessionNumber": "0000927066-21-000032",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000032/dva-20210309.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-02-26",
+   "reportDate": "2021-02-26",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0000927066-21-000022",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000022/dva-20210226.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-02-25",
+   "reportDate": "2021-02-24",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-21-000019",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000019/dva-20210224.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-02-24",
+   "reportDate": "2021-02-24",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-21-000016",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000016/dva-20210224.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2021-02-12",
+   "reportDate": "2020-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-21-000008",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000008/dva-20201231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-02-11",
+   "reportDate": "2021-02-11",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-21-000004",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706621000004/dva-20210211.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-12-10",
+   "reportDate": "2020-12-09",
+   "items": "5.02,5.03,8.01,9.01",
+   "accessionNumber": "0000927066-20-000266",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000266/formreboardmeeting1220.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-11-13",
+   "reportDate": "2020-11-06",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-20-000219",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000219/formresettlementderiva.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2020-10-29",
+   "reportDate": "2020-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-20-000215",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000215/dva-9302010q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-10-29",
+   "reportDate": "2020-10-29",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-20-000213",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000213/dva-930208k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-10-05",
+   "reportDate": "2020-10-01",
+   "items": "5.02",
+   "accessionNumber": "0000927066-20-000209",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000209/form8-kretransitionagr.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-09-08",
+   "reportDate": "2020-09-07",
+   "items": "5.02",
+   "accessionNumber": "0001193125-20-241042",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312520241042/d17340d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-08-17",
+   "reportDate": "2020-08-17",
+   "items": "7.01,8.01",
+   "accessionNumber": "0001193125-20-221701",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312520221701/d61457d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-08-11",
+   "reportDate": "2020-08-11",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0000927066-20-000177",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000177/form8-kreclosingaugust.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-08-11",
+   "reportDate": "2020-08-10",
+   "items": "5.02",
+   "accessionNumber": "0000927066-20-000174",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000174/form8-krenewdirectorpr.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-08-07",
+   "reportDate": "2020-08-06",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-20-000171",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000171/form8-krepricingaugust.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-08-06",
+   "reportDate": "2020-08-06",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-20-000167",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000167/form8-krelaunchaugust2.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2020-07-30",
+   "reportDate": "2020-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-20-000164",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000164/dva-6302010q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-07-30",
+   "reportDate": "2020-07-30",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-20-000162",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000162/dva-630208k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-06-17",
+   "reportDate": "2020-06-11",
+   "items": "5.02,5.07",
+   "accessionNumber": "0000927066-20-000148",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000148/form8-kre2020annualsto.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-06-09",
+   "reportDate": "2020-06-09",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0000927066-20-000125",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000125/form8-kreclosing692020.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-05-27",
+   "reportDate": "2020-05-26",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-20-000112",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000112/form8-krenoupsizeprici.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-05-26",
+   "reportDate": "2020-05-26",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-20-000109",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000109/form8-krelaunch5262020.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2020-05-05",
+   "reportDate": "2020-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-20-000073",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000073/dva-3312010q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-05-05",
+   "reportDate": "2020-05-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-20-000071",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000071/dva-331208k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-04-13",
+   "reportDate": "2020-04-13",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-20-000061",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000061/form8-krepressrelease4.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-03-23",
+   "reportDate": "2020-03-23",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-20-000057",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000057/form8-krepressrelease.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-03-16",
+   "reportDate": "2020-03-10",
+   "items": "5.02",
+   "accessionNumber": "0000927066-20-000023",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000023/form8-kre2020boardchan.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2020-02-21",
+   "reportDate": "2019-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-20-000014",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000014/dva-12311910k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-02-10",
+   "reportDate": "2020-02-10",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-20-000010",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000010/dva-1231198k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-01-24",
+   "reportDate": "2020-01-23",
+   "items": "5.02,5.07",
+   "accessionNumber": "0000927066-20-000005",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706620000005/form8-krespecialmeetin.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2019-11-07",
+   "reportDate": "2019-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-19-000176",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000176/dva-9301910q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-11-05",
+   "reportDate": "2019-11-05",
+   "items": "2.02,5.02,9.01",
+   "accessionNumber": "0000927066-19-000172",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000172/dva-930198k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-11-04",
+   "reportDate": "2019-11-04",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000927066-19-000165",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000165/form8-kreannouncemento.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-10-29",
+   "reportDate": "2019-10-26",
+   "items": "5.02",
+   "accessionNumber": "0000927066-19-000160",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000160/form8-krewinstelappoin.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-08-14",
+   "reportDate": "2019-08-12",
+   "items": "1.01,1.02,2.03,8.01,9.01",
+   "accessionNumber": "0000927066-19-000137",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000137/form8-kre2019creditagr.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2019-08-02",
+   "reportDate": "2019-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-19-000133",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000133/dva-6301910q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-08-01",
+   "reportDate": "2019-08-01",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-19-000131",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000131/dva-630198k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-07-22",
+   "reportDate": "2019-07-22",
+   "items": "2.02,8.01,9.01",
+   "accessionNumber": "0001193125-19-198406",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312519198406/d755798d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-06-21",
+   "reportDate": "2019-06-17",
+   "items": "5.07",
+   "accessionNumber": "0000927066-19-000116",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000116/form8-kreannualstockho.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-06-20",
+   "reportDate": "2019-06-20",
+   "items": "2.01,7.01",
+   "accessionNumber": "0000927066-19-000111",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000111/dmgsale-8kversion3.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-06-19",
+   "reportDate": "2019-06-19",
+   "items": "2.01,7.01",
+   "accessionNumber": "0000927066-19-000108",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000108/dmgsale-8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2019-05-07",
+   "reportDate": "2019-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-19-000060",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000060/dva-3311910q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-05-07",
+   "reportDate": "2019-05-07",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-19-000058",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000058/dva-331198k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-04-29",
+   "reportDate": "2019-04-27",
+   "items": "5.02,9.01",
+   "accessionNumber": "0001193125-19-123788",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312519123788/d726706d8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2019-02-22",
+   "reportDate": "2018-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-19-000025",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000025/dva-123118x10k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-02-13",
+   "reportDate": "2019-02-13",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-19-000022",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706619000022/dva-1231188k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-12-17",
+   "reportDate": "2018-12-11",
+   "items": "1.01,2.06,9.01",
+   "accessionNumber": "0001193125-18-350364",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312518350364/d658923d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-11-26",
+   "reportDate": "2018-11-21",
+   "items": "1.01,9.01",
+   "accessionNumber": "0000927066-18-000200",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000200/form8-kreamendmentno1tocre.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2018-11-07",
+   "reportDate": "2018-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-18-000196",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000196/dva-93018x10q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-11-07",
+   "reportDate": "2018-11-07",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-18-000195",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000195/dva-930188k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-10-01",
+   "reportDate": "2018-09-28",
+   "items": "8.01",
+   "accessionNumber": "0001193125-18-289277",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312518289277/d631588d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-09-24",
+   "reportDate": "2018-09-20",
+   "items": "1.01,9.01",
+   "accessionNumber": "0001193125-18-280459",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312518280459/d621366d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-08-23",
+   "reportDate": "2018-08-19",
+   "items": "5.02,9.01",
+   "accessionNumber": "0000927066-18-000167",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000167/dva8-k8222018.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2018-08-01",
+   "reportDate": "2018-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-18-000165",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000165/dva-63018x10q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-08-01",
+   "reportDate": "2018-08-01",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-18-000162",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000162/dva-630188k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-06-22",
+   "reportDate": "2018-06-22",
+   "items": "5.07",
+   "accessionNumber": "0000927066-18-000135",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000135/davitaincstockholdersmtg_0.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2018-05-03",
+   "reportDate": "2018-03-31",
+   "items": "",
+   "accessionNumber": "0000927066-18-000071",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000071/dva-33118x10q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-05-03",
+   "reportDate": "2018-05-03",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-18-000069",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000069/dva-331188k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-03-13",
+   "reportDate": "2018-03-12",
+   "items": "8.01",
+   "accessionNumber": "0001193125-18-079643",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312518079643/d512049d8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2018-02-23",
+   "reportDate": "2017-12-31",
+   "items": "",
+   "accessionNumber": "0000927066-18-000030",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000030/dva-123117x10k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-02-13",
+   "reportDate": "2018-02-13",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-18-000027",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000027/dva-1231178k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-02-07",
+   "reportDate": "2018-02-01",
+   "items": "5.02",
+   "accessionNumber": "0000927066-18-000024",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706618000024/form8-kdavidsonretirement2.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-12-06",
+   "reportDate": "2017-12-05",
+   "items": "1.01,8.01,9.01",
+   "accessionNumber": "0001193125-17-362136",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312517362136/d496893d8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2017-11-07",
+   "reportDate": "2017-09-30",
+   "items": "",
+   "accessionNumber": "0000927066-17-000088",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706617000088/dva-93017x10q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-11-07",
+   "reportDate": "2017-11-07",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-17-000087",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706617000087/dva-930178k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-10-10",
+   "reportDate": "2017-10-10",
+   "items": "8.01",
+   "accessionNumber": "0000927066-17-000077",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706617000077/oct2017sharerepurchaseprog.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2017-08-01",
+   "reportDate": "2017-06-30",
+   "items": "",
+   "accessionNumber": "0000927066-17-000057",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706617000057/dva-63017x10q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-08-01",
+   "reportDate": "2017-08-01",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000927066-17-000055",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706617000055/dva-630178k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-06-22",
+   "reportDate": "2017-06-16",
+   "items": "5.07",
+   "accessionNumber": "0000927066-17-000024",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000092706617000024/davitaincstockholdersmtg_0.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2017-05-02",
+   "reportDate": "2017-03-31",
+   "items": "",
+   "accessionNumber": "0001628280-17-004680",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000162828017004680/dva-33117x10q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-05-02",
+   "reportDate": "2017-05-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001628280-17-004641",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000162828017004641/dva-331178k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-04-03",
+   "reportDate": "2017-03-29",
+   "items": "5.02",
+   "accessionNumber": "0001193125-17-108729",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312517108729/d331725d8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2017-02-24",
+   "reportDate": "2016-12-31",
+   "items": "",
+   "accessionNumber": "0001564590-17-002409",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000156459017002409/dva-10k_20161231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-02-16",
+   "reportDate": "2017-02-16",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001193125-17-046718",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312517046718/d318957d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-02-01",
+   "reportDate": "2017-01-19",
+   "items": "7.01",
+   "accessionNumber": "0001193125-17-026529",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312517026529/d338717d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-01-09",
+   "reportDate": "2017-01-06",
+   "items": "1.01,1.02,7.01",
+   "accessionNumber": "0001193125-17-005025",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312517005025/d302206d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-01-05",
+   "reportDate": "2017-01-05",
+   "items": "5.02",
+   "accessionNumber": "0001193125-17-003109",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312517003109/d320102d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2017-01-05",
+   "reportDate": "2017-01-05",
+   "items": "5.02",
+   "accessionNumber": "0001193125-17-003107",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312517003107/d322870d8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2016-11-02",
+   "reportDate": "2016-09-30",
+   "items": "",
+   "accessionNumber": "0001564590-16-027049",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000156459016027049/dva-10q_20160930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2016-11-02",
+   "reportDate": "2016-11-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001193125-16-757071",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312516757071/d278029d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2016-11-01",
+   "reportDate": "2016-10-31",
+   "items": "7.01,9.01",
+   "accessionNumber": "0001193125-16-754433",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312516754433/d283677d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2016-10-20",
+   "reportDate": "2016-10-17",
+   "items": "5.02",
+   "accessionNumber": "0001193125-16-742168",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312516742168/d235128d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2016-09-08",
+   "reportDate": "2016-09-07",
+   "items": "5.03,9.01",
+   "accessionNumber": "0001193125-16-703996",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312516703996/d234468d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2016-09-06",
+   "reportDate": "2016-09-01",
+   "items": "5.03,8.01,9.01",
+   "accessionNumber": "0001193125-16-702143",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312516702143/d249311d8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2016-08-08",
+   "reportDate": "2016-06-30",
+   "items": "",
+   "accessionNumber": "0001564590-16-023348",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000156459016023348/dva-10q_20160630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2016-08-08",
+   "reportDate": "2016-08-08",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001193125-16-675145",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312516675145/d210167d8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2016-07-13",
+   "reportDate": "2016-07-11",
+   "items": "5.02,9.01",
+   "accessionNumber": "0001193125-16-647173",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/927066/000119312516647173/d124428d8k.htm"
+  }
+ ]
+}

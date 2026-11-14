@@ -1,0 +1,1303 @@
+{
+ "cik": "0001739940",
+ "company": "Cigna Group",
+ "capturedOn": "2026-11-14",
+ "filings": [
+  {
+   "form": "10-Q",
+   "filingDate": "2026-11-05",
+   "reportDate": "2026-09-30",
+   "items": "",
+   "accessionNumber": "0001739940-26-000071",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-11-05",
+   "reportDate": "2026-11-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-26-042030",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126042030/ef20084818_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-10-09",
+   "reportDate": "2026-10-06",
+   "items": "5.02",
+   "accessionNumber": "0001140361-26-039271",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126039271/ef20083475_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-09-30",
+   "reportDate": "2026-09-30",
+   "items": "7.01,9.01",
+   "accessionNumber": "0001140361-26-038056",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126038056/ef20082869_8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2026-07-30",
+   "reportDate": "2026-06-30",
+   "items": "",
+   "accessionNumber": "0001739940-26-000065",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-07-30",
+   "reportDate": "2026-07-30",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-26-030135",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126030135/ef20078875_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-05-13",
+   "reportDate": "2026-05-13",
+   "items": "7.01",
+   "accessionNumber": "0001140361-26-020906",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126020906/ef20073186_8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2026-04-30",
+   "reportDate": "2026-03-31",
+   "items": "",
+   "accessionNumber": "0001739940-26-000043",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000043/ci-20260331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-04-30",
+   "reportDate": "2026-04-30",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-26-017971",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126017971/ef20071317_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-04-27",
+   "reportDate": "2026-04-22",
+   "items": "5.07",
+   "accessionNumber": "0001140361-26-017123",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126017123/ef20071227_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-03-03",
+   "reportDate": "2026-02-25",
+   "items": "5.02,7.01,9.01",
+   "accessionNumber": "0001140361-26-007450",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126007450/ef20066976_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-02-27",
+   "reportDate": "2026-02-27",
+   "items": "7.01",
+   "accessionNumber": "0001140361-26-007049",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126007049/ef20066640_8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2026-02-26",
+   "reportDate": "2025-12-31",
+   "items": "",
+   "accessionNumber": "0001739940-26-000006",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2026-02-05",
+   "reportDate": "2026-02-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-26-003768",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036126003768/ef20064751_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-11-18",
+   "reportDate": "2025-10-22",
+   "items": "8.01",
+   "accessionNumber": "0001140361-25-042597",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125042597/ef20059558_8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2025-10-30",
+   "reportDate": "2025-09-30",
+   "items": "",
+   "accessionNumber": "0001739940-25-000037",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994025000037/ci-20250930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-10-30",
+   "reportDate": "2025-10-30",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-25-039777",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125039777/ef20057735_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-10-20",
+   "reportDate": "2025-10-15",
+   "items": "5.02",
+   "accessionNumber": "0001140361-25-038670",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125038670/ef20057405_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-09-04",
+   "reportDate": "2025-09-04",
+   "items": "1.01,2.03,8.01,9.01",
+   "accessionNumber": "0001140361-25-033986",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-09-02",
+   "reportDate": "2025-09-02",
+   "items": "7.01",
+   "accessionNumber": "0001140361-25-033536",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033536/ef20054926_8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2025-07-31",
+   "reportDate": "2025-06-30",
+   "items": "",
+   "accessionNumber": "0001739940-25-000028",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994025000028/ci-20250630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-07-31",
+   "reportDate": "2025-07-31",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-25-028099",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125028099/ef20052574_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-06-02",
+   "reportDate": "2025-05-30",
+   "items": "5.02,9.01",
+   "accessionNumber": "0001140361-25-021143",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125021143/ef20050060_8-k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-05-20",
+   "reportDate": "2025-05-20",
+   "items": "7.01",
+   "accessionNumber": "0001140361-25-019807",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125019807/ef20049268_8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2025-05-02",
+   "reportDate": "2025-03-31",
+   "items": "",
+   "accessionNumber": "0001739940-25-000021",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994025000021/ci-20250331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-05-02",
+   "reportDate": "2025-05-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-25-017006",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125017006/ef20048097_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-04-28",
+   "reportDate": "2025-04-22",
+   "items": "1.01,1.02,2.03,5.02,5.07",
+   "accessionNumber": "0001140361-25-016027",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125016027/ef20048062_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-04-18",
+   "reportDate": "2025-04-15",
+   "items": "5.02",
+   "accessionNumber": "0001140361-25-014574",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125014574/ef20047681_form8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-03-19",
+   "reportDate": "2025-03-19",
+   "items": "8.01,9.01",
+   "accessionNumber": "0001140361-25-009365",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125009365/ef20045617_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-03-13",
+   "reportDate": "2025-03-10",
+   "items": "5.02,7.01",
+   "accessionNumber": "0001140361-25-008555",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125008555/ef20045433_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-03-03",
+   "reportDate": "2025-03-03",
+   "items": "7.01",
+   "accessionNumber": "0001140361-25-006753",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125006753/ef20044506_8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2025-02-27",
+   "reportDate": "2024-12-31",
+   "items": "",
+   "accessionNumber": "0001739940-25-000009",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994025000009/ci-20241231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2025-01-30",
+   "reportDate": "2025-01-30",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-25-002386",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125002386/ef20042519_8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2024-10-31",
+   "reportDate": "2024-09-30",
+   "items": "",
+   "accessionNumber": "0001739940-24-000033",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994024000033/ci-20240930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-10-31",
+   "reportDate": "2024-10-31",
+   "items": "2.02,9.01",
+   "accessionNumber": "0001140361-24-044674",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036124044674/ef20037812_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-09-03",
+   "reportDate": "2024-09-03",
+   "items": "7.01",
+   "accessionNumber": "0000950159-24-000274",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000274/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2024-08-01",
+   "reportDate": "2024-06-30",
+   "items": "",
+   "accessionNumber": "0001739940-24-000028",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994024000028/ci-20240630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-08-01",
+   "reportDate": "2024-08-01",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-24-000233",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000233/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-06-20",
+   "reportDate": "2024-06-14",
+   "items": "5.02",
+   "accessionNumber": "0000950159-24-000218",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000218/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-06-06",
+   "reportDate": "2024-06-06",
+   "items": "7.01",
+   "accessionNumber": "0000950159-24-000212",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000212/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2024-05-02",
+   "reportDate": "2024-03-31",
+   "items": "",
+   "accessionNumber": "0001739940-24-000015",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994024000015/ci-20240331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-05-02",
+   "reportDate": "2024-05-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-24-000134",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000134/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-04-26",
+   "reportDate": "2024-04-24",
+   "items": "5.07",
+   "accessionNumber": "0000950159-24-000132",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000132/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-04-26",
+   "reportDate": "2024-04-25",
+   "items": "1.01,2.03,8.01",
+   "accessionNumber": "0000950159-24-000130",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000130/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-03-07",
+   "reportDate": "2024-03-07",
+   "items": "7.01,9.01",
+   "accessionNumber": "0000950159-24-000103",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000103/cigna8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2024-02-29",
+   "reportDate": "2023-12-31",
+   "items": "",
+   "accessionNumber": "0001739940-24-000005",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994024000005/ci-20231231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-02-15",
+   "reportDate": "2024-02-14",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000950159-24-000100",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000100/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-02-13",
+   "reportDate": "2024-02-13",
+   "items": "1.01,2.03,7.01,8.01,9.01",
+   "accessionNumber": "0001140361-24-007429",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036124007429/ny20020170x6_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-02-07",
+   "reportDate": "2024-02-05",
+   "items": "8.01,9.01",
+   "accessionNumber": "0001140361-24-005982",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036124005982/ny20020170x2_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-02-02",
+   "reportDate": "2024-02-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-24-000033",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000033/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-01-31",
+   "reportDate": "2024-01-31",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000950159-24-000025",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000025/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-01-22",
+   "reportDate": "2024-01-16",
+   "items": "5.02",
+   "accessionNumber": "0000950159-24-000017",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000017/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2024-01-17",
+   "reportDate": "2024-01-16",
+   "items": "5.02",
+   "accessionNumber": "0000950159-24-000014",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015924000014/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-12-29",
+   "reportDate": "2023-12-29",
+   "items": "7.01",
+   "accessionNumber": "0000950159-23-000321",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000321/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-12-11",
+   "reportDate": "2023-12-10",
+   "items": "7.01,9.01",
+   "accessionNumber": "0000950159-23-000317",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000317/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-12-04",
+   "reportDate": "2023-12-04",
+   "items": "7.01",
+   "accessionNumber": "0000950159-23-000315",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000315/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2023-11-02",
+   "reportDate": "2023-09-30",
+   "items": "",
+   "accessionNumber": "0001739940-23-000025",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994023000025/ci-20230930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-11-02",
+   "reportDate": "2023-11-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-23-000272",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000272/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-09-15",
+   "reportDate": "2023-09-14",
+   "items": "5.02",
+   "accessionNumber": "0000950159-23-000267",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000267/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-09-11",
+   "reportDate": "2023-09-11",
+   "items": "7.01",
+   "accessionNumber": "0000950159-23-000258",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000258/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2023-08-03",
+   "reportDate": "2023-06-30",
+   "items": "",
+   "accessionNumber": "0001739940-23-000020",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994023000020/ci-20230630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-08-03",
+   "reportDate": "2023-08-03",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-23-000227",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000227/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-06-05",
+   "reportDate": "2023-06-05",
+   "items": "7.01",
+   "accessionNumber": "0000950159-23-000204",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000204/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2023-05-05",
+   "reportDate": "2023-03-31",
+   "items": "",
+   "accessionNumber": "0001739940-23-000016",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994023000016/ci-20230331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-05-05",
+   "reportDate": "2023-05-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-23-000159",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000159/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-05-01",
+   "reportDate": "2023-04-26",
+   "items": "5.02",
+   "accessionNumber": "0000950159-23-000157",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000157/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-04-28",
+   "reportDate": "2023-04-27",
+   "items": "1.01,2.03,8.01",
+   "accessionNumber": "0000950159-23-000155",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000155/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-04-27",
+   "reportDate": "2023-04-26",
+   "items": "5.07",
+   "accessionNumber": "0000950159-23-000152",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000152/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-03-07",
+   "reportDate": "2023-03-07",
+   "items": "1.01,2.03,7.01,8.01,9.01",
+   "accessionNumber": "0001140361-23-010511",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036123010511/ny20007738x4_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-02-27",
+   "reportDate": "2023-02-27",
+   "items": "7.01",
+   "accessionNumber": "0000950159-23-000112",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000112/cigna8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2023-02-23",
+   "reportDate": "2022-12-31",
+   "items": "",
+   "accessionNumber": "0001739940-23-000008",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994023000008/ci-20221231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-02-13",
+   "reportDate": "2023-02-13",
+   "items": "5.03,9.01",
+   "accessionNumber": "0000950159-23-000019",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000019/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2023-02-03",
+   "reportDate": "2023-02-03",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-23-000017",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015923000017/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-12-30",
+   "reportDate": "2022-12-30",
+   "items": "7.01",
+   "accessionNumber": "0000950159-22-000255",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000255/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-11-30",
+   "reportDate": "2022-11-30",
+   "items": "7.01",
+   "accessionNumber": "0000950159-22-000250",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000250/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2022-11-03",
+   "reportDate": "2022-09-30",
+   "items": "",
+   "accessionNumber": "0001739940-22-000025",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994022000025/ci-20220930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-11-03",
+   "reportDate": "2022-11-03",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-22-000227",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000227/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-10-28",
+   "reportDate": "2022-10-26",
+   "items": "5.03,9.01",
+   "accessionNumber": "0000950159-22-000220",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000220/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-09-13",
+   "reportDate": "2022-09-13",
+   "items": "7.01",
+   "accessionNumber": "0000950159-22-000207",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000207/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2022-08-04",
+   "reportDate": "2022-06-30",
+   "items": "",
+   "accessionNumber": "0001739940-22-000019",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994022000019/ci-20220630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-08-04",
+   "reportDate": "2022-08-04",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-22-000182",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000182/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-06-16",
+   "reportDate": "2022-06-15",
+   "items": "8.01,9.01",
+   "accessionNumber": "0000950159-22-000171",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000171/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-06-03",
+   "reportDate": "2022-06-03",
+   "items": "7.01",
+   "accessionNumber": "0000950159-22-000169",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000169/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2022-05-06",
+   "reportDate": "2022-03-31",
+   "items": "",
+   "accessionNumber": "0001739940-22-000012",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994022000012/ci-20220331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-05-06",
+   "reportDate": "2022-05-06",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-22-000107",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000107/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-05-02",
+   "reportDate": "2022-04-27",
+   "items": "5.07,9.01",
+   "accessionNumber": "0000950159-22-000104",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000104/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-04-29",
+   "reportDate": "2022-04-28",
+   "items": "1.01,2.03,8.01,9.01",
+   "accessionNumber": "0000950159-22-000102",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000102/cigna8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2022-02-24",
+   "reportDate": "2021-12-31",
+   "items": "",
+   "accessionNumber": "0001739940-22-000007",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994022000007/ci-20211231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-02-24",
+   "reportDate": "2022-02-24",
+   "items": "7.01",
+   "accessionNumber": "0000950159-22-000084",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000084/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-02-03",
+   "reportDate": "2022-02-03",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-22-000018",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000018/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2022-01-24",
+   "reportDate": "2022-01-24",
+   "items": "7.01",
+   "accessionNumber": "0000950159-22-000010",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015922000010/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-12-27",
+   "reportDate": "2021-12-27",
+   "items": "7.01",
+   "accessionNumber": "0000950159-21-000364",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000364/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-12-08",
+   "reportDate": "2021-12-02",
+   "items": "5.03,9.01",
+   "accessionNumber": "0000950159-21-000343",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000343/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-11-29",
+   "reportDate": "2021-11-29",
+   "items": "7.01",
+   "accessionNumber": "0000950159-21-000335",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000335/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2021-11-04",
+   "reportDate": "2021-09-30",
+   "items": "",
+   "accessionNumber": "0001739940-21-000024",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994021000024/ci-20210930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-11-04",
+   "reportDate": "2021-11-04",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-21-000310",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000310/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-09-23",
+   "reportDate": "2021-09-20",
+   "items": "5.02,7.01,9.01",
+   "accessionNumber": "0000950159-21-000290",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000290/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-09-02",
+   "reportDate": "2021-09-02",
+   "items": "7.01",
+   "accessionNumber": "0000950159-21-000283",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000283/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2021-08-05",
+   "reportDate": "2021-06-30",
+   "items": "",
+   "accessionNumber": "0001739940-21-000017",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994021000017/ci-20210630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-08-05",
+   "reportDate": "2021-08-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-21-000207",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000207/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-07-30",
+   "reportDate": "2021-07-26",
+   "items": "5.02,8.01,9.01",
+   "accessionNumber": "0000950159-21-000192",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000192/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-05-28",
+   "reportDate": "2021-05-28",
+   "items": "7.01",
+   "accessionNumber": "0000950159-21-000176",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000176/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2021-05-07",
+   "reportDate": "2021-03-31",
+   "items": "",
+   "accessionNumber": "0001739940-21-000011",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994021000011/ci-20210331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-05-07",
+   "reportDate": "2021-05-07",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-21-000142",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000142/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-05-03",
+   "reportDate": "2021-04-28",
+   "items": "5.02,5.07,9.01",
+   "accessionNumber": "0000950159-21-000138",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000138/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-04-30",
+   "reportDate": "2021-04-29",
+   "items": "1.01,2.03,8.01,9.01",
+   "accessionNumber": "0001140361-21-015041",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036121015041/brhc10023716_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-03-08",
+   "reportDate": "2021-03-08",
+   "items": "7.01",
+   "accessionNumber": "0000950159-21-000116",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000116/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-03-03",
+   "reportDate": "2021-03-01",
+   "items": "1.01,2.03,7.01,8.01,9.01",
+   "accessionNumber": "0001140361-21-007207",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036121007207/nt10020524x5_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-02-26",
+   "reportDate": "2021-02-26",
+   "items": "7.01",
+   "accessionNumber": "0000950159-21-000111",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000111/cigna8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2021-02-25",
+   "reportDate": "2020-12-31",
+   "items": "",
+   "accessionNumber": "0001739940-21-000007",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994021000007/ci-20201231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-02-04",
+   "reportDate": "2021-02-04",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-21-000014",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000014/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2021-01-12",
+   "reportDate": "2021-01-06",
+   "items": "5.02,9.01",
+   "accessionNumber": "0000950159-21-000006",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015921000006/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-12-31",
+   "reportDate": "2020-12-31",
+   "items": "7.01",
+   "accessionNumber": "0000950159-20-000286",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000286/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-12-28",
+   "reportDate": "2020-12-28",
+   "items": "7.01",
+   "accessionNumber": "0000950159-20-000281",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000281/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-12-11",
+   "reportDate": "2020-12-08",
+   "items": "5.02",
+   "accessionNumber": "0000950159-20-000278",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000278/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-12-10",
+   "reportDate": "2020-12-10",
+   "items": "7.01,9.01",
+   "accessionNumber": "0000950159-20-000273",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000273/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-11-30",
+   "reportDate": "2020-11-30",
+   "items": "7.01",
+   "accessionNumber": "0000950159-20-000270",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000270/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2020-11-05",
+   "reportDate": "2020-09-30",
+   "items": "",
+   "accessionNumber": "0001739940-20-000021",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994020000021/ci-20200930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-11-05",
+   "reportDate": "2020-11-05",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-20-000238",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000238/cigna8kearnings.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-10-30",
+   "reportDate": "2020-10-26",
+   "items": "5.02,9.01",
+   "accessionNumber": "0000950159-20-000231",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000231/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-09-09",
+   "reportDate": "2020-09-09",
+   "items": "7.01",
+   "accessionNumber": "0000950159-20-000223",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000223/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-08-20",
+   "reportDate": "2020-08-20",
+   "items": "7.01",
+   "accessionNumber": "0000950159-20-000211",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000211/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2020-08-06",
+   "reportDate": "2020-06-30",
+   "items": "",
+   "accessionNumber": "0001739940-20-000017",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994020000017/ci-20200630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-07-30",
+   "reportDate": "2020-07-30",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-20-000161",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000161/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-05-26",
+   "reportDate": "2020-05-26",
+   "items": "7.01",
+   "accessionNumber": "0000950159-20-000142",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000142/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2020-05-07",
+   "reportDate": "2020-03-31",
+   "items": "",
+   "accessionNumber": "0001739940-20-000012",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994020000012/ci-20200331.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-04-30",
+   "reportDate": "2020-04-30",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-20-000110",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000110/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-04-24",
+   "reportDate": "2020-04-22",
+   "items": "5.07",
+   "accessionNumber": "0000950159-20-000099",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000099/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-04-03",
+   "reportDate": "2020-04-01",
+   "items": "1.01,2.03,9.01",
+   "accessionNumber": "0000950159-20-000089",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000089/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-03-16",
+   "reportDate": "2020-03-16",
+   "items": "1.01,2.03,7.01,8.01,9.01",
+   "accessionNumber": "0001140361-20-005865",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036120005865/nc10005480x3_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-03-05",
+   "reportDate": "2020-03-04",
+   "items": "8.01,9.01",
+   "accessionNumber": "0001140361-20-004888",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036120004888/nt10009292x3_8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2020-02-27",
+   "reportDate": "2019-12-31",
+   "items": "",
+   "accessionNumber": "0001739940-20-000006",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994020000006/ci-20191231.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-02-27",
+   "reportDate": "2020-02-19",
+   "items": "5.03,7.01,8.01,9.01",
+   "accessionNumber": "0000950159-20-000057",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000057/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-02-19",
+   "reportDate": "2020-02-14",
+   "items": "7.01",
+   "accessionNumber": "0001140361-20-003579",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000114036120003579/nc10008987x1_8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-02-06",
+   "reportDate": "2020-02-06",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-20-000034",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000034/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2020-01-13",
+   "reportDate": "2020-01-13",
+   "items": "7.01",
+   "accessionNumber": "0000950159-20-000008",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015920000008/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-12-30",
+   "reportDate": "2019-12-30",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000321",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000321/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-12-27",
+   "reportDate": "2019-12-23",
+   "items": "8.01",
+   "accessionNumber": "0000950159-19-000319",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000319/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-12-11",
+   "reportDate": "2019-12-04",
+   "items": "5.05,8.01",
+   "accessionNumber": "0000950159-19-000295",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000295/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-11-21",
+   "reportDate": "2019-11-21",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000244",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000244/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-11-20",
+   "reportDate": "2019-11-20",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000242",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000242/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2019-10-31",
+   "reportDate": "2019-09-30",
+   "items": "",
+   "accessionNumber": "0001739940-19-000012",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994019000012/ci-20190930.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-10-31",
+   "reportDate": "2019-10-31",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-19-000208",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000208/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-10-29",
+   "reportDate": "2019-10-23",
+   "items": "5.02,9.01",
+   "accessionNumber": "0000950159-19-000204",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000204/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-10-11",
+   "reportDate": "2019-10-10",
+   "items": "1.01,2.03,7.01,9.01",
+   "accessionNumber": "0000950159-19-000178",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000178/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-09-27",
+   "reportDate": "2019-09-24",
+   "items": "5.02",
+   "accessionNumber": "0000950159-19-000157",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000157/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-09-26",
+   "reportDate": "2019-09-26",
+   "items": "7.01,9.01",
+   "accessionNumber": "0000950159-19-000155",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000155/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-09-09",
+   "reportDate": "2019-09-06",
+   "items": "8.01",
+   "accessionNumber": "0000950159-19-000137",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000137/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-08-28",
+   "reportDate": "2019-08-28",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000129",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000129/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2019-08-01",
+   "reportDate": "2019-06-30",
+   "items": "",
+   "accessionNumber": "0001739940-19-000007",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994019000007/ci-20190630.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-08-01",
+   "reportDate": "2019-08-01",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-19-000114",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000114/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-05-31",
+   "reportDate": "2019-05-31",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000085",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000085/cigna8k.htm"
+  },
+  {
+   "form": "10-Q",
+   "filingDate": "2019-05-02",
+   "reportDate": "2019-03-31",
+   "items": "",
+   "accessionNumber": "0001104659-19-026396",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000110465919026396/a19-9011_110q.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-05-02",
+   "reportDate": "2019-05-02",
+   "items": "2.02,9.01",
+   "accessionNumber": "0000950159-19-000073",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000073/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-04-29",
+   "reportDate": "2019-04-24",
+   "items": "5.07",
+   "accessionNumber": "0000950159-19-000069",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000069/cigna8k.htm"
+  },
+  {
+   "form": "10-K",
+   "filingDate": "2019-02-28",
+   "reportDate": "2018-12-31",
+   "items": "",
+   "accessionNumber": "0001047469-19-000792",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000104746919000792/a2237767z10-k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-02-26",
+   "reportDate": "2019-02-26",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000031",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000031/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-02-01",
+   "reportDate": "2019-02-01",
+   "items": "2.01,9.01",
+   "accessionNumber": "0000950159-19-000028",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000028/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-01-30",
+   "reportDate": "2019-01-30",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000026",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000026/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-01-23",
+   "reportDate": "2019-01-22",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000020",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000020/cigna8k.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2019-01-07",
+   "reportDate": "2019-01-07",
+   "items": "7.01",
+   "accessionNumber": "0000950159-19-000007",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015919000007/cigna8k1-7.htm"
+  },
+  {
+   "form": "8-K",
+   "filingDate": "2018-12-26",
+   "reportDate": "2018-12-24",
+   "items": "8.01",
+   "accessionNumber": "0000950159-18-000533",
+   "primaryDocUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000095015918000533/cigna8k.htm"
+  }
+ ]
+}
