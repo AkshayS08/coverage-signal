@@ -46,23 +46,13 @@
    ],
    [
     {
-     "k": "text",
-     "t": "No new filings with a debt item since Oct 15, 2026."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "1 Form 8-K (Item 2.02, results; Item 9.01, exhibits) "
-    },
-    {
      "k": "filing",
-     "t": "[Oct 29, 2026]",
+     "t": "8-K (earnings results) same day",
      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000045/thc-20261029.htm"
     },
     {
      "k": "text",
-     "t": ", none with a debt item."
+     "t": ", read at the next refresh."
     }
    ]
   ]
@@ -2721,11 +2711,16 @@
    "status": [
     {
      "k": "text",
-     "t": "new this week"
+     "t": "new this week · 1 other filing: "
+    },
+    {
+     "k": "filing",
+     "t": "8-K (earnings results) same day",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000045/thc-20261029.htm"
     },
     {
      "k": "text",
-     "t": " · 1 other filing, none with a debt item"
+     "t": ", read at the next refresh"
     }
    ],
    "actionable": []

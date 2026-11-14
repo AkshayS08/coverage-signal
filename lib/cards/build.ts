@@ -50,6 +50,8 @@ import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 import { antecedentWindow, paragraphSentences, REFERS, HEADING } from "./antecedent";
+import { plainFilingName, READ_WHEN } from "./filingWords";
+import { REFRESH_TRIGGER_ITEMS } from "../cache/lastBuild";
 import { quoteKey, statesSameMove, SCHEDULED } from "./moveEvidence";
 
 export interface CardInputs {
@@ -70,20 +72,6 @@ export interface CardInputs {
 }
 
 /** 8-K items that change, or could change, debt, liquidity or maturities (card_spec 2.2). */
-const ACTIONABLE_ITEMS: Record<string, string> = {
-  "1.01": "a material agreement entered into or amended",
-  "1.02": "a material agreement terminated",
-  "2.03": "a new direct financial obligation",
-  "2.04": "an event accelerating an obligation",
-  "2.01": "an acquisition or disposition completed",
-};
-const WHY: Record<string, string> = {
-  "1.01": "may change a facility, a commitment or the debt terms",
-  "1.02": "may end a facility or commitment",
-  "2.03": "adds debt or an off-balance-sheet obligation",
-  "2.04": "may make debt due early",
-  "2.01": "counts only if financed with debt, which needs the filing's text",
-};
 
 const t = (text: string): Segment => ({ k: "text", t: text });
 
@@ -576,38 +564,32 @@ export function buildCard(i: CardInputs): Card {
   // SESSION 27 (Akshay, Oct 30): the ANCHOR filed inside the brief week is this card's position, read — never a new
   // filing "not yet read". Named in the header; kept out of the actionable and other lists.
   const anchorThisWeek = anchor.date >= weekFrom && anchor.date <= briefDate;
+  // Nov 14 (headerFilings.test): a new filing is NAMED in plain words (filingWords.ts) and said to be read at the next
+  // refresh; the card never says what an unread filing does, or does not do, to debt.
+  const newFilings: FilingEntry[] = [];
+  // The header states the anchor's date once (Nov 3): a filing made the same day says so.
+  const fdate = (f: FilingEntry) => (f.filingDate === anchor.date ? "same day" : shortDate(f.filingDate));
   for (const f of i.weekFilings) {
     if (f.primaryDocUrl === anchor.url) continue;
-    const items = f.items.split(",").map((s) => s.trim()).filter(Boolean);
-    const hit = items.filter((it) => ACTIONABLE_ITEMS[it]);
-    const meta = `${formName(f.form)}${items.length ? `, Item${items.length > 1 ? "s" : ""} ${items.join(", ")}` : ""} · ${shortDate(f.filingDate)}`;
+    newFilings.push(f);
+    const items = f.items.split(",").map((x) => x.trim()).filter(Boolean);
+    const meta = `${plainFilingName(f)} · ${fdate(f)}`;
     if (f.form === "10-Q" || f.form === "10-K") {
-      actionable.push([{ k: "filing", t: meta, url: f.primaryDocUrl }, t(` — a new ${f.form}, which carries a new position. Not yet read: this card's position is still the ${anchor.form} for ${displayDate(periodEnd, "day")}.`)]);
-    } else if (hit.length > 0) {
-      actionable.push([
-        { k: "filing", t: meta, url: f.primaryDocUrl },
-        t(` — ${hit.map((h) => ACTIONABLE_ITEMS[h]).join("; ")}. Amount and instrument: not read (filing text not yet extracted). Why it matters: ${hit.map((h) => WHY[h]).join("; ")}.`),
-      ]);
+      actionable.push([{ k: "filing", t: meta, url: f.primaryDocUrl }, t(` — ${READ_WHEN}; this card's position is still the ${anchor.form} for ${displayDate(periodEnd, "day")}.`)]);
+    } else if (items.some((it) => REFRESH_TRIGGER_ITEMS.includes(it))) {
+      actionable.push([{ k: "filing", t: meta, url: f.primaryDocUrl }, t(` — ${READ_WHEN}.`)]);
     } else other.push(f);
   }
   const thisWeekLines: Line[] = [
     ...(anchorThisWeek ? [[{ k: "filing", t: `${formName(anchor.form)} · ${shortDate(anchor.date)}`, url: anchor.url } as Segment, t(` — this card's position: the ${anchor.form} for the ${anchor.form === "10-K" ? "year" : "quarter"} ended ${displayDate(periodEnd, "day")}, filed this week and read for this card.`)] as Line] : []),
     ...actionable,
   ];
-  if (actionable.length === 0) thisWeekLines.push([t(`No new filings with a debt item since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
+  if (newFilings.length === 0) thisWeekLines.push([t(`No new filings since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
   // §2.2: everything else in one line, grouped by form, each filing one click deeper.
   if (other.length > 0) {
-    const byForm = new Map<string, FilingEntry[]>();
-    for (const f of other) byForm.set(f.form, [...(byForm.get(f.form) ?? []), f]);
     const line: Line = [];
-    [...byForm.entries()].forEach(([form, fs], n) => {
-      if (n > 0) line.push(t("; "));
-      const items = [...new Set(fs.flatMap((f) => f.items.split(",").map((x) => x.trim()).filter(Boolean)))];
-      const what = FORM_WHAT[form] ?? (items.length ? items.map((it) => `Item ${it}${ITEM_WHAT[it] ? `, ${ITEM_WHAT[it]}` : ""}`).join("; ") : "");
-      line.push(t(`${fs.length} ${formName(form)}${fs.length === 1 ? "" : "s"}${what ? ` (${what})` : ""} `));
-      fs.forEach((f, k) => line.push(...(k ? [t(" ")] : []), { k: "filing", t: `[${shortDate(f.filingDate)}]`, url: f.primaryDocUrl }));
-    });
-    line.push(t(", none with a debt item."));
+    other.forEach((f, n) => line.push(...(n ? [t("; ")] : []), { k: "filing", t: `${plainFilingName(f)} ${fdate(f)}`, url: f.primaryDocUrl } as Segment));
+    line.push(t(`, ${READ_WHEN}.`));
     thisWeekLines.push(line);
   } else if (actionable.length > 0) thisWeekLines.push([t("No other filings this week.")]);
 
@@ -1941,14 +1923,13 @@ export function buildCard(i: CardInputs): Card {
     company: result.company.toUpperCase(),
     position: [t("Position as of "), periodDate()],
     filing: { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url },
-    status: anchorThisWeek
-      // Session 27 (Nov 3): beside "[form] filed [date]", the date once — "10-Q filed Oct 29, 2026 · new this week · …".
-      ? [t("new this week"), ...(actionable.length ? [t(` · ${actionable.length} other filing${actionable.length === 1 ? "" : "s"} may affect debt`)] : otherCount ? [t(` · ${otherCount} other filing${otherCount === 1 ? "" : "s"}, none with a debt item`)] : [])]
-      : actionable.length
-      ? [t(`${actionable.length} filing${actionable.length === 1 ? "" : "s"} this week may affect debt`)]
-      : otherCount
-        ? [t(`${otherCount} filing${otherCount === 1 ? "" : "s"} this week, none with a debt item: `), ...other.flatMap((f, n) => [...(n ? [t(" ")] : []), { k: "filing", t: `${formName(f.form)} ${shortDate(f.filingDate)}`, url: f.primaryDocUrl } as Segment])]
-        : [t("No new debt filings this week")],
+    // Nov 14: every new filing named in plain words, and when it will be read; nothing said about what it does.
+    status: (() => {
+      const named: Line = newFilings.flatMap((f, n) => [...(n ? [t("; ")] : []), { k: "filing", t: `${plainFilingName(f)} ${fdate(f)}`, url: f.primaryDocUrl } as Segment]);
+      const n = newFilings.length, s1 = n === 1 ? "" : "s";
+      if (anchorThisWeek) return n ? [t(`new this week · ${n} other filing${s1}: `), ...named, t(`, ${READ_WHEN}`)] : [t("new this week")];
+      return n ? [t(`${n} filing${s1} this week: `), ...named, t(`, ${READ_WHEN}`)] : [t("No new filings this week")];
+    })(),
     actionable,
   };
   const baseUrl = dm?.priorPeriodBase?.filingUrl as string | undefined;
@@ -2764,9 +2745,6 @@ function widen(fragment: string, sentences: string[]): string {
 }
 
 /** EDGAR names some forms by number alone ("4", "144"); a reader sees "Form 4". */
-/** What a form or an 8-K item is, in plain words, for the "everything else" line (§2.2). */
-const FORM_WHAT: Record<string, string> = { "4": "insider trades", "3": "insider holdings", "144": "planned insider sales", "SC 13G": "ownership", "SC 13G/A": "ownership", "S-8": "employee share plans", "DEF 14A": "proxy statement" };
-const ITEM_WHAT: Record<string, string> = { "2.02": "results", "5.02": "officer or director change", "5.07": "shareholder vote", "7.01": "Regulation FD disclosure", "8.01": "other events", "9.01": "exhibits" };
 
 function formName(form: string): string {
   return /^\d/.test(form) ? `Form ${form}` : form;

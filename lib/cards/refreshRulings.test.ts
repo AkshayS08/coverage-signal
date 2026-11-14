@@ -34,7 +34,8 @@ about("0001179929", /up to \$800MM of uncommitted incremental term loans/.test(l
 const chsMoves = chs.card.v3.moves.map((m: any) => `${txt(m.meta)} | ${m.title.map(txt).join(" / ")}`);
 about("0001108109", chsMoves.some((l: string) => /^Feb 2, 2026/.test(l) && /10⅞%[^/]*\$1,780MM remains/.test(l)) && chsMoves.some((l: string) => /^May 6, 2026/.test(l) && /10⅞%[^/]*\$1,549MM remains/.test(l)), `[R] CHS: Feb 2 "$1,780MM remains", May 6 "$1,549MM remains" (${chsMoves.join(" || ")})`);
 const head = `${txt([ten.card.v3.header.filing])} · ${txt(ten.card.v3.header.status)}`;
-about("0000070318", /^10-Q filed Oct 29, 2026 · new this week · 1 other filing, none with a debt item$/.test(head), `[H] Tenet's header: "${head}"`);
+// Nov 14 (headerFilings): the other filing named in plain words, the anchor's date once, and when it will be read.
+about("0000070318", /^10-Q filed Oct 29, 2026 · new this week · 1 other filing: 8-K \(earnings results\) same day, read at the next refresh$/.test(head), `[H] Tenet's header: "${head}"`);
 const css = readFileSync(join("app", "cards", "cardsV3.module.css"), "utf-8");
 assert(/\.headerRight\s*\{[^}]*margin-left:\s*auto/.test(css) && /\.headerRight\s*\{[^}]*text-align:\s*right/.test(css), `[H] the right-hand header block stays right-aligned when it wraps (margin-left: auto; text-align: right)`);
 about("0000070318", ten.card.v3.moves.some((m: any) => /Sept 22, 2026 · Issued, confirmed by 8-K/.test(txt(m.meta))), `[C] Tenet's issuance cites the Sept 22 8-K (${ten.card.v3.moves.map((m: any) => txt(m.meta)).join(" | ")})`);

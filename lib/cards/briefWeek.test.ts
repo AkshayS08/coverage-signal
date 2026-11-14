@@ -70,7 +70,8 @@ const all = JSON.stringify(fresh.v3);
 assert(/^10-Q filed Oct 22, 2026 · new this week\b/.test(status) && status.split("Oct 22, 2026").length === 2, `[W4] the header names the 10-Q filed Oct 22 as this week's filing, the date once: "${status}"`);
 // The line that calls a NEW filing unread ("Not yet read: this card's position is still …"); Session 27's missing-stage
 // lines ("Debt moves this year: not yet read from …") are a different statement and are tested in missingStage.test.
-const NEW_UNREAD = /Not yet read: this card's position is still/;
+// Nov 14 (headerFilings): an unread anchor-carrying filing is 'read at the next refresh'.
+const NEW_UNREAD = /read at the next refresh; this card's position is still/;
 assert(!NEW_UNREAD.test(all), `[W4] no line calls the anchor a new filing "not yet read"`);
 const stale = build("0001179929", snapOf("0001179929").result, "2026-10-30", "2026-10-15", [q3]);
 const sStatus = txt(stale.v3.header.status);

@@ -21,7 +21,8 @@ export const FORM_WORDS: Record<string, string> = {
   "SC 13G": "ownership", "SC 13G/A": "ownership", "S-8": "employee share plans", "DEF 14A": "proxy statement", "S-3": "registration", "S-3ASR": "registration",
 };
 
-const formLabel = (form: string) => (/^\d/.test(form) ? `Form ${form}` : form);
+/** EDGAR names some forms by number alone ("4", "144"): a reader sees "Form 4". "10-Q" stays "10-Q". */
+const formLabel = (form: string) => (/^\d+$/.test(form) ? `Form ${form}` : form);
 
 /** "8-K (public disclosure)", "8-K (earnings results, public disclosure)", "10-Q (quarterly report)". */
 export function plainFilingName(f: { form: string; items?: string | null }): string {

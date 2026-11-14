@@ -6,11 +6,11 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
 - **header**
   - was: Position as of June 30, 2026
   - was: 10-Q filed July 30, 2026
-  - was: 1 filing this week may affect debt
-  - was: Form 10-Q · Nov 5, 2026 — a new 10-Q, which carries a new position. Not yet read: this card's position is still the 10-Q for June 30, 2026.
+  - was: 2 filings this week: 8-K (earnings results) Nov 5, 2026; 10-Q (quarterly report) Nov 5, 2026, read at the next refresh
+  - was: 10-Q (quarterly report) · Nov 5, 2026 — read at the next refresh; this card's position is still the 10-Q for June 30, 2026.
   - now: Position as of September 30, 2026
   - now: 10-Q filed Nov 5, 2026
-  - now: new this week · 1 other filing, none with a debt item
+  - now: new this week · 1 other filing: 8-K (earnings results) same day, read at the next refresh
 - **rolledNote**
   - was: This company's 10-Q does not list its notes. This list comes from the Dec 31, 2025 10-K, updated for changes through June 30, 2026. Rows from the 10-K carry a 10-K tag. $10MM (0.03%) not attributed to a stated cause, within the 0.2% materiality line.
 - **call (label)**

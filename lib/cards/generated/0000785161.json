@@ -35,23 +35,13 @@
   "lines": [
    [
     {
-     "k": "text",
-     "t": "No new filings with a debt item since Nov 3, 2026."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "1 Form 8-K (Item 7.01, Regulation FD disclosure; Item 9.01, exhibits) "
-    },
-    {
      "k": "filing",
-     "t": "[Nov 6, 2026]",
+     "t": "8-K (public disclosure) Nov 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000242/ehc-20261106.htm"
     },
     {
      "k": "text",
-     "t": ", none with a debt item."
+     "t": ", read at the next refresh."
     }
    ]
   ]
@@ -2525,12 +2515,16 @@
    "status": [
     {
      "k": "text",
-     "t": "1 filing this week, none with a debt item: "
+     "t": "1 filing this week: "
     },
     {
      "k": "filing",
-     "t": "Form 8-K Nov 6, 2026",
+     "t": "8-K (public disclosure) Nov 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000242/ehc-20261106.htm"
+    },
+    {
+     "k": "text",
+     "t": ", read at the next refresh"
     }
    ],
    "actionable": []

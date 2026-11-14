@@ -36,7 +36,7 @@
    [
     {
      "k": "text",
-     "t": "No new filings with a debt item since Nov 3, 2026."
+     "t": "No new filings since Nov 3, 2026."
     }
    ]
   ]
@@ -2177,7 +2177,7 @@
    "status": [
     {
      "k": "text",
-     "t": "No new debt filings this week"
+     "t": "No new filings this week"
     }
    ],
    "actionable": []
