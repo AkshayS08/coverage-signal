@@ -17,6 +17,7 @@
  *
  * Offline, $0. Run: npx tsx lib/events/goldenTextTolerance.test.ts
  */
+import { anchorTextCommitted } from "../cache/anchorText";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { deriveGoldenState, compareToGolden } from "./golden";
@@ -38,7 +39,7 @@ const respace = (s: string) => s.replace(/\$(\d)/g, "$ $1").replace(/(\d)%/g, "$
 
 for (const cik of CIKS) {
   const result = JSON.parse(readFileSync(join("lib", "cards", "inputs", `${cik}.json`), "utf-8")).result;
-  const st: any = deriveGoldenState(result, AS_OF);
+  const st: any = deriveGoldenState(result, AS_OF, { anchorText: anchorTextCommitted(result) });
   const fields = textFields(st).filter(([o, k]) => typeof o[k] === "string" && o[k].length > 0);
   const w = clone(st);
   textFields(w).filter(([o, k]) => typeof o[k] === "string" && o[k].length > 0).forEach(([o, k]) => { o[k] = respace(o[k]) + (k === "sourceLine" ? " (1)" : ""); });
@@ -52,7 +53,7 @@ for (const cik of CIKS) {
   else console.log(`  · ${result.company}: no non-sentence text field for W2`);
 }
 
-const cigna: any = deriveGoldenState(JSON.parse(readFileSync(join("lib", "cards", "inputs", "0001739940.json"), "utf-8")).result, AS_OF);
+const cigna: any = deriveGoldenState(JSON.parse(readFileSync(join("lib", "cards", "inputs", "0001739940.json"), "utf-8")).result, AS_OF, { anchorText: anchorTextCommitted(JSON.parse(readFileSync(join("lib", "cards", "inputs", "0001739940.json"), "utf-8")).result) });
 const w3 = clone(cigna); const br = w3.rolled.baseRows.find((r: any) => /1,406/.test(r.sourceLine)); br.sourceLine = br.sourceLine.replace("1,406", "1,407");
 assert(compareToGolden(cigna, w3).kind === "diverged", `[W3 control] a changed figure inside a base row's sentence diverges`);
 const l1 = clone(cigna); l1.rolled.deltas[1].instrument = l1.rolled.deltas[1].instrument.toUpperCase();

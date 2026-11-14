@@ -110,8 +110,9 @@ console.log("\n=== [3] The roll tie — Akshay's hand verification, pinned ===")
   assert(tie.computedMillions === 31913, `[3a] 31,463 − 550 + 1,000 = 31,913 (got ${tie.computedMillions})`);
   assert(tie.residualMillions === 35, `[3b] against the anchor's 31,878 the residual is 35 (got ${tie.residualMillions})`);
   assert(tie.ties, "[3c] and 35 is inside the band the filer's own \"approximately\" supports, so it ties");
-  assert(/within the filer's stated approximation/.test(tie.detail),
-    "[3d] the surface says WHOSE approximation the band comes from — it is the filer's word, not our tolerance");
+  // Nov 13 (Akshay's ruling): the band is the stated 0.2% materiality line, not the filer's approximation.
+  assert(/within the 0\.2% materiality line/.test(tie.detail),
+    "[3d] the surface names the line the residual is held to: the 0.2% materiality line");
 
   assert(toleranceFor(deltas) === APPROXIMATION_BAND_MILLIONS,
     "[3e] the band exists only because a delta is stated as an approximation");

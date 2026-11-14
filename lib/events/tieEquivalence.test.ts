@@ -147,7 +147,8 @@ console.log("\n=== [3] ROLLFORWARD'S OWN TWO TIES, AGAINST THEIR FROZEN ORIGINAL
     for (const target of [31878, 31913, 31963, 31964, 31862, 31863, null]) {
       const deltas = mk(450, approx);
       const now = computeRollTie(31463, deltas, target);
-      const old = OLD_rollTie(31463 + 450, target, approx ? 50 : 0);
+      // Nov 13: the band is the 0.2% materiality line of the rolled figure, approximate or not (Akshay's ruling).
+      const old = OLD_rollTie(31463 + 450, target, (31463 + 450) * 0.002);
       pts++;
       if (now.ties !== old.ties || (now.residualMillions ?? null) !== (old.residual ?? null)) bad2++;
     }

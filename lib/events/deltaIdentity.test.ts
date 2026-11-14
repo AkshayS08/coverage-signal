@@ -20,6 +20,7 @@
  *
  * Offline, $0. Run: npx tsx lib/events/deltaIdentity.test.ts
  */
+import { anchorTextCommitted } from "../cache/anchorText";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { rolledCoverageFor } from "./rolledCoverage";
@@ -41,7 +42,7 @@ const samples = (cik: string) => [
   ...re.filter((x: any) => x.result.cik === cik).map((x: any) => ({ label: x.bust, result: x.result })),
 ];
 const clone = (x: any) => JSON.parse(JSON.stringify(x));
-const deltas = (r: any) => rolledCoverageFor(r).movements.filter((m) => m.placement === "delta");
+const deltas = (r: any) => rolledCoverageFor(r, { anchorText: anchorTextCommitted(r) }).movements.filter((m) => m.placement === "delta");
 
 console.log("\n=== D1: every sample of the six ===");
 for (const cik of CIKS) {
@@ -72,7 +73,7 @@ nr.sourceLine = nr.sourceLine.replace("1.250 %", "2.250 %"); nr.instrument = Str
 assert(repaidLine(cardFrom("0001739940", coupon)) !== lines[0], `[D3 control] a different coupon changes the Repaid line`);
 
 console.log("\n=== D4-D5: what is not the same delta ===");
-const st: any = deriveGoldenState(cigna[1].result, AS_OF);
+const st: any = deriveGoldenState(cigna[1].result, AS_OF, { anchorText: anchorTextCommitted(cigna[1].result) });
 for (const [what, mut] of [
   ["amount", (d: any) => { d.amountMillions = d.amountMillions - 1; }],
   ["date", (d: any) => { d.date = "2026-04"; }],

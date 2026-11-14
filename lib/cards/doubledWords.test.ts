@@ -14,6 +14,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { shownCards } from "./shownCards";
 import { priceLabelText } from "./build";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -27,10 +28,10 @@ const REPEAT = /\b([A-Za-z]+)\s+\1\b/i;
 export const doubled = (card: any): string[] => linesIn(card.v3).map((l) => l.map((s: any) => s.t ?? "").join("")).filter((x) => REPEAT.test(x)).map((x) => `"${(REPEAT.exec(x) ?? [""])[0]}" in "${x.slice(0, 90)}"`);
 
 const extra = join("sessions", "27", "facts_rerun", "reverified", "cards");
-const cards: [string, any][] = [
+const cards: [string, any][] = nonEmpty("the cards to check", [
   ...shownCards().map((s) => [`${s.card.company} ${s.label}`, s.card] as [string, any]),
   ...(existsSync(extra) ? readdirSync(extra).filter((f) => f.endsWith(".json")).map((f) => [`${f} (re-verified facts)`, JSON.parse(readFileSync(join(extra, f), "utf-8"))] as [string, any]) : []),
-];
+]);
 for (const [label, card] of cards) { const v = doubled(card); assert(v.length === 0, `[D1:${label}]${v.length ? ` — ${v.join("; ")}` : " holds"}`); }
 
 assert(priceLabelText("at par") === "at par" && priceLabelText("103 %") === "at 103%" && priceLabelText("At par") === "At par", `[D2] price phrases: "${priceLabelText("at par")}", "${priceLabelText("103 %")}"`);

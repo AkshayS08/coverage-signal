@@ -39,6 +39,7 @@
  *
  * Run: npx tsx lib/events/golden.test.ts
  */
+import { anchorTextCommitted } from "../cache/anchorText";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { compareToGolden, compareGoldenFile, goldenVersionVerdict, deriveGoldenState, filingSetOf, positionFilingSetOf, type GoldenFile, type GoldenState } from "./golden";
@@ -84,7 +85,7 @@ console.log("\n=== [1] EVERY SIGNED GOLDEN FILE REPRODUCES FROM ITS OWN CAPTURED
     if ((golden.extractionVersion ?? 0) !== EXTRACTION_PROMPT_VERSION) {
       console.log(`  — SKIPPED [1c:${name}] — captured at extraction v${golden.extractionVersion ?? "(unrecorded)"}, code is v${EXTRACTION_PROMPT_VERSION}. The pin does not apply across a schema change; re-sign against a v${EXTRACTION_PROMPT_VERSION} capture.`);
     } else {
-      const actual = deriveGoldenState(golden.sourceResult, new Date(`${golden.state.asOf}T00:00:00Z`));
+      const actual = deriveGoldenState(golden.sourceResult, new Date(`${golden.state.asOf}T00:00:00Z`), { anchorText: anchorTextCommitted(golden.sourceResult) });
       const verdict = compareToGolden(golden.state, actual);
       assert(verdict.kind === "matches",
         `[1c:${name}] REPRODUCES EXACTLY from its captured input${verdict.kind === "diverged" ? ` — DIVERGED:\n      ${verdict.divergences.join("\n      ")}` : verdict.kind === "not-applicable" ? ` — ${verdict.reason}` : ""}`);
@@ -253,7 +254,7 @@ console.log("\n=== [5] THE NINE CRITERIA — each asserted by name, on the signe
       continue;
     }
     const att = (g as { attestation?: { rowsCorrect?: boolean; instrumentTypeFaithful?: boolean; reproducedThreeTimes?: boolean; by?: string; on?: string } }).attestation ?? {};
-    const r = evaluateGoldenCriteria(g.sourceResult, new Date(`${g.state.asOf}T00:00:00Z`), att);
+    const r = evaluateGoldenCriteria(g.sourceResult, new Date(`${g.state.asOf}T00:00:00Z`), att, { anchorText: anchorTextCommitted(g.sourceResult) });
 
     assert(r.criteria.length === 12 && ["1","2","3","4","5","6","7","8a","8b","8c","9a","9b"].every((id) => r.criteria.some((c) => c.id === id)),
       `[5a:${name}] all nine criteria are evaluated, with 8 and 9 split into their separable parts (got ${r.criteria.map((c) => c.id).join(",")})`);

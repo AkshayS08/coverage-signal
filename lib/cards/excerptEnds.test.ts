@@ -13,6 +13,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
 import { shownCards } from "./shownCards";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -26,10 +27,10 @@ const STRAY = /[.;]\s+(?:Note\s+)?\d{1,2}\.\s*(?:…)?[”"]/;
 export const strays = (card: any): string[] => linesIn(card.v3).map((l) => l.map((s: any) => s.t ?? "").join("")).filter((x) => STRAY.test(x)).map((x) => `"…${(STRAY.exec(x) ?? [""])[0]}" in "${x.slice(0, 70)}"`);
 
 const extra = join("sessions", "27", "facts_rerun", "reverified", "cards");
-const cards: [string, any][] = [
+const cards: [string, any][] = nonEmpty("the cards to check", [
   ...shownCards().map((s) => [`${s.card.company} ${s.label}`, s.card] as [string, any]),
   ...(existsSync(extra) ? readdirSync(extra).filter((f) => f.endsWith(".json")).map((f) => [`${f} (re-verified facts)`, JSON.parse(readFileSync(join(extra, f), "utf-8"))] as [string, any]) : []),
-];
+]);
 for (const [label, card] of cards) { const v = strays(card); assert(v.length === 0, `[X1:${label}]${v.length ? ` — ${v.join("; ")}` : " holds"}`); }
 
 const before = JSON.parse(execSync("git show 0382ac0:sessions/27/facts_rerun/reverified/cards/0000785161.json", { encoding: "utf-8", maxBuffer: 64e6 }));

@@ -16,6 +16,7 @@ import { join } from "node:path";
 import { factsForBuild } from "./factsForBuild";
 import { cachedCardFacts, UnadoptedAnswerError, isUnadopted } from "../../cache/answerCache";
 import { buildCard } from "../build";
+import { nonEmpty } from "../../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -27,7 +28,7 @@ for (const cik of ["0000070318", "0000927066", "0001108109"]) {
   assert(got.source === "adopted" && JSON.stringify(got.facts) === JSON.stringify(read(join("lib", "cards", "inputs", "facts", `${cik}.json`))), `[U1:${cik}] the rebuild's facts are production's adopted facts (${got.source})`);
 }
 
-const keys = readdirSync(join("sessions", "27", "facts_rerun")).filter((f) => /^raw-\d{10}\.json$/.test(f)).flatMap((f) => read(join("sessions", "27", "facts_rerun", f)).keys as string[]);
+const keys = nonEmpty("the re-run's answer keys", readdirSync(join("sessions", "27", "facts_rerun")).filter((f) => /^raw-\d{10}\.json$/.test(f)).flatMap((f) => read(join("sessions", "27", "facts_rerun", f)).keys as string[]));
 const unregistered = keys.filter((k) => !isUnadopted(k));
 let refused = 0;
 (async () => {
