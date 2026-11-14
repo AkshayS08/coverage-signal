@@ -55,8 +55,8 @@ import { verifyAsk } from "./verifyFacts";
 import { factsForBuild } from "./factsForBuild";
 
 export const CARD_FACTS_PROMPT_VERSION = 1;
-const MODEL = "claude-haiku-4-5";
-const ASKS = 3;
+export const MODEL = "claude-haiku-4-5";
+export const ASKS = 3;
 const BAND_PER_ASK = 0.12;
 const BAND_PER_NAME = 0.35;
 const OUTPUT_TOKENS_EST = 3500;
@@ -65,7 +65,7 @@ const BRIEF = briefDateArg(); // Session 27: today's date in New York unless one
 const ROOT = process.cwd();
 const IN = join(ROOT, "lib", "cards", "inputs");
 
-const SYSTEM = `You transcribe specific facts from SEC filings. You never compute, infer, round or summarize.
+export const SYSTEM = `You transcribe specific facts from SEC filings. You never compute, infer, round or summarize.
 
 Rules for every fact:
 - Copy every value VERBATIM as the filing prints it, with the unit the filing prints beside it.
@@ -84,7 +84,7 @@ What to transcribe:
 8. moves: every debt transaction that HAPPENED or was ANNOUNCED from January 1 of the anchor period's year through ${BRIEF}: issuance, redemption (full, partial, special call), tender or repurchase, repayment at maturity, facility entry/amendment/refinancing/termination, incremental add-ons, material draws or paydowns. Do not include transactions completed before January 1 of that year. status is "pending" when the filing says the company intends, expects or will; otherwise "completed". For each move give the date as printed, the instrument as named, the face amount, and where stated: funding (how it was paid for), use (what the proceeds were used for), price (e.g. "at par", "103% of the principal amount").`;
 
 const FACT = { type: ["object", "null"], properties: { value: { type: "string" }, sourceLine: { type: "string" }, documentUrl: { type: "string" } }, required: ["value", "sourceLine", "documentUrl"] };
-const SCHEMA = {
+export const SCHEMA = {
   type: "object",
   properties: {
     schedule: { type: "array", items: { type: "object", properties: { period: { type: "string" }, amount: { type: "string" }, sourceLine: { type: "string" }, documentUrl: { type: "string" } }, required: ["period", "amount", "sourceLine", "documentUrl"] } },
@@ -123,7 +123,7 @@ type Raw = any;
 const anchorUrlOf = (snap: any): string => snap.result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.url;
 
 /** The text the model is shown: labelled regions of the documents the card holds. */
-function inputFor(snap: any): string {
+export function inputFor(snap: any): string {
   const dm = snap.result.results.find((r: any) => r.triggerId === "debt-maturity");
   const anchor = dm.debtScheduleSourceFiling;
   const blocks: string[] = [];
@@ -221,7 +221,8 @@ const INPUT = argOf("--input");
 const OUT_DIR = argOf("--out") ?? join(IN, "facts");
 const LIMIT = argOf("--limit");
 
-(async () => {
+// Nov 14: the script runs only as a script; the product imports its prompt and input to price a cold build.
+if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async () => {
   const snaps = INPUT ? [JSON.parse(readFileSync(INPUT, "utf-8"))] : readdirSync(IN).filter((f) => /^\d+\.json$/.test(f)).map((f) => JSON.parse(readFileSync(join(IN, f), "utf-8")));
   // DECLARE FIRST: every name's estimated cost, before anything bills.
   const plan = snaps.map((s) => {
