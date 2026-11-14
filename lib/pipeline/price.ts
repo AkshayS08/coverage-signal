@@ -29,6 +29,8 @@ const PROCEEDS_ESTIMATE_INPUT_TOKENS = 6000;
 export interface PricedBuild { worstUsd: number; declaredUsd: number; expectedRangeUsd: [number, number]; calls: { stage: string; sample: string; count: number; worstEachUsd: number; estimate?: boolean }[] }
 
 export async function priceColdBuild(company: string, rs: ResolvedReadSet, uncachedSamples: (string | null)[]): Promise<PricedBuild> {
+  // Counting is free, but it needs the token counter: without it the build cannot be priced, and says so at once.
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error("this build cannot be priced: the token counter is not configured");
   const calls: PricedBuild["calls"] = [];
   const counted = async (fn: () => Promise<unknown>) => { const n0 = pricedCalls().length; await fn().catch((e) => { if (e?.name !== "PricedOnlyError") throw e; }); return pricedCalls().slice(n0)[0]?.worstUsd ?? NaN; };
   setPriceOnly(true);
