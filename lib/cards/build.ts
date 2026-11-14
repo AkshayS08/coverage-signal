@@ -51,7 +51,7 @@ import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 import { antecedentWindow, paragraphSentences, REFERS, HEADING } from "./antecedent";
 import { plainFilingName, READ_WHEN } from "./filingWords";
-import { REFRESH_TRIGGER_ITEMS } from "../cache/lastBuild";
+import { REFRESH_TRIGGER_ITEMS, movesWindowStart } from "../cache/lastBuild";
 import { quoteKey, statesSameMove, SCHEDULED } from "./moveEvidence";
 
 export interface CardInputs {
@@ -613,7 +613,8 @@ export function buildCard(i: CardInputs): Card {
     /** Nov 4: a scheduled day for a completed move, shown labelled, never as its date. */
     scheduled?: Segment;
   };
-  const fyStart = `${periodEnd.slice(0, 4)}-01-01`;
+  // Nov 14: the moves window starts where the read window does (lastBuild.movesWindowStart, one home).
+  const fyStart = movesWindowStart(periodEnd);
   // A fact's sentence is linked as the FILER printed it: the document's own
   // sentence containing the copied text (typography aside), which also widens
   // a copied fragment to its whole sentence.

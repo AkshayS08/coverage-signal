@@ -49,9 +49,48 @@ export function frozenFilings<T extends F>(cik: string, filings: T[], asOf: stri
   return filings.filter((f) => f.filingDate <= d);
 }
 
-/** The 8-K rule of Nov 14: debt-item 8-Ks filed since the latest 10-K, newest first; none if none. */
-export function selectEightKsV2<T extends F>(filings: T[]): T[] {
+/** The start of a card's moves window: Jan 1 of its anchor period's year (the card's fyStart). One home. */
+export function movesWindowStart(anchorReportDate: string): string {
+  return `${anchorReportDate.slice(0, 4)}-01-01`;
+}
+
+/**
+ * The 8-K rule of Nov 14, with its read window (Nov 14, readWindow.test): debt-item 8-Ks filed since the EARLIER of
+ * the latest 10-K's filing date and the start of the card's moves window, newest first; none if none.
+ */
+export function selectEightKsV2<T extends F & { reportDate?: string }>(filings: T[]): T[] {
   const byDate = [...filings].sort((a, b) => (a.filingDate < b.filingDate ? 1 : a.filingDate > b.filingDate ? -1 : 0));
   const tenK = byDate.find((f) => f.form === "10-K");
-  return byDate.filter((f) => f.form === "8-K" && hasItem(f, DEBT_ITEMS_V2) && (!tenK || f.filingDate >= tenK.filingDate));
+  const anchor = byDate.find((f) => f.form === "10-Q" || f.form === "10-K");
+  const starts = [tenK?.filingDate, anchor?.reportDate ? movesWindowStart(anchor.reportDate) : undefined].filter((x): x is string => !!x).sort();
+  const from = starts[0] ?? "";
+  return byDate.filter((f) => f.form === "8-K" && hasItem(f, DEBT_ITEMS_V2) && f.filingDate >= from);
+}
+
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const addDays = (iso: string, n: number) => new Date(Date.parse(`${iso}T00:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
+/** A move's stated date as a span: a day, or a whole month. */
+function spanOf(date: string): [string, string] | null {
+  const d = new RegExp(`(${MONTHS.join("|")})\\s+(\\d{1,2}),\\s*(\\d{4})`).exec(date);
+  if (d) { const iso = `${d[3]}-${String(MONTHS.indexOf(d[1]) + 1).padStart(2, "0")}-${d[2].padStart(2, "0")}`; return [iso, iso]; }
+  const m = new RegExp(`(${MONTHS.join("|")})\\s+(\\d{4})`).exec(date);
+  if (m) { const mo = MONTHS.indexOf(m[1]) + 1, start = `${m[2]}-${String(mo).padStart(2, "0")}-01`; return [start, addDays(new Date(Date.UTC(+m[2], mo, 0)).toISOString().slice(0, 10), 0)]; }
+  return null;
+}
+
+/**
+ * FACT RETENTION (Nov 14): a move's full statement is the debt-item 8-K filed within a week of it (an 8-K is due within
+ * four business days). Every such 8-K must be in the read set; each one that is not is a gap.
+ */
+export function retentionGaps(moves: { date: string; what: string }[], filings: (F & { accessionNumber: string })[], readSet: Set<string>): string[] {
+  const out: string[] = [];
+  for (const mv of moves) {
+    const span = spanOf(mv.date);
+    if (!span) continue;
+    for (const f of filings) {
+      if (f.form !== "8-K" || !hasItem(f, DEBT_ITEMS_V2) || f.filingDate < span[0] || f.filingDate > addDays(span[1], 7)) continue;
+      if (!readSet.has(f.accessionNumber)) out.push(`${mv.what} (${mv.date}): its 8-K of ${f.filingDate} (Items ${f.items}) is not read`);
+    }
+  }
+  return out;
 }

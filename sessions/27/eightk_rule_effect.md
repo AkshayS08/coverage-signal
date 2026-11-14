@@ -32,3 +32,14 @@ Current = the 8-Ks in the read set each card is served from now (its last build)
 - Adds: none
 - Drops: 2025-11-18 (Items 8.01); 2025-09-04 (Items 1.01,2.03,8.01,9.01)
 
+
+## Nov 14, second rule: the read window covers the card
+
+Debt-item 8-Ks read from the earlier of the latest 10-K's filing date and the moves window's start (Jan 1 of the anchor period's year). What it restores against the rule above:
+
+- **TENET HEALTHCARE CORP** (10-K filed 2026-02-17; window from 2026-01-01): restores 2026-02-02 (Items 2.02,7.01,8.01,9.01)
+- **Encompass Health Corp** (10-K filed 2026-02-26; window from 2026-01-01): restores 2026-02-05 (Items 2.02,7.01,9.01)
+- **DAVITA INC.** (10-K filed 2026-02-11; window from 2026-01-01): restores nothing
+- **COMMUNITY HEALTH SYSTEMS INC** (10-K filed 2026-02-19; window from 2026-01-01): restores 2026-02-18 (Items 2.02,7.01,9.01); 2026-02-02 (Items 2.01,8.01,9.01); 2026-01-20 (Items 1.01,8.01,9.01)
+- **MOLINA HEALTHCARE, INC.** (10-K filed 2026-02-10; window from 2026-01-01): restores 2026-02-06 (Items 1.01,2.03,2.06,9.01)
+- **Cigna Group** (10-K filed 2026-02-26; window from 2026-01-01): restores nothing
