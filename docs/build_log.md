@@ -7399,3 +7399,12 @@ the residual that rejected the roll, not what the card did with the rejection.
 **Lesson: report what the card shows, not what the engine computed.** A diagnosis of a check's residual is incomplete
 until the rendered card has been read against it. Now a failed roll fails the card (the roll shown, its gap), and a
 card whose coverage fails states no call at all.
+
+### Session 27, Stage 2: Ring 1 (Nov 14, 2026) — approved
+
+Ring 1 ran the six signed names through the pipeline as of the Nov 9 brief: $0.0815 billed of $0.40 approved (Cigna's
+facts). Tenet and CHS match live production on every field; Encompass, Molina and DaVita differ by one wording line each
+(the Nov 14 rules); Cigna's card is its Sept 30 refresh (Checks failed) by design; every card deterministic.
+
+**What Ring 1 did and did not prove (Akshay, Nov 14).** Ring 1 proved determinism and wiring from cached answers. Fresh
+extraction, and the facts stage with debt 8-Ks, are first exercised in Ring 2.
