@@ -33,9 +33,7 @@ import { readCache } from "../fetch/cache";
 import { transcribeReferencedNote, REFERENCED_NOTE_PROMPT_VERSION } from "../agent/referencedNote";
 import { captureCardInput } from "../cards/capture/snapshot";
 
-export const RING1_BRIEF = "2026-11-09";
-export const RING1_NAMES = ["TENET HEALTHCARE CORP", "Encompass Health Corp", "DAVITA INC.", "COMMUNITY HEALTH SYSTEMS INC", "MOLINA HEALTHCARE, INC.", "Cigna Group"];
-export const RING1_SAMPLES: (string | null)[] = [null, "s27-refresh-retaste-1", "s27-refresh-retaste-2"];
+import { RING1_BRIEF, RING1_NAMES, RING1_SAMPLES } from "./s27ring1Names";
 const DIG_BUDGET = 5;
 const DIR = "sessions/27/ring1";
 const ceilCent = (x: number) => Math.ceil(x * 100 - 1e-9) / 100;
