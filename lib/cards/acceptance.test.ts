@@ -974,8 +974,9 @@ function greyCauses(card: Card): string[] {
   const bad: string[] = [];
   const want = (cond: boolean, re: RegExp, what: string) => { if (cond && !re.test(caps)) bad.push(`missing cause: ${what}`); if (!cond && re.test(caps)) bad.push(`cause stated but not present: ${what}`); };
   want(absorbed, /appears? as scheduled principal: the filer's schedule doesn't split (?:them|it) by instrument/, "debt carried only in the schedule's yearly totals");
-  want(securityOnly.length > 0, /security is not stated/, "grey rows whose security is not stated");
-  want(neither.length > 0, /seniority and security are not stated/, "grey rows stating neither label");
+  // Nov 14 (one caption per cause): "Not stated by the filer: security for the senior notes; seniority and security for the notes."
+  want(securityOnly.length > 0, /security is not stated|[:;]\s*security for the/, "grey rows whose security is not stated");
+  want(neither.length > 0, /seniority and security are not stated|seniority and security for the/, "grey rows stating neither label");
   const neitherFace = neither.reduce((a, x) => a + x.usd, 0);
   want(neitherFace > charted / 2, /state (?:seniority or security|labels) for few/i, "most charted face states neither label");
   return bad;

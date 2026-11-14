@@ -2588,7 +2588,7 @@ export function buildCard(i: CardInputs): Card {
       ...capParts.map((p) => [t("Balance sheet: "), fig(p.printed, p.src.sentence, p.src.url)] as Line),
       // The base table's cells carry its caption's scale (Rule 67): the resolved millions, as the carrying-basis check reads them.
       ...baseTotals.map((r: any) => [t(`${base!.periodOfReport} 10-K, ${String(r.instrument).toLowerCase()}: `), fig(printedIn(r.sourceLine, Math.abs(r.amountMillions) * 1e6) ?? `$ ${Math.abs(r.amountMillions).toLocaleString("en-US")} million`, r.sourceLine, base!.filingUrl)] as Line),
-      ...deltas.map((d) => [t(`${d.amountMillions < 0 ? "Repaid" : "Added"}: `), fig(printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, d.sourceLine, d.citedUrl || anchor.url), ...(d.cashMillions !== undefined ? [t(`; in the roll at cash proceeds of $${Math.abs(d.cashMillions).toLocaleString("en-US")}MM, per “${d.cashSourceLine}”`)] : [])] as Line),
+      ...deltas.map((d) => [t(`${d.amountMillions < 0 ? "Repaid" : "Added"}: `), fig(printedIn(d.sourceLine, Math.abs(d.amountMillions) * 1e6) ?? d.statedAs, d.sourceLine, d.citedUrl || anchor.url), ...(d.cashMillions !== undefined ? [t(`; carried forward at cash proceeds of $${Math.abs(d.cashMillions).toLocaleString("en-US")}MM, per “${d.cashSourceLine}”`)] : [])] as Line),
       // A failed roll states no anchor-only total: that partial position is what this rule withholds.
       ...(rollFailed ? [] : [[t("Stated on this card's filings: "), faceSeg()] as Line]),
     ];

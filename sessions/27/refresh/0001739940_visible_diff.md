@@ -346,7 +346,7 @@ Verified card facts: read from this anchor (the 10-Q filed 2026-11-05) ($0.08046
   - now: 2025-12-31 10-K, total short-term debt: $592MM
   - now: 2025-12-31 10-K, total long-term debt: $30,871MM
   - now: Repaid: $550MM
-  - now: Added: ~$500MM; in the roll at cash proceeds of $463MM, per “Net change in short-term debt, excluding term loan 463”
+  - now: Added: ~$500MM; carried forward at cash proceeds of $463MM, per “Net change in short-term debt, excluding term loan 463”
 - **breakage (basis)**
   - now: cash
   - now: cash
