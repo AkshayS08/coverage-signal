@@ -1,0 +1,53 @@
+{
+ "about": "Answers that were billed but not adopted (Akshay, Nov 13-14). Kept as evidence only (sessions/27/facts_rerun); the cache refuses to serve them as current (answerCache.cachedCardFacts). A rebuild uses the adopted facts.",
+ "keys": [
+  {
+   "key": "answer/0000070318/card-facts/0ac13d8573aed13c653f14d1/cf-v1-ask1.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0000070318/card-facts/0ac13d8573aed13c653f14d1/cf-v1-ask2.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0000070318/card-facts/0ac13d8573aed13c653f14d1/cf-v1-ask3.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0000785161/card-facts/3cca232609ada71b2a0c8838/cf-v1-ask1.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0000785161/card-facts/3cca232609ada71b2a0c8838/cf-v1-ask2.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0000785161/card-facts/3cca232609ada71b2a0c8838/cf-v1-ask3.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0000927066/card-facts/124daea6988fab8de6cc23a2/cf-v1-ask1.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0000927066/card-facts/124daea6988fab8de6cc23a2/cf-v1-ask2.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0000927066/card-facts/124daea6988fab8de6cc23a2/cf-v1-ask3.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0001108109/card-facts/cac7c38ec8ef498e56452e44/cf-v1-ask1.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0001108109/card-facts/cac7c38ec8ef498e56452e44/cf-v1-ask2.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  },
+  {
+   "key": "answer/0001108109/card-facts/cac7c38ec8ef498e56452e44/cf-v1-ask3.json",
+   "why": "the decision 11 facts re-run of Nov 9: production kept its earlier facts (Nov 13)"
+  }
+ ]
+}

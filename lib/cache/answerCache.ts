@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { readCache, writeCache } from "../fetch/cache";
 import { PROCEEDS_USE_PROMPT_VERSION, EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 import { cacheStats } from "./stats";
@@ -133,8 +135,25 @@ export async function cachedReferencedNote<T>(
 export function cardFactsKey(cik: string, inputHash: string, promptVersion: number, ask: number): string {
   return `answer/${cik}/card-facts/${inputHash}/cf-v${promptVersion}-ask${ask}.json`;
 }
+/**
+ * SESSION 27 (Akshay, Nov 14): AN ANSWER THAT WAS NOT ADOPTED IS EVIDENCE, NEVER SERVED AS CURRENT. Its key is listed
+ * in baselines/unadopted.json; the cache refuses it before any read (and never computes over it, which would bill into a
+ * key that already holds an answer). A rebuild uses the adopted facts (lib/cards/capture/factsForBuild.ts).
+ */
+export class UnadoptedAnswerError extends Error {
+  constructor(key: string) { super(`UNADOPTED ANSWER — ${key} was billed but not adopted; it is evidence only and is never served as current`); this.name = "UnadoptedAnswerError"; }
+}
+let UNADOPTED: Set<string> | null = null;
+export function isUnadopted(key: string): boolean {
+  if (!UNADOPTED) {
+    try { UNADOPTED = new Set((JSON.parse(readFileSync(join(process.cwd(), "baselines", "unadopted.json"), "utf-8")).keys ?? []).map((k: { key: string }) => k.key)); } catch { UNADOPTED = new Set(); }
+  }
+  return UNADOPTED!.has(key);
+}
 export async function cachedCardFacts<T>(cik: string, inputHash: string, promptVersion: number, ask: number, compute: () => Promise<T>): Promise<{ data: T; hit: boolean }> {
-  return getOrCompute(cardFactsKey(cik, inputHash, promptVersion, ask), compute);
+  const key = cardFactsKey(cik, inputHash, promptVersion, ask);
+  if (isUnadopted(key)) throw new UnadoptedAnswerError(key);
+  return getOrCompute(key, compute);
 }
 
 /** A single-trigger dig follow-up against one specific extra filing. */

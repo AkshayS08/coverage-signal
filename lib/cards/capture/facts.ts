@@ -52,6 +52,7 @@ import { amountSupportOf } from "../../events/position";
 import { containsWord } from "../labels";
 import type { CardFacts, Fact } from "../types";
 import { verifyAsk } from "./verifyFacts";
+import { factsForBuild } from "./factsForBuild";
 
 export const CARD_FACTS_PROMPT_VERSION = 1;
 const MODEL = "claude-haiku-4-5";
@@ -258,6 +259,8 @@ const LIMIT = argOf("--limit");
   // would make (the call-set rule). Reads the cache only; $0.
   if (process.argv.includes("--status")) {
     for (const p of plan) {
+      // Nov 14: a rebuild uses the adopted facts where they were read from this anchor; nothing to run.
+      if (factsForBuild(p.s).source === "adopted") { console.log(`STATUS ${p.s.cik} hash ${p.hash} uncached-asks none (adopted facts)`); continue; }
       const asks: number[] = [];
       for (let ask = 1; ask <= ASKS; ask++) if ((await readCache(cardFactsKey(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, ask), null)) === null) asks.push(ask);
       console.log(`STATUS ${p.s.cik} hash ${p.hash} uncached-asks ${asks.length ? asks.join(",") : "none"}`);
