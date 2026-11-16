@@ -68,8 +68,8 @@ const quiet = async <T>(fn: () => Promise<T>) => { const l = console.log, w = co
     // dig: only a name with a candidate not excerpted can dig; the budget is 5 calls
     let dig = 0;
     const f2 = await getRecentFilings(company, ["8-K", "10-Q", "10-K"]);
-    const rs = new Set(readSetOf(f2.filings).map((x) => x.accessionNumber));
-    const cand = digCandidatesOf(f2.filings).find((x) => !rs.has(x.accessionNumber));
+    const rs = new Set(readSetOf(f2.filings, 1).map((x) => x.accessionNumber));
+    const cand = digCandidatesOf(f2.filings, 1).find((x) => !rs.has(x.accessionNumber));
     if (cand) {
       const { text } = await getFilingText(cand.primaryDocUrl);
       const ex = buildExtractionText({ form: cand.form, url: cand.primaryDocUrl, fullText: text });

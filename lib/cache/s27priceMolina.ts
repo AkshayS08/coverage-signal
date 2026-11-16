@@ -44,7 +44,7 @@ const quiet = async <T>(fn: () => Promise<T>) => { const l = console.log, w = co
   const old = JSON.parse(readFileSync("baselines/s27-replay.json", "utf-8")).results.find((x: any) => x.company === COMPANY).result;
   const oldDm = old.results.find((t: any) => t.triggerId === "debt-maturity");
   const f = await getRecentFilings(COMPANY, ["8-K", "10-Q", "10-K"]);
-  const rs = readSetOf(f.filings), anchor = anchorOf(rs)!;
+  const rs = readSetOf(f.filings, 1), anchor = anchorOf(rs)!;
   console.log(`read set now (${rs.length}): ${rs.map((x) => `${x.form} ${x.filingDate}`).join(", ")}`);
   console.log(`anchor: ${oldDm.debtScheduleSourceFiling.form} ${oldDm.debtScheduleSourceFiling.date} (period ${oldDm.debtScheduleSourceFiling.reportDate}) → ${anchor.form} ${anchor.filingDate} (period ${anchor.reportDate})`);
   const [x0, x1] = await Promise.all([fetchXbrlDebtTotal(old.cik, oldDm.debtScheduleSourceFiling.reportDate), fetchXbrlDebtTotal(old.cik, anchor.reportDate)]);
@@ -61,7 +61,7 @@ const quiet = async <T>(fn: () => Promise<T>) => { const l = console.log, w = co
     runs.push({ label: bust ?? "canonical", base: p.worstUsd, inputTokens: p.inputTokens, maxTokens: p.maxTokens });
   }
   const rsAcc = new Set(rs.map((x) => x.accessionNumber));
-  const cand = digCandidatesOf(f.filings).find((x) => !rsAcc.has(x.accessionNumber));
+  const cand = digCandidatesOf(f.filings, 1).find((x) => !rsAcc.has(x.accessionNumber));
   let dig = 0;
   if (cand) {
     const { text } = await getFilingText(cand.primaryDocUrl);

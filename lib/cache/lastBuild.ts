@@ -6,23 +6,27 @@
  * a trigger is listed in the header, not read, until the next trigger. Where a trigger has come since the last build,
  * the read set is taken as of that trigger.
  *
- * THE 8-K RULE (Nov 14): from a trigger on or after Nov 14, a read set's 8-Ks are only those carrying debt items
- * (1.01, 1.02, 2.03, 2.04, 7.01, 8.01) filed since the latest 10-K, and none if there are none (no fallback). Answers
- * built under the earlier rule are served until the name's next trigger.
+ * THE 8-K RULE (Nov 14): a read set's 8-Ks are only those carrying debt items (1.01, 1.02, 2.03, 2.04, 7.01, 8.01) in
+ * the read window (selectEightKsV2), none if there are none (no fallback).
+ *
+ * WHICH RULE A BUILD READS UNDER (Akshay, Nov 16): the new rule applies from each name's FIRST BUILD AFTER THE DECISION,
+ * never by the trigger filing's date. A read set that is a recorded build keeps the rule that build recorded
+ * (eightKRule); any new build — a trigger since the last build, or a name never built — reads under the new rule.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 export const REFRESH_TRIGGER_ITEMS = ["1.01", "1.02", "2.03", "2.04", "8.01"];
 export const DEBT_ITEMS_V2 = ["1.01", "1.02", "2.03", "2.04", "7.01", "8.01"];
-export const READ_SET_RULE_V2_FROM = "2026-11-14";
+export type EightKRule = 1 | 2;
 
 type F = { form: string; filingDate: string; items?: string | null };
 const hasItem = (f: F, set: string[]) => String(f.items ?? "").split(",").some((i) => set.includes(i.trim()));
 export const isTrigger = (f: F): boolean => f.form === "10-Q" || f.form === "10-K" || (f.form === "8-K" && hasItem(f, REFRESH_TRIGGER_ITEMS));
 
-let BUILDS: Record<string, { readSetAsOf: string }[]> | null = null;
-function builds(): Record<string, { readSetAsOf: string }[]> {
+type Build = { readSetAsOf: string; eightKRule: EightKRule };
+let BUILDS: Record<string, Build[]> | null = null;
+function builds(): Record<string, Build[]> {
   if (!BUILDS) {
     try { BUILDS = JSON.parse(readFileSync(join(process.cwd(), "baselines", "builds.json"), "utf-8")).builds ?? {}; } catch { BUILDS = {}; }
   }
@@ -41,6 +45,18 @@ export function readSetDateFor(cik: string, filings: F[], asOf: string): string 
   const last = (builds()[pad(cik)] ?? []).map((b) => b.readSetAsOf).filter((d) => d <= asOf).sort().pop() ?? null;
   if (last && (!trig || trig <= last)) return last;
   return trig ?? asOf;
+}
+
+/**
+ * The 8-K rule of the build a read set is taken for: the recorded build's own rule when it is served from one (a recorded
+ * build that names none is an error, never a default); the new rule for a new build.
+ */
+export function eightKRuleFor(cik: string, filings: F[], asOf: string): EightKRule {
+  const d = readSetDateFor(cik, filings, asOf);
+  const rec = (builds()[pad(cik)] ?? []).find((b) => b.readSetAsOf === d);
+  if (!rec) return 2;
+  if (rec.eightKRule !== 1 && rec.eightKRule !== 2) throw new Error(`baselines/builds.json: ${pad(cik)}'s build of ${d} names no 8-K rule`);
+  return rec.eightKRule;
 }
 
 /** The filing list as the read set may see it. */

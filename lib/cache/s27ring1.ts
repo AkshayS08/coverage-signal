@@ -53,7 +53,7 @@ const LEDGER = readFileSync("baselines/cost-log.jsonl", "utf-8").trim().split("\
   for (const company of RING1_NAMES) {
     await quiet(() => assertFilingListCurrent(company));
     const f = await quiet(() => getRecentFilings(company, ["8-K", "10-Q", "10-K"]));
-    const rs = readSetOf(f.filings), anchor = anchorOf(rs)!;
+    const rs = readSetOf(f.filings, 1), anchor = anchorOf(rs)!;
     // Stages 5-7, per sample: cached (free) or the calls the run would make.
     const samples: { sample: string; cached: boolean; fingerprint: string }[] = [];
     for (const b of RING1_SAMPLES) { const v = await quiet(() => checkFree(company, b ?? undefined)); samples.push({ sample: b ?? "canonical", cached: v.cached, fingerprint: v.fingerprint }); }
@@ -70,7 +70,7 @@ const LEDGER = readFileSync("baselines/cost-log.jsonl", "utf-8").trim().split("\
       delete process.env.CACHE_BUST;
       base = pricedCalls().slice(n0)[0];
       const rsAcc = new Set(rs.map((x) => x.accessionNumber));
-      const cand = digCandidatesOf(f.filings).find((x) => !rsAcc.has(x.accessionNumber));
+      const cand = digCandidatesOf(f.filings, 1).find((x) => !rsAcc.has(x.accessionNumber));
       if (cand) {
         const { text } = await getFilingText(cand.primaryDocUrl);
         const ex = buildExtractionText({ form: cand.form, url: cand.primaryDocUrl, fullText: text });

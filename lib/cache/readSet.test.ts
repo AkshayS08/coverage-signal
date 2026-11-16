@@ -49,12 +49,12 @@ const catalogs: Catalog[] = JSON.parse(readFileSync("lib/cache/fixtures/s27-cata
 const sha = (s: string) => createHash("sha256").update(s).digest("hex").slice(0, 24);
 const textOf = (url: string) => `the text of ${url}`;
 
-interface KeyInputs { cik: string; company: string; filings: FilingEntry[]; contentHash: (url: string) => string; xbrlDebtTotal: number | null; promptVersion: number; locatorVersion: number }
+interface KeyInputs { cik: string; company: string; filings: FilingEntry[]; contentHash: (url: string) => string; xbrlDebtTotal: number | null; promptVersion: number; locatorVersion: number; eightKRule: 1 | 2 }
 type KeyFn = (i: KeyInputs) => string;
 
 (async () => {
   const mod: any = existsSync("lib/cache/readSet.ts") ? await import("./readSet") : null;
-  const readSetOf: (f: FilingEntry[]) => FilingEntry[] = mod ? mod.readSetOf : (f: FilingEntry[]) => f;
+  const readSetOf: (f: FilingEntry[], rule: 1 | 2) => FilingEntry[] = mod ? mod.readSetOf : (f: FilingEntry[]) => f;
   const underTest: KeyFn = mod
     ? (i) => mod.readSetFingerprint(i)
     : (i) => `${corpusFingerprint(i.filings)}/v${i.promptVersion}`;
@@ -62,11 +62,11 @@ type KeyFn = (i: KeyInputs) => string;
 
   // Controls: each is a key that ignores exactly the input its rule is about.
   const wholeCatalog: KeyFn = (i) => `${corpusFingerprint(i.filings)}/v${i.promptVersion}`;
-  const only = (forms: string[]): KeyFn => (i) => sha(readSetOf(i.filings).filter((f) => forms.includes(f.form)).map((f) => f.accessionNumber).join(",") + i.promptVersion);
-  const noVersion: KeyFn = (i) => sha(readSetOf(i.filings).map((f) => `${f.accessionNumber}|${i.contentHash(f.primaryDocUrl)}`).join(","));
-  const accessionOnly: KeyFn = (i) => sha(readSetOf(i.filings).map((f) => f.accessionNumber).join(",") + i.promptVersion);
+  const only = (forms: string[]): KeyFn => (i) => sha(readSetOf(i.filings, 1).filter((f) => forms.includes(f.form)).map((f) => f.accessionNumber).join(",") + i.promptVersion);
+  const noVersion: KeyFn = (i) => sha(readSetOf(i.filings, 1).map((f) => `${f.accessionNumber}|${i.contentHash(f.primaryDocUrl)}`).join(","));
+  const accessionOnly: KeyFn = (i) => sha(readSetOf(i.filings, 1).map((f) => f.accessionNumber).join(",") + i.promptVersion);
 
-  const base = (c: Catalog, filings = c.filings, over: Partial<KeyInputs> = {}): KeyInputs => ({ cik: c.cik, company: c.company, filings, contentHash: (u) => sha(textOf(u)), xbrlDebtTotal: 1e9, promptVersion: 32, locatorVersion: 1, ...over });
+  const base = (c: Catalog, filings = c.filings, over: Partial<KeyInputs> = {}): KeyInputs => ({ cik: c.cik, company: c.company, filings, contentHash: (u) => sha(textOf(u)), xbrlDebtTotal: 1e9, eightKRule: 1, promptVersion: 32, locatorVersion: 1, ...over });
   const NEXT = "2026-10-22";
   const synth = (c: Catalog, form: string, items: string, n: number): FilingEntry => {
     const acc = `9999999999-26-${String(900000 + n).padStart(6, "0")}`;
@@ -80,7 +80,7 @@ type KeyFn = (i: KeyInputs) => string;
     { id: "K2", name: "a new 10-Q moves the key", moves: true, change: (c) => [base(c), base(c, withNew(c, synth(c, "10-Q", "", 2)))], control: only(["8-K"]), controlName: "a key over the 8-Ks alone" },
     { id: "K3", name: "an 8-K with a debt item (1.01, 2.03) inside the read window moves the key", moves: true, change: (c) => [base(c), base(c, withNew(c, synth(c, "8-K", "1.01,2.03,9.01", 3)))], control: only(["10-Q", "10-K"]), controlName: "a key over the 10-Qs and 10-K alone" },
     { id: "K4", name: "a prompt-version bump moves the key", moves: true, change: (c) => [base(c), base(c, c.filings, { promptVersion: 33 })], control: noVersion, controlName: "the key with the version left out" },
-    { id: "K5", name: "a read document whose content changes moves the key", moves: true, change: (c) => { const anchor = readSetOf(c.filings)[0].primaryDocUrl; return [base(c), base(c, c.filings, { contentHash: (u) => sha(textOf(u) + (u === anchor ? " restated" : "")) })]; }, control: accessionOnly, controlName: "a key over accession numbers alone" },
+    { id: "K5", name: "a read document whose content changes moves the key", moves: true, change: (c) => { const anchor = readSetOf(c.filings, 1)[0].primaryDocUrl; return [base(c), base(c, c.filings, { contentHash: (u) => sha(textOf(u) + (u === anchor ? " restated" : "")) })]; }, control: accessionOnly, controlName: "a key over accession numbers alone" },
     { id: "K6", name: "filings aging out of EDGAR's recent window (the Encompass Form 4 case) do not move the key", moves: false, change: (c) => [base(c), base(c, c.filings.slice(0, c.filings.length - 3))], control: wholeCatalog, controlName: "the whole-catalog fingerprint" },
   ];
 
@@ -107,8 +107,8 @@ type KeyFn = (i: KeyInputs) => string;
   const ids = (fs: FilingEntry[]) => fs.map((f) => f.accessionNumber).join(",");
   const latest10K = (fs: FilingEntry[]) => [...fs].sort((a, b) => (a.filingDate < b.filingDate ? 1 : -1)).find((f) => f.form === "10-K");
   const everySince10K = (fs: FilingEntry[]) => { const k = latest10K(fs); return fs.filter((f) => k && f.filingDate >= k.filingDate); };
-  const eightKsOnly = (fs: FilingEntry[]) => readSetOf(fs).filter((f) => f.form === "8-K");
-  const readSetOnlyKey: KeyFn = (i) => sha(readSetOf(i.filings).map((f) => `${f.accessionNumber}|${i.contentHash(f.primaryDocUrl)}`).join(",") + i.promptVersion);
+  const eightKsOnly = (fs: FilingEntry[]) => readSetOf(fs, 1).filter((f) => f.form === "8-K");
+  const readSetOnlyKey: KeyFn = (i) => sha(readSetOf(i.filings, 1).map((f) => `${f.accessionNumber}|${i.contentHash(f.primaryDocUrl)}`).join(",") + i.promptVersion);
   const dayAfter = (iso: string) => new Date(Date.parse(`${iso}T00:00:00Z`) + 864e5).toISOString().slice(0, 10);
 
   interface DRule { id: string; name: string; moves: boolean; change: (c: Catalog) => [FilingEntry[], FilingEntry[]] | null; controlCands: (f: FilingEntry[]) => FilingEntry[]; controlName: string }
@@ -139,7 +139,7 @@ type KeyFn = (i: KeyInputs) => string;
     if (!k || qs.length < 2) { console.log(`  · ${c.company}: fewer than two 10-Qs since the latest 10-K, so no 10-Q can join the candidates without joining the read set — not constructible here`); continue; }
     const extra: FilingEntry = { ...synth(c, "10-Q", "", 13), filingDate: dayAfter(k.filingDate), reportDate: k.reportDate };
     const fb = [...c.filings, extra];
-    if (ids(readSetOf(c.filings)) !== ids(readSetOf(fb))) { failed++; failures.push(`D3 ${c.company}: the constructed 10-Q entered the read set`); continue; }
+    if (ids(readSetOf(c.filings, 1)) !== ids(readSetOf(fb, 1))) { failed++; failures.push(`D3 ${c.company}: the constructed 10-Q entered the read set`); continue; }
     const candMoved = ids(candidatesOf(c.filings)) !== ids(candidatesOf(fb));
     const keyMoved = underTest(base(c)) !== underTest(base(c, fb));
     if (candMoved && keyMoved) { passed++; console.log(`  ✓ ${c.company}: read set unchanged, candidates and key move`); }
@@ -153,7 +153,7 @@ type KeyFn = (i: KeyInputs) => string;
   {
     const record = mod?.recordedReadSet as undefined | ((baseDocs: { url: string; text: string; filing: FilingEntry }[], dug: { url: string; text: string; filing: FilingEntry }[]) => { url: string; contentHash: string; via: string }[]);
     for (const c of catalogs) {
-      const rs = readSetOf(c.filings);
+      const rs = readSetOf(c.filings, 1);
       const outside = c.filings.find((f) => !rs.some((r) => r.accessionNumber === f.accessionNumber))!;
       const baseDocs = rs.map((f) => ({ url: f.primaryDocUrl, text: textOf(f.primaryDocUrl), filing: f }));
       const dug = [{ url: outside.primaryDocUrl, text: textOf(outside.primaryDocUrl), filing: outside }];

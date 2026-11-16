@@ -42,7 +42,7 @@ export async function priceColdBuild(company: string, rs: ResolvedReadSet, uncac
       const base = await counted(() => inRequestScope({ cacheBust: uncachedSamples[0] }, () => runAgentLoop(company)));
       for (const s of uncachedSamples) calls.push({ stage: "base extraction", sample: s ?? "canonical", count: 1, worstEachUsd: base });
       const inRs = new Set(rs.readSet.map((f) => f.accessionNumber));
-      const cand = digCandidatesOf(rs.filingsResult.filings).find((f) => !inRs.has(f.accessionNumber));
+      const cand = digCandidatesOf(rs.filingsResult.filings, rs.eightKRule).find((f) => !inRs.has(f.accessionNumber));
       if (cand) {
         const { text } = await getFilingText(cand.primaryDocUrl);
         const ex = buildExtractionText({ form: cand.form, url: cand.primaryDocUrl, fullText: text });

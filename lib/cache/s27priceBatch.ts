@@ -56,7 +56,7 @@ const ceilCent = (x: number) => Math.ceil(x * 100 - 1e-9) / 100;
     // Stage 2 rule (Nov 3): never price on a filing list older than the request (lib/fetch/freshFilings.ts).
     await quiet(() => assertFilingListCurrent(company));
     const f = await quiet(() => getRecentFilings(company, ["8-K", "10-Q", "10-K"]));
-    const rs = readSetOf(f.filings), anchor = anchorOf(rs)!;
+    const rs = readSetOf(f.filings, 1), anchor = anchorOf(rs)!;
     for (const b of BUSTS) { const v = await checkFree(company, b); if (v.cached) throw new Error(`${company} [${b ?? "canonical"}] is already cached on the new read set — not a forced miss`); }
     // base: the real prompt, counted once (the three asks share it)
     process.env.CACHE_BUST = BUSTS[1]!;
@@ -66,7 +66,7 @@ const ceilCent = (x: number) => Math.ceil(x * 100 - 1e-9) / 100;
     const base = pricedCalls().slice(n0)[0];
     // dig
     const rsAcc = new Set(rs.map((x) => x.accessionNumber));
-    const cand = digCandidatesOf(f.filings).find((x) => !rsAcc.has(x.accessionNumber));
+    const cand = digCandidatesOf(f.filings, 1).find((x) => !rsAcc.has(x.accessionNumber));
     let dig = 0;
     if (cand) {
       const { text } = await getFilingText(cand.primaryDocUrl);

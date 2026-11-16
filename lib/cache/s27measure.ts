@@ -80,7 +80,7 @@ const readKey = (rs: FilingEntry[]) => rs.map((f) => f.accessionNumber).sort().j
     console.log(`feed cached ${sub.cachedAt}; recent block ${blockSize} filings of all forms, ${recent[recent.length - 1].filingDate} to ${recent[0].filingDate}; ${older.length} older on ${(sub.data.filings.files ?? []).length} page(s)`);
 
     // 1. today's read set
-    const rs = readSetOf(cur.filings);
+    const rs = readSetOf(cur.filings, 1);
     console.log(`READ SET today (${rs.length} documents; ${cur.filings.length} filings in the catalog the prompt lists):`);
     for (const f of rs) console.log(`  ${tag(f).padEnd(44)} ${f.accessionNumber}`);
     console.log(`  + XBRL company facts (debt total at the anchor's period end: bounds the debt-note excerpt), the catalog listing itself (${cur.filings.length} lines in the prompt), the registered name "${cur.company}"`);
@@ -117,13 +117,13 @@ const readKey = (rs: FilingEntry[]) => rs.map((f) => f.accessionNumber).sort().j
 
     // 3. the 90-day replay
     let prevCat = catalogOn(all, addDays(TODAY, -DAYS - 1), blockSize);
-    let prevFp = corpusFingerprint(prevCat), prevRs = readSetOf(prevCat), prevRk = readKey(prevRs);
+    let prevFp = corpusFingerprint(prevCat), prevRs = readSetOf(prevCat, 1), prevRk = readKey(prevRs);
     let oldMoves = 0, newMoves = 0;
     console.log(`REPLAY ${addDays(TODAY, -DAYS)} to ${TODAY}:`);
     for (let k = DAYS - 1; k >= 0; k--) {
       const day = addDays(TODAY, -k);
       const cat = catalogOn(all, day, blockSize);
-      const fp = corpusFingerprint(cat), rsD = readSetOf(cat), rk = readKey(rsD);
+      const fp = corpusFingerprint(cat), rsD = readSetOf(cat, 1), rk = readKey(rsD);
       if (fp === prevFp && rk === prevRk) continue;
       const urls = new Set(cat.map((f) => f.primaryDocUrl)), pUrls = new Set(prevCat.map((f) => f.primaryDocUrl));
       const entered = cat.filter((f) => !pUrls.has(f.primaryDocUrl)), left = prevCat.filter((f) => !urls.has(f.primaryDocUrl));

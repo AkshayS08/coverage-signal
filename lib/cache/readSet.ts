@@ -40,7 +40,7 @@ import { fetchXbrlDebtTotal, type XbrlDebtTotal } from "../fetch/xbrlDebt";
 import { buildExtractionText, NOTE_LOCATOR_VERSION, type FilingExtractionResult } from "../fetch/noteLocation";
 import { selectBaselineFilings, has8KSignal } from "../agent/selectFilings";
 import { EXTRACTION_PROMPT_VERSION } from "./promptVersion";
-import { frozenFilings, lastTriggerDate, READ_SET_RULE_V2_FROM, selectEightKsV2 } from "./lastBuild";
+import { frozenFilings, eightKRuleFor, selectEightKsV2, type EightKRule } from "./lastBuild";
 
 const sha = (s: string, n = 24) => createHash("sha256").update(s).digest("hex").slice(0, n);
 const newestFirst = (a: FilingEntry, b: FilingEntry) => (a.filingDate < b.filingDate ? 1 : a.filingDate > b.filingDate ? -1 : 0);
@@ -51,12 +51,12 @@ const newestFirst = (a: FilingEntry, b: FilingEntry) => (a.filingDate < b.filing
  * recent 10-K, and the six most recent 8-Ks carrying an item the triggers
  * read (selectFilings.ts names them; three newest 8-Ks when none does).
  */
-export function readSetOf(filings: FilingEntry[]): FilingEntry[] {
+export function readSetOf(filings: FilingEntry[], rule: EightKRule): FilingEntry[] {
   const sorted = [...filings].sort(newestFirst);
-  // Nov 14: from a trigger on or after READ_SET_RULE_V2_FROM, the 8-Ks are the debt-item 8-Ks since the latest 10-K
-  // (none if none); before it, the earlier selection, so answers built under it are served until the next trigger.
-  const trig = lastTriggerDate(sorted, sorted[0]?.filingDate ?? "");
-  if (trig && trig >= READ_SET_RULE_V2_FROM) {
+  // Nov 16: the 8-K rule is the build's (lastBuild.eightKRuleFor), never a date: rule 2, the debt-item 8-Ks in the read
+  // window (none if none); rule 1, the earlier selection, for a recorded build made under it.
+  if (rule !== 1 && rule !== 2) throw new Error(`readSetOf: no 8-K rule given (${String(rule)}); the build names its rule (lastBuild.eightKRuleFor)`);
+  if (rule === 2) {
     const tenK = sorted.find((f) => f.form === "10-K");
     return [...sorted.filter((f) => f.form === "10-Q").slice(0, 2), ...(tenK ? [tenK] : []), ...selectEightKsV2(sorted)];
   }
@@ -84,10 +84,10 @@ export function anchorOf(readSet: FilingEntry[]): FilingEntry | undefined {
  * 10-Qs filed since it, and the trigger-item 8-Ks filed since it. With no
  * 10-K, nothing beyond the read set.
  */
-export function digCandidatesOf(filings: FilingEntry[]): FilingEntry[] {
+export function digCandidatesOf(filings: FilingEntry[], rule: EightKRule): FilingEntry[] {
   const sorted = [...filings].sort(newestFirst);
   const tenK = sorted.find((f) => f.form === "10-K");
-  if (!tenK) return readSetOf(filings);
+  if (!tenK) return readSetOf(filings, rule);
   const since = sorted.filter((f) => f.filingDate >= tenK.filingDate);
   return [tenK, ...since.filter((f) => f.form === "10-Q"), ...since.filter((f) => f.form === "8-K" && has8KSignal(f))].sort(newestFirst);
 }
@@ -109,8 +109,8 @@ export function recordedReadSet(base: { url: string; text: string; filing: Filin
 }
 
 /** Would going from one filing list to another change what the extraction reads? */
-export function wouldChangeReads(before: FilingEntry[], after: FilingEntry[]): boolean {
-  const ids = (f: FilingEntry[]) => readSetOf(f).map((x) => x.accessionNumber).join(",");
+export function wouldChangeReads(before: FilingEntry[], after: FilingEntry[], rule: EightKRule): boolean {
+  const ids = (f: FilingEntry[]) => readSetOf(f, rule).map((x) => x.accessionNumber).join(",");
   return ids(before) !== ids(after);
 }
 
@@ -119,6 +119,8 @@ export interface ReadSetKeyInputs {
   company: string;
   /** The catalog; only its read set reaches the key. */
   filings: FilingEntry[];
+  /** The build's 8-K rule (lastBuild.eightKRuleFor). */
+  eightKRule: EightKRule;
   /** Hash of a read document's full text. */
   contentHash: (url: string) => string;
   /** Hash of the excerpt the model is shown for that document; defaults to the content hash. */
@@ -137,8 +139,8 @@ export function readSetKeyMaterial(i: ReadSetKeyInputs): string {
     `extraction prompt v${i.promptVersion}`,
     `note locator v${i.locatorVersion}`,
     `xbrl stated total ${i.xbrlDebtTotal ?? "none"}`,
-    ...readSetOf(i.filings).map((f) => `read ${f.form}|${f.filingDate}|${f.reportDate}|${f.items}|${f.accessionNumber}|${f.primaryDocUrl}|text ${i.contentHash(f.primaryDocUrl)}|excerpt ${ex(f.primaryDocUrl)}`),
-    ...digCandidatesOf(i.filings).map((f) => `dig candidate ${f.form}|${f.filingDate}|${f.reportDate}|${f.items}|${f.accessionNumber}|${f.primaryDocUrl}`),
+    ...readSetOf(i.filings, i.eightKRule).map((f) => `read ${f.form}|${f.filingDate}|${f.reportDate}|${f.items}|${f.accessionNumber}|${f.primaryDocUrl}|text ${i.contentHash(f.primaryDocUrl)}|excerpt ${ex(f.primaryDocUrl)}`),
+    ...digCandidatesOf(i.filings, i.eightKRule).map((f) => `dig candidate ${f.form}|${f.filingDate}|${f.reportDate}|${f.items}|${f.accessionNumber}|${f.primaryDocUrl}`),
   ].join("\n");
 }
 
@@ -149,6 +151,8 @@ export function readSetFingerprint(i: ReadSetKeyInputs): string {
 export interface ResolvedReadSet {
   filingsResult: RecentFilingsResult;
   readSet: FilingEntry[];
+  /** The 8-K rule this build reads under (lastBuild.eightKRuleFor). */
+  eightKRule: EightKRule;
   /** What the dig may open (in the key); those not in the read set are listed to the model as not excerpted. */
   digCandidates: FilingEntry[];
   anchor: FilingEntry | undefined;
@@ -171,7 +175,8 @@ export async function resolveReadSet(company: string): Promise<ResolvedReadSet> 
   // unless a refresh trigger has come since (lastBuild.ts); later non-trigger filings are listed, not read.
   const asOf = process.env.READ_SET_AS_OF ?? new Date().toISOString().slice(0, 10);
   const filingsResult = { ...listed, filings: frozenFilings(listed.cik, listed.filings, asOf) };
-  const readSet = readSetOf(filingsResult.filings);
+  const eightKRule = eightKRuleFor(listed.cik, listed.filings, asOf);
+  const readSet = readSetOf(filingsResult.filings, eightKRule);
   const anchor = anchorOf(readSet);
   const anchorXbrl = anchor ? await fetchXbrlDebtTotal(filingsResult.cik, anchor.reportDate) : null;
   const docs = new Map<string, { fullText: string; extraction: FilingExtractionResult }>();
@@ -183,11 +188,12 @@ export async function resolveReadSet(company: string): Promise<ResolvedReadSet> 
     cik: filingsResult.cik,
     company: filingsResult.company,
     filings: filingsResult.filings,
+    eightKRule,
     contentHash: (u) => sha(docs.get(u)!.fullText, 64),
     excerptHash: (u) => sha(docs.get(u)!.extraction.text, 64),
     xbrlDebtTotal: anchorXbrl?.total ?? null,
     promptVersion: EXTRACTION_PROMPT_VERSION,
     locatorVersion: NOTE_LOCATOR_VERSION,
   };
-  return { filingsResult, readSet, digCandidates: digCandidatesOf(filingsResult.filings), anchor, anchorXbrl, docs, fingerprint: readSetFingerprint(inputs), material: readSetKeyMaterial(inputs) };
+  return { filingsResult, readSet, eightKRule, digCandidates: digCandidatesOf(filingsResult.filings, eightKRule), anchor, anchorXbrl, docs, fingerprint: readSetFingerprint(inputs), material: readSetKeyMaterial(inputs) };
 }
