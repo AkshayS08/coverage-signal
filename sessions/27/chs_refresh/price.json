@@ -1,0 +1,105 @@
+{
+ "pricedAt": "2026-11-16T18:28:45.335Z",
+ "kind": "priced",
+ "decision": {
+  "kind": "run",
+  "declaredUsd": 1.9,
+  "allowanceLeftUsd": 0.1
+ },
+ "price": {
+  "worstUsd": 1.8924149999999997,
+  "declaredUsd": 1.9,
+  "expectedRangeUsd": [
+   0.5,
+   0.9
+  ],
+  "calls": [
+   {
+    "stage": "base extraction",
+    "sample": "canonical",
+    "count": 1,
+    "worstEachUsd": 0.175496
+   },
+   {
+    "stage": "base extraction",
+    "sample": "s27-refresh-retaste-1",
+    "count": 1,
+    "worstEachUsd": 0.175496
+   },
+   {
+    "stage": "base extraction",
+    "sample": "s27-refresh-retaste-2",
+    "count": 1,
+    "worstEachUsd": 0.175496
+   },
+   {
+    "stage": "dig budget",
+    "sample": "canonical",
+    "count": 5,
+    "worstEachUsd": 0.059554
+   },
+   {
+    "stage": "dig budget",
+    "sample": "s27-refresh-retaste-1",
+    "count": 5,
+    "worstEachUsd": 0.059554
+   },
+   {
+    "stage": "dig budget",
+    "sample": "s27-refresh-retaste-2",
+    "count": 5,
+    "worstEachUsd": 0.059554
+   },
+   {
+    "stage": "proceeds-use",
+    "sample": "canonical",
+    "count": 1,
+    "worstEachUsd": 0.021,
+    "estimate": true
+   },
+   {
+    "stage": "proceeds-use",
+    "sample": "s27-refresh-retaste-1",
+    "count": 1,
+    "worstEachUsd": 0.021,
+    "estimate": true
+   },
+   {
+    "stage": "proceeds-use",
+    "sample": "s27-refresh-retaste-2",
+    "count": 1,
+    "worstEachUsd": 0.021,
+    "estimate": true
+   },
+   {
+    "stage": "referenced 10-K note",
+    "sample": "canonical",
+    "count": 1,
+    "worstEachUsd": 0.068806
+   },
+   {
+    "stage": "referenced 10-K note",
+    "sample": "s27-refresh-retaste-1",
+    "count": 1,
+    "worstEachUsd": 0.068806
+   },
+   {
+    "stage": "referenced 10-K note",
+    "sample": "s27-refresh-retaste-2",
+    "count": 1,
+    "worstEachUsd": 0.068806
+   },
+   {
+    "stage": "card facts",
+    "sample": "facts",
+    "count": 3,
+    "worstEachUsd": 0.067733
+   }
+  ]
+ },
+ "company": {
+  "cik": "0001108109",
+  "title": "COMMUNITY HEALTH SYSTEMS INC",
+  "ticker": "CYH"
+ }
+}
