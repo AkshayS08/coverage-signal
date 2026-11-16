@@ -41,13 +41,7 @@
     },
     {
      "k": "text",
-     "t": " — read at the next refresh."
-    }
-   ],
-   [
-    {
-     "k": "text",
-     "t": "No other filings this week."
+     "t": " — read for this card."
     }
    ]
   ]
@@ -56,6 +50,54 @@
   "heading": "Recent debt moves",
   "lines": [],
   "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "Since September 30, 2026: not yet in the position totals"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "label",
+       "t": "November 9, 2026",
+       "stated": "November 9, 2026",
+       "src": {
+        "sentence": "On November 9, 2026, Community Health Systems, Inc. issued a press release announcing that its wholly owned subsidiary, CHS/Community Health Systems, Inc. (the \"Issuer\"), intends to commence a private offer to exchange any and all of its outstanding 6.875% Junior-Priority Secured Notes due 2029 (the \"Old Notes\") for newly issued 10.250% Senior Secured Notes due 2035 (the \"New Notes\")",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526454058/d266722d8k.htm",
+        "doc": "d266722d8k.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": "
+      },
+      {
+       "k": "text",
+       "t": "Issuance announced"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "10.250% senior secured notes due 2035",
+       "stated": "10.250%",
+       "src": {
+        "sentence": "On November 9, 2026, Community Health Systems, Inc. issued a press release announcing that its wholly owned subsidiary, CHS/Community Health Systems, Inc. (the \"Issuer\"), intends to commence a private offer to exchange any and all of its outstanding 6.875% Junior-Priority Secured Notes due 2029 (the \"Old Notes\") for newly issued 10.250% Senior Secured Notes due 2035 (the \"New Notes\")",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526454058/d266722d8k.htm",
+        "doc": "d266722d8k.htm"
+       }
+      },
+      {
+       "k": "text",
+       "t": " · pending, not yet confirmed by a filing"
+      }
+     ]
+    ]
+   },
    {
     "heading": [
      {
@@ -166,7 +208,7 @@
       {
        "k": "figure",
        "t": "~$600MM",
-       "printed": "$ 600 million",
+       "printed": "$600 million",
        "src": {
         "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
         "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
@@ -2289,7 +2331,7 @@
    [
     {
      "k": "text",
-     "t": "1 filing this week may affect debt: its text is not read, so amount and instrument are not shown."
+     "t": "Nothing withheld this week."
     }
    ]
   ]
@@ -2510,22 +2552,10 @@
     },
     {
      "k": "text",
-     "t": ", read at the next refresh"
+     "t": ", read for this card"
     }
    ],
-   "actionable": [
-    [
-     {
-      "k": "filing",
-      "t": "8-K (other event) · Nov 10, 2026",
-      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526454058/d266722d8k.htm"
-     },
-     {
-      "k": "text",
-      "t": " — read at the next refresh."
-     }
-    ]
-   ]
+   "actionable": []
   },
   "rolledNote": null,
   "breakage": null,
@@ -2832,6 +2862,40 @@
     "meta": [
      {
       "k": "label",
+      "t": "Nov 9, 2026",
+      "stated": "November 9, 2026",
+      "src": {
+       "sentence": "On November 9, 2026, Community Health Systems, Inc. issued a press release announcing that its wholly owned subsidiary, CHS/Community Health Systems, Inc. (the \"Issuer\"), intends to commence a private offer to exchange any and all of its outstanding 6.875% Junior-Priority Secured Notes due 2029 (the \"Old Notes\") for newly issued 10.250% Senior Secured Notes due 2035 (the \"New Notes\")",
+       "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526454058/d266722d8k.htm",
+       "doc": "d266722d8k.htm"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · Issued, confirmed by 8-K"
+     }
+    ],
+    "title": [
+     [
+      {
+       "k": "label",
+       "t": "10.250% senior secured notes due 2035",
+       "stated": "10.250%",
+       "src": {
+        "sentence": "On November 9, 2026, Community Health Systems, Inc. issued a press release announcing that its wholly owned subsidiary, CHS/Community Health Systems, Inc. (the \"Issuer\"), intends to commence a private offer to exchange any and all of its outstanding 6.875% Junior-Priority Secured Notes due 2029 (the \"Old Notes\") for newly issued 10.250% Senior Secured Notes due 2035 (the \"New Notes\")",
+        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526454058/d266722d8k.htm",
+        "doc": "d266722d8k.htm"
+       }
+      }
+     ]
+    ],
+    "detail": null,
+    "retires": null
+   },
+   {
+    "meta": [
+     {
+      "k": "label",
       "t": "May 6, 2026",
       "stated": "May 6, 2026",
       "src": {
@@ -2955,7 +3019,7 @@
      {
       "k": "figure",
       "t": "~$600MM",
-      "printed": "$ 600 million",
+      "printed": "$600 million",
       "src": {
        "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
        "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
@@ -5113,7 +5177,7 @@
    [
     {
      "k": "text",
-     "t": "1 filing this week may affect debt: its text is not read, so amount and instrument are not shown."
+     "t": "Nothing withheld this week."
     }
    ]
   ],

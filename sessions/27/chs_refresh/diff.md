@@ -7,15 +7,14 @@ Badge: **checks-passed** — every automated check holds, including 3 of 3 stabi
   - now: Weekly coverage brief · Nov 10 to Nov 16, 2026
 - **header**
   - was: No new filings this week
-  - now: 1 filing this week: 8-K (other event) Nov 10, 2026, read at the next refresh
-  - now: 8-K (other event) · Nov 10, 2026 — read at the next refresh.
+  - now: 1 filing this week: 8-K (other event) Nov 10, 2026, read for this card
 - **call (label)**
   - was: The call · next 18 months, to May 9, 2028
   - now: The call · next 18 months, to May 16, 2028
-- **notShown**
-  - was: Nothing withheld this week.
-  - now: 1 filing this week may affect debt: its text is not read, so amount and instrument are not shown.
-- **cited sentences behind source links**: 117 out, 117 in
+- **moves**
+  - now: Nov 9, 2026 · Issued, confirmed by 8-K
+  - now: 10.250% senior secured notes due 2035
+- **cited sentences behind source links**: 117 out, 119 in
   - was cited: 10-Q 2026-10-29 | 6 ⅞% Junior-Priority Secured Notes due 2029 1,244
   - was cited: 10-Q 2026-10-29 | 4 ¾% Senior Secured Notes due 2031 689
   - was cited: 10-Q 2026-10-29 | 10 ⅞% Senior Secured Notes due 2032 1,549
@@ -28,6 +27,7 @@ Badge: **checks-passed** — every automated check holds, including 3 of 3 stabi
   - was cited: 10-Q 2026-10-29 | Other 46
   - was cited: 10-Q 2026-10-29 | Long-term debt 9,568
   - now cited: 10-Q 2026-10-29 | 6 ⅞% Junior-Priority Secured Notes due 2029 $ 1,244
+  - now cited: d266722d8k.htm | On November 9, 2026, Community Health Systems, Inc. issued a press release announcing that its wholly owned subsidiary, CHS/Community Health
   - now cited: 10-Q 2026-10-29 | 4 ¾% Senior Secured Notes due 2031 $ 689
   - now cited: 10-Q 2026-10-29 | 10 ⅞% Senior Secured Notes due 2032 $ 1,549
   - now cited: 10-Q 2026-10-29 | 6 ⅛% Junior-Priority Secured Notes due 2030 $ 1,227

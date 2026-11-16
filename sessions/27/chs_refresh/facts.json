@@ -1,9 +1,10 @@
 {
  "cik": "0001108109",
  "anchorUrl": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm",
- "promptVersion": 1,
+ "readSet": "1516560e4b7ebe32df94944c",
+ "promptVersion": 2,
  "asks": 3,
- "costUsd": 0.10317,
+ "costUsd": 0,
  "schedule": [],
  "subFacilities": [
   {
@@ -33,7 +34,7 @@
    }
   },
   {
-   "instrument": "6% Senior Secured Notes due 2029",
+   "instrument": "6 % Senior Secured Notes due 2029",
    "face": {
     "value": "$644 million",
     "src": {
@@ -105,7 +106,7 @@
    }
   },
   {
-   "instrument": "6% Senior Secured Notes due 2029",
+   "instrument": "6 % Senior Secured Notes due 2029",
    "maturity": {
     "value": "2029",
     "src": {
@@ -130,16 +131,6 @@
     "value": "2031",
     "src": {
      "sentence": "4 ¾% Senior Secured Notes due 2031",
-     "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
-    }
-   }
-  },
-  {
-   "instrument": "10 ⅞% Senior Secured Notes due 2032",
-   "maturity": {
-    "value": "2032",
-    "src": {
-     "sentence": "10 ⅞% Senior Secured Notes due 2032",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    }
@@ -200,7 +191,7 @@
    "date": {
     "value": "February 2, 2026",
     "src": {
-     "sentence": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+     "sentence": "On February 2, 2026, the Company exercised a special call provision to redeem 10% of the original principal amount, or approximately $223 million, of the 10.875% Senior Secured Notes due 2032, at a redemption price of 103% of the principal amount, plus accrued and unpaid interest.",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -209,14 +200,14 @@
    "instrument": {
     "value": "10.875% Senior Secured Notes due 2032",
     "src": {
-     "sentence": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+     "sentence": "On February 2, 2026, the Company exercised a special call provision to redeem 10% of the original principal amount, or approximately $223 million, of the 10.875% Senior Secured Notes due 2032, at a redemption price of 103% of the principal amount, plus accrued and unpaid interest.",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
    "face": {
     "value": "approximately $223 million",
     "src": {
-     "sentence": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+     "sentence": "On February 2, 2026, the Company exercised a special call provision to redeem 10% of the original principal amount, or approximately $223 million, of the 10.875% Senior Secured Notes due 2032, at a redemption price of 103% of the principal amount, plus accrued and unpaid interest.",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -225,7 +216,7 @@
    "price": {
     "value": "103% of the principal amount, plus accrued and unpaid interest",
     "src": {
-     "sentence": "On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 million, of the 10.875 % Senior Secured Notes due 2032 , at a redemption price of 103 % of the principal amount, plus accrued and unpaid interest.",
+     "sentence": "On February 2, 2026, the Company exercised a special call provision to redeem 10% of the original principal amount, or approximately $223 million, of the 10.875% Senior Secured Notes due 2032, at a redemption price of 103% of the principal amount, plus accrued and unpaid interest.",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    }
@@ -234,7 +225,7 @@
    "date": {
     "value": "April 22, 2026",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032, or approximately 13% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -243,21 +234,55 @@
    "instrument": {
     "value": "4.750% Senior Secured Notes due 2031",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032, or approximately 13% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
    "face": {
     "value": "approximately $368 million principal amount",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032, or approximately 13% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
    "funding": {
-    "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+    "value": "approximately $600 million of cash on hand from recent divestiture proceeds",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031",
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031",
+     "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+    }
+   },
+   "use": null,
+   "price": null
+  },
+  {
+   "date": {
+    "value": "April 22, 2026",
+    "src": {
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032, or approximately 13% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+    }
+   },
+   "type": "tender or repurchase",
+   "status": "pending",
+   "instrument": {
+    "value": "10.875% Senior Secured Notes due 2032",
+    "src": {
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032, or approximately 13% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+    }
+   },
+   "face": {
+    "value": "approximately $231 million principal amount",
+    "src": {
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032, or approximately 13% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
+    }
+   },
+   "funding": {
+    "value": "approximately $600 million of cash on hand from recent divestiture proceeds",
+    "src": {
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -268,7 +293,7 @@
    "date": {
     "value": "May 6, 2026",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -277,7 +302,7 @@
    "instrument": {
     "value": "4.750% Senior Secured Notes due 2031",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -289,9 +314,9 @@
     }
    },
    "funding": {
-    "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+    "value": "approximately $600 million of cash on hand from recent divestiture proceeds",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032, or approximately 13% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -302,7 +327,7 @@
    "date": {
     "value": "May 6, 2026",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -311,7 +336,7 @@
    "instrument": {
     "value": "10.875% Senior Secured Notes due 2032",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
@@ -323,12 +348,34 @@
     }
    },
    "funding": {
-    "value": "approximately $ 600 million of cash on hand from recent divestiture proceeds",
+    "value": "approximately $600 million of cash on hand from recent divestiture proceeds",
     "src": {
-     "sentence": "The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million principal amount of its 4.750 % Senior Secured Notes due 2031 , or approximately 35 % of the total outstanding principal amount, and to repurchase approximately $ 231 million principal amount of its 10.875 % Senior Secured Notes due 2032 , or approximately 13 % of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026, and to pay related fees and expenses.",
+     "sentence": "The Company used approximately $600 million of cash on hand from recent divestiture proceeds to repurchase approximately $368 million principal amount of its 4.750% Senior Secured Notes due 2031, or approximately 35% of the total outstanding principal amount, and to repurchase approximately $231 million principal amount of its 10.875% Senior Secured Notes due 2032, or approximately 13% of the total outstanding principal amount, that were validly tendered and accepted for purchase pursuant to a tender offer that launched on April 22, 2026, and was completed on May 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526437869/cyh-20260930.htm"
     }
    },
+   "use": null,
+   "price": null
+  },
+  {
+   "date": {
+    "value": "November 9, 2026",
+    "src": {
+     "sentence": "On November 9, 2026, Community Health Systems, Inc. issued a press release announcing that its wholly owned subsidiary, CHS/Community Health Systems, Inc. (the \"Issuer\"), intends to commence a private offer to exchange any and all of its outstanding 6.875% Junior-Priority Secured Notes due 2029 (the \"Old Notes\") for newly issued 10.250% Senior Secured Notes due 2035 (the \"New Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526454058/d266722d8k.htm"
+    }
+   },
+   "type": "issuance",
+   "status": "pending",
+   "instrument": {
+    "value": "10.250% Senior Secured Notes due 2035",
+    "src": {
+     "sentence": "On November 9, 2026, Community Health Systems, Inc. issued a press release announcing that its wholly owned subsidiary, CHS/Community Health Systems, Inc. (the \"Issuer\"), intends to commence a private offer to exchange any and all of its outstanding 6.875% Junior-Priority Secured Notes due 2029 (the \"Old Notes\") for newly issued 10.250% Senior Secured Notes due 2035 (the \"New Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526454058/d266722d8k.htm"
+    }
+   },
+   "face": null,
+   "funding": null,
    "use": null,
    "price": null
   }
@@ -341,7 +388,7 @@
   },
   {
    "fact": "uncommitted additional borrowing capacity under the ABL Facility",
-   "why": "not verified: its sentence is in no document the card holds",
+   "why": "not verified: its sentence does not state description \"additional borrowing capacity under the ABL Facility\"",
    "variation": []
   },
   {
@@ -353,6 +400,15 @@
    "fact": "face of 10 ⅞% Senior Secured Notes due 2032",
    "why": "not verified: its sentence is in no document the card holds",
    "variation": []
+  },
+  {
+   "fact": "maturity: 10⅞%seniorsecurednotesdue2032=2032",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
   }
  ]
 }

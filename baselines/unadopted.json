@@ -60,6 +60,18 @@
   {
    "key": "answer/0001739940/card-facts/ed143fe476fb9e0181f5988f/cf-v1-ask3.json",
    "why": "Ring 1 (Nov 14): Cigna Sept 30 card facts, billed $0.0815; pending Akshay review, not adopted"
+  },
+  {
+   "key": "answer/0001108109/card-facts/rs-1516560e4b7ebe32df94944c/cf-v2-ask1.json",
+   "why": "CHS refresh of Nov 16 (read set after the Nov 10 8-K): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001108109/card-facts/rs-1516560e4b7ebe32df94944c/cf-v2-ask2.json",
+   "why": "CHS refresh of Nov 16 (read set after the Nov 10 8-K): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001108109/card-facts/rs-1516560e4b7ebe32df94944c/cf-v2-ask3.json",
+   "why": "CHS refresh of Nov 16 (read set after the Nov 10 8-K): awaiting Akshay's review"
   }
  ]
 }
