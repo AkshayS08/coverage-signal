@@ -8,7 +8,7 @@
  *   H1  over every shown card: the header (status and new-filing lines) characterises no unread filing
  *   H2  every new filing the header names is named by plainFilingName and followed by "read at the next refresh"
  *   H3  build.ts names filings only through filingWords.ts (no item map of its own)
- *   control: Encompass's header as committed before this rule fails H1
+ *   control: Encompass's header as committed before this rule (fa99441~1, pinned: HEAD now holds the rule) fails H1
  *
  * Offline, $0. Run: npx tsx lib/cards/headerFilings.test.ts
  */
@@ -32,7 +32,7 @@ for (const s of shownCards()) {
 assert(plainFilingName({ form: "8-K", items: "7.01,9.01" }) === "8-K (public disclosure)" && plainFilingName({ form: "8-K", items: "2.02,7.01,9.01" }) === "8-K (earnings results, public disclosure)" && plainFilingName({ form: "8-K", items: "5.02" }) === "8-K (officer change)" && plainFilingName({ form: "10-Q", items: "" }) === "10-Q (quarterly report)", `[H2] the shared names: "${plainFilingName({ form: "8-K", items: "7.01,9.01" })}", "${plainFilingName({ form: "8-K", items: "2.02,7.01,9.01" })}"`);
 const build = readFileSync("lib/cards/build.ts", "utf-8");
 assert(/from "\.\/filingWords"/.test(build) && !/const (?:ACTIONABLE_ITEMS|ITEM_WHAT|FORM_WHAT|WHY)\b/.test(build), `[H3] build.ts names filings only through filingWords.ts`);
-const before = JSON.parse(execSync("git show HEAD:lib/cards/generated/0000785161.json", { encoding: "utf-8", maxBuffer: 64e6 }));
+const before = JSON.parse(execSync("git show fa99441~1:lib/cards/generated/0000785161.json", { encoding: "utf-8", maxBuffer: 64e6 }));
 assert(CHARACTERISES.test(headerText(before)), `[control] Encompass's header before this rule: "${headerText(before).slice(0, 120)}"`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);
