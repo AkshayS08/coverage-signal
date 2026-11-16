@@ -50,7 +50,7 @@ import { amountSupportOf, sentenceSupportsMaturity } from "../events/position";
 import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings } from "./headings";
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 import { antecedentWindow, paragraphSentences, REFERS, HEADING } from "./antecedent";
-import { plainFilingName, READ_WHEN } from "./filingWords";
+import { plainFilingName, READ_WHEN, READ_FOR_CARD } from "./filingWords";
 import { REFRESH_TRIGGER_ITEMS, movesWindowStart } from "../cache/lastBuild";
 import { quoteKey, statesSameMove, SCHEDULED } from "./moveEvidence";
 
@@ -577,10 +577,15 @@ export function buildCard(i: CardInputs): Card {
   // Nov 14 (headerFilings.test): a new filing is NAMED in plain words (filingWords.ts) and said to be read at the next
   // refresh; the card never says what an unread filing does, or does not do, to debt.
   const newFilings: FilingEntry[] = [];
+  // Nov 16 (headerReadSet.test): a filing is READ if it is in the build's read set (what the base read and what a dig
+  // opened, recorded on the result); the header and Not shown check it, never assuming the week's filings are unread.
+  const readUrls = new Set((result.recordedReadSet ?? []).map((r) => r.url));
+  const readThisWeek: FilingEntry[] = [];
   // The header states the anchor's date once (Nov 3): a filing made the same day says so.
   const fdate = (f: FilingEntry) => (f.filingDate === anchor.date ? "same day" : shortDate(f.filingDate));
   for (const f of i.weekFilings) {
     if (f.primaryDocUrl === anchor.url) continue;
+    if (readUrls.has(f.primaryDocUrl)) { readThisWeek.push(f); continue; }
     newFilings.push(f);
     const items = f.items.split(",").map((x) => x.trim()).filter(Boolean);
     const meta = `${plainFilingName(f)} · ${fdate(f)}`;
@@ -592,9 +597,10 @@ export function buildCard(i: CardInputs): Card {
   }
   const thisWeekLines: Line[] = [
     ...(anchorThisWeek ? [[{ k: "filing", t: `${formName(anchor.form)} · ${shortDate(anchor.date)}`, url: anchor.url } as Segment, t(` — this card's position: the ${anchor.form} for the ${anchor.form === "10-K" ? "year" : "quarter"} ended ${displayDate(periodEnd, "day")}, filed this week and read for this card.`)] as Line] : []),
+    ...readThisWeek.map((f) => [{ k: "filing", t: `${plainFilingName(f)} · ${fdate(f)}`, url: f.primaryDocUrl } as Segment, t(` — ${READ_FOR_CARD}.`)] as Line),
     ...actionable,
   ];
-  if (newFilings.length === 0) thisWeekLines.push([t(`No new filings since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
+  if (newFilings.length === 0 && readThisWeek.length === 0) thisWeekLines.push([t(`No new filings since ${shortDate(i.previousBrief ?? weekFrom)}.`)]);
   // §2.2: everything else in one line, grouped by form, each filing one click deeper.
   if (other.length > 0) {
     const line: Line = [];
@@ -1938,10 +1944,12 @@ export function buildCard(i: CardInputs): Card {
     filing: { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url },
     // Nov 14: every new filing named in plain words, and when it will be read; nothing said about what it does.
     status: (() => {
-      const named: Line = newFilings.flatMap((f, n) => [...(n ? [t("; ")] : []), { k: "filing", t: `${plainFilingName(f)} ${fdate(f)}`, url: f.primaryDocUrl } as Segment]);
-      const n = newFilings.length, s1 = n === 1 ? "" : "s";
-      if (anchorThisWeek) return n ? [t(`new this week · ${n} other filing${s1}: `), ...named, t(`, ${READ_WHEN}`)] : [t("new this week")];
-      return n ? [t(`${n} filing${s1} this week: `), ...named, t(`, ${READ_WHEN}`)] : [t("No new filings this week")];
+      const list = (fs: FilingEntry[]): Line => fs.flatMap((f, n) => [...(n ? [t("; ")] : []), { k: "filing", t: `${plainFilingName(f)} ${fdate(f)}`, url: f.primaryDocUrl } as Segment]);
+      // Read filings first, each group with when it is read: for this card, or at the next refresh.
+      const named: Line = [...(readThisWeek.length ? [...list(readThisWeek), t(`, ${READ_FOR_CARD}`)] : []), ...(readThisWeek.length && newFilings.length ? [t("; ")] : []), ...(newFilings.length ? [...list(newFilings), t(`, ${READ_WHEN}`)] : [])];
+      const n = readThisWeek.length + newFilings.length, s1 = n === 1 ? "" : "s";
+      if (anchorThisWeek) return n ? [t(`new this week · ${n} other filing${s1}: `), ...named] : [t("new this week")];
+      return n ? [t(`${n} filing${s1} this week: `), ...named] : [t("No new filings this week")];
     })(),
     actionable,
   };

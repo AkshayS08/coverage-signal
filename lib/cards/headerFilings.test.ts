@@ -10,12 +10,14 @@
  *   H3  build.ts names filings only through filingWords.ts (no item map of its own)
  *   control: Encompass's header as committed before this rule (fa99441~1, pinned: HEAD now holds the rule) fails H1
  *
+ * Nov 16: a named filing in the build's read set says it was read for this card (headerReadSet.test checks which).
+ *
  * Offline, $0. Run: npx tsx lib/cards/headerFilings.test.ts
  */
 import { readFileSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { shownCards } from "./shownCards";
-import { ITEM_WORDS, plainFilingName, READ_WHEN } from "./filingWords";
+import { ITEM_WORDS, plainFilingName, READ_WHEN, READ_FOR_CARD } from "./filingWords";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -27,7 +29,7 @@ for (const s of shownCards()) {
   const h = headerText(s.card);
   const filings = [...(s.card.v3.header.status ?? []), ...(s.card.v3.header.actionable ?? []).flat()].filter((x: any) => x.k === "filing" && x.url !== s.card.v3.header.filing?.url);
   const unnamed = filings.filter((f: any) => !Object.values(ITEM_WORDS).some((w) => f.t.includes(w)) && !/\((?:quarterly|annual) report|insider|ownership|proxy|share plans|registration|other filing\)/.test(f.t));
-  assert(!CHARACTERISES.test(h) && unnamed.length === 0 && (filings.length === 0 || h.includes(READ_WHEN)), `[H1/H2:${s.card.company} ${s.label}] "${h.slice(0, 150)}"${unnamed.length ? `; not named in plain words: ${unnamed.map((f: any) => f.t).join(", ")}` : ""}`);
+  assert(!CHARACTERISES.test(h) && unnamed.length === 0 && (filings.length === 0 || h.includes(READ_WHEN) || h.includes(READ_FOR_CARD)), `[H1/H2:${s.card.company} ${s.label}] "${h.slice(0, 150)}"${unnamed.length ? `; not named in plain words: ${unnamed.map((f: any) => f.t).join(", ")}` : ""}`);
 }
 assert(plainFilingName({ form: "8-K", items: "7.01,9.01" }) === "8-K (public disclosure)" && plainFilingName({ form: "8-K", items: "2.02,7.01,9.01" }) === "8-K (earnings results, public disclosure)" && plainFilingName({ form: "8-K", items: "5.02" }) === "8-K (officer change)" && plainFilingName({ form: "10-Q", items: "" }) === "10-Q (quarterly report)", `[H2] the shared names: "${plainFilingName({ form: "8-K", items: "7.01,9.01" })}", "${plainFilingName({ form: "8-K", items: "2.02,7.01,9.01" })}"`);
 const build = readFileSync("lib/cards/build.ts", "utf-8");

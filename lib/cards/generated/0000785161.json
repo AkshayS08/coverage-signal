@@ -36,12 +36,12 @@
    [
     {
      "k": "filing",
-     "t": "8-K (public disclosure) Nov 6, 2026",
+     "t": "8-K (public disclosure) · Nov 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000242/ehc-20261106.htm"
     },
     {
      "k": "text",
-     "t": ", read at the next refresh."
+     "t": " — read for this card."
     }
    ]
   ]
@@ -2524,7 +2524,7 @@
     },
     {
      "k": "text",
-     "t": ", read at the next refresh"
+     "t": ", read for this card"
     }
    ],
    "actionable": []

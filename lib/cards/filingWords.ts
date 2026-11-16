@@ -4,6 +4,8 @@
  * what the filing does to debt. An unread filing is "read at the next refresh".
  */
 export const READ_WHEN = "read at the next refresh";
+/** Nov 16: a filing of the week that is in the build's read set (result.recordedReadSet) was read for the card. */
+export const READ_FOR_CARD = "read for this card";
 
 /** 8-K items, in plain words (Form 8-K's own item titles, shortened). */
 export const ITEM_WORDS: Record<string, string> = {

@@ -47,12 +47,12 @@
    [
     {
      "k": "filing",
-     "t": "8-K (earnings results, public disclosure) Oct 28, 2026",
+     "t": "8-K (earnings results, public disclosure) · Oct 28, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1108109/000119312526436229/cyh-20261028.htm"
     },
     {
      "k": "text",
-     "t": ", read at the next refresh."
+     "t": " — read for this card."
     }
    ]
   ]
@@ -2515,7 +2515,7 @@
     },
     {
      "k": "text",
-     "t": ", read at the next refresh"
+     "t": ", read for this card"
     }
    ],
    "actionable": []
