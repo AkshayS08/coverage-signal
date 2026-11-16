@@ -32,7 +32,7 @@
  *      --price                     count every ask's input pre-call (spend guard, price-only) and stop: $0
  *      --limit <usd>               with --bill: the approved ceiling the guard holds, pre-call
  */
-import { guardedCreate, setPriceOnly, setSpendLimits, pricedCalls } from "../../agent/spendGuard";
+import { guardedCreate, setPriceOnly, setSpendLimits, pricedCalls, asKind } from "../../agent/spendGuard";
 import { loadEnvQuietly } from "../../cache/loadEnv";
 loadEnvQuietly();
 import Anthropic from "@anthropic-ai/sdk";
@@ -230,6 +230,41 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
   return { schedule, subFacilities, uncommitted, commercialPaper, cash, faces, maturities, moves };
 }
 
+/**
+ * THE FACTS STAGE FOR ONE CARD INPUT (Nov 16: shared by the script and the pipeline). Three asks over what it reads, each
+ * cached under (read set, prompt version, ask), each verified, then reproduced across the three. `read` is the read set
+ * (the pipeline); without it, the script's input through the brief date. Every call goes through the spend guard.
+ */
+export async function extractFacts(snap: any, read: FactsRead | undefined, client: Anthropic): Promise<{ facts: CardFacts; raws: Raw[]; keys: string[]; hits: number }> {
+  const input = inputFor(snap, read);
+  const hash = factsInputHash(input);
+  const fp: string = read?.fingerprint ?? snap.corpusFingerprint;
+  const asks: Raw[] = [], raws: Raw[] = [];
+  const rejected: { fact: string; why: string }[] = [];
+  let hits = 0;
+  for (let ask = 1; ask <= ASKS; ask++) {
+    const { data, hit } = await cachedCardFacts(snap.cik, fp, CARD_FACTS_PROMPT_VERSION, ask, hash, () => asKind("card facts", async () => {
+      const r = await guardedCreate(client, {
+        model: MODEL, max_tokens: 8000, temperature: 0, system: SYSTEM,
+        messages: [{ role: "user", content: input }],
+        tools: [{ name: "submit_facts", description: "Submit the transcribed facts.", input_schema: SCHEMA as any }],
+        tool_choice: { type: "tool", name: "submit_facts" },
+      });
+      recordUsage(MODEL, r.usage);
+      if (r.stop_reason === "max_tokens") throw new Error(`TRUNCATED — ${snap.company} ask ${ask}`);
+      const tu = r.content.find((b) => b.type === "tool_use");
+      if (!tu || tu.type !== "tool_use") throw new Error(`no tool call — ${snap.company} ask ${ask}`);
+      return tu.input as Raw;
+    }));
+    if (hit) hits++;
+    raws.push(data);
+    asks.push(verifyAsk(snap, data, ask === 1 ? rejected : []));
+  }
+  const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
+  const facts: CardFacts = { cik: snap.cik, anchorUrl: anchorUrlOf(snap), promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: 0, ...reproduce(asks, residual), residual };
+  return { facts, raws, keys: [1, 2, 3].map((a) => cardFactsKey(snap.cik, fp, CARD_FACTS_PROMPT_VERSION, a)), hits };
+}
+
 const argOf = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : null; };
 const INPUT = argOf("--input");
 const OUT_DIR = argOf("--out") ?? join(IN, "facts");
@@ -303,33 +338,13 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async ()
   let spent = 0;
   for (const p of plan) {
     beginCompanyCostScope(p.s.company);
-    const asks: Raw[] = [];
-    const raws: Raw[] = [];
-    const rejected: { fact: string; why: string }[] = [];
-    for (let ask = 1; ask <= ASKS; ask++) {
-      const { data } = await cachedCardFacts(p.s.cik, p.s.corpusFingerprint, CARD_FACTS_PROMPT_VERSION, ask, p.hash, async () => {
-        const r = await guardedCreate(client, {
-          model: MODEL, max_tokens: 8000, temperature: 0, system: SYSTEM,
-          messages: [{ role: "user", content: p.input }],
-          tools: [{ name: "submit_facts", description: "Submit the transcribed facts.", input_schema: SCHEMA as any }],
-          tool_choice: { type: "tool", name: "submit_facts" },
-        });
-        recordUsage(MODEL, r.usage);
-        if (r.stop_reason === "max_tokens") throw new Error(`TRUNCATED — ${p.s.company} ask ${ask}`);
-        const tu = r.content.find((b) => b.type === "tool_use");
-        if (!tu || tu.type !== "tool_use") throw new Error(`no tool call — ${p.s.company} ask ${ask}`);
-        return tu.input as Raw;
-      });
-      raws.push(data);
-      asks.push(verifyAsk(p.s, data, ask === 1 ? rejected : []));
-    }
+    const run = await extractFacts(p.s, undefined, client);
     const spend = currentCompanySpend();
     persistCompanySpend(spend);
     spent += spend.totalUsd;
-    const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
-    const facts: CardFacts = { cik: p.s.cik, anchorUrl: anchorUrlOf(p.s), promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: Number(spend.totalUsd.toFixed(6)), ...reproduce(asks, residual), residual };
+    const facts: CardFacts = { ...run.facts, costUsd: Number(spend.totalUsd.toFixed(6)) };
     writeFileSync(join(OUT_DIR, `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");
-    writeFileSync(join(OUT_DIR, `raw-${p.s.cik}.json`), JSON.stringify({ keys: [1, 2, 3].map((a) => cardFactsKey(p.s.cik, p.s.corpusFingerprint, CARD_FACTS_PROMPT_VERSION, a)), asks: raws }, null, 1) + "\n", "utf-8");
+    writeFileSync(join(OUT_DIR, `raw-${p.s.cik}.json`), JSON.stringify({ keys: run.keys, asks: run.raws }, null, 1) + "\n", "utf-8");
     console.log(`  ${p.s.company.padEnd(30)} $${spend.totalUsd.toFixed(4)} (${spend.totalCalls} calls)  kept: ${facts.moves.length} moves, ${facts.schedule.length} schedule, ${facts.subFacilities.length} sub-facilities, ${facts.maturities.length} maturities, ${facts.faces.length} faces; residual ${facts.residual.length}`);
     if (spend.totalUsd > BAND_PER_NAME) { console.error(`STOPPING: ${p.s.company} cost $${spend.totalUsd.toFixed(4)}, over its $${BAND_PER_NAME} band. No further name billed.`); process.exit(1); }
   }

@@ -14,7 +14,7 @@
  *
  * Offline, $0. Run: npx tsx lib/pipeline/caps.test.ts
  */
-import { decide, CAPS, allowanceUsd } from "./caps";
+import { decide, CAPS, allowanceUsd, billingGate } from "./caps";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -28,6 +28,16 @@ const perCard = decide({ ...base, worstUsd: 2.01 }), perUser = decide({ ...base,
 assert(perCard.kind === "refused" && perUser.kind === "refused" && global.kind === "refused", `[K4] refused before any call: ${[perCard, perUser, global].map((d) => (d.kind === "refused" ? d.reason : d.kind)).join(" | ")}`);
 const r = decide({ ...base, worstUsd: 1.701, allowanceUsd: 0 });
 assert(r.kind === "needs-approval" && r.declaredUsd === 1.71 && allowanceUsd("50") === CAPS.perUserDayUsd && allowanceUsd(undefined) === 2, `[K5] $1.701 is declared $${r.kind === "needs-approval" ? r.declaredUsd : "?"}; an allowance of $50 is held to $${allowanceUsd("50")}`);
+
+// K6 (Nov 16): a build bills only when billing is on, it is confirmed, it is not refused, and its declared price is
+// within the approval; its ceiling is that declared price.
+const run = decide({ ...base, worstUsd: 0.7 }), appr = decide({ ...base, worstUsd: 1.851, allowanceUsd: 0 });
+const g = (o: Partial<Parameters<typeof billingGate>[0]>) => billingGate({ billingOn: true, confirm: true, decision: run, declaredUsd: 0.7, ...o });
+const off = g({ billingOn: false }), unconfirmed = g({ confirm: false }), inAllowance = g({}), noApproval = g({ decision: appr, declaredUsd: 1.86 }), under = g({ decision: appr, declaredUsd: 1.86, approvedUsd: 1.85 }), approved = g({ decision: appr, declaredUsd: 1.86, approvedUsd: 1.86 }), refusedG = g({ decision: perCard, declaredUsd: 2.01, approvedUsd: 5 });
+assert(!off.bill && !unconfirmed.bill && inAllowance.bill && inAllowance.ceilingUsd === 0.7 && !noApproval.bill && !under.bill && approved.bill && approved.ceilingUsd === 1.86 && !refusedG.bill, `[K6] off: ${off.bill}; unconfirmed: ${unconfirmed.bill}; within the allowance: ${inAllowance.bill}; over it, unapproved: ${noApproval.bill}; $1.86 against $1.85 approved: ${under.bill}; approved: ${approved.bill}; over the per-card cap: ${refusedG.bill}`);
+// Control: a gate that checks only the switch and the confirmation bills $1.86 against $1.85 approved.
+const switchOnly = (o: { billingOn: boolean; confirm: boolean }) => o.billingOn && o.confirm;
+assert(switchOnly({ billingOn: true, confirm: true }) && !under.bill, `[control K6] switch-and-confirm alone would bill over the approval`);
 
 // Control: the same rule without the global cap.
 const noGlobal = (x: typeof base) => (x.userSpentToday + x.worstUsd <= Math.min(x.allowanceUsd, CAPS.perUserDayUsd) && x.worstUsd <= CAPS.perBuildUsd ? "run" : "needs-approval");

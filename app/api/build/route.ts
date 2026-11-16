@@ -12,7 +12,7 @@ export const maxDuration = 300;
  * confirmed cold build says so rather than bill.
  */
 export async function POST(request: Request) {
-  let body: { match?: CompanyMatch; confirm?: boolean };
+  let body: { match?: CompanyMatch; confirm?: boolean; approvedUsd?: number };
   try { body = await request.json(); } catch { return new Response("Invalid JSON body", { status: 400 }); }
   const match = body.match;
   if (!match?.cik || !match.title) return new Response("Pick a company first", { status: 400 });
@@ -26,7 +26,8 @@ export async function POST(request: Request) {
         return;
       }
       try {
-        const outcome = await buildFor(match, { emit: (e: BuildEvent) => send({ type: "event", ...e }) });
+        const approvedUsd = typeof body.approvedUsd === "number" ? body.approvedUsd : undefined;
+        const outcome = await buildFor(match, { emit: (e: BuildEvent) => send({ type: "event", ...e }), confirm: !!body.confirm, approvedUsd });
         send({ type: "outcome", ...outcome });
       } catch (e) {
         send({ type: "outcome", kind: "could-not-build", stage: "Render", reason: e instanceof Error ? e.message : String(e) });

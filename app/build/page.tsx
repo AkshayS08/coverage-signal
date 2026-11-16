@@ -36,10 +36,10 @@ export default function BuildPage() {
     setOutcome({ kind: "could-not-build", stage: "Find the company", reason: r.reason });
   }
 
-  async function build(m: Match, confirm = false) {
+  async function build(m: Match, confirm = false, approvedUsd?: number) {
     setPicked(m); setMatches(null); setOutcome(null); setStages({}); setBusy(true);
     try {
-      const res = await fetch("/api/build", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ match: m, confirm }) });
+      const res = await fetch("/api/build", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ match: m, confirm, approvedUsd }) });
       const reader = res.body!.getReader();
       const dec = new TextDecoder();
       let buf = "";
@@ -106,8 +106,8 @@ export default function BuildPage() {
           <div className={styles.panelHead}>{outcome.company.title} has not been built on its current filings.</div>
           <p>Typical cost {usd(outcome.price.expectedRangeUsd[0])} to {usd(outcome.price.expectedRangeUsd[1])}. Worst case <strong>{usd(outcome.price.declaredUsd)}</strong>, counted from every call the build would make, rounded up to the cent.</p>
           <ul className={styles.calls}>{outcome.price.calls.map((c: any, i: number) => <li key={i}>{c.stage}{c.sample !== "facts" ? ` (${c.sample})` : ""}: {c.count} × {usd(c.worstEachUsd)}{c.estimate ? " (estimate)" : ""}</li>)}</ul>
-          {outcome.decision.kind === "run" && <><p>Within today’s demo allowance: {usd(outcome.decision.allowanceLeftUsd)} left after this card.</p><button className={styles.button} onClick={() => build(outcome.company, true)}>Build the card</button></>}
-          {outcome.decision.kind === "needs-approval" && <div className={styles.approval}><div className={styles.panelHead}>Approval needed</div><p>{outcome.decision.why}. Approve up to <strong>{usd(outcome.decision.declaredUsd)}</strong> for this card?</p><button className={styles.button} onClick={() => build(outcome.company, true)}>Approve {usd(outcome.decision.declaredUsd)} and build</button></div>}
+          {outcome.decision.kind === "run" && <><p>Within today’s demo allowance: {usd(outcome.decision.allowanceLeftUsd)} left after this card.</p><button className={styles.button} onClick={() => build(outcome.company, true, outcome.decision.declaredUsd)}>Build the card</button></>}
+          {outcome.decision.kind === "needs-approval" && <div className={styles.approval}><div className={styles.panelHead}>Approval needed</div><p>{outcome.decision.why}. Approve up to <strong>{usd(outcome.decision.declaredUsd)}</strong> for this card?</p><button className={styles.button} onClick={() => build(outcome.company, true, outcome.decision.declaredUsd)}>Approve {usd(outcome.decision.declaredUsd)} and build</button></div>}
           {outcome.decision.kind === "refused" && <p className={styles.refused}>{outcome.decision.reason}</p>}
         </section>
       )}

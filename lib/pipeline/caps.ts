@@ -37,3 +37,16 @@ export function decide(i: { cached: boolean; worstUsd: number; userSpentToday: n
   if (declared <= left + 1e-9) return { kind: "run", declaredUsd: declared, allowanceLeftUsd: ceilCent(left - declared) };
   return { kind: "needs-approval", declaredUsd: declared, why: `${usd(declared)} is more than the ${usd(Math.max(0, left))} left of today's allowance` };
 }
+
+/**
+ * Nov 16: MAY THIS BUILD BILL? Only when billing is switched on, the reader confirmed, the caps did not refuse it, and
+ * its declared price is within the approval (the allowance's own figure when it runs within the allowance). Its ceiling
+ * is that declared price: the spend guard refuses any call whose counted worst case would cross it.
+ */
+export function billingGate(i: { billingOn: boolean; confirm: boolean; decision: SpendDecision; declaredUsd: number; approvedUsd?: number }): { bill: true; ceilingUsd: number } | { bill: false; why: string } {
+  if (!i.billingOn || !i.confirm) return { bill: false, why: "priced only" };
+  if (i.decision.kind === "refused") return { bill: false, why: i.decision.reason };
+  const approved = i.approvedUsd ?? (i.decision.kind === "run" ? i.declaredUsd : 0);
+  if (i.declaredUsd > approved + 1e-9) return { bill: false, why: `this build's worst case $${i.declaredUsd.toFixed(2)} is over the $${approved.toFixed(2)} approved; nothing was charged` };
+  return { bill: true, ceilingUsd: i.declaredUsd };
+}
