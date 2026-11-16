@@ -18,7 +18,7 @@
  */
 import { loadEnvQuietly } from "./loadEnv";
 loadEnvQuietly();
-import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { buildFor, type BuildEvent, type BuildOutcome } from "../pipeline/buildFor";
 import { resolveCompany } from "../pipeline/resolve";
 import { visibleDiff } from "./s27cardDiff";
@@ -76,9 +76,7 @@ const usd = (x: number) => `$${x.toFixed(4)}`;
   }
   writeFileSync(`${DIR}/spend.md`, lines.join("\n") + "\n");
   writeFileSync(`${DIR}/spend.json`, JSON.stringify({ ranAt: new Date().toISOString(), approvedUsd: APPROVED, declaredUsd: price?.declaredUsd ?? null, worstUsd: price?.worstUsd ?? null, spentUsd: Number(spent.toFixed(6)), calls, price }, null, 1) + "\n");
-  // The ledger: one line per model for this run.
-  const byModel = [...new Set(calls.map((c) => c.model))].map((m) => { const cs = calls.filter((c) => c.model === m); return { model: m, calls: cs.length, inputTokens: cs.reduce((t, c) => t + c.inputTokens, 0), usd: Number(cs.reduce((t, c) => t + c.actualUsd, 0).toFixed(6)) }; });
-  appendFileSync("baselines/cost-log.jsonl", JSON.stringify({ at: new Date().toISOString(), company: "COMMUNITY HEALTH SYSTEMS INC (Stage 2 refresh, guard total)", totalUsd: Number(spent.toFixed(6)), totalCalls: calls.length, byModel, unpricedModels: [] }) + "\n");
+  // The ledger: each sample's loop writes its own line (costMeter); this run's total is in spend.json, not added again.
 
   if (out.kind !== "card") {
     console.log(`\nCOULD NOT BUILD at ${out.stage}: ${out.reason}\nSpent ${usd(spent)}. See ${DIR}/spend.md.`);
@@ -96,5 +94,10 @@ const usd = (x: number) => `$${x.toFixed(4)}`;
     for (const key of out.facts.keys) if (!have.has(key)) reg.keys.push({ key, why: "CHS refresh of Nov 16 (read set after the Nov 10 8-K): awaiting Akshay's review" });
     writeFileSync("baselines/unadopted.json", JSON.stringify(reg, null, 1) + "\n");
   }
+  // A build that bills is recorded (builds.json): its read set's date (the Nov 10 trigger) and the rule it read under.
+  const reg = JSON.parse(readFileSync("baselines/builds.json", "utf-8"));
+  const list = (reg.builds[r.match.cik.padStart(10, "0")] ??= []);
+  if (!list.some((b: any) => b.readSetAsOf === "2026-11-10")) list.push({ readSetAsOf: "2026-11-10", eightKRule: 2, what: "the Stage 2 refresh on the Nov 10 8-K, run Nov 16 (billed, not signed)" });
+  writeFileSync("baselines/builds.json", JSON.stringify(reg, null, 1) + "\n");
   console.log(`\n${out.badge.toUpperCase()}: ${out.reasons.join("; ")}\nSpent ${usd(spent)} of $${APPROVED.toFixed(2)} approved (declared $${price!.declaredUsd.toFixed(2)}). Facts: ${out.facts?.source} (${out.facts?.keys.length ?? 0} keys registered unadopted). See ${DIR}/.`);
 })().catch((e) => { console.error(e); process.exit(1); });
