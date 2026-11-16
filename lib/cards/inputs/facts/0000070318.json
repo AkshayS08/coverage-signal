@@ -1,6 +1,7 @@
 {
  "cik": "0000070318",
  "anchorUrl": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
+ "readSet": "db72d7fd887b5aff4394caf7",
  "promptVersion": 1,
  "asks": 3,
  "costUsd": 0.105051,

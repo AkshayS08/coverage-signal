@@ -51,6 +51,7 @@ import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 import { antecedentWindow, paragraphSentences, REFERS, HEADING } from "./antecedent";
 import { plainFilingName, READ_WHEN, READ_FOR_CARD } from "./filingWords";
+import { factsValidFor } from "./factsValidity";
 import { REFRESH_TRIGGER_ITEMS, movesWindowStart } from "../cache/lastBuild";
 import { quoteKey, statesSameMove, SCHEDULED } from "./moveEvidence";
 
@@ -199,7 +200,8 @@ export function buildCard(i: CardInputs): Card {
   if (!anchor) throw new Error(`${result.company}: no anchor filing — a card states where its position comes from or it is not built`);
   // SESSION 27 (Akshay, Oct 30): EVERY STAGE ON THIS ANCHOR. Verified facts are used only when they were read from this
   // card's own anchor; facts from a prior anchor never render. A section whose stage has not run says so (sections.ts).
-  const factsRead = !!i.facts && i.facts.anchorUrl === anchor.url;
+  // Nov 16: and from this card's own READ SET (factsValidity.ts): facts read over another read set never render.
+  const factsRead = factsValidFor(i.facts, result, anchor.url);
   const facts = factsRead ? i.facts : null;
   const anchorFiling: Segment = { k: "filing", t: `${anchor.form} filed ${shortDate(anchor.date)}`, url: anchor.url };
   const notYetRead = (what: string): Line => [t(`${what}: not yet read from `), anchorFiling, t(".")];

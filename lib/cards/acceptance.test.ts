@@ -490,6 +490,9 @@ const T8_MOVES: Test = {
     const bad: string[] = [];
     const v = card.v3;
     if (!v) return ["no v3 card"];
+    // Nov 16 (Akshay): until the card facts are read for the card's read set, its moves section renders "not yet read"
+    // (factsValidity.ts): the section is withheld, and a stated move shows only as a possible move.
+    if (rawV3(v)?.movesUnread) throw new WithheldSection("moves, not yet read for this read set");
     const cards = v.moves.map((m) => ({ m, lines: [m.meta, ...m.title, ...(m.detail ? [m.detail] : []), ...(m.retires ? [m.retires.meta, ...m.retires.items] : [])] }));
     const figuresOf = (ls: Line[]) => ls.flatMap((l) => l.filter((x) => x.k === "figure" || x.k === "computed").map((x) => (x.k === "computed" ? x.usd : parseMoneyAmount((x as any).printed) ?? 0)));
     // Every card shows a date, a move word and an instrument.

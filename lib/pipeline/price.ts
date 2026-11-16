@@ -30,7 +30,7 @@ const PROCEEDS_ESTIMATE_INPUT_TOKENS = 6000;
 
 export interface PricedBuild { worstUsd: number; declaredUsd: number; expectedRangeUsd: [number, number]; calls: { stage: string; sample: string; count: number; worstEachUsd: number; estimate?: boolean }[] }
 
-export async function priceColdBuild(company: string, rs: ResolvedReadSet, uncachedSamples: (string | null)[]): Promise<PricedBuild> {
+export async function priceColdBuild(company: string, rs: ResolvedReadSet, uncachedSamples: (string | null)[], withFacts: boolean): Promise<PricedBuild> {
   // Counting is free, but it needs the token counter: without it the build cannot be priced, and says so at once.
   if (!process.env.ANTHROPIC_API_KEY) throw new Error("this build cannot be priced: the token counter is not configured");
   const calls: PricedBuild["calls"] = [];
@@ -62,7 +62,7 @@ export async function priceColdBuild(company: string, rs: ResolvedReadSet, uncac
     // The card-facts stage over what it will read (Nov 16): the read set's own documents through its latest filing — the
     // anchor, the filings after it, the debt-item 8-Ks, and the 10-K note a 10-Q anchor directs to — fetched now, $0.
     // Its input before extraction lacks only the cited sentences outside these documents.
-    if (rs.anchor) {
+    if (withFacts && rs.anchor) {
       const read = factsReadOf(rs);
       const docs: Record<string, { label: string; text: string }> = {};
       for (const f of rs.readSet) docs[f.primaryDocUrl] = { label: `${f.form} ${f.filingDate}`, text: (await getFilingParagraphs(f.primaryDocUrl)).text };

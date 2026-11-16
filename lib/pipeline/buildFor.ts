@@ -24,6 +24,20 @@ import { assertFilingListCurrent } from "../fetch/freshFilings";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { decideBadge, type Badge } from "./badge";
+import { factsValidFor } from "../cards/factsValidity";
+import { cardFactsKey, isUnadopted } from "../cache/answerCache";
+import { answerExists } from "../cache/freeRun";
+import { existsSync as fileExists, readFileSync as readFile } from "node:fs";
+
+/** The card facts for a read set: adopted (reviewed over it), cached (every ask answered over it), awaiting review, or needed. */
+async function factsStateFor(cik: string, anchorUrl: string, readSetKey: string): Promise<"adopted" | "cached" | "awaiting review" | "needed"> {
+  const p = `lib/cards/inputs/facts/${cik.padStart(10, "0")}.json`;
+  if (fileExists(p)) { const a = JSON.parse(readFile(p, "utf-8")); if (a.anchorUrl === anchorUrl && a.readSet === readSetKey) return "adopted"; }
+  const keys = [1, 2, 3].map((ask) => cardFactsKey(cik, readSetKey, CARD_FACTS_PROMPT_VERSION, ask));
+  if (keys.some(isUnadopted)) return "awaiting review";
+  for (const k of keys) if (!(await answerExists(k))) return "needed";
+  return "cached";
+}
 import { decide, allowanceUsd, billingGate, type SpendDecision } from "./caps";
 import { acquireLease, releaseLease, leaseKey } from "./leases";
 import { withGuard, withPriceOnly, setDigAllowance, type MadeCall } from "../agent/spendGuard";
@@ -73,10 +87,16 @@ export async function buildFor(company: CompanyMatch, opts: BuildOpts): Promise<
     const verdicts = [];
     for (const b of SAMPLES) verdicts.push({ b, v: await quiet(() => checkFree(name, b)) });
     const uncached = verdicts.filter((x) => !x.v.cached).map((x) => x.b);
-    emit({ stage: "Check the cache", status: "done", detail: uncached.length ? `${3 - uncached.length} of 3 samples built before on these documents` : "built before on these exact documents: rebuilt free" });
-    if (uncached.length) {
+    // Nov 16: the card facts too. They are needed unless adopted facts were read over this read set, or every ask is
+    // cached under it; an answer awaiting review is neither served nor billed again.
+    const fr = factsReadOf(rs);
+    const factsState = await quiet(() => factsStateFor(company.cik, rs.anchor!.primaryDocUrl, fr.fingerprint));
+    if (factsState === "awaiting review") return stop("Check the cache", "this read set's card facts were read and are awaiting review; nothing was charged");
+    const factsNeeded = factsState === "needed";
+    emit({ stage: "Check the cache", status: "done", detail: `${uncached.length ? `${3 - uncached.length} of 3 samples built before on these documents` : "every sample built before on these exact documents"}; card facts ${factsNeeded ? "not yet read for this read set" : factsState === "adopted" ? "reviewed for this read set" : "read before for this read set"}` });
+    if (uncached.length || factsNeeded) {
       emit({ stage: "Price it", status: "running", detail: "counting every call the build would make" });
-      const price = await quiet(() => priceColdBuild(name, rs, uncached));
+      const price = await quiet(() => priceColdBuild(name, rs, uncached, factsNeeded));
       const decision = decide({ cached: false, worstUsd: price.worstUsd, userSpentToday: opts.userSpentToday ?? 0, globalSpentToday: opts.globalSpentToday ?? 0, allowanceUsd: allowanceUsd(), paying: !!opts.paying });
       emit({ stage: "Price it", status: decision.kind === "refused" ? "stopped" : "done", detail: `worst case $${price.declaredUsd.toFixed(2)}; typical $${price.expectedRangeUsd[0].toFixed(2)}–$${price.expectedRangeUsd[1].toFixed(2)}` });
       const gate = billingGate({ billingOn: process.env.BUILD_BILLING === "on", confirm: !!opts.confirm, decision, declaredUsd: price.declaredUsd, approvedUsd: opts.approvedUsd });
@@ -143,7 +163,7 @@ export async function buildFor(company: CompanyMatch, opts: BuildOpts): Promise<
     const weekFrom = new Date(Date.parse(`${briefDate}T00:00:00Z`) - 6 * 864e5).toISOString().slice(0, 10);
     const weekFilings = (input.laterFilings ?? []).filter((f: any) => f.filingDate >= weekFrom && f.filingDate <= briefDate).map((f: any) => ({ form: f.form, filingDate: f.filingDate, items: f.items ?? "", primaryDocUrl: f.url, accessionNumber: "", reportDate: "", primaryDocument: "" }));
     const card = buildCard({ result, briefDate, previousBrief: null, weekFilings, cash: input.cash, textByUrl: new Map(Object.entries(input.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text])), periodSentence: input.periodSentence, laterUrls: (input.laterFilings ?? []).filter((x: any) => x.filingDate <= briefDate).map((x: any) => x.url), facts: factsUsed });
-    const bd = decideBadge({ stoppedAt: null, goldenReproduces, cardChecksFailed: card.v3?.checks === "failed", failures: [], samplesReproducing: reproducing, samples: 3 });
+    const bd = decideBadge({ stoppedAt: null, goldenReproduces, cardChecksFailed: card.v3?.checks === "failed", failures: [], samplesReproducing: reproducing, samples: 3, factsRead: factsValidFor(factsUsed, result, rs.anchor!.primaryDocUrl) });
     emit({ stage: "Apply the rules and checks", status: "done", detail: `${reproducing} of 3 samples reproduce; ${card.v3?.checks === "failed" ? "the coverage check fails" : "the card's checks hold"}${goldenReproduces ? "; matches its signed review" : ""}` });
     emit({ stage: "Render", status: "done", detail: "the card, every figure linked to its sentence" });
     return { kind: "card", badge: bd.badge, reasons: bd.reasons, card, costUsd: 0, facts: factsInfo };

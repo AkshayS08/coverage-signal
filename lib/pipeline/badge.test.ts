@@ -17,7 +17,7 @@ import { decideBadge } from "./badge";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
-const ok = { stoppedAt: null, goldenReproduces: false, cardChecksFailed: false, failures: [] as string[], samplesReproducing: 3, samples: 3 };
+const ok = { stoppedAt: null, goldenReproduces: false, cardChecksFailed: false, failures: [] as string[], samplesReproducing: 3, samples: 3, factsRead: true };
 
 assert(decideBadge({ ...ok, stoppedAt: { stage: "resolve", reason: "No SEC registrant matches \"x\"" } }).badge === "could-not-build", `[1] a stopped pipeline: Could not build`);
 assert(decideBadge({ ...ok, goldenReproduces: true }).badge === "signed", `[2] a reproducing golden: Signed`);

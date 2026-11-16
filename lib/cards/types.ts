@@ -60,6 +60,9 @@ export interface CardFacts {
   cik: string;
   /** Session 27 (Oct 30): the anchor filing these facts were read from. A card uses them only when it is its own anchor. */
   anchorUrl?: string;
+  /** Session 27 (Nov 16): the read set these facts were read from (factsValidity.readSetDocsKey). A card uses them only
+   *  when built from that read set; facts with none recorded are valid for no read set. */
+  readSet?: string;
   promptVersion: number;
   asks: number;
   costUsd: number;

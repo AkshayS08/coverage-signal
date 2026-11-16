@@ -12,10 +12,13 @@ export function decideBadge(i: {
   failures: string[];
   samplesReproducing: number;
   samples: number;
+  /** Nov 16: the card facts were read over this build's read set. Until they are, the card is not Checks passed. */
+  factsRead: boolean;
 }): { badge: Badge; reasons: string[] } {
   if (i.stoppedAt) return { badge: "could-not-build", reasons: [`${i.stoppedAt.reason} (stopped at: ${i.stoppedAt.stage})`] };
   const fails = [...i.failures];
   if (i.cardChecksFailed && !fails.length) fails.push("the card's own checks failed (see its breakage panel)");
+  if (!i.factsRead) fails.push("the card facts (debt moves, sub-facilities, schedule) are not yet read for this read set");
   if (i.samplesReproducing < i.samples) fails.push(`stability: ${i.samplesReproducing} of ${i.samples} samples reproduce`);
   if (fails.length) return { badge: "checks-failed", reasons: fails };
   if (i.goldenReproduces) return { badge: "signed", reasons: ["a person reviewed this card's answer, and today's answer still matches it"] };

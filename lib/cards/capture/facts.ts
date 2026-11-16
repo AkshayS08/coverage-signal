@@ -53,6 +53,7 @@ import { containsWord } from "../labels";
 import type { CardFacts, Fact } from "../types";
 import { verifyAsk } from "./verifyFacts";
 import { factsForBuild } from "./factsForBuild";
+import { readSetDocsKey, factsReadSetOf } from "../factsValidity";
 
 // v2 (Nov 16): the moves window ends at the read set's latest filing, stated in the input, not at the brief date.
 export const CARD_FACTS_PROMPT_VERSION = 2;
@@ -129,8 +130,9 @@ const anchorUrlOf = (snap: any): string => snap.result.results.find((r: any) => 
  * one (the review scripts) the stage reads the card input's filings through the brief date, as before.
  */
 export interface FactsRead { fingerprint: string; urls: string[]; through: string }
-export function factsReadOf(rs: { fingerprint: string; readSet: { primaryDocUrl: string; filingDate: string }[] }): FactsRead {
-  return { fingerprint: rs.fingerprint, urls: rs.readSet.map((f) => f.primaryDocUrl), through: rs.readSet.map((f) => f.filingDate).sort().pop()! };
+export function factsReadOf(rs: { readSet: { primaryDocUrl: string; filingDate: string }[] }): FactsRead {
+  // Nov 16: the read set is its documents (factsValidity.readSetDocsKey), the same key adopted facts and the card check.
+  return { fingerprint: readSetDocsKey(rs.readSet.map((f) => f.primaryDocUrl)), urls: rs.readSet.map((f) => f.primaryDocUrl), through: rs.readSet.map((f) => f.filingDate).sort().pop()! };
 }
 export const factsInputHash = (input: string): string => createHash("sha256").update(input).digest("hex").slice(0, 24);
 
@@ -238,7 +240,7 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
 export async function extractFacts(snap: any, read: FactsRead | undefined, client: Anthropic): Promise<{ facts: CardFacts; raws: Raw[]; keys: string[]; hits: number }> {
   const input = inputFor(snap, read);
   const hash = factsInputHash(input);
-  const fp: string = read?.fingerprint ?? snap.corpusFingerprint;
+  const fp: string = read?.fingerprint ?? factsReadSetOf(snap.result) ?? snap.corpusFingerprint;
   const asks: Raw[] = [], raws: Raw[] = [];
   const rejected: { fact: string; why: string }[] = [];
   let hits = 0;
@@ -261,7 +263,7 @@ export async function extractFacts(snap: any, read: FactsRead | undefined, clien
     asks.push(verifyAsk(snap, data, ask === 1 ? rejected : []));
   }
   const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
-  const facts: CardFacts = { cik: snap.cik, anchorUrl: anchorUrlOf(snap), promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: 0, ...reproduce(asks, residual), residual };
+  const facts: CardFacts = { cik: snap.cik, anchorUrl: anchorUrlOf(snap), readSet: fp, promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: 0, ...reproduce(asks, residual), residual };
   return { facts, raws, keys: [1, 2, 3].map((a) => cardFactsKey(snap.cik, fp, CARD_FACTS_PROMPT_VERSION, a)), hits };
 }
 
