@@ -53,6 +53,21 @@ const cfg = (f: any) => ({ url: "https://example.upstash.io", token: "t", fetch:
   const loose = fakeUpstash({ honourNx: false });
   const [c, d] = await Promise.all([acquireLease(key, "build-C", cfg(loose.fetchFn)), acquireLease(key, "build-D", cfg(loose.fetchFn))]);
   assert(c && d, `[control] without NX both callers win (${[c, d].filter(Boolean).length})`);
+  // L5: Vercel's Upstash integration names the store KV_REST_API_URL / KV_REST_API_TOKEN; either naming configures it.
+  const saved = Object.fromEntries(["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN", "KV_REST_API_URL", "KV_REST_API_TOKEN", "KV_REST_API_READ_ONLY_TOKEN"].map((k) => [k, process.env[k]]));
+  const restore = () => { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } };
+  for (const k of Object.keys(saved)) delete process.env[k];
+  process.env.KV_REST_API_URL = "https://kv.upstash.io"; process.env.KV_REST_API_TOKEN = "kv-token";
+  let seen: { url: string; auth: string } | null = null;
+  const kvU = fakeUpstash();
+  await acquireLease("kv-key", "o", { fetch: async (url: string, init: any) => { seen = { url, auth: init.headers.Authorization }; return kvU.fetchFn(url, init); } });
+  assert(seen !== null && (seen as any).url === "https://kv.upstash.io" && (seen as any).auth === "Bearer kv-token", `[L5] KV_REST_API_URL / KV_REST_API_TOKEN configure the store (${JSON.stringify(seen)})`);
+  // Control: the read-only token cannot take a lease, so it never stands in for the write token.
+  delete process.env.KV_REST_API_TOKEN; process.env.KV_REST_API_READ_ONLY_TOKEN = "ro-token";
+  let roStops = false;
+  try { await acquireLease("kv-key2", "o", { fetch: kvU.fetchFn }); } catch (e) { roStops = e instanceof LeaseUnavailableError; }
+  assert(roStops, `[L5 control] only the read-only token set: the build stops (${roStops})`);
+  restore();
   console.log(`\n${passed} passed, ${failed} failed.`);
   process.exit(failed > 0 ? 1 : 0);
 })();

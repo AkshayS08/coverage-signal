@@ -20,9 +20,10 @@ export function leaseKey(cik: string, fingerprint: string, version: number, samp
 }
 
 async function command(cmd: (string | number)[], cfg: LeaseConfig): Promise<any> {
-  const url = cfg.url ?? process.env.UPSTASH_REDIS_REST_URL ?? "";
-  const token = cfg.token ?? process.env.UPSTASH_REDIS_REST_TOKEN ?? "";
-  if (!url || !token) throw new LeaseUnavailableError("Upstash is not configured (UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN)");
+  // Vercel's Upstash integration names them KV_REST_API_URL / KV_REST_API_TOKEN; the read-only token never takes a lease.
+  const url = cfg.url ?? process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL ?? "";
+  const token = cfg.token ?? process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN ?? "";
+  if (!url || !token) throw new LeaseUnavailableError("Upstash is not configured (UPSTASH_REDIS_REST_URL/TOKEN or KV_REST_API_URL/TOKEN)");
   const f: FetchLike = cfg.fetch ?? (fetch as unknown as FetchLike);
   let res;
   try { res = await f(url, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify(cmd.map(String)) }); }
