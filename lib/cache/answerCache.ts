@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { readCache, writeCache } from "../fetch/cache";
 import { PROCEEDS_USE_PROMPT_VERSION, EXTRACTION_PROMPT_VERSION } from "./promptVersion";
 import { cacheStats } from "./stats";
+import { cacheBustNow } from "../agent/requestScope";
 
 function sha256(input: string): string {
   return createHash("sha256").update(input).digest("hex").slice(0, 24);
@@ -120,7 +121,8 @@ export async function cachedReferencedNote<T>(
   // "the 38 entries reproduce" would be a statement about a stored file
   // rather than about the model. Writes to its own key, so the canonical
   // transcription is never disturbed.
-  const bust = process.env.CACHE_BUST ? `-bust${process.env.CACHE_BUST}` : "";
+  const tag = cacheBustNow(); // Nov 16: the request's sample tag, else the process's
+  const bust = tag ? `-bust${tag}` : "";
   const key = `answer/${cik}/referenced-note/${sha256(filingUrl)}${bust}/rn-v${promptVersion}.json`;
   return getOrCompute(key, compute);
 }

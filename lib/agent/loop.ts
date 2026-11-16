@@ -99,6 +99,7 @@ function pickDirectedFiling(
   return tenKs[0] ?? null;
 }
 import { beginCompanyCostScope, currentCompanySpend, formatCompanyCostLine, persistCompanySpend } from "./costMeter";
+import { cacheBustNow } from "./requestScope";
 
 /** Session 18 (post-v11): rewrites each entry's `amount` with its own table's declared unit where the amount states none — see moneyScale.ts's applyTableUnitToAmount. Generic over every money-bearing extracted array (sequence entries, balance-sheet captions) since all of them share the `amount` field and hit the identical bug. */
 function applyTableUnit<T extends { amount: string }>(entries: T[], declaration: string | null): T[] {
@@ -992,7 +993,7 @@ async function runAgentLoopInner(
   // Deliberately NOT a version bump: a bump would invalidate all 10
   // companies' cached answers and change what the model is asked, which is
   // the opposite of the controlled comparison this is for.
-  const cacheBust = process.env.CACHE_BUST;
+  const cacheBust = cacheBustNow(); // Nov 16: the request's sample tag, else the process's
   const fingerprint = readSet.fingerprint + (cacheBust ? `-bust${cacheBust}` : "");
   if (cacheBust) log(`  ⚠ CACHE_BUST=${cacheBust} — answer cache deliberately bypassed; this run BILLS. Measurement only.`);
   log(`checking all 15 triggers...`);
@@ -1064,14 +1065,14 @@ async function runAgentLoopInner(
           directed.primaryDocUrl,
           REFERENCED_NOTE_PROMPT_VERSION,
           () =>
-            transcribeReferencedNote({
+            asKind("referenced note", () => transcribeReferencedNote({
               companyName: filingsResult.company,
               filingUrl: directed.primaryDocUrl,
               filingForm: directed.form,
               periodOfReport: directed.reportDate ?? "",
               filingText: directedText,
               xbrlTotalForScale: null,
-            })
+            }))
         );
         // RULE 67 — THE BASE'S CELLS ARE SCALED HERE, WHERE THE TEXT IS.
         //
@@ -1942,13 +1943,13 @@ async function runAgentLoopInner(
         .update(JSON.stringify({ evidence: issuance.evidence, quote: issuance.verifiedQuote, filingTexts }))
         .digest("hex")
         .slice(0, 12);
-      const { data: proceedsUse, hit: proceedsHit } = await cachedProceedsUse(filingsResult.cik, fingerprint, proceedsInputHash, () =>
+      const { data: proceedsUse, hit: proceedsHit } = await cachedProceedsUse(filingsResult.cik, fingerprint, proceedsInputHash, () => asKind("proceeds-use", () =>
         classifyProceedsUse({
           companyName,
           evidence: issuance.evidence,
           quote: issuance.verifiedQuote,
           filingTexts,
-        })
+        }))
       );
       results[issuanceIdx] = { ...issuance, proceedsUse };
       log(`  answer cache ${proceedsHit ? "HIT" : "MISS"} (proceedsUse)`);

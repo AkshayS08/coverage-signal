@@ -9,13 +9,15 @@
  */
 import { runAgentLoop } from "../agent";
 import { classifyOneTrigger } from "../agent/claude";
-import { setPriceOnly, pricedCalls, guardedCreate } from "../agent/spendGuard";
+import { withPriceOnly, guardedCreate } from "../agent/spendGuard";
+import { inRequestScope } from "../agent/requestScope";
 import { priceOf } from "../agent/costMeter";
 import { getFilingText } from "../fetch";
 import { buildExtractionText } from "../fetch/noteLocation";
 import { TRIGGERS } from "../agent/triggers";
 import { transcribeReferencedNote } from "../agent/referencedNote";
-import { inputFor, SYSTEM, SCHEMA, MODEL, ASKS } from "../cards/capture/facts";
+import { inputFor, factsReadOf, SYSTEM, SCHEMA, MODEL, ASKS } from "../cards/capture/facts";
+import { getFilingParagraphs } from "../fetch/filingText";
 import type { ResolvedReadSet } from "../cache/readSet";
 import { digCandidatesOf } from "../cache/readSet";
 import { ceilCent } from "./caps";
@@ -32,15 +34,12 @@ export async function priceColdBuild(company: string, rs: ResolvedReadSet, uncac
   // Counting is free, but it needs the token counter: without it the build cannot be priced, and says so at once.
   if (!process.env.ANTHROPIC_API_KEY) throw new Error("this build cannot be priced: the token counter is not configured");
   const calls: PricedBuild["calls"] = [];
-  const counted = async (fn: () => Promise<unknown>) => { const n0 = pricedCalls().length; await fn().catch((e) => { if (e?.name !== "PricedOnlyError") throw e; }); return pricedCalls().slice(n0)[0]?.worstUsd ?? NaN; };
-  setPriceOnly(true);
-  try {
+  // Nov 16: price-only for this request alone (a concurrent build's calls are its own), each call counted in its own scope.
+  const counted = async (fn: () => Promise<unknown>) => (await withPriceOnly(() => fn().catch((e) => { if (e?.name !== "PricedOnlyError") throw e; }))).priced[0]?.worstUsd ?? NaN;
+  {
     if (uncachedSamples.length) {
-      const prior = process.env.CACHE_BUST;
-      const s0 = uncachedSamples[0];
-      if (s0) process.env.CACHE_BUST = s0; else delete process.env.CACHE_BUST;
-      const base = await counted(() => runAgentLoop(company));
-      if (prior === undefined) delete process.env.CACHE_BUST; else process.env.CACHE_BUST = prior;
+      // The first uncached sample's own key, read in this request's scope (never the process env).
+      const base = await counted(() => inRequestScope({ cacheBust: uncachedSamples[0] }, () => runAgentLoop(company)));
       for (const s of uncachedSamples) calls.push({ stage: "base extraction", sample: s ?? "canonical", count: 1, worstEachUsd: base });
       const inRs = new Set(rs.readSet.map((f) => f.accessionNumber));
       const cand = digCandidatesOf(rs.filingsResult.filings).find((f) => !inRs.has(f.accessionNumber));
@@ -60,15 +59,24 @@ export async function priceColdBuild(company: string, rs: ResolvedReadSet, uncac
         for (const s of uncachedSamples) calls.push({ stage: "referenced 10-K note", sample: s ?? "canonical", count: 1, worstEachUsd: note });
       }
     }
-    // The card-facts stage over the anchor's own text (its input before extraction: the anchor alone).
+    // The card-facts stage over what it will read (Nov 16): the read set's own documents through its latest filing — the
+    // anchor, the filings after it, the debt-item 8-Ks, and the 10-K note a 10-Q anchor directs to — fetched now, $0.
+    // Its input before extraction lacks only the cited sentences outside these documents.
     if (rs.anchor) {
-      const { text } = await getFilingText(rs.anchor.primaryDocUrl);
-      const stub = { cik: rs.filingsResult.cik, company: rs.filingsResult.company, result: { cik: rs.filingsResult.cik, company: rs.filingsResult.company, results: [{ triggerId: "debt-maturity", debtScheduleSourceFiling: { form: rs.anchor.form, date: rs.anchor.filingDate, reportDate: rs.anchor.reportDate, url: rs.anchor.primaryDocUrl } }] }, docs: { [rs.anchor.primaryDocUrl]: { label: `${rs.anchor.form} ${rs.anchor.filingDate}`, text } }, laterFilings: [], debtEightKs: [] };
+      const read = factsReadOf(rs);
+      const docs: Record<string, { label: string; text: string }> = {};
+      for (const f of rs.readSet) docs[f.primaryDocUrl] = { label: `${f.form} ${f.filingDate}`, text: (await getFilingParagraphs(f.primaryDocUrl)).text };
+      const a = rs.anchor;
+      const later = rs.readSet.filter((f) => f.filingDate >= a.filingDate && f.primaryDocUrl !== a.primaryDocUrl).map((f) => ({ form: f.form, filingDate: f.filingDate, items: f.items, url: f.primaryDocUrl }));
+      const eightKs = rs.readSet.filter((f) => f.form === "8-K").map((f) => ({ form: f.form, filingDate: f.filingDate, items: f.items, url: f.primaryDocUrl }));
+      const tenKInRs = a.form === "10-Q" ? rs.readSet.find((f) => f.form === "10-K") : undefined;
+      const dm = { triggerId: "debt-maturity", debtScheduleSourceFiling: { form: a.form, date: a.filingDate, reportDate: a.reportDate, url: a.primaryDocUrl }, priorPeriodBase: tenKInRs ? { filingUrl: tenKInRs.primaryDocUrl, periodOfReport: tenKInRs.reportDate } : null };
+      const stub = { cik: rs.filingsResult.cik, company: rs.filingsResult.company, result: { cik: rs.filingsResult.cik, company: rs.filingsResult.company, results: [dm] }, docs, laterFilings: later, debtEightKs: eightKs };
       const client = new Anthropic();
-      const facts = await counted(() => guardedCreate(client, { model: MODEL, max_tokens: 8000, temperature: 0, system: SYSTEM, messages: [{ role: "user", content: inputFor(stub) }], tools: [{ name: "submit_facts", description: "Submit the transcribed facts.", input_schema: SCHEMA as any }], tool_choice: { type: "tool", name: "submit_facts" } } as any));
+      const facts = await counted(() => guardedCreate(client, { model: MODEL, max_tokens: 8000, temperature: 0, system: SYSTEM, messages: [{ role: "user", content: inputFor(stub, read) }], tools: [{ name: "submit_facts", description: "Submit the transcribed facts.", input_schema: SCHEMA as any }], tool_choice: { type: "tool", name: "submit_facts" } } as any));
       calls.push({ stage: "card facts", sample: "facts", count: ASKS, worstEachUsd: facts });
     }
-  } finally { setPriceOnly(false); }
+  }
   const worst = calls.reduce((a, c) => a + c.count * c.worstEachUsd, 0);
   return { worstUsd: worst, declaredUsd: ceilCent(worst), expectedRangeUsd: EXPECTED_RANGE_USD, calls };
 }

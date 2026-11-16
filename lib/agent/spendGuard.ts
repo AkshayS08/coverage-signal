@@ -19,6 +19,7 @@
  */
 import type Anthropic from "@anthropic-ai/sdk";
 import { priceOf, usdFor } from "./costMeter";
+import { requestScope, inRequestScope, cacheBustNow } from "./requestScope";
 
 export class SpendRefusedError extends Error {
   readonly worstUsd: number | null;
@@ -41,16 +42,50 @@ export class DigRefusedError extends Error {
     this.worstUsd = worstUsd;
   }
 }
-let digAllowance: number | null = null;
-let digSpent = 0;
-let currentKind: string | null = null;
+
+/**
+ * Session 27 (Akshay, Nov 16): THE GUARD'S STATE IS PER REQUEST. One build's price-only switch, priced calls, limits and
+ * spend live in its own GuardState (withGuard / withPriceOnly); outside any — the command-line scripts — the
+ * process-wide state applies, as before.
+ */
+export interface GuardState {
+  limits: { perRunUsd: number | null; totalUsd: number | null };
+  runLabel: string; runSpent: number; totalSpent: number; priceOnly: boolean;
+  last: PricedCall | null; priced: PricedCall[];
+  digAllowance: number | null; digSpent: number;
+  /** Every call made, with its worst case priced before it and its actual cost after: the per-call spend report. */
+  made: MadeCall[];
+}
+export interface MadeCall { kind: string; sample: string; model: string; inputTokens: number; maxTokens: number; worstUsd: number; actualUsd: number }
+const fresh = (): GuardState => ({ limits: { perRunUsd: null, totalUsd: null }, runLabel: "(no run)", runSpent: 0, totalSpent: 0, priceOnly: false, last: null, priced: [], digAllowance: null, digSpent: 0, made: [] });
+const processState: GuardState = fresh();
+const st = (): GuardState => requestScope()?.guard ?? processState;
+const kindNow = (): string | null => requestScope()?.kind ?? null;
+
+/** Runs `fn` under its own guard: its own limits and spend, untouched by any other request. */
+export async function withGuard<T>(l: { perRunUsd?: number | null; totalUsd?: number | null }, fn: () => Promise<T>): Promise<{ result: T; spentUsd: number; priced: PricedCall[]; made: MadeCall[] }> {
+  const g = fresh();
+  g.limits = { perRunUsd: l.perRunUsd ?? null, totalUsd: l.totalUsd ?? null };
+  // A build that fails part-way still reports what it spent: the error carries it.
+  let result: T;
+  try { result = await inRequestScope({ guard: g }, fn); }
+  catch (e) { if (e && typeof e === "object") Object.assign(e, { spentUsd: g.totalSpent, made: [...g.made] }); throw e; }
+  return { result, spentUsd: g.totalSpent, priced: [...g.priced], made: [...g.made] };
+}
+/** Runs `fn` in price-only mode for this request alone: every guarded call inside is counted and recorded, none made. */
+export async function withPriceOnly<T>(fn: () => Promise<T>): Promise<{ result: T; priced: PricedCall[] }> {
+  const g = fresh();
+  g.priceOnly = true;
+  const result = await inRequestScope({ guard: g }, fn);
+  return { result, priced: [...g.priced] };
+}
+
 /** What digs may spend: the build's cap less the other stages' counted worst case. Null: no dig allowance. */
-export function setDigAllowance(usd: number | null): void { digAllowance = usd; digSpent = 0; }
-export const digAllowanceLeft = (): number | null => (digAllowance === null ? null : digAllowance - digSpent);
+export function setDigAllowance(usd: number | null): void { const g = st(); g.digAllowance = usd; g.digSpent = 0; }
+export const digAllowanceLeft = (): number | null => { const g = st(); return g.digAllowance === null ? null : g.digAllowance - g.digSpent; };
 /** Runs `fn` with every guarded call inside it counted as `kind` ("dig"). */
 export async function asKind<T>(kind: string, fn: () => Promise<T>): Promise<T> {
-  const prev = currentKind; currentKind = kind;
-  try { return await fn(); } finally { currentKind = prev; }
+  return inRequestScope({ kind }, fn);
 }
 export class PricedOnlyError extends Error {
   readonly worstUsd: number;
@@ -62,25 +97,24 @@ export class PricedOnlyError extends Error {
 }
 
 export interface PricedCall { model: string; inputTokens: number; maxTokens: number; worstUsd: number; label: string }
-let limits: { perRunUsd: number | null; totalUsd: number | null } = { perRunUsd: null, totalUsd: null };
-let runLabel = "(no run)", runSpent = 0, totalSpent = 0, priceOnly = false;
-let last: PricedCall | null = null;
-const priced: PricedCall[] = [];
 
 export function setSpendLimits(l: { perRunUsd?: number | null; totalUsd?: number | null }): void {
-  limits = { perRunUsd: l.perRunUsd ?? null, totalUsd: l.totalUsd ?? null };
+  st().limits = { perRunUsd: l.perRunUsd ?? null, totalUsd: l.totalUsd ?? null };
 }
 /** A new run (one company's build): the per-run spend restarts; the running total does not. */
-export function beginGuardRun(label: string): void { runLabel = label; runSpent = 0; }
-export function setPriceOnly(on: boolean): void { priceOnly = on; }
-export function resetSpendGuard(): void { digAllowance = null; digSpent = 0; currentKind = null; limits = { perRunUsd: null, totalUsd: null }; runLabel = "(no run)"; runSpent = 0; totalSpent = 0; priceOnly = false; last = null; priced.length = 0; }
-export const lastPriced = (): PricedCall | null => last;
-export const pricedCalls = (): PricedCall[] => [...priced];
-export const spentTotal = (): number => totalSpent;
-export const spentThisRun = (): number => runSpent;
+export function beginGuardRun(label: string): void { const g = st(); g.runLabel = label; g.runSpent = 0; }
+/** The process-wide switch, for the command-line scripts. A request uses withPriceOnly. */
+export function setPriceOnly(on: boolean): void { processState.priceOnly = on; }
+export function resetSpendGuard(): void { Object.assign(processState, fresh()); }
+export const lastPriced = (): PricedCall | null => st().last;
+export const pricedCalls = (): PricedCall[] => [...st().priced];
+export const spentTotal = (): number => st().totalSpent;
+export const spentThisRun = (): number => st().runSpent;
+export const madeCalls = (): MadeCall[] => [...st().made];
 
 type CreateParams = Anthropic.MessageCreateParamsNonStreaming;
 export async function guardedCreate(client: Anthropic, params: CreateParams, options?: Parameters<Anthropic["messages"]["create"]>[1]): Promise<Anthropic.Message> {
+  const g = st();
   const price = priceOf(params.model);
   if (!price) throw new SpendRefusedError(`model ${params.model} has no price, so its worst case cannot be known`, null);
   let inputTokens: number;
@@ -92,21 +126,23 @@ export async function guardedCreate(client: Anthropic, params: CreateParams, opt
     throw new SpendRefusedError(`the input could not be counted (${e instanceof Error ? e.message : String(e)}), so the call is not made`, null);
   }
   const worstUsd = (inputTokens * price.input + params.max_tokens * price.output) / 1_000_000;
-  last = { model: params.model, inputTokens, maxTokens: params.max_tokens, worstUsd, label: runLabel };
-  if (priceOnly) { priced.push(last); throw new PricedOnlyError(worstUsd); }
-  if (limits.perRunUsd !== null && runSpent + worstUsd > limits.perRunUsd + 1e-12) {
-    throw new SpendRefusedError(`${runLabel}: $${runSpent.toFixed(4)} spent this run + this call's worst case $${worstUsd.toFixed(4)} (${inputTokens} in, ${params.max_tokens} max out, ${params.model}) would cross the per-run limit $${limits.perRunUsd.toFixed(4)}`, worstUsd);
+  const kind = kindNow();
+  g.last = { model: params.model, inputTokens, maxTokens: params.max_tokens, worstUsd, label: g.runLabel };
+  if (g.priceOnly) { g.priced.push(g.last); throw new PricedOnlyError(worstUsd); }
+  if (g.limits.perRunUsd !== null && g.runSpent + worstUsd > g.limits.perRunUsd + 1e-12) {
+    throw new SpendRefusedError(`${g.runLabel}: $${g.runSpent.toFixed(4)} spent this run + this call's worst case $${worstUsd.toFixed(4)} (${inputTokens} in, ${params.max_tokens} max out, ${params.model}) would cross the per-run limit $${g.limits.perRunUsd.toFixed(4)}`, worstUsd);
   }
-  if (currentKind === "dig" && digAllowance !== null && digSpent + worstUsd > digAllowance + 1e-12) {
-    throw new DigRefusedError(`${runLabel}: digs have spent $${digSpent.toFixed(4)} of the $${digAllowance.toFixed(4)} left under the cap after the other stages' counted worst case; this dig's worst case is $${worstUsd.toFixed(4)}`, worstUsd);
+  if (kind === "dig" && g.digAllowance !== null && g.digSpent + worstUsd > g.digAllowance + 1e-12) {
+    throw new DigRefusedError(`${g.runLabel}: digs have spent $${g.digSpent.toFixed(4)} of the $${g.digAllowance.toFixed(4)} left under the cap after the other stages' counted worst case; this dig's worst case is $${worstUsd.toFixed(4)}`, worstUsd);
   }
-  if (limits.totalUsd !== null && totalSpent + worstUsd > limits.totalUsd + 1e-12) {
-    throw new SpendRefusedError(`$${totalSpent.toFixed(4)} spent so far + this call's worst case $${worstUsd.toFixed(4)} (${inputTokens} in, ${params.max_tokens} max out, ${params.model}) would cross the running limit $${limits.totalUsd.toFixed(4)}`, worstUsd);
+  if (g.limits.totalUsd !== null && g.totalSpent + worstUsd > g.limits.totalUsd + 1e-12) {
+    throw new SpendRefusedError(`$${g.totalSpent.toFixed(4)} spent so far + this call's worst case $${worstUsd.toFixed(4)} (${inputTokens} in, ${params.max_tokens} max out, ${params.model}) would cross the running limit $${g.limits.totalUsd.toFixed(4)}`, worstUsd);
   }
   const response = (await client.messages.create(params, options)) as Anthropic.Message;
   const actual = usdFor(params.model, response.usage);
-  runSpent += actual;
-  totalSpent += actual;
-  if (currentKind === "dig") digSpent += actual;
+  g.runSpent += actual;
+  g.totalSpent += actual;
+  if (kind === "dig") g.digSpent += actual;
+  g.made.push({ kind: kind ?? "base extraction", sample: cacheBustNow() ?? "canonical", model: params.model, inputTokens, maxTokens: params.max_tokens, worstUsd, actualUsd: actual });
   return response;
 }
