@@ -1,11 +1,82 @@
 {
  "about": "Each name's builds, by the date its read set was taken (Session 27, Nov 14). Between triggers a card is served from its last build: its read set is the one that build read, and later filings that are not refresh triggers are listed, not read (lib/cache/lastBuild.ts). Added when a build bills or is signed. eightKRule: the 8-K rule the build read under (Nov 16: every build recorded before the Nov 14 decision read under rule 1; a new build reads under rule 2).",
  "builds": {
-  "0000070318": [{ "readSetAsOf": "2026-10-15", "eightKRule": 1, "what": "the Oct 15 brief build (v33)" }, { "readSetAsOf": "2026-10-31", "eightKRule": 1, "what": "the refresh batch on the Oct 29 10-Q (signed)" }],
-  "0000785161": [{ "readSetAsOf": "2026-10-15", "eightKRule": 1, "what": "the Oct 15 brief build (v33)" }, { "readSetAsOf": "2026-11-06", "eightKRule": 1, "what": "the refresh on the Nov 3 10-Q, run Nov 6 (signed)" }],
-  "0000927066": [{ "readSetAsOf": "2026-10-15", "eightKRule": 1, "what": "the Oct 15 brief build (v33)" }, { "readSetAsOf": "2026-10-31", "eightKRule": 1, "what": "the refresh batch on the Oct 29 10-Q (signed)" }],
-  "0001108109": [{ "readSetAsOf": "2026-10-15", "eightKRule": 1, "what": "the Oct 15 brief build (v33)" }, { "readSetAsOf": "2026-10-31", "eightKRule": 1, "what": "the refresh batch on the Oct 29 10-Q (signed)" }],
-  "0001179929": [{ "readSetAsOf": "2026-10-15", "eightKRule": 1, "what": "the Oct 15 brief build (v33)" }, { "readSetAsOf": "2026-10-29", "eightKRule": 1, "what": "the refresh on the Oct 22 10-Q (signed)" }],
-  "0001739940": [{ "readSetAsOf": "2026-10-15", "eightKRule": 1, "what": "the Oct 15 brief build (v33, signed)" }, { "readSetAsOf": "2026-11-09", "eightKRule": 1, "what": "the refresh on the Nov 5 10-Q (billed, not signed)" }]
+  "0000070318": [
+   {
+    "readSetAsOf": "2026-10-15",
+    "eightKRule": 1,
+    "what": "the Oct 15 brief build (v33)"
+   },
+   {
+    "readSetAsOf": "2026-10-31",
+    "eightKRule": 1,
+    "what": "the refresh batch on the Oct 29 10-Q (signed)"
+   }
+  ],
+  "0000785161": [
+   {
+    "readSetAsOf": "2026-10-15",
+    "eightKRule": 1,
+    "what": "the Oct 15 brief build (v33)"
+   },
+   {
+    "readSetAsOf": "2026-11-06",
+    "eightKRule": 1,
+    "what": "the refresh on the Nov 3 10-Q, run Nov 6 (signed)"
+   }
+  ],
+  "0000927066": [
+   {
+    "readSetAsOf": "2026-10-15",
+    "eightKRule": 1,
+    "what": "the Oct 15 brief build (v33)"
+   },
+   {
+    "readSetAsOf": "2026-10-31",
+    "eightKRule": 1,
+    "what": "the refresh batch on the Oct 29 10-Q (signed)"
+   }
+  ],
+  "0001108109": [
+   {
+    "readSetAsOf": "2026-10-15",
+    "eightKRule": 1,
+    "what": "the Oct 15 brief build (v33)"
+   },
+   {
+    "readSetAsOf": "2026-10-31",
+    "eightKRule": 1,
+    "what": "the refresh batch on the Oct 29 10-Q (signed)"
+   },
+   {
+    "readSetAsOf": "2026-11-10",
+    "eightKRule": 2,
+    "what": "the Stage 2 refresh on the Nov 10 8-K, run Nov 16 (billed, not signed)"
+   }
+  ],
+  "0001179929": [
+   {
+    "readSetAsOf": "2026-10-15",
+    "eightKRule": 1,
+    "what": "the Oct 15 brief build (v33)"
+   },
+   {
+    "readSetAsOf": "2026-10-29",
+    "eightKRule": 1,
+    "what": "the refresh on the Oct 22 10-Q (signed)"
+   }
+  ],
+  "0001739940": [
+   {
+    "readSetAsOf": "2026-10-15",
+    "eightKRule": 1,
+    "what": "the Oct 15 brief build (v33, signed)"
+   },
+   {
+    "readSetAsOf": "2026-11-09",
+    "eightKRule": 1,
+    "what": "the refresh on the Nov 5 10-Q (billed, not signed)"
+   }
+  ]
  }
 }

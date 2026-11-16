@@ -1,0 +1,65 @@
+# CHS: the refresh card against production's card
+
+Badge: **checks-passed** — every automated check holds, including 3 of 3 stability; no person has signed it
+
+- **header (label)**
+  - was: Weekly coverage brief · Nov 4 to Nov 9, 2026
+  - now: Weekly coverage brief · Nov 10 to Nov 16, 2026
+- **header**
+  - was: No new filings this week
+  - now: 1 filing this week: 8-K (other event) Nov 10, 2026, read at the next refresh
+  - now: 8-K (other event) · Nov 10, 2026 — read at the next refresh.
+- **call (label)**
+  - was: The call · next 18 months, to May 9, 2028
+  - now: The call · next 18 months, to May 16, 2028
+- **notShown**
+  - was: Nothing withheld this week.
+  - now: 1 filing this week may affect debt: its text is not read, so amount and instrument are not shown.
+- **cited sentences behind source links**: 117 out, 117 in
+  - was cited: 10-Q 2026-10-29 | 6 ⅞% Junior-Priority Secured Notes due 2029 1,244
+  - was cited: 10-Q 2026-10-29 | 4 ¾% Senior Secured Notes due 2031 689
+  - was cited: 10-Q 2026-10-29 | 10 ⅞% Senior Secured Notes due 2032 1,549
+  - was cited: 10-Q 2026-10-29 | 6 ⅛% Junior-Priority Secured Notes due 2030 1,227
+  - was cited: 10-Q 2026-10-29 | 6 % Senior Secured Notes due 2029 644
+  - was cited: 10-Q 2026-10-29 | 5 ¼% Senior Secured Notes due 2030 1,535
+  - was cited: 10-Q 2026-10-29 | 10 ¾% Senior Secured Notes due 2033 700
+  - was cited: 10-Q 2026-10-29 | 9 ¾% Senior Secured Notes due 2034 1,790
+  - was cited: 10-Q 2026-10-29 | Finance lease and financing obligations 300
+  - was cited: 10-Q 2026-10-29 | Other 46
+  - was cited: 10-Q 2026-10-29 | Long-term debt 9,568
+  - now cited: 10-Q 2026-10-29 | 6 ⅞% Junior-Priority Secured Notes due 2029 $ 1,244
+  - now cited: 10-Q 2026-10-29 | 4 ¾% Senior Secured Notes due 2031 $ 689
+  - now cited: 10-Q 2026-10-29 | 10 ⅞% Senior Secured Notes due 2032 $ 1,549
+  - now cited: 10-Q 2026-10-29 | 6 ⅛% Junior-Priority Secured Notes due 2030 $ 1,227
+  - now cited: 10-Q 2026-10-29 | 6 % Senior Secured Notes due 2029 $ 644
+  - now cited: 10-Q 2026-10-29 | 5 ¼% Senior Secured Notes due 2030 $ 1,535
+  - now cited: 10-Q 2026-10-29 | 10 ¾% Senior Secured Notes due 2033 $ 700
+  - now cited: 10-Q 2026-10-29 | 9 ¾% Senior Secured Notes due 2034 $ 1,790
+  - now cited: 10-Q 2026-10-29 | Finance lease and financing obligations $ 300
+  - now cited: 10-Q 2026-10-29 | Other $ 46
+  - now cited: 10-Q 2026-10-29 | Long-term debt $ 9,568
+- **parts of computed figures (shown when a figure is opened)**: 73 shown differently
+  - was: $ 42 million
+  - was: $ 1,244 million
+  - was: $ 689 million
+  - was: $ 1,549 million
+  - was: approximately $231 million principal amount
+  - was: $ 1,227 million
+  - was: $ 644 million
+  - was: $ 1,535 million
+  - was: $ 700 million
+  - was: $ 1,790 million
+  - was: $ 300 million
+  - was: $ 46 million
+  - now: $42MM
+  - now: $1,244MM
+  - now: $689MM
+  - now: $1,549MM
+  - now: ~$231MM
+  - now: $1,227MM
+  - now: $644MM
+  - now: $1,535MM
+  - now: $700MM
+  - now: $1,790MM
+  - now: $300MM
+  - now: $46MM

@@ -1,0 +1,127 @@
+{
+ "ranAt": "2026-11-16T20:11:26.131Z",
+ "approvedUsd": 1.96,
+ "declaredUsd": 1.96,
+ "worstUsd": 1.9563839999999997,
+ "spentUsd": 0.402141,
+ "calls": [
+  {
+   "kind": "base extraction",
+   "sample": "canonical",
+   "model": "claude-haiku-4-5",
+   "inputTokens": 86372,
+   "maxTokens": 20000,
+   "worstUsd": 0.186372,
+   "actualUsd": 0.134047
+  },
+  {
+   "kind": "base extraction",
+   "sample": "s27-refresh-retaste-1",
+   "model": "claude-haiku-4-5",
+   "inputTokens": 86372,
+   "maxTokens": 20000,
+   "worstUsd": 0.186372,
+   "actualUsd": 0.134047
+  },
+  {
+   "kind": "base extraction",
+   "sample": "s27-refresh-retaste-2",
+   "model": "claude-haiku-4-5",
+   "inputTokens": 86372,
+   "maxTokens": 20000,
+   "worstUsd": 0.186372,
+   "actualUsd": 0.134047
+  }
+ ],
+ "price": {
+  "worstUsd": 1.9563839999999997,
+  "declaredUsd": 1.96,
+  "expectedRangeUsd": [
+   0.5,
+   0.9
+  ],
+  "calls": [
+   {
+    "stage": "base extraction",
+    "sample": "canonical",
+    "count": 1,
+    "worstEachUsd": 0.186372
+   },
+   {
+    "stage": "base extraction",
+    "sample": "s27-refresh-retaste-1",
+    "count": 1,
+    "worstEachUsd": 0.186372
+   },
+   {
+    "stage": "base extraction",
+    "sample": "s27-refresh-retaste-2",
+    "count": 1,
+    "worstEachUsd": 0.186372
+   },
+   {
+    "stage": "dig budget",
+    "sample": "canonical",
+    "count": 5,
+    "worstEachUsd": 0.059554
+   },
+   {
+    "stage": "dig budget",
+    "sample": "s27-refresh-retaste-1",
+    "count": 5,
+    "worstEachUsd": 0.059554
+   },
+   {
+    "stage": "dig budget",
+    "sample": "s27-refresh-retaste-2",
+    "count": 5,
+    "worstEachUsd": 0.059554
+   },
+   {
+    "stage": "proceeds-use",
+    "sample": "canonical",
+    "count": 1,
+    "worstEachUsd": 0.021,
+    "estimate": true
+   },
+   {
+    "stage": "proceeds-use",
+    "sample": "s27-refresh-retaste-1",
+    "count": 1,
+    "worstEachUsd": 0.021,
+    "estimate": true
+   },
+   {
+    "stage": "proceeds-use",
+    "sample": "s27-refresh-retaste-2",
+    "count": 1,
+    "worstEachUsd": 0.021,
+    "estimate": true
+   },
+   {
+    "stage": "referenced 10-K note",
+    "sample": "canonical",
+    "count": 1,
+    "worstEachUsd": 0.068806
+   },
+   {
+    "stage": "referenced 10-K note",
+    "sample": "s27-refresh-retaste-1",
+    "count": 1,
+    "worstEachUsd": 0.068806
+   },
+   {
+    "stage": "referenced 10-K note",
+    "sample": "s27-refresh-retaste-2",
+    "count": 1,
+    "worstEachUsd": 0.068806
+   },
+   {
+    "stage": "card facts",
+    "sample": "facts",
+    "count": 3,
+    "worstEachUsd": 0.07818
+   }
+  ]
+ }
+}
