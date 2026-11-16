@@ -32,12 +32,19 @@ const keys = nonEmpty("the re-run's answer keys", readdirSync(join("sessions", "
 const unregistered = keys.filter((k) => !isUnadopted(k));
 let refused = 0;
 (async () => {
-  for (const k of keys) {
-    const m = /^answer\/(\d+)\/card-facts\/(\w+)\/cf-v(\d+)-ask(\d+)\.json$/.exec(k)!;
-    try { await cachedCardFacts(m[1], m[2], Number(m[3]), Number(m[4]), async () => { throw new Error("would bill"); }); }
+  // Nov 16: the facts key is (read set, prompt version). These keys hashed an input, so no build can reach them; they
+  // stay registered as evidence.
+  const reachable = keys.filter((k) => /\/card-facts\/rs-/.test(k));
+  assert(keys.length > 0 && unregistered.length === 0 && reachable.length === 0, `[U2] ${keys.length} re-run answer keys: all registered unadopted; ${reachable.length} reachable under the read-set key`);
+  // A registered key of the read-set scheme is refused before the store is asked.
+  const current = (read(join("baselines", "unadopted.json")).keys as { key: string }[]).map((x) => x.key).filter((k) => /\/card-facts\/rs-/.test(k));
+  let storeAsked = false;
+  for (const k of current) {
+    const m = /^answer\/(\d+)\/card-facts\/rs-(\w+)\/cf-v(\d+)-ask(\d+)\.json$/.exec(k)!;
+    try { await cachedCardFacts(m[1], m[2], Number(m[3]), Number(m[4]), "any", async () => { throw new Error("would bill"); }, async () => { storeAsked = true; return { data: null as any, hit: false }; }); }
     catch (e) { if (e instanceof UnadoptedAnswerError) refused++; }
   }
-  assert(keys.length > 0 && unregistered.length === 0 && refused === keys.length, `[U2] ${keys.length} re-run answer keys: all registered unadopted, ${refused} refused by the cache before any read`);
+  assert(refused === current.length && !storeAsked, `[U2b] ${current.length} registered read-set keys: ${refused} refused before the store is asked`);
 
   const BRIEF = "2026-11-09";
   const ten = read(join("lib", "cards", "inputs", "0000070318.json"));

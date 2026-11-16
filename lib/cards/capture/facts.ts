@@ -54,7 +54,8 @@ import type { CardFacts, Fact } from "../types";
 import { verifyAsk } from "./verifyFacts";
 import { factsForBuild } from "./factsForBuild";
 
-export const CARD_FACTS_PROMPT_VERSION = 1;
+// v2 (Nov 16): the moves window ends at the read set's latest filing, stated in the input, not at the brief date.
+export const CARD_FACTS_PROMPT_VERSION = 2;
 export const MODEL = "claude-haiku-4-5";
 export const ASKS = 3;
 const BAND_PER_ASK = 0.12;
@@ -81,7 +82,7 @@ What to transcribe:
 5. cash: cash figures stated for the parent company or as unrestricted cash, with the filer's own label.
 6. faces: the principal (face) amount of a debt instrument where a sentence states it, e.g. "$400 million in aggregate principal amount ... remained outstanding".
 7. maturities: the most precise maturity date a sentence states for a named debt instrument, e.g. "The 2034 Notes mature on June 1, 2034". Only where the sentence states it is the maturity (not an interest payment date or a redemption date).
-8. moves: every debt transaction that HAPPENED or was ANNOUNCED from January 1 of the anchor period's year through ${BRIEF}: issuance, redemption (full, partial, special call), tender or repurchase, repayment at maturity, facility entry/amendment/refinancing/termination, incremental add-ons, material draws or paydowns. Do not include transactions completed before January 1 of that year. status is "pending" when the filing says the company intends, expects or will; otherwise "completed". For each move give the date as printed, the instrument as named, the face amount, and where stated: funding (how it was paid for), use (what the proceeds were used for), price (e.g. "at par", "103% of the principal amount").`;
+8. moves: every debt transaction that HAPPENED or was ANNOUNCED from January 1 of the anchor period's year through the read-through date stated in the input: issuance, redemption (full, partial, special call), tender or repurchase, repayment at maturity, facility entry/amendment/refinancing/termination, incremental add-ons, material draws or paydowns. Do not include transactions completed before January 1 of that year. status is "pending" when the filing says the company intends, expects or will; otherwise "completed". For each move give the date as printed, the instrument as named, the face amount, and where stated: funding (how it was paid for), use (what the proceeds were used for), price (e.g. "at par", "103% of the principal amount").`;
 
 const FACT = { type: ["object", "null"], properties: { value: { type: "string" }, sourceLine: { type: "string" }, documentUrl: { type: "string" } }, required: ["value", "sourceLine", "documentUrl"] };
 export const SCHEMA = {
@@ -122,8 +123,21 @@ type Raw = any;
 /** Session 27 (Oct 30): the anchor the facts are read from, recorded on them. */
 const anchorUrlOf = (snap: any): string => snap.result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.url;
 
+/**
+ * Session 27 (Akshay, Nov 16): WHAT THE FACTS STAGE READS — the read set (its fingerprint, its documents) and the date it
+ * reads through (its latest filing), never the brief date: so the answer is reused until the read set changes. Without
+ * one (the review scripts) the stage reads the card input's filings through the brief date, as before.
+ */
+export interface FactsRead { fingerprint: string; urls: string[]; through: string }
+export function factsReadOf(rs: { fingerprint: string; readSet: { primaryDocUrl: string; filingDate: string }[] }): FactsRead {
+  return { fingerprint: rs.fingerprint, urls: rs.readSet.map((f) => f.primaryDocUrl), through: rs.readSet.map((f) => f.filingDate).sort().pop()! };
+}
+export const factsInputHash = (input: string): string => createHash("sha256").update(input).digest("hex").slice(0, 24);
+
 /** The text the model is shown: labelled regions of the documents the card holds. */
-export function inputFor(snap: any): string {
+export function inputFor(snap: any, read?: FactsRead): string {
+  const through = read?.through ?? BRIEF;
+  const inRead = (url: string) => !read || read.urls.includes(url);
   const dm = snap.result.results.find((r: any) => r.triggerId === "debt-maturity");
   const anchor = dm.debtScheduleSourceFiling;
   const blocks: string[] = [];
@@ -149,14 +163,14 @@ export function inputFor(snap: any): string {
   const extra = a.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)/)
     .filter((s) => s.length > 30 && s.length < 1200 && INSTR.test(s) && /\$\s?[\d]/.test(s) && (s.match(/\d[\d,.]*/g) ?? []).length <= 14 && !shown.includes(s.slice(0, 80)));
   if (extra.length) block(`${anchor.form} ${anchor.date}, other sentences naming a debt instrument and an amount`, anchor.url, [...new Set(extra)].join("\n").slice(0, 16000));
-  for (const f of snap.laterFilings ?? []) if (f.filingDate <= BRIEF && snap.docs[f.url]) block(`${f.form} ${f.filingDate}`, f.url, at(snap.docs[f.url].text, 0, 20000));
+  for (const f of snap.laterFilings ?? []) if (f.filingDate <= through && inRead(f.url) && snap.docs[f.url]) block(`${f.form} ${f.filingDate}`, f.url, at(snap.docs[f.url].text, 0, 20000));
   // Decision 11 (Nov 9): the same read set as extraction — the debt-item 8-Ks filed since the latest 10-K, even those
   // before the anchor, which state move detail (the day, the amount, the funding) a 10-Q may give only by month. The
   // card input records them through the one deciding function (debtEightKsSinceTenK).
   const later = new Set((snap.laterFilings ?? []).map((f: any) => f.url));
-  for (const f of snap.debtEightKs ?? []) if (f.filingDate <= BRIEF && snap.docs[f.url] && !later.has(f.url)) block(`${f.form} ${f.filingDate}, a debt-item 8-K since the latest 10-K`, f.url, at(snap.docs[f.url].text, 0, 20000));
+  for (const f of snap.debtEightKs ?? []) if (f.filingDate <= through && inRead(f.url) && snap.docs[f.url] && !later.has(f.url)) block(`${f.form} ${f.filingDate}, a debt-item 8-K since the latest 10-K`, f.url, at(snap.docs[f.url].text, 0, 20000));
   const base = dm.priorPeriodBase;
-  if (base?.filingUrl && snap.docs[base.filingUrl]) {
+  if (base?.filingUrl && inRead(base.filingUrl) && snap.docs[base.filingUrl]) {
     const t = snap.docs[base.filingUrl].text as string;
     const n = locateDebtNoteSection(t);
     if (n.status === "found") block(`10-K for ${base.periodOfReport}, the debt note the anchor directs to`, base.filingUrl, at(t, n.start, 30000));
@@ -164,9 +178,9 @@ export function inputFor(snap: any): string {
   // SESSION 27 (Akshay, Oct 31): THE CAUSE OF MOLINA'S MISSED MOVE. On its Q3 anchor all three asks omitted a move
   // sentence they were shown (year-scoped instruction; the Q2 asks returned it). Move sentences are located in code and
   // listed for the stage to account for; the card checks the same list (moveSentences.ts).
-  const candidates = locateMoveSentences(Object.entries(snap.docs as Record<string, { label: string; text: string }>).map(([url, d]) => ({ url, label: d.label, text: d.text })), `${String(anchor.reportDate).slice(0, 4)}-01-01`, BRIEF);
+  const candidates = locateMoveSentences(Object.entries(snap.docs as Record<string, { label: string; text: string }>).filter(([url]) => inRead(url)).map(([url, d]) => ({ url, label: d.label, text: d.text })), `${String(anchor.reportDate).slice(0, 4)}-01-01`, through);
   if (candidates.length) block(`CANDIDATE MOVE SENTENCES, located in code — return EACH one that states a debt transaction as a move (with this sentence as its sourceLine); omit one only if it is not a debt transaction`, anchor.url, candidates.map((c) => `${c.date} | ${c.label} | ${c.url} | ${c.sentence}`).join("\n"));
-  return [`Company: ${snap.company}`, `Anchor: ${anchor.form} for the period ended ${anchor.reportDate}, filed ${anchor.date}`, `Brief date: ${BRIEF}`, ``, ...blocks].join("\n\n");
+  return [`Company: ${snap.company}`, `Anchor: ${anchor.form} for the period ended ${anchor.reportDate}, filed ${anchor.date}`, `Read through: ${through}`, ``, ...blocks].join("\n\n");
 }
 
 const squash = (s: string | null | undefined) => (s ?? "").toLowerCase().replace(/[\s $,]+/g, "");
@@ -229,7 +243,7 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async ()
     const input = inputFor(s);
     const inTok = Math.ceil((input.length + SYSTEM.length + JSON.stringify(SCHEMA).length) / 3.6);
     const perAsk = (inTok * 1.0 + OUTPUT_TOKENS_EST * 5.0) / 1e6;
-    return { s, input, hash: createHash("sha256").update(input).digest("hex").slice(0, 24), inTok, perAsk, perName: perAsk * ASKS };
+    return { s, input, hash: factsInputHash(input), inTok, perAsk, perName: perAsk * ASKS };
   });
   console.log(`DECLARED — card-facts extraction v${CARD_FACTS_PROMPT_VERSION}, ${MODEL}, ${ASKS} asks per name, bands $${BAND_PER_ASK}/ask and $${BAND_PER_NAME}/name`);
   for (const p of plan) console.log(`  ${p.s.company.padEnd(30)} ~${p.inTok.toLocaleString()} input tokens/ask   est $${p.perAsk.toFixed(4)}/ask   $${p.perName.toFixed(4)}/name${p.perAsk > BAND_PER_ASK || p.perName > BAND_PER_NAME ? "   OVER BAND" : ""}`);
@@ -263,7 +277,7 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async ()
       // Nov 14: a rebuild uses the adopted facts where they were read from this anchor; nothing to run.
       if (factsForBuild(p.s).source === "adopted") { console.log(`STATUS ${p.s.cik} hash ${p.hash} uncached-asks none (adopted facts)`); continue; }
       const asks: number[] = [];
-      for (let ask = 1; ask <= ASKS; ask++) if ((await readCache(cardFactsKey(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, ask), null)) === null) asks.push(ask);
+      for (let ask = 1; ask <= ASKS; ask++) if ((await readCache(cardFactsKey(p.s.cik, p.s.corpusFingerprint, CARD_FACTS_PROMPT_VERSION, ask), null)) === null) asks.push(ask);
       console.log(`STATUS ${p.s.cik} hash ${p.hash} uncached-asks ${asks.length ? asks.join(",") : "none"}`);
     }
     return;
@@ -293,7 +307,7 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async ()
     const raws: Raw[] = [];
     const rejected: { fact: string; why: string }[] = [];
     for (let ask = 1; ask <= ASKS; ask++) {
-      const { data } = await cachedCardFacts(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, ask, async () => {
+      const { data } = await cachedCardFacts(p.s.cik, p.s.corpusFingerprint, CARD_FACTS_PROMPT_VERSION, ask, p.hash, async () => {
         const r = await guardedCreate(client, {
           model: MODEL, max_tokens: 8000, temperature: 0, system: SYSTEM,
           messages: [{ role: "user", content: p.input }],
@@ -315,7 +329,7 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async ()
     const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
     const facts: CardFacts = { cik: p.s.cik, anchorUrl: anchorUrlOf(p.s), promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: Number(spend.totalUsd.toFixed(6)), ...reproduce(asks, residual), residual };
     writeFileSync(join(OUT_DIR, `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");
-    writeFileSync(join(OUT_DIR, `raw-${p.s.cik}.json`), JSON.stringify({ keys: [1, 2, 3].map((a) => cardFactsKey(p.s.cik, p.hash, CARD_FACTS_PROMPT_VERSION, a)), asks: raws }, null, 1) + "\n", "utf-8");
+    writeFileSync(join(OUT_DIR, `raw-${p.s.cik}.json`), JSON.stringify({ keys: [1, 2, 3].map((a) => cardFactsKey(p.s.cik, p.s.corpusFingerprint, CARD_FACTS_PROMPT_VERSION, a)), asks: raws }, null, 1) + "\n", "utf-8");
     console.log(`  ${p.s.company.padEnd(30)} $${spend.totalUsd.toFixed(4)} (${spend.totalCalls} calls)  kept: ${facts.moves.length} moves, ${facts.schedule.length} schedule, ${facts.subFacilities.length} sub-facilities, ${facts.maturities.length} maturities, ${facts.faces.length} faces; residual ${facts.residual.length}`);
     if (spend.totalUsd > BAND_PER_NAME) { console.error(`STOPPING: ${p.s.company} cost $${spend.totalUsd.toFixed(4)}, over its $${BAND_PER_NAME} band. No further name billed.`); process.exit(1); }
   }

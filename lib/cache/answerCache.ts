@@ -126,14 +126,20 @@ export async function cachedReferencedNote<T>(
 }
 
 /**
- * SESSION 26 — the card-facts extraction (lib/cards/capture/facts.ts). Its own
- * key and its own prompt version, keyed on a hash of the exact input text it
- * was asked over, so it can never orphan or overwrite a base answer, a
- * referenced-note answer, or anything a golden was signed from. One key per
+ * SESSION 26 — the card-facts extraction (lib/cards/capture/facts.ts). Its own key and its own prompt version, so it can
+ * never orphan or overwrite a base answer, a referenced-note answer, or anything a golden was signed from. One key per
  * ask: the three asks are three cached answers, not one answer read thrice.
+ *
+ * SESSION 27 (Akshay, Nov 16): THE KEY COVERS WHAT THE STAGE READ — THE READ SET AND THE PROMPT VERSION — NEVER THE
+ * BRIEF DATE. It was a hash of an input built through the brief date, so the next day missed and re-billed over the same
+ * documents. The answer is reused until the read set changes. The input's hash is stored with the answer: a hit whose
+ * input differs from what the stage would read now (its builder changed without a version bump) is refused, not served.
  */
-export function cardFactsKey(cik: string, inputHash: string, promptVersion: number, ask: number): string {
-  return `answer/${cik}/card-facts/${inputHash}/cf-v${promptVersion}-ask${ask}.json`;
+export function cardFactsKey(cik: string, readSetFingerprint: string, promptVersion: number, ask: number): string {
+  return `answer/${cik}/card-facts/rs-${readSetFingerprint}/cf-v${promptVersion}-ask${ask}.json`;
+}
+export class FactsReadChangedError extends Error {
+  constructor(key: string) { super(`FACTS INPUT CHANGED — ${key} was answered over a different input than this read set now builds; bump the facts prompt version rather than serve it`); this.name = "FactsReadChangedError"; }
 }
 /**
  * SESSION 27 (Akshay, Nov 14): AN ANSWER THAT WAS NOT ADOPTED IS EVIDENCE, NEVER SERVED AS CURRENT. Its key is listed
@@ -150,10 +156,12 @@ export function isUnadopted(key: string): boolean {
   }
   return UNADOPTED!.has(key);
 }
-export async function cachedCardFacts<T>(cik: string, inputHash: string, promptVersion: number, ask: number, compute: () => Promise<T>): Promise<{ data: T; hit: boolean }> {
-  const key = cardFactsKey(cik, inputHash, promptVersion, ask);
+export async function cachedCardFacts<T>(cik: string, readSetFingerprint: string, promptVersion: number, ask: number, inputHash: string, compute: () => Promise<T>, store: <S>(key: string, compute: () => Promise<S>) => Promise<{ data: S; hit: boolean }> = getOrCompute): Promise<{ data: T; hit: boolean }> {
+  const key = cardFactsKey(cik, readSetFingerprint, promptVersion, ask);
   if (isUnadopted(key)) throw new UnadoptedAnswerError(key);
-  return getOrCompute(key, compute);
+  const { data, hit } = await store(key, async () => ({ inputHash, answer: await compute() }));
+  if (data.inputHash !== inputHash) throw new FactsReadChangedError(key);
+  return { data: data.answer, hit };
 }
 
 /** A single-trigger dig follow-up against one specific extra filing. */
