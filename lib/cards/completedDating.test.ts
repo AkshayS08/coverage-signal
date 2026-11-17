@@ -72,5 +72,9 @@ const c7 = cardOf(cig, cigFacts);
 const rep7 = metas(c7).find((m: string) => /Repaid at maturity/.test(m));
 assert(!!rep7 && /^Mar 2026 · Repaid at maturity/.test(rep7), `[A7] a period end ("three months ended March 31, 2026") does not date Cigna's repayment: ${rep7 ?? "(no repayment card)"}`);
 
+// A8: the card's check agrees (moveIntegrity M2): a period end is not the day a held document states for the move.
+const { moveIntegrityViolations } = require("./moveIntegrity");
+assert(moveIntegrityViolations(c7, cig).M2.length === 0, `[A8] move integrity M2 does not read "three months ended March 31, 2026" as the repayment's day: ${moveIntegrityViolations(c7, cig).M2.join("; ") || "holds"}`);
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

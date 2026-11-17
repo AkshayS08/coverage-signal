@@ -37,7 +37,8 @@ export function moveIntegrityViolations(card: any, input: any): { M1: string[]; 
     if (/\bexpected to\b|\bscheduled\b|\bwill be\b|\bset for\b|\bconditional\b|\banticipat\w*/i.test(s)) continue;
     const cs = couponsIn(s).map((c) => c.rate);
     if (!cs.length) continue;
-    for (const m of s.matchAll(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s*(\d{4})/g)) dayStatements.push({ coupons: cs, y: +m[3], m: monthOf(m[1]), d: +m[2], sentence: s });
+    // Nov 16 (completedDating.test A8): a period end ("three months ended March 31, 2026", "as of", "at") is no move's day.
+    for (const m of s.matchAll(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2}),\s*(\d{4})/g)) if (!/\b(?:ended|ending|as of|at|through)\s*$/i.test(s.slice(Math.max(0, (m.index ?? 0) - 12), m.index ?? 0))) dayStatements.push({ coupons: cs, y: +m[3], m: monthOf(m[1]), d: +m[2], sentence: s });
   }
   for (const mv of card.v3?.moves ?? []) {
     const meta = txt(mv.meta);
