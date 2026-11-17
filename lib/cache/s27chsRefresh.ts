@@ -13,7 +13,7 @@
  * and registers the facts' answer keys as unadopted (baselines/unadopted.json) until Akshay clears them. Nothing here
  * writes lib/cards/inputs or lib/cards/generated, and nothing is released.
  *
- *   --price   price only ($0, token counts): CACHE_NO_WRITE=1 npx tsx lib/cache/s27chsRefresh.ts --price
+ *   --price   price only ($0, token counts): CACHE_NO_WRITE=1 npx tsx lib/cache/s27chsRefresh.ts --price [--dir=<path>]
  *   bill:     BUILD_BILLING=on npx tsx lib/cache/s27chsRefresh.ts --approved=1.85
  */
 import { loadEnvQuietly } from "./loadEnv";
@@ -24,7 +24,8 @@ import { resolveCompany } from "../pipeline/resolve";
 import { visibleDiff } from "./s27cardDiff";
 import type { MadeCall } from "../agent/spendGuard";
 
-const DIR = "sessions/27/chs_refresh";
+// Nov 16: --dir=<path> keeps an earlier run's record (the v2 facts run is sessions/27/chs_refresh).
+const DIR = (process.argv.find((a) => a.startsWith("--dir=")) ?? "--dir=sessions/27/chs_refresh").slice(6);
 const PRICE_ONLY = process.argv.includes("--price");
 const APPROVED = Number((process.argv.find((a) => a.startsWith("--approved=")) ?? "").slice(11));
 const usd = (x: number) => `$${x.toFixed(4)}`;
