@@ -17,6 +17,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -67,14 +68,14 @@ const params = { model: "claude-haiku-4-5", max_tokens: 8000, messages: [{ role:
   const files: string[] = [];
   const walk = (d: string) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) { if (!/node_modules|\.next/.test(p)) walk(p); } else if (/\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f)) files.push(p); } };
   for (const d of ["lib", "app"]) if (existsSync(d)) walk(d);
-  const outside = files.filter((f) => !/spendGuard\.ts$/.test(f) && /\.messages\.create\(|\.messages\.stream\(|\.beta\.messages\.create\(/.test(readFileSync(f, "utf-8")));
+  const outside = nonEmpty("the source files under lib and app", files).filter((f) => !/spendGuard\.ts$/.test(f) && /\.messages\.create\(|\.messages\.stream\(|\.beta\.messages\.create\(/.test(readFileSync(f, "utf-8")));
   assert(outside.length === 0, `[L4] no call reaches the API outside the gate${outside.length ? `: ${outside.join(", ")}` : ""}`);
 
   // L5
   const tests: string[] = [];
   const walkT = (d: string) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) walkT(p); else if (/\.test\.ts$/.test(f)) tests.push(p); } };
   walkT("lib");
-  const unscoped = tests.filter((f) => { const t = readFileSync(f, "utf-8"); return /guardedCreate|withGuard\(/.test(t) && !/COST_LOG_PATH/.test(t); });
+  const unscoped = nonEmpty("the test files under lib", tests).filter((f) => { const t = readFileSync(f, "utf-8"); return /guardedCreate|withGuard\(/.test(t) && !/COST_LOG_PATH/.test(t); });
   assert(unscoped.length === 0, `[L5] every test driving the gate writes a scratch ledger${unscoped.length ? `: not ${unscoped.join(", ")}` : ""}`);
 
   console.log(`\n${passed} passed, ${failed} failed.`);

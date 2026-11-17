@@ -74,7 +74,7 @@ const tcard = cardWith({ ...v3facts, readSet: factsReadSetOf(chs.result) });
 const row = (c: any, re: RegExp) => (c.v3.table?.rows ?? []).find((r: any) => re.test(r.name));
 const rowText = (r: any) => (r?.status ? txt(r.status.text) : "");
 assert(/\$689MM remains/.test(rowText(row(tcard, /4 ¾% Senior Secured Notes due 2031/))) && /\$1,549MM remains/.test(rowText(row(tcard, /10 ⅞% Senior Secured Notes due 2032/))) && /~\$454MM/.test(rowText(row(tcard, /10 ⅞% Senior Secured Notes due 2032/))), `[N6] a completed tender offer is a retirement: 4¾% 2031 "${rowText(row(tcard, /4 ¾%/))}"; 10⅞% 2032 "${rowText(row(tcard, /10 ⅞% Senior Secured Notes due 2032/))}"`);
-const firstV3 = read("sessions/27/chs_refresh_v3/card.json");
+const firstV3 = read("sessions/27/chs_refresh_v3/card_first_render.json"); // the billed run's own render, kept
 assert(!/remains/.test(rowText(row(firstV3, /4 ¾% Senior Secured Notes due 2031/))), `[N6 control] the v3 card as first rendered: 4¾% 2031 "${rowText(row(firstV3, /4 ¾%/))}"`);
 
 // N4b: a results announcement is not pending, and a cross-reference ("For additional information … see …") is not a move.
