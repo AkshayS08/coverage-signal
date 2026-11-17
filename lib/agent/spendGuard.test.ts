@@ -23,6 +23,8 @@
  */
 import { readFileSync } from "node:fs";
 import * as guard from "./spendGuard";
+// Nov 16: the gate writes every billed call to the cost log; stub calls write to a scratch ledger, never baselines/.
+process.env.COST_LOG_PATH = require("node:path").join(process.env.TEMP ?? ".", `stub-ledger-${process.pid}.jsonl`);
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };

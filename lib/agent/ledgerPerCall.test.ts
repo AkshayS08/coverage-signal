@@ -10,6 +10,7 @@
  *   L3  no double count: a scope that persists after the gate's lines adds none of the same spend; a scope with no
  *       billed call still writes its $0 line (the release checks read them)
  *   L4  no call reaches the API except through the gate (the one place the line is written)
+ *   L5  every test that drives the gate with a stub writes a scratch ledger, never baselines/cost-log.jsonl
  *   control: usage recorded without the gate (the Nov 16 facts stage's path) writes no line
  *
  * Offline, $0: a stub client; the ledger is a scratch file. Run: ANTHROPIC_API_KEY="" npx tsx lib/agent/ledgerPerCall.test.ts
@@ -68,6 +69,13 @@ const params = { model: "claude-haiku-4-5", max_tokens: 8000, messages: [{ role:
   for (const d of ["lib", "app"]) if (existsSync(d)) walk(d);
   const outside = files.filter((f) => !/spendGuard\.ts$/.test(f) && /\.messages\.create\(|\.messages\.stream\(|\.beta\.messages\.create\(/.test(readFileSync(f, "utf-8")));
   assert(outside.length === 0, `[L4] no call reaches the API outside the gate${outside.length ? `: ${outside.join(", ")}` : ""}`);
+
+  // L5
+  const tests: string[] = [];
+  const walkT = (d: string) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) walkT(p); else if (/\.test\.ts$/.test(f)) tests.push(p); } };
+  walkT("lib");
+  const unscoped = tests.filter((f) => { const t = readFileSync(f, "utf-8"); return /guardedCreate|withGuard\(/.test(t) && !/COST_LOG_PATH/.test(t); });
+  assert(unscoped.length === 0, `[L5] every test driving the gate writes a scratch ledger${unscoped.length ? `: not ${unscoped.join(", ")}` : ""}`);
 
   console.log(`\n${passed} passed, ${failed} failed.`);
   process.exit(failed > 0 ? 1 : 0);
