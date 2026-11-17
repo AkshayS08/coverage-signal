@@ -119,9 +119,12 @@ function sortFundingAndUse(m: any): any {
 /** Verify one ask: every kept fact's sentence is in a held document and states its values. */
 export function verifyAsk(snap: any, raw: Raw, rejected: { fact: string; why: string }[]): Raw {
   const locs = new Map<string, ReturnType<typeof createTextLocator>>();
-  const fact = (f: any, label: string): Fact | null => {
+  // Nov 16 (factConsensus.test I2): a move's detail whose quote is not found in a held document (CHS's 10.875% funding
+  // quote spliced its sentence) is verified by the move's own verified sentence where that sentence states the value.
+  const fact = (f: any, label: string, own?: { sentence: string; url: string }): Fact | null => {
     if (!f || !f.value || !f.sourceLine) return null;
     const url = locate(snap, locs, f.sourceLine, f.documentUrl);
+    if (!url && own && states(own.sentence, f.value)) return { value: f.value, src: own };
     if (!url) { rejected.push({ fact: label, why: "its sentence is in no document the card holds" }); return null; }
     if (!states(f.sourceLine, f.value)) { rejected.push({ fact: label, why: `its sentence does not state "${f.value}"` }); return null; }
     return { value: f.value, src: { sentence: f.sourceLine, url } };
@@ -161,6 +164,7 @@ export function verifyAsk(snap: any, raw: Raw, rejected: { fact: string; why: st
       if (!url) { rejected.push({ fact: label, why: "its sentence is in no document the card holds" }); return null; }
       // Each detail is verified against the sentence the card's own functions accept for it, and links there.
       const mv = { type: m.type, instrument: m.instrument, status: m.status };
+      const own = { sentence: m.sourceLine as string, url };
       const dateE = evidenceFor(snap, url, m.sourceLine, m.date, mv, true);
       if (!dateE) { rejected.push({ fact: label, why: `no sentence the card accepts for this move states the date "${m.date}"` }); return null; }
       const instE = evidenceFor(snap, url, m.sourceLine, m.instrument, null, false) ?? (containsWord(m.sourceLine, m.instrument) ? { sentence: m.sourceLine, url } : null);
@@ -171,8 +175,8 @@ export function verifyAsk(snap: any, raw: Raw, rejected: { fact: string; why: st
         date: { value: m.date, src: dateE },
         instrument: { value: m.instrument, src: instE ?? { sentence: m.sourceLine, url }, verified: !!instE },
         face: faceE ? { value: m.face, src: faceE } : null,
-        funding: fact(m.funding, `funding of ${m.instrument}`), use: fact(m.use, `use of ${m.instrument}`), price: fact(m.price, `price of ${m.instrument}`),
-        offered: fact(m.offered, `instrument offered for ${m.instrument}`), consent: fact(m.consent, `consent solicitation with ${m.instrument}`),
+        funding: fact(m.funding, `funding of ${m.instrument}`, own), use: fact(m.use, `use of ${m.instrument}`, own), price: fact(m.price, `price of ${m.instrument}`, own),
+        offered: fact(m.offered, `instrument offered for ${m.instrument}`, own), consent: fact(m.consent, `consent solicitation with ${m.instrument}`, own),
       };
     }).filter(Boolean),
   };

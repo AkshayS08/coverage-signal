@@ -54,6 +54,7 @@ import type { CardFacts, Fact } from "../types";
 import { verifyAsk } from "./verifyFacts";
 import { factsForBuild } from "./factsForBuild";
 import { readSetDocsKey } from "../factsValidity";
+import { reproduceFacts } from "./factConsensus";
 
 // v2 (Nov 16): the moves window ends at the read set's latest filing, stated in the input, not at the brief date.
 // v3 (Nov 16): the input reads every read-set document (one deciding function), and refuses if one is missing.
@@ -213,52 +214,8 @@ export function inputFor(snap: any, read?: FactsRead): string {
   return [`Company: ${snap.company}`, `Anchor: ${anchor.form} for the period ended ${anchor.reportDate}, filed ${anchor.date}`, `Read through: ${through}`, ``, ...blocks].join("\n\n");
 }
 
-const squash = (s: string | null | undefined) => (s ?? "").toLowerCase().replace(/[\s $,]+/g, "");
-
-/** Keep only what all three verified asks state identically; everything else is residual, with the variation. */
-function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts, "cik" | "promptVersion" | "asks" | "costUsd" | "residual"> {
-  const keep = <T>(kind: string, key: (x: any) => string, pick: (x: any) => T, list: (a: Raw) => any[]): T[] => {
-    const per = asks.map((a) => new Map(list(a).map((x) => [key(x), x])));
-    const all = new Set(per.flatMap((m) => [...m.keys()]));
-    const out: T[] = [];
-    for (const k of all) {
-      const present = per.map((m) => m.get(k));
-      if (present.every(Boolean)) out.push(pick(present[0]));
-      else residual.push({ fact: `${kind}: ${k}`, why: `stated in ${present.filter(Boolean).length} of ${asks.length} asks`, variation: present.map((p, i) => `ask ${i + 1}: ${p ? "present" : "absent"}`) });
-    }
-    return out;
-  };
-  const f = (x: any): Fact => ({ value: x.value ?? x, src: x.src });
-  const schedule = keep("schedule", (x) => `${squash(x.period)}=${squash(x.amount)}`, (x) => ({ period: x.period, amount: { value: x.amount, src: x.src } }), (a) => a.schedule);
-  const subFacilities = keep("sub-facility", (x) => `${x.kind}=${squash(x.amount)}`, (x) => ({ facility: x.facility, kind: x.kind, amount: { value: x.amount, src: x.src } }), (a) => a.subFacilities);
-  const uncommitted = keep("uncommitted", (x) => `${squash(x.description)}=${squash(x.amount)}`, (x) => ({ description: { value: x.description, src: x.src }, amount: x.amount ? { value: x.amount, src: x.src } : null }), (a) => a.uncommitted);
-  const cash = keep("cash", (x) => `${squash(x.label)}=${squash(x.amount)}`, (x) => ({ label: { value: x.label, src: x.src }, amount: { value: x.amount, src: x.src } }), (a) => a.cash);
-  const faces = keep("face", (x) => `${squash(x.instrument)}=${squash(x.face)}`, (x) => ({ instrument: x.instrument, face: { value: x.face, src: x.src } }), (a) => a.faces);
-  const maturities = keep("maturity", (x) => `${squash(x.instrument)}=${squash(x.maturity)}`, (x) => ({ instrument: x.instrument, maturity: { value: x.maturity, src: x.src } }), (a) => a.maturities);
-  const moveKey = (x: any) => `${x.type}|${x.status}|${squash(x.date.value)}|${squash(x.face?.value)}|${squash(x.instrument.value).slice(0, 40)}`;
-  const moves = keep("move", moveKey, (x) => x, (a) => a.moves).map((m: any) => {
-    // A move reproduces on its core; each detail must reproduce on its own or it is dropped to the residual.
-    const detail = (k: "funding" | "use" | "price" | "offered" | "consent") => {
-      const vals = asks.map((a) => a.moves.find((y: any) => moveKey(y) === moveKey(m))?.[k]?.value ?? null);
-      if (vals.every((v: any) => squash(v) === squash(vals[0]))) return m[k] ? f(m[k]) : null;
-      residual.push({ fact: `${k} of the ${m.type} of ${m.instrument.value}`, why: "varied across asks", variation: vals.map((v: any, i: number) => `ask ${i + 1}: ${v ?? "null"}`) });
-      return null;
-    };
-    return { date: m.date, type: m.type, status: m.status, instrument: { value: m.instrument.value, src: m.instrument.src }, face: m.face, funding: detail("funding"), use: detail("use"), price: detail("price"), offered: detail("offered"), consent: detail("consent") };
-  });
-  const cps = asks.map((a) => a.commercialPaper);
-  let commercialPaper: CardFacts["commercialPaper"] = null;
-  if (cps.every(Boolean)) {
-    const field = (k: "programSize" | "outstanding" | "averageRate" | "backedBy") => {
-      const v = cps.map((c: any) => c[k]?.value ?? null);
-      if (v.every((x: any) => squash(x) === squash(v[0]))) return cps[0][k] ? f(cps[0][k]) : null;
-      residual.push({ fact: `commercial paper ${k}`, why: "varied across asks", variation: v.map((x: any, i: number) => `ask ${i + 1}: ${x ?? "null"}`) });
-      return null;
-    };
-    commercialPaper = { programSize: field("programSize"), outstanding: field("outstanding"), averageRate: field("averageRate"), backedBy: field("backedBy") };
-  } else if (cps.some(Boolean)) residual.push({ fact: "commercial paper program", why: `stated in ${cps.filter(Boolean).length} of ${asks.length} asks`, variation: cps.map((c, i) => `ask ${i + 1}: ${c ? "present" : "absent"}`) });
-  return { schedule, subFacilities, uncommitted, commercialPaper, cash, faces, maturities, moves };
-}
+// Nov 16 (Akshay): consensus across the three reads is by identity, not wording (factConsensus.ts).
+const reproduce = reproduceFacts;
 
 /**
  * THE FACTS STAGE FOR ONE CARD INPUT (Nov 16: shared by the script and the pipeline). Three asks over what it reads, each
