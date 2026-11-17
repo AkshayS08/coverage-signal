@@ -701,14 +701,16 @@ export function buildCard(i: CardInputs): Card {
   };
   /** Does `text` name the note `instrument`: its coupon, and its year where the instrument states one. */
   const sameNote = sameNoteOf;
-  const RETIRES = new Set(["redemption", "special call", "tender or repurchase", "repayment at maturity", "paydown"]);
+  // Nov 16: a tender offer buys the notes it is for: a repurchase (isRepurchase), and a retirement.
+  const RETIRES = new Set(["redemption", "special call", "tender or repurchase", "tender offer", "repayment at maturity", "paydown"]);
+  const isRepurchase = (type: string) => type === "tender or repurchase" || type === "tender offer";
   const TYPE_WORD: Record<string, [string, string]> = {
     issuance: ["Issued", "Issuance announced"], redemption: ["Redeemed", "Redemption announced"], "special call": ["Special call redemption", "Special call announced"],
     "tender or repurchase": ["Repurchased", "Repurchase announced"], "repayment at maturity": ["Repaid at maturity", "Repayment announced"],
     "facility entry": ["Entered", "Entry announced"], "facility amendment": ["Amended", "Amendment announced"], "facility termination": ["Terminated", "Termination announced"],
     refinancing: ["Refinanced", "Refinancing announced"], draw: ["Drew on", "Draw announced"], paydown: ["Repaid", "Repayment announced"], "incremental add-on": ["Incremental add-on", "Add-on announced"],
     // Nov 16: liability-management events.
-    "exchange offer": ["Exchanged", "Exchange offer announced"], "tender offer": ["Tendered", "Tender offer announced"], "consent solicitation": ["Consents received", "Consent solicitation announced"],
+    "exchange offer": ["Exchanged", "Exchange offer announced"], "tender offer": ["Repurchased", "Tender offer announced"], "consent solicitation": ["Consents received", "Consent solicitation announced"],
   };
   const movesAll: Move[] = [];
   for (const m of facts?.moves ?? []) {
@@ -1085,7 +1087,7 @@ export function buildCard(i: CardInputs): Card {
     sources.forEach((s, n) => { if (n) out.push(t(n === sources.length - 1 ? " and " : ", ")); out.push({ k: "label", t: s.stated.toLowerCase(), stated: s.stated, src: where }); });
     return out;
   };
-  const RETIRE_VERB: Record<string, string> = { redemption: "redeem", "special call": "redeem", "tender or repurchase": "repurchase", "repayment at maturity": "repay", paydown: "repay" };
+  const RETIRE_VERB: Record<string, string> = { redemption: "redeem", "special call": "redeem", "tender or repurchase": "repurchase", "tender offer": "repurchase", "repayment at maturity": "repay", paydown: "repay" };
   const useClause = (m: Move): Line => {
     if (m.retires.length) {
       const rs = m.retires;
@@ -1192,7 +1194,7 @@ export function buildCard(i: CardInputs): Card {
   for (const it of allDebtItems) {
     for (const m of movesAll.filter((x) => RETIRES.has(x.type) && sameNote(x.instrument, it.name) && (!it.maturity || !/\b20\d\d\b/.test(x.instrument) || x.instrument.includes(it.maturity.date.slice(0, 4))))) {
       const verb = (TYPE_WORD[m.type]?.[0] ?? m.type).toLowerCase();
-      if (m.status === "pending") { it.moveFlags = [...(it.moveFlags ?? []), t(" · "), { k: "label", t: `pending ${({ "tender or repurchase": "repurchase", "repayment at maturity": "repayment", paydown: "repayment" } as Record<string, string>)[m.type] ?? "redemption"}`, stated: m.instSeg.k === "label" ? m.instSeg.stated : m.instrument, src: m.instSeg.k === "label" ? m.instSeg.src : src(m.sentence, m.url) }, ...(m.face ? [t(" "), m.face] : []), t(", not yet confirmed by a filing")]; continue; }
+      if (m.status === "pending") { it.moveFlags = [...(it.moveFlags ?? []), t(" · "), { k: "label", t: `pending ${({ "tender or repurchase": "repurchase", "tender offer": "tender offer", "repayment at maturity": "repayment", paydown: "repayment" } as Record<string, string>)[m.type] ?? "redemption"}`, stated: m.instSeg.k === "label" ? m.instSeg.stated : m.instrument, src: m.instSeg.k === "label" ? m.instSeg.src : src(m.sentence, m.url) }, ...(m.face ? [t(" "), m.face] : []), t(", not yet confirmed by a filing")]; continue; }
       const prior = moneyIn(m.sentence).filter((x) => new RegExp(`${x.raw.replace(/[$.*+?^{}()|[\]\\]/g, "\\$&")}\\s+in\\s+outstanding principal`, "i").test(m.sentence));
       if (it.basis === "carrying" && m.inPeriod && m.faceUsd && prior.length === 1) {
         const before = { printed: prior[0].raw, usd: prior[0].moneyValue!, src: src(m.sentence, m.url) };
@@ -1923,7 +1925,7 @@ export function buildCard(i: CardInputs): Card {
       // v3.2: a partial retirement inside the period shows what it retired and what remains, still not refinanced.
       const past = rs.filter((m) => m.inPeriod);
       if (past.length) {
-        const word = past.every((m) => m.fundedBy) ? "refinanced" : past.every((m) => m.type === "tender or repurchase") ? `repurchased in ${past[0].sort.slice(0, 4)}` : `retired in ${past[0].sort.slice(0, 4)}`;
+        const word = past.every((m) => m.fundedBy) ? "refinanced" : past.every((m) => isRepurchase(m.type)) ? `repurchased in ${past[0].sort.slice(0, 4)}` : `retired in ${past[0].sort.slice(0, 4)}`;
         return { text: [fig(past.reduce((a, m) => a + m.faceUsd!, 0), past), t(` ${word} · `), { k: "computed", t: displayUsd(faceUsdOf(it), false, dp(partOf(it))), usd: faceUsdOf(it), parts: partOf(it) }, t(" remains, not yet refinanced")], tone: "orange" };
       }
       return { text: [t("Not yet refinanced")], tone: "orange" };
@@ -1940,7 +1942,7 @@ export function buildCard(i: CardInputs): Card {
         : { text: [t("Refinanced · "), dateOf(m0, `redeemed ${monthYear(m0.sort)}`)], tone: "refinanced" };
     }
     const remainFig: Segment = { k: "computed", t: displayUsd(remains, false, dp(partOf(it))), usd: remains, parts: [...partOf(it), ...rs.filter((m) => !m.inPeriod).map((m) => ({ printed: (m.face as any).printed, usd: -m.faceUsd!, src: (m.face as any).src }))] };
-    const word = funded ? "refinanced" : rs.every((m) => m.type === "tender or repurchase") ? `repurchased in ${rs[0].sort.slice(0, 4)}` : `retired in ${rs[0].sort.slice(0, 4)}`;
+    const word = funded ? "refinanced" : rs.every((m) => isRepurchase(m.type)) ? `repurchased in ${rs[0].sort.slice(0, 4)}` : `retired in ${rs[0].sort.slice(0, 4)}`;
     return { text: [fig(retired, rs), t(` ${word} · `), remainFig, t(" remains")], tone: funded ? "pending" : "neutral" };
   };
   const notStatedPhrase = (it: Item) => (!it.labels.seniority && !it.labels.security ? "Seniority not stated" : !it.labels.security ? "Security not stated" : !it.labels.seniority ? "Seniority not stated" : null);
@@ -2017,7 +2019,7 @@ export function buildCard(i: CardInputs): Card {
     const earlier = notYetItems.length === 1 ? retirementsOf(notYetItems[0]).filter((m) => m.inPeriod) : [];
     if (earlier.length) {
       const usd = earlier.reduce((a, m) => a + m.faceUsd!, 0);
-      const word = earlier.every((m) => m.fundedBy) ? "refinanced" : earlier.every((m) => m.type === "tender or repurchase") ? "repurchased" : "retired";
+      const word = earlier.every((m) => m.fundedBy) ? "refinanced" : earlier.every((m) => isRepurchase(m.type)) ? "repurchased" : "retired";
       headline.push(t("; the other "), { k: "computed", t: displayUsd(usd, false, 0), usd, parts: earlier.map((m) => ({ printed: (m.face as any).printed, usd: m.faceUsd!, src: (m.face as any).src })) }, t(` ${earlier.length === 1 && usd > 0 ? "was" : "were"} ${word} in ${monthYear(earlier[0].sort)}`));
     }
     headline.push(t("."));
@@ -2208,7 +2210,7 @@ export function buildCard(i: CardInputs): Card {
     if (m.type === "facility amendment") return "Amended";
     if (m.type === "repayment at maturity") return "Repaid at maturity";
     if (m.type === "paydown") return "Repaid";
-    if (m.type === "tender or repurchase") return "Repurchased";
+    if (isRepurchase(m.type)) return "Repurchased";
     if (m.type === "special call" || m.type === "redemption") return m.fundedBy ? "Refinanced" : m.status === "pending" ? "Redemption announced, awaiting confirmation in a filing" : "Redeemed";
     if (m.type === "issuance") return `Issued, confirmed by ${formOfUrl(confirmingUrl(m))}`;
     if (m.type === "draw") return "Drew";
@@ -2219,7 +2221,7 @@ export function buildCard(i: CardInputs): Card {
     const o = m.offeredFact;
     if (!o) return [];
     const where = factSrc(o);
-    return [t("for new "), { k: "label", t: o.value.replace(/[\s ]+/g, " ").trim().toLowerCase(), stated: filerSpan(o.value, where.sentence), src: where }];
+    return [t("for new "), { k: "label", t: o.value.replace(/[\s ]+/g, " ").trim().replace(/^(?:newly[\s-]+issued|new)\s+/i, "").toLowerCase(), stated: filerSpan(o.value, where.sentence), src: where }];
   }
   /** Nov 16: a consent solicitation stated with an exchange or tender: the facts' own fact, else the move's sentence. */
   function consentClause(m: Move): Line {
@@ -2247,7 +2249,7 @@ export function buildCard(i: CardInputs): Card {
     const pr = priceClause(m).filter((x) => !(x.k === "text" && x.t === ", "));
     if (pr.length) {
       const rest = [...fundClause(m), ...useClause(m), ...m.extra];
-      const verb = m.status === "pending" ? "At" : m.type === "tender or repurchase" ? "Repurchased" : m.type === "issuance" ? "Issued" : "Redeemed";
+      const verb = m.status === "pending" ? "At" : isRepurchase(m.type) ? "Repurchased" : m.type === "issuance" ? "Issued" : "Redeemed";
       return [t(`${verb} `), ...pr, t("."), ...(rest.length ? [t(" "), ...capFirst(rest.map((x, n) => (n === 0 && x.k === "text" ? { ...x, t: x.t.replace(/^,\s*funded by/, "with") } : x))), t(".")] : [])];
     }
     // Nov 16: an exchange or tender states what it offers and the consent solicitation made with it.

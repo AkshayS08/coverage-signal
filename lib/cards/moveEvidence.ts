@@ -12,7 +12,7 @@
  */
 import { couponsIn } from "./labels";
 
-export const RETIRING_TYPES = new Set(["redemption", "special call", "tender or repurchase", "repayment at maturity", "paydown"]);
+export const RETIRING_TYPES = new Set(["redemption", "special call", "tender or repurchase", "tender offer", "repayment at maturity", "paydown"]);
 /** A document about a move, not the move: issuing a notice dates the notice. */
 export const NOTICE = /\bnotice\b|\bpress release\b|\bannounc\w*|\bmay\s+redeem\b|\bintends?\s+to\b/i;
 /** A day that has not happened as a completed move's day (ruling A2). */

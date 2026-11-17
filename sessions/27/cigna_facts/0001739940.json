@@ -1,0 +1,297 @@
+{
+ "cik": "0001739940",
+ "anchorUrl": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm",
+ "readSet": "26512777ed5c80e9f5615526",
+ "promptVersion": 3,
+ "asks": 3,
+ "costUsd": 0.171722,
+ "schedule": [
+  {
+   "period": "2026",
+   "amount": {
+    "value": "$ 550",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "2027",
+   "amount": {
+    "value": "$ 2,359",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "2028",
+   "amount": {
+    "value": "$ 3,800",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "2029",
+   "amount": {
+    "value": "$ 1,000",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800 2029 $ 1,000",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "2030",
+   "amount": {
+    "value": "$ 2,400",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800 2029 $ 1,000 2030 $ 2,400",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  },
+  {
+   "period": "Maturities after 2030",
+   "amount": {
+    "value": "$ 21,485",
+    "src": {
+     "sentence": " Maturities of outstanding long-term debt as of December 31, 2025 are as follows: (In millions) Scheduled Maturities (1) 2026 $ 550 2027 $ 2,359 2028 $ 3,800 2029 $ 1,000 2030 $ 2,400 Maturities after 2030 $ 21,485",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  }
+ ],
+ "subFacilities": [
+  {
+   "facility": "Credit Agreement",
+   "kind": "letter-of-credit",
+   "amount": {
+    "value": "$ 500 million",
+    "src": {
+     "sentence": "The Company can borrow up to $ 6.5 billion under the Credit Agreement for general corporate purposes, with up to $ 500 million available for issuance of letters of credit.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000006/ci-20251231.htm"
+    }
+   }
+  }
+ ],
+ "uncommitted": [],
+ "commercialPaper": {
+  "programSize": {
+   "value": "$ 6.5 billion",
+   "src": {
+    "sentence": "Under our commercial paper program, we may issue short-term, unsecured commercial paper notes privately placed on a discounted basis through certain broker-dealers at any time not to exceed an aggregate amount of $ 6.5 billion.",
+    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+   }
+  },
+  "outstanding": null,
+  "averageRate": {
+   "value": "3.92 %",
+   "src": {
+    "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+   }
+  },
+  "backedBy": {
+   "value": "revolving credit agreement",
+   "src": {
+    "sentence": "As of June 30, 2026, we had $6.5 billion of undrawn committed capacity under our revolving credit agreement (these amounts are available for general corporate purposes, including providing liquidity support for our commercial paper program)",
+    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+   }
+  }
+ },
+ "cash": [],
+ "faces": [],
+ "maturities": [],
+ "moves": [],
+ "residual": [
+  {
+   "fact": "uncommitted Accounts Receivable Factoring Facilities",
+   "why": "not verified: its sentence does not state description \"Accounts Receivable Factoring Facilities\"",
+   "variation": []
+  },
+  {
+   "fact": "uncommitted incremental add-on capacity under Credit Agreement",
+   "why": "not verified: its sentence does not state description \"incremental add-on capacity under Credit Agreement\"",
+   "variation": []
+  },
+  {
+   "fact": "cash cash and short-term investments held by parent company or certain non-regulated subsidiaries",
+   "why": "not verified: its sentence does not state label \"cash and short-term investments held by parent company or certain non-regulated subsidiaries\"",
+   "variation": []
+  },
+  {
+   "fact": "move issuance 4.875% Senior Notes due 2032 September 4, 2025",
+   "why": "not verified: its sentence is in no document the card holds",
+   "variation": []
+  },
+  {
+   "fact": "move issuance 5.250% Senior Notes due 2036 September 4, 2025",
+   "why": "not verified: its sentence is in no document the card holds",
+   "variation": []
+  },
+  {
+   "fact": "move issuance 6.000% Senior Notes due 2056 September 4, 2025",
+   "why": "not verified: its sentence is in no document the card holds",
+   "variation": []
+  },
+  {
+   "fact": "cash: cashandshort-terminvestments=6.6billion",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "face: 1.250%seniornotes=550million",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  },
+  {
+   "fact": "face: 1000million4.500%notesdueseptember2030=1000million",
+   "why": "stated in 1 of 3 asks",
+   "variation": [
+    "ask 1: absent",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "maturity: 1.250%seniornotes=march2026",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  },
+  {
+   "fact": "maturity: 4.500%seniornotes=september152030",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  },
+  {
+   "fact": "maturity: 4.875%seniornotes=september152032",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  },
+  {
+   "fact": "maturity: 5.250%seniornotes=january152036",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  },
+  {
+   "fact": "maturity: 6.000%seniornotes=january152056",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  },
+  {
+   "fact": "maturity: 1000million4.500%notesdueseptember2030=september152030",
+   "why": "stated in 1 of 3 asks",
+   "variation": [
+    "ask 1: absent",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "maturity: 1250million4.875%notesdueseptember2032=september152032",
+   "why": "stated in 1 of 3 asks",
+   "variation": [
+    "ask 1: absent",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "maturity: 1500million5.250%notesduejanuary2036=january152036",
+   "why": "stated in 1 of 3 asks",
+   "variation": [
+    "ask 1: absent",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "maturity: 750million6.000%notesduejanuary2056=january152056",
+   "why": "stated in 1 of 3 asks",
+   "variation": [
+    "ask 1: absent",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "move: issuance|completed|september42025|1000000000|4.500%seniornotesdue2030",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  },
+  {
+   "fact": "move: repayment at maturity|completed|march2026|550million|1.250%seniornotes",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: present",
+    "ask 3: absent"
+   ]
+  },
+  {
+   "fact": "move: issuance|completed|september42025|1000million|1000million4.500%notesdueseptember2030",
+   "why": "stated in 1 of 3 asks",
+   "variation": [
+    "ask 1: absent",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "move: repayment at maturity|completed|march2026|550million|550million1.250%notesduemarch2026",
+   "why": "stated in 1 of 3 asks",
+   "variation": [
+    "ask 1: absent",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "commercial paper outstanding",
+   "why": "varied across asks",
+   "variation": [
+    "ask 1: $ 1.0 billion",
+    "ask 2: $ 1.0 billion",
+    "ask 3: approximately $ 1.0 billion"
+   ]
+  }
+ ]
+}

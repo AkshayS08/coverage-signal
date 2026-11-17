@@ -72,6 +72,30 @@
   {
    "key": "answer/0001108109/card-facts/rs-1516560e4b7ebe32df94944c/cf-v2-ask3.json",
    "why": "CHS refresh of Nov 16 (read set after the Nov 10 8-K): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001108109/card-facts/rs-1516560e4b7ebe32df94944c/cf-v3-ask1.json",
+   "why": "CHS refresh of Nov 16 (read set after the Nov 10 8-K): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001108109/card-facts/rs-1516560e4b7ebe32df94944c/cf-v3-ask2.json",
+   "why": "CHS refresh of Nov 16 (read set after the Nov 10 8-K): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001108109/card-facts/rs-1516560e4b7ebe32df94944c/cf-v3-ask3.json",
+   "why": "CHS refresh of Nov 16 (read set after the Nov 10 8-K): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001739940/card-facts/rs-26512777ed5c80e9f5615526/cf-v3-ask1.json",
+   "why": "Cigna card facts re-read Nov 16 over its read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001739940/card-facts/rs-26512777ed5c80e9f5615526/cf-v3-ask2.json",
+   "why": "Cigna card facts re-read Nov 16 over its read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001739940/card-facts/rs-26512777ed5c80e9f5615526/cf-v3-ask3.json",
+   "why": "Cigna card facts re-read Nov 16 over its read set (v3): awaiting Akshay's review"
   }
  ]
 }

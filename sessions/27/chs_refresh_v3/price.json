@@ -1,0 +1,30 @@
+{
+ "pricedAt": "2026-11-17T00:58:12.412Z",
+ "kind": "priced",
+ "decision": {
+  "kind": "run",
+  "declaredUsd": 0.25,
+  "allowanceLeftUsd": 1.75
+ },
+ "price": {
+  "worstUsd": 0.243564,
+  "declaredUsd": 0.25,
+  "expectedRangeUsd": [
+   0.5,
+   0.9
+  ],
+  "calls": [
+   {
+    "stage": "card facts",
+    "sample": "facts",
+    "count": 3,
+    "worstEachUsd": 0.081188
+   }
+  ]
+ },
+ "company": {
+  "cik": "0001108109",
+  "title": "COMMUNITY HEALTH SYSTEMS INC",
+  "ticker": "CYH"
+ }
+}

@@ -62,6 +62,27 @@ const card = cardWith(factsWith([exchange]));
 const lines = (card.v3!.call?.notes ?? []).map(txt);
 assert(lines.includes(want), `[N3] CHS call box: ${lines.find((l) => /announced/.test(l)) ?? "(no line)"}`);
 
+// N3b (Nov 16, the v3 facts): the filer's "newly issued 10.250% …" reads "for new 10.250% …", never "new newly issued".
+const card2 = cardWith(factsWith([{ ...exchange, offered: fact("newly issued 10.250% Senior Secured Notes due 2035") }]));
+const lines2 = (card2.v3!.call?.notes ?? []).map(txt);
+assert(lines2.includes(want), `[N3b] with the offered instrument as the filer words it ("newly issued …"): ${lines2.find((l) => /announced/.test(l)) ?? "(no line)"}`);
+
+// N6 (Nov 16, the v3 facts): a completed tender offer retires what it bought, as a repurchase does: the table states
+// what remains. Control: the v3 CHS card as first rendered lost "$689MM remains" on the 4¾% notes.
+const v3facts = read("sessions/27/chs_refresh_v3/facts.json");
+const tcard = cardWith({ ...v3facts, readSet: factsReadSetOf(chs.result) });
+const row = (c: any, re: RegExp) => (c.v3.table?.rows ?? []).find((r: any) => re.test(r.name));
+const rowText = (r: any) => (r?.status ? txt(r.status.text) : "");
+assert(/\$689MM remains/.test(rowText(row(tcard, /4 ¾% Senior Secured Notes due 2031/))) && /\$1,549MM remains/.test(rowText(row(tcard, /10 ⅞% Senior Secured Notes due 2032/))) && /~\$454MM/.test(rowText(row(tcard, /10 ⅞% Senior Secured Notes due 2032/))), `[N6] a completed tender offer is a retirement: 4¾% 2031 "${rowText(row(tcard, /4 ¾%/))}"; 10⅞% 2032 "${rowText(row(tcard, /10 ⅞% Senior Secured Notes due 2032/))}"`);
+const firstV3 = read("sessions/27/chs_refresh_v3/card.json");
+assert(!/remains/.test(rowText(row(firstV3, /4 ¾% Senior Secured Notes due 2031/))), `[N6 control] the v3 card as first rendered: 4¾% 2031 "${rowText(row(firstV3, /4 ¾%/))}"`);
+
+// N4b: a results announcement is not pending, and a cross-reference ("For additional information … see …") is not a move.
+const all = locateMoveSentences(Object.entries(chs.docs as Record<string, { label: string; text: string }>).map(([url, d]) => ({ url, label: d.label, text: d.text })), "2026-01-01", BRIEF);
+const results = all.find((m) => /early tender results/.test(m.sentence));
+const xref = all.find((m) => /^For additional information/.test(m.sentence));
+assert((!results || results.status === "completed") && !xref, `[N4b] the May 6 tender results: ${results ? results.status : "not located"}; the cross-reference: ${xref ? "located" : "not located"}`);
+
 // N4: the possible-move net
 const located = locateMoveSentences([{ url: U8K, label: "8-K 2026-11-10", text: chs.docs[U8K].text }], "2026-01-01", BRIEF);
 const hit = located.find((m) => m.sentence.includes("offer to exchange"));

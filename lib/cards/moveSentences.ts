@@ -45,10 +45,12 @@ const KINDS: { kind: LocatedMove["kind"]; re: RegExp }[] = [
   { kind: "facility", re: new RegExp(String.raw`\bused\s+(?:the\s+)?(?:net\s+)?proceeds\b${GAP(400)}\brepay\b${GAP(200)}\b(?:revolving credit facility|revolver)\b`, "i") },
 ];
 const CONDITIONAL = /\b(?:may|will|would|could|can|shall|might)\s+(?:be\s+)?(?:\w+\s+){0,2}(?:redeem|repurchase|repay|retire|prepay|issue|amend|refinance|terminate)|\bto be (?:redeemed|repaid|repurchased|retired|issued)\b/i;
-const NOT_A_STATEMENT = /\bexhibit\b|^description\b/i;
+// Nov 16: a cross-reference ("For additional information regarding … see the Current Reports …") points to a move.
+const NOT_A_STATEMENT = /\bexhibit\b|^description\b|^for (?:additional|further|more) information\b/i;
 /** Nov 16: announced or intended, and not said to be done. */
 const PENDING = /\b(?:intends?|expects?|plans?)\s+to\b|\bannounc\w*|\bcommenc\w*|\blaunch\w*/i;
-const DONE = /\b(?:completed|consummated|settled|expired|closed)\b/i;
+// Nov 16: results of a transaction already announced ("the early tender results of its previously announced …") are done.
+const DONE = /\b(?:completed|consummated|settled|expired|closed)\b|\bresults\b|\bpreviously announced\b/i;
 /** A sentence that opens with its date: "On November 9, 2026, …". */
 const OPENING_DATE = new RegExp(String.raw`^(?:On|In)\s+((?:${MONTHS.join("|")})\s+(?:\d{1,2},\s*)?\d{4}),`, "i");
 

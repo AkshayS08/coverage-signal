@@ -32,7 +32,7 @@
  *      --price                     count every ask's input pre-call (spend guard, price-only) and stop: $0
  *      --limit <usd>               with --bill: the approved ceiling the guard holds, pre-call
  */
-import { guardedCreate, setPriceOnly, setSpendLimits, pricedCalls, asKind } from "../../agent/spendGuard";
+import { guardedCreate, setPriceOnly, setSpendLimits, pricedCalls, asKind, madeCalls } from "../../agent/spendGuard";
 import { loadEnvQuietly } from "../../cache/loadEnv";
 loadEnvQuietly();
 import Anthropic from "@anthropic-ai/sdk";
@@ -383,4 +383,6 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async ()
     if (spend.totalUsd > BAND_PER_NAME) { console.error(`STOPPING: ${p.s.company} cost $${spend.totalUsd.toFixed(4)}, over its $${BAND_PER_NAME} band. No further name billed.`); process.exit(1); }
   }
   console.log(`\nSPEND: $${spent.toFixed(4)} across ${plan.length} names, each measured as it finished.`);
+  // Nov 16: spend per call, against the worst case counted before it.
+  for (const c of madeCalls()) console.log(`  call: ${c.kind} ${c.model} ${c.inputTokens} in -> worst $${c.worstUsd.toFixed(4)}, actual $${c.actualUsd.toFixed(4)}`);
 })();
