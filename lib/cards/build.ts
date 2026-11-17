@@ -53,7 +53,7 @@ import { antecedentWindow, paragraphSentences, REFERS, HEADING } from "./anteced
 import { plainFilingName, READ_WHEN, READ_FOR_CARD } from "./filingWords";
 import { factsValidFor } from "./factsValidity";
 import { REFRESH_TRIGGER_ITEMS, movesWindowStart } from "../cache/lastBuild";
-import { quoteKey, statesSameMove, SCHEDULED } from "./moveEvidence";
+import { quoteKey, quoteFound, statesSameMove, SCHEDULED } from "./moveEvidence";
 
 export interface CardInputs {
   result: CompanyResult;
@@ -632,6 +632,8 @@ export function buildCard(i: CardInputs): Card {
     altSrc?: Source;
     /** Nov 4: a scheduled day for a completed move, shown labelled, never as its date. */
     scheduled?: Segment;
+    /** Nov 16 (ruling A2): a completed move dated by its completion shows its launch, where a sentence states it. */
+    launched?: Segment;
   };
   // Nov 14: the moves window starts where the read window does (lastBuild.movesWindowStart, one home).
   const fyStart = movesWindowStart(periodEnd);
@@ -788,6 +790,41 @@ export function buildCard(i: CardInputs): Card {
       mv.when = `${MONTH_NAMES[mo - 1]} ${h.day}, ${y}`;
       mv.sort = iso;
       mv.dateSeg = { k: "label", t: displayDate(iso, "day"), stated: h.text, src: h.src };
+    }
+  }
+  // SESSION 27 (Akshay, Nov 16) — RULING A2, COMPLETED-MOVE DATING IN CODE. A completed move is dated by its completion:
+  // where its own sentence, or a read-set sentence stating the same move (its verb and its note), states that it was
+  // completed on a later day in the window, that day dates it ("… a tender offer that launched on April 22, 2026, and
+  // was completed on May 6, 2026"). Its launch is shown only where that sentence states it ("launched Apr 22"). A
+  // pending move is never dated by a completion (completedDating.test).
+  {
+    const MN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+    const DAY = `(${MN.join("|")})\\s+(\\d{1,2}),\\s*(20\\d\\d)`;
+    const COMPLETED_ON = new RegExp(`\\b(?:was|were|been)\\s+(?:completed|consummated|settled|closed)\\s+(?:on\\s+)?${DAY}`, "i");
+    const LAUNCHED_ON = new RegExp(`\\b(?:launched|commenced)\\s+(?:on\\s+)?${DAY}`, "i");
+    const isoOf = (m: RegExpExecArray) => `${m[3]}-${String(MN.indexOf(m[1]) + 1).padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+    for (const mv of movesAll) {
+      if (mv.status !== "completed") continue;
+      const own: Source = { ...src(mv.sentence, mv.url) };
+      // Another sentence states THIS move only when it names its note and its own amount or its own date: a different
+      // transaction in the same notes (CHS's Feb 2 special call and its May tender, both of the 10⅞% notes) is not it.
+      const face = mv.face && mv.face.k === "figure" ? mv.face.printed : null;
+      const ownDate = mv.dateSeg.k === "label" ? mv.dateSeg.stated : mv.when;
+      const statesThis = (x: string) => (!!face && quoteFound(x, face.replace(/^approximately\s+/i, ""))) || quoteFound(x, ownDate);
+      const others = moveDocs().flatMap((u) => sentencesOf(u).filter((x) => x.sentence !== mv.sentence && statesSameMove(x.sentence, mv, i.textByUrl.get(u) ?? "") && statesThis(x.sentence)));
+      for (const s of [own, ...others]) {
+        const c = COMPLETED_ON.exec(s.sentence);
+        if (!c) continue;
+        const iso = isoOf(c);
+        if (iso <= mv.sort || iso > briefDate) continue;
+        const l = LAUNCHED_ON.exec(s.sentence);
+        if (l && isoOf(l) === mv.sort) mv.launched = { k: "label", t: `launched ${SHORT[MN.indexOf(l[1])]} ${Number(l[2])}`, stated: l[0], src: s };
+        mv.when = `${c[1]} ${Number(c[2])}, ${c[3]}`;
+        mv.sort = iso;
+        mv.dateSeg = { k: "label", t: displayDate(iso, "day"), stated: `${c[1]} ${c[2]}, ${c[3]}`, src: s };
+        break;
+      }
     }
   }
   // FUNDED BY / USED TO, both ways. A retirement whose sentence spends "net
@@ -1877,7 +1914,7 @@ export function buildCard(i: CardInputs): Card {
   /** A move's date as the card shows it: "Sept 22, 2026" where a day is stated, "May 2026" where only a month is. */
   const whenShort = (m: Move): string => (/\d{1,2},\s*\d{4}/.test(m.when) ? shortDate(m.sort) : /^[A-Z][a-z]+ \d{4}$/.test(m.when) ? `${MON[Number(m.sort.slice(5, 7)) - 1]} ${m.sort.slice(0, 4)}` : m.when);
   /** Nov 4: " (scheduled for Sept 23)" beside a completed move's month, where only a scheduled day is stated. */
-  const schedNote = (m: Move): Line => (m.scheduled ? [t(" (scheduled for "), m.scheduled, t(")")] : []);
+  const schedNote = (m: Move): Line => [...(m.scheduled ? [t(" (scheduled for "), m.scheduled, t(")")] : []), ...(m.launched ? [t(" ("), m.launched, t(")")] : [])];
   const dateOf = (m: Move, text?: string): Segment => (m.dateSeg.k === "label" ? { ...m.dateSeg, t: text ?? whenShort(m) } : t(text ?? whenShort(m)));
   /** First letter up, for display only: what a label states is unchanged. */
   const capFirst = (l: Line): Line => l.map((x, n) => (n === 0 ? { ...x, t: x.t.replace(/^[,;\s]+/, "").replace(/^./, (c) => c.toUpperCase()) } : x));
