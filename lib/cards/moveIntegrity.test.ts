@@ -42,8 +42,8 @@ console.log("\n=== controls (Tenet's refresh, each defect re-introduced) ===");
 // Control material: read from every card, whatever the scope (releaseGate.test R4).
 const ten = everyShownCard().find((x) => x.label === "review" && x.cik === "0000070318") as any;
 const clone = (o: any) => JSON.parse(JSON.stringify(o));
-const c1 = clone(ten.input); c1.debtEightKs = [...(c1.debtEightKs ?? []), { form: "8-K", filingDate: "2026-09-08", items: "8.01", url: "https://example.invalid/8k.htm" }];
-assert(moveIntegrityViolations(ten.card, c1).M1.length > 0, `[M1 control] a debt-item 8-K since the 10-K missing from the documents is flagged`);
+const c1 = clone(ten.input); c1.result.recordedReadSet = [...(c1.result.recordedReadSet ?? []), { form: "8-K", filingDate: "2026-09-08", accessionNumber: "x", contentHash: "x", via: "base", url: "https://example.invalid/8k.htm" }];
+assert(moveIntegrityViolations(ten.card, c1).M1.length > 0, `[M1 control] a read-set document missing from the documents is flagged`);
 const c2 = clone(ten.card); for (const m of c2.v3.moves) for (const s of m.meta) if (s.k === "label" && /Sept(ember)? 2[23], 2026/.test(s.t)) { s.t = "Sept 2026"; s.stated = "September 2026"; }
 assert(moveIntegrityViolations(c2, ten.input).M2.length > 0, `[M2 control] "Sept 2026" where a held document states the day is flagged`);
 const c3 = clone(ten.card); c3.v3.moves[0].detail = [{ k: "label", t: "use of the proceeds stated", stated: "finance", src: { sentence: "x", url: "u", doc: "d" } }];

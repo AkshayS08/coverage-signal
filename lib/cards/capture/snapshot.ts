@@ -30,7 +30,6 @@ import { fetchXbrlCash } from "../../fetch/xbrlDebt";
 import { locatorFor, scaledAmountString } from "../../agent/tableScale";
 import { assemblePosition, parseMoneyAmount } from "../../events/position";
 import { briefDateArg } from "../briefDate";
-import { debtEightKsSinceTenK } from "../../cache/readSet";
 
 const ROOT = process.cwd();
 const OUT = join(ROOT, "lib", "cards", "inputs");
@@ -77,14 +76,12 @@ export async function captureCardInput(result: any, opts: { fingerprint: string;
   for (const r of assemblePosition(result, new Date(`${BRIEF}T00:00:00Z`)).rows) if (r.citedUrl && !urls.has(r.citedUrl)) urls.set(r.citedUrl, r.citedUrl.split("/").pop()!);
   for (const f of dm.facilities ?? []) for (const u of [f.citedUrl, ...Object.values(f.figureSources ?? {})] as string[]) if (u && !urls.has(u)) urls.set(u, u.split("/").pop()!);
   if (dm.priorPeriodBase?.filingUrl) urls.set(dm.priorPeriodBase.filingUrl, `10-K for ${dm.priorPeriodBase.periodOfReport}`);
-  // Session 27 (Nov 1): debt-item 8-Ks filed since the latest 10-K stay in the read set for move detail (date, amount,
-  // funding), even when they predate the anchor: Tenet's Sept 8 and Sept 22 8-Ks state the days its 10-Q dates to a month.
   const yearBack = `${Number(BRIEF.slice(0, 4)) - 1}${BRIEF.slice(4)}`;
   const recent = await liveFilingsBetween(result.cik, yearBack, BRIEF);
-  const lastTenK = recent.find((x) => x.form === "10-K")?.filingDate ?? yearBack;
-  // Decision 11 (Nov 9): the one deciding function, shared with the facts stage.
-  const debtEightKs = debtEightKsSinceTenK(recent, lastTenK);
-  for (const x of debtEightKs) if (!urls.has(x.primaryDocUrl)) urls.set(x.primaryDocUrl, `${x.form} ${x.filingDate}`);
+  // Nov 16 (Akshay): ONE DECIDING FUNCTION FOR DOCUMENTS. The card input holds every document of the build's read set
+  // (readSetOf, as the loop recorded it), and nothing else decides what is read: the facts stage reads exactly these.
+  const readSet = (result.recordedReadSet ?? []).filter((r: any) => r.via === "base").map((r: any) => ({ form: r.form, filingDate: r.filingDate, url: r.url as string }));
+  for (const x of readSet) if (!urls.has(x.url)) urls.set(x.url, `${x.form} ${x.filingDate}`);
   const docs: Record<string, { label: string; text: string }> = {};
   for (const [u, label] of urls) docs[u] = { label, text: (await getFilingParagraphs(u)).text };
   // Session 27 (Nov 9): seniority and security are standing terms. A note's seniority statement not in the anchor is
@@ -107,7 +104,8 @@ export async function captureCardInput(result: any, opts: { fingerprint: string;
     cash: { usd: xc.value, printed: pc?.printed ?? null, printedLine: pc?.line ?? null, reason: xc.value === null ? xc.unavailableReason : pc ? null : "the tagged figure appears on no printed balance-sheet line" },
     periodSentence: periodSentenceIn(docs[anchor.url].text, anchor.reportDate),
     laterFilings: later.map((x) => ({ form: x.form, filingDate: x.filingDate, items: x.items, url: x.primaryDocUrl })),
-    debtEightKs: debtEightKs.map((x) => ({ form: x.form, filingDate: x.filingDate, items: x.items, url: x.primaryDocUrl })),
+    // The read set this input holds: only documents whose text it holds (a document it could not read is not recorded).
+    readSet: readSet.filter((x: any) => docs[x.url]),
     result,
     docs,
   };

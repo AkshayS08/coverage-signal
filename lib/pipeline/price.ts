@@ -59,19 +59,15 @@ export async function priceColdBuild(company: string, rs: ResolvedReadSet, uncac
         for (const s of uncachedSamples) calls.push({ stage: "referenced 10-K note", sample: s ?? "canonical", count: 1, worstEachUsd: note });
       }
     }
-    // The card-facts stage over what it will read (Nov 16): the read set's own documents through its latest filing — the
-    // anchor, the filings after it, the debt-item 8-Ks, and the 10-K note a 10-Q anchor directs to — fetched now, $0.
-    // Its input before extraction lacks only the cited sentences outside these documents.
+    // The card-facts stage over what it will read (Nov 16): every read-set document, through its latest filing, the one
+    // input the stage builds (inputFor), fetched now, $0.
     if (withFacts && rs.anchor) {
       const read = factsReadOf(rs);
       const docs: Record<string, { label: string; text: string }> = {};
       for (const f of rs.readSet) docs[f.primaryDocUrl] = { label: `${f.form} ${f.filingDate}`, text: (await getFilingParagraphs(f.primaryDocUrl)).text };
       const a = rs.anchor;
-      const later = rs.readSet.filter((f) => f.filingDate >= a.filingDate && f.primaryDocUrl !== a.primaryDocUrl).map((f) => ({ form: f.form, filingDate: f.filingDate, items: f.items, url: f.primaryDocUrl }));
-      const eightKs = rs.readSet.filter((f) => f.form === "8-K").map((f) => ({ form: f.form, filingDate: f.filingDate, items: f.items, url: f.primaryDocUrl }));
-      const tenKInRs = a.form === "10-Q" ? rs.readSet.find((f) => f.form === "10-K") : undefined;
-      const dm = { triggerId: "debt-maturity", debtScheduleSourceFiling: { form: a.form, date: a.filingDate, reportDate: a.reportDate, url: a.primaryDocUrl }, priorPeriodBase: tenKInRs ? { filingUrl: tenKInRs.primaryDocUrl, periodOfReport: tenKInRs.reportDate } : null };
-      const stub = { cik: rs.filingsResult.cik, company: rs.filingsResult.company, result: { cik: rs.filingsResult.cik, company: rs.filingsResult.company, results: [dm] }, docs, laterFilings: later, debtEightKs: eightKs };
+      const dm = { triggerId: "debt-maturity", debtScheduleSourceFiling: { form: a.form, date: a.filingDate, reportDate: a.reportDate, url: a.primaryDocUrl } };
+      const stub = { cik: rs.filingsResult.cik, company: rs.filingsResult.company, result: { cik: rs.filingsResult.cik, company: rs.filingsResult.company, results: [dm] }, docs };
       const client = new Anthropic();
       const facts = await counted(() => guardedCreate(client, { model: MODEL, max_tokens: 8000, temperature: 0, system: SYSTEM, messages: [{ role: "user", content: inputFor(stub, read) }], tools: [{ name: "submit_facts", description: "Submit the transcribed facts.", input_schema: SCHEMA as any }], tool_choice: { type: "tool", name: "submit_facts" } } as any));
       calls.push({ stage: "card facts", sample: "facts", count: ASKS, worstEachUsd: facts });

@@ -53,10 +53,11 @@ import { containsWord } from "../labels";
 import type { CardFacts, Fact } from "../types";
 import { verifyAsk } from "./verifyFacts";
 import { factsForBuild } from "./factsForBuild";
-import { readSetDocsKey, factsReadSetOf } from "../factsValidity";
+import { readSetDocsKey } from "../factsValidity";
 
 // v2 (Nov 16): the moves window ends at the read set's latest filing, stated in the input, not at the brief date.
-export const CARD_FACTS_PROMPT_VERSION = 2;
+// v3 (Nov 16): the input reads every read-set document (one deciding function), and refuses if one is missing.
+export const CARD_FACTS_PROMPT_VERSION = 3;
 export const MODEL = "claude-haiku-4-5";
 export const ASKS = 3;
 const BAND_PER_ASK = 0.12;
@@ -125,23 +126,49 @@ type Raw = any;
 const anchorUrlOf = (snap: any): string => snap.result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.url;
 
 /**
- * Session 27 (Akshay, Nov 16): WHAT THE FACTS STAGE READS — the read set (its fingerprint, its documents) and the date it
- * reads through (its latest filing), never the brief date: so the answer is reused until the read set changes. Without
- * one (the review scripts) the stage reads the card input's filings through the brief date, as before.
+ * Session 27 (Akshay, Nov 16): WHAT THE FACTS STAGE READS — THE READ SET, AND ONLY IT. One deciding function (readSetOf)
+ * names the documents; the loop records them (result.recordedReadSet), the card input holds them (captureCardInput) and
+ * the facts input reads every one, through the read set's latest filing, never the brief date. No second selector.
  */
-export interface FactsRead { fingerprint: string; urls: string[]; through: string }
-export function factsReadOf(rs: { readSet: { primaryDocUrl: string; filingDate: string }[] }): FactsRead {
-  // Nov 16: the read set is its documents (factsValidity.readSetDocsKey), the same key adopted facts and the card check.
-  return { fingerprint: readSetDocsKey(rs.readSet.map((f) => f.primaryDocUrl)), urls: rs.readSet.map((f) => f.primaryDocUrl), through: rs.readSet.map((f) => f.filingDate).sort().pop()! };
+export interface ReadDoc { url: string; form: string; filingDate: string }
+export interface FactsRead { fingerprint: string; docs: ReadDoc[]; urls: string[]; through: string }
+const factsReadFrom = (docs: ReadDoc[]): FactsRead => ({ fingerprint: readSetDocsKey(docs.map((d) => d.url)), docs, urls: docs.map((d) => d.url), through: docs.map((d) => d.filingDate).sort().pop()! });
+/** The read set a build resolved (the pipeline, the price). */
+export function factsReadOf(rs: { readSet: { primaryDocUrl: string; filingDate: string; form: string }[] }): FactsRead {
+  return factsReadFrom(rs.readSet.map((f) => ({ url: f.primaryDocUrl, form: f.form, filingDate: f.filingDate })));
+}
+/** The read set a result records (its base reads), or null where it records none. */
+export function factsReadOfResult(result: { recordedReadSet?: { url: string; via: string; form: string; filingDate: string }[] }): FactsRead | null {
+  const base = (result.recordedReadSet ?? []).filter((r) => r.via === "base").map((r) => ({ url: r.url, form: r.form, filingDate: r.filingDate }));
+  return base.length ? factsReadFrom(base) : null;
 }
 export const factsInputHash = (input: string): string => createHash("sha256").update(input).digest("hex").slice(0, 24);
 
-/** The text the model is shown: labelled regions of the documents the card holds. */
+/** The facts stage refuses an input that lacks a read-set document: it would read less than the facts would claim. */
+export class FactsInputIncompleteError extends Error {
+  name = "FactsInputIncompleteError";
+  constructor(public missing: string[], why: string) { super(why); }
+}
+
+/** The documents a facts input puts before the model: the URL of every document block, once each. */
+export function factsInputDocs(input: string): string[] {
+  return [...new Set([...input.matchAll(/^--- DOCUMENT: .* \| (\S+) ---$/gm)].map((m) => m[1]))];
+}
+
+/**
+ * The text the model is shown: labelled regions of every read-set document. The anchor by its debt note, liquidity
+ * section, market-risk section and other debt sentences; another 10-K or 10-Q by its debt note (its opening text where
+ * none is located); an 8-K by its text. Refuses (FactsInputIncompleteError) when the card input lacks any of them.
+ */
 export function inputFor(snap: any, read?: FactsRead): string {
-  const through = read?.through ?? BRIEF;
-  const inRead = (url: string) => !read || read.urls.includes(url);
-  const dm = snap.result.results.find((r: any) => r.triggerId === "debt-maturity");
+  const r = read ?? factsReadOfResult(snap.result);
+  if (!r) throw new FactsInputIncompleteError([], `${snap.company}: the card input records no read set, so the facts stage cannot know what to read`);
+  const missing = r.docs.filter((d) => !snap.docs?.[d.url]);
+  if (missing.length) throw new FactsInputIncompleteError(missing.map((d) => d.url), `${snap.company}: the card input lacks ${missing.length} of the read set's ${r.docs.length} documents (${missing.map((d) => `${d.form} ${d.filingDate}`).join(", ")}); the facts stage does not run`);
+  const through = r.through;
+  const dm = snap.result.results.find((x: any) => x.triggerId === "debt-maturity");
   const anchor = dm.debtScheduleSourceFiling;
+  if (!r.urls.includes(anchor.url)) throw new FactsInputIncompleteError([anchor.url], `${snap.company}: the anchor (${anchor.form} ${anchor.date}) is not in the read set`);
   const blocks: string[] = [];
   const block = (label: string, url: string, text: string) => blocks.push(`--- DOCUMENT: ${label} | ${url} ---\n${text}\n--- END DOCUMENT ---`);
   const at = (text: string, s: number, cap: number) => text.slice(s, Math.min(text.length, s + cap)).replace(/[ \t]+/g, " ");
@@ -165,22 +192,19 @@ export function inputFor(snap: any, read?: FactsRead): string {
   const extra = a.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)/)
     .filter((s) => s.length > 30 && s.length < 1200 && INSTR.test(s) && /\$\s?[\d]/.test(s) && (s.match(/\d[\d,.]*/g) ?? []).length <= 14 && !shown.includes(s.slice(0, 80)));
   if (extra.length) block(`${anchor.form} ${anchor.date}, other sentences naming a debt instrument and an amount`, anchor.url, [...new Set(extra)].join("\n").slice(0, 16000));
-  for (const f of snap.laterFilings ?? []) if (f.filingDate <= through && inRead(f.url) && snap.docs[f.url]) block(`${f.form} ${f.filingDate}`, f.url, at(snap.docs[f.url].text, 0, 20000));
-  // Decision 11 (Nov 9): the same read set as extraction — the debt-item 8-Ks filed since the latest 10-K, even those
-  // before the anchor, which state move detail (the day, the amount, the funding) a 10-Q may give only by month. The
-  // card input records them through the one deciding function (debtEightKsSinceTenK).
-  const later = new Set((snap.laterFilings ?? []).map((f: any) => f.url));
-  for (const f of snap.debtEightKs ?? []) if (f.filingDate <= through && inRead(f.url) && snap.docs[f.url] && !later.has(f.url)) block(`${f.form} ${f.filingDate}, a debt-item 8-K since the latest 10-K`, f.url, at(snap.docs[f.url].text, 0, 20000));
-  const base = dm.priorPeriodBase;
-  if (base?.filingUrl && inRead(base.filingUrl) && snap.docs[base.filingUrl]) {
-    const t = snap.docs[base.filingUrl].text as string;
-    const n = locateDebtNoteSection(t);
-    if (n.status === "found") block(`10-K for ${base.periodOfReport}, the debt note the anchor directs to`, base.filingUrl, at(t, n.start, 30000));
+  // Every other read-set document, newest first.
+  for (const d of [...r.docs].filter((x) => x.url !== anchor.url).sort((x, y) => (x.filingDate < y.filingDate ? 1 : x.filingDate > y.filingDate ? -1 : 0))) {
+    const t = snap.docs[d.url].text as string;
+    if (d.form === "10-K" || d.form === "10-Q") {
+      const n = locateDebtNoteSection(t);
+      if (n.status === "found") block(`${d.form} ${d.filingDate}, debt note`, d.url, at(t, n.start, Math.min(n.end - n.start + 2000, 30000)));
+      else block(`${d.form} ${d.filingDate}, opening text (no debt note located)`, d.url, at(t, 0, 20000));
+    } else block(`${d.form} ${d.filingDate}`, d.url, at(t, 0, 20000));
   }
   // SESSION 27 (Akshay, Oct 31): THE CAUSE OF MOLINA'S MISSED MOVE. On its Q3 anchor all three asks omitted a move
   // sentence they were shown (year-scoped instruction; the Q2 asks returned it). Move sentences are located in code and
-  // listed for the stage to account for; the card checks the same list (moveSentences.ts).
-  const candidates = locateMoveSentences(Object.entries(snap.docs as Record<string, { label: string; text: string }>).filter(([url]) => inRead(url)).map(([url, d]) => ({ url, label: d.label, text: d.text })), `${String(anchor.reportDate).slice(0, 4)}-01-01`, through);
+  // listed for the stage to account for; the card checks the same list (moveSentences.ts). Read-set documents only.
+  const candidates = locateMoveSentences(r.docs.map((d) => ({ url: d.url, label: snap.docs[d.url].label, text: snap.docs[d.url].text })), `${String(anchor.reportDate).slice(0, 4)}-01-01`, through);
   if (candidates.length) block(`CANDIDATE MOVE SENTENCES, located in code — return EACH one that states a debt transaction as a move (with this sentence as its sourceLine); omit one only if it is not a debt transaction`, anchor.url, candidates.map((c) => `${c.date} | ${c.label} | ${c.url} | ${c.sentence}`).join("\n"));
   return [`Company: ${snap.company}`, `Anchor: ${anchor.form} for the period ended ${anchor.reportDate}, filed ${anchor.date}`, `Read through: ${through}`, ``, ...blocks].join("\n\n");
 }
@@ -240,7 +264,9 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
 export async function extractFacts(snap: any, read: FactsRead | undefined, client: Anthropic): Promise<{ facts: CardFacts; raws: Raw[]; keys: string[]; hits: number }> {
   const input = inputFor(snap, read);
   const hash = factsInputHash(input);
-  const fp: string = read?.fingerprint ?? factsReadSetOf(snap.result) ?? snap.corpusFingerprint;
+  // Nov 16: the facts record only the documents their input held: every read-set document, or inputFor refused.
+  const fp: string = readSetDocsKey(factsInputDocs(input));
+  if (fp !== (read ?? factsReadOfResult(snap.result))!.fingerprint) throw new FactsInputIncompleteError([], `${snap.company}: the facts input's documents are not the read set's`);
   const asks: Raw[] = [], raws: Raw[] = [];
   const rejected: { fact: string; why: string }[] = [];
   let hits = 0;
@@ -276,6 +302,8 @@ const LIMIT = argOf("--limit");
 if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async () => {
   const snaps = INPUT ? [JSON.parse(readFileSync(INPUT, "utf-8"))] : readdirSync(IN).filter((f) => /^\d+\.json$/.test(f)).map((f) => JSON.parse(readFileSync(join(IN, f), "utf-8")));
   // DECLARE FIRST: every name's estimated cost, before anything bills.
+  // Nov 16: a card input that lacks a read-set document is refused here, before anything is declared or billed.
+  for (const s of snaps) { try { inputFor(s); } catch (e) { if (e instanceof FactsInputIncompleteError) { console.error(`REFUSING: ${e.message}`); process.exit(1); } throw e; } }
   const plan = snaps.map((s) => {
     const input = inputFor(s);
     const inTok = Math.ceil((input.length + SYSTEM.length + JSON.stringify(SCHEMA).length) / 3.6);
@@ -314,7 +342,7 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async ()
       // Nov 14: a rebuild uses the adopted facts where they were read from this anchor; nothing to run.
       if (factsForBuild(p.s).source === "adopted") { console.log(`STATUS ${p.s.cik} hash ${p.hash} uncached-asks none (adopted facts)`); continue; }
       const asks: number[] = [];
-      for (let ask = 1; ask <= ASKS; ask++) if ((await readCache(cardFactsKey(p.s.cik, p.s.corpusFingerprint, CARD_FACTS_PROMPT_VERSION, ask), null)) === null) asks.push(ask);
+      for (let ask = 1; ask <= ASKS; ask++) if ((await readCache(cardFactsKey(p.s.cik, factsReadOfResult(p.s.result)!.fingerprint, CARD_FACTS_PROMPT_VERSION, ask), null)) === null) asks.push(ask);
       console.log(`STATUS ${p.s.cik} hash ${p.hash} uncached-asks ${asks.length ? asks.join(",") : "none"}`);
     }
     return;

@@ -7,8 +7,9 @@
  * the facts cache key, the facts a stage writes, adopted facts, the card and the badge (factsValidity.ts).
  *   F1  today's CHS build (read set after the Nov 10 trigger): production's CHS facts, read over its earlier read set,
  *       are not valid; the build gets no adopted facts
- *   F2  production: Tenet, Encompass, DaVita, CHS and Molina's facts were read over the read set their card uses and
- *       are valid; Cigna's (Oct 16, a v31 input with no recorded read set) cannot be shown to be, and are not
+ *   F2  production: no adopted facts were read over the read set their card uses. Each facts input held fewer documents
+ *       than the read set (factsDocs.test S7: a facts file records only what its input held), and Cigna's (Oct 16, a
+ *       v31 input) records none; so none is valid for its card
  *   F3  a card given facts read over another read set renders "Debt moves this year: not yet read"
  *   F4  without facts read for its read set, the badge is neither Checks passed nor Signed
  *   F5  the key is the documents: Molina's two captures read the same documents under different extraction
@@ -35,7 +36,7 @@ const chsFacts = read("lib/cards/inputs/facts/0001108109.json");
 const got = factsForBuild(chsToday);
 assert(got.source === "none" && !factsValidFor(chsFacts, chsToday.result, anchorOf(chsToday)), `[F1] today's CHS build (read set ${factsReadSetOf(chsToday.result)?.slice(0, 8)}): production's facts (read over ${String(chsFacts.readSet).slice(0, 8)}) → ${got.source}`);
 
-const valid = ["0000070318", "0000785161", "0000927066", "0001108109", "0001179929"];
+const valid: string[] = [];
 for (const cik of [...valid, "0001739940"]) {
   const input = read(`lib/cards/inputs/${cik}.json`);
   const ok = factsForBuild(input).source === "adopted";

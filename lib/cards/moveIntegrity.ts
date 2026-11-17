@@ -2,8 +2,8 @@
  * SESSION 27 (Akshay, Nov 1, 2026) — A REFRESH NEVER LOSES A STATED FACT.
  * Five checks over a rendered card and its input (moveIntegrity.test.ts):
  *
- *   M1  debt-item 8-Ks (Items 1.01, 1.02, 2.03, 2.04, 8.01) filed since the
- *       latest 10-K stay among the card's documents, for move detail
+ *   M1  every document of the build's read set is among the card's documents (Nov 16:
+ *       one deciding function), for move detail
  *   M2  the more precise statement of the same move wins: no move card shows
  *       a month where a held document states that move's day (Rules 76-78)
  *   M3  no template renders a placeholder with no content
@@ -25,8 +25,10 @@ export function moveIntegrityViolations(card: any, input: any): { M1: string[]; 
   const out = { M1: [] as string[], M2: [] as string[], M3: [] as string[], M4: [] as string[], M5: [] as string[] };
   const docs: Record<string, { label: string; text: string }> = input?.docs ?? {};
   // M1
-  if (!Array.isArray(input?.debtEightKs)) out.M1.push("the card input does not record the debt-item 8-Ks filed since the latest 10-K");
-  else for (const e of input.debtEightKs) if (!docs[e.url]) out.M1.push(`8-K ${e.filingDate} [${e.items}] is not among the card's documents`);
+  // Nov 16 (Akshay): one deciding function — every document of the build's read set (result.recordedReadSet) is held.
+  const rs = (input?.result?.recordedReadSet ?? []).filter((r: any) => r.via === "base");
+  if (!rs.length) out.M1.push("the card's result records no read set");
+  else for (const e of rs) if (!docs[e.url]) out.M1.push(`${e.form} ${e.filingDate} (in the read set) is not among the card's documents`);
   // M2: sentences in held documents stating a move's day, with the coupons they name.
   const dayStatements: { coupons: number[]; y: number; m: number; d: number; sentence: string }[] = [];
   for (const d of Object.values(docs)) for (const s of d.text.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"])/)) {

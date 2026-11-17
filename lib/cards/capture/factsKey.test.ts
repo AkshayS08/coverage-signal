@@ -41,7 +41,8 @@ const snapOn = (day: string, extra: { form: string; filingDate: string; items: s
     ...Object.fromEntries(extra.map((e) => [e.url, doc(`${e.form} ${e.filingDate}`, "Item 7.01. The Company presented at a conference.")])),
   },
 });
-const readA: FactsRead = { fingerprint: "544c51ae", urls: [A, K10, T8K], through: "2026-11-10" };
+const rd = (url: string, form: string, filingDate: string) => ({ url, form, filingDate });
+const readA: FactsRead = { fingerprint: "544c51ae", docs: [rd(A, "10-Q", "2026-10-23"), rd(K10, "10-K", "2026-02-18"), rd(T8K, "8-K", "2026-11-10")], urls: [A, K10, T8K], through: "2026-11-10" };
 
 /** An in-memory stand-in for the answer cache: getOrCompute over a Map. */
 function memStore() {
@@ -64,7 +65,7 @@ const answer = { schedule: [], moves: [] };
   const dated = /20\d\d-\d\d-\d\d|brief date/i;
   assert(!dated.test(SYSTEM) && !/brief date/i.test(in1) && !in1.includes("2026-11-16") && /Read through: 2026-11-10/.test(in1) && !in2.includes(NEW8K), `[K2] the prompt names no date; the input reads through the read set's latest filing (2026-11-10) and not the day's extra 8-K`);
 
-  const readB: FactsRead = { fingerprint: "9f00aa11", urls: [A, K10, T8K, T8K2], through: "2026-11-17" };
+  const readB: FactsRead = { fingerprint: "9f00aa11", docs: [...readA.docs, rd(T8K2, "8-K", "2026-11-17")], urls: [A, K10, T8K, T8K2], through: "2026-11-17" };
   const day3 = snapOn("2026-11-18", [{ form: "8-K", filingDate: "2026-11-17", items: "2.03,9.01", url: T8K2 }]);
   const r3 = await cachedCardFacts(day3.cik, readB.fingerprint, CARD_FACTS_PROMPT_VERSION, 1, factsInputHash(inputFor(day3, readB)), async () => answer, s.store);
   assert(!r3.hit && cardFactsKey(day3.cik, readB.fingerprint, CARD_FACTS_PROMPT_VERSION, 1) !== cardFactsKey(day1.cik, readA.fingerprint, CARD_FACTS_PROMPT_VERSION, 1), `[K3] a new read set (a new trigger 8-K) is a new key: ${r3.hit ? "hit" : "miss"}`);
