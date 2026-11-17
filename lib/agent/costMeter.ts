@@ -73,8 +73,8 @@ export interface CompanySpend {
   unpricedModels: string[];
 }
 
-function emptySpend(company: string): { company: string; byModel: Map<string, ModelSpend>; unpriced: Set<string> } {
-  return { company, byModel: new Map(), unpriced: new Set() };
+function emptySpend(company: string): { company: string; byModel: Map<string, ModelSpend>; unpriced: Set<string>; ledgered: Map<string, ModelSpend> } {
+  return { company, byModel: new Map(), unpriced: new Set(), ledgered: new Map() };
 }
 
 let current = emptySpend("(no company scope)");
@@ -182,17 +182,52 @@ export function formatCompanyCostLine(spend: CompanySpend = currentCompanySpend(
  * extraction (see recordUsage), and that applies at least as much to a
  * filesystem write as to an unknown model price.
  */
-const COST_LOG_PATH = process.env.COST_LOG_PATH ?? "baselines/cost-log.jsonl";
+const costLogPath = () => process.env.COST_LOG_PATH ?? "baselines/cost-log.jsonl";
 
-export function persistCompanySpend(spend: CompanySpend = currentCompanySpend(), at: Date = new Date()): void {
+/** The scope's label: the company (and stage) a billed call is written under. */
+export const currentScopeLabel = (): string => current.company;
+
+/**
+ * SESSION 27 (Akshay, Nov 16): EVERY BILLED CALL WRITES THE COST LOG FROM THE PIPELINE ITSELF. The one gate every billed
+ * call passes (spendGuard.guardedCreate) writes one line per call, here, and a write that fails throws: a billed call
+ * whose ledger write fails is an error, never silent. The call's spend is then marked ledgered in its scope, so the
+ * scope's own line (persistCompanySpend) carries only spend not already written (ledgerPerCall.test).
+ */
+export function ledgerBilledCall(c: { kind: string; sample: string; model: string; usage: UsageLike; usd: number }, at: Date = new Date()): void {
+  const { appendFileSync, mkdirSync } = require("node:fs") as typeof import("node:fs");
+  const { dirname } = require("node:path") as typeof import("node:path");
+  const m = { model: c.model, calls: 1, inputTokens: c.usage.input_tokens ?? 0, outputTokens: c.usage.output_tokens ?? 0, cacheReadTokens: c.usage.cache_read_input_tokens ?? 0, cacheWriteTokens: c.usage.cache_creation_input_tokens ?? 0, usd: c.usd };
+  const p = costLogPath();
+  mkdirSync(dirname(p), { recursive: true });
+  appendFileSync(p, JSON.stringify({ at: at.toISOString(), company: `${current.company} (${c.kind})`, perCall: true, kind: c.kind, sample: c.sample, totalUsd: Number(c.usd.toFixed(6)), totalCalls: 1, byModel: [{ ...m, usd: Number(c.usd.toFixed(6)) }], unpricedModels: [] }) + "\n", "utf8");
+  const e = current.ledgered.get(c.model) ?? { model: c.model, calls: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, usd: 0 };
+  for (const k of ["calls", "inputTokens", "outputTokens", "cacheReadTokens", "cacheWriteTokens", "usd"] as const) e[k] += m[k];
+  current.ledgered.set(c.model, e);
+}
+
+/** The scope's spend not already written by the gate, call by call. */
+export function unledgeredSpend(): CompanySpend & { ledgeredCalls: number } {
+  const all = currentCompanySpend();
+  const byModel = all.byModel.map((m) => {
+    const l = current.ledgered.get(m.model);
+    return l ? { ...m, calls: Math.max(0, m.calls - l.calls), inputTokens: Math.max(0, m.inputTokens - l.inputTokens), outputTokens: Math.max(0, m.outputTokens - l.outputTokens), cacheReadTokens: Math.max(0, m.cacheReadTokens - l.cacheReadTokens), cacheWriteTokens: Math.max(0, m.cacheWriteTokens - l.cacheWriteTokens), usd: Math.max(0, m.usd - l.usd) } : m;
+  }).filter((m) => m.calls > 0);
+  const ledgeredCalls = [...current.ledgered.values()].reduce((n, m) => n + m.calls, 0);
+  return { ...all, byModel, totalCalls: byModel.reduce((n, m) => n + m.calls, 0), totalUsd: byModel.reduce((n, m) => n + m.usd, 0), ledgeredCalls };
+}
+
+export function persistCompanySpend(spend: CompanySpend & { ledgeredCalls?: number } = unledgeredSpend(), at: Date = new Date()): void {
+  // Nov 16: a scope whose calls were all written by the gate adds no line of its own; one with no billed call still
+  // writes its $0 line (the release checks read them).
+  if (spend.totalCalls === 0 && (spend.ledgeredCalls ?? 0) > 0) return;
   try {
     // Required lazily so this module stays importable from any environment
     // that has no filesystem; the meter is not worth a hard dependency.
     const { appendFileSync, mkdirSync } = require("node:fs") as typeof import("node:fs");
     const { dirname } = require("node:path") as typeof import("node:path");
-    mkdirSync(dirname(COST_LOG_PATH), { recursive: true });
+    mkdirSync(dirname(costLogPath()), { recursive: true });
     appendFileSync(
-      COST_LOG_PATH,
+      costLogPath(),
       JSON.stringify({
         at: at.toISOString(),
         company: spend.company,
@@ -206,9 +241,9 @@ export function persistCompanySpend(spend: CompanySpend = currentCompanySpend(),
       }) + "\n",
       "utf8"
     );
-  } catch {
-    // Deliberately silent. A run that cannot write its cost log is still a
-    // valid run; the trace line above it is the fallback record.
+  } catch (e) {
+    // Nov 16: spend not written by the gate that cannot reach the ledger is an error; a $0 line is not a billed call.
+    if (spend.totalCalls > 0) throw new Error(`the cost log could not be written for ${spend.totalCalls} billed call(s), $${spend.totalUsd.toFixed(6)} (${e instanceof Error ? e.message : String(e)})`);
   }
 }
 
@@ -220,9 +255,9 @@ export function persistCompanySpend(spend: CompanySpend = currentCompanySpend(),
  * nothing when nothing billed. The current scope is left as it was.
  */
 export async function withLedgerDelta<T>(label: string, fn: () => Promise<T>): Promise<T> {
-  const before = new Map(currentCompanySpend().byModel.map((m) => [m.model, { ...m }]));
+  const before = new Map(unledgeredSpend().byModel.map((m) => [m.model, { ...m }]));
   const write = () => {
-    const after = currentCompanySpend();
+    const after = unledgeredSpend();
     const byModel = after.byModel
       .map((m) => {
         const b = before.get(m.model);

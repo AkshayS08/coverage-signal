@@ -18,7 +18,7 @@
  * calling, for declarations.
  */
 import type Anthropic from "@anthropic-ai/sdk";
-import { priceOf, usdFor } from "./costMeter";
+import { priceOf, usdFor, ledgerBilledCall } from "./costMeter";
 import { requestScope, inRequestScope, cacheBustNow } from "./requestScope";
 
 export class SpendRefusedError extends Error {
@@ -144,5 +144,12 @@ export async function guardedCreate(client: Anthropic, params: CreateParams, opt
   g.totalSpent += actual;
   if (kind === "dig") g.digSpent += actual;
   g.made.push({ kind: kind ?? "base extraction", sample: cacheBustNow() ?? "canonical", model: params.model, inputTokens, maxTokens: params.max_tokens, worstUsd, actualUsd: actual });
+  // Nov 16 (Akshay): every billed call writes the cost log, here, from the pipeline itself; a write that fails is an
+  // error (the call has billed: its spend stays counted in the guard above).
+  try { ledgerBilledCall({ kind: kind ?? "base extraction", sample: cacheBustNow() ?? "canonical", model: params.model, usage: response.usage as any, usd: actual }); }
+  catch (e) { throw new LedgerWriteError(`a billed call ($${actual.toFixed(6)}, ${kind ?? "base extraction"}, ${params.model}) could not be written to the cost log: ${e instanceof Error ? e.message : String(e)}`); }
   return response;
 }
+
+/** Nov 16: a billed call whose ledger write failed. The call billed; the build stops. */
+export class LedgerWriteError extends Error { name = "LedgerWriteError"; }

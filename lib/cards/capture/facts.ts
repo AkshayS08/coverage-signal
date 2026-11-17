@@ -44,7 +44,7 @@ import { locateMoveSentences } from "../moveSentences";
 import { placedInsideParent } from "../subFacility";
 import { cachedCardFacts, cardFactsKey } from "../../cache/answerCache";
 import { readCache } from "../../fetch/cache";
-import { beginCompanyCostScope, currentCompanySpend, persistCompanySpend, recordUsage } from "../../agent/costMeter";
+import { beginCompanyCostScope, currentCompanySpend, persistCompanySpend, recordUsage, unledgeredSpend } from "../../agent/costMeter";
 import { locateDebtNoteSection } from "../../fetch/noteLocation";
 import { locateLiquiditySection } from "../../fetch/liquiditySection";
 import { createTextLocator } from "../../agent/verifyQuote";
@@ -374,7 +374,7 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("capture/facts.ts")) (async ()
     beginCompanyCostScope(p.s.company);
     const run = await extractFacts(p.s, undefined, client);
     const spend = currentCompanySpend();
-    persistCompanySpend(spend);
+    persistCompanySpend(unledgeredSpend()); // Nov 16: the gate wrote each billed call; this adds only what it did not
     spent += spend.totalUsd;
     const facts: CardFacts = { ...run.facts, costUsd: Number(spend.totalUsd.toFixed(6)) };
     writeFileSync(join(OUT_DIR, `${p.s.cik}.json`), JSON.stringify(facts, null, 1) + "\n", "utf-8");

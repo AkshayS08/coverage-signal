@@ -21,7 +21,7 @@
  * case that matters most, because a failed expensive call is exactly the one
  * a caller is least likely to hand-record afterwards.
  */
-import { beginCompanyCostScope, currentCompanySpend, persistCompanySpend, type CompanySpend } from "./costMeter";
+import { beginCompanyCostScope, currentCompanySpend, persistCompanySpend, unledgeredSpend, type CompanySpend } from "./costMeter";
 
 /**
  * Run `fn` inside a named cost scope and persist whatever it spent, whether it
@@ -33,13 +33,14 @@ export async function withCostScope<T>(label: string, fn: () => Promise<T>): Pro
   try {
     const result = await fn();
     const spend = currentCompanySpend();
-    persistCompanySpend(spend);
+    // Nov 16: the line carries only what the gate did not already write, call by call.
+    persistCompanySpend(unledgeredSpend());
     return { result, spend };
   } catch (e) {
     // THE THROWING CASE IS THE POINT. A call that failed after the tokens were
     // consumed has still been paid for, and it is the one a human is least
     // likely to remember to record by hand.
-    persistCompanySpend(currentCompanySpend());
+    persistCompanySpend(unledgeredSpend());
     throw e;
   }
 }
