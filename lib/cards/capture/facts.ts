@@ -84,7 +84,8 @@ What to transcribe:
 5. cash: cash figures stated for the parent company or as unrestricted cash, with the filer's own label.
 6. faces: the principal (face) amount of a debt instrument where a sentence states it, e.g. "$400 million in aggregate principal amount ... remained outstanding".
 7. maturities: the most precise maturity date a sentence states for a named debt instrument, e.g. "The 2034 Notes mature on June 1, 2034". Only where the sentence states it is the maturity (not an interest payment date or a redemption date).
-8. moves: every debt transaction that HAPPENED or was ANNOUNCED from January 1 of the anchor period's year through the read-through date stated in the input: issuance, redemption (full, partial, special call), tender or repurchase, repayment at maturity, facility entry/amendment/refinancing/termination, incremental add-ons, material draws or paydowns. Do not include transactions completed before January 1 of that year. status is "pending" when the filing says the company intends, expects or will; otherwise "completed". For each move give the date as printed, the instrument as named, the face amount, and where stated: funding (how it was paid for), use (what the proceeds were used for), price (e.g. "at par", "103% of the principal amount").`;
+8. moves: every debt transaction that HAPPENED or was ANNOUNCED from January 1 of the anchor period's year through the read-through date stated in the input: issuance, redemption (full, partial, special call), tender or repurchase, repayment at maturity, facility entry/amendment/refinancing/termination, incremental add-ons, material draws or paydowns, exchange offers, tender offers and consent solicitations. Do not include transactions completed before January 1 of that year. status is "pending" when the filing says the company intends, expects, plans or will, or that it announced, commenced or launched a transaction it does not say was completed; otherwise "completed". For each move give the date as printed, the instrument as named, the face amount, and where stated: funding (how it was paid for), use (what the proceeds were used for), price (e.g. "at par", "103% of the principal amount").
+   An exchange offer is ONE move of type "exchange offer" on the instrument being exchanged (the old notes): the new instrument offered goes in offered, never as a separate issuance; a consent solicitation made with it goes in consent, never as a separate move. A tender offer is likewise one move of type "tender offer" on the instrument sought. A consent solicitation made on its own is a move of type "consent solicitation".`;
 
 const FACT = { type: ["object", "null"], properties: { value: { type: "string" }, sourceLine: { type: "string" }, documentUrl: { type: "string" } }, required: ["value", "sourceLine", "documentUrl"] };
 export const SCHEMA = {
@@ -103,7 +104,7 @@ export const SCHEMA = {
         type: "object",
         properties: {
           date: { type: "string" },
-          type: { type: "string", enum: ["issuance", "redemption", "special call", "tender or repurchase", "repayment at maturity", "facility entry", "facility amendment", "facility refinancing", "facility termination", "incremental add-on", "draw", "paydown"] },
+          type: { type: "string", enum: ["issuance", "redemption", "special call", "tender or repurchase", "repayment at maturity", "facility entry", "facility amendment", "facility refinancing", "facility termination", "incremental add-on", "draw", "paydown", "exchange offer", "tender offer", "consent solicitation"] },
           status: { type: "string", enum: ["completed", "pending"] },
           instrument: { type: "string" },
           face: { type: ["string", "null"] },
@@ -112,6 +113,9 @@ export const SCHEMA = {
           funding: FACT,
           use: FACT,
           price: FACT,
+          // Nov 16: an exchange or tender offer's new instrument offered, and the consent solicitation made with it.
+          offered: FACT,
+          consent: FACT,
         },
         required: ["date", "type", "status", "instrument", "face", "sourceLine", "documentUrl"],
       },
@@ -234,13 +238,13 @@ function reproduce(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts
   const moveKey = (x: any) => `${x.type}|${x.status}|${squash(x.date.value)}|${squash(x.face?.value)}|${squash(x.instrument.value).slice(0, 40)}`;
   const moves = keep("move", moveKey, (x) => x, (a) => a.moves).map((m: any) => {
     // A move reproduces on its core; each detail must reproduce on its own or it is dropped to the residual.
-    const detail = (k: "funding" | "use" | "price") => {
+    const detail = (k: "funding" | "use" | "price" | "offered" | "consent") => {
       const vals = asks.map((a) => a.moves.find((y: any) => moveKey(y) === moveKey(m))?.[k]?.value ?? null);
       if (vals.every((v: any) => squash(v) === squash(vals[0]))) return m[k] ? f(m[k]) : null;
       residual.push({ fact: `${k} of the ${m.type} of ${m.instrument.value}`, why: "varied across asks", variation: vals.map((v: any, i: number) => `ask ${i + 1}: ${v ?? "null"}`) });
       return null;
     };
-    return { date: m.date, type: m.type, status: m.status, instrument: { value: m.instrument.value, src: m.instrument.src }, face: m.face, funding: detail("funding"), use: detail("use"), price: detail("price") };
+    return { date: m.date, type: m.type, status: m.status, instrument: { value: m.instrument.value, src: m.instrument.src }, face: m.face, funding: detail("funding"), use: detail("use"), price: detail("price"), offered: detail("offered"), consent: detail("consent") };
   });
   const cps = asks.map((a) => a.commercialPaper);
   let commercialPaper: CardFacts["commercialPaper"] = null;

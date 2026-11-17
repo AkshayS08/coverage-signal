@@ -624,6 +624,8 @@ export function buildCard(i: CardInputs): Card {
     sentence: string; url: string; funding: Line; use: Line; price: Segment | null; extra: Line;
     /** v2.1: the raw facts, rendered by template, never as prose (§2.3). */
     fundFact?: Fact; useFact?: Fact; priceFact?: Fact;
+    /** Nov 16: an exchange or tender's new instrument offered, and a consent solicitation stated with it. */
+    offeredFact?: Fact; consentFact?: Fact;
     /** The issuance this retirement spends, and the retirements an issuance funds. */
     fundedBy?: Move; retires: Move[]; spendSrc?: Source;
     /** Another filing sentence stating the same move, linked from the move's verb. */
@@ -661,7 +663,11 @@ export function buildCard(i: CardInputs): Card {
     return { k: "label", t: text, stated: filerSpan(fact.value, where.sentence), src: where };
   };
   const factSrc = (x: { src: { sentence: string; url: string } }) => ownSentence(x.src.sentence, x.src.url) ?? src(x.src.sentence, x.src.url);
-  const moveDocs = () => [...new Set([anchor.url, ...(i.laterUrls ?? [])])].filter((u) => i.textByUrl.has(u));
+  // Nov 16 (Akshay): ONE DECIDING FUNCTION FOR DOCUMENTS. A move is read from the build's read set, the documents the
+  // facts stage read (result.recordedReadSet); a result that records none reads the anchor and the filings after it.
+  const baseReadUrls: string[] = ((result as any).recordedReadSet ?? []).filter((r: any) => r.via === "base").map((r: any) => r.url);
+  const moveFrom = new Set<string>(baseReadUrls.length ? baseReadUrls : [anchor.url, ...(i.laterUrls ?? [])]);
+  const moveDocs = () => [...new Set([anchor.url, ...moveFrom])].filter((u) => i.textByUrl.has(u));
   /** The instrument as a label linked to a sentence that prints it: its own sentence, else one in a filing that names it, else the longest end of the name that sentence does print. */
   const instrumentSeg = (value: string, own: Source): Segment => {
     if (containsWord(own.sentence, filerSpan(value, own.sentence))) return { k: "label", t: tidyCoupon(value), stated: filerSpan(value, own.sentence), src: own };
@@ -701,11 +707,13 @@ export function buildCard(i: CardInputs): Card {
     "tender or repurchase": ["Repurchased", "Repurchase announced"], "repayment at maturity": ["Repaid at maturity", "Repayment announced"],
     "facility entry": ["Entered", "Entry announced"], "facility amendment": ["Amended", "Amendment announced"], "facility termination": ["Terminated", "Termination announced"],
     refinancing: ["Refinanced", "Refinancing announced"], draw: ["Drew on", "Draw announced"], paydown: ["Repaid", "Repayment announced"], "incremental add-on": ["Incremental add-on", "Add-on announced"],
+    // Nov 16: liability-management events.
+    "exchange offer": ["Exchanged", "Exchange offer announced"], "tender offer": ["Tendered", "Tender offer announced"], "consent solicitation": ["Consents received", "Consent solicitation announced"],
   };
   const movesAll: Move[] = [];
   for (const m of facts?.moves ?? []) {
     const url = m.date.src.url;
-    if (!(url === anchor.url || (i.laterUrls ?? []).includes(url))) continue;
+    if (!(url === anchor.url || moveFrom.has(url))) continue;
     const d = isoOfText(m.date.value);
     if (!d || d.iso < fyStart || d.iso > briefDate) continue;
     // A face the extraction did not return is read from the move's own sentence where it states exactly one amount.
@@ -727,6 +735,7 @@ export function buildCard(i: CardInputs): Card {
       price: m.price ? factLabel(priceLabelText(m.price.value), m.price) : null,
       extra: [], retires: [],
       fundFact: m.funding ?? undefined, useFact: m.use ?? undefined, priceFact: m.price ?? undefined,
+      offeredFact: m.offered ?? undefined, consentFact: m.consent ?? undefined,
     });
   }
   // A retirement move's size, where its facts state none, from the cached
@@ -1183,7 +1192,7 @@ export function buildCard(i: CardInputs): Card {
   for (const it of allDebtItems) {
     for (const m of movesAll.filter((x) => RETIRES.has(x.type) && sameNote(x.instrument, it.name) && (!it.maturity || !/\b20\d\d\b/.test(x.instrument) || x.instrument.includes(it.maturity.date.slice(0, 4))))) {
       const verb = (TYPE_WORD[m.type]?.[0] ?? m.type).toLowerCase();
-      if (m.status === "pending") { it.moveFlags = [...(it.moveFlags ?? []), t(" · "), { k: "label", t: "pending redemption", stated: m.instSeg.k === "label" ? m.instSeg.stated : m.instrument, src: m.instSeg.k === "label" ? m.instSeg.src : src(m.sentence, m.url) }, ...(m.face ? [t(" "), m.face] : []), t(", not yet confirmed by a filing")]; continue; }
+      if (m.status === "pending") { it.moveFlags = [...(it.moveFlags ?? []), t(" · "), { k: "label", t: `pending ${({ "tender or repurchase": "repurchase", "repayment at maturity": "repayment", paydown: "repayment" } as Record<string, string>)[m.type] ?? "redemption"}`, stated: m.instSeg.k === "label" ? m.instSeg.stated : m.instrument, src: m.instSeg.k === "label" ? m.instSeg.src : src(m.sentence, m.url) }, ...(m.face ? [t(" "), m.face] : []), t(", not yet confirmed by a filing")]; continue; }
       const prior = moneyIn(m.sentence).filter((x) => new RegExp(`${x.raw.replace(/[$.*+?^{}()|[\]\\]/g, "\\$&")}\\s+in\\s+outstanding principal`, "i").test(m.sentence));
       if (it.basis === "carrying" && m.inPeriod && m.faceUsd && prior.length === 1) {
         const before = { printed: prior[0].raw, usd: prior[0].moneyValue!, src: src(m.sentence, m.url) };
@@ -2067,6 +2076,30 @@ export function buildCard(i: CardInputs): Card {
     callRows.push({ when, body: [usdSeg(partOf(r.it)), t(" "), ...instrumentWords(r.it)], tenK: r.it.rolled, tag: statusOf(r.it), usd: faceUsdOf(r.it), isCP: false });
   }
   const callNotes: Line[] = [];
+  // Nov 16 (Akshay): A PENDING LIABILITY-MANAGEMENT EVENT ON ANY INSTRUMENT gets a line in the call box: the instrument,
+  // its face, the new instrument offered, and a consent solicitation where stated. A pending redemption of an instrument
+  // the call already names is stated by its tiles; a consent solicitation made with an exchange or tender of the same
+  // notes, on that line.
+  const LIABILITY_MANAGEMENT = new Set(["exchange offer", "tender offer", "consent solicitation", "tender or repurchase", "redemption", "special call"]);
+  const lmPending = movesAll.filter((m) => m.status === "pending" && LIABILITY_MANAGEMENT.has(m.type));
+  for (const m of lmPending) {
+    const item = allDebtItems.find((it) => sameNote(m.instrument, it.name) && (!it.maturity || !/\b20\d\d\b/.test(m.instrument) || m.instrument.includes(it.maturity.date.slice(0, 4))));
+    if ((m.type === "redemption" || m.type === "special call") && item && named.includes(item)) continue;
+    if (m.type === "consent solicitation" && lmPending.some((o) => (o.type === "exchange offer" || o.type === "tender offer") && o.sort === m.sort && sameNote(o.instrument, m.instrument))) continue;
+    const line: Line = [t(`${TYPE_WORD[m.type][1]}: `)];
+    const anyAll = /\bany\s+and\s+all\b/i.exec(m.sentence)?.[0];
+    if (anyAll) line.push({ k: "label", t: "any and all", stated: anyAll, src: src(m.sentence, m.url) }, t(" of the "));
+    else if (m.face) line.push(m.face, t(" of the "));
+    else line.push(t("the "));
+    if (item) line.push(usdSeg(partOf(item)), t(" "));
+    line.push(instPhrase(m));
+    const off = offeredClause(m), con = m.type === "consent solicitation" ? [] : consentClause(m);
+    if (off.length) line.push(t(", "), ...off);
+    if (con.length) line.push(t(", "), ...con);
+    if (m.type === "consent solicitation") line.push(...amendsIndenture(m.sentence));
+    line.push(t("."));
+    callNotes.push(line);
+  }
   if ((callCase === "A" || callCase === "B") && leftoverSegs.length) {
     callNotes.push([t("Also in window: "), { k: "computed", t: displayUsd(leftoverSegs.reduce((a, x) => a + x.usd, 0), false, Math.max(0, ...leftoverSegs.map((x) => (/\.(\d+)MM/.exec(x.t)?.[1] ?? "").length))), usd: leftoverSegs.reduce((a, x) => a + x.usd, 0), parts: leftoverSegs.flatMap((x) => x.parts) }, ...(leftoverMaybe ? [t(MARK)] : []), t(" of scheduled amortization and other principal.")]);
     if (leftoverMaybe) daggerUsed = true;
@@ -2132,11 +2165,11 @@ export function buildCard(i: CardInputs): Card {
       const title: Line = [t(`${fac && /revolv/i.test(fac.name) ? "Revolver" : "Credit facility"}: new `)];
       if (fac?.facilitySize) title.push({ k: "figure", t: displayAmount(fac.facilitySize.value, fac.facilitySize.sourceLine), printed: fac.facilitySize.value, src: src(fac.facilitySize.sourceLine, fac.figureSources?.facilitySize ?? fac.citedUrl) }, t(" "));
       title.push(entry.instSeg.k === "label" ? { k: "label", t: "credit agreement", stated: containsWord(entry.instSeg.src.sentence, "credit agreement") ? "credit agreement" : entry.instSeg.stated, src: entry.instSeg.src } : t("credit agreement"), t(" replaced the "), term.instSeg.k === "label" && oldYear ? { k: "label", t: `${oldYear} agreement`, stated: oldYear, src: term.instSeg.src } : t("earlier agreement"));
-      moveCards.push({ meta: [dateOf(entry), t(" · Refinanced")], title: [title], detail: draw ? [...(draw.face ? [draw.face, t(" ")] : []), draw.instSeg.k === "label" ? { k: "label", t: "drawn to retire it", stated: "drew", src: draw.instSeg.src } : t("drawn to retire it"), t(".")] : null, retires: null });
+      moveCards.push({ meta: [dateOf(entry), t(entry.status === "pending" || term.status === "pending" ? " · Refinancing announced, awaiting confirmation in a filing" : " · Refinanced")], title: [title], detail: draw ? [...(draw.face ? [draw.face, t(" ")] : []), draw.instSeg.k === "label" ? { k: "label", t: "drawn to retire it", stated: "drew", src: draw.instSeg.src } : t("drawn to retire it"), t(".")] : null, retires: null });
       continue;
     }
     if (issuance) {
-      const left: CardV3["moves"][number] = { meta: [dateOf(issuance), ...schedNote(issuance), t(` · Issued, confirmed by ${formOfUrl(confirmingUrl(issuance))}`)], title: [faceInst(issuance)], detail: null, retires: null };
+      const left: CardV3["moves"][number] = { meta: [dateOf(issuance), ...schedNote(issuance), t(issuance.status === "pending" ? ` · ${pendingWords(issuance)}` : ` · Issued, confirmed by ${formOfUrl(confirmingUrl(issuance))}`)], title: [faceInst(issuance)], detail: null, retires: null };
       // v3.2 §2.3: a price attaches to the issuance it describes, in its own sentence: "Issued at 98.75% of principal, adding to the existing notes."
       const pr = priceClause(issuance).filter((x) => !(x.k === "text" && x.t === ", "));
       const issuedLine: Line = pr.length ? [t("Issued "), ...pr, ...issuance.extra, t(".")] : [];
@@ -2146,7 +2179,7 @@ export function buildCard(i: CardInputs): Card {
         const r0 = issuance.retires[0];
         left.retires = {
           meta: [
-            ...(pending ? [t("Refinanced · "), dateOf(r0, `redemption set for ${whenShort(r0)}`), t(", awaiting confirmation in a filing")] : [t("Refinanced · "), dateOf(r0, `${issuance.retires.every((r) => r.type === "paydown") ? "repaid" : "redeemed"} ${whenShort(r0)}`), ...schedNote(r0)]),
+            ...(issuance.status === "pending" ? [t("Refinancing announced · "), dateOf(r0, whenShort(r0)), t(", awaiting confirmation in a filing")] : pending ? [t("Refinanced · "), dateOf(r0, `redemption set for ${whenShort(r0)}`), t(", awaiting confirmation in a filing")] : [t("Refinanced · "), dateOf(r0, `${issuance.retires.every((r) => r.type === "paydown") ? "repaid" : "redeemed"} ${whenShort(r0)}`), ...schedNote(r0)]),
             // Session 27 (Nov 1): every source the funding sentence names, in its order (the new notes, then cash on hand).
             ...(() => { const sp = r0.spendSrc; const others = sp ? fundSources(sp.sentence).filter((s) => !s.newDebt) : []; return others.length ? [t(", funded by the new notes and "), ...others.flatMap((s, n) => [...(n ? [t(" and ")] : []), { k: "label", t: s.stated.toLowerCase(), stated: s.stated, src: sp! } as Segment])] : []; })(),
           ],
@@ -2169,6 +2202,9 @@ export function buildCard(i: CardInputs): Card {
     moveCards.push({ meta: [dateOf(sorted[0]), ...schedNote(sorted[0]), t(` · ${vocab(sorted[0])}`)], title: sorted.map((m) => [...faceInstOrName(m), ...remainsClause(m)]), detail: shared || sorted.length === 1 ? detailOf(sorted[0]) : null, retires: null });
   }
   function vocab(m: Move): string {
+    // Nov 16 (Akshay): pending status for every move type, not only redemptions. A retirement an issuance funds is
+    // stated on the issuance's card (its "Refinanced" line), pending or not.
+    if (m.status === "pending" && !(RETIRES.has(m.type) && m.fundedBy)) return pendingWords(m);
     if (m.type === "facility amendment") return "Amended";
     if (m.type === "repayment at maturity") return "Repaid at maturity";
     if (m.type === "paydown") return "Repaid";
@@ -2178,9 +2214,30 @@ export function buildCard(i: CardInputs): Card {
     if (m.type === "draw") return "Drew";
     return (TYPE_WORD[m.type]?.[0] ?? m.type).replace(/^./, (c) => c.toUpperCase());
   }
+  /** Nov 16: an exchange or tender's new instrument offered (the facts' own fact). */
+  function offeredClause(m: Move): Line {
+    const o = m.offeredFact;
+    if (!o) return [];
+    const where = factSrc(o);
+    return [t("for new "), { k: "label", t: o.value.replace(/[\s ]+/g, " ").trim().toLowerCase(), stated: filerSpan(o.value, where.sentence), src: where }];
+  }
+  /** Nov 16: a consent solicitation stated with an exchange or tender: the facts' own fact, else the move's sentence. */
+  function consentClause(m: Move): Line {
+    const where = m.consentFact ? factSrc(m.consentFact) : src(m.sentence, m.url);
+    const stated = /\bsolicit\w*\s+consents?\b|\bconsent\s+solicitation\b/i.exec(where.sentence)?.[0];
+    if (!stated) return [];
+    return [t("with a "), { k: "label", t: "consent solicitation", stated, src: where }, ...amendsIndenture(where.sentence)];
+  }
+  function amendsIndenture(sentence: string): Line {
+    return /\bamendments?\s+to\s+the\s+indenture\b|\bamend\w*\s+the\s+indenture\b/i.test(sentence) ? [t(" to amend the indenture")] : [];
+  }
+  function pendingWords(m: Move): string {
+    return `${TYPE_WORD[m.type]?.[1] ?? `${m.type.charAt(0).toUpperCase()}${m.type.slice(1)} announced`}, awaiting confirmation in a filing`;
+  }
   function faceInstOrName(m: Move): Line {
     if (m.type === "facility amendment") {
       const incr = /\bincremental\b/i.test(m.sentence);
+      if (m.status === "pending") return [(() => { const seg = instPhrase(m); return { ...seg, t: seg.t.charAt(0).toUpperCase() + seg.t.slice(1) } as Segment; })(), ...(incr && m.face ? [t(", incremental "), m.face] : [])];
       return incr ? [t("Added an incremental "), ...(m.face ? [m.face, t(" ")] : []), instPhrase(m)] : [instPhrase(m), t(" amended")].map((x, n) => (n === 0 && x.k === "label" ? { ...x, t: x.t.replace(/^./, (c) => c.toUpperCase()) } : x));
     }
     return [...(m.face ? [m.face, t(" ")] : []), instPhrase(m)];
@@ -2190,10 +2247,12 @@ export function buildCard(i: CardInputs): Card {
     const pr = priceClause(m).filter((x) => !(x.k === "text" && x.t === ", "));
     if (pr.length) {
       const rest = [...fundClause(m), ...useClause(m), ...m.extra];
-      const verb = m.type === "tender or repurchase" ? "Repurchased" : m.type === "issuance" ? "Issued" : "Redeemed";
+      const verb = m.status === "pending" ? "At" : m.type === "tender or repurchase" ? "Repurchased" : m.type === "issuance" ? "Issued" : "Redeemed";
       return [t(`${verb} `), ...pr, t("."), ...(rest.length ? [t(" "), ...capFirst(rest.map((x, n) => (n === 0 && x.k === "text" ? { ...x, t: x.t.replace(/^,\s*funded by/, "with") } : x))), t(".")] : [])];
     }
-    const parts = [...fundClause(m), ...useClause(m), ...priceClause(m), ...m.extra];
+    // Nov 16: an exchange or tender states what it offers and the consent solicitation made with it.
+    const offer = m.type === "exchange offer" || m.type === "tender offer" ? (() => { const o = offeredClause(m), c = consentClause(m); return [...o, ...(o.length && c.length ? [t(", ")] : []), ...c]; })() : [];
+    const parts = [...offer, ...fundClause(m), ...useClause(m), ...priceClause(m), ...m.extra];
     if (m.type === "facility amendment" && !parts.length && !/\bincremental\b/i.test(m.sentence)) return [t("Terms of the amendment are not covered in this version.")];
     if (!parts.length) return m.type === "repayment at maturity" || m.type === "paydown" ? [t("Funding source not stated.")] : null;
     const out = capFirst(parts.map((x, n) => (n === 0 && x.k === "text" ? { ...x, t: x.t.replace(/^,\s*funded by/, "with") } : x)));
@@ -2533,7 +2592,7 @@ export function buildCard(i: CardInputs): Card {
   // card cites the same sentence (spacing aside) or carries the same date.
   const located = locateMoveSentences([...textByUrlOf(i)].sort(([a], [b]) => (a === anchor.url ? -1 : b === anchor.url ? 1 : 0)).map(([url, text]) => ({ url, label: src("", url).doc, text })), `${periodEnd.slice(0, 4)}-01-01`, briefDate);
   const possibleMoves: Line[] = uncoveredMoves(located, moveCards)
-    .map((m) => { const excerpt = m.sentence.length > 220 ? `${m.sentence.slice(0, 217)}…` : m.sentence; return [t("Possible move, not confirmed: "), { k: "label", t: `“${excerpt}”`, stated: m.sentence.slice(0, Math.min(m.sentence.length, 217)), src: src(m.sentence, m.url) } as Segment]; });
+    .map((m) => { const excerpt = m.sentence.length > 220 ? `${m.sentence.slice(0, 217)}…` : m.sentence; return [t(m.status === "pending" ? "Possible move, announced and pending, not confirmed: " : "Possible move, not confirmed: "), { k: "label", t: `“${excerpt}”`, stated: m.sentence.slice(0, Math.min(m.sentence.length, 217)), src: src(m.sentence, m.url) } as Segment]; });
   // Session 27 (Oct 31): a trigger left unresolved by a refused dig is flagged, never silently answered.
   notShown.push(...pairingFlags);
   for (const r of result.results as any[]) if (r.unresolved) notShown.push([t(`${String(r.triggerId).replace(/-/g, " ")}: unresolved — ${r.unresolved}.`)]);

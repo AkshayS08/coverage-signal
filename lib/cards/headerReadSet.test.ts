@@ -8,7 +8,8 @@
  *   H1  CHS's refresh card: the Nov 10 8-K, in its read set, is "read for this card"; nothing says it is unread
  *   H2  the same card with that 8-K outside the read set: "read at the next refresh", and Not shown says it is not read
  *   H3  every shown card: each filing its header names is said read exactly when it is in that card's read set
- *   control: the CHS card built before this rule (sessions/27/chs_refresh/card.json) says a read filing is unread
+ *   control: the CHS card built before this rule (sessions/27/chs_refresh/card.json at cfb8496, before the card was
+ *            re-rendered under it) says a read filing is unread
  *
  * Offline, $0. Run: npx tsx lib/cards/headerReadSet.test.ts
  */
@@ -46,7 +47,7 @@ for (const s of shownCards()) {
   assert(wrong.length === 0, `[H3:${s.card.company} ${s.label}] ${named.length} filing(s) named; each said read exactly when in the read set${wrong.length ? `; wrong: ${wrong.map((f: any) => f.t).join(", ")}` : ""}`);
 }
 
-const before = JSON.parse(readFileSync("sessions/27/chs_refresh/card.json", "utf-8"));
+const before = JSON.parse(require("node:child_process").execSync("git show cfb8496:sessions/27/chs_refresh/card.json", { encoding: "utf-8", maxBuffer: 64e6 }));
 assert(headerOf(before).includes(READ_WHEN) && /its text is not read/.test(notShownOf(before)), `[control] the CHS card built before this rule calls its read Nov 10 8-K unread: "${headerOf(before).slice(0, 110)}"`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);

@@ -82,6 +82,10 @@ export interface CardFacts {
     funding: Fact | null;
     use: Fact | null;
     price: Fact | null;
+    /** Nov 16: an exchange or tender offer's new instrument offered, as the filer names it. */
+    offered?: Fact | null;
+    /** Nov 16: the clause stating a consent solicitation made with an exchange or tender offer. */
+    consent?: Fact | null;
   }[];
   residual: { fact: string; why: string; variation: string[] }[];
 }

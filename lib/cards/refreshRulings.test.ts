@@ -7,6 +7,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { rulingViolations } from "./refreshRulings";
 import { buildCard } from "./build";
+import { factsReadSetOf } from "./factsValidity";
 import { nonEmpty } from "../testing/nonEmpty";
 import { shownCards, everyShownCard, inScope } from "./shownCards";
 
@@ -54,7 +55,10 @@ assert(rulingViolations(c, ten.input).C.length > 0, `[C control] "confirmed by 1
 const batch = read("baselines/s27-refresh-batch.json").names.find((n: any) => n.cik === "0000070318");
 const result = batch.samples.find((s: any) => s.bust === null).result;
 const noProceeds = (x: string) => x.replace(/\b(?:net\s+)?(?:issuance\s+)?proceeds\b/gi, "funds");
-const facts = JSON.parse(noProceeds(readFileSync("sessions/27/refresh/facts/0000070318.json", "utf-8")));
+// Nov 16: the pairing rule, given facts taken as read over this result's read set (whether a facts file was is
+// factsReadSet.test and factsDocs.test's question; these facts held 2 of its 9 documents).
+const asReadFor = (f: any, r: any) => ({ ...f, anchorUrl: r.results.find((x: any) => x.triggerId === "debt-maturity").debtScheduleSourceFiling.url, readSet: factsReadSetOf(r) });
+const facts = asReadFor(JSON.parse(noProceeds(readFileSync("sessions/27/refresh/facts/0000070318.json", "utf-8"))), result);
 const pc = buildCard({ result, briefDate: "2026-10-31", previousBrief: "2026-10-15", weekFilings: [], cash: ten.input.cash, textByUrl: new Map(Object.entries(ten.input.docs as Record<string, { text: string }>).map(([u, d]) => [u, noProceeds(d.text)])), periodSentence: ten.input.periodSentence, laterUrls: [], facts });
 const pair = pc.v3!.moves.find((m: any) => m.retires);
 assert(!!pair && pair.retires!.items.length === 2 && /2034/.test(txt(pair.title[0])), `[P control] with no "proceeds" anywhere, the funding sentence naming the "2034 Senior Notes" still pairs the issuance with both redemptions (${pc.v3!.moves.map((m: any) => txt(m.meta)).join(" | ")})`);
@@ -69,7 +73,7 @@ const flags = (c: any) => (c.v3.notShown ?? []).map(txt).filter((l: string) => /
 const may = enc.card.v3.moves.find((m: any) => /May 29, 2026 · Issued/.test(txt(m.meta)));
 assert(flags(enc.card).length === 0 && !!may?.retires && may.retires.items.length === 2, `[P2] Encompass: both retirements pair with the May 29 issue, no "Paired by" line (${flags(enc.card).length} flag line(s); ${may?.retires?.items.map(txt).join(" / ") ?? "no pair"})`);
 const encResult = read(join("baselines", "golden", "0000785161.json")).sourceResult;
-const encFacts = read(join("lib", "cards", "archive", "2026-10-15", "inputs", "facts", "0000785161.json"));
+const encFacts = asReadFor(read(join("lib", "cards", "archive", "2026-10-15", "inputs", "facts", "0000785161.json")), enc.input.result ?? encResult);
 const encWeek = read(join("lib", "cards", "archive", "2026-10-15", "inputs", "week-2026-10-15.json")).names["0000785161"];
 const encBuild = (docs: Record<string, { text: string }>) => buildCard({ result: enc.input.result ?? encResult, briefDate: enc.card.briefDate, previousBrief: encWeek?.previousBrief ?? null, weekFilings: encWeek?.filings ?? [], cash: enc.input.cash, textByUrl: new Map(Object.entries(docs).map(([u, d]) => [u, d.text])), periodSentence: enc.input.periodSentence, laterUrls: (enc.input.laterFilings ?? []).filter((x: any) => x.filingDate <= enc.card.briefDate).map((x: any) => x.url), facts: encFacts });
 // The 10-Q's "this offering" as the only link: without the 8-Ks that name the May notes by their defined term.

@@ -32,6 +32,7 @@ import { join } from "node:path";
 import { locateMoveSentences, uncoveredMoves } from "./moveSentences";
 import { movesSectionText } from "./sections";
 import { buildCard } from "./build";
+import { factsReadSetOf } from "./factsValidity";
 import { nonEmpty } from "../testing/nonEmpty";
 import { shownCards } from "./shownCards";
 
@@ -93,7 +94,9 @@ assert((card.v3.possibleMoves ?? []).length === 1, `[P6] the Feb 4 amendment, pr
 const bad = JSON.parse(JSON.stringify(card)); bad.v3.possibleMoves = [];
 assert(violations(bad, docsOf(mol), "2026-01-01", "2026-10-30").length > 0, `[P4 control] with the possible-move lines removed, the card is flagged`);
 
-const confirmed = buildWith(rerun);
+// Nov 16: the covering rule, given the re-run facts taken as read over this result's read set (their validity is
+// factsReadSet.test and factsDocs.test's question).
+const confirmed = buildWith({ ...rerun, readSet: factsReadSetOf(result) });
 assert(confirmed.v3.moves.some((m: any) => /Feb 4, 2026/.test(m.meta.map((x: any) => x.t ?? "").join(""))) && (confirmed.v3.possibleMoves ?? []).length === 0, `[P7] with the re-run facts, the Feb 4 amendment is a confirmed move card and nothing is left as possible`);
 
 console.log("\n=== P8: a redemption notice is covered by the redemption it announced ===");
@@ -116,7 +119,7 @@ for (const cik of CIKS) {
 console.log("\n=== P5: the cause, fixed ===");
 const dump = join(process.env.TEMP ?? ".", "p5dump");
 require("node:fs").mkdirSync(dump, { recursive: true });
-require("node:child_process").execFileSync("npx", ["tsx", "lib/cards/capture/facts.ts", "2026-10-30", "--input", "sessions/27/molina_review_input.json", "--dump", dump], { env: { ...process.env, ANTHROPIC_API_KEY: "" }, shell: true, stdio: "ignore" });
+require("node:child_process").execFileSync("npx", ["tsx", "lib/cards/capture/facts.ts", "2026-10-30", "--input", "sessions/27/molina_review_v3_input.json", "--dump", dump], { env: { ...process.env, ANTHROPIC_API_KEY: "" }, shell: true, stdio: "ignore" });
 const input = existsSync(join(dump, "input-0001179929.txt")) ? readFileSync(join(dump, "input-0001179929.txt"), "utf-8") : "";
 assert(/CANDIDATE MOVE SENTENCES/.test(input) && /amendment to the Credit Agreement on February 4, 2026/.test(input.split("CANDIDATE MOVE SENTENCES")[1] ?? ""), `[P5] the facts input lists the located move sentences, the Feb 4 amendment among them`);
 

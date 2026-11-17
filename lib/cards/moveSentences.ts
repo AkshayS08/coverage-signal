@@ -14,17 +14,27 @@
  * repurchased or repaid, a redemption notice issued, a facility entered into,
  * refinanced or terminated), with a date inside the window printed within
  * 140 characters of that verb. A conditional ("may redeem", "will be repaid")
- * is not a move, and neither is an exhibit or press-release description.
+ * is not a move, and neither is an exhibit description.
+ *
+ * Nov 16 (Akshay): a press-release sentence is a statement ("On November 9, 2026, CHS issued a press release
+ * announcing that … intends to commence a private offer to exchange …"), so it is no longer discarded. Exchange offers,
+ * tender offers and consent solicitations are moves. A move the filer says it intends, expects or plans, or announced,
+ * commenced or launched (and does not say was completed) is located as PENDING. A sentence that opens with its date
+ * ("On November 9, 2026, …") is dated by it where no date is printed near its verb.
  */
 import { paragraphSentences, antecedentWindow, REFERS, HEADING } from "./antecedent";
 import { quoteFound } from "./moveEvidence";
 
-export interface LocatedMove { sentence: string; url: string; label: string; date: string; kind: "amendment" | "issuance" | "retirement" | "facility" }
+export interface LocatedMove { sentence: string; url: string; label: string; date: string; kind: "amendment" | "issuance" | "retirement" | "facility" | "exchange" | "tender" | "consent"; status: "completed" | "pending" }
 
 const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
 /** A gap that may cross a decimal point ("1.250 %") but not a sentence end. */
 const GAP = (n: number) => String.raw`(?:[^.]|\.(?=\d)){0,${n}}`;
 const KINDS: { kind: LocatedMove["kind"]; re: RegExp }[] = [
+  // Nov 16: liability-management events, before the kinds their sentences also name (an exchange offer issues notes).
+  { kind: "exchange", re: /\b(?:offers?|offering)\s+to\s+exchange\b|\bexchange\s+offers?\b/i },
+  { kind: "tender", re: /\btender\s+offers?\b|\boffers?\s+to\s+purchase\b/i },
+  { kind: "consent", re: /\bsolicit\w*\s+consents?\b|\bconsent\s+solicitations?\b/i },
   { kind: "amendment", re: new RegExp(String.raw`\b(?:executed|entered into|completed)\s+(?:an?|the)\s+(?:[\w-]+\s+){0,3}amendment\b|\bamended\s+(?:and\s+restated\s+)?(?:the|our|its)\s+[\w\s-]{0,40}?(?:credit agreement|credit facility|indenture|facility)\b`, "i") },
   { kind: "retirement", re: new RegExp(String.raw`\bissued\s+(?:a\s+)?notices?\s+of\s+(?:conditional\s+)?(?:full\s+|partial\s+)?(?:and\s+(?:conditional\s+)?(?:full\s+|partial\s+)?)?redemption\b|\b(?:redeemed|repurchased|repaid|retired|prepaid)\b${GAP(160)}\b(?:notes|debentures|bonds|term loans?|loans)\b`, "i") },
   { kind: "issuance", re: new RegExp(String.raw`\b(?:issued\s+(?:\$|an\s+aggregate|aggregate|additional)|completed\s+(?:an?|the|its)\s+(?:private\s+|registered\s+)?offering\s+of|priced\s+(?:an?|its|the)\s+(?:private\s+)?offering\s+of)${GAP(160)}\b(?:notes|debentures|bonds)\b`, "i") },
@@ -34,8 +44,13 @@ const KINDS: { kind: LocatedMove["kind"]; re: RegExp }[] = [
   { kind: "facility", re: new RegExp(String.raw`\b(?:drew|borrowed)\b${GAP(120)}\b(?:revolving credit facility|revolver|credit facility)\b${GAP(200)}\bto\s+(?:repay|retire|redeem|fund|finance|refinance)\b`, "i") },
   { kind: "facility", re: new RegExp(String.raw`\bused\s+(?:the\s+)?(?:net\s+)?proceeds\b${GAP(400)}\brepay\b${GAP(200)}\b(?:revolving credit facility|revolver)\b`, "i") },
 ];
-const CONDITIONAL = /\b(?:may|will|would|could|can|shall|might|intends? to|expects? to)\s+(?:be\s+)?(?:\w+\s+){0,2}(?:redeem|repurchase|repay|retire|prepay|issue|amend|refinance|terminate)|\bto be (?:redeemed|repaid|repurchased|retired|issued)\b/i;
-const NOT_A_STATEMENT = /\bpress release\b|\bexhibit\b|^description\b/i;
+const CONDITIONAL = /\b(?:may|will|would|could|can|shall|might)\s+(?:be\s+)?(?:\w+\s+){0,2}(?:redeem|repurchase|repay|retire|prepay|issue|amend|refinance|terminate)|\bto be (?:redeemed|repaid|repurchased|retired|issued)\b/i;
+const NOT_A_STATEMENT = /\bexhibit\b|^description\b/i;
+/** Nov 16: announced or intended, and not said to be done. */
+const PENDING = /\b(?:intends?|expects?|plans?)\s+to\b|\bannounc\w*|\bcommenc\w*|\blaunch\w*/i;
+const DONE = /\b(?:completed|consummated|settled|expired|closed)\b/i;
+/** A sentence that opens with its date: "On November 9, 2026, …". */
+const OPENING_DATE = new RegExp(String.raw`^(?:On|In)\s+((?:${MONTHS.join("|")})\s+(?:\d{1,2},\s*)?\d{4}),`, "i");
 
 /** Every date the sentence prints, with its position and [first day, last day] at its precision. */
 function datesIn(sentence: string): { iso: string; from: string; to: string; at: number }[] {
@@ -51,7 +66,8 @@ function datesIn(sentence: string): { iso: string; from: string; to: string; at:
 
 // Nov 13 (excerptEnds.test): a sentence ends where it ends — a note number or "Note N." heading after its period
 // ("… revolving credit facility. 5.") belongs to the next section, not to the quote.
-const sentencesOf = (t: string) => t.replace(/\s+/g, " ").split(/(?<=[.;])\s+(?=[A-Z(“"]|20\d\d\b)|\s*[•●▪]\s*/).map((x) => x.replace(/([.;])\s+(?:Note\s+)?\d{1,2}\.\s*$/, "$1")).filter((x) => x.length > 30 && x.length < 900);
+// Nov 16: a company abbreviation ("Inc. (the “Issuer”)") does not end a sentence: CHS's Nov 10 8-K was cut there.
+const sentencesOf = (t: string) => t.replace(/\s+/g, " ").split(/(?<=[.;])(?<!\b(?:Inc|Corp|Co|Ltd|No|Nos|L\.P|N\.A|U\.S|S\.A)\.)\s+(?=[A-Z(“"]|20\d\d\b)|\s*[•●▪]\s*/).map((x) => x.replace(/([.;])\s+(?:Note\s+)?\d{1,2}\.\s*$/, "$1")).filter((x) => x.length > 30 && x.length < 900);
 
 /** Debt-move sentences in these documents dated inside [from, to] (ISO dates), once each. */
 export function locateMoveSentences(docs: { url: string; label: string; text: string }[], from: string, to: string): LocatedMove[] {
@@ -73,7 +89,9 @@ export function locateMoveSentences(docs: { url: string; label: string; text: st
     return null;
   };
   for (const d of docs) for (const raw of sentencesOf(d.text)) {
-    if (NOT_A_STATEMENT.test(raw) || CONDITIONAL.test(raw)) continue;
+    if (NOT_A_STATEMENT.test(raw)) continue;
+    const pending = PENDING.test(raw) && !DONE.test(raw);
+    if (!pending && CONDITIONAL.test(raw)) continue;
     let hit: { kind: LocatedMove["kind"]; at: number } | null = null;
     for (const k of KINDS) { const m = k.re.exec(raw); if (m) { hit = { kind: k.kind, at: m.index }; break; } }
     if (!hit) continue;
@@ -83,7 +101,10 @@ export function locateMoveSentences(docs: { url: string; label: string; text: st
     const opener = Math.max(raw.lastIndexOf(" On ", hit.at), raw.lastIndexOf(" In ", hit.at));
     if (opener > 0 && (raw.slice(0, opener).match(/\d[\d,.]*/g) ?? []).length >= 4) { s = raw.slice(opener + 1); hit = { ...hit, at: hit.at - opener - 1 }; }
     // A period marker ("six months ended June 30", "as of", "at") is not the move's date.
-    const near = datesIn(s).filter((x) => x.to >= from && x.from <= to && Math.abs(x.at - hit!.at) <= 140 && !/\b(?:ended|as of|at)\s*$/i.test(s.slice(Math.max(0, x.at - 12), x.at)));
+    const inWindow = (x: { from: string; to: string }) => x.to >= from && x.from <= to;
+    const opening = OPENING_DATE.exec(s) ? datesIn(s).filter((x) => x.at <= 3 && inWindow(x)) : [];
+    const nearBy = datesIn(s).filter((x) => inWindow(x) && Math.abs(x.at - hit!.at) <= 140 && !/\b(?:ended|as of|at)\s*$/i.test(s.slice(Math.max(0, x.at - 12), x.at)));
+    const near = nearBy.length ? nearBy : opening;
     const viaAntecedent = near.length ? null : antecedentDate(d.url, d.text, s);
     if (!near.length && !viaAntecedent) continue;
     const key = s.slice(0, 80);
@@ -91,7 +112,7 @@ export function locateMoveSentences(docs: { url: string; label: string; text: st
     seen.add(key);
     // The move's own date: the in-window date printed nearest its verb (or, for a referring sentence, its antecedent's).
     const date = viaAntecedent ?? near.sort((a, b) => Math.abs(a.at - hit!.at) - Math.abs(b.at - hit!.at))[0].iso;
-    out.push({ sentence: s, url: d.url, label: d.label, date, kind: hit.kind });
+    out.push({ sentence: s, url: d.url, label: d.label, date, kind: hit.kind, status: pending ? "pending" : "completed" });
   }
   // A run of flattened text that swallows a located sentence is not a second move: keep the shorter.
   return out.filter((m) => !out.some((o) => o !== m && o.url === m.url && o.sentence.length < m.sentence.length && m.sentence.includes(o.sentence.slice(0, 60))));

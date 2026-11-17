@@ -172,6 +172,7 @@ export function verifyAsk(snap: any, raw: Raw, rejected: { fact: string; why: st
         instrument: { value: m.instrument, src: instE ?? { sentence: m.sourceLine, url }, verified: !!instE },
         face: faceE ? { value: m.face, src: faceE } : null,
         funding: fact(m.funding, `funding of ${m.instrument}`), use: fact(m.use, `use of ${m.instrument}`), price: fact(m.price, `price of ${m.instrument}`),
+        offered: fact(m.offered, `instrument offered for ${m.instrument}`), consent: fact(m.consent, `consent solicitation with ${m.instrument}`),
       };
     }).filter(Boolean),
   };
