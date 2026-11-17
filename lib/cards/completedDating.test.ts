@@ -38,7 +38,7 @@ const card = cardOf(chs, facts);
 assert(metas(card).includes("May 6, 2026 (launched Apr 22) · Repurchased") && !poss(card).some((p: string) => /May 6, 2026/.test(p)), `[A1] ${metas(card).join(" | ")}; possible moves: ${poss(card).length}`);
 assert(metas(card).some((m: string) => /^Feb 2, 2026 · Redeemed/.test(m)), `[A2] the Feb 2 special call keeps its date`);
 
-const before = read("sessions/27/chs_refresh_v3/card.json");
+const before = JSON.parse(require("node:child_process").execSync("git show 3ab16f2:sessions/27/chs_refresh_v3/card.json", { encoding: "utf-8", maxBuffer: 64e6 })); // the card before the rule
 assert(metas(before).includes("Apr 22, 2026 · Repurchased") && poss(before).some((p: string) => /May 6, 2026/.test(p)), `[A3 control] before the rule: ${metas(before).join(" | ")}`);
 
 // A4: the completion sentence names another coupon.
@@ -63,6 +63,14 @@ const f6 = JSON.parse(JSON.stringify(facts));
 for (const m of f6.moves) if (m.type === "tender offer") m.status = "pending";
 const c6 = cardOf(chs, f6);
 assert(!metas(c6).some((m: string) => /^May 6, 2026/.test(m)), `[A6] a pending move is not dated by a completion: ${metas(c6).join(" | ")}`);
+
+// A7: a period end is not a move's day. Cigna's Q1 10-Q, now in its input: "During the three months ended March 31,
+// 2026, the Company repaid $550 million 1.250% senior notes that matured in March 2026." The repayment stays "Mar 2026".
+const cig = read("sessions/27/cigna_facts/input.json");
+const cigFacts = { ...factsFrom(cig, read("sessions/27/cigna_facts/raw-0001739940.json")), anchorUrl: cig.result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.url };
+const c7 = cardOf(cig, cigFacts);
+const rep7 = metas(c7).find((m: string) => /Repaid at maturity/.test(m));
+assert(!!rep7 && /^Mar 2026 · Repaid at maturity/.test(rep7), `[A7] a period end ("three months ended March 31, 2026") does not date Cigna's repayment: ${rep7 ?? "(no repayment card)"}`);
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

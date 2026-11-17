@@ -769,7 +769,8 @@ export function buildCard(i: CardInputs): Card {
       for (const { s, docText } of allHeld) {
         // The same move, done (moveEvidence.ts): its verb and its note, never a notice or press release about it.
         if (!statesSameMove(s.sentence, mv, docText)) continue;
-        for (const d of s.sentence.matchAll(DAY)) if (+d[3] === y && MONTH_NAMES.indexOf(d[1]) + 1 === mo) hits.push({ day: +d[2], text: d[0], src: s });
+        // Nov 16 (completedDating.test A7): a period end ("three months ended March 31, 2026", "as of", "at") is not a move's day.
+        for (const d of s.sentence.matchAll(DAY)) if (+d[3] === y && MONTH_NAMES.indexOf(d[1]) + 1 === mo && !/\b(?:ended|ending|as of|at|through)\s*$/i.test(s.sentence.slice(Math.max(0, (d.index ?? 0) - 12), d.index ?? 0))) hits.push({ day: +d[2], text: d[0], src: s });
       }
       // Nov 4 (correcting Nov 1's ruling (b)): the more precise statement wins only when it states the SAME fact. A
       // scheduled or expected day ("expected to be redeemed on September 23") never dates a completed move; it is shown
