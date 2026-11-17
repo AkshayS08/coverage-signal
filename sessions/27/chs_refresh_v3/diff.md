@@ -15,14 +15,11 @@ Re-rendered at $0 from this run's input and facts (lib/cache/s27chsRender.ts). B
   - now: Exchange offer announced: any and all of the $1,244MM 6⅞% junior-priority secured notes due 2029, for new 10.250% senior secured notes due 2035, with a consent solicitation to amend the indenture.
 - **moves**
   - was: May 6, 2026 · Repurchased
-  - was: With ~$600MM of cash on hand from recent divestiture proceeds.
   - now: Nov 9, 2026 · Exchange offer announced, awaiting confirmation in a filing
   - now: 6⅞% junior-priority secured notes due 2029
   - now: For new 10.250% senior secured notes due 2035, with a consent solicitation to amend the indenture.
-  - now: Apr 22, 2026 · Repurchased
-- **possibleMoves**
-  - now: Possible move, not confirmed: “On May 6, 2026, the Company issued a press release announcing the early tender results of its previously announced cash tender offer (the “Tender Offer”) to purchase for cash up to $600,000,000 aggregate purchase pric…”
-- **cited sentences behind source links**: 121 out, 129 in
+  - now: May 6, 2026 (launched Apr 22) · Repurchased
+- **cited sentences behind source links**: 119 out, 129 in
   - was cited: 10-Q 2026-10-29 | 6 ⅞% Junior-Priority Secured Notes due 2029 1,244
   - was cited: 10-Q 2026-10-29 | 4 ¾% Senior Secured Notes due 2031 689
   - was cited: 10-Q 2026-10-29 | 10 ⅞% Senior Secured Notes due 2032 1,549
@@ -33,7 +30,6 @@ Re-rendered at $0 from this run's input and facts (lib/cache/s27chsRender.ts). B
   - was cited: 10-Q 2026-10-29 | 9 ¾% Senior Secured Notes due 2034 1,790
   - was cited: 10-Q 2026-10-29 | Finance lease and financing obligations 300
   - was cited: 10-Q 2026-10-29 | Other 46
-  - was cited: 10-Q 2026-10-29 | The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million prin
   - was cited: 10-Q 2026-10-29 | On February 2, 2026, the Company exercised a special call provision to redeem 10 % of the original principal amount, or approximately $ 223 
   - was cited: 10-Q 2026-10-29 | The ABL Facility includes borrowing capacity available for letters of credit of $200 million.
   - was cited: 10-Q 2026-10-29 | Long-term debt 9,568
@@ -49,9 +45,9 @@ Re-rendered at $0 from this run's input and facts (lib/cache/s27chsRender.ts). B
   - now cited: 10-Q 2026-10-29 | 9 ¾% Senior Secured Notes due 2034 $ 1,790
   - now cited: 10-Q 2026-10-29 | Finance lease and financing obligations $ 300
   - now cited: 10-Q 2026-10-29 | Other $ 46
+  - now cited: 10-Q 2026-10-29 | The Company used approximately $ 600 million of cash on hand from recent divestiture proceeds to repurchase approximately $ 368 million prin
   - now cited: 10-Q 2026-10-29 | The ABL Facility includes borrowing capacity available for letters of credit of $ 200 million.
   - now cited: 10-Q 2026-10-29 | Long-term debt $ 9,568
-  - now cited: d107670d8k.htm | On May 6, 2026, the Company issued a press release announcing the early tender results of its previously announced cash tender offer (the “T
 - **parts of computed figures (shown when a figure is opened)**: 73 shown differently
   - was: $ 42 million
   - was: $ 1,244 million

@@ -1,0 +1,344 @@
+{
+ "cik": "0000785161",
+ "anchorUrl": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+ "readSet": "663d7d0315fcfff200b74b24",
+ "promptVersion": 3,
+ "asks": 3,
+ "costUsd": 0.162256,
+ "schedule": [
+  {
+   "period": "October 1 through December 31, 2026",
+   "amount": {
+    "value": "$ 9.2",
+    "src": {
+     "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount October 1 through December 31, 2026 $ 9.2",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "2027",
+   "amount": {
+    "value": "47.0",
+    "src": {
+     "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount October 1 through December 31, 2026 $ 9.2 $ 9.2 2027 47.0",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "2028",
+   "amount": {
+    "value": "436.0",
+    "src": {
+     "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount October 1 through December 31, 2026 $ 9.2 $ 9.2 2027 47.0 47.0 2028 436.0",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "2029",
+   "amount": {
+    "value": "45.1",
+    "src": {
+     "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount October 1 through December 31, 2026 $ 9.2 $ 9.2 2027 47.0 47.0 2028 436.0 433.4 2029 45.1",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "2030",
+   "amount": {
+    "value": "850.8",
+    "src": {
+     "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount October 1 through December 31, 2026 $ 9.2 $ 9.2 2027 47.0 47.0 2028 436.0 433.4 2029 45.1 45.1 2030 850.8",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "2031",
+   "amount": {
+    "value": "515.1",
+    "src": {
+     "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount October 1 through December 31, 2026 $ 9.2 $ 9.2 2027 47.0 47.0 2028 436.0 433.4 2029 45.1 45.1 2030 850.8 839.9 2031 515.1",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  },
+  {
+   "period": "Thereafter",
+   "amount": {
+    "value": "726.8",
+    "src": {
+     "sentence": "2 The following chart shows scheduled principal payments due on long-term debt for the next five years and thereafter (in millions): Face Amount Net Amount October 1 through December 31, 2026 $ 9.2 $ 9.2 2027 47.0 47.0 2028 436.0 433.4 2029 45.1 45.1 2030 850.8 839.9 2031 515.1 509.4 Thereafter 726.8",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  }
+ ],
+ "subFacilities": [
+  {
+   "facility": "2026 Credit Agreement",
+   "kind": "letter-of-credit",
+   "amount": {
+    "value": "$ 260 million",
+    "src": {
+     "sentence": "The credit agreement provides for a $ 1 billion revolving credit facility, with a $ 260 million letter of credit subfacility and a swingline loan subfacility, all of which mature in October 2027.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+    }
+   }
+  },
+  {
+   "facility": "2026 Credit Agreement",
+   "kind": "swingline",
+   "amount": {
+    "value": "$ 40 million",
+    "src": {
+     "sentence": "the swingline loan sublimit has been increased from $ 25 million to $ 40 million.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  }
+ ],
+ "uncommitted": [],
+ "commercialPaper": null,
+ "cash": [],
+ "faces": [
+  {
+   "instrument": "4.50 % Senior Notes due 2028",
+   "face": {
+    "value": "$ 400 million in aggregate principal amount",
+    "src": {
+     "sentence": "redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  },
+  {
+   "instrument": "5.875 % Senior Notes due 2034",
+   "face": {
+    "value": "$ 500 million",
+    "src": {
+     "sentence": "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  }
+ ],
+ "maturities": [
+  {
+   "instrument": "5.875 % Senior Notes due 2034",
+   "maturity": {
+    "value": "June 1, 2034",
+    "src": {
+     "sentence": "The 2034 Notes mature on June 1, 2034 and interest is payable semiannually in arrears on June 1 and December 1 of each year.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   }
+  },
+  {
+   "instrument": "4.50 % Senior Notes due 2028",
+   "maturity": {
+    "value": "February 1, 2028",
+    "src": {
+     "sentence": "The 2028 Notes mature on February 1, 2028 and bear interest at a per annum rate of 4.50 %.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+    }
+   }
+  },
+  {
+   "instrument": "4.75 % Senior Notes due 2030",
+   "maturity": {
+    "value": "February 1, 2030",
+    "src": {
+     "sentence": "The 2030 Notes mature on February 1, 2030 and bear interest at a per annum rate of 4.75 %.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+    }
+   }
+  },
+  {
+   "instrument": "4.625 % Senior Notes due 2031",
+   "maturity": {
+    "value": "April 1, 2031",
+    "src": {
+     "sentence": "The 2031 Notes mature on April 1, 2031 and bear interest at a per annum rate of 4.625 %.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm"
+    }
+   }
+  }
+ ],
+ "moves": [
+  {
+   "date": {
+    "value": "March 9, 2026",
+    "src": {
+     "sentence": "On March 9, 2026 (the \"Closing Date\"), we entered into a credit agreement (the \"2026 Credit Agreement\"), by and among us, certain of our subsidiaries, as guarantors, Truist Bank, as administrative agent and collateral agent, and various other lenders.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "type": "facility refinancing",
+   "status": "completed",
+   "instrument": {
+    "value": "2026 Credit Agreement",
+    "src": {
+     "sentence": "On March 9, 2026 (the \"Closing Date\"), we entered into a credit agreement (the \"2026 Credit Agreement\"), by and among us, certain of our subsidiaries, as guarantors, Truist Bank, as administrative agent and collateral agent, and various other lenders.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "face": null,
+   "funding": null,
+   "use": null,
+   "price": null,
+   "offered": null,
+   "consent": null
+  },
+  {
+   "date": {
+    "value": "March 2026",
+    "src": {
+     "sentence": "During March 2026, we drew $ 250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "type": "draw",
+   "status": "completed",
+   "instrument": {
+    "value": "2026 Credit Agreement revolving credit facility",
+    "src": {
+     "sentence": "During March 2026, we drew $ 250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "face": {
+    "value": "$ 250.0 million",
+    "src": {
+     "sentence": "During March 2026, we drew $ 250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "funding": null,
+   "use": {
+    "value": "to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement",
+    "src": {
+     "sentence": "During March 2026, we drew $ 250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "price": null,
+   "offered": null,
+   "consent": null
+  },
+  {
+   "date": {
+    "value": "May 29, 2026",
+    "src": {
+     "sentence": "On May 29, 2026, Encompass Health Corporation (the “Company”) completed the issuance and sale of $500 million in aggregate principal amount of its 5.875% Senior Notes due 2034 (the “Notes”), along with the related guarantees of the Notes by certain of the Company’s subsidiaries (the “Guarantees”), in a private offering.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000161/ehc-20260529.htm"
+    }
+   },
+   "type": "issuance",
+   "status": "completed",
+   "instrument": {
+    "value": "5.875 % Senior Notes due 2034",
+    "src": {
+     "sentence": "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "face": {
+    "value": "$ 500 million",
+    "src": {
+     "sentence": "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "funding": null,
+   "use": {
+    "value": "to (i) redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100 million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses",
+    "src": {
+     "sentence": "We used the net proceeds from this offering, together with cash on hand, to (i) redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\"), (ii) repay $ 100 million of outstanding amounts under our revolving credit facility, and (iii) pay certain related fees and expenses.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "price": {
+    "value": "at par",
+    "src": {
+     "sentence": "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the \"2034 Notes\") at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "offered": null,
+   "consent": null
+  },
+  {
+   "date": {
+    "value": "August 13, 2026",
+    "src": {
+     "sentence": "On August 13, 2026, Encompass Health Corporation (the “Company”) completed the issuance and sale of $100 million in aggregate principal amount of its 5.875% Senior Notes due 2034 (the “Additional Notes”), along with the related guarantees of the Additional Notes by certain of the Company’s subsidiaries, in a private offering.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm"
+    }
+   },
+   "type": "issuance",
+   "status": "completed",
+   "instrument": {
+    "value": "5.875 % Senior Notes due 2034",
+    "src": {
+     "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "face": {
+    "value": "$ 100 million",
+    "src": {
+     "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "funding": null,
+   "use": {
+    "value": "to repay a portion of the amounts outstanding under our revolving credit facility",
+    "src": {
+     "sentence": "We used the net proceeds from this borrowing, together with cash on hand, to repay a portion of the amounts outstanding under our revolving credit facility.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "price": {
+    "value": "at a price of 98.75 % of the principal amount",
+    "src": {
+     "sentence": "In August 2026, we issued an additional $ 100 million of our existing 2034 Notes at a price of 98.75 % of the principal amount, which resulted in approximately $ 97 million in net proceeds.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "offered": null,
+   "consent": null
+  }
+ ],
+ "residual": [
+  {
+   "fact": "uncommitted Available capacity under revolving credit facility",
+   "why": "not verified: its sentence does not state description \"Available capacity under revolving credit facility\"",
+   "variation": []
+  },
+  {
+   "fact": "face of 5.875 % Senior Notes due 2034",
+   "why": "not verified: its sentence does not state instrument \"5.875 % Senior Notes due 2034\"",
+   "variation": []
+  },
+  {
+   "fact": "move redemption 4.50 % Senior Notes due 2028 May 2026",
+   "why": "not verified: no sentence the card accepts for this move states the date \"May 2026\"",
+   "variation": []
+  },
+  {
+   "fact": "move paydown 2026 Credit Agreement revolving credit facility May 2026",
+   "why": "not verified: no sentence the card accepts for this move states the date \"May 2026\"",
+   "variation": []
+  },
+  {
+   "fact": "move paydown 2026 Credit Agreement revolving credit facility August 2026",
+   "why": "not verified: no sentence the card accepts for this move states the date \"August 2026\"",
+   "variation": []
+  }
+ ]
+}

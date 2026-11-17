@@ -89,7 +89,13 @@
     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
    }
   },
-  "outstanding": null,
+  "outstanding": {
+   "value": "$ 1.0 billion",
+   "src": {
+    "sentence": "The commercial paper program had approximately $ 1.0 billion outstanding as of June 30, 2026 and an average interest rate of 3.92 %.",
+    "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+   }
+  },
   "averageRate": {
    "value": "3.92 %",
    "src": {
@@ -107,8 +113,110 @@
  },
  "cash": [],
  "faces": [],
- "maturities": [],
- "moves": [],
+ "maturities": [
+  {
+   "instrument": "4.500% Senior Notes",
+   "maturity": {
+    "value": "September 15, 2030",
+    "src": {
+     "sentence": "The 2030 Notes will bear interest at a rate of 4.500% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2030.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+    }
+   }
+  },
+  {
+   "instrument": "4.875% Senior Notes",
+   "maturity": {
+    "value": "September 15, 2032",
+    "src": {
+     "sentence": "The 2032 Notes will bear interest at a rate of 4.875% per annum, and interest will be payable on March 15 and September 15 of each year, beginning March 15, 2026 until the maturity date of September 15, 2032.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+    }
+   }
+  },
+  {
+   "instrument": "5.250% Senior Notes",
+   "maturity": {
+    "value": "January 15, 2036",
+    "src": {
+     "sentence": "The 2036 Notes will bear interest at a rate of 5.250% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2036.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+    }
+   }
+  },
+  {
+   "instrument": "6.000% Senior Notes",
+   "maturity": {
+    "value": "January 15, 2056",
+    "src": {
+     "sentence": "The 2056 Notes will bear interest at a rate of 6.000% per annum, and interest will be payable on January 15 and July 15 of each year, beginning January 15, 2026 until the maturity date of January 15, 2056.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+    }
+   }
+  }
+ ],
+ "moves": [
+  {
+   "date": {
+    "value": "September 4, 2025",
+    "src": {
+     "sentence": "On September 4, 2025, The Cigna Group (the \"Company\") completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the \"2030 Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+    }
+   },
+   "type": "issuance",
+   "status": "completed",
+   "instrument": {
+    "value": "4.500% Senior Notes due 2030",
+    "src": {
+     "sentence": "On September 4, 2025, The Cigna Group (the \"Company\") completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the \"2030 Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+    }
+   },
+   "face": {
+    "value": "$1,000,000,000",
+    "src": {
+     "sentence": "On September 4, 2025, The Cigna Group (the \"Company\") completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the \"2030 Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
+    }
+   },
+   "funding": null,
+   "use": null,
+   "price": null,
+   "offered": null,
+   "consent": null
+  },
+  {
+   "date": {
+    "value": "March 2026",
+    "src": {
+     "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+    }
+   },
+   "type": "repayment at maturity",
+   "status": "completed",
+   "instrument": {
+    "value": "1.250 % senior notes",
+    "src": {
+     "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+    }
+   },
+   "face": {
+    "value": "$ 550 million",
+    "src": {
+     "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
+     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000065/ci-20260630.htm"
+    }
+   },
+   "funding": null,
+   "use": null,
+   "price": null,
+   "offered": null,
+   "consent": null
+  }
+ ],
  "residual": [
   {
    "fact": "uncommitted Accounts Receivable Factoring Facilities",
@@ -141,7 +249,7 @@
    "variation": []
   },
   {
-   "fact": "cash: cashandshort-terminvestments=6.6billion",
+   "fact": "cash: cash and short-term investments $6.6 billion",
    "why": "stated in 2 of 3 asks",
    "variation": [
     "ask 1: present",
@@ -150,7 +258,7 @@
    ]
   },
   {
-   "fact": "face: 1.250%seniornotes=550million",
+   "fact": "face: 1.250 % senior notes $ 550 million",
    "why": "stated in 2 of 3 asks",
    "variation": [
     "ask 1: present",
@@ -159,7 +267,7 @@
    ]
   },
   {
-   "fact": "face: 1000million4.500%notesdueseptember2030=1000million",
+   "fact": "face: $ 1,000 million, 4.500 % Notes due September 2030 $ 1,000 million",
    "why": "stated in 1 of 3 asks",
    "variation": [
     "ask 1: absent",
@@ -168,7 +276,7 @@
    ]
   },
   {
-   "fact": "maturity: 1.250%seniornotes=march2026",
+   "fact": "maturity: 1.250 % senior notes March 2026",
    "why": "stated in 2 of 3 asks",
    "variation": [
     "ask 1: present",
@@ -177,120 +285,12 @@
    ]
   },
   {
-   "fact": "maturity: 4.500%seniornotes=september152030",
-   "why": "stated in 2 of 3 asks",
-   "variation": [
-    "ask 1: present",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "maturity: 4.875%seniornotes=september152032",
-   "why": "stated in 2 of 3 asks",
-   "variation": [
-    "ask 1: present",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "maturity: 5.250%seniornotes=january152036",
-   "why": "stated in 2 of 3 asks",
-   "variation": [
-    "ask 1: present",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "maturity: 6.000%seniornotes=january152056",
-   "why": "stated in 2 of 3 asks",
-   "variation": [
-    "ask 1: present",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "maturity: 1000million4.500%notesdueseptember2030=september152030",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: absent",
-    "ask 3: present"
-   ]
-  },
-  {
-   "fact": "maturity: 1250million4.875%notesdueseptember2032=september152032",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: absent",
-    "ask 3: present"
-   ]
-  },
-  {
-   "fact": "maturity: 1500million5.250%notesduejanuary2036=january152036",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: absent",
-    "ask 3: present"
-   ]
-  },
-  {
-   "fact": "maturity: 750million6.000%notesduejanuary2056=january152056",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: absent",
-    "ask 3: present"
-   ]
-  },
-  {
-   "fact": "move: issuance|completed|september42025|1000000000|4.500%seniornotesdue2030",
-   "why": "stated in 2 of 3 asks",
-   "variation": [
-    "ask 1: present",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "move: repayment at maturity|completed|march2026|550million|1.250%seniornotes",
-   "why": "stated in 2 of 3 asks",
-   "variation": [
-    "ask 1: present",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "move: issuance|completed|september42025|1000million|1000million4.500%notesdueseptember2030",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: absent",
-    "ask 3: present"
-   ]
-  },
-  {
-   "fact": "move: repayment at maturity|completed|march2026|550million|550million1.250%notesduemarch2026",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: absent",
-    "ask 3: present"
-   ]
-  },
-  {
-   "fact": "commercial paper outstanding",
+   "fact": "use of the issuance of 4.500% Senior Notes due 2030",
    "why": "varied across asks",
    "variation": [
-    "ask 1: $ 1.0 billion",
-    "ask 2: $ 1.0 billion",
-    "ask 3: approximately $ 1.0 billion"
+    "ask 1: to repay $2.0 billion of loans outstanding under the Term Loan Agreement, dated as of August 5, 2025, among the Company, the guarantors from time to time party thereto, the banks from time to time party thereto and Bank of America, N.A., as administrative agent, the proceeds of which were used to fund a strategic investment in another company, and the remainder for general corporate purposes, which may include investments and repayment of indebtedness",
+    "ask 2: general corporate purposes, which may include investments and repayment of indebtedness",
+    "ask 3: to repay $2.0 billion of loans outstanding under the Term Loan Agreement, dated as of August 5, 2025, among the Company, the guarantors from time to time party thereto, the banks from time to time party thereto and Bank of America, N.A., as administrative agent, the proceeds of which were used to fund a strategic investment in another company, and the remainder for general corporate purposes, which may include investments and repayment of indebtedness"
    ]
   }
  ]

@@ -96,6 +96,54 @@
   {
    "key": "answer/0001739940/card-facts/rs-26512777ed5c80e9f5615526/cf-v3-ask3.json",
    "why": "Cigna card facts re-read Nov 16 over its read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000070318/card-facts/rs-db72d7fd887b5aff4394caf7/cf-v3-ask1.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000070318/card-facts/rs-db72d7fd887b5aff4394caf7/cf-v3-ask2.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000070318/card-facts/rs-db72d7fd887b5aff4394caf7/cf-v3-ask3.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000785161/card-facts/rs-663d7d0315fcfff200b74b24/cf-v3-ask1.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000785161/card-facts/rs-663d7d0315fcfff200b74b24/cf-v3-ask2.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000785161/card-facts/rs-663d7d0315fcfff200b74b24/cf-v3-ask3.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000927066/card-facts/rs-b4bdbc10e9e276db5dfd792c/cf-v3-ask1.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000927066/card-facts/rs-b4bdbc10e9e276db5dfd792c/cf-v3-ask2.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0000927066/card-facts/rs-b4bdbc10e9e276db5dfd792c/cf-v3-ask3.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001179929/card-facts/rs-508df840d1ae21e8c103941c/cf-v3-ask1.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001179929/card-facts/rs-508df840d1ae21e8c103941c/cf-v3-ask2.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
+  },
+  {
+   "key": "answer/0001179929/card-facts/rs-508df840d1ae21e8c103941c/cf-v3-ask3.json",
+   "why": "card facts re-read Nov 16 over the full read set (v3): awaiting Akshay's review"
   }
  ]
 }
