@@ -41,14 +41,16 @@ const badRun = rerun(read("sessions/27/chs_refresh_v3/input.json"), bad);
 assert(badRun.moves.filter((m: any) => m.type === "tender offer").every((m: any) => !m.funding) && badRun.rejected.some((r: any) => /^funding of/.test(r.fact)), `[I2 control] a funding the move's own sentence does not state is rejected, not borrowed`);
 
 // I3 controls: the wording consensus
-const oldCig = read("sessions/27/cigna_facts/0001739940.json"), oldChs = read("sessions/27/chs_refresh_v3/facts.json");
+// The facts files as the wording consensus wrote them (3ab16f2), before they were re-derived by identity.
+const atWording = (p: string) => JSON.parse(require("node:child_process").execSync(`git show 3ab16f2:${p}`, { encoding: "utf-8", maxBuffer: 64e6 }));
+const oldCig = atWording("sessions/27/cigna_facts/0001739940.json"), oldChs = atWording("sessions/27/chs_refresh_v3/facts.json");
 assert(!oldCig.moves.some((m: any) => m.type === "repayment at maturity") && !oldCig.commercialPaper?.outstanding && oldChs.moves.filter((m: any) => m.type === "tender offer" && m.funding).length < 2, `[I3 control] the wording consensus dropped Cigna's repayment and CP outstanding, and CHS's funding on one note`);
 
 // I4 controls: identity, not similarity
 assert(sameInstrument("1.250% senior notes", "$550 million 1.250% notes due March 2026") && sameInstrument("10 ⅞% Senior Secured Notes due 2032", "10.875% Senior Secured Notes due 2032"), `[I4] same coupon (printed as a fraction or a decimal), maturity year where both state one: same instrument`);
 assert(!sameInstrument("4.500% Senior Notes due 2030", "4.875% Senior Notes due 2030") && !sameInstrument("6.875% Senior Notes due 2028", "6.875% Junior-Priority Secured Notes due 2029"), `[I4 control] a different coupon or maturity year is another instrument`);
 assert(sameAmount("approximately $ 1.0 billion", "$1,000 million") && !sameAmount("$ 368 million", "$ 231 million"), `[I4 control] amounts by value: $1.0 billion is $1,000 million; $368 million is not $231 million`);
-assert(sameDate("March 2026", "March 2026") && !sameDate("March 2026", "March 15, 2026") && !sameDate("April 22, 2026", "May 6, 2026"), `[I4 control] dates at their stated precision: a month is not a day in it; another day is another date`);
+assert(sameDate("March 2026", "March 2026") && sameDate("March 2026", "March 15, 2026") && !sameDate("March 2026", "April 15, 2026") && !sameDate("April 22, 2026", "May 6, 2026"), `[I4 control] dates by identity (Nov 18): a day within the stated month is the same date; another month or another day is not`);
 assert(sameFunding("approximately $ 600 million of cash on hand from recent divestiture proceeds", "$600 million of cash on hand from divestiture proceeds") && !sameFunding("net proceeds from the 2034 Notes", "cash on hand"), `[I4 control] funding by source kind and amount: new notes are not cash on hand`);
 const one = JSON.parse(JSON.stringify(read("sessions/27/cigna_facts/raw-0001739940.json")));
 for (const m of one.asks[2].moves) m.instrument = String(m.instrument).replace(/1\.250\s*%/, "1.500%");

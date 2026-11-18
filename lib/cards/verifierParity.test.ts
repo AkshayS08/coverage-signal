@@ -18,8 +18,9 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { verifyAskForTest } from "./capture/verifyFacts";
 import { quoteFound, statesSameMove, datesCompletedMove } from "./moveEvidence";
-import { paragraphSentences, antecedentWindow, REFERS, HEADING } from "./antecedent";
+import { paragraphSentences, antecedentWindow, offeringAntecedents, sentenceIndexOf, REFERS, HEADING } from "./antecedent";
 import { nonEmpty } from "../testing/nonEmpty";
+import { moveFamily } from "./capture/factConsensus";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -52,10 +53,14 @@ function cardAccepts(snap: any, m: { type: string; instrument: string; date: str
   let antecedent = false;
   if (ownDoc) {
     const { sentences, hasBreaks } = paragraphSentences(ownDoc.text);
-    const at = sentences.findIndex((x) => quoteFound(x.sentence, m.sourceLine) || quoteFound(m.sourceLine, x.sentence));
+    const at = sentenceIndexOf(sentences, m.sourceLine, quoteFound);
     antecedent = at >= 0 && REFERS.test(sentences[at].sentence) && antecedentWindow(sentences, at, hasBreaks, (x) => HEADING.test(x)).some((k) => quoteFound(sentences[k].sentence, sentence));
   }
-  const same = own || antecedent || statesSameMove(sentence, m, doc.text);
+  // Nov 18 (ruling A2, antecedent.offeringAntecedents): the offering a held sentence stating the same move done refers to
+  // ("We used the net issuance proceeds … to finance the redemption …" → "In September 2026, we issued …").
+  const { sentences: ds, hasBreaks: db } = paragraphSentences(doc.text);
+  const viaCompletion = ds.some((x, i) => statesSameMove(x.sentence, m, doc.text) && datesCompletedMove(x.sentence) && offeringAntecedents(ds, i, db).some((k) => quoteFound(ds[k].sentence, sentence)));
+  const same = own || antecedent || viaCompletion || statesSameMove(sentence, m, doc.text);
   return same && (m.status !== "completed" || datesCompletedMove(sentence));
 }
 function cardFinds(snap: any, m: { type: string; instrument: string; date: string; status: string; sourceLine: string }): boolean {
@@ -73,8 +78,11 @@ for (const set of present) {
     const v = verifyAskForTest(snap, ask);
     for (const m of ask.moves ?? []) {
       moves++;
-      const kept = v.moves.find((k: any) => k.type === m.type && k.date.value === m.date && k.instrument.value === m.instrument);
-      const ok = kept ? cardAccepts(snap, m, kept.date.src.sentence) : !cardFinds(snap, m);
+      // Nov 18: the verifier may re-date a move (from the sentence stating its completion) or complete a pending one;
+      // it is the same move by its instrument and type family, its date exact where it kept it.
+      const same = v.moves.filter((k: any) => k.instrument.value === m.instrument && moveFamily(k.type) === moveFamily(m.type));
+      const kept = same.find((k: any) => k.date.value === m.date) ?? same[0];
+      const ok = kept ? cardAccepts(snap, { ...m, status: kept.status }, kept.date.src.sentence) : !cardFinds(snap, m);
       if (!ok) disagree.push(`${set.label}: ${m.type} ${m.date} ${String(m.instrument).slice(0, 40)} — verifier ${kept ? "kept" : "rejected"}, the card's functions ${kept ? "do not accept its date sentence" : "find a sentence dating it"}`);
     }
   }

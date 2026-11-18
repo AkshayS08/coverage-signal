@@ -710,7 +710,7 @@ export function buildCard(i: CardInputs): Card {
     issuance: ["Issued", "Issuance announced"], redemption: ["Redeemed", "Redemption announced"], "special call": ["Special call redemption", "Special call announced"],
     "tender or repurchase": ["Repurchased", "Repurchase announced"], "repayment at maturity": ["Repaid at maturity", "Repayment announced"],
     "facility entry": ["Entered", "Entry announced"], "facility amendment": ["Amended", "Amendment announced"], "facility termination": ["Terminated", "Termination announced"],
-    refinancing: ["Refinanced", "Refinancing announced"], draw: ["Drew on", "Draw announced"], paydown: ["Repaid", "Repayment announced"], "incremental add-on": ["Incremental add-on", "Add-on announced"],
+    refinancing: ["Refinanced", "Refinancing announced"], "facility refinancing": ["Refinanced", "Refinancing announced"], draw: ["Drew on", "Draw announced"], paydown: ["Repaid", "Repayment announced"], "incremental add-on": ["Incremental add-on", "Add-on announced"],
     // Nov 16: liability-management events.
     "exchange offer": ["Exchanged", "Exchange offer announced"], "tender offer": ["Repurchased", "Tender offer announced"], "consent solicitation": ["Consents received", "Consent solicitation announced"],
   };
@@ -1142,8 +1142,13 @@ export function buildCard(i: CardInputs): Card {
     }
     if (!m.useFact) return [];
     const where = factSrc(m.useFact);
-    const verb = /\b(repay|redeem|refinance|fund|finance|retire)\b/i.exec(m.useFact.value);
-    const obj = /revolving|line of credit|credit facility/i.test(m.useFact.value) ? "the revolver" : /term loan/i.test(m.useFact.value) ? "the term loan" : null;
+    // Nov 18 (Akshay): the verb is the one that governs the object ("(i) redeem … notes, (ii) repay … revolving credit
+    // facility" uses the proceeds to REPAY the revolver), and a revolver or term loan is repaid, never redeemed.
+    const objAt = m.useFact.value.search(/revolving|line of credit|credit facility|term loan/i);
+    const obj = objAt < 0 ? null : /revolving|line of credit|credit facility/i.test(m.useFact.value.slice(objAt)) && !/^term loan/i.test(m.useFact.value.slice(objAt)) ? "the revolver" : "the term loan";
+    const verbs = [...m.useFact.value.matchAll(/\b(repay|redeem|refinance|fund|finance|retire)\b/gi)].filter((v) => objAt < 0 || (v.index ?? 0) < objAt);
+    const v0 = verbs.length ? verbs[verbs.length - 1] : null;
+    const verb = v0 ? (obj && /^redeem$/i.test(v0[1]) ? Object.assign([...v0], { 1: "repay", index: v0.index }) as unknown as RegExpExecArray : v0) : null;
     // Session 27 (Nov 1): never a placeholder with no content — the use is stated in the filer's own words.
     if (!verb || !obj) { const words = m.useFact.value.replace(/^\s*to\s+/i, "").split(/\s+/); const excerpt = words.slice(0, 14).join(" ") + (words.length > 14 ? " …" : ""); return [t(", used to "), { k: "label", t: excerpt, stated: words.slice(0, 14).join(" "), src: where }]; }
     const part = /a portion|partial|part of/i.test(m.useFact.value) ? "part of " : "";
@@ -1164,19 +1169,40 @@ export function buildCard(i: CardInputs): Card {
   // v2.1 §2.3 RELATED MOVES ARE ONE EVENT: the same date, a retirement and the
   // issuance it spends, or facility moves (entry, termination, draw, paydown)
   // in the same month.
-  const isFacilityMove = (m: Move) => !couponOf(m.instrument) && ["facility entry", "facility termination", "draw", "paydown"].includes(m.type);
+  const isFacilityMove = (m: Move) => !couponOf(m.instrument) && ["facility entry", "facility termination", "facility refinancing", "draw", "paydown"].includes(m.type);
+  /**
+   * The agreement a new one replaced: its year and the sentence that names it. From the termination's own name
+   * ("credit agreement dated … 2022"); where one refinancing move stands for both, from the event's sentences and stated
+   * uses ("… to repay in full and retire … the 2022 Credit Agreement"), never the new agreement's own year.
+   */
+  function replacedAgreement(entry: Move, term: Move, ms: Move[]): { year: string | undefined; src: Source | null } {
+    if (term !== entry) {
+      const y = (/dated\s+[A-Z][a-z]+\s+\d{1,2},\s*(20\d\d)/.exec(term.instrument) ?? /\b(20\d\d)\b/.exec(term.instrument) ?? [])[1];
+      return { year: y, src: term.instSeg.k === "label" ? term.instSeg.src : null };
+    }
+    const newYear = (/\b(20\d\d)\b/.exec(entry.instrument) ?? [])[1];
+    const cands: Source[] = [...ms.map((m) => src(m.sentence, m.url)), ...ms.flatMap((m) => (m.useFact ? [factSrc(m.useFact)] : []))];
+    for (const c of cands) for (const y of c.sentence.matchAll(/\b(20\d\d)\s+(?:Credit Agreement|credit agreement|Credit Facility)\b/g)) if (y[1] !== newYear) return { year: y[1], src: c };
+    return { year: undefined, src: null };
+  }
   const parent = new Map<Move, Move>();
   const root = (m: Move): Move => { let r = m; while (parent.get(r) && parent.get(r) !== r) r = parent.get(r)!; return r; };
-  const join = (a: Move, b: Move) => { if (a.inPeriod === b.inPeriod) parent.set(root(b), root(a)); };
+  const join = (a: Move, b: Move) => { if (root(a) !== root(b)) parent.set(root(b), root(a)); };
   for (const a of movesAll) for (const b of movesAll) {
-    if (a === b || a.inPeriod !== b.inPeriod) continue;
-    if (a.when === b.when || b.fundedBy === a || (isFacilityMove(a) && isFacilityMove(b) && a.sort.slice(0, 7) === b.sort.slice(0, 7))) join(a, b);
+    if (a === b) continue;
+    // Nov 18: a retirement and the issuance that funds it are one event, whichever documents state them (Encompass:
+    // its May 29 issuance dated by the 8-K, the redemption it funds by the 10-Q's antecedent).
+    if (b.fundedBy === a) { join(a, b); continue; }
+    if (a.inPeriod !== b.inPeriod) continue;
+    if (a.when === b.when || (isFacilityMove(a) && isFacilityMove(b) && a.sort.slice(0, 7) === b.sort.slice(0, 7))) join(a, b);
   }
   const moveEvents = new Map<Move, Move[]>();
   for (const m of movesAll) moveEvents.set(root(m), [...(moveEvents.get(root(m)) ?? []), m]);
   const eventLine = (ms: Move[]): Line => {
     const issuance = ms.find((m) => m.type === "issuance");
-    const entry = ms.find((m) => m.type === "facility entry"), term = ms.find((m) => m.type === "facility termination");
+    // Nov 18: a facility refinancing is the entry of the new agreement and the termination of the one it replaced.
+    const refi = ms.find((m) => m.type === "facility refinancing");
+    const entry = ms.find((m) => m.type === "facility entry") ?? refi, term = ms.find((m) => m.type === "facility termination") ?? refi;
     const anyPending = ms.some((m) => m.status === "pending");
     const tail: Line = anyPending ? [t(issuance && issuance.status !== "pending" ? " · redemption pending, not yet confirmed by a filing" : " · pending, not yet confirmed by a filing")] : [];
     if (entry && term) {
@@ -1184,11 +1210,11 @@ export function buildCard(i: CardInputs): Card {
       const lender = facilities.filter((f) => !/commercial paper|letter of credit/i.test(f.name));
       const fac = lender.length === 1 ? lender[0] : null;
       const draw = ms.find((m) => m.type === "draw");
-      const oldYear = (/dated\s+[A-Z][a-z]+\s+\d{1,2},\s*(20\d\d)/.exec(term.instrument) ?? /\b(20\d\d)\b/.exec(term.instrument) ?? [])[1];
+      const { year: oldYear, src: oldSrc } = replacedAgreement(entry, term, ms);
       const line: Line = [entry.dateSeg, t(`: Refinanced ${fac && /revolv/i.test(fac.name) ? "revolver" : "credit facility"}: new `)];
       if (fac?.facilitySize) line.push({ k: "figure", t: displayAmount(fac.facilitySize.value, fac.facilitySize.sourceLine), printed: fac.facilitySize.value, src: src(fac.facilitySize.sourceLine, fac.figureSources?.facilitySize ?? fac.citedUrl) }, t(" "));
       line.push(entry.instSeg.k === "label" ? { k: "label", t: "credit agreement", stated: containsWord(entry.instSeg.src.sentence, "credit agreement") ? "credit agreement" : entry.instSeg.stated, src: entry.instSeg.src } : t("credit agreement"));
-      line.push(t(" replaced the "), term.instSeg.k === "label" && oldYear ? { k: "label", t: `${oldYear} agreement`, stated: oldYear, src: term.instSeg.src } : t("earlier agreement"));
+      line.push(t(" replaced the "), oldYear && oldSrc ? { k: "label", t: `${oldYear} agreement`, stated: oldYear, src: oldSrc } : t("earlier agreement"));
       if (draw) line.push(t("; "), ...(draw.face ? [draw.face, t(" ")] : []), draw.instSeg.k === "label" ? { k: "label", t: "drawn to retire it", stated: "drew", src: draw.instSeg.src } : t("drawn to retire it"));
       for (const other of ms.filter((m) => m !== entry && m !== term && m !== draw)) line.push(t("; "), ...one(other, false));
       return [...line, ...tail];
@@ -2195,16 +2221,18 @@ export function buildCard(i: CardInputs): Card {
   const moveCards: CardV3["moves"] = [];
   for (const ms of evs) {
     const issuance = ms.find((m) => m.type === "issuance");
-    const entry = ms.find((m) => m.type === "facility entry"), term = ms.find((m) => m.type === "facility termination");
+    // Nov 18: a facility refinancing is the entry of the new agreement and the termination of the one it replaced.
+    const refi = ms.find((m) => m.type === "facility refinancing");
+    const entry = ms.find((m) => m.type === "facility entry") ?? refi, term = ms.find((m) => m.type === "facility termination") ?? refi;
     const faceInst = (m: Move): Line => [...(m.face ? [m.face, t(" ")] : []), instPhrase(m)];
     if (entry && term) {
       const lender = facilities.filter((f) => !/commercial paper|letter of credit/i.test(f.name));
       const fac = lender.length === 1 ? lender[0] : null;
       const draw = ms.find((m) => m.type === "draw");
-      const oldYear = (/dated\s+[A-Z][a-z]+\s+\d{1,2},\s*(20\d\d)/.exec(term.instrument) ?? /\b(20\d\d)\b/.exec(term.instrument) ?? [])[1];
+      const { year: oldYear, src: oldSrc } = replacedAgreement(entry, term, ms);
       const title: Line = [t(`${fac && /revolv/i.test(fac.name) ? "Revolver" : "Credit facility"}: new `)];
       if (fac?.facilitySize) title.push({ k: "figure", t: displayAmount(fac.facilitySize.value, fac.facilitySize.sourceLine), printed: fac.facilitySize.value, src: src(fac.facilitySize.sourceLine, fac.figureSources?.facilitySize ?? fac.citedUrl) }, t(" "));
-      title.push(entry.instSeg.k === "label" ? { k: "label", t: "credit agreement", stated: containsWord(entry.instSeg.src.sentence, "credit agreement") ? "credit agreement" : entry.instSeg.stated, src: entry.instSeg.src } : t("credit agreement"), t(" replaced the "), term.instSeg.k === "label" && oldYear ? { k: "label", t: `${oldYear} agreement`, stated: oldYear, src: term.instSeg.src } : t("earlier agreement"));
+      title.push(entry.instSeg.k === "label" ? { k: "label", t: "credit agreement", stated: containsWord(entry.instSeg.src.sentence, "credit agreement") ? "credit agreement" : entry.instSeg.stated, src: entry.instSeg.src } : t("credit agreement"), t(" replaced the "), oldYear && oldSrc ? { k: "label", t: `${oldYear} agreement`, stated: oldYear, src: oldSrc } : t("earlier agreement"));
       moveCards.push({ meta: [dateOf(entry), t(entry.status === "pending" || term.status === "pending" ? " · Refinancing announced, awaiting confirmation in a filing" : " · Refinanced")], title: [title], detail: draw ? [...(draw.face ? [draw.face, t(" ")] : []), draw.instSeg.k === "label" ? { k: "label", t: "drawn to retire it", stated: "drew", src: draw.instSeg.src } : t("drawn to retire it"), t(".")] : null, retires: null });
       continue;
     }

@@ -8,8 +8,30 @@ import { amountSupportOf } from "../../events/position";
 import { containsWord } from "../labels";
 import { placedInsideParent } from "../subFacility";
 import { quoteFound, statesSameMove, datesCompletedMove } from "../moveEvidence";
-import { paragraphSentences, antecedentWindow, REFERS, HEADING } from "../antecedent";
+import { paragraphSentences, antecedentWindow, offeringAntecedents, sentenceIndexOf, REFERS, HEADING } from "../antecedent";
 import type { Fact } from "../types";
+import { dateId, sameAmount } from "./factConsensus";
+const MONEY = /\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/gi;
+
+/**
+ * Nov 18 (Akshay): ONE FORM FOR A DATE. A date the sentence prints (written or abbreviated) that is the value's date at
+ * its precision, as the sentence prints it; never a period end ("three months ended March 31, 2026", "as of", "at").
+ */
+const PRINTED_DATE = /\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(?:\d{1,2}\s*,\s*)?20\d\d\b/g;
+// Nov 18: neither a period end nor a maturity ("due November 2027", "maturing in") is a move's date; "matured in March
+// 2026" is (a repayment at maturity).
+const PERIOD_END = /\b(?:ended|ending|as of|at|through|due|matures?|maturing)(?:\s+(?:on|in))?\s*$/i;
+/** A date that names a note ("the “February 2027 Notes”") is part of its name, not a date. */
+const NAMES_NOTE = /^[”"’']?\s*(?:senior\s+|secured\s+|first\s+lien\s+|second\s+lien\s+)*(?:notes|debentures|bonds)\b/i;
+function printedDates(sentence: string): string[] {
+  return [...sentence.matchAll(PRINTED_DATE)].filter((d) => {
+    const at = d.index ?? 0;
+    return !PERIOD_END.test(sentence.slice(Math.max(0, at - 12), at)) && !NAMES_NOTE.test(sentence.slice(at + d[0].length));
+  }).map((d) => d[0]);
+}
+function printedDateIn(sentence: string, value: string): string | null {
+  return printedDates(sentence).find((d) => dateId(d) === dateId(value)) ?? null;
+}
 
 type Raw = any;
 
@@ -27,6 +49,8 @@ function locate(snap: any, locs: Map<string, ReturnType<typeof createTextLocator
 function states(sentence: string, value: string): boolean {
   if (!value) return false;
   if (/\$|million|billion|thousand/i.test(value) && amountSupportOf(value, sentence).kind !== "unsupported") return true;
+  // Nov 18: an amount the sentence prints in another form, by value ("$1,500,000,000" is "$ 1.500 billion").
+  if (/\$/.test(value) && [...sentence.matchAll(MONEY)].some((x) => sameAmount(x[0], value))) return true;
   return containsWord(sentence, value.trim()) || containsWord(sentence, value.replace(/^\$\s*/, "").trim());
 }
 
@@ -43,15 +67,45 @@ const flatText = (t: string) => t.replace(/\s+/g, " ");
  */
 function evidenceFor(snap: any, url: string, sentence: string, value: string, move: { type: string; instrument: string; status?: string } | null, dating: boolean): { sentence: string; url: string } | null {
   const ok = (x: string) => !dating || move?.status !== "completed" || datesCompletedMove(x);
-  if (states(sentence, value) && ok(sentence)) return { sentence, url };
+  // Nov 18: a date is stated in any of its forms (ISO, written, abbreviated), at its precision.
+  const says = (x: string) => states(x, value) || (dating && printedDateIn(x, value) !== null);
+  if (says(sentence) && ok(sentence)) return { sentence, url };
   const text = snap.docs[url]?.text ?? "";
   const { sentences, hasBreaks } = paragraphSentences(text);
-  const at = sentences.findIndex((x) => quoteFound(x.sentence, sentence) || quoteFound(sentence, x.sentence));
+  // Nov 18 (Encompass's May redemption): the sentence that CONTAINS the quote; only failing that, a long sentence the
+  // quote contains — never a short one the quote happens to contain ("2028 Notes").
+  const at = sentenceIndexOf(sentences, sentence, quoteFound);
   if (at >= 0 && REFERS.test(sentences[at].sentence)) {
-    for (const k of antecedentWindow(sentences, at, hasBreaks, (x) => HEADING.test(x))) if (states(sentences[k].sentence, value) && ok(sentences[k].sentence)) return { sentence: sentences[k].sentence, url };
+    for (const k of antecedentWindow(sentences, at, hasBreaks, (x) => HEADING.test(x))) if (says(sentences[k].sentence) && ok(sentences[k].sentence)) return { sentence: sentences[k].sentence, url };
   }
   if (move) for (const [u, d] of Object.entries(snap.docs as Record<string, { text: string }>)) {
-    for (const x of paragraphSentences(d.text).sentences) if (statesSameMove(x.sentence, move, d.text) && states(x.sentence, value) && ok(x.sentence)) return { sentence: x.sentence, url: u };
+    for (const x of paragraphSentences(d.text).sentences) if (statesSameMove(x.sentence, move, d.text) && says(x.sentence) && ok(x.sentence)) return { sentence: x.sentence, url: u };
+  }
+  return null;
+}
+
+/**
+ * Nov 18 (Akshay): A DATE FAILURE NEVER DROPS A MOVE (ruling A2). A held sentence stating the same move DONE — its verb
+ * and its note (moveEvidence.statesSameMove), never a notice or a scheduled day, and its amount where the move states
+ * one — dates it: by the date it prints, or, where it refers ("this offering"), its antecedent's. Null where no
+ * sentence confirms the move.
+ */
+export function completionOf(snap: any, move: { type: string; instrument: string }, face: string | null): { date: string; src: { sentence: string; url: string } } | null {
+  for (const [u, d] of Object.entries(snap.docs as Record<string, { text: string }>)) {
+    const { sentences, hasBreaks } = paragraphSentences(d.text);
+    for (let i = 0; i < sentences.length; i++) {
+      const s = sentences[i].sentence;
+      if (!statesSameMove(s, move, d.text) || !datesCompletedMove(s)) continue;
+      // Nov 18: the move's amount by value ("$1,500,000,000" is "$ 1.500 billion"), the identity rule (factConsensus).
+      if (face && amountSupportOf(face, s).kind === "unsupported" && ![...s.matchAll(MONEY)].some((x) => sameAmount(x[0], face))) continue;
+      const own = printedDates(s)[0];
+      if (own) return { date: own, src: { sentence: s, url: u } };
+      // Where it refers ("this offering", "the net proceeds"), the offering it refers to (antecedent.ts, one home).
+      for (const k of offeringAntecedents(sentences, i, hasBreaks)) {
+        const a = printedDates(sentences[k].sentence)[0];
+        if (a && datesCompletedMove(sentences[k].sentence)) return { date: a, src: { sentence: sentences[k].sentence, url: u } };
+      }
+    }
   }
   return null;
 }
@@ -165,14 +219,23 @@ export function verifyAsk(snap: any, raw: Raw, rejected: { fact: string; why: st
       // Each detail is verified against the sentence the card's own functions accept for it, and links there.
       const mv = { type: m.type, instrument: m.instrument, status: m.status };
       const own = { sentence: m.sourceLine as string, url };
-      const dateE = evidenceFor(snap, url, m.sourceLine, m.date, mv, true);
-      if (!dateE) { rejected.push({ fact: label, why: `no sentence the card accepts for this move states the date "${m.date}"` }); return null; }
+      let date: string = m.date, status: string = m.status;
+      let dateE = evidenceFor(snap, url, m.sourceLine, m.date, mv, true);
+      // Nov 18 (ruling A2): a move recorded pending whose completion a held sentence states is completed, dated by it;
+      // a move whose date fails verification is dated by the sentence stating its completion; only a move no sentence
+      // confirms is dropped.
+      const done = (status === "pending" || !dateE) ? completionOf(snap, mv, m.face ?? null) : null;
+      if (status === "pending" && done && (!dateE || dateId(done.date) >= dateId(m.date).slice(0, 7))) { status = "completed"; date = done.date; dateE = done.src; }
+      else if (!dateE && done) { date = done.date; dateE = done.src; }
+      if (!dateE) { rejected.push({ fact: label, why: `no sentence the card accepts for this move states the date "${m.date}", and none states its completion` }); return null; }
+      // The date as the sentence prints it (one form: "2026-06-08" is kept as "June 8, 2026").
+      date = printedDateIn(dateE.sentence, date) ?? date;
       const instE = evidenceFor(snap, url, m.sourceLine, m.instrument, null, false) ?? (containsWord(m.sourceLine, m.instrument) ? { sentence: m.sourceLine, url } : null);
       const faceE = m.face ? evidenceFor(snap, url, m.sourceLine, m.face, mv, false) : null;
       if (m.face && !faceE) rejected.push({ fact: `face of ${label}`, why: `no sentence the card accepts for this move states "${m.face}"` });
       return {
-        type: m.type, status: m.status,
-        date: { value: m.date, src: dateE },
+        type: m.type, status,
+        date: { value: date, src: dateE },
         instrument: { value: m.instrument, src: instE ?? { sentence: m.sourceLine, url }, verified: !!instE },
         face: faceE ? { value: m.face, src: faceE } : null,
         funding: fact(m.funding, `funding of ${m.instrument}`, own), use: fact(m.use, `use of ${m.instrument}`, own), price: fact(m.price, `price of ${m.instrument}`, own),
