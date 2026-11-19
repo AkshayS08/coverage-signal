@@ -43,15 +43,81 @@
  },
  "moves": {
   "heading": "Recent debt moves",
-  "lines": [
-   [
-    {
-     "k": "text",
-     "t": "No debt moves stated between Jan 1, 2026 and Nov 9, 2026."
-    }
-   ]
-  ],
-  "blocks": []
+  "lines": [],
+  "blocks": [
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "During the period, Jan 1, 2026 to Sept 30, 2026: already in the position"
+     }
+    ],
+    "lines": [
+     [
+      {
+       "k": "label",
+       "t": "June 8, 2026",
+       "stated": "June 8, 2026",
+       "src": {
+        "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
+        "doc": "10-Q 2026-10-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": "
+      },
+      {
+       "k": "text",
+       "t": "Added an incremental"
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "figure",
+       "t": "$500MM",
+       "printed": "$ 500,000 thousand",
+       "src": {
+        "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
+        "doc": "10-Q 2026-10-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "Term Loan B-2",
+       "stated": "Term Loan B-2",
+       "src": {
+        "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
+        "doc": "10-Q 2026-10-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": ", used to "
+      },
+      {
+       "k": "label",
+       "t": "repay part of the revolver",
+       "stated": "repay",
+       "src": {
+        "sentence": "The Company used the net proceeds from this transaction to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
+        "doc": "10-Q 2026-10-29"
+       }
+      }
+     ]
+    ]
+   }
+  ]
  },
  "headlines": {
   "totalDebt": {
@@ -2245,7 +2311,79 @@
    "notes": [],
    "legend": "† Year only stated; may fall inside the window."
   },
-  "moves": [],
+  "moves": [
+   {
+    "meta": [
+     {
+      "k": "label",
+      "t": "June 8, 2026",
+      "stated": "June 8, 2026",
+      "src": {
+       "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
+       "doc": "10-Q 2026-10-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": " · Amended"
+     }
+    ],
+    "title": [
+     [
+      {
+       "k": "text",
+       "t": "Added an incremental "
+      },
+      {
+       "k": "figure",
+       "t": "$500MM",
+       "printed": "$ 500,000 thousand",
+       "src": {
+        "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
+        "doc": "10-Q 2026-10-29"
+       }
+      },
+      {
+       "k": "text",
+       "t": " "
+      },
+      {
+       "k": "label",
+       "t": "Term Loan B-2",
+       "stated": "Term Loan B-2",
+       "src": {
+        "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
+        "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
+        "doc": "10-Q 2026-10-29"
+       }
+      }
+     ]
+    ],
+    "detail": [
+     {
+      "k": "text",
+      "t": "Used to "
+     },
+     {
+      "k": "label",
+      "t": "repay part of the revolver",
+      "stated": "repay",
+      "src": {
+       "sentence": "The Company used the net proceeds from this transaction to repay a portion of the balance outstanding on its revolving line of credit and related accrued interest and fees.",
+       "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
+       "doc": "10-Q 2026-10-29"
+      }
+     },
+     {
+      "k": "text",
+      "t": "."
+     }
+    ],
+    "retires": null
+   }
+  ],
   "totalDebt": {
    "figure": {
     "k": "computed",
@@ -5079,24 +5217,7 @@
   "stages": {
    "facts": true
   },
-  "possibleMoves": [
-   [
-    {
-     "k": "text",
-     "t": "Possible move, not confirmed: "
-    },
-    {
-     "k": "label",
-     "t": "“On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement.”",
-     "stated": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement.",
-     "src": {
-      "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement.",
-      "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000134/dva-20260930.htm",
-      "doc": "10-Q 2026-10-29"
-     }
-    }
-   ]
-  ],
+  "possibleMoves": [],
   "movesUnread": null
  }
 }

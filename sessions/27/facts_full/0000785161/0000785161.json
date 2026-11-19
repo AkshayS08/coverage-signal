@@ -273,6 +273,42 @@
   },
   {
    "date": {
+    "value": "May 2026",
+    "src": {
+     "sentence": "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "type": "redemption",
+   "status": "completed",
+   "instrument": {
+    "value": "4.50 % Senior Notes due 2028",
+    "src": {
+     "sentence": "redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "face": {
+    "value": "$ 400 million in aggregate principal amount",
+    "src": {
+     "sentence": "redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "funding": null,
+   "use": null,
+   "price": {
+    "value": "at par",
+    "src": {
+     "sentence": "redeem at par $ 400 million in aggregate principal amount of the $ 800 million in outstanding principal amount of our 4.50 % Senior Notes due 2028 (the \"2028 Notes\")",
+     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm"
+    }
+   },
+   "offered": null,
+   "consent": null
+  },
+  {
+   "date": {
     "value": "August 13, 2026",
     "src": {
      "sentence": "On August 13, 2026, Encompass Health Corporation (the “Company”) completed the issuance and sale of $100 million in aggregate principal amount of its 5.875% Senior Notes due 2034 (the “Additional Notes”), along with the related guarantees of the Additional Notes by certain of the Company’s subsidiaries, in a private offering.",
@@ -326,19 +362,37 @@
    "variation": []
   },
   {
-   "fact": "move redemption 4.50 % Senior Notes due 2028 May 2026",
-   "why": "not verified: no sentence the card accepts for this move states the date \"May 2026\"",
+   "fact": "funding of 4.50 % Senior Notes due 2028",
+   "why": "not verified: its sentence does not state \"from the net proceeds from this offering, together with cash on hand\"",
    "variation": []
   },
   {
-   "fact": "move paydown 2026 Credit Agreement revolving credit facility May 2026",
-   "why": "not verified: no sentence the card accepts for this move states the date \"May 2026\"",
+   "fact": "funding of 2026 Credit Agreement revolving credit facility",
+   "why": "not verified: its sentence does not state \"from the net proceeds from this offering, together with cash on hand\"",
    "variation": []
   },
   {
-   "fact": "move paydown 2026 Credit Agreement revolving credit facility August 2026",
-   "why": "not verified: no sentence the card accepts for this move states the date \"August 2026\"",
+   "fact": "funding of 2026 Credit Agreement revolving credit facility",
+   "why": "not verified: its sentence does not state \"from the net proceeds from this borrowing, together with cash on hand\"",
    "variation": []
+  },
+  {
+   "fact": "move: paydown completed May 2026 $ 100 million 2026 Credit Agreement revolving credit facility",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
+  },
+  {
+   "fact": "move: paydown completed August 2026  2026 Credit Agreement revolving credit facility",
+   "why": "stated in 2 of 3 asks",
+   "variation": [
+    "ask 1: present",
+    "ask 2: absent",
+    "ask 3: present"
+   ]
   }
  ]
 }
