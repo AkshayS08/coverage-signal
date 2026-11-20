@@ -1,0 +1,219 @@
+# Published cards at the Nov 20 release against the cleared candidates_final
+
+## TENET HEALTHCARE CORP
+
+- **header (label)**
+  - was: Weekly coverage brief · Nov 4 to Nov 9, 2026
+  - now: Weekly coverage brief · Nov 10 to Nov 20, 2026
+- **header**
+  - was: No new filings this week
+  - now: 3 filings since this card's build of Oct 31, 2026: Form 4 (insider trades) Nov 19, 2026; Form 4 (insider trades) Nov 13, 2026; Form 144 (planned insider sales) Nov 12, 2026, read at the next refresh
+- **call (label)**
+  - was: The call · next 18 months, to May 9, 2028
+  - now: The call · next 18 months, to May 20, 2028
+- **parts of computed figures (shown when a figure is opened)**: 78 shown differently
+  - was: $ 600   million
+  - was: $ 27
+  - was: $ 157 million
+  - was: $ 1,931 million
+  - was: $ 1,250   million
+  - was: $ 1,400   million
+  - was: $ 1,450   million
+  - was: $ 2,000   million
+  - was: $ 1,350   million
+  - was: $ 1,500   million
+  - was: $ 362   million
+  - was: $ 750   million
+  - now: $600MM
+  - now: $27MM
+  - now: $157MM
+  - now: $1,931MM
+  - now: $1,250MM
+  - now: $1,400MM
+  - now: $1,450MM
+  - now: $2,000MM
+  - now: $1,350MM
+  - now: $1,500MM
+  - now: $362MM
+  - now: $750MM
+
+## Encompass Health Corp
+
+- **header (label)**
+  - was: Weekly coverage brief · Nov 4 to Nov 9, 2026
+  - now: Weekly coverage brief · Nov 10 to Nov 20, 2026
+- **header**
+  - was: 1 filing this week: 8-K (public disclosure) Nov 6, 2026, read for this card
+  - now: No new filings since this card's build of Nov 6, 2026
+- **call (label)**
+  - was: The call · next 18 months, to May 9, 2028
+  - now: The call · next 18 months, to May 20, 2028
+- **parts of computed figures (shown when a figure is opened)**: 94 shown differently
+  - was: $ 800 million
+  - was: $ 400 million in aggregate principal amount
+  - was: $ 9.2
+  - was: $ 47.0 million
+  - was: $ 436.0 million
+  - was: $ 789.2 million
+  - was: $ 45.1 million
+  - was: $ 850.8 million
+  - was: $ 515.1 million
+  - was: $ 726.8 million
+  - was: $ 75.0 million
+  - was: $ 500 million
+  - now: $800MM
+  - now: $400MM
+  - now: $9.2MM
+  - now: $47MM
+  - now: $436MM
+  - now: $789.2MM
+  - now: $45.1MM
+  - now: $850.8MM
+  - now: $515.1MM
+  - now: $726.8MM
+  - now: $75MM
+  - now: $500MM
+
+## MOLINA HEALTHCARE, INC.
+
+- **header (label)**
+  - was: Weekly coverage brief · Nov 4 to Nov 9, 2026
+  - now: Weekly coverage brief · Nov 10 to Nov 20, 2026
+- **header**
+  - was: 1 filing this week: 8-K (public disclosure) Nov 6, 2026, read at the next refresh
+  - now: 13 filings since this card's build of Oct 29, 2026: Form 144 (planned insider sales) Nov 16, 2026; Form 4 (insider trades) Nov 16, 2026; SCHEDULE 13G (other filing) Nov 13, 2026; Form 144 (planned insider sales) Nov 13, 2026; Form 4 (insider trades) Nov 13, 2026; Form 4 (insider trades) Nov 13, 2026; 4/A (other filing) Nov 13, 2026; Form 4 (insider trades) Nov 13, 2026; Form 4 (insider trades) Nov 13, 2026; Form 144 (planned insider sales) Nov 10, 2026; Form 144 (planned insider sales) Nov 10, 2026; 8-K (public disclosure) Nov 6, 2026; SCHEDULE 13G/A (other filing) Oct 30, 2026, read at the next refresh
+- **call (label)**
+  - was: The call · next 18 months, to May 9, 2028
+  - now: The call · next 18 months, to May 20, 2028
+- **call (away)**
+  - was: 19 months away · 1 month past the window
+  - now: 18 months away
+- **parts of computed figures (shown when a figure is opened)**: 29 shown differently
+  - was: $ 800 million
+  - was: $ 650 million
+  - was: $ 850 million
+  - was: $ 750 million
+  - was: $ 4,479 million
+  - was: $ 1.25 billion
+  - was: $ 3,771 million
+  - now: $800MM
+  - now: $650MM
+  - now: $850MM
+  - now: $750MM
+  - now: $4,479MM
+  - now: $1,250MM
+  - now: $3,771MM
+
+## DAVITA INC.
+
+- **header (label)**
+  - was: Weekly coverage brief · Nov 4 to Nov 9, 2026
+  - now: Weekly coverage brief · Nov 10 to Nov 20, 2026
+- **header**
+  - was: No new filings this week
+  - now: 10 filings since this card's build of Oct 31, 2026: Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026; Form 4 (insider trades) Nov 17, 2026, read at the next refresh
+- **call (label)**
+  - was: The call · next 18 months, to May 9, 2028
+  - now: The call · next 18 months, to May 20, 2028
+- **parts of computed figures (shown when a figure is opened)**: 66 shown differently
+  - was: $ 31,412 thousand
+  - was: $ 112,997 thousand
+  - was: $ 160,357 thousand
+  - was: $ 2,750,000 thousand
+  - was: $ 1,962,500 thousand
+  - was: $ 80,000 thousand
+  - was: $ 2,351,956 thousand
+  - was: $ 1,500,000 thousand
+  - was: $ 1,000,000 thousand
+  - was: $ 36,176 thousand
+  - was: $ 151,611 thousand
+  - was: $ 495,629 thousand
+  - now: $31.4MM
+  - now: $113MM
+  - now: $160.4MM
+  - now: $2,750MM
+  - now: $1,962.5MM
+  - now: $80MM
+  - now: $2,352MM
+  - now: $1,500MM
+  - now: $1,000MM
+  - now: $36.2MM
+  - now: $151.6MM
+  - now: $495.6MM
+
+## COMMUNITY HEALTH SYSTEMS INC
+
+- **header (label)**
+  - was: Weekly coverage brief · Nov 10 to Nov 16, 2026
+  - now: Weekly coverage brief · Nov 10 to Nov 20, 2026
+- **header**
+  - was: 1 filing this week: 8-K (other event) Nov 10, 2026, read for this card
+  - now: 2 filings this week: 8-K (other event) Nov 10, 2026, read for this card; SCHEDULE 13G/A (other filing) Nov 16, 2026, read at the next refresh
+- **call (label)**
+  - was: The call · next 18 months, to May 16, 2028
+  - now: The call · next 18 months, to May 20, 2028
+- **parts of computed figures (shown when a figure is opened)**: 74 shown differently
+  - was: $ 42 million
+  - was: $ 1,244 million
+  - was: $ 689 million
+  - was: $ 1,549 million
+  - was: approximately $ 231 million principal amount
+  - was: $ 1,227 million
+  - was: $ 644 million
+  - was: $ 1,535 million
+  - was: $ 700 million
+  - was: $ 1,790 million
+  - was: $ 300 million
+  - was: $ 46 million
+  - now: $42MM
+  - now: $1,244MM
+  - now: $689MM
+  - now: $1,549MM
+  - now: ~$231MM
+  - now: $1,227MM
+  - now: $644MM
+  - now: $1,535MM
+  - now: $700MM
+  - now: $1,790MM
+  - now: $300MM
+  - now: $46MM
+
+## Cigna Group
+
+- **header (label)**
+  - was: Weekly coverage brief · Nov 4 to Nov 9, 2026
+  - now: Weekly coverage brief · Nov 10 to Nov 20, 2026
+- **header**
+  - was: 2 filings this week: 8-K (earnings results) Nov 5, 2026; 10-Q (quarterly report) Nov 5, 2026, read at the next refresh
+  - was: 10-Q (quarterly report) · Nov 5, 2026 — read at the next refresh; this card's position is still the 10-Q for June 30, 2026.
+  - now: 2 filings since this card's build of Oct 15, 2026: 10-Q (quarterly report) Nov 5, 2026, read; this card stays at June 30, 2026; 8-K (earnings results) Nov 5, 2026, read at the next refresh
+  - now: Nov 5 10-Q read: its Sept 30 debt doesn't reconcile to the balance sheet ($194MM, 0.62%), so this card stays at June 30.
+- **call (label)**
+  - was: The call · next 18 months, to May 9, 2028
+  - now: The call · next 18 months, to May 20, 2028
+- **parts of computed figures (shown when a figure is opened)**: 204 shown differently
+  - was: $1,500 million
+  - was: $259 million
+  - was: $600 million
+  - was: $ 1.0 billion
+  - was: $3,800 million
+  - was: $ 1,000 million
+  - was: $ 1,250 million
+  - was: $ 1,500 million
+  - was: $ 750 million
+  - was: $1,000 million
+  - was: $1,400 million
+  - was: $750 million
+  - now: $1,500MM
+  - now: $259MM
+  - now: $600MM
+  - now: ~$1,000MM
+  - now: $3,800MM
+  - now: $1,000MM
+  - now: $1,250MM
+  - now: $750MM
+  - now: $1,400MM
+  - now: $45MM
+  - now: $800MM
+  - now: $190MM
+

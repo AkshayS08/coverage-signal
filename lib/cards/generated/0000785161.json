@@ -1,10 +1,10 @@
 {
  "cik": "0000785161",
  "company": "Encompass Health Corp",
- "briefDate": "2026-11-09",
- "weekFrom": "2026-11-04",
- "weekTo": "2026-11-09",
- "previousBrief": "2026-11-03",
+ "briefDate": "2026-11-20",
+ "weekFrom": "2026-11-10",
+ "weekTo": "2026-11-20",
+ "previousBrief": "2026-11-09",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Nov 4 to Nov 9, 2026"
+    "t": "Brief week: Nov 10 to Nov 20, 2026"
    }
   ],
   [
@@ -35,13 +35,8 @@
   "lines": [
    [
     {
-     "k": "filing",
-     "t": "8-K (public disclosure) · Nov 6, 2026",
-     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000242/ehc-20261106.htm"
-    },
-    {
      "k": "text",
-     "t": " — read for this card."
+     "t": "No new filings since Nov 9, 2026."
     }
    ]
   ]
@@ -54,7 +49,7 @@
     "heading": [
      {
       "k": "text",
-      "t": "During the period, Jan 1, 2026 to Sept 30, 2026: already in the position"
+      "t": "Since September 30, 2026: not yet in the position totals"
      }
     ],
     "lines": [
@@ -168,8 +163,14 @@
        "t": ": "
       },
       {
-       "k": "text",
-       "t": "Issued"
+       "k": "label",
+       "t": "Issued",
+       "stated": "issued",
+       "src": {
+        "sentence": "The Additional Notes represent a further issuance of the Company’s 5.875% Senior Notes due 2034, of which $500,000,000 aggregate principal amount was issued on May 29, 2026 (the “Existing Notes”) under the Indenture.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000195/ehc-20260813.htm",
+        "doc": "8-K 2026-08-13"
+       }
       },
       {
        "k": "text",
@@ -262,8 +263,32 @@
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
         "doc": "10-Q 2026-11-03"
        }
+      },
+      {
+       "k": "text",
+       "t": ", "
+      },
+      {
+       "k": "label",
+       "t": "at par",
+       "stated": "at par",
+       "src": {
+        "sentence": "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+        "doc": "10-Q 2026-11-03"
+       }
       }
-     ],
+     ]
+    ]
+   },
+   {
+    "heading": [
+     {
+      "k": "text",
+      "t": "During the period, Jan 1, 2026 to Sept 30, 2026: already in the position"
+     }
+    ],
+    "lines": [
      [
       {
        "k": "label",
@@ -312,7 +337,7 @@
        "t": "2022 agreement",
        "stated": "2022",
        "src": {
-        "sentence": "In connection with the execution of the 2026 Credit Agreement, we paid off all outstanding amounts, and terminated the commitments, as of the Closing Date, under the Sixth Amended and Restated Credit Agreement, dated October 7, 2022 (the “2022 Credit Agreement”), by and among us, certain of our subsidiaries, as guarantors, Barclays Bank PLC, as administrative agent and collateral agent (“Barclays”), and various other lenders.",
+        "sentence": "During March 2026, we drew $ 250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
         "doc": "10-Q 2026-11-03"
        }
@@ -1045,7 +1070,7 @@
    ]
   },
   "refi": {
-   "heading": "Potential refinance opportunities (to May 9, 2028)",
+   "heading": "Potential refinance opportunities (to May 20, 2028)",
    "lines": [
     [
      {
@@ -1291,7 +1316,7 @@
     [
      {
       "k": "text",
-      "t": "Next, after May 9, 2028: "
+      "t": "Next, after May 20, 2028: "
      },
      {
       "k": "figure",
@@ -2304,6 +2329,26 @@
      [
       {
        "k": "text",
+       "t": "Letter-of-credit sub-facility "
+      },
+      {
+       "k": "figure",
+       "t": "$260MM",
+       "printed": "$ 260 million",
+       "src": {
+        "sentence": "The credit agreement provides for a $ 1 billion revolving credit facility, with a $ 260 million letter of credit subfacility and a swingline loan subfacility, all of which mature in October 2027.",
+        "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm",
+        "doc": "10-K"
+       }
+      },
+      {
+       "k": "text",
+       "t": ": capacity within the facility, not drawn, stated in the 10-K for 2025"
+      }
+     ],
+     [
+      {
+       "k": "text",
        "t": "Swingline sub-facility "
       },
       {
@@ -2488,7 +2533,7 @@
  },
  "v3": {
   "header": {
-   "label": "Weekly coverage brief · Nov 4 to Nov 9, 2026",
+   "label": "Weekly coverage brief · Nov 10 to Nov 20, 2026",
    "company": "ENCOMPASS HEALTH CORP",
    "position": [
     {
@@ -2515,16 +2560,7 @@
    "status": [
     {
      "k": "text",
-     "t": "1 filing this week: "
-    },
-    {
-     "k": "filing",
-     "t": "8-K (public disclosure) Nov 6, 2026",
-     "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000242/ehc-20261106.htm"
-    },
-    {
-     "k": "text",
-     "t": ", read for this card"
+     "t": "No new filings since this card's build of Nov 6, 2026"
     }
    ],
    "actionable": []
@@ -2533,7 +2569,7 @@
   "breakage": null,
   "checks": null,
   "call": {
-   "label": "The call · next 18 months, to May 9, 2028",
+   "label": "The call · next 18 months, to May 20, 2028",
    "case": "A",
    "headline": [
     {
@@ -3221,7 +3257,26 @@
       }
      ]
     ],
-    "detail": null,
+    "detail": [
+     {
+      "k": "text",
+      "t": "Issued "
+     },
+     {
+      "k": "label",
+      "t": "at par",
+      "stated": "at par",
+      "src": {
+       "sentence": "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
+       "doc": "10-Q 2026-11-03"
+      }
+     },
+     {
+      "k": "text",
+      "t": "."
+     }
+    ],
     "retires": {
      "meta": [
       {
@@ -3233,7 +3288,7 @@
        "t": "redeemed May 2026",
        "stated": "May 2026",
        "src": {
-        "sentence": "As of December 31, 2025, $ 130.0 million was drawn under the revolving credit facility with an interest rate of 5.9 %. 12 Encompass Health Corporation and Subsidiaries Notes to Condensed Consolidated Financial Statements In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
+        "sentence": "In May 2026, we issued $ 500 million of 5.875 % Senior Notes due 2034 (the “2034 Notes”) at par, which resulted in approximately $ 491 million in net proceeds from the private offering.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
         "doc": "10-Q 2026-11-03"
        }
@@ -3402,7 +3457,7 @@
        "t": "2022 agreement",
        "stated": "2022",
        "src": {
-        "sentence": "In connection with the execution of the 2026 Credit Agreement, we paid off all outstanding amounts, and terminated the commitments, as of the Closing Date, under the Sixth Amended and Restated Credit Agreement, dated October 7, 2022 (the “2022 Credit Agreement”), by and among us, certain of our subsidiaries, as guarantors, Barclays Bank PLC, as administrative agent and collateral agent (“Barclays”), and various other lenders.",
+        "sentence": "During March 2026, we drew $ 250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement.",
         "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000239/ehc-20260930.htm",
         "doc": "10-Q 2026-11-03"
        }
@@ -4295,7 +4350,7 @@
    ],
    "window": {
     "endIndex": 2,
-    "endFraction": 0.35752688172043007,
+    "endFraction": 0.38709677419354843,
     "label": "18-month window"
    },
    "legend": [
@@ -5950,6 +6005,28 @@
     "sub": [
      {
       "k": "text",
+      "t": "Letter-of-credit sub-facility "
+     },
+     {
+      "k": "figure",
+      "t": "$260MM",
+      "printed": "$ 260 million",
+      "src": {
+       "sentence": "The credit agreement provides for a $ 1 billion revolving credit facility, with a $ 260 million letter of credit subfacility and a swingline loan subfacility, all of which mature in October 2027.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm",
+       "doc": "10-K"
+      }
+     },
+     {
+      "k": "text",
+      "t": ", capacity only, stated in the 10-K for 2025."
+     },
+     {
+      "k": "text",
+      "t": " "
+     },
+     {
+      "k": "text",
       "t": "Swingline sub-facility "
      },
      {
@@ -5972,12 +6049,12 @@
      },
      {
       "k": "label",
-      "t": "Letters of credit outstanding: stated only as of March 9, 2026 in an 8-K; not shown.",
-      "stated": "$53.6 million",
+      "t": "Letters of credit outstanding: stated only as of December 31, 2025 in the 10-K; not shown.",
+      "stated": "$ 36.3 million",
       "src": {
-       "sentence": "As of March 9, 2026, the Company had drawn $250.0 million on the revolving credit facility under the 2026 Credit Agreement to repay in full and retire the remaining amounts outstanding under the 2022 Credit Agreement and $53.6 million on the new letter of credit subfacility.",
-       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000100/ehc-20260309.htm",
-       "doc": "ehc-20260309.htm"
+       "sentence": "As of December 31, 2025 and 2024, $ 46.3 million and $ 36.3 million , respectively, was being utilized under the letter of credit subfacility, which were being used in the ordinary course of business to secure workers’ compensation and other insurance coverages and for general corporate purposes.",
+       "url": "https://www.sec.gov/Archives/edgar/data/785161/000078516126000081/ehc-20251231.htm",
+       "doc": "10-K"
       }
      }
     ]

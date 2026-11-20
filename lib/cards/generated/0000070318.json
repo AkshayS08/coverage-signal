@@ -1,10 +1,10 @@
 {
  "cik": "0000070318",
  "company": "TENET HEALTHCARE CORP",
- "briefDate": "2026-11-09",
- "weekFrom": "2026-11-04",
- "weekTo": "2026-11-09",
- "previousBrief": "2026-11-03",
+ "briefDate": "2026-11-20",
+ "weekFrom": "2026-11-10",
+ "weekTo": "2026-11-20",
+ "previousBrief": "2026-11-09",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Nov 4 to Nov 9, 2026"
+    "t": "Brief week: Nov 10 to Nov 20, 2026"
    }
   ],
   [
@@ -35,8 +35,31 @@
   "lines": [
    [
     {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 19, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526468949/xslF345X06/ownership.xml"
+    },
+    {
      "k": "text",
-     "t": "No new filings since Nov 3, 2026."
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526461336/xslF345X06/ownership.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 12, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000195917326007932/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": ", read at the next refresh."
     }
    ]
   ]
@@ -125,11 +148,11 @@
       {
        "k": "label",
        "t": "5.125% senior secured first lien notes due November 2027",
-       "stated": "5.125 %",
+       "stated": "5.125%",
        "src": {
-        "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
-        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-        "doc": "10-Q 2026-10-29"
+        "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+        "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+        "doc": "thc-20260908.htm"
        }
       },
       {
@@ -693,7 +716,7 @@
    ]
   },
   "refi": {
-   "heading": "Potential refinance opportunities (to May 9, 2028)",
+   "heading": "Potential refinance opportunities (to May 20, 2028)",
    "lines": [
     [
      {
@@ -827,7 +850,7 @@
         "printed": "$ 27",
         "usd": 27000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -836,7 +859,7 @@
         "printed": "$ 157 million",
         "usd": 157000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -845,7 +868,7 @@
         "printed": "$ 1,931 million",
         "usd": 1931000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -882,7 +905,7 @@
     [
      {
       "k": "text",
-      "t": "Next, after May 9, 2028: "
+      "t": "Next, after May 20, 2028: "
      },
      {
       "k": "figure",
@@ -1083,7 +1106,7 @@
          "printed": "$ 27",
          "usd": 27000000,
          "src": {
-          "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+          "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27",
           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
           "doc": "10-Q 2026-10-29"
          }
@@ -1115,7 +1138,7 @@
          "printed": "$ 157 million",
          "usd": 157000000,
          "src": {
-          "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+          "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157",
           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
           "doc": "10-Q 2026-10-29"
          }
@@ -1347,7 +1370,7 @@
          "printed": "$ 1,931 million",
          "usd": 1931000000,
          "src": {
-          "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+          "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931",
           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
           "doc": "10-Q 2026-10-29"
          }
@@ -1481,7 +1504,7 @@
          "printed": "$ 1,464 million",
          "usd": 1464000000,
          "src": {
-          "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+          "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464",
           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
           "doc": "10-Q 2026-10-29"
          }
@@ -1690,7 +1713,7 @@
          "printed": "$ 3,493 million",
          "usd": 3493000000,
          "src": {
-          "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+          "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493",
           "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
           "doc": "10-Q 2026-10-29"
          }
@@ -2668,7 +2691,7 @@
  },
  "v3": {
   "header": {
-   "label": "Weekly coverage brief · Nov 4 to Nov 9, 2026",
+   "label": "Weekly coverage brief · Nov 10 to Nov 20, 2026",
    "company": "TENET HEALTHCARE CORP",
    "position": [
     {
@@ -2695,7 +2718,34 @@
    "status": [
     {
      "k": "text",
-     "t": "No new filings this week"
+     "t": "3 filings since this card's build of Oct 31, 2026: "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 19, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526468949/xslF345X06/ownership.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000119312526461336/xslF345X06/ownership.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 12, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000195917326007932/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": ", read at the next refresh"
     }
    ],
    "actionable": []
@@ -2704,7 +2754,7 @@
   "breakage": null,
   "checks": null,
   "call": {
-   "label": "The call · next 18 months, to May 9, 2028",
+   "label": "The call · next 18 months, to May 20, 2028",
    "case": "A",
    "headline": [
     {
@@ -2928,7 +2978,7 @@
         "printed": "$ 27",
         "usd": 27000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -2937,7 +2987,7 @@
         "printed": "$ 157 million",
         "usd": 157000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -2946,7 +2996,7 @@
         "printed": "$ 1,931 million",
         "usd": 1931000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -3195,11 +3245,11 @@
        {
         "k": "label",
         "t": "5.125% senior secured first lien notes due November 2027",
-        "stated": "5.125 %",
+        "stated": "5.125%",
         "src": {
-         "sentence": "We used the net issuance proceeds, together with cash on hand, to finance the redemption of all $ 1.500 billion in aggregate principal amount of our 5.125 % senior secured first lien notes due November 2027 and the redemption of $ 500 million of the then outstanding $ 1.750 billion aggregate principal amount of our 6.125 % senior unsecured notes due October 2028.",
-         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
-         "doc": "10-Q 2026-10-29"
+         "sentence": "The Company intends to use the net proceeds from the sale of the notes, after payment of fees and expenses, to finance, together with cash on hand, the redemption of all $1.5 billion outstanding of its 5.125% senior secured first lien notes due November 2027 (the “2027 Notes”) and the partial redemption of $0.5 billion outstanding of its 6.125% senior notes due October 2028 (the “2028 Notes”).",
+         "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000040/thc-20260908.htm",
+         "doc": "thc-20260908.htm"
         }
        }
       ],
@@ -3755,7 +3805,7 @@
         "printed": "$ 27",
         "usd": 27000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -3786,7 +3836,7 @@
         "printed": "$ 157 million",
         "usd": 157000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -3817,7 +3867,7 @@
         "printed": "$ 1,931 million",
         "usd": 1931000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -3864,7 +3914,7 @@
         "printed": "$ 1,464 million",
         "usd": 1464000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -3903,7 +3953,7 @@
         "printed": "$ 3,493 million",
         "usd": 3493000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -3943,7 +3993,7 @@
         "printed": "$ 6,269 million",
         "usd": 6269000000,
         "src": {
-         "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+         "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
          "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
          "doc": "10-Q 2026-10-29"
         }
@@ -3985,7 +4035,7 @@
    ],
    "window": {
     "endIndex": 2,
-    "endFraction": 0.35752688172043007,
+    "endFraction": 0.38709677419354843,
     "label": "18-month window"
    },
    "legend": [
@@ -5079,7 +5129,7 @@
           "printed": "$ 27",
           "usd": 27000000,
           "src": {
-           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+           "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27",
            "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
            "doc": "10-Q 2026-10-29"
           }
@@ -5111,7 +5161,7 @@
           "printed": "$ 157 million",
           "usd": 157000000,
           "src": {
-           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+           "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157",
            "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
            "doc": "10-Q 2026-10-29"
           }
@@ -5343,7 +5393,7 @@
           "printed": "$ 1,931 million",
           "usd": 1931000000,
           "src": {
-           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+           "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931",
            "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
            "doc": "10-Q 2026-10-29"
           }
@@ -5477,7 +5527,7 @@
           "printed": "$ 1,464 million",
           "usd": 1464000000,
           "src": {
-           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+           "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464",
            "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
            "doc": "10-Q 2026-10-29"
           }
@@ -5686,7 +5736,7 @@
           "printed": "$ 3,493 million",
           "usd": 3493000000,
           "src": {
-           "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+           "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493",
            "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm",
            "doc": "10-Q 2026-10-29"
           }

@@ -1,10 +1,10 @@
 {
  "cik": "0000927066",
  "company": "DAVITA INC.",
- "briefDate": "2026-11-09",
- "weekFrom": "2026-11-04",
- "weekTo": "2026-11-09",
- "previousBrief": "2026-11-03",
+ "briefDate": "2026-11-20",
+ "weekFrom": "2026-11-10",
+ "weekTo": "2026-11-20",
+ "previousBrief": "2026-11-09",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Nov 4 to Nov 9, 2026"
+    "t": "Brief week: Nov 10 to Nov 20, 2026"
    }
   ],
   [
@@ -35,8 +35,94 @@
   "lines": [
    [
     {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000145/xslF345X06/wk-form4_1794953933.xml"
+    },
+    {
      "k": "text",
-     "t": "No new filings since Nov 3, 2026."
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000146/xslF345X06/wk-form4_1794953938.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000147/xslF345X06/wk-form4_1794953945.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000148/xslF345X06/wk-form4_1794953951.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000149/xslF345X06/wk-form4_1794953959.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000150/xslF345X06/wk-form4_1794953965.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000151/xslF345X06/wk-form4_1794953971.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000152/xslF345X06/wk-form4_1794953979.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000153/xslF345X06/wk-form4_1794953985.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000154/xslF345X06/wk-form4_1794953992.xml"
+    },
+    {
+     "k": "text",
+     "t": ", read at the next refresh."
     }
    ]
   ]
@@ -717,7 +803,7 @@
    ]
   },
   "refi": {
-   "heading": "Potential refinance opportunities (to May 9, 2028)",
+   "heading": "Potential refinance opportunities (to May 20, 2028)",
    "lines": [
     [
      {
@@ -776,7 +862,7 @@
     [
      {
       "k": "text",
-      "t": "Next, after May 9, 2028: "
+      "t": "Next, after May 20, 2028: "
      },
      {
       "k": "figure",
@@ -2150,7 +2236,7 @@
  },
  "v3": {
   "header": {
-   "label": "Weekly coverage brief · Nov 4 to Nov 9, 2026",
+   "label": "Weekly coverage brief · Nov 10 to Nov 20, 2026",
    "company": "DAVITA INC.",
    "position": [
     {
@@ -2177,7 +2263,97 @@
    "status": [
     {
      "k": "text",
-     "t": "No new filings this week"
+     "t": "10 filings since this card's build of Oct 31, 2026: "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000145/xslF345X06/wk-form4_1794953933.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000146/xslF345X06/wk-form4_1794953938.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000147/xslF345X06/wk-form4_1794953945.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000148/xslF345X06/wk-form4_1794953951.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000149/xslF345X06/wk-form4_1794953959.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000150/xslF345X06/wk-form4_1794953965.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000151/xslF345X06/wk-form4_1794953971.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000152/xslF345X06/wk-form4_1794953979.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000153/xslF345X06/wk-form4_1794953985.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 17, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000154/xslF345X06/wk-form4_1794953992.xml"
+    },
+    {
+     "k": "text",
+     "t": ", read at the next refresh"
     }
    ],
    "actionable": []
@@ -2186,7 +2362,7 @@
   "breakage": null,
   "checks": null,
   "call": {
-   "label": "The call · next 18 months, to May 9, 2028",
+   "label": "The call · next 18 months, to May 20, 2028",
    "case": "C",
    "headline": [
     {
@@ -3170,7 +3346,7 @@
    ],
    "window": {
     "endIndex": 2,
-    "endFraction": 0.35752688172043007,
+    "endFraction": 0.38709677419354843,
     "label": "18-month window"
    },
    "legend": [

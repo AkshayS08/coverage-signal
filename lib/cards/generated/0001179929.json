@@ -1,10 +1,10 @@
 {
  "cik": "0001179929",
  "company": "MOLINA HEALTHCARE, INC.",
- "briefDate": "2026-11-09",
- "weekFrom": "2026-11-04",
- "weekTo": "2026-11-09",
- "previousBrief": "2026-11-03",
+ "briefDate": "2026-11-20",
+ "weekFrom": "2026-11-10",
+ "weekTo": "2026-11-20",
+ "previousBrief": "2026-11-09",
  "header": [
   [
    {
@@ -15,7 +15,7 @@
   [
    {
     "k": "text",
-    "t": "Brief week: Nov 4 to Nov 9, 2026"
+    "t": "Brief week: Nov 10 to Nov 20, 2026"
    }
   ],
   [
@@ -36,8 +36,116 @@
    [
     {
      "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 16, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000162828026074068/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 16, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000121149326000010/xslF345X06/wk-form4_1794864895.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "SCHEDULE 13G (other filing) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000142284926000190/xslSCHEDULE_13G_X02/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000195004726011069/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000155560326000008/xslF345X06/wk-form4_1794609438.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000164977326000010/xslF345X06/wk-form4_1794609504.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "4/A (other filing) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000132092926000005/xslF345X06/wk-form4a_1794609547.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000132092926000006/xslF345X06/wk-form4_1794609608.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000122886126000012/xslF345X06/wk-form4_1794609643.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 10, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000162828026072544/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 10, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000195004726010911/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
      "t": "8-K (public disclosure) Nov 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000143774926035576/moh20261106_8k.htm"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "SCHEDULE 13G/A (other filing) Oct 30, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000210012126001083/xslSCHEDULE_13G_X02/primary_doc.xml"
     },
     {
      "k": "text",
@@ -436,15 +544,11 @@
     ],
     [
      {
-      "k": "text",
-      "t": "Uncommitted: "
-     },
-     {
       "k": "label",
-      "t": "incremental term loans to finance certain acquisitions",
-      "stated": "incremental term loans to finance certain acquisitions",
+      "t": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
+      "stated": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
       "src": {
-       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "sentence": "uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
        "doc": "10-Q 2026-10-22"
       }
@@ -456,9 +560,9 @@
      {
       "k": "figure",
       "t": "$800MM",
-      "printed": "$800 million",
+      "printed": "$ 800 million",
       "src": {
-       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "sentence": "uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
        "doc": "10-Q 2026-10-22"
       }
@@ -471,7 +575,7 @@
    ]
   },
   "refi": {
-   "heading": "Potential refinance opportunities (to May 9, 2028)",
+   "heading": "Potential refinance opportunities (to May 20, 2028)",
    "lines": [
     [
      {
@@ -482,7 +586,7 @@
     [
      {
       "k": "text",
-      "t": "Next, after May 9, 2028: "
+      "t": "Next, after May 20, 2028: "
      },
      {
       "k": "figure",
@@ -1225,9 +1329,9 @@
       {
        "k": "figure",
        "t": "$15MM",
-       "printed": "$15 million",
+       "printed": "$ 15 million",
        "src": {
-        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+        "sentence": "a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
         "doc": "10-Q 2026-10-22"
        }
@@ -1245,9 +1349,9 @@
       {
        "k": "figure",
        "t": "$100MM",
-       "printed": "$100 million",
+       "printed": "$ 100 million",
        "src": {
-        "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+        "sentence": "a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility",
         "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
         "doc": "10-Q 2026-10-22"
        }
@@ -1389,7 +1493,7 @@
  },
  "v3": {
   "header": {
-   "label": "Weekly coverage brief · Nov 4 to Nov 9, 2026",
+   "label": "Weekly coverage brief · Nov 10 to Nov 20, 2026",
    "company": "MOLINA HEALTHCARE, INC.",
    "position": [
     {
@@ -1416,12 +1520,120 @@
    "status": [
     {
      "k": "text",
-     "t": "1 filing this week: "
+     "t": "13 filings since this card's build of Oct 29, 2026: "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 16, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000162828026074068/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 16, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000121149326000010/xslF345X06/wk-form4_1794864895.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "SCHEDULE 13G (other filing) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000142284926000190/xslSCHEDULE_13G_X02/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000195004726011069/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000155560326000008/xslF345X06/wk-form4_1794609438.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000164977326000010/xslF345X06/wk-form4_1794609504.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "4/A (other filing) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000132092926000005/xslF345X06/wk-form4a_1794609547.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000132092926000006/xslF345X06/wk-form4_1794609608.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 4 (insider trades) Nov 13, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000122886126000012/xslF345X06/wk-form4_1794609643.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 10, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000162828026072544/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "Form 144 (planned insider sales) Nov 10, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000195004726010911/xsl144X01/primary_doc.xml"
+    },
+    {
+     "k": "text",
+     "t": "; "
     },
     {
      "k": "filing",
      "t": "8-K (public disclosure) Nov 6, 2026",
      "url": "https://www.sec.gov/Archives/edgar/data/1179929/000143774926035576/moh20261106_8k.htm"
+    },
+    {
+     "k": "text",
+     "t": "; "
+    },
+    {
+     "k": "filing",
+     "t": "SCHEDULE 13G/A (other filing) Oct 30, 2026",
+     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000210012126001083/xslSCHEDULE_13G_X02/primary_doc.xml"
     },
     {
      "k": "text",
@@ -1434,7 +1646,7 @@
   "breakage": null,
   "checks": null,
   "call": {
-   "label": "The call · next 18 months, to May 9, 2028",
+   "label": "The call · next 18 months, to May 20, 2028",
    "case": "D",
    "headline": [
     {
@@ -1525,7 +1737,7 @@
       "doc": "10-Q 2026-10-22"
      }
     },
-    "away": "19 months away · 1 month past the window"
+    "away": "18 months away"
    },
    "rows": [],
    "notes": [],
@@ -1864,9 +2076,9 @@
      {
       "k": "figure",
       "t": "$800MM",
-      "printed": "$800 million",
+      "printed": "$ 800 million",
       "src": {
-       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "sentence": "uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
        "doc": "10-Q 2026-10-22"
       }
@@ -1878,9 +2090,9 @@
      {
       "k": "label",
       "t": "uncommitted incremental term loans to finance certain acquisitions",
-      "stated": "incremental term loans to finance certain acquisitions",
+      "stated": "uncommitted capacity to incur incremental term loans to finance certain acquisitions",
       "src": {
-       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "sentence": "uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800 million",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
        "doc": "10-Q 2026-10-22"
       }
@@ -2058,7 +2270,7 @@
    ],
    "window": {
     "endIndex": 2,
-    "endFraction": 0.35752688172043007,
+    "endFraction": 0.38709677419354843,
     "label": "18-month window · nothing due"
    },
    "legend": [
@@ -2618,9 +2830,9 @@
      {
       "k": "figure",
       "t": "$15MM",
-      "printed": "$15 million",
+      "printed": "$ 15 million",
       "src": {
-       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "sentence": "a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
        "doc": "10-Q 2026-10-22"
       }
@@ -2640,9 +2852,9 @@
      {
       "k": "figure",
       "t": "$100MM",
-      "printed": "$100 million",
+      "printed": "$ 100 million",
       "src": {
-       "sentence": "We are party to a Credit Agreement (the \"Credit Agreement\") which includes a revolving credit facility (\"Credit Facility\") of $ 1.25  billion, a $ 15  million swingline sub-facility, a $ 100  million letter of credit sub-facility, as well as uncommitted capacity to incur incremental term loans to finance certain acquisitions up to $ 800  million.",
+       "sentence": "a revolving credit facility (\"Credit Facility\") of $ 1.25 billion, a $ 15 million swingline sub-facility, a $ 100 million letter of credit sub-facility",
        "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000045/moh-20260930.htm",
        "doc": "10-Q 2026-10-22"
       }
