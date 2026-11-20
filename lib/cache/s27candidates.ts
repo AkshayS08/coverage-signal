@@ -15,9 +15,10 @@ import { factsValidFor } from "../cards/factsValidity";
 import { moveIntegrityViolations } from "../cards/moveIntegrity";
 import { pendingShownAsDone } from "../cards/pendingMoves";
 import { visibleDiff } from "./s27cardDiff";
+import { ladderEquation } from "../cards/ladderEquation";
 
 if (process.env.ANTHROPIC_API_KEY !== "") { console.error('REFUSING: run with ANTHROPIC_API_KEY=""'); process.exit(1); }
-const OUT = "sessions/27/candidates";
+const OUT = (process.argv.find((a) => a.startsWith("--out=")) ?? "--out=sessions/27/candidates").slice(6);
 mkdirSync(OUT, { recursive: true });
 const read = (p: string) => JSON.parse(readFileSync(p, "utf-8"));
 const BRIEF = "2026-11-09";
@@ -31,7 +32,7 @@ const SOURCES: Record<string, { input: string; facts: string; card?: string; not
   "0001739940": { input: "sessions/27/cigna_facts/input.json", facts: "sessions/27/cigna_facts/0001739940.json", note: "facts re-read Nov 16, re-derived by identity from the paid reads" },
 };
 const txt = (l: any[] | null | undefined) => (l ?? []).map((s: any) => s?.t ?? "").join("");
-const summary = [`# The six candidate cards against production (origin/main)`, ``, `Not adopted, not regenerated, not released.`, ``, `| Card | Facts valid for its read set | Checks | Move integrity | Pending shown as done | Moves (candidate / production) |`, `|---|---|---|---|---|---|`];
+const summary = [`# The six candidate cards against production (origin/main)`, ``, `Not adopted, not regenerated, not released.`, ``, `| Card | Facts valid for its read set | Checks | Move integrity | Pending shown as done | Ladder equation | Moves (candidate / production) |`, `|---|---|---|---|---|---|---|`];
 for (const [cik, s] of Object.entries(SOURCES)) {
   const input = read(s.input), facts = read(s.facts);
   const w = week.names[cik];
@@ -42,10 +43,13 @@ for (const [cik, s] of Object.entries(SOURCES)) {
   const mi = moveIntegrityViolations(card, input);
   const miCount = Object.values(mi).reduce((n, v) => n + v.length, 0);
   const pend = pendingShownAsDone(card, facts);
+  const eq = ladderEquation(card);
+  const mmOf = (x: number) => `$${(x / 1e6).toLocaleString("en-US")}MM`;
+  const eqText = !eq ? "no chart" : `${eq.holds ? "holds" : "**fails**"} (${mmOf(eq.barsUsd)} + ${mmOf(eq.notShownUsd)} = ${mmOf(eq.totalUsd)})`;
   writeFileSync(join(OUT, `${cik}.json`), JSON.stringify(card, null, 1) + "\n");
-  writeFileSync(join(OUT, `${cik}.md`), [`# ${prod.company}: candidate (${s.note}) against production`, ``, `Facts valid for the read set: ${valid}. Card checks: ${card.v3?.checks === "failed" ? "FAILED (breakage)" : "hold"}. Move integrity: ${miCount ? Object.entries(mi).filter(([, v]) => v.length).map(([k, v]) => `${k}: ${v.join("; ")}`).join(" | ") : "holds"}. Pending shown as done: ${pend.length ? pend.join("; ") : "none"}.`, ``, ...visibleDiff(prod, card)].join("\n") + "\n");
+  writeFileSync(join(OUT, `${cik}.md`), [`# ${prod.company}: candidate (${s.note}) against production`, ``, `Facts valid for the read set: ${valid}. Card checks: ${card.v3?.checks === "failed" ? "FAILED (breakage)" : "hold"}. Move integrity: ${miCount ? Object.entries(mi).filter(([, v]) => v.length).map(([k, v]) => `${k}: ${v.join("; ")}`).join(" | ") : "holds"}. Pending shown as done: ${pend.length ? pend.join("; ") : "none"}. Ladder equation: ${eqText}.`, ``, ...visibleDiff(prod, card)].join("\n") + "\n");
   const mv = (c: any) => (c.v3?.moves ?? []).map((m: any) => txt(m.meta)).join("; ") || (c.v3?.movesUnread ? "not yet read" : "none");
-  summary.push(`| ${prod.company} | ${valid ? "yes" : "**no**"} | ${card.v3?.checks === "failed" ? "**failed**" : "hold"} | ${miCount ? `**${miCount} issue(s)**` : "holds"} | ${pend.length ? `**${pend.length}**` : "none"} | ${mv(card)} / ${mv(prod)} |`);
+  summary.push(`| ${prod.company} | ${valid ? "yes" : "**no**"} | ${card.v3?.checks === "failed" ? "**failed**" : "hold"} | ${miCount ? `**${miCount} issue(s)**` : "holds"} | ${pend.length ? `**${pend.length}**` : "none"} | ${eqText} | ${mv(card)} / ${mv(prod)} |`);
   console.log(`${prod.company}: valid ${valid}; checks ${card.v3?.checks ?? "hold"}; integrity ${miCount}; pending-as-done ${pend.length}`);
 }
 writeFileSync(join(OUT, "summary.md"), summary.join("\n") + "\n");

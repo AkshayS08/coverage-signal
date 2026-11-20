@@ -7,11 +7,21 @@
  "costUsd": 0.168655,
  "schedule": [
   {
+   "period": "2026",
+   "amount": {
+    "value": "$ 27",
+    "src": {
+     "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27",
+     "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
+    }
+   }
+  },
+  {
    "period": "2027",
    "amount": {
     "value": "$ 157",
     "src": {
-     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157",
      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
     }
    }
@@ -21,7 +31,7 @@
    "amount": {
     "value": "$ 1,931",
     "src": {
-     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931",
      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
     }
    }
@@ -31,7 +41,7 @@
    "amount": {
     "value": "$ 1,464",
     "src": {
-     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464",
      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
     }
    }
@@ -41,7 +51,7 @@
    "amount": {
     "value": "$ 3,493",
     "src": {
-     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493",
      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
     }
    }
@@ -51,7 +61,7 @@
    "amount": {
     "value": "$ 6,269",
     "src": {
-     "sentence": " Maturity Date, Years Ending December 31, 2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
+     "sentence": "2026 2027 2028 2029 2030 Thereafter Total Fair Value (Dollars in Millions) Fixed-rate long-term debt $ 27 $ 157 $ 1,931 $ 1,464 $ 3,493 $ 6,269",
      "url": "https://www.sec.gov/Archives/edgar/data/70318/000007031826000050/thc-20260930.htm"
     }
    }

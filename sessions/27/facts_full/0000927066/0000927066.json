@@ -316,7 +316,7 @@
   },
   {
    "fact": "move: facility refinancing completed July 17, 2025 $ 1,877,949 Term Loan B-2",
-   "why": "stated in 2 of 3 asks",
+   "why": "contradicted by ask 2 (facility amendment completed July 17, 2025 $ 250,000 Term Loan B-2); not kept",
    "variation": [
     "ask 1: present",
     "ask 2: absent",
@@ -325,7 +325,7 @@
   },
   {
    "fact": "move: facility refinancing completed November 24, 2025 $ 2,000,000 Term Loan A-2",
-   "why": "stated in 2 of 3 asks",
+   "why": "contradicted by ask 2 (facility amendment completed November 24, 2025 $ 2,000,000 Term Loan A-2); not kept",
    "variation": [
     "ask 1: present",
     "ask 2: absent",
