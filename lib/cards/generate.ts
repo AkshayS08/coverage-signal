@@ -19,6 +19,7 @@ import { join } from "node:path";
 import { buildCard } from "./build";
 import { recordBrief } from "./briefLog";
 import { briefDateArg } from "./briefDate";
+import { loadFailedReads } from "./failedReads";
 
 /** card_spec 1: the six, in the spec's order. */
 const ORDER = ["0000070318", "0000785161", "0001179929", "0000927066", "0001108109", "0001739940"];
@@ -46,6 +47,9 @@ for (const cik of ORDER) {
     periodSentence: snap.periodSentence,
     laterUrls: (snap.laterFilings ?? []).filter((x: { filingDate: string }) => x.filingDate <= BRIEF).map((x: { url: string }) => x.url),
     facts,
+    // Nov 20: filings read by a build that failed its checks, and the build this card serves (its header's filings).
+    failedReads: loadFailedReads(cik),
+    sinceBuild: w?.sinceBuild ?? null,
   });
   writeFileSync(join(OUT, `${cik}.json`), JSON.stringify(card, null, 1) + "\n", "utf-8");
   recordBrief({ cik, company: snap.company, briefDate: BRIEF });

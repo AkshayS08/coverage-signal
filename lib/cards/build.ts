@@ -51,6 +51,7 @@ import { headingFor as printedHeadingFor, kindOf, printedBefore, printedHeadings
 import { addDays, addMonths, displayAmount, displayDate, displayUsd, hedgedIn, mmDecimals, shortDate, weekRange } from "./format";
 import { antecedentWindow, paragraphSentences, REFERS, HEADING } from "./antecedent";
 import { plainFilingName, READ_WHEN, READ_FOR_CARD } from "./filingWords";
+import { failedReadLine, type FailedRead } from "./failedReads";
 import { factsValidFor } from "./factsValidity";
 import { REFRESH_TRIGGER_ITEMS, movesWindowStart } from "../cache/lastBuild";
 import { quoteKey, quoteFound, statesSameMove, SCHEDULED } from "./moveEvidence";
@@ -70,6 +71,10 @@ export interface CardInputs {
   laterUrls?: string[];
   /** Verified card facts (capture/facts.ts), where captured. */
   facts?: CardFacts | null;
+  /** Nov 20: filings this name read and that failed their checks (failedReads.ts): read, never "read at the next refresh". */
+  failedReads?: FailedRead[];
+  /** Nov 20: the date of the build this card serves (releaseBrief.servedBuildDate); its filings since are in the header. */
+  sinceBuild?: string | null;
 }
 
 /** 8-K items that change, or could change, debt, liquidity or maturities (card_spec 2.2). */
@@ -585,9 +590,19 @@ export function buildCard(i: CardInputs): Card {
   const readThisWeek: FilingEntry[] = [];
   // The header states the anchor's date once (Nov 3): a filing made the same day says so.
   const fdate = (f: FilingEntry) => (f.filingDate === anchor.date ? "same day" : shortDate(f.filingDate));
+  // Nov 20 (releaseHeader.test F2): a filing read by a build that failed its checks was read: the banner says so and why
+  // the card stays on its position, with the gap; never "read at the next refresh".
+  const failedThisWeek: FilingEntry[] = [];
   for (const f of i.weekFilings) {
     if (f.primaryDocUrl === anchor.url) continue;
     if (readUrls.has(f.primaryDocUrl)) { readThisWeek.push(f); continue; }
+    const fr = (i.failedReads ?? []).find((x) => x.url === f.primaryDocUrl);
+    if (fr) {
+      failedThisWeek.push(f);
+      const line = failedReadLine(fr, periodEnd), cut = line.indexOf(" read:");
+      actionable.push([{ k: "filing", t: line.slice(0, cut), url: f.primaryDocUrl }, t(line.slice(cut))]);
+      continue;
+    }
     newFilings.push(f);
     const items = f.items.split(",").map((x) => x.trim()).filter(Boolean);
     const meta = `${plainFilingName(f)} · ${fdate(f)}`;
@@ -2034,10 +2049,19 @@ export function buildCard(i: CardInputs): Card {
     status: (() => {
       const list = (fs: FilingEntry[]): Line => fs.flatMap((f, n) => [...(n ? [t("; ")] : []), { k: "filing", t: `${plainFilingName(f)} ${fdate(f)}`, url: f.primaryDocUrl } as Segment]);
       // Read filings first, each group with when it is read: for this card, or at the next refresh.
-      const named: Line = [...(readThisWeek.length ? [...list(readThisWeek), t(`, ${READ_FOR_CARD}`)] : []), ...(readThisWeek.length && newFilings.length ? [t("; ")] : []), ...(newFilings.length ? [...list(newFilings), t(`, ${READ_WHEN}`)] : [])];
-      const n = readThisWeek.length + newFilings.length, s1 = n === 1 ? "" : "s";
+      // Nov 20: a filing read by a failed build: read, and the card stays on its position (the banner says why).
+      const groups: Line[] = [
+        ...(failedThisWeek.length ? [[...list(failedThisWeek), t(`, read; this card stays at ${displayDate(periodEnd, "day")}`)]] : []),
+        ...(readThisWeek.length ? [[...list(readThisWeek), t(`, ${READ_FOR_CARD}`)]] : []),
+        ...(newFilings.length ? [[...list(newFilings), t(`, ${READ_WHEN}`)]] : []),
+      ];
+      const named: Line = groups.flatMap((g, n) => [...(n ? [t("; ")] : []), ...g]);
+      const n = failedThisWeek.length + readThisWeek.length + newFilings.length, s1 = n === 1 ? "" : "s";
+      // Nov 20 (releaseHeader.test F1): each card serves its last build; where that build is older than the brief week,
+      // the header lists the filings since it, and says so.
+      const since = i.sinceBuild && i.sinceBuild < weekFrom ? `since this card's build of ${shortDate(i.sinceBuild)}` : "this week";
       if (anchorThisWeek) return n ? [t(`new this week · ${n} other filing${s1}: `), ...named] : [t("new this week")];
-      return n ? [t(`${n} filing${s1} this week: `), ...named] : [t("No new filings this week")];
+      return n ? [t(`${n} filing${s1} ${since}: `), ...named] : [t(`No new filings ${since}`)];
     })(),
     actionable,
   };

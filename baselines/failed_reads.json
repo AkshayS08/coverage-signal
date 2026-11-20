@@ -1,0 +1,14 @@
+{
+ "reads": [
+  {
+   "cik": "0001739940",
+   "url": "https://www.sec.gov/Archives/edgar/data/1739940/000173994026000071/ci-20260930.htm",
+   "form": "10-Q",
+   "filingDate": "2026-11-05",
+   "periodEnd": "2026-09-30",
+   "gapUsd": 194000000,
+   "gapPct": "0.62%",
+   "kind": "tie"
+  }
+ ]
+}
