@@ -1749,15 +1749,26 @@ export function buildCard(i: CardInputs): Card {
   const subsFor = new Map<VerifiedFacility, NonNullable<typeof facts>["subFacilities"]>();
   const orphanSubs: NonNullable<typeof facts>["subFacilities"] = [];
   for (const sf of facts?.subFacilities ?? []) {
-    if (!permitted(sf.amount.src.url)) { unpermittedFacts.push(`${sf.kind.replace(/-/g, " ")} sub-facility of ${displayAmount(sf.amount.value, sf.amount.src.sentence)}`); continue; }
+    // Nov 20 (Akshay): a sub-facility's size is capacity, and renders "capacity only", never withheld — also where only
+    // an earlier annual report states it (Encompass's $260MM letter-of-credit sub-facility, in its 10-K); it names that
+    // filing (subNote). Other facility terms from an earlier annual report stay withheld.
     const byName = lenders.filter((f) => containsWord(sf.amount.src.sentence, f.name) || containsWord(f.name, sf.facility));
     const host = byName.length === 1 ? byName[0] : lenders.length === 1 ? lenders[0] : null;
     if (host) subsFor.set(host, [...(subsFor.get(host) ?? []), sf]);
     else orphanSubs.push(sf);
   }
   const SUB_NAME: Record<string, string> = { "letter-of-credit": "Letter-of-credit sub-facility", swingline: "Swingline sub-facility" };
+  /** A sub-facility's note: the annual report the anchor directs to, else, for an earlier report, the filing stating it. */
+  const subNote = (url: string): string | null => {
+    if (directedNote(url)) return directedNote(url);
+    if (permitted(url)) return null;
+    const head = (i.textByUrl.get(url) ?? "").slice(0, 8000).replace(/\s+/g, " ");
+    const form = (/\bFORM\s+(10-K|10-Q|8-K)\b/i.exec(head) ?? [])[1]?.toUpperCase() ?? "annual report";
+    const fy = /fiscal year ended\s+([A-Z][a-z]+)\s+\d{1,2}\s*,\s*(\d{4})/i.exec(head);
+    return `stated in the ${form}${fy ? ` for ${fy[2]}` : ""}`;
+  };
   const subLine = (sf: NonNullable<typeof facts>["subFacilities"][number], of?: string): Line => {
-    const note = directedNote(sf.amount.src.url);
+    const note = subNote(sf.amount.src.url);
     return [t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`}${of ? ` of the ${of}` : ""} `), factFig(sf.amount), t(`: capacity within the facility, not drawn${note ? `, ${note}` : ""}`)];
   };
   const cpFacts = facts?.commercialPaper ?? null;
@@ -2625,7 +2636,7 @@ export function buildCard(i: CardInputs): Card {
     const bold: Line = [...nameLine];
     for (const fl of facts) bold.push(t(" · "), ...fl);
     const sub: Line = [];
-    for (const sf of subsFor.get(f) ?? []) { const note = directedNote(sf.amount.src.url); sub.push(...(sub.length ? [t(" ")] : []), t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`} `), factFig(sf.amount), t(`, capacity only${note ? `, ${note}` : ""}.`)); }
+    for (const sf of subsFor.get(f) ?? []) { const note = subNote(sf.amount.src.url); sub.push(...(sub.length ? [t(" ")] : []), t(`${SUB_NAME[sf.kind] ?? `${sf.kind} sub-facility`} `), factFig(sf.amount), t(`, capacity only${note ? `, ${note}` : ""}.`)); }
     // Session 27: a letters-of-credit figure its own sentence predicates as capacity is shown as capacity, where no sub-facility line already states it.
     const lcCap = (f as any).lettersOfCreditCapacity as { value: string; sourceLine: string } | undefined;
     if (lcCap && !(subsFor.get(f) ?? []).some((sf) => /letter/i.test(sf.kind))) sub.push(...(sub.length ? [t(" ")] : []), t("Letter-of-credit capacity "), { k: "figure", t: displayAmount(lcCap.value, lcCap.sourceLine), printed: lcCap.value, src: src(lcCap.sourceLine, f.figureSources?.lettersOfCreditCapacity ?? f.citedUrl) }, t(", capacity only."));

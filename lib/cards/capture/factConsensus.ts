@@ -17,6 +17,8 @@
 import { couponsIn } from "../labels";
 import { parseMoneyAmount } from "../../events/position";
 import type { CardFacts, Fact } from "../types";
+import { locateMoveSentences } from "../moveSentences";
+import { quoteFound } from "../moveEvidence";
 
 type Raw = any;
 const squash = (s: string | null | undefined) => (s ?? "").toLowerCase().replace(/[\s $,]+/g, "");
@@ -119,8 +121,13 @@ const percentOf = (s: string) => /(\d+(?:\.\d+)?)\s*%/.exec(s)?.[1] ?? (/\bpar\b
 const samePrice = (a: string | null | undefined, b: string | null | undefined) => (!a && !b) || (!!a && !!b && (percentOf(a) !== null && percentOf(b) !== null ? Number(percentOf(a)) === Number(percentOf(b)) : squash(a) === squash(b)));
 const sameRate = samePrice;
 
-/** The items all reads state, matched by `same`: one group per fact, each read's own item; the rest to the residual. */
-function consensus<T>(kind: string, lists: T[][], same: (a: T, b: T) => boolean, label: (x: T) => string, residual: CardFacts["residual"]): T[][] {
+/**
+ * The items all reads state, matched by `same`: one group per fact, each read's own item; the rest to the residual.
+ * Nov 20 (Akshay): OMISSION AGAINST CONTRADICTION. With `partial` (moves): an item one read omits is kept when the
+ * other reads agree on it and the code confirms it (`confirm`); stability fails only on a contradiction — a read
+ * stating a related item (`related`) that is not the same — never on omission. One read alone is never enough.
+ */
+function consensus<T>(kind: string, lists: T[][], same: (a: T, b: T) => boolean, label: (x: T) => string, residual: CardFacts["residual"], partial?: { related: (a: T, b: T) => boolean; confirm: (x: T) => boolean }): T[][] {
   const used = lists.map(() => new Set<number>());
   const groups: T[][] = [];
   for (let i = 0; i < lists.length; i++) for (let j = 0; j < lists[i].length; j++) {
@@ -128,14 +135,40 @@ function consensus<T>(kind: string, lists: T[][], same: (a: T, b: T) => boolean,
     const x = lists[i][j];
     const hits = lists.map((l, k) => (k === i ? j : l.findIndex((y, n) => !used[k].has(n) && same(x, y))));
     hits.forEach((n, k) => { if (n >= 0) used[k].add(n); });
-    if (hits.every((n) => n >= 0)) groups.push(hits.map((n, k) => lists[k][n]));
-    else residual.push({ fact: `${kind}: ${label(x)}`, why: `stated in ${hits.filter((n) => n >= 0).length} of ${lists.length} asks`, variation: hits.map((n, k) => `ask ${k + 1}: ${n >= 0 ? "present" : "absent"}`) });
+    const variation = hits.map((n, k) => `ask ${k + 1}: ${n >= 0 ? "present" : "absent"}`);
+    if (hits.every((n) => n >= 0)) { groups.push(hits.map((n, k) => lists[k][n])); continue; }
+    const present = hits.filter((n) => n >= 0).length;
+    if (partial && present >= 2) {
+      const against = lists.map((l, k) => (hits[k] >= 0 ? -1 : l.findIndex((y, n) => !used[k].has(n) && partial.related(x, y))));
+      const k = against.findIndex((n) => n >= 0);
+      if (k >= 0) { residual.push({ fact: `${kind}: ${label(x)}`, why: `contradicted by ask ${k + 1} (${label(lists[k][against[k]])}); not kept`, variation }); continue; }
+      if (partial.confirm(x)) { groups.push(hits.filter((n) => n >= 0).map((n) => lists[hits.indexOf(n)][n])); continue; }
+      residual.push({ fact: `${kind}: ${label(x)}`, why: `omitted by ${lists.length - present} ask(s), and the code's move-sentence finder confirms no verified sentence of it`, variation });
+      continue;
+    }
+    residual.push({ fact: `${kind}: ${label(x)}`, why: `stated in ${present} of ${lists.length} asks`, variation });
   }
   return groups;
 }
 
+/**
+ * Nov 20: THE CODE'S CONFIRMATION OF A MOVE — a sentence the move-sentence finder (moveSentences.locateMoveSentences, the
+ * card's possible-move net) locates in the read set, that is one of the move's verified sentences (its date, instrument or
+ * amount sentence) and is dated compatibly with it.
+ */
+export function codeConfirms(snap: any): (m: any) => boolean {
+  const rs: string[] = (snap.result?.recordedReadSet ?? []).filter((r: any) => r.via === "base").map((r: any) => r.url);
+  const urls = (rs.length ? rs : Object.keys(snap.docs)).filter((u) => snap.docs[u]);
+  const located = locateMoveSentences(urls.map((u) => ({ url: u, label: snap.docs[u].label, text: snap.docs[u].text })), "2000-01-01", "2100-12-31");
+  return (m: any) => {
+    const mine = [m.date?.src?.sentence, m.instrument?.src?.sentence, m.face?.src?.sentence].filter((x): x is string => !!x);
+    const d = dateId(m.date?.value);
+    return located.some((l) => (l.date.startsWith(d) || d.startsWith(l.date)) && mine.some((s) => quoteFound(l.sentence, s.slice(0, 120)) || quoteFound(s, l.sentence.slice(0, 120))));
+  };
+}
+
 /** Keep only what all three verified asks state, by identity; everything else is residual, with the variation. */
-export function reproduceFacts(asks: Raw[], residual: CardFacts["residual"]): Omit<CardFacts, "cik" | "promptVersion" | "asks" | "costUsd" | "residual"> {
+export function reproduceFacts(asks: Raw[], residual: CardFacts["residual"], confirm: (m: any) => boolean = () => false): Omit<CardFacts, "cik" | "promptVersion" | "asks" | "costUsd" | "residual"> {
   const f = (x: any): Fact => ({ value: x.value ?? x, src: x.src });
   const first = <T>(g: T[][]) => g.map((x) => x[0]);
   const schedule = first(consensus("schedule", asks.map((a) => a.schedule ?? []), (a: any, b: any) => squash(a.period) === squash(b.period) && sameAmount(a.amount, b.amount), (x: any) => `${x.period} ${x.amount}`, residual)).map((x: any) => ({ period: x.period, amount: { value: x.amount, src: x.src } }));
@@ -156,7 +189,9 @@ export function reproduceFacts(asks: Raw[], residual: CardFacts["residual"]): Om
     flagged.add(k);
     residual.push({ fact: `move: ${a.instrument.value} ${a.date.value}`, why: `move types disagree across reads: ${a.type} (ask ${i + 1}) / ${b.type} (ask ${j + 1}); not merged`, variation: [] });
   }
-  const moves = consensus("move", lists, sameMove, (x: any) => `${x.type} ${x.status} ${x.date.value} ${x.face?.value ?? ""} ${x.instrument.value}`, residual).map((g: any[]) => {
+  // Nov 20: a related move (its instrument, and its date or its amount) that is not the same move contradicts it.
+  const related = (a: any, b: any) => sameInstrument(a.instrument.value, b.instrument.value) && (sameDate(a.date.value, b.date.value) || (!!a.face?.value && sameAmount(a.face?.value, b.face?.value)));
+  const moves = consensus("move", lists, sameMove, (x: any) => `${x.type} ${x.status} ${x.date.value} ${x.face?.value ?? ""} ${x.instrument.value}`, residual, { related, confirm }).map((g: any[]) => {
     // Nov 18: one type for the family (the most often read, the family's canonical where it has one); one date — where
     // the reads differ in precision, the month: the card keeps the day only where a sentence states completion on it.
     const fam = moveFamily(g[0].type);

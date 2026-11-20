@@ -54,7 +54,8 @@ import type { CardFacts, Fact } from "../types";
 import { verifyAsk } from "./verifyFacts";
 import { factsForBuild } from "./factsForBuild";
 import { readSetDocsKey } from "../factsValidity";
-import { reproduceFacts } from "./factConsensus";
+import { reproduceFacts, codeConfirms } from "./factConsensus";
+import { scheduleByCode } from "./scheduleByCode";
 
 // v2 (Nov 16): the moves window ends at the read set's latest filing, stated in the input, not at the brief date.
 // v3 (Nov 16): the input reads every read-set document (one deciding function), and refuses if one is missing.
@@ -250,7 +251,10 @@ export async function extractFacts(snap: any, read: FactsRead | undefined, clien
     asks.push(verifyAsk(snap, data, ask === 1 ? rejected : []));
   }
   const residual: CardFacts["residual"] = rejected.map((r) => ({ fact: r.fact, why: `not verified: ${r.why}`, variation: [] }));
-  const facts: CardFacts = { cik: snap.cik, anchorUrl: anchorUrlOf(snap), readSet: fp, promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: 0, ...reproduce(asks, residual), residual };
+  const facts: CardFacts = { cik: snap.cik, anchorUrl: anchorUrlOf(snap), readSet: fp, promptVersion: CARD_FACTS_PROMPT_VERSION, asks: ASKS, costUsd: 0, ...reproduce(asks, residual, codeConfirms(snap)), residual };
+  // Nov 20: a printed maturity schedule the code can read (and that ties) is read by code, not by the model.
+  const coded = scheduleByCode(snap);
+  if (coded) facts.schedule = coded;
   return { facts, raws, keys: [1, 2, 3].map((a) => cardFactsKey(snap.cik, fp, CARD_FACTS_PROMPT_VERSION, a)), hits };
 }
 
