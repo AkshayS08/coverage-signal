@@ -4336,3 +4336,8 @@
 {"at":"2026-11-17T04:37:18.829Z","company":"MOLINA HEALTHCARE, INC. (card facts)","perCall":true,"kind":"card facts","sample":"canonical","totalUsd":0.037171,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":23146,"outputTokens":2805,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.037171}],"unpricedModels":[]}
 {"at":"2026-11-17T04:37:35.480Z","company":"MOLINA HEALTHCARE, INC. (card facts)","perCall":true,"kind":"card facts","sample":"canonical","totalUsd":0.037431,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":23146,"outputTokens":2857,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.037431}],"unpricedModels":[]}
 {"at":"2026-11-17T04:37:51.613Z","company":"MOLINA HEALTHCARE, INC. (card facts)","perCall":true,"kind":"card facts","sample":"canonical","totalUsd":0.037296,"totalCalls":1,"byModel":[{"model":"claude-haiku-4-5","calls":1,"inputTokens":23146,"outputTokens":2830,"cacheReadTokens":0,"cacheWriteTokens":0,"usd":0.037296}],"unpricedModels":[]}
+{"at":"2026-11-22T05:02:36.738Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-22T05:02:50.000Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-22T05:03:02.719Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-22T05:25:55.055Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
+{"at":"2026-11-22T05:30:24.117Z","company":"COMMUNITY HEALTH SYSTEMS INC","totalUsd":0,"totalCalls":0,"byModel":[],"unpricedModels":[]}
