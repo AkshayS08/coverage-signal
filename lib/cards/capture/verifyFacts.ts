@@ -11,6 +11,7 @@ import { quoteFound, statesSameMove, datesCompletedMove } from "../moveEvidence"
 import { paragraphSentences, antecedentWindow, offeringAntecedents, sentenceIndexOf, REFERS, HEADING } from "../antecedent";
 import type { Fact } from "../types";
 import { dateId, sameAmount } from "./factConsensus";
+import { movesWindowStart } from "../../cache/lastBuild";
 const MONEY = /\$\s?[\d,]+(?:\.\d+)?(?:\s*(?:million|billion|thousand))?/gi;
 
 /**
@@ -230,6 +231,11 @@ export function verifyAsk(snap: any, raw: Raw, rejected: { fact: string; why: st
       if (!dateE) { rejected.push({ fact: label, why: `no sentence the card accepts for this move states the date "${m.date}", and none states its completion` }); return null; }
       // The date as the sentence prints it (one form: "2026-06-08" is kept as "June 8, 2026").
       date = printedDateIn(dateE.sentence, date) ?? date;
+      // Nov 21 (Akshay; movesWindow.test): the moves window is enforced in code — a move dated before January 1 of the
+      // anchor period's year (lastBuild.movesWindowStart, the card's own window) is rejected, whatever a read returned.
+      const windowStart = movesWindowStart(snap.result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.reportDate);
+      const id = dateId(date);
+      if (/^\d{4}/.test(id) && id < windowStart.slice(0, id.length)) { rejected.push({ fact: label, why: `dated ${date}, before the moves window (from ${windowStart})` }); return null; }
       const instE = evidenceFor(snap, url, m.sourceLine, m.instrument, null, false) ?? (containsWord(m.sourceLine, m.instrument) ? { sentence: m.sourceLine, url } : null);
       const faceE = m.face ? evidenceFor(snap, url, m.sourceLine, m.face, mv, false) : null;
       if (m.face && !faceE) rejected.push({ fact: `face of ${label}`, why: `no sentence the card accepts for this move states "${m.face}"` });

@@ -244,6 +244,17 @@ export function fillCommitmentFromFacility<P extends { category?: string | null;
   return prose.map((p) => {
     if ((p.amount ?? "").trim() || !p.sourceLine) return p;
     const hits = facilities.filter((f) => f.category && f.category === p.category && f.facilitySize?.value && flat(f.facilitySize.sourceLine) === flat(p.sourceLine) && printedIn(String(f.facilitySize.value), String(p.sourceLine)));
-    return hits.length === 1 ? { ...p, amount: hits[0].facilitySize!.value!, amountBasis: "commitment" } : p;
+    if (hits.length === 1) return { ...p, amount: hits[0].facilitySize!.value!, amountBasis: "commitment" };
+    if (hits.length > 1) return p;
+    // SESSION 27 (Akshay, Nov 21, CHS criterion 2): THE INSTRUMENT IS ITS FACILITY. Where the instrument's own sentence
+    // is one of a verified facility's own stated sentences (its drawn, availability or letters-of-credit line: CHS's
+    // "no outstanding borrowings … under the ABL Facility", the stated zero of Rules 53/60), and that facility of the
+    // same category and the same name states its size, the instrument takes that size, basis "commitment", citing the
+    // size's own sentence. Any other sentence still fills nothing (the Oct 30 rule above); two such facilities fill
+    // neither. The guardrail holds: a commitment is capacity, never outstanding debt (commitmentFill.test K2, K3, K5).
+    const own = facilities.filter((f: any) => f.category && f.category === p.category && f.facilitySize?.value && f.facilitySize?.sourceLine && flat(f.name) === flat((p as any).name)
+      && [f.drawn, f.available, f.lettersOfCredit].some((x: any) => x?.sourceLine && flat(x.sourceLine) === flat(p.sourceLine))
+      && printedIn(String(f.facilitySize.value), String(f.facilitySize.sourceLine)));
+    return own.length === 1 ? { ...p, amount: own[0].facilitySize!.value!, amountBasis: "commitment", sourceLine: own[0].facilitySize!.sourceLine! } : p;
   });
 }

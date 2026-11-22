@@ -75,5 +75,18 @@ assert(fillCommitmentFromFacility([p0] as any, [{ ...f0, facilitySize: { value: 
 assert(fillCommitmentFromFacility([{ ...p0, amount: "$ 1.0 billion", amountBasis: "outstanding" }] as any, [f0] as any)[0].amount === "$ 1.0 billion", `[K4 control] an instrument that carries an amount is never touched`);
 assert(fillCommitmentFromFacility([{ ...p0, sourceLine: "The Company maintains a revolving credit agreement." }] as any, [{ ...f0, facilitySize: { value: "$ 6.5 billion", sourceLine: "The Company maintains a revolving credit agreement." } }] as any)[0].amount === null, `[K4 control] a sentence that does not state the figure fills nothing`);
 
+console.log("\n=== K5 (Akshay, Nov 21): the facility's own stated sentences ===");
+// CHS's Nov 10 build cites its ABL by the sentence stating it undrawn ("no outstanding borrowings … under the ABL
+// Facility"); the same verified facility states its size ($ 1.0 billion) in another sentence. The instrument IS that
+// facility: it takes the facility's stated size, basis "commitment", citing the size's own sentence.
+const chsNow = read(join("lib", "cards", "inputs", "0001108109.json")).result;
+const chsFilled = dmOf(filled(chsNow)).proseInstruments.find((p: any) => p.category === "revolver");
+const chsFac = dmOf(chsNow).facilities.find((f: any) => f.name === "ABL Facility");
+assert(chsFilled?.amount === "$ 1.0 billion" && chsFilled?.amountBasis === "commitment" && chsFilled?.sourceLine === chsFac.facilitySize.sourceLine, `[K5:CHS Nov 10] the ABL takes its facility's stated size: ${chsFilled?.amount}, ${chsFilled?.amountBasis}, citing "${String(chsFilled?.sourceLine).slice(0, 70)}…"`);
+const drawnOnly = { category: "revolver", name: "ABL Facility", amount: null, amountBasis: null, sourceLine: "At September 30, 2026, the Company had no outstanding borrowings under the ABL Facility." };
+const fac = { name: "ABL Facility", category: "revolver", facilitySize: { value: "$ 1.0 billion", sourceLine: "The lenders have extended a facility of up to $ 1.0 billion." }, drawn: { value: "$0", sourceLine: drawnOnly.sourceLine } };
+assert(fillCommitmentFromFacility([{ ...drawnOnly, sourceLine: "The ABL Facility contains customary covenants." }] as any, [fac] as any)[0].amount === null, `[K5 control] a sentence that is none of the facility's own stated sentences still fills nothing (the Oct 30 rule)`);
+assert(fillCommitmentFromFacility([drawnOnly] as any, [fac, { ...fac, name: "Second ABL" }] as any)[0].amount === "$ 1.0 billion" && fillCommitmentFromFacility([{ ...drawnOnly, name: "Term Loan" }] as any, [fac] as any)[0].amount === null, `[K5 control] matched by the facility's own name: another facility's name fills nothing`);
+
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

@@ -157,60 +157,6 @@
  "moves": [
   {
    "date": {
-    "value": "November 20, 2025",
-    "src": {
-     "sentence": "On November 20, 2025, we completed the private offering of $ 850 million aggregate principal amount of senior notes (the \" 6.500 % Notes due 2031\")",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm"
-    }
-   },
-   "type": "issuance",
-   "status": "completed",
-   "instrument": {
-    "value": "6.500 % Notes due 2031",
-    "src": {
-     "sentence": "On November 20, 2025, we completed the private offering of $ 850 million aggregate principal amount of senior notes (the \" 6.500 % Notes due 2031\")",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm"
-    }
-   },
-   "face": {
-    "value": "$ 850 million",
-    "src": {
-     "sentence": "On November 20, 2025, we completed the private offering of $ 850 million aggregate principal amount of senior notes (the \" 6.500 % Notes due 2031\")",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm"
-    }
-   },
-   "funding": null,
-   "use": null,
-   "price": null,
-   "offered": null,
-   "consent": null
-  },
-  {
-   "date": {
-    "value": "November 20, 2025",
-    "src": {
-     "sentence": "On November 20, 2025, we entered into a Credit Agreement (the \"New Credit Agreement\") which replaced our prior credit agreement dated as of June 8, 2020",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm"
-    }
-   },
-   "type": "facility entry",
-   "status": "completed",
-   "instrument": {
-    "value": "Credit Agreement",
-    "src": {
-     "sentence": "On November 20, 2025, we entered into a Credit Agreement (the \"New Credit Agreement\") which replaced our prior credit agreement dated as of June 8, 2020",
-     "url": "https://www.sec.gov/Archives/edgar/data/1179929/000117992926000005/moh-20251231.htm"
-    }
-   },
-   "face": null,
-   "funding": null,
-   "use": null,
-   "price": null,
-   "offered": null,
-   "consent": null
-  },
-  {
-   "date": {
     "value": "February 4, 2026",
     "src": {
      "sentence": "We executed an amendment to the Credit Agreement on February 4, 2026 that temporarily reduces the Interest Coverage Ratio threshold to (a) with respect to each fiscal quarter ending March 31, 2026 through and including December 31, 2026, 1.75 :1.00, (b) with respect to fiscal quarter ending March 31, 2027, 2.00 :1.00, (c) with respect to fiscal quarter ending June 30, 2027, 2.50 :1.00 and (d) with respect to fiscal quarter ending September 30, 2027, 2.75 :1.00.",
@@ -261,18 +207,14 @@
    "variation": []
   },
   {
-   "fact": "funding of 6.500 % Notes due 2031",
-   "why": "not verified: its sentence is in no document the card holds",
+   "fact": "move issuance 6.500 % Notes due 2031 November 20, 2025",
+   "why": "not verified: dated November 20, 2025, before the moves window (from 2026-01-01)",
    "variation": []
   },
   {
-   "fact": "funding of the issuance of 6.500 % Notes due 2031",
-   "why": "varied across asks",
-   "variation": [
-    "ask 1: null",
-    "ask 2: We used the net proceeds for repayment of $ 740 million in term loan debt related to the Prior Credit Agreement (see discussion below) and for general corporate purposes.",
-    "ask 3: null"
-   ]
+   "fact": "move facility entry Credit Agreement November 20, 2025",
+   "why": "not verified: dated November 20, 2025, before the moves window (from 2026-01-01)",
+   "variation": []
   }
  ]
 }

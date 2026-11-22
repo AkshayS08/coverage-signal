@@ -158,36 +158,6 @@
  "moves": [
   {
    "date": {
-    "value": "September 4, 2025",
-    "src": {
-     "sentence": "On September 4, 2025, The Cigna Group (the \"Company\") completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the \"2030 Notes\")",
-     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
-    }
-   },
-   "type": "issuance",
-   "status": "completed",
-   "instrument": {
-    "value": "4.500% Senior Notes due 2030",
-    "src": {
-     "sentence": "On September 4, 2025, The Cigna Group (the \"Company\") completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the \"2030 Notes\")",
-     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
-    }
-   },
-   "face": {
-    "value": "$1,000,000,000",
-    "src": {
-     "sentence": "On September 4, 2025, The Cigna Group (the \"Company\") completed its offering of $1,000,000,000 in aggregate principal amount of its 4.500% Senior Notes due 2030 (the \"2030 Notes\")",
-     "url": "https://www.sec.gov/Archives/edgar/data/1739940/000114036125033986/ny20054607x5_8k.htm"
-    }
-   },
-   "funding": null,
-   "use": null,
-   "price": null,
-   "offered": null,
-   "consent": null
-  },
-  {
-   "date": {
     "value": "March 2026",
     "src": {
      "sentence": "During the six months ended June 30, 2026, the Company repaid $ 550 million 1.250 % senior notes that matured in March 2026.",
@@ -231,6 +201,11 @@
   {
    "fact": "cash cash and short-term investments held by parent company or certain non-regulated subsidiaries",
    "why": "not verified: its sentence does not state label \"cash and short-term investments held by parent company or certain non-regulated subsidiaries\"",
+   "variation": []
+  },
+  {
+   "fact": "move issuance 4.500% Senior Notes due 2030 September 4, 2025",
+   "why": "not verified: dated September 4, 2025, before the moves window (from 2026-01-01)",
    "variation": []
   },
   {
@@ -282,15 +257,6 @@
     "ask 1: present",
     "ask 2: present",
     "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "use of the issuance of 4.500% Senior Notes due 2030",
-   "why": "varied across asks",
-   "variation": [
-    "ask 1: to repay $2.0 billion of loans outstanding under the Term Loan Agreement, dated as of August 5, 2025, among the Company, the guarantors from time to time party thereto, the banks from time to time party thereto and Bank of America, N.A., as administrative agent, the proceeds of which were used to fund a strategic investment in another company, and the remainder for general corporate purposes, which may include investments and repayment of indebtedness",
-    "ask 2: general corporate purposes, which may include investments and repayment of indebtedness",
-    "ask 3: to repay $2.0 billion of loans outstanding under the Term Loan Agreement, dated as of August 5, 2025, among the Company, the guarantors from time to time party thereto, the banks from time to time party thereto and Bank of America, N.A., as administrative agent, the proceeds of which were used to fund a strategic investment in another company, and the remainder for general corporate purposes, which may include investments and repayment of indebtedness"
    ]
   }
  ]

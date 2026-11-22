@@ -228,36 +228,6 @@
  "moves": [
   {
    "date": {
-    "value": "May 23, 2025",
-    "src": {
-     "sentence": "On May 23, 2025, the Company issued $ 1,000,000 aggregate principal amount of 6.75 % senior notes due 2033 (the 6.75 % Senior Notes) in a private offering pursuant to Rule 144A and Regulation S under the Securities Act of 1933, as amended.",
-     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm"
-    }
-   },
-   "type": "issuance",
-   "status": "completed",
-   "instrument": {
-    "value": "6.75% Senior Notes",
-    "src": {
-     "sentence": "On May 23, 2025 (the \"Closing Date\"), DaVita Inc. (the \"Company\") completed the previously announced private offering (the \"Notes Offering\") of $1.0 billion aggregate principal amount of its 6.750% Senior Notes due 2033 (the \"2033 Notes\").",
-     "url": "https://www.sec.gov/Archives/edgar/data/927066/000120677425000378/dva4490761-8k.htm"
-    }
-   },
-   "face": {
-    "value": "$ 1,000,000",
-    "src": {
-     "sentence": "On May 23, 2025, the Company issued $ 1,000,000 aggregate principal amount of 6.75 % senior notes due 2033 (the 6.75 % Senior Notes) in a private offering pursuant to Rule 144A and Regulation S under the Securities Act of 1933, as amended.",
-     "url": "https://www.sec.gov/Archives/edgar/data/927066/000092706626000012/dva-20251231.htm"
-    }
-   },
-   "funding": null,
-   "use": null,
-   "price": null,
-   "offered": null,
-   "consent": null
-  },
-  {
-   "date": {
     "value": "June 8, 2026",
     "src": {
      "sentence": "On June 8, 2026 (the Ninth Amendment Effective Date), the Company entered into the Ninth Amendment (the Ninth Amendment) to the Credit Agreement. The Ninth Amendment modified the Credit Agreement to extend an additional incremental principal amount of $ 500,000 on its Term Loan B-2.",
@@ -310,54 +280,19 @@
    "variation": []
   },
   {
-   "fact": "move: Term Loan A-2 November 24, 2025",
-   "why": "move types disagree across reads: facility refinancing (ask 1) / facility amendment (ask 2); not merged",
+   "fact": "move issuance 6.75% Senior Notes 2025-05-23",
+   "why": "not verified: dated May 23, 2025, before the moves window (from 2026-01-01)",
    "variation": []
   },
   {
-   "fact": "move: facility refinancing completed July 17, 2025 $ 1,877,949 Term Loan B-2",
-   "why": "contradicted by ask 2 (facility amendment completed July 17, 2025 $ 250,000 Term Loan B-2); not kept",
-   "variation": [
-    "ask 1: present",
-    "ask 2: absent",
-    "ask 3: present"
-   ]
+   "fact": "move facility refinancing Term Loan B-2 2025-07-17",
+   "why": "not verified: dated July 17, 2025, before the moves window (from 2026-01-01)",
+   "variation": []
   },
   {
-   "fact": "move: facility refinancing completed November 24, 2025 $ 2,000,000 Term Loan A-2",
-   "why": "contradicted by ask 2 (facility amendment completed November 24, 2025 $ 2,000,000 Term Loan A-2); not kept",
-   "variation": [
-    "ask 1: present",
-    "ask 2: absent",
-    "ask 3: present"
-   ]
-  },
-  {
-   "fact": "move: facility amendment completed July 17, 2025 $ 250,000 Term Loan B-2",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "move: facility amendment completed November 24, 2025 $ 2,000,000 Term Loan A-2",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "use of the issuance of 6.75% Senior Notes",
-   "why": "varied across asks",
-   "variation": [
-    "ask 1: to repay outstanding revolving credit facility borrowings in the amount of $830 million, and to pay any costs, fees and expenses in connection with the foregoing",
-    "ask 2: for general corporate purposes, including, without limitation, for repurchases of capital stock, working capital and capital expenditures",
-    "ask 3: to repay outstanding revolving credit facility borrowings in the amount of $830 million, and to pay any costs, fees and expenses in connection with the foregoing"
-   ]
+   "fact": "move facility refinancing Term Loan A-2 2025-11-24",
+   "why": "not verified: dated November 24, 2025, before the moves window (from 2026-01-01)",
+   "variation": []
   }
  ]
 }

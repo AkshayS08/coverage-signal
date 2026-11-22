@@ -366,24 +366,6 @@
    ]
   },
   {
-   "fact": "move: issuance completed November 18, 2025 $1,500,000,000 5.500% senior secured first lien notes due 2032",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "move: issuance completed November 18, 2025 $750,000,000 6.000% senior notes due 2033",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
    "fact": "move: redemption completed October 2028 $1,500,000,000 6.250% senior secured second lien notes due February 2027",
    "why": "stated in 1 of 3 asks",
    "variation": [
@@ -394,15 +376,6 @@
   },
   {
    "fact": "move: redemption completed October 2028 $750,000,000 6.125% senior notes due October 2028",
-   "why": "stated in 1 of 3 asks",
-   "variation": [
-    "ask 1: absent",
-    "ask 2: present",
-    "ask 3: absent"
-   ]
-  },
-  {
-   "fact": "move: facility refinancing completed November 4, 2025 $1.900 billion senior secured revolving credit facility",
    "why": "stated in 1 of 3 asks",
    "variation": [
     "ask 1: absent",

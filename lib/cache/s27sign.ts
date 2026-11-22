@@ -55,14 +55,16 @@ const REFRESH = process.argv.includes("--refresh");
 const REFRESH_OF: Record<string, { file: string; asOf: string }> = {
   "0000070318": { file: "baselines/s27-refresh-batch.json", asOf: "2026-10-31" }, // s27batch9b.ts
   "0000927066": { file: "baselines/s27-refresh-batch.json", asOf: "2026-10-31" },
-  "0001108109": { file: "baselines/s27-refresh-batch.json", asOf: "2026-10-31" },
+  // Nov 22: CHS's Stage 2 refresh on its Nov 10 8-K (its exchange offer), cleared Nov 20; its Oct 31 signature is kept
+  // in the golden's basis.
+  "0001108109": { file: "sessions/27/chs_refresh_v3/samples.json", asOf: "2026-11-10" },
   "0001179929": { file: "baselines/s27-molina-refresh.json", asOf: "2026-10-29" }, // s27molinaDiff.ts
   "0000785161": { file: "baselines/s27-encompass-refresh.json", asOf: "2026-11-06" }, // the Nov 6 run, bound to read set 8ed10235
 };
 const REFRESH_CLEARED: Record<string, string> = {
   "0000785161": "Cleared by Akshay Sahani on Nov 9, 2026, after he viewed its rendered refresh card (screenshots_v13), to sign at v33 on its Nov 3 read set (its 10-Q filed Nov 3, 2026, the refresh of Nov 6; $0.6510 billed of $1.80 approved).",
   "0000927066": "Cleared by Akshay Sahani on Nov 1, 2026, to sign at v33 on its Oct 29 read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31); its card at the published brief still renders from the Oct 15 read set until the next brief.",
-  "0001108109": "Cleared by Akshay Sahani on Nov 3, 2026, after he viewed its rendered refresh card (screenshots_v10), to sign at v33 on its refresh read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31). Its card at the published brief still renders from its v31 input until the next brief.",
+  "0001108109": "Cleared by Akshay Sahani on Nov 20, 2026, after he viewed its rendered card (sessions/27/candidates_final), to sign at v33 on its Stage 2 refresh read set (its 8-K of Nov 10, 2026: the pending exchange offer for its 6.875% junior-priority secured notes due 2029). Signed Nov 22 after the Nov 21 commitment fill (the ABL takes its facility's stated $1.0 billion size, basis commitment, from the facility's own sentence), which changes no visible output against the cleared card.",
   "0001179929": "Cleared by Akshay Sahani on Nov 3, 2026, after he viewed its rendered refresh card (screenshots_v10), to sign at v33 on its refresh read set (its 10-Q filed Oct 22, 2026, the refresh of Oct 29). Its card at the published brief still renders from its v31 input until the next brief.",
   "0000070318": "Cleared by Akshay Sahani on Nov 3, 2026, after he viewed its rendered refresh card (screenshots_v9), to sign at v33 on its Oct 29 read set (its 10-Q filed Oct 29, 2026, the refresh batch of Oct 31). Its card at the published brief still renders from the Oct 15 read set until the next brief. (CHS and Molina: their Nov 1 signatures were reverted on Nov 3; nothing signs until he has seen the rendered card.)",
 };
@@ -87,7 +89,7 @@ export function cardFrom(cik: string, result: any): string {
   /** A refresh file's samples, either shape: the batch's names[].samples, or Molina's results[]. */
   const samplesIn = (file: string): { bust: string | null; result: any }[] => { const f = JSON.parse(readFileSync(file, "utf-8")); return f.names ? f.names.flatMap((n: any) => n.samples) : f.results; };
   const clearedOf = REFRESH ? REFRESH_CLEARED : CLEARED;
-  const REFRESH_CLEARED_ON: Record<string, string> = { "0000785161": "2026-11-09", "0000927066": "2026-11-01", "0000070318": "2026-11-03", "0001108109": "2026-11-03", "0001179929": "2026-11-03" };
+  const REFRESH_CLEARED_ON: Record<string, string> = { "0000785161": "2026-11-09", "0000927066": "2026-11-01", "0000070318": "2026-11-03", "0001108109": "2026-11-20", "0001179929": "2026-11-03" };
   for (const cik of ciks) {
     if (REFRESH && !REFRESH_OF[cik]) { console.log(`
 ${cik}: REFUSED — no refresh recorded`); continue; }
