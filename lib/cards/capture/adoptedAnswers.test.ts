@@ -11,6 +11,7 @@
  *
  * Offline, $0. Run: npx tsx lib/cards/capture/adoptedAnswers.test.ts
  */
+import { loadFailedReads } from "../failedReads";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { factsForBuild } from "./factsForBuild";
@@ -46,10 +47,13 @@ let refused = 0;
   }
   assert(refused === current.length && !storeAsked, `[U2b] ${current.length} registered read-set keys: ${refused} refused before the store is asked`);
 
-  const BRIEF = "2026-11-09";
+  // Nov 21 (Akshay): U3 follows the release — Tenet rebuilt at the published brief date, from its week file, exactly as
+  // lib/cards/generate.ts builds it (the filings since its build, any failed read); its control is unchanged.
+  const BRIEF = read(join("lib", "cards", "generated", "index.json")).briefDate as string;
   const ten = read(join("lib", "cards", "inputs", "0000070318.json"));
   const week = read(join("lib", "cards", "inputs", "week", `${BRIEF}.json`)).names["0000070318"];
-  const build = (facts: any) => buildCard({ result: ten.result, briefDate: BRIEF, previousBrief: week?.previousBrief ?? null, weekFilings: week?.filings ?? [], cash: ten.cash, textByUrl: new Map(Object.entries(ten.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text])), periodSentence: ten.periodSentence, laterUrls: (ten.laterFilings ?? []).filter((x: any) => x.filingDate <= BRIEF).map((x: any) => x.url), facts });
+  const failedReads = loadFailedReads("0000070318");
+  const build = (facts: any) => buildCard({ result: ten.result, briefDate: BRIEF, previousBrief: week?.previousBrief ?? null, weekFilings: week?.filings ?? [], cash: ten.cash, textByUrl: new Map(Object.entries(ten.docs as Record<string, { text: string }>).map(([u, d]) => [u, d.text])), periodSentence: ten.periodSentence, laterUrls: (ten.laterFilings ?? []).filter((x: any) => x.filingDate <= BRIEF).map((x: any) => x.url), facts, failedReads, sinceBuild: week?.sinceBuild ?? null });
   const prod = read(join("lib", "cards", "generated", "0000070318.json"));
   assert(JSON.stringify(build(factsForBuild(ten).facts).v3) === JSON.stringify(prod.v3), `[U3] Tenet's rebuilt card equals production's`);
   const reRun = read(join("sessions", "27", "facts_rerun", "0000070318.json"));

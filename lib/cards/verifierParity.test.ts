@@ -20,7 +20,8 @@ import { verifyAskForTest } from "./capture/verifyFacts";
 import { quoteFound, statesSameMove, datesCompletedMove } from "./moveEvidence";
 import { paragraphSentences, antecedentWindow, offeringAntecedents, sentenceIndexOf, REFERS, HEADING } from "./antecedent";
 import { nonEmpty } from "../testing/nonEmpty";
-import { moveFamily } from "./capture/factConsensus";
+import { moveFamily, dateId } from "./capture/factConsensus";
+import { movesWindowStart } from "../cache/lastBuild";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
@@ -76,7 +77,11 @@ for (const set of present) {
   const raw = read(set.raw), snap = read(set.input);
   for (const ask of raw.asks as any[]) {
     const v = verifyAskForTest(snap, ask);
-    for (const m of ask.moves ?? []) {
+    // Nov 21 (Akshay: the moves window enforced in code): the card considers no move dated before January 1 of its
+    // anchor's year (build.ts, lastBuild.movesWindowStart), and the verifier now rejects one; such a raw move is outside
+    // both, so parity is checked over the moves inside the window. Control V2b below.
+    const windowStart = movesWindowStart(snap.result.results.find((r: any) => r.triggerId === "debt-maturity").debtScheduleSourceFiling.reportDate);
+    for (const m of (ask.moves ?? []).filter((x: any) => !(/^\d{4}/.test(dateId(x.date)) && dateId(x.date) < windowStart.slice(0, dateId(x.date).length)))) {
       moves++;
       // Nov 18: the verifier may re-date a move (from the sentence stating its completion) or complete a pending one;
       // it is the same move by its instrument and type family, its date exact where it kept it.
@@ -93,6 +98,15 @@ assert(moves > 0 && disagree.length === 0, `[V2] ${moves} saved moves over ${pre
 const ten = read(join("lib", "cards", "inputs", "0000070318.json"));
 const notice = "On September 8, 2026 , the Company issued a notice of conditional full redemption to the holders of its 2027 Notes and a notice of conditional partial redemption to the holders of its 2028 Notes.";
 assert(!cardAccepts(ten, { type: "redemption", instrument: "5.125% senior secured first lien notes due November 2027", date: "September 8, 2026", status: "completed", sourceLine: notice }, notice), `[control] a completed redemption dated by its notice is not accepted by the card's functions`);
+// V2b control (Nov 21): the window excludes only pre-window moves; an in-window move the verifier rejects but the card's
+// functions date is still a disagreement. Tenet's Sept 22, 2026 issuance, its sourceLine broken so the verifier rejects it.
+{
+  const traw = read(join("lib", "cards", "inputs", "facts", "raw-0000070318.json"));
+  const m = traw.asks.flatMap((a: any) => a.moves).find((x: any) => x.type === "issuance" && /September 22, 2026/.test(x.date));
+  const broken = { ...m, sourceLine: "A sentence in no filing." };
+  const rejected = !verifyAskForTest(ten, { ...traw.asks[0], moves: [broken] }).moves.length;
+  assert(rejected && cardFinds(ten, broken), `[V2b control, Nov 21] an in-window move the verifier rejects while the card's functions date it is still a disagreement`);
+}
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

@@ -69,16 +69,26 @@ else {
 const snapSrc = readFileSync("lib/cards/capture/snapshot.ts", "utf-8"), factsSrc = readFileSync("lib/cards/capture/facts.ts", "utf-8"), priceSrc = readFileSync("lib/pipeline/price.ts", "utf-8");
 assert(!/debtEightKsSinceTenK|debtEightKs/.test(snapSrc + factsSrc + priceSrc), `[S6] no debt-8-K selector in the card input, the facts stage or the price`);
 
-// S7 adopted facts claim only documents their input held
+// S7 adopted facts claim only documents their input held.
+// Nov 21 (Akshay): S7 checks the facts adopted before Nov 20 (as stamped Nov 16), pinned to the commit before the
+// Nov 20 adoption (c0c285c~1); the facts adopted Nov 20 are S7b's.
 const stamped = new Map<string, string>();
+const preAdoption = (cik: string) => JSON.parse(require("node:child_process").execSync(`git show c0c285c~1:lib/cards/inputs/facts/${cik}.json`, { encoding: "utf-8", maxBuffer: 64e6 }));
 for (const src of adoptedFactsSources()) {
-  const f = read(`lib/cards/inputs/facts/${src.cik}.json`);
+  const f = preAdoption(src.cik);
   const held = src.heldUrls();
   stamped.set(src.cik, src.fullReadSetKey());
   assert(f.readSet === readSetDocsKey(held), `[S7:${src.cik}] its facts record ${String(f.readSet).slice(0, 8)}, the ${held.length} document(s) their input held (full read set ${src.fullReadSetKey().slice(0, 8)})`);
 }
 const lied = [...stamped.entries()].filter(([cik, full]) => { const src = adoptedFactsSources().find((s) => s.cik === cik)!; return readSetDocsKey(src.heldUrls()) !== full; });
 assert(lied.length > 0, `[S7 control] the Nov 16 stamp (full read set) claims documents the inputs never held for ${lied.length} name(s)`);
+
+// S7b (Nov 21): the facts adopted Nov 20 name exactly the documents their facts input holds — the card's read set.
+for (const cik of ["0000070318", "0000785161", "0001179929", "0000927066", "0001108109", "0001739940"]) {
+  const input = read(`lib/cards/inputs/${cik}.json`), f = read(`lib/cards/inputs/facts/${cik}.json`);
+  const held = factsInputDocs(inputFor(input));
+  assert(f.readSet === readSetDocsKey(held) && f.readSet === factsReadSetOf(input.result), `[S7b:${cik}] its facts record ${String(f.readSet).slice(0, 8)}: the ${held.length} documents its input holds, its read set`);
+}
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

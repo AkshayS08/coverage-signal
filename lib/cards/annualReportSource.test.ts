@@ -50,11 +50,26 @@ const tenKCited = (card: any, snap: any) => {
 /** A standing term may cite the 10-K when the card tags it: a facility maturity (a date) or a size figure. */
 // Nov 9: a seniority or security label from the 10-K's statement is a standing term too, tagged.
 const taggedStandingTerm = (o: any) => o?.tenK === true && (o.k === "date" || o.k === "label" || o.term === "facilitySize");
+/**
+ * Nov 21, following Akshay's rulings of Nov 20 — and no further:
+ *   (c) a sub-facility's size renders "capacity only", naming the 10-K that states it: a figure followed at once by
+ *       ", capacity only, stated in the 10-K" (Encompass's $260MM letter-of-credit sub-facility);
+ *   (b) a balance stated only in the 10-K is said to be, and not shown: a label reading "… stated only [as of …] in the
+ *       10-K; not shown." (the Oct 31 rule; Encompass's letters of credit, cited to the 10-K until its next trigger).
+ * Any other 10-K figure, date or label is still caught (A3; the (b)/(c) controls below).
+ */
+const ruledSubFacility = (o: any, next: any) => o?.k === "figure" && typeof next?.t === "string" && /^, capacity only, stated in the 10-K\b/.test(next.t);
+const ruledNotShown = (o: any) => o?.k === "label" && /stated only (?:as of [^;]+ )?in the 10-K; not shown\.$/.test(String(o.t ?? ""));
 const violations = (card: any, snap: any) => {
   if (rule66(snap)) return [];
   const isTenK = (src: any) => /^10-K/.test(src?.doc ?? "") || /^10-K/.test(snap.docs?.[src?.url]?.label ?? "");
   const out: string[] = [];
-  const walk = (o: any, path: string) => { if (!o || typeof o !== "object") return; if (o.src && isTenK(o.src) && !taggedStandingTerm(o)) out.push(`${path}: ${o.t ?? o.printed ?? ""}`); for (const [k, v] of Object.entries(o)) if (k !== "src") walk(v, `${path}.${k}`); };
+  const walk = (o: any, path: string, next?: any) => {
+    if (!o || typeof o !== "object") return;
+    if (o.src && isTenK(o.src) && !taggedStandingTerm(o) && !ruledSubFacility(o, next) && !ruledNotShown(o)) out.push(`${path}: ${o.t ?? o.printed ?? ""}`);
+    if (Array.isArray(o)) o.forEach((v, n) => walk(v, `${path}.${n}`, o[n + 1]));
+    else for (const [k, v] of Object.entries(o)) if (k !== "src") walk(v, `${path}.${k}`);
+  };
   walk(card.v3, "v3");
   return out;
 };
@@ -80,6 +95,15 @@ assert(violations(balance, tsnap).length > 0, `[A3 control] a 10-K balance (draw
 const csnap = snapOf("0001739940"), cnoRef = clone(csnap);
 cnoRef.result.results.find((t: any) => t.triggerId === "debt-maturity").noteCrossReference = null;
 assert(tenKCited(cardOf("0001739940"), csnap).length > 0 && violations(cardOf("0001739940"), cnoRef).length > 0, `[A4 control] Cigna's 10-K citations are caught once its cross-reference is removed`);
+
+// Controls for the Nov 20 (b)/(c) rulings: the same 10-K citations, worded otherwise, are still caught.
+{
+  const enc = cardOf("0000785161"), esnap = snapOf("0000785161");
+  const c1 = clone(enc); for (const f of c1.v3.facilities) for (const s of f.sub ?? []) if (typeof s.t === "string" && /^, capacity only, stated in the 10-K/.test(s.t)) s.t = ".";
+  assert(violations(c1, esnap).some((v) => /\$260MM/.test(v)), `[A5 control, Nov 20 (c)] the $260MM sub-facility without "capacity only, stated in the 10-K" is caught`);
+  const c2 = clone(enc); for (const f of c2.v3.facilities) for (const s of f.sub ?? []) if (s.k === "label" && /stated only .* in the 10-K; not shown\./.test(s.t)) s.t = "Letters of credit outstanding $32MM.";
+  assert(violations(c2, esnap).some((v) => /Letters of credit outstanding \$32MM/.test(v)), `[A5 control, Nov 20 (b)] a 10-K balance shown as a figure is caught`);
+}
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);

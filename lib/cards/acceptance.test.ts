@@ -693,7 +693,10 @@ const V3_TILES: Test = {
 };
 
 const VOCAB = /^(?:Refinanced(?: · (?:redemption set for .+|redeemed [A-Z][a-z]+ \d{4}))?|Not yet refinanced|Backed by revolver|Short-term|~?\$[\d,.]+MM (?:refinanced|repurchased in \d{4}|retired in \d{4}) · ~?\$[\d,.]+MM remains(?:, not yet refinanced)?|(?:Seniority|Security|Seniority and security) not stated)$/;
-const MOVE_WORD = /· (?:Issued, confirmed by \S+|Refinanced|Repaid(?: at maturity)?|Repurchased|Redeemed|Amended|Drew|Redemption announced, awaiting confirmation in a filing)$/;
+// Nov 21, following Akshay's ruling of Nov 16 (pending status for every move type) — and no further: each type's pending
+// form as build.ts's TYPE_WORD renders it, "<type> announced, awaiting confirmation in a filing". A completed move's
+// launch note, "(launched Apr 22)" (ruling A2, Nov 18), sits before the word and leaves it unchanged. Control V4b.
+const MOVE_WORD = /· (?:Issued, confirmed by \S+|Refinanced|Repaid(?: at maturity)?|Repurchased|Redeemed|Amended|Drew|(?:Redemption|Issuance|Repurchase|Repayment|Amendment|Exchange offer|Tender offer|Consent solicitation|Refinancing|Special call|Entry|Termination|Draw|Add-on) announced, awaiting confirmation in a filing)$/;
 const V4_VOCAB: Test = {
   id: "V4", name: "status and move words only from the §2.10 list; \"redeemed\" only with a confirming filing",
   run: (card) => {
@@ -1326,6 +1329,8 @@ function controls(): { id: string; failed: boolean; what: string }[] {
       { const c = clone(tenet); c.v3!.call.case = "B"; out.push({ id: "V2", failed: V2_CASE.run(c, null).length > 0, what: "Tenet called case B with debt not yet refinanced" }); }
       { const c = clone(tenet); const r = c.v3!.call.tiles.find((x) => x.key === "refinanced")!; r.usd += 100e6; out.push({ id: "V3", failed: V3_TILES.run(c, null).length > 0, what: "tiles that do not sum" }); }
       { const c = clone(tenet); c.v3!.call.rows[0].tag = { text: [{ k: "text", t: "Refinanced · redeemed September 2026" }], tone: "refinanced" }; out.push({ id: "V4", failed: V4_VOCAB.run(c, null).length > 0, what: "\"redeemed\" for a redemption no filing confirms" }); }
+      // V4b (Nov 21): the Nov 16 pending forms are listed; any other move word still fails.
+      { const c = clone(tenet); const m = c.v3!.moves[0]; m.meta = [...m.meta.slice(0, -1), { k: "text", t: " · Exchange offer pending" } as any]; out.push({ id: "V4", failed: V4_VOCAB.run(c, null).length > 0, what: "a move word outside the Nov 16 pending forms (\"Exchange offer pending\")" }); }
       { const c = clone(tenet); c.v3!.chart.legend = c.v3!.chart.legend.slice(1); out.push({ id: "V5", failed: V5_LEGEND.run(c, null).length > 0, what: "a chart color with no legend entry" }); }
       { const c = clone(tenet); const b = c.v3!.chart.bars.find((x) => x.source === "schedule")!; (b.total as any).usd += 50e6; b.segments[0].usd += 50e6; out.push({ id: "V6", failed: V6_BARS.run(c, fixtureOf(tenet.cik)).length > 0, what: "a bar that does not equal the filer's schedule" }); }
     }

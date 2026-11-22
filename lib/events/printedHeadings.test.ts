@@ -16,7 +16,10 @@ import { nonEmpty } from "../testing/nonEmpty";
 
 let passed = 0, failed = 0;
 const assert = (ok: boolean, msg: string) => { if (ok) { passed++; console.log(`  ✓ PASS — ${msg}`); } else { failed++; console.log(`  ✗ FAIL — ${msg}`); } };
-const snap = (cik: string) => JSON.parse(readFileSync(join(process.cwd(), "lib", "cards", "inputs", `${cik}.json`), "utf-8"));
+// Nov 21 (Akshay): pinned to the archived Oct 15 brief, the position these rows are read at (ASOF): its card inputs
+// are the loop-derived snapshots this check was written over. The published inputs now come from later builds.
+const SNAPS = join(process.cwd(), "lib", "cards", "archive", "2026-10-15", "inputs");
+const snap = (cik: string) => JSON.parse(readFileSync(join(SNAPS, `${cik}.json`), "utf-8"));
 const ASOF = new Date("2026-10-15T00:00:00Z");
 const rowsOf = (cik: string) => assemblePosition(snap(cik).result, ASOF).rows;
 const row = (cik: string, name: string) => rowsOf(cik).find((r) => r.instrument === name);
@@ -26,7 +29,7 @@ console.log("\n=== every loop-derived row records its printed heading ===");
 // corpus moved renders from its signed golden's stored result (Cigna, and
 // Encompass since Oct 21), which predates the field and keeps its recorded
 // headings. Only a loop-derived snapshot is the loop's output.
-const ALL = nonEmpty("the card input snapshots", readdirSync(join(process.cwd(), "lib", "cards", "inputs")).filter((f) => /^\d{10}\.json$/.test(f)).map((f) => f.slice(0, 10)));
+const ALL = nonEmpty("the card input snapshots", readdirSync(SNAPS).filter((f) => /^\d{10}\.json$/.test(f)).map((f) => f.slice(0, 10)));
 const loopDerived = nonEmpty("the snapshots re-derived through the loop", ALL.filter((cik) => /^re-derived through the loop/.test(snap(cik).source)));
 assert(loopDerived.length > 0, `[1] ${loopDerived.length} of ${ALL.length} snapshots are loop-derived (by their recorded source)`);
 const carries = (cik: string) => { const rows = snap(cik).result.results.find((r: any) => r.triggerId === "debt-maturity").scheduleSequence.filter((e: any) => e.kind === "row"); return rows.length > 0 && rows.every((e: any) => e.printedHeading !== undefined); };

@@ -68,6 +68,10 @@ const SCHEDULED = /\bexpected to\b|\bscheduled\b|\bwill be\b|\bintends?\b|\bset 
 function r2(card: any): string[] {
   const out: string[] = [];
   for (const m of card.v3.moves) for (const meta of [m.meta, m.retires?.meta].filter(Boolean)) {
+    // Nov 21 (Akshay, a bug): ruling A2 is completed-move dating; a PENDING move (its meta "… awaiting confirmation in
+    // a filing", the Nov 16 ruling) is dated by its announcement, and R2 does not apply to it. A move rendered as done
+    // is still checked (control below).
+    if (/awaiting confirmation in a filing/.test(txt(meta))) continue;
     meta.forEach((s: any, n: number) => {
       if (s.k !== "label" || !/\b\d{1,2}, 20\d\d\b|\b[A-Z][a-z]+\.? \d{1,2}\b/.test(s.t) || !s.src?.sentence) return;
       const labelled = /\(scheduled for\s*$/.test(txt(meta.slice(0, n)));
@@ -135,6 +139,18 @@ const c3 = clone(cig.card); c3.v3.table.rows = c3.v3.table.rows.filter((r: any) 
 assert(r3(c3, cig.input).length > 0, `[R3 control] Cigna's card with its commercial paper row removed is flagged`);
 assert(r4({ moveSentences: [{ sentence: "As a result of the redemption of the 2028 Notes, we recorded a $3.2 million Loss on early extinguishment of debt." }] }).length > 0, `[R4 control] a fixture requiring Encompass's $3.2MM loss on extinguishment is flagged`);
 assert(applyRuled("5.8", "0000927066", { form: "10-Q", filingDate: "2026-10-29" }, fail, synth).counted.length > 0, `[R5 control] the $65MM ruling applied on a different anchor than its own does not suppress the failure`);
+// Nov 21 controls for the R2 fix: CHS's pending exchange offer is exempt only while rendered pending.
+{
+  const chs = JSON.parse(readFileSync("lib/cards/generated/0001108109.json", "utf-8"));
+  const asDone = JSON.parse(JSON.stringify(chs));
+  for (const m of asDone.v3.moves) for (const s of m.meta) if (typeof s.t === "string" && /announced, awaiting confirmation in a filing/.test(s.t)) s.t = " · Exchanged";
+  assert(r2(chs).length === 0 && r2(asDone).length > 0, `[R2 control, Nov 21] the pending exchange offer, dated by its announcement, passes; the same move rendered as done is flagged: ${r2(asDone)[0]?.slice(0, 90) ?? "not flagged"}`);
+  const sched = JSON.parse(JSON.stringify(chs));
+  const done = sched.v3.moves.find((m: any) => /Repurchased/.test(txt(m.meta)));
+  const d = done.meta.find((s: any) => s.k === "label");
+  d.src = { ...d.src, sentence: "The notes are expected to be repurchased on May 6, 2026." };
+  assert(r2(sched).length > 0, `[R2 control, Nov 21] a completed move dated by a scheduled sentence is still flagged`);
+}
 
 console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed > 0 ? 1 : 0);
